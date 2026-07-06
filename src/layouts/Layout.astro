@@ -124,13 +124,15 @@ const schemas = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : []
         <!-- 号码弹出卡片 -->
         <div class="absolute bottom-0 right-14 bg-white rounded-xl shadow-xl border border-gray-100 px-4 py-3 w-48 opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-opacity duration-200 whitespace-nowrap">
           <p class="text-[10px] text-gray-400 font-medium tracking-wider mb-2.5">电话咨询</p>
-          <a href="tel:02082036224" class="flex items-center gap-2 text-sm font-bold text-navy-800 hover:text-brand-orange transition-colors mb-2">
-            <span class="text-brand-orange text-xs">直线</span>020-82036224
-          </a>
+          <div class="mb-2.5">
+            <a href="tel:02082036224" class="flex items-center gap-2 text-sm font-bold text-navy-800 hover:text-brand-orange transition-colors">
+              <span class="text-brand-orange text-xs">直线</span>020-82036224
+            </a>
+            <p class="text-[9px] text-gray-400 ml-5 mt-0.5">周一至周五 09:00 – 18:00</p>
+          </div>
           <a href="tel:4006865156" class="flex items-center gap-2 text-sm font-bold text-navy-800 hover:text-brand-orange transition-colors">
-            <span class="text-brand-orange text-xs">免费</span>400-6865-156
+            <span class="text-brand-orange text-xs">全国</span>400-6865-156
           </a>
-          <p class="text-[10px] text-gray-400 mt-2.5 leading-snug">周一至周五<br/>09:00 – 18:00</p>
         </div>
       </div>
     </div>
