@@ -4,13 +4,15 @@ const pathname = Astro.url.pathname
 
 const SPECIALTY_LINKS = [
   { href: '/xiefu-yuncang', label: '鞋服云仓', sub: 'B2C+B2B+O2O全渠道' },
-  { href: '/fuzhuang-yuncang', label: '服装云仓', sub: '全品类鞋服仓储' },
+  { href: '/huadong-xiefu-yuncang', label: '华东鞋服云仓', sub: '上海仓·长三角覆盖' },
   { href: '/tuihuo-zhijian', label: '退货质检', sub: 'AQL 1.0–6.5标准' },
   { href: '/houzheng-xiufu', label: '后整修复', sub: '修复成功率90%+' },
   { href: '/kuajing-yuncang', label: '跨境云仓', sub: '跨境退货+国际质检' },
   { href: '/zhibo-cangpei', label: '直播电商仓配', sub: '抖音/快手/淘宝直播' },
   { href: '/huanan-xiefu-yuncang', label: '华南鞋服云仓', sub: '广州+东莞+肇庆' },
   { href: '/guangzhou-xiefu-yuncang', label: '广州鞋服云仓', sub: '黄埔+番禺双仓' },
+  { href: '/b2b-mendian-cangpei', label: 'B2B门店仓配', sub: '连锁补货·批发铺货' },
+  { href: '/chaowanmeizhang-yuncang', label: '潮玩美妆仓储', sub: '精细仓储·多品类' },
 ]
 
 const isProductActive = pathname === '/product' || SPECIALTY_LINKS.some(l => pathname.startsWith(l.href))

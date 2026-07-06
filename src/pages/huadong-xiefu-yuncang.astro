@@ -1,0 +1,98 @@
+---
+import ServiceLanding from '@/layouts/ServiceLanding.astro'
+
+const COVERAGE_ROWS = [
+  { city: '上海', type: '本地', time: '当日达 / 次日达', note: '青浦仓发出，本地极速配' },
+  { city: '苏州 / 无锡 / 南京', type: '江苏', time: '次日达', note: '长三角核心圈，覆盖率高' },
+  { city: '杭州 / 宁波 / 义乌', type: '浙江', time: '次日达', note: '电商产业带，支持批发发货' },
+  { city: '合肥 / 南京', type: '安徽', time: '次日达', note: '次日达覆盖安徽主要城市' },
+  { city: '福州 / 厦门', type: '福建', time: '次日达', note: '福建省会次日稳定覆盖' },
+  { city: '济南 / 青岛', type: '山东', time: '次日 – 两日', note: '山东主要城市次日到两日' },
+  { city: '南昌 / 武汉', type: '华中延伸', time: '次日 – 两日', note: '经快递干线辐射' },
+]
+---
+
+<ServiceLanding
+  title="华东鞋服云仓 — 上海青浦仓，长三角次日达，华东覆盖 | 新亦源"
+  description="新亦源华东鞋服云仓位于上海青浦区，服务长三角及华东品牌，上海本地当日达，华东六省次日达，支持B2C+B2B+退货质检全业务，系统免费接入。"
+  slug="huadong-xiefu-yuncang"
+  breadcrumbLabel="华东鞋服云仓"
+  eyebrow="华东鞋服云仓 · 上海青浦，长三角核心节点"
+  h1="华东鞋服云仓"
+  h1sub="上海青浦仓，长三角次日达，服务华东全域品牌"
+  heroDesc="新亦源华东鞋服云仓位于上海市青浦区，是服务长三角及华东品牌的核心仓储节点，上海本地当日达，苏浙皖闽次日达，支持B2C全渠道、B2B门店补货及退货质检全业务。"
+  imgSrc="/w-hq.webp"
+  imgAlt="华东鞋服云仓 — 上海青浦仓储中心"
+  stats={[
+    { stat: '上海青浦', label: '仓库位置', sub: '汇金路889号，交通便利' },
+    { stat: '长三角', label: '次日达覆盖圈', sub: '苏浙皖闽主要城市' },
+    { stat: '18:00截单', label: '当日24:00全出', sub: 'SLA合同保障' },
+    { stat: '0元', label: '系统接入费', sub: '奇门/EDI免费对接' },
+  ]}
+  contentDesc="新亦源华东鞋服云仓坐落于上海市青浦区汇金路889号，是新亦源在长三角地区的核心仓储节点。华东仓专为服务长三角及华东品牌设计，解决华东品牌使用广州华南仓发货时效慢、运费高的问题。上海本地订单可实现当日达，苏州、杭州、南京等长三角主要城市次日达，覆盖江苏、浙江、安徽、福建等华东全域。支持天猫、京东、拼多多、抖音等主流平台B2C发货，同时承接B2B门店批量补货和退货质检业务，与广州华南仓联动，实现全国一盘货运营。"
+  featuresLabel="华东仓核心能力"
+  features={[
+    { title: '长三角极速覆盖', desc: '上海青浦仓紧邻沪渝高速/318国道，辐射苏州、无锡、杭州、南京等核心城市次日达，上海本地订单最快当日送达。' },
+    { title: '华东B2C全渠道发货', desc: '支持天猫、京东、拼多多、抖音电商、快手等主流平台华东区域发货，华东本地订单从华东仓发出，时效优于从广州华南仓发货。' },
+    { title: 'B2B华东门店补货', desc: '承接华东区域品牌连锁门店、批发商、加盟商的B2B补货配送，按门店分仓分拣，货架标签齐全，支持整件发货或拆零分发。' },
+    { title: '华东退货就近处理', desc: '华东区域退货就近回收至上海仓，避免长途运回广州的时间和运费损耗，48小时内完成质检分级+二次上架，快速回流可售库存。' },
+    { title: '南北双仓联动', desc: '华东仓与广州华南仓联动，OMS统一库存视图，支持就近发货策略：华东订单走上海仓，华南订单走广州仓，降低跨区物流成本。' },
+    { title: '长三角本地商务支持', desc: '华东有专属商务BD，可上门洽谈，方便上海、杭州、苏州等地品牌快速开始合作，首单免费试运营支持。' },
+  ]}
+  faqs={[
+    {
+      q: '新亦源华东仓在哪里？适合哪些品牌？',
+      a: '位于上海市青浦区汇金路889号2号楼三楼，青浦是上海电商仓储集中区，交通便利。特别适合：①总部或供应商在长三角的品牌（减少入库运输成本）；②消费市场主要集中在华东的品牌（时效优势明显）；③希望南北双仓覆盖全国的品牌（与广州华南仓联动）；④有上海/浙江线下门店需要就近补货的品牌。',
+    },
+    {
+      q: '华东仓发货，长三角主要城市能次日到吗？',
+      a: '是的。上海本地订单最快当日达；苏州、无锡、南京、杭州、宁波、合肥等长三角主要城市稳定次日达；福州、厦门、济南、青岛等城市次日到两日达。具体时效以仓库实际对接快递的时效承诺为准，我们会在合同中明确SLA。',
+    },
+    {
+      q: '华东仓和广州仓可以同时使用，统一管理库存吗？',
+      a: '可以。新亦源OMS支持多仓一体管理：①统一库存视图，库存在广州仓和上海仓之间实时可见；②就近发货策略配置，华东订单自动路由至上海仓，华南订单路由至广州仓；③统一报表和对账，无需分别登录两套系统；④分仓补货预警，避免单仓缺货影响发货。',
+    },
+    {
+      q: '华东仓规模多大？能应对大促爆单吗？',
+      a: '上海青浦仓目前运营面积适配中小规模品牌日常运营，大促期间通过弹性人力机制扩产能。如果品牌规模较大，也可结合广州华南仓分担华东订单量，确保大促SLA不违约。具体容量请联系商务团队评估。',
+    },
+    {
+      q: '华东仓收费与广州仓有区别吗？',
+      a: '整体收费结构一致（仓储费+操作费），但具体单价因上海本地成本而有所不同。系统接入费同样免费（奇门/EDI对接）。建议品牌告知SKU数量、月均吞吐量，商务团队为您定制华东仓方案报价。',
+    },
+  ]}
+>
+  <section slot="unique" class="py-14 bg-gray-50 border-b border-gray-100" aria-labelledby="coverage-heading">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 id="coverage-heading" class="text-xl font-black text-navy-800 mb-1 text-center">华东仓配送时效覆盖</h2>
+      <p class="text-xs text-gray-400 text-center mb-8">上海青浦发出，覆盖长三角及华东主要城市</p>
+      <div class="overflow-x-auto rounded-xl border border-gray-200">
+        <table class="w-full text-sm text-left">
+          <thead>
+            <tr class="bg-navy-800 text-white">
+              <th class="px-5 py-3.5 font-bold text-xs tracking-wider">城市 / 区域</th>
+              <th class="px-5 py-3.5 font-bold text-xs tracking-wider">所属省份</th>
+              <th class="px-5 py-3.5 font-bold text-xs tracking-wider">参考时效</th>
+              <th class="px-5 py-3.5 font-bold text-xs tracking-wider hidden sm:table-cell">说明</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100 bg-white">
+            {COVERAGE_ROWS.map(({ city, type, time, note }) => (
+              <tr class="hover:bg-orange-50/20 transition-colors">
+                <td class="px-5 py-4 font-bold text-navy-700 text-xs">{city}</td>
+                <td class="px-5 py-4 text-gray-500 text-xs">{type}</td>
+                <td class="px-5 py-4 text-xs">
+                  <span class={`inline-block px-2 py-0.5 rounded-full font-bold text-[10px] ${time.includes('当日') ? 'bg-green-100 text-green-600' : time.includes('次日达') && !time.includes('两日') ? 'bg-brand-orange/10 text-brand-orange' : 'bg-gray-100 text-gray-500'}`}>
+                    {time}
+                  </span>
+                </td>
+                <td class="px-5 py-4 text-gray-400 text-xs hidden sm:table-cell">{note}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="text-xs text-gray-400 mt-3">* 以上时效为参考值，以实际合同SLA条款为准。具体快递覆盖及时效请联系商务团队确认。</p>
+    </div>
+  </section>
+</ServiceLanding>
