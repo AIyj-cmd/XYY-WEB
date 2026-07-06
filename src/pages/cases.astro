@@ -111,6 +111,7 @@ const caseListSchema = {
                 <img
                   src={`/logos/imgi_${n}_default.png`}
                   alt={i < row.length ? `${LOGO_BRANDS[n] ?? '新亦源合作品牌'} 合作品牌 logo` : ''}
+                  aria-hidden={i >= row.length ? 'true' : undefined}
                   loading="lazy"
                   onerror="this.closest('.logo-img-card').style.display='none'"
                 />
