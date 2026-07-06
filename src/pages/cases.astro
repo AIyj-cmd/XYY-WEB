@@ -6,6 +6,36 @@ import { getCases } from '@/lib/directus'
 
 const displayCases = await getCases()
 
+const LOGO_BRANDS: Record<number, string> = {
+  6: 'UR Urban Revivo 快时尚', 7: 'New Balance 运动鞋服', 8: 'adidas 阿迪达斯',
+  9: 'HEA 潮牌', 10: '玛克茜妮 MAXRIENY 轻奢女装', 11: 'LOORA PWD 罗拉密码 设计师品牌',
+  12: '秋鹿家居服 AUTUMNDEER', 13: 'KM 快时尚男装', 14: 'broadcast 播 设计师品牌',
+  15: 'BAISI 白色时代', 16: '太平鸟 PEACEBIRD', 17: '乔丹体育 QIAODAN',
+  18: '回力 1927 运动鞋', 19: 'ZOW ZOW 潮牌', 20: 'DILì 迪丽女装',
+  21: 'MO&Co. 摩安珂', 22: '美丽联盟 Meilm', 23: 'Beverly Hills Polo Club 商务男装',
+  24: 'Dr. Martens 马汀博士', 25: 'TOMS 帆布鞋', 26: '好品服饰',
+  27: 'IMAGE SUBJECT 印象主题', 28: 'LILANZ 利郎男装', 29: 'LUOLAI 罗莱家纺',
+  30: 'G2000 商务男装', 31: 'L.K.D.L 下半身', 32: 'KIKS 鞋报',
+  33: '极典保罗 JIDIBAOLUO', 34: 'STANCE 袜业潮牌', 35: '水立方服饰',
+  36: 'betu 百图女装', 37: '红蜻蜓 RED DRAGONFLY', 38: 'POP MART 泡泡玛特',
+  39: '长虹佳华 Changhong IT', 40: 'Razer 雷蛇', 41: 'NOME 名创',
+  42: 'oce 服饰', 43: '睿米 REMI', 44: 'Ed Hardy 美国潮牌',
+  45: '初語 TOYOU 快时尚', 46: 'KISSFUNK 潮牌', 47: 'HONJI 鸿基',
+  48: 'JOJOBO 哦比乐', 49: 'JeansWest 真维斯', 50: 'YISHION 以纯',
+  51: 'M6000 运动品牌', 52: '不良人 国潮品牌', 53: '潮牌合作伙伴',
+  54: '潮牌合作伙伴', 55: '潮牌合作伙伴', 56: '国际运动品牌',
+  57: '国际运动品牌', 58: '国际运动品牌', 59: 'Mardi 韩国花卉潮牌',
+  60: 'Herschel Supply Co. 加拿大箱包', 61: 'Outopia 户外运动',
+  62: 'DUOZOULU 多足鹿鞋服', 63: '宝诚潮步 运动鞋', 64: 'DC SHOE CO USA 滑板鞋',
+  65: 'ETERNAL FASHION 快时尚', 66: 'PINPINPLUS 品品加 快时尚', 67: 'OSA 欧莎女装',
+  68: 'LUCKMEEY 幸棉内衣', 69: 'GOSO 香蜜润秀内衣', 70: 'Dihao 帝豪家纺',
+  71: 'Cocozone 轻奢女装', 72: 'ROMI STUDIO 设计师品牌', 73: 'ZRAU COLLECTION 轻奢女装',
+  74: '肉肉酱 RORO JUMP 潮玩', 75: 'Bestn 百斯盾 商务男装', 76: 'GUSHA 古鲨 男装',
+  77: 'LAWSITON 劳斯顿 法国男装', 78: '巴拉巴拉 balabala 童装',
+  79: '新亦源合作品牌', 80: '新亦源合作品牌', 81: '新亦源合作品牌',
+  82: '新亦源合作品牌', 83: '新亦源合作品牌',
+}
+
 const breadcrumbSchema = {
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
@@ -78,7 +108,7 @@ const caseListSchema = {
           <div class="logos-track">
             {[...row, ...row].map(n => (
               <div class="logo-img-card">
-                <img src={`/logos/imgi_${n}_default.png`} alt="新亦源合作品牌" loading="lazy" onerror="this.closest('.logo-img-card').style.display='none'" />
+                <img src={`/logos/imgi_${n}_default.png`} alt={`${LOGO_BRANDS[n] ?? '新亦源合作品牌'} 合作品牌 logo`} loading="lazy" onerror="this.closest('.logo-img-card').style.display='none'" />
               </div>
             ))}
           </div>
