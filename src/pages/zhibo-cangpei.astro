@@ -1,0 +1,141 @@
+---
+import ServiceLanding from '@/layouts/ServiceLanding.astro'
+
+const PLATFORM_ROWS = [
+  { platform: '抖音电商', model: 'D2C店铺 / 达播 / 自播', sla: '48小时内发货', risk: '时效违规扣分，影响商品权重', note: '支持抖音奇门接口，库存实时同步' },
+  { platform: '快手电商', model: '小店 / 达播', sla: '48小时内', risk: '差评影响店铺评分', note: '快手API接入，自动回传物流单号' },
+  { platform: '淘宝直播', model: '天猫/淘宝直播间', sla: '当日发货或次日发货', risk: '延迟发货触发买家投诉', note: '与天猫仓配标准一致' },
+  { platform: '小红书', model: '买手号 / 品牌号', sla: '48小时内', risk: '新平台考核严，投诉率影响推流', note: '支持小红书商城接口' },
+  { platform: '视频号', model: '品牌自播 / 服务商代播', sla: '48小时内', risk: '微信生态口碑敏感', note: '微信侧OMS已打通' },
+]
+
+const CHALLENGE_ITEMS = [
+  {
+    icon: '⚡',
+    title: '爆单不可预测',
+    problem: '一场直播几分钟内涌入数万订单，普通仓无弹性产能应对，导致超时发货',
+    solution: '新亦源弹性人力机制：大促/直播前提前预排班，峰值可调动300+临时拣货员，单仓单日峰值50万单',
+  },
+  {
+    icon: '📦',
+    title: '库存超卖风险',
+    problem: '直播间库存与仓库实际库存不同步，导致超卖后取消订单，买家差评爆发',
+    solution: 'RFID+WMS实时库存同步，与抖音/快手/淘宝等平台库存双向打通，库存准确率99.99%+',
+  },
+  {
+    icon: '↩️',
+    title: '退货率高、处理慢',
+    problem: '直播电商退货率普遍高于传统电商，退货积压导致库存沉淀、资金占用',
+    solution: '退货48小时内完成质检+二次上架，良品快速回流可售库存，减少库存积压损耗',
+  },
+]
+---
+
+<ServiceLanding
+  title="直播电商仓配服务商 — 抖音/快手/淘宝直播仓配，爆单弹性保障 | 新亦源"
+  description="新亦源直播电商仓配，支持抖音、快手、淘宝直播、小红书、视频号等主流直播平台，弹性人力应对爆单，单仓峰值50万单/日，18:00截单当日24:00全出，库存实时同步防超卖。"
+  slug="zhibo-cangpei"
+  breadcrumbLabel="直播电商仓配"
+  eyebrow="直播电商仓配 · 爆单弹性 + 多平台实时同步"
+  h1="直播电商仓配"
+  h1sub="抖音/快手/淘宝直播全平台对接，爆单弹性保障不超时"
+  heroDesc="新亦源直播电商仓配以弹性产能和多平台库存同步为核心，支持抖音电商、快手电商、淘宝直播、小红书、视频号等主流直播平台，单仓峰值50万单/日，帮助直播品牌和代播机构稳定履约。"
+  imgSrc="/w-fulfill.webp"
+  imgAlt="直播电商仓配 — 直播爆单弹性发货"
+  stats={[
+    { stat: '50万单/日', label: '单仓峰值处理量', sub: '弹性人力实时扩容' },
+    { stat: '18:00截单', label: '当日24:00全出', sub: 'SLA合同保障' },
+    { stat: '99.99%+', label: '库存准确率', sub: 'RFID+多平台实时同步' },
+    { stat: '5大平台', label: '直播平台接口', sub: '抖音/快手/淘宝/小红书/视频号' },
+  ]}
+  contentDesc="直播电商的仓配需求与传统电商根本不同：爆单规模不可预测、库存必须多平台实时同步、退货率更高且处理周期要求更短。新亦源直播电商仓配服务以弹性产能为核心，通过提前预排班机制和灵活的临时人力调配，应对直播间突发爆单；OMS/WMS与抖音、快手、淘宝直播等平台深度对接，库存变动实时回写，彻底消除超卖风险；退货48小时内完成质检分级和二次上架，让良品快速回流可售库存，降低资金占用损耗。"
+  featuresLabel="直播仓配核心能力"
+  features={[
+    { title: '爆单弹性产能', desc: '直播大场前提前预排班，峰值可快速扩充人力，单仓单日最高处理50万单，历史双11/大促期间SLA零违约。' },
+    { title: '多平台实时库存同步', desc: '与抖音、快手、淘宝直播、小红书、视频号等平台奇门/API深度打通，直播间库存与仓库实时双向同步，防止超卖导致取消订单。' },
+    { title: '极速波次分配', desc: '直播出单后系统自动识别并触发波次，RFID精准定位，拣货效率较传统提升40%，保障直播结束后短时间内批量出库。' },
+    { title: '18:00截单当日全出', desc: '18:00前所有直播订单当日24:00前完成打包出库，与各大快递公司驻仓收件协作，次日送达时效有保障。' },
+    { title: '高退货率快速处理', desc: '直播电商退货就近回收至广州/华南仓，48小时内完成拆包核对、质检分级、修复整理、二次上架，快速补充可售库存。' },
+    { title: '代播机构专属方案', desc: '针对MCN机构和代播服务商提供多品牌共仓方案，按品牌独立分区管理，系统权限隔离，单独出库单和报表，满足多客户管理需求。' },
+  ]}
+  faqs={[
+    {
+      q: '直播仓配和普通电商仓配有什么不同？',
+      a: '主要差异在三点：①爆单模式不同，直播间可能短时间内爆发大量订单，需要仓库具备弹性扩产能力，普通仓固定人力应对不了；②库存同步要求更严格，直播间必须与仓库库存实时双向同步，否则容易超卖；③退货率更高，通常比传统电商高10-20%，需要更高效的退货处理流程。新亦源针对这三点有专属的解决方案。',
+    },
+    {
+      q: '新亦源支持哪些直播平台的仓配对接？',
+      a: '目前已完成对接的平台包括：抖音电商（奇门接口）、快手电商（API接口）、淘宝直播/天猫超级品牌日（与天猫仓配标准一致）、小红书商城、微信视频号。对接内容包括：库存同步、订单自动推送、发货回传、退货数据回写。新平台接入通常1-2周完成测试上线。',
+    },
+    {
+      q: '遇到直播大场爆单，仓库能应对吗？',
+      a: '可以。新亦源采用弹性人力机制：大促/直播大场前提前7天预排班，峰值期可快速调动300+临时专职拣货员进仓。历史记录：双11、618、直播千万场等大促期间，单仓单日最高处理超50万单，未出现因仓配产能导致的SLA违约。建议提前3-7天告知预期直播规模，我们提前备仓布货。',
+    },
+    {
+      q: '直播间超卖了怎么处理？',
+      a: '如果在合作期间发生超卖，通常是库存同步延迟导致的。新亦源WMS与直播平台实时双向同步，正常情况下库存准确率99.99%+，超卖风险极低。如发生异常，系统自动拦截超出库存的订单并预警，商务团队第一时间协助处理退款和客户沟通，减少差评损失。',
+    },
+    {
+      q: 'MCN机构或代播服务商可以用新亦源做多品牌仓配吗？',
+      a: '可以。新亦源为MCN机构和代播服务商提供多品牌共仓方案：①各品牌独立分区存储，互不混仓；②系统账号权限隔离，每个品牌只能看自己的库存和订单；③独立出库单和账单，对账清晰；④支持代播机构统一结算，也支持各品牌方分别结算。具体方案根据品牌数量和SKU规模定制。',
+    },
+  ]}
+>
+  <section slot="unique" class="py-14 bg-gray-50 border-b border-gray-100" aria-labelledby="zhibo-challenges-heading">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 id="zhibo-challenges-heading" class="text-xl font-black text-navy-800 mb-1 text-center">直播仓配三大核心挑战与解决方案</h2>
+      <p class="text-xs text-gray-400 text-center mb-8">普通仓库无法应对直播电商的爆单节奏，需要专属的弹性仓配体系</p>
+
+      <!-- 挑战 & 解决方案 -->
+      <div class="grid lg:grid-cols-3 gap-5 mb-10">
+        {CHALLENGE_ITEMS.map(({ icon, title, problem, solution }) => (
+          <div class="bg-white rounded-xl border border-gray-200 p-5 flex flex-col gap-4">
+            <div class="flex items-center gap-2">
+              <span class="text-2xl" aria-hidden="true">{icon}</span>
+              <h3 class="font-black text-navy-800 text-base">{title}</h3>
+            </div>
+            <div class="flex flex-col gap-3">
+              <div class="bg-red-50 rounded-lg p-3 border-l-2 border-red-300">
+                <p class="text-[10px] font-bold text-red-400 uppercase tracking-wider mb-1">痛点</p>
+                <p class="text-xs text-gray-600 leading-snug">{problem}</p>
+              </div>
+              <div class="bg-green-50 rounded-lg p-3 border-l-2 border-green-400">
+                <p class="text-[10px] font-bold text-green-500 uppercase tracking-wider mb-1">新亦源方案</p>
+                <p class="text-xs text-gray-600 leading-snug">{solution}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- 平台适配表 -->
+      <h3 class="text-sm font-bold text-navy-800 mb-3">主流直播平台仓配适配说明</h3>
+      <div class="overflow-x-auto rounded-xl border border-gray-200">
+        <table class="w-full text-sm text-left">
+          <thead>
+            <tr class="bg-navy-800 text-white">
+              <th class="px-4 py-3 font-bold text-xs tracking-wider">平台</th>
+              <th class="px-4 py-3 font-bold text-xs tracking-wider">主要模式</th>
+              <th class="px-4 py-3 font-bold text-xs tracking-wider">发货时效要求</th>
+              <th class="px-4 py-3 font-bold text-xs tracking-wider hidden sm:table-cell">违规风险</th>
+              <th class="px-4 py-3 font-bold text-xs tracking-wider hidden md:table-cell">新亦源对接方式</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100 bg-white">
+            {PLATFORM_ROWS.map(({ platform, model, sla, risk, note }) => (
+              <tr class="hover:bg-orange-50/20 transition-colors">
+                <td class="px-4 py-3.5 font-bold text-navy-700 text-xs whitespace-nowrap">{platform}</td>
+                <td class="px-4 py-3.5 text-gray-500 text-xs">{model}</td>
+                <td class="px-4 py-3.5 text-xs">
+                  <span class="inline-block px-2 py-0.5 rounded-full bg-brand-orange/10 text-brand-orange font-bold text-[10px]">{sla}</span>
+                </td>
+                <td class="px-4 py-3.5 text-gray-500 text-xs leading-snug hidden sm:table-cell">{risk}</td>
+                <td class="px-4 py-3.5 text-gray-500 text-xs leading-snug hidden md:table-cell">{note}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+</ServiceLanding>

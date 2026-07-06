@@ -10,7 +10,7 @@ const STATIC_PAGES = [
   { url: '/tuihuo-zhijian', priority: '0.85', changefreq: 'monthly' },
   { url: '/houzheng-xiufu', priority: '0.85', changefreq: 'monthly' },
   { url: '/kuajing-yuncang', priority: '0.85', changefreq: 'monthly' },
-  { url: '/weipinhui-jit-jitx', priority: '0.85', changefreq: 'monthly' },
+  { url: '/zhibo-cangpei', priority: '0.85', changefreq: 'monthly' },
   { url: '/huanan-xiefu-yuncang', priority: '0.85', changefreq: 'monthly' },
   { url: '/guangzhou-xiefu-yuncang', priority: '0.85', changefreq: 'monthly' },
   { url: '/about', priority: '0.8', changefreq: 'monthly' },
