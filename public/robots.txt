@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://56xyy.com/sitemap-index.xml

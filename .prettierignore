@@ -1,0 +1,7 @@
+dist
+node_modules
+.astro
+.playwright-cli
+coverage
+public/fonts
+package-lock.json

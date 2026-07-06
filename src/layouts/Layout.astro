@@ -1,0 +1,154 @@
+---
+import { BRAND } from '@/lib/brand'
+import Header from '@/components/Header.astro'
+import Footer from '@/components/Footer.astro'
+import '@/styles/global.css'
+
+interface Props {
+  title: string
+  description: string
+  canonical?: string
+  ogImage?: string
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[]
+  noIndex?: boolean
+}
+
+const {
+  title,
+  description,
+  canonical = new URL(Astro.url.pathname, BRAND.url).href,
+  ogImage = `${BRAND.url}/logo.png`,
+  jsonLd,
+  noIndex = false,
+} = Astro.props
+
+const fullTitle = title.includes('新亦源') ? title : `${title} - ${BRAND.name}`
+const schemas = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : []
+---
+
+<!doctype html>
+<html lang="zh-Hans" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    {noIndex && <meta name="robots" content="noindex,nofollow" />}
+    <link rel="canonical" href={canonical} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={BRAND.name} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="zh_CN" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <!-- Alibaba PuHuiTi 3.0 — preload critical weight, then shard-based load for body -->
+    <link rel="preload" href="/fonts/puhuiti-900.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="/fonts/puhuiti-400/result.css" />
+    <style>
+      @font-face {
+        font-family: 'Alibaba PuHuiTi';
+        font-weight: 900;
+        font-display: swap;
+        src: url('/fonts/puhuiti-900.woff2') format('woff2');
+      }
+    </style>
+
+    <!-- 搜索引擎验证 -->
+    <meta name="baidu-site-verification" content="codeva-placeholder" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- JSON-LD Structured Data -->
+    {schemas.map((schema) => (
+      <script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />
+    ))}
+  </head>
+  <body class="bg-white text-gray-900 font-sans antialiased">
+    <Header />
+    <main>
+      <slot />
+    </main>
+    <Footer />
+
+    <!-- 悬浮联系按钮 -->
+    <div id="float-contact" class="fixed bottom-6 right-5 z-50 flex flex-col items-end gap-2.5">
+
+      <!-- 回到顶部 -->
+      <button
+        id="btn-scroll-top"
+        class="w-11 h-11 rounded-full bg-white border border-gray-200 shadow-md flex items-center justify-center text-gray-400 hover:text-navy-800 hover:border-navy-300 hover:shadow-lg transition-all duration-200 opacity-0 translate-y-2 pointer-events-none"
+        aria-label="回到顶部"
+      >
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+        </svg>
+      </button>
+
+      <!-- 在线咨询 -->
+      <a
+        href="/contact"
+        class="w-11 h-11 rounded-full bg-navy-800 shadow-md flex items-center justify-center text-white hover:bg-navy-700 hover:shadow-lg transition-all duration-200"
+        aria-label="在线咨询"
+        title="在线咨询"
+      >
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+        </svg>
+      </a>
+
+      <!-- 电话咨询（hover 展开号码卡片） -->
+      <div class="relative group">
+        <button
+          class="w-11 h-11 rounded-full bg-brand-orange shadow-md flex items-center justify-center text-white hover:bg-brand-orange-dark hover:shadow-lg transition-all duration-200"
+          aria-label="电话咨询"
+        >
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+          </svg>
+        </button>
+        <!-- 号码弹出卡片 -->
+        <div class="absolute bottom-0 right-14 bg-white rounded-xl shadow-xl border border-gray-100 px-4 py-3 w-48 opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-opacity duration-200 whitespace-nowrap">
+          <p class="text-[10px] text-gray-400 font-medium tracking-wider mb-2.5">电话咨询</p>
+          <a href="tel:02082036224" class="flex items-center gap-2 text-sm font-bold text-navy-800 hover:text-brand-orange transition-colors mb-2">
+            <span class="text-brand-orange text-xs">直线</span>020-82036224
+          </a>
+          <a href="tel:4006865156" class="flex items-center gap-2 text-sm font-bold text-navy-800 hover:text-brand-orange transition-colors">
+            <span class="text-brand-orange text-xs">免费</span>400-6865-156
+          </a>
+          <p class="text-[10px] text-gray-400 mt-2.5 leading-snug">周一至周五<br/>09:00 – 18:00</p>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const btnTop = document.getElementById('btn-scroll-top')
+      if (btnTop) {
+        window.addEventListener('scroll', () => {
+          if (window.scrollY > 400) {
+            btnTop.classList.remove('opacity-0', 'translate-y-2', 'pointer-events-none')
+            btnTop.classList.add('opacity-100', 'translate-y-0')
+          } else {
+            btnTop.classList.add('opacity-0', 'translate-y-2', 'pointer-events-none')
+            btnTop.classList.remove('opacity-100', 'translate-y-0')
+          }
+        }, { passive: true })
+        btnTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }))
+      }
+    </script>
+  </body>
+</html>

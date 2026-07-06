@@ -1,0 +1,307 @@
+---
+// No prerender = SSR, fetches fresh from Directus on each request
+import Layout from '@/layouts/Layout.astro'
+import { BRAND } from '@/lib/brand'
+import { getCases } from '@/lib/directus'
+
+const displayCases = await getCases()
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: '首页', item: BRAND.url },
+    { '@type': 'ListItem', position: 2, name: '合作案例', item: `${BRAND.url}/cases` },
+  ],
+}
+
+const caseListSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: '新亦源供应链合作案例',
+  description: '新亦源供应链服务140+知名鞋服品牌合作案例',
+  numberOfItems: displayCases.length,
+  itemListElement: displayCases.slice(0, 10).map((c, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: c.label,
+    description: c.metrics,
+  })),
+}
+---
+
+<Layout
+  title="合作案例 - 140+品牌的鞋服供应链选择 | 新亦源供应链"
+  description="新亦源供应链合作案例展示，服务鞋服、潮玩等品类140+知名品牌。包含头部快时尚女装、国际运动品牌、商务男装、内衣家居、跨境出海等多种类型案例。"
+  jsonLd={[breadcrumbSchema, caseListSchema]}
+>
+  <!-- Hero -->
+  <section class="relative py-16 lg:py-24 overflow-hidden" aria-labelledby="cases-hero-heading">
+    <img
+      src="https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?w=1920&q=80&auto=format&fit=crop"
+      alt=""
+      aria-hidden="true"
+      class="absolute inset-0 w-full h-full object-cover"
+      fetchpriority="high"
+    />
+    <div
+      class="absolute inset-0"
+      style="background: linear-gradient(105deg, rgba(8,20,42,0.95) 0%, rgba(8,20,42,0.80) 40%, rgba(8,20,42,0.45) 100%);"
+      aria-hidden="true"
+    ></div>
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <p class="text-brand-orange font-semibold text-sm tracking-wider uppercase mb-3">合作案例</p>
+      <h1 id="cases-hero-heading" class="text-4xl lg:text-5xl font-black text-white leading-tight mb-5">
+        140+ 知名品牌的<br />
+        <span class="text-brand-orange">共同选择</span>
+      </h1>
+      <p class="text-lg text-navy-100 max-w-2xl leading-relaxed">
+        涵盖鞋服、潮玩、美妆、箱包等细分行业，从成长型品牌到集团化运营，
+        新亦源均有成熟的解决方案和实操经验。以下案例均为脱敏处理，具体商务信息请联系我们。
+      </p>
+    </div>
+  </section>
+
+  <!-- Logo Wall -->
+  <section class="py-10 bg-[#f8fafc] overflow-hidden border-b border-gray-100" aria-label="部分合作品牌">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center mb-8">
+      <p class="text-xs font-bold tracking-widest uppercase text-brand-orange mb-2">部分合作品牌</p>
+      <h2 class="text-2xl font-black text-navy-800">这些品牌都选择了新亦源</h2>
+    </div>
+    <div class="logos-track-wrap" aria-hidden="true">
+      {[
+        [6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28],
+        [29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51],
+      ].map((row, ri) => (
+        <div class={`logos-row logos-row--${ri === 0 ? 'fwd' : 'rev'}`}>
+          <div class="logos-track">
+            {[...row, ...row].map(n => (
+              <div class="logo-img-card">
+                <img src={`/logos/imgi_${n}_default.png`} alt="" loading="lazy" onerror="this.closest('.logo-img-card').style.display='none'" />
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Cases Grid -->
+  <section class="py-16 bg-white" aria-label="合作案例列表">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+<div id="cases-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {displayCases.map((c) => (
+          <article class="case-card group bg-white rounded-2xl border border-gray-100 hover:border-navy-200 hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col" data-category={c.category}>
+            <div class="relative h-44 overflow-hidden">
+              <img src={c.img} alt={c.category} loading="lazy" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+              <div class="absolute inset-0" style="background: linear-gradient(to top, rgba(8,20,42,0.88) 0%, rgba(8,20,42,0.40) 55%, rgba(8,20,42,0.05) 100%);"></div>
+              <div class="absolute bottom-0 left-0 right-0 px-5 pb-4">
+                <span class="text-xs font-bold text-brand-orange tracking-wider uppercase mb-1 block">{c.category}</span>
+                <h2 class="text-white font-bold text-base leading-snug">{c.label}</h2>
+              </div>
+            </div>
+            <div class="p-6 flex flex-col flex-1">
+              <p class="text-xs font-bold text-navy-700 uppercase tracking-wide mb-1">核心规模</p>
+              <p class="text-sm text-gray-700 font-medium mb-3 leading-relaxed">{c.metrics}</p>
+              <p class="text-sm text-gray-500 leading-relaxed mb-4 flex-1">{c.details}</p>
+              <div class="flex flex-wrap gap-2 pt-3 border-t border-gray-100">
+                {c.tags.map((tag) => (
+                  <span class="text-xs px-2.5 py-1 rounded-full bg-navy-50 text-navy-700 font-medium">{tag}</span>
+                ))}
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <p class="text-center text-xs text-gray-400 mt-10">
+        * 以上案例数据来源于企业公开资料，客户信息已脱敏处理。具体合作细节请联系商务咨询。
+      </p>
+    </div>
+  </section>
+
+  <!-- Value Props -->
+  <section class="py-16 bg-gray-50" aria-labelledby="value-heading">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 id="value-heading" class="text-3xl font-black text-navy-800 text-center mb-12">为什么品牌选择新亦源</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {[
+          {
+            title: '垂直鞋服，深度优化',
+            desc: '系统、流程、人员配置全部针对鞋服品类深度定制，不是通用仓加鞋服标签，而是真正懂鞋服的专业仓。',
+          },
+          {
+            title: '弹性产能，大促不爆仓',
+            desc: '动态人力池+小时级调配，单仓峰值50万单，地区峰值100万单。有完整的大促保障预案和历史实战记录。',
+          },
+          {
+            title: '按需付费，零系统费',
+            desc: '无最低消费门槛，不收WMS/LMS系统使用费，按实际出入库量计费，适合成长期和头部品牌同等使用。',
+          },
+        ].map(({ title, desc }) => (
+          <div class="value-card">
+            <div class="p-7">
+              <h3 class="text-lg font-bold text-navy-800 mb-3">{title}</h3>
+              <p class="text-sm text-gray-600 leading-relaxed">{desc}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="py-14 bg-[#EFF4FF]" aria-labelledby="cases-cta-heading">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <h2 id="cases-cta-heading" class="text-2xl lg:text-3xl font-black text-navy-800 mb-4">想看与您品类相近的案例详情？</h2>
+      <p class="text-gray-600 mb-6">联系我们，我们会为您推荐最匹配的成功案例，并提供定制报价</p>
+      <a href="/contact" class="inline-flex items-center px-7 py-3.5 bg-brand-orange text-white font-bold rounded-xl hover:bg-brand-orange-dark transition-colors">
+        预约案例分享
+      </a>
+    </div>
+  </section>
+</Layout>
+
+<style>
+/* Value cards */
+.value-card {
+  background: #fff;
+  border-radius: 1rem;
+  border: 1.5px solid #D1DCF0;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(10,26,51,0.07);
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+.value-card:hover {
+  border-color: #E85D26;
+  box-shadow: 0 8px 28px rgba(10,26,51,0.12);
+  transform: translateY(-3px);
+}
+.value-card-bar { display: none; }
+.value-card-icon {
+  display: block;
+  font-size: 1.75rem;
+  margin-bottom: 0.875rem;
+}
+
+/* Logo wall */
+.logos-track-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+}
+.logos-row { overflow: hidden; }
+.logos-track { display: flex; gap: 0.625rem; width: max-content; }
+.logos-row--fwd .logos-track { animation: logos-left 38s linear infinite; }
+.logos-row--rev .logos-track { animation: logos-right 42s linear infinite; }
+@keyframes logos-left {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+@keyframes logos-right {
+  from { transform: translateX(-50%); }
+  to   { transform: translateX(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .logos-track { animation: none !important; }
+}
+.logo-img-card {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 148px;
+  height: 68px;
+  background: #fff;
+  border: 1px solid #E8ECF2;
+  border-radius: 0.875rem;
+  padding: 0.75rem 1.125rem;
+  flex-shrink: 0;
+  box-shadow: 0 1px 4px rgba(10,26,51,0.06);
+}
+.logo-img-card img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  filter: grayscale(100%) contrast(1.1);
+  opacity: 0.65;
+  transition: filter 0.25s, opacity 0.25s;
+}
+.logo-img-card:hover img {
+  filter: grayscale(0%) contrast(1);
+  opacity: 1;
+}
+
+.case-filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.4rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  border: 1.5px solid #E2E8F0;
+  color: #475569;
+  background: #fff;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.case-filter:hover {
+  border-color: #E85D26;
+  color: #E85D26;
+}
+.case-filter.active {
+  background: #0A1A33;
+  border-color: #0A1A33;
+  color: #fff;
+}
+.case-filter-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.25rem;
+  height: 1.25rem;
+  padding: 0 0.3rem;
+  border-radius: 9999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  background: rgba(255,255,255,0.2);
+  color: inherit;
+}
+.case-filter:not(.active) .case-filter-count {
+  background: #EFF4FF;
+  color: #3B6FCC;
+}
+.case-card {
+  transition: opacity 0.2s, transform 0.2s;
+}
+.case-card.hidden {
+  display: none;
+}
+</style>
+
+<script>
+  const filters = document.querySelectorAll<HTMLButtonElement>('.case-filter')
+  const cards = document.querySelectorAll<HTMLElement>('.case-card')
+
+  filters.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      filters.forEach((b) => b.classList.remove('active'))
+      btn.classList.add('active')
+
+      const filter = btn.dataset.filter
+      cards.forEach((card) => {
+        if (filter === 'all' || card.dataset.category === filter) {
+          card.classList.remove('hidden')
+        } else {
+          card.classList.add('hidden')
+        }
+      })
+    })
+  })
+</script>

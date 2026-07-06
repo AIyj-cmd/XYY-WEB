@@ -1,0 +1,485 @@
+---
+import Layout from '@/layouts/Layout.astro'
+import { BRAND } from '@/lib/brand'
+import { getServices } from '@/lib/directus'
+
+const SERVICES = await getServices()
+
+const serviceSchemas = SERVICES.map((s) => ({
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  '@id': `${BRAND.url}/product#${s.slug}`,
+  name: s.name,
+  description: s.description,
+  provider: {
+    '@type': 'Organization',
+    '@id': `${BRAND.url}/#organization`,
+    name: BRAND.fullName,
+  },
+  areaServed: { '@type': 'Country', name: '中国' },
+  url: `${BRAND.url}/product#${s.slug}`,
+}))
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: '首页', item: BRAND.url },
+    { '@type': 'ListItem', position: 2, name: '产品服务', item: `${BRAND.url}/product` },
+  ],
+}
+
+const NAV_ITEMS = [
+  { id: 'cloud-warehouse',       label: '鞋服云仓',         en: 'Cloud Warehouse' },
+  { id: 'quality-inspection',    label: '后整质检修复',      en: 'QC & Repair' },
+  { id: 'logistics-cloud',       label: '物流云',            en: 'Logistics Cloud' },
+  { id: 'logistics-cloud-digital', label: '数字供应链',      en: 'Digital Supply Chain' },
+  { id: 'basic-supply',          label: '直供平台',          en: 'Direct Supply' },
+]
+---
+
+<Layout
+  title="产品服务 - 鞋服云仓 | 后整质检修复 | 物流云 | 数字供应链 | 直供平台 | 新亦源供应链"
+  description="新亦源供应链五大产品：鞋服云仓、后整质检修复、物流云、物流云数字供应链中台、服装基础品类直供平台，为鞋服品牌提供全链路一站式服务。"
+  jsonLd={[breadcrumbSchema, ...serviceSchemas]}
+>
+
+  <!-- Hero -->
+  <section class="relative py-16 lg:py-28 overflow-hidden" aria-labelledby="product-hero-heading">
+    <!-- 背景大图 -->
+    <img
+      src="https://images.unsplash.com/photo-1592085198739-ffcad7f36b54?w=1920&q=80&auto=format&fit=crop"
+      alt=""
+      aria-hidden="true"
+      class="absolute inset-0 w-full h-full object-cover"
+      fetchpriority="high"
+    />
+    <!-- 遮罩：左深右透，确保文字可读 -->
+    <div
+      class="absolute inset-0"
+      style="background: linear-gradient(105deg, rgba(8,20,42,0.95) 0%, rgba(8,20,42,0.80) 40%, rgba(8,20,42,0.50) 70%, rgba(8,20,42,0.25) 100%);"
+      aria-hidden="true"
+    ></div>
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <p class="text-brand-orange font-semibold text-sm tracking-wider uppercase mb-3">产品服务</p>
+      <h1 id="product-hero-heading" class="text-4xl lg:text-5xl font-black text-white leading-tight mb-5">
+        覆盖鞋服供应链<br />
+        <span class="text-brand-orange">全链路解决方案</span>
+      </h1>
+      <p class="text-lg text-navy-100 max-w-2xl leading-relaxed mb-10">
+        从入库质检到出库发货，从正向仓配到逆向退货，新亦源提供五大产品板块，满足鞋服品牌全链路需求。
+      </p>
+      <!-- 产品快速导航 -->
+      <div class="flex flex-wrap gap-3">
+        {NAV_ITEMS.map(({ id, label }) => (
+          <a
+            href={`#${id}`}
+            class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/20 text-white/80 hover:border-brand-orange hover:text-brand-orange text-sm font-medium transition-colors"
+          >
+            {label}
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ① 鞋服云仓 -->
+  <section id="cloud-warehouse" class="py-16 lg:py-24 bg-white scroll-mt-32" aria-labelledby="cloud-warehouse-heading">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <!-- 标题区 -->
+      <div class="mb-6">
+        <span class="text-[11px] font-bold text-brand-orange tracking-[0.35em] uppercase">产品一 · 鞋服云仓</span>
+        <h2 id="cloud-warehouse-heading" class="text-3xl lg:text-4xl font-black text-navy-800 mt-2 mb-2">鞋服云仓</h2>
+        <p class="text-brand-orange font-semibold">一仓发全国，全渠道一盘货</p>
+      </div>
+      <!-- 题图 -->
+      <div class="w-full h-56 lg:h-72 rounded-2xl overflow-hidden mb-10">
+        <img
+          src="https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=1400&q=80&auto=format&fit=crop"
+          alt="鞋服云仓 — 专业服装仓储"
+          class="w-full h-full object-cover"
+          loading="lazy"
+        />
+      </div>
+
+      <div class="lg:grid lg:grid-cols-2 lg:gap-20 items-start">
+        <!-- 左：描述 + 数据行 -->
+        <div>
+          <p class="text-gray-600 leading-relaxed mb-8">
+            以鞋服品类深度优化的WMS为核心，提供B2C+B2B+O2O全渠道发货、库存同步与智能补货服务。
+            三代智能仓演进至RFID全域识别+自动化分拣，配合弹性人力池，应对大促不爆仓。
+            全年支持唯品会JIT/JITX等主流平台，140+品牌中60+涉及唯品会运营。
+          </p>
+
+          <!-- 数据行 -->
+          <div class="border-t border-gray-100 divide-y divide-gray-100 mb-8">
+            {[
+              { stat: '99.99%', label: '发货准确率', sub: '错漏全赔' },
+              { stat: '50万单/日', label: '单仓峰值', sub: '弹性产能保大促' },
+              { stat: '18:00截单', label: '当日出库', sub: '当日24:00前全出' },
+              { stat: '+40%', label: 'RFID拣货效率', sub: '三代智能仓' },
+            ].map(({ stat, label, sub }) => (
+              <div class="flex items-center py-4 gap-4">
+                <span class="w-32 flex-shrink-0 text-xl font-black text-brand-orange">{stat}</span>
+                <span class="flex-1 text-sm font-semibold text-navy-800">{label}</span>
+                <span class="text-xs text-gray-400">{sub}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- 右：核心能力行列表 -->
+        <div>
+          <p class="text-[11px] font-bold text-gray-400 tracking-[0.25em] uppercase mb-4">核心能力</p>
+          <div class="divide-y divide-gray-100">
+            {[
+              { title: '全渠道一盘货', desc: 'B2C+B2B+O2O库存实时同步，支持多平台聚合发货，含天猫、京东、拼多多、唯品会JIT/JITX、抖音、小程序等全渠道。' },
+              { title: '智能波次拣货', desc: 'RFID全域识别+电子标签拣货+自动化分拣系统，人效提升30%，仓内运营成本降低18%。' },
+              { title: '弹性产能机制', desc: '动态人力池+小时级极速人力调配，保障百万级大促订单发货时效，单仓单日峰值50万单，地区峰值100万单。' },
+              { title: '深度定制WMS', desc: '针对鞋服优化的WMS，支持序列号/RFID/线上线下一体管理，可二次开发，与主流ERP奇门/EDI无缝对接，不收系统费。' },
+              { title: '精细库存管控', desc: '日动盘+周抽盘+月实盘+季忙盘+年度全盘，库存准确率99.99%+，综合损耗下降20%。' },
+              { title: '全程风控保障', desc: '1080P高清拆包监控，360°安防追溯，仓库财产险+运输险保额100亿，满足电商平台争议举证。' },
+            ].map(({ title, desc }) => (
+              <div class="py-4 flex gap-4 group hover:bg-orange-50/40 -mx-3 px-3 transition-colors">
+                <div class="w-1 flex-shrink-0 rounded-full bg-brand-orange/30 group-hover:bg-brand-orange transition-colors self-stretch"></div>
+                <div>
+                  <h4 class="text-sm font-bold text-navy-800 mb-1">{title}</h4>
+                  <p class="text-sm text-gray-500 leading-relaxed">{desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" aria-hidden="true"></div>
+
+  <!-- ② 后整质检修复 -->
+  <section id="quality-inspection" class="py-16 lg:py-24 bg-gray-50 scroll-mt-32" aria-labelledby="quality-heading">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <div class="mb-6">
+        <span class="text-[11px] font-bold text-brand-orange tracking-[0.35em] uppercase">产品二 · 后整质检修复</span>
+        <h2 id="quality-heading" class="text-3xl lg:text-4xl font-black text-navy-800 mt-2 mb-2">后整质检修复</h2>
+        <p class="text-brand-orange font-semibold">135+种缺陷识别，48小时二次上架</p>
+      </div>
+      <div class="w-full h-56 lg:h-72 rounded-2xl overflow-hidden mb-10">
+        <img
+          src="https://images.unsplash.com/photo-1540221652346-e5dd6b50f3e7?w=1400&q=80&auto=format&fit=crop"
+          alt="后整质检修复 — 专业质检团队"
+          class="w-full h-full object-cover"
+          loading="lazy"
+        />
+      </div>
+
+      <div class="lg:grid lg:grid-cols-2 lg:gap-20 items-start">
+        <!-- 左：描述 + 数据行 -->
+        <div>
+          <p class="text-gray-600 leading-relaxed mb-8">
+            鞋服退货是行业公认的"最后一公里"难题。新亦源专属质检中心，与广检集团合作的QC认证团队，
+            可识别135+种常见缺陷，覆盖污渍、面料外观、缝线、纽扣配件、后工艺印绣、吊牌标识、异味等7大类，退货质检+二次上架标准时效48小时内（加急24小时），
+            让退货商品快速重新创造价值。
+          </p>
+
+          <div class="border-t border-gray-200 divide-y divide-gray-200 mb-8">
+            {[
+              { stat: '135+种', label: '可识别缺陷种类', sub: '7大类，覆盖全场景' },
+              { stat: '90%', label: '瑕疵修复成功率', sub: '专属9区修复分区' },
+              { stat: '48小时', label: '退货质检标准时效', sub: '加急24小时内' },
+              { stat: '1.53亿件', label: '年退货质检量', sub: '据公司公开资料' },
+            ].map(({ stat, label, sub }) => (
+              <div class="flex items-center py-4 gap-4">
+                <span class="w-32 flex-shrink-0 text-xl font-black text-brand-orange">{stat}</span>
+                <span class="flex-1 text-sm font-semibold text-navy-800">{label}</span>
+                <span class="text-xs text-gray-400">{sub}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- 右：服务内容行列表 -->
+        <div>
+          <p class="text-[11px] font-bold text-gray-400 tracking-[0.25em] uppercase mb-4">服务内容</p>
+          <div class="divide-y divide-gray-200">
+            {[
+              { cat: '质检类', items: '新货抽检/全检（洗水测试、色牢度、缩率）、退货质检、工艺检查、对样比对' },
+              { cat: '修复类', items: '135+种缺陷修复：清污、缝补、更换配件、熨烫整理、鞋类修复、除味晾晒' },
+              { cat: '加工类', items: '车唛换唛、贴标换标、换吊牌、换包装、熨烫整理、印花一件代发' },
+              { cat: '存储类', items: '恒温恒湿仓（真丝/羽绒/皮草专储）、立体挂装存储、防尘防蛀处理' },
+              { cat: '质检背书', items: '与广检集团合作QC认证质检团队，按AQL 1.0–6.5国际标准运行' },
+              { cat: '风控类', items: '1080P高清拆包监控全程录像，支持电商平台售后争议举证，360°安防追溯' },
+            ].map(({ cat, items }) => (
+              <div class="py-4 flex gap-4 group hover:bg-orange-50/40 -mx-3 px-3 transition-colors">
+                <div class="w-1 flex-shrink-0 rounded-full bg-brand-orange/30 group-hover:bg-brand-orange transition-colors self-stretch"></div>
+                <div class="flex gap-3 items-start">
+                  <span class="text-[11px] font-bold text-brand-orange flex-shrink-0 mt-0.5 w-14">{cat}</span>
+                  <p class="text-sm text-gray-500 leading-relaxed">{items}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" aria-hidden="true"></div>
+
+  <!-- ③ 物流云 -->
+  <section id="logistics-cloud" class="py-16 lg:py-24 bg-white scroll-mt-32" aria-labelledby="logistics-heading">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <div class="mb-6">
+        <span class="text-[11px] font-bold text-brand-orange tracking-[0.35em] uppercase">产品三 · 物流云</span>
+        <h2 id="logistics-heading" class="text-3xl lg:text-4xl font-black text-navy-800 mt-2 mb-2">物流云</h2>
+        <p class="text-brand-orange font-semibold">多承运商聚合，智能路由降本</p>
+      </div>
+      <div class="w-full h-56 lg:h-72 rounded-2xl overflow-hidden mb-10">
+        <img
+          src="https://images.unsplash.com/photo-1566576721346-d4a3b4eaeb55?w=1400&q=80&auto=format&fit=crop"
+          alt="物流云 — 智慧物流网络"
+          class="w-full h-full object-cover"
+          loading="lazy"
+        />
+      </div>
+
+      <div class="lg:grid lg:grid-cols-2 lg:gap-20 items-start">
+        <div>
+          <p class="text-gray-600 leading-relaxed mb-8">
+            自研物流服务中台OTD，聚合全平台承运商，提供智能路由、实时轨迹可视化、发货超时预警等能力。
+            自研商圈寄件平台"运到"，支持零售门店正向+逆向统一网络管理，帮助品牌实现更低物流成本和更优时效表现。
+          </p>
+
+          <div class="border-t border-gray-100 divide-y divide-gray-100 mb-8">
+            {[
+              { stat: '全平台', label: '承运商聚合', sub: '智能路由匹配' },
+              { stat: '实时', label: '轨迹可视化', sub: '全链路可追溯' },
+              { stat: '主动', label: '发货超时预警', sub: '与快递系统实时对接' },
+              { stat: '0元', label: '系统接入费', sub: '按量付费，无门槛' },
+            ].map(({ stat, label, sub }) => (
+              <div class="flex items-center py-4 gap-4">
+                <span class="w-32 flex-shrink-0 text-xl font-black text-brand-orange">{stat}</span>
+                <span class="flex-1 text-sm font-semibold text-navy-800">{label}</span>
+                <span class="text-xs text-gray-400">{sub}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <p class="text-[11px] font-bold text-gray-400 tracking-[0.25em] uppercase mb-4">六大系统模块</p>
+          <div class="divide-y divide-gray-100">
+            {[
+              { n: '01', title: '物流网关', desc: '标准奇门接口+定制接口，快速打通业务系统' },
+              { n: '02', title: '物流管理系统（LMS）', desc: '物流服务全面信息化、实时可视化' },
+              { n: '03', title: '仓储管理系统（WMS）', desc: '服装云仓深度优化，单仓百万级，可二次开发' },
+              { n: '04', title: '人效通', desc: '精细化管理人员产能、效率与质量，降低管理成本' },
+              { n: '05', title: '发货超时预警', desc: '与电商平台及快递实时对接，主动预警异常单' },
+              { n: '06', title: '全程可视化', desc: '轨迹追踪+签收监控+全平台承运商管理+一键拦截转寄' },
+            ].map(({ n, title, desc }) => (
+              <div class="py-4 flex gap-4 group hover:bg-orange-50/40 -mx-3 px-3 transition-colors">
+                <div class="w-1 flex-shrink-0 rounded-full bg-brand-orange/30 group-hover:bg-brand-orange transition-colors self-stretch"></div>
+                <div class="flex gap-3 items-start">
+                  <span class="text-xs font-black text-brand-orange flex-shrink-0 w-6 mt-0.5">{n}</span>
+                  <div>
+                    <h4 class="text-sm font-bold text-navy-800 mb-0.5">{title}</h4>
+                    <p class="text-sm text-gray-500">{desc}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" aria-hidden="true"></div>
+
+  <!-- ④ 数字供应链 -->
+  <section id="logistics-cloud-digital" class="py-16 lg:py-24 bg-gray-50 scroll-mt-32" aria-labelledby="digital-chain-heading">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <div class="mb-6">
+        <span class="text-[11px] font-bold text-brand-orange tracking-[0.35em] uppercase">产品四 · 数字供应链</span>
+        <h2 id="digital-chain-heading" class="text-3xl lg:text-4xl font-black text-navy-800 mt-2 mb-2">物流云数字供应链</h2>
+        <p class="text-brand-orange font-semibold">供应链全链路数字化中台</p>
+      </div>
+      <div class="w-full h-56 lg:h-72 rounded-2xl overflow-hidden mb-10">
+        <img
+          src="https://images.unsplash.com/photo-1557838923-2985c318be48?w=1400&q=80&auto=format&fit=crop"
+          alt="数字供应链 — 供应链数字化中台"
+          class="w-full h-full object-cover"
+          loading="lazy"
+        />
+      </div>
+
+      <div class="lg:grid lg:grid-cols-2 lg:gap-20 items-start">
+        <div>
+          <p class="text-gray-600 leading-relaxed mb-8">
+            自研供应链数字中台，聚合多仓、多平台、多承运商数据，实现订单履约、库存能见度、
+            时效预警与数据洞察的一体化管控。帮助中大型鞋服品牌消除信息孤岛，提升整体运营响应效率，
+            无需额外系统费，按需付费接入。
+          </p>
+
+          <div class="border-t border-gray-200 divide-y divide-gray-200 mb-8">
+            {[
+              { stat: '实时', label: '多仓库存同步', sub: '全渠道一盘货视图' },
+              { stat: '6大', label: '系统模块', sub: 'WMS/LMS/OMS全覆盖' },
+              { stat: '0元', label: '系统使用费', sub: '按需付费，无门槛' },
+              { stat: '98%+', label: '接口对接成功率', sub: '主流ERP/OMS无缝接入' },
+            ].map(({ stat, label, sub }) => (
+              <div class="flex items-center py-4 gap-4">
+                <span class="w-32 flex-shrink-0 text-xl font-black text-brand-orange">{stat}</span>
+                <span class="flex-1 text-sm font-semibold text-navy-800">{label}</span>
+                <span class="text-xs text-gray-400">{sub}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <p class="text-[11px] font-bold text-gray-400 tracking-[0.25em] uppercase mb-4">核心功能模块</p>
+          <div class="divide-y divide-gray-200">
+            {[
+              { title: '全渠道库存中台', desc: '聚合天猫、京东、拼多多、唯品会等多平台库存，实时同步，多仓视图统一管控，库存超卖率趋近于零。' },
+              { title: '订单履约看板', desc: '全平台订单集中处理，发货进度实时可视，超时订单自动预警推送，履约过程全透明。' },
+              { title: '智能路由决策', desc: '根据收件地址、重量、时效要求自动匹配性价比最优承运商，降低物流成本8%-15%。' },
+              { title: '数据洞察报表', desc: '库存周转率、品类销量趋势、退换货分析、承运商时效对比，辅助采购与补货决策。' },
+              { title: 'API开放接口', desc: '提供标准奇门/EDI接口及定制化对接方案，适配SAP、金蝶、用友、自研ERP等主流系统。' },
+              { title: '逆向物流管理', desc: '退货收件、入库质检、二次上架全流程数字化管理，退货从揽收到处理全链路可追溯。' },
+            ].map(({ title, desc }) => (
+              <div class="py-4 flex gap-4 group hover:bg-orange-50/40 -mx-3 px-3 transition-colors">
+                <div class="w-1 flex-shrink-0 rounded-full bg-brand-orange/30 group-hover:bg-brand-orange transition-colors self-stretch"></div>
+                <div>
+                  <h4 class="text-sm font-bold text-navy-800 mb-1">{title}</h4>
+                  <p class="text-sm text-gray-500 leading-relaxed">{desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" aria-hidden="true"></div>
+
+  <!-- ⑤ 直供平台 -->
+  <section id="basic-supply" class="py-16 lg:py-24 bg-white scroll-mt-32" aria-labelledby="basic-supply-heading">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <div class="mb-6">
+        <span class="text-[11px] font-bold text-brand-orange tracking-[0.35em] uppercase">产品五 · 直供平台</span>
+        <h2 id="basic-supply-heading" class="text-3xl lg:text-4xl font-black text-navy-800 mt-2 mb-2">服装基础品类直供</h2>
+        <p class="text-brand-orange font-semibold">工厂直采，去中间层降成本</p>
+      </div>
+      <div class="w-full h-56 lg:h-72 rounded-2xl overflow-hidden mb-10">
+        <img
+          src="https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=1400&q=80&auto=format&fit=crop"
+          alt="服装基础品类直供 — 工厂直连"
+          class="w-full h-full object-cover"
+          loading="lazy"
+        />
+      </div>
+
+      <div class="lg:grid lg:grid-cols-2 lg:gap-20 items-start">
+        <div>
+          <p class="text-gray-600 leading-relaxed mb-8">
+            聚合优质服装基础品类供应商，覆盖袜类、内衣、T恤、打底衫等高频刚需品类，
+            实现工厂直供零售商及品牌，省去中间层级。适合需要稳定基础品类供货、
+            希望系统性降低采购成本的品牌和零售连锁。
+          </p>
+
+          <div class="border-t border-gray-100 divide-y divide-gray-100 mb-8">
+            {[
+              { stat: '小批量', label: '起订门槛', sub: '无最低MOQ限制' },
+              { stat: '7天', label: '快速翻单周期', sub: '热销款极速补货' },
+              { stat: '98%+', label: '货期履约率', sub: '违约赔付保障' },
+              { stat: '20%+', label: '采购成本降幅', sub: '对比传统渠道' },
+            ].map(({ stat, label, sub }) => (
+              <div class="flex items-center py-4 gap-4">
+                <span class="w-32 flex-shrink-0 text-xl font-black text-brand-orange">{stat}</span>
+                <span class="flex-1 text-sm font-semibold text-navy-800">{label}</span>
+                <span class="text-xs text-gray-400">{sub}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <p class="text-[11px] font-bold text-gray-400 tracking-[0.25em] uppercase mb-4">平台优势</p>
+          <div class="divide-y divide-gray-100">
+            {[
+              { title: '精选工厂直连', desc: '严格筛选优质服装基础品类工厂（袜类、内衣、T恤、打底等），省去层层中间商，出厂价直接对接品牌与零售商。' },
+              { title: '小批量柔性起订', desc: '支持小批量起订，降低库存积压风险。翻单周期短，市场热销品可快速补货，响应速度比传统采购提升50%+。' },
+              { title: '品质溯源保障', desc: '每批货物附带工厂检测报告，可追溯至原材料批次。支持买家送样比对，确保品质与商定标准一致。' },
+              { title: '货期承诺有保障', desc: '合作工厂签署货期协议，违约赔付。系统实时推送生产进度，提前预警异常，履约率稳定在98%以上。' },
+              { title: '一站式服务', desc: '从选款打样、下单生产到入库质检、发货，全流程由新亦源统一协调，品牌无需对接多家工厂。' },
+              { title: '专属商务支持', desc: '专属BD经理跟进需求，按品类、规模定制采购方案，新合作伙伴免费提供首单样品评估。' },
+            ].map(({ title, desc }) => (
+              <div class="py-4 flex gap-4 group hover:bg-orange-50/40 -mx-3 px-3 transition-colors">
+                <div class="w-1 flex-shrink-0 rounded-full bg-brand-orange/30 group-hover:bg-brand-orange transition-colors self-stretch"></div>
+                <div>
+                  <h4 class="text-sm font-bold text-navy-800 mb-1">{title}</h4>
+                  <p class="text-sm text-gray-500 leading-relaxed">{desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="py-14 bg-[#EFF4FF]" aria-labelledby="product-cta-heading">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <h2 id="product-cta-heading" class="text-2xl lg:text-3xl font-black text-navy-800 mb-4">想了解哪项服务适合您？</h2>
+      <p class="text-gray-600 mb-8">告诉我们您的品类、规模和当前痛点，我们会为您定制最优方案</p>
+      <div class="flex flex-wrap gap-4 justify-center">
+        <a href="/contact" class="inline-flex items-center px-7 py-3.5 bg-brand-orange hover:bg-brand-orange-dark text-white font-bold rounded-xl transition-colors">
+          免费获取方案
+        </a>
+        <a href="/cases" class="inline-flex items-center px-7 py-3.5 border border-navy-300 hover:border-navy-500 text-navy-700 font-semibold rounded-xl transition-colors">
+          查看合作案例
+        </a>
+      </div>
+    </div>
+  </section>
+
+</Layout>
+
+<style>
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+.product-nav-link.active {
+  color: #fff;
+  border-bottom-color: #E85D26;
+}
+</style>
+
+<script>
+  // 滚动高亮当前产品锚点
+  const sections = document.querySelectorAll<HTMLElement>('section[id]')
+  const navLinks = document.querySelectorAll<HTMLElement>('.product-nav-link')
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          navLinks.forEach((link) => {
+            link.classList.toggle('active', link.dataset.navId === entry.target.id)
+          })
+        }
+      })
+    },
+    { rootMargin: '-30% 0px -60% 0px' }
+  )
+
+  sections.forEach((s) => observer.observe(s))
+</script>

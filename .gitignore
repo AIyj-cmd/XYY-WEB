@@ -1,0 +1,39 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+dist.bak*/
+output/
+
+# Environment — never commit real secrets
+.env
+.env.local
+.env.production
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+
+# Claude internals
+.claude/
+
+# Playwright
+.playwright-cli/
+test-results/
+
+# Large binary assets — serve from CDN/server directly
+resources/
+public/introduce-720p.mp4
+public/introduce-poster.jpg
+public/fonts/
+public/logos/
+public/about/
+
+# Temp
+*.tar.gz

@@ -1,0 +1,631 @@
+---
+import Layout from '@/layouts/Layout.astro'
+import { BRAND, HONORS } from '@/lib/brand'
+import { getWarehouses } from '@/lib/directus'
+
+const WAREHOUSES = await getWarehouses()
+
+const HISTORY = [
+  { year: '2017', subtitle: '夯实·天使投资',      text: '获千万级天使投资，战略定位服饰专业化物流，创始团队完成核心搭建',     img: '/about/history/2017.png' },
+  { year: '2018', subtitle: '启航·战略定位',      text: '开始布局服装仓储中心，建立仓配服务体系，鞋服垂直物流正式成型',       img: '/about/history/2018.png' },
+  { year: '2019', subtitle: '逐梦·A轮融资',       text: 'A轮融资落地，全国物流中心网络布局完成，线上线下一体化模式跑通',     img: '/about/history/2019.png' },
+  { year: '2020', subtitle: '聚智·行业大布局',    text: '布局"三架马车"，全国区域后整检品服务落地，退货仓储中心覆盖华南华东', img: '/about/history/2020.png' },
+  { year: '2021', subtitle: '旋风年·PreA轮',      text: 'PreA轮融资，上市公司参股，启明星人才计划启动，O2O物流平台上线',    img: '/about/history/2021.png' },
+  { year: '2022', subtitle: '内修外行·OTD上线',   text: '物流服务中台OTD正式上线，O2O平台全面升级，系统能力跃上新台阶',    img: '/about/history/2022.png' },
+  { year: '2023', subtitle: '业绩增长·数字化升级', text: '业绩持续增长，仓内作业全面数字化升级，服务效率与准确率再创新高',   img: '/about/history/2023.jpg' },
+  { year: '2024', subtitle: '逆势增长·深耕鞋服',  text: '深耕鞋服战略持续推进，仓内数字化纵深迭代，服务品牌数量突破新高',  img: '/about/history/2024.jpg' },
+  { year: '2025', subtitle: '出海布局·数智升级',  text: '布局跨境出海业务，从数字化全面迈向数智化，开启第二增长曲线',       img: '/about/history/2025.jpg' },
+  { year: '2026', subtitle: '持续进化·敬请期待', text: '新的里程碑正在书写中……',                                          img: '' },
+]
+
+const CITY_CONFIG: Record<string, { color: string; label: string }> = {
+  '广州': { color: '#E85D26', label: '广州' },
+  '东莞': { color: '#3B6FCC', label: '东莞' },
+  '肇庆': { color: '#059669', label: '肇庆' },
+}
+const CITY_ORDER = ['广州', '东莞', '肇庆']
+const warehouseGroups = CITY_ORDER.map(city => ({
+  city,
+  cfg: CITY_CONFIG[city],
+  items: WAREHOUSES.filter(w => w.city === city),
+}))
+const MAX_RENT = 50000
+function rentNum(s: string) { return parseInt(s.replace(/,/g, ''), 10) }
+function barPct(rent: string) { return Math.max(5, Math.round(rentNum(rent) / MAX_RENT * 100)) }
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: '首页', item: BRAND.url },
+    { '@type': 'ListItem', position: 2, name: '关于我们', item: `${BRAND.url}/about` },
+  ],
+}
+
+const orgSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  '@id': `${BRAND.url}/#organization`,
+  name: BRAND.fullName,
+  alternateName: '新亦源',
+  url: BRAND.url,
+  foundingDate: String(BRAND.founded),
+  foundingLocation: { '@type': 'Place', name: '广州' },
+  description: BRAND.description,
+  numberOfEmployees: { '@type': 'QuantitativeValue', minValue: 2000 },
+  telephone: [BRAND.phone.direct, BRAND.phone.toll],
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: '果园一路2号',
+    addressLocality: '广州市黄埔区',
+    addressRegion: '广东省',
+    addressCountry: 'CN',
+  },
+}
+---
+
+<Layout
+  title="关于新亦源 - 广州新亦源供应链管理有限公司"
+  description="广州新亦源供应链管理有限公司，2011年成立，深耕鞋服物流15年，已完成多轮融资。合作知名服饰品牌140+，自有员工2000+。了解新亦源的发展历程、核心理念与荣誉资质。"
+  jsonLd={[breadcrumbSchema, orgSchema]}
+>
+  <!-- Hero -->
+  <section
+    class="relative overflow-hidden"
+    style="height: 72vh; min-height: 560px; max-height: 760px;"
+    aria-labelledby="about-hero-heading"
+  >
+
+    <!-- 全幅视频：静音自动播放，作为沉浸式背景 -->
+    <video
+      id="hero-bg-video"
+      autoplay
+      muted
+      loop
+      playsinline
+      preload="metadata"
+      poster="/introduce-poster.jpg"
+      class="absolute inset-0 w-full h-full object-cover"
+      aria-hidden="true"
+    >
+      <source src="/introduce-720p.mp4" type="video/mp4" />
+    </video>
+
+    <!-- 遮罩：左侧深色承载文字，右侧透出视频画面 -->
+    <div
+      class="absolute inset-0 pointer-events-none"
+      style="background: linear-gradient(100deg, rgba(8,20,42,0.94) 0%, rgba(8,20,42,0.82) 30%, rgba(8,20,42,0.45) 58%, rgba(8,20,42,0.08) 100%);"
+    ></div>
+
+    <!-- 主内容 -->
+    <div class="relative h-full max-w-7xl mx-auto px-8 lg:px-12 flex flex-col justify-center">
+      <div class="max-w-xl">
+        <p class="text-brand-orange font-bold text-[11px] tracking-[0.4em] uppercase mb-5">关于我们</p>
+        <h1 id="about-hero-heading" class="text-5xl lg:text-[3.75rem] font-black text-white leading-[1.08] mb-6">
+          让每个品牌<br />
+          都有专业的<br />
+          <span class="text-brand-orange">出货能力</span>
+        </h1>
+        <p class="text-white/55 text-sm leading-relaxed max-w-sm mb-10">
+          鞋服出货的坑，全让我们替你踩过了。<br />
+          15年、2000名自有员工、6大仓点，只为一件事：让你的货准时、准确地到达消费者手中。
+        </p>
+
+        <!-- 播放 + 音量控制 -->
+        <div class="flex items-center gap-3">
+          <button
+            id="hero-video-btn"
+            class="group inline-flex items-center gap-3 text-white/60 hover:text-white transition-colors text-sm"
+            aria-label="暂停视频"
+          >
+            <span class="w-11 h-11 rounded-full border border-white/25 group-hover:border-white/60 flex items-center justify-center transition-colors">
+              <svg id="icon-pause" class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+              </svg>
+              <svg id="icon-play" class="w-4 h-4 hidden" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M8 5v14l11-7z"/>
+              </svg>
+            </span>
+            <span id="btn-label">暂停视频</span>
+          </button>
+
+          <button
+            id="hero-mute-btn"
+            class="group w-11 h-11 rounded-full border border-white/25 hover:border-white/60 flex items-center justify-center text-white/60 hover:text-white transition-colors"
+            aria-label="开启声音"
+          >
+            <!-- 静音图标（初始显示，因为视频默认静音） -->
+            <svg id="icon-muted" class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M16.5 12A4.5 4.5 0 0 0 14 7.97v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51A8.796 8.796 0 0 0 21 12c0-4.28-3-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3 3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06A8.99 8.99 0 0 0 17.73 18l2 2L21 18.73l-9-9L4.27 3zM12 4 9.91 6.09 12 8.18V4z"/>
+            </svg>
+            <!-- 有声图标（点击后显示） -->
+            <svg id="icon-unmuted" class="w-4 h-4 hidden" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 视频字幕：右侧同步字幕，随播放进度切换 -->
+    <div class="hidden lg:flex absolute right-12 xl:right-20 bottom-28 max-w-md justify-end pointer-events-none z-10">
+      <p
+        id="hero-caption"
+        class="inline-block bg-[#08142A]/50 backdrop-blur-sm text-white text-lg font-semibold leading-snug px-5 py-2.5 rounded-lg text-right opacity-0 transition-opacity duration-300"
+      ></p>
+    </div>
+
+    <!-- 底部数据条：黑色磨砂玻璃 -->
+    <div id="about-stats-bar" class="absolute bottom-0 left-0 right-0 border-t border-white/10" style="background: rgba(8,20,42,0.60); backdrop-filter: blur(12px);">
+      <div class="max-w-7xl mx-auto px-8 lg:px-12 py-4 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-x-6 gap-y-4 lg:gap-x-4">
+        {[
+          { value: '1.17亿', unit: '件/年', label: '新货质检' },
+          { value: '1.53亿', unit: '件/年', label: '退货质检' },
+          { value: '99.99',  unit: '%+',    label: '库存准确率' },
+          { value: '135',    unit: '种+',   label: '缺陷识别' },
+          { value: '48',     unit: '小时',  label: '退货二次上架' },
+          { value: '90',     unit: '%',     label: '瑕疵修复成功率' },
+          { value: '40',     unit: '%↑',    label: 'RFID拣货提效' },
+          { value: '30',     unit: '%↑',    label: '人效提升' },
+        ].map(({ value, unit, label }) => (
+          <div class="flex flex-col items-center gap-1 text-center">
+            <div class="flex items-baseline gap-1">
+              <span class="about-stat-num text-lg font-black text-white" data-raw={value}>{value}</span>
+              <span class="text-[11px] text-white/45 font-medium leading-none">{unit}</span>
+            </div>
+            <span class="text-[11px] text-white/30">{label}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+
+  </section>
+
+  <script>
+    // 视频字幕：来自 7月1日 台词稿，时间码取自对应 srt
+    const HERO_CAPTIONS = [
+      { start: 1.833, end: 3.200, text: '新亦源鞋服云仓' },
+      { start: 3.200, end: 5.900, text: '在全国拥有50万平专业服装仓' },
+      { start: 8.400, end: 8.933, text: '专业' },
+      { start: 8.933, end: 11.233, text: '始于对每一寸空间的细致规划' },
+      { start: 12.266, end: 14.200, text: '精准调控温湿度的恒温仓' },
+      { start: 14.200, end: 16.233, text: '为高端面料筑牢品质防线' },
+      { start: 17.500, end: 18.400, text: '立体悬挂' },
+      { start: 18.400, end: 19.666, text: '杜绝褶皱损耗' },
+      { start: 20.933, end: 22.466, text: '从入库到存储' },
+      { start: 22.466, end: 24.300, text: '全链路6S标准化管控' },
+      { start: 24.400, end: 25.300, text: '每一处细节' },
+      { start: 25.300, end: 27.633, text: '都藏着我们对鞋服仓储的深刻理解' },
+      { start: 29.666, end: 30.166, text: '服务' },
+      { start: 30.166, end: 32.400, text: '鉴于对每一个需求的极致响应' },
+      { start: 34.133, end: 35.533, text: '我们提供新货质检' },
+      { start: 36.200, end: 38.833, text: '服装质检、箱包质检、鞋子质检' },
+      { start: 40.233, end: 42.133, text: '提供24小时退货质检' },
+      { start: 42.133, end: 42.933, text: '二次上架' },
+      { start: 42.933, end: 45.200, text: '污渍清理特殊污渍清理' },
+      { start: 45.200, end: 45.700, text: '清洗' },
+      { start: 45.700, end: 46.400, text: '烘干' },
+      { start: 46.433, end: 48.233, text: '提供最全面的增值服务' },
+      { start: 48.300, end: 48.766, text: '整烫' },
+      { start: 48.766, end: 49.400, text: '挂烫' },
+      { start: 49.400, end: 51.533, text: '合规改标瑕疵修复等' },
+      { start: 54.733, end: 57.466, text: '从一件新品的入库到一单包裹的发出' },
+      { start: 58.000, end: 59.266, text: '从一件退货的翻新' },
+      { start: 59.266, end: 61.033, text: '到一份库存的精准预警' },
+      { start: 61.233, end: 62.200, text: '新亦源云仓' },
+      { start: 62.200, end: 64.300, text: '让每一份托付都安心可靠' },
+      { start: 64.300, end: 66.266, text: '做服装就用新亦源云仓' },
+    ]
+
+    const video = document.getElementById('hero-bg-video') as HTMLVideoElement | null
+    const captionEl = document.getElementById('hero-caption')
+    const playBtn = document.getElementById('hero-video-btn')
+    const muteBtn = document.getElementById('hero-mute-btn')
+    const iconPause = document.getElementById('icon-pause')
+    const iconPlay = document.getElementById('icon-play')
+    const iconMuted = document.getElementById('icon-muted')
+    const iconUnmuted = document.getElementById('icon-unmuted')
+    const label = document.getElementById('btn-label')
+
+    playBtn?.addEventListener('click', () => {
+      if (!video) return
+      if (video.paused) {
+        video.play()
+        iconPause?.classList.remove('hidden')
+        iconPlay?.classList.add('hidden')
+        if (label) label.textContent = '暂停视频'
+        playBtn.setAttribute('aria-label', '暂停视频')
+      } else {
+        video.pause()
+        iconPause?.classList.add('hidden')
+        iconPlay?.classList.remove('hidden')
+        if (label) label.textContent = '播放视频'
+        playBtn.setAttribute('aria-label', '播放视频')
+      }
+    })
+
+    video?.addEventListener('timeupdate', () => {
+      if (!video || !captionEl) return
+      const t = video.currentTime
+      const cue = HERO_CAPTIONS.find((c) => t >= c.start && t < c.end)
+      if (cue) {
+        if (captionEl.textContent !== cue.text) captionEl.textContent = cue.text
+        captionEl.classList.remove('opacity-0')
+      } else {
+        captionEl.classList.add('opacity-0')
+      }
+    })
+
+    muteBtn?.addEventListener('click', () => {
+      if (!video) return
+      if (video.muted) {
+        video.muted = false
+        iconMuted?.classList.add('hidden')
+        iconUnmuted?.classList.remove('hidden')
+        muteBtn.setAttribute('aria-label', '静音')
+      } else {
+        video.muted = true
+        iconMuted?.classList.remove('hidden')
+        iconUnmuted?.classList.add('hidden')
+        muteBtn.setAttribute('aria-label', '开启声音')
+      }
+    })
+  </script>
+
+  <!-- Milestones Carousel -->
+  <section class="py-16 bg-[#f8fafc]" aria-labelledby="history-heading">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
+      <h2 id="history-heading" class="text-3xl font-black text-navy-800 text-center">发展历程</h2>
+    </div>
+
+    <!-- 轮播主体：按钮 + 内容同行 -->
+    <div class="flex items-center gap-4 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <button id="history-prev" class="flex-shrink-0 w-10 h-10 rounded-full bg-white shadow-md border border-gray-200 flex items-center justify-center text-gray-400 hover:text-navy-700 hover:border-navy-300 transition-colors" aria-label="上一年">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+      </button>
+
+      <div class="flex-1 overflow-hidden">
+        <div id="history-track" class="flex transition-transform duration-500 ease-out" style="will-change: transform;">
+          {HISTORY.map(({ year, subtitle, text, img }) => (
+            <div class="w-full flex-shrink-0">
+              <div class="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-12 py-2">
+                <!-- 左：文字 -->
+                <div class="flex-shrink-0 w-full md:w-64">
+                  <div class="flex items-center gap-4 mb-5">
+                    <span class="text-[3.5rem] font-black text-navy-800 leading-none">{year}</span>
+                    <div class="border-l-2 border-brand-orange pl-3">
+                      <div class="text-sm font-bold text-navy-700 leading-snug whitespace-pre-line">{subtitle.replace('·', '\n')}</div>
+                    </div>
+                  </div>
+                  <p class="text-gray-500 text-sm leading-relaxed">{text}</p>
+                </div>
+                <!-- 右：图片 -->
+                <div class="flex-shrink-0">
+                  <div class="rounded-xl overflow-hidden shadow-md" style="width: 371px; height: 209px;">
+                    {img ? (
+                      <img
+                        src={img}
+                        alt={`${year}年发展历程`}
+                        loading="lazy"
+                        decoding="async"
+                        width="371"
+                        height="209"
+                        class="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                      />
+                    ) : (
+                      <div class="w-full h-full bg-orange-50 border border-orange-100 flex flex-col items-center justify-center gap-2">
+                        <span class="text-brand-orange/30 text-[11px] tracking-[0.3em] uppercase font-bold">即将揭晓</span>
+                        <span class="text-brand-orange text-4xl font-black leading-none">{year}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <button id="history-next" class="flex-shrink-0 w-10 h-10 rounded-full bg-white shadow-md border border-gray-200 flex items-center justify-center text-gray-400 hover:text-navy-700 hover:border-navy-300 transition-colors" aria-label="下一年">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+      </button>
+
+    </div>
+
+    <!-- 年份点导航 -->
+    <div class="mt-10 px-8 lg:px-16 max-w-7xl mx-auto">
+      <div class="relative flex items-center">
+        <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 h-px bg-gray-300"></div>
+        <div class="relative flex justify-between w-full">
+          {HISTORY.map(({ year }, i) => (
+            <button
+              class="history-dot group flex flex-col items-center gap-1.5 relative z-10"
+              data-index={i}
+              aria-label={`跳到${year}年`}
+            >
+              <div class="w-3 h-3 rounded-full border-2 border-gray-300 bg-[#f8fafc] group-hover:border-brand-orange transition-colors history-dot-circle"></div>
+              <span class="text-xs text-gray-400 group-hover:text-navy-700 transition-colors history-dot-label">{year}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 仓网布局 -->
+  <section class="flex flex-col lg:flex-row overflow-hidden" style="min-height: 580px;" aria-labelledby="warehouse-heading">
+
+    <!-- 左：地图面板 -->
+    <div class="relative flex-shrink-0 w-full lg:w-[52%] bg-navy-50 flex items-center justify-center overflow-hidden" style="min-height: 360px;">
+      <!-- 地图 SVG 背景 -->
+      <img
+        src="/china-map-warehouse-light.svg"
+        alt="仓网分布地图"
+        class="absolute inset-0 w-full h-full object-contain opacity-90 p-10 lg:p-16"
+        aria-hidden="true"
+      />
+
+      <!-- 左下角说明 -->
+      <div class="absolute bottom-8 left-8 lg:left-10">
+        <p class="text-navy-800/40 text-[10px] tracking-[0.3em] uppercase font-bold mb-1">仓网布局</p>
+        <p class="text-navy-800/70 text-xs">华南 · 华东 · 华中，覆盖全国</p>
+      </div>
+    </div>
+
+    <!-- 右：三级仓网详情 -->
+    <div class="flex-1 bg-white flex flex-col justify-center px-12 lg:px-20 py-14">
+      <p class="text-brand-orange font-bold text-[11px] tracking-[0.35em] uppercase mb-3">仓网布局</p>
+      <h2 id="warehouse-heading" class="text-3xl font-black text-navy-800 mb-2">战略三仓，覆盖全国</h2>
+      <p class="text-gray-400 text-sm leading-relaxed mb-10 max-w-sm">
+        CDC + RDC + FDC 三级仓网，按需配仓、就近发货，干线成本最优
+      </p>
+
+      <!-- 三行列表，无卡片 -->
+      <div class="space-y-0 divide-y divide-gray-100">
+        {[
+          {
+            abbr: 'CDC', name: '中心仓', accent: '#E85D26',
+            desc: '华南总部，一仓发全国，支持全渠道大规模库存管理与智能分波次发货',
+            location: BRAND.locations.south.address,
+            tags: ['总仓调拨', '全渠道发货', '智能分波'],
+          },
+          {
+            abbr: 'RDC', name: '区域仓', accent: '#3B6FCC',
+            desc: '布局华东、华中，区域补铺 + 就近发货，降低干线物流成本与时效损耗',
+            location: BRAND.locations.east.address,
+            tags: ['区域补货', '就近发货', '降低损耗'],
+          },
+          {
+            abbr: 'FDC', name: '产地仓', accent: '#059669',
+            desc: '直接对接生产端，产地直发，压缩仓储成本，加快新货上架时效',
+            location: BRAND.locations.central.address,
+            tags: ['产地直发', '快速上架', '弹性配置'],
+          },
+        ].map(({ abbr, name, accent, desc, location, tags }) => (
+          <div class="py-6 flex items-start gap-5">
+            <div class="flex-shrink-0 w-12 text-center pt-0.5">
+              <span class="text-xl font-black" style={`color: ${accent}`}>{abbr}</span>
+              <div class="text-[10px] text-gray-400 font-medium mt-0.5">{name}</div>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-gray-600 text-sm leading-relaxed mb-2">{desc}</p>
+              <p class="text-xs text-gray-400 mb-2.5">{location}</p>
+              <div class="flex flex-wrap gap-1.5">
+                {tags.map(t => (
+                  <span class="text-[11px] font-medium px-2 py-0.5 rounded-full border" style={`color: ${accent}; border-color: ${accent}33; background: ${accent}0d`}>{t}</span>
+                ))}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- 华南仓点详情 -->
+  <section class="py-14 bg-gray-50" aria-labelledby="southwh-heading">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <!-- 标题栏 -->
+      <div class="flex items-end justify-between mb-12">
+        <div>
+          <p class="text-brand-orange font-bold text-[11px] tracking-[0.35em] uppercase mb-2">华南仓点</p>
+          <h3 id="southwh-heading" class="text-2xl font-black text-navy-800">广州 · 东莞 · 肇庆，6大仓点</h3>
+        </div>
+        <p class="text-xs text-gray-400 max-w-xs text-right leading-relaxed hidden sm:block">
+          全部具备丙二类消防资质<br/>新货质检 · 退货质检 · 整烫修复全链路
+        </p>
+      </div>
+
+      <!-- 按城市分组 -->
+      <div class="space-y-10">
+        {warehouseGroups.map(({ city, cfg, items }) => (
+          <div>
+            <!-- 城市分组 header -->
+            <div class="flex items-center gap-3 mb-1">
+              <div class="w-1 h-4 rounded-full flex-shrink-0" style={`background:${cfg.color}`}></div>
+              <span class="text-xs font-bold tracking-[0.25em] uppercase" style={`color:${cfg.color}`}>{city}</span>
+              <span class="text-xs text-gray-400">{items.length} 个仓点</span>
+              <div class="flex-1 h-px bg-gray-200"></div>
+            </div>
+
+            <!-- 仓点行列表 -->
+            <div class="divide-y divide-gray-100 pl-4" style={`border-left: 2px solid ${cfg.color}22`}>
+              {items.map((w) => (
+                <div class="py-5 flex flex-col lg:flex-row lg:items-center gap-3 lg:gap-0">
+
+                  <!-- 名称 + 年份 -->
+                  <div class="lg:w-36 flex-shrink-0">
+                    <div class="text-base font-black text-navy-800 leading-tight">{w.name}</div>
+                    <div class="text-[11px] text-gray-400 mt-0.5">自 {w.since}</div>
+                  </div>
+
+                  <!-- 地址 -->
+                  <div class="lg:w-60 flex-shrink-0 text-xs text-gray-500 leading-snug lg:px-5 lg:border-l lg:border-gray-100">
+                    {w.address}
+                  </div>
+
+                  <!-- 可租面积（主要数字）+ 面积条 -->
+                  <div class="lg:w-52 flex-shrink-0 lg:px-5 lg:border-l lg:border-gray-100">
+                    <div class="flex items-baseline gap-1 mb-1.5">
+                      <span class="text-lg font-black text-navy-800">{w.rent}</span>
+                      <span class="text-xs text-gray-400">㎡ 可租</span>
+                    </div>
+                    <!-- 面积比例条 -->
+                    <div class="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                      <div
+                        class="h-full rounded-full transition-all"
+                        style={`width:${barPct(w.rent)}%; background:${cfg.color}`}
+                      ></div>
+                    </div>
+                    <div class="text-[10px] text-gray-400 mt-1">园区 {w.park}㎡ · 层高 {w.height}</div>
+                  </div>
+
+                  <!-- 亮点 -->
+                  <div class="flex-1 text-xs text-gray-500 leading-relaxed lg:px-5 lg:border-l lg:border-gray-100">
+                    {w.highlight}
+                  </div>
+
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- 补充说明：其他区域仓库 -->
+      <p class="mt-8 text-xs font-bold text-navy-800">
+        佛山区域、湖北区域、上海区域均有仓库
+      </p>
+
+    </div>
+  </section>
+
+  <!-- Honors -->
+  <section class="py-16 bg-white" aria-labelledby="honors-heading">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <p class="text-brand-orange font-bold text-[11px] tracking-[0.35em] uppercase mb-3">资质与荣誉</p>
+        <h2 id="honors-heading" class="text-3xl font-black text-navy-800">资质与荣誉</h2>
+      </div>
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-5">
+        {HONORS.map((honor, i) => (
+          <div class="bg-gray-50 rounded-xl overflow-hidden hover:shadow-md hover:-translate-y-0.5 transition-all flex flex-col">
+            <div class="flex items-center justify-center p-4 aspect-[3/2]">
+              <img
+                src={`/about/honor/${i + 1}.png`}
+                alt={honor}
+                class="w-full h-full object-contain"
+                loading="lazy"
+              />
+            </div>
+            <div class="px-3 pb-3 text-center">
+              <p class="text-[11px] font-semibold text-navy-700 leading-snug">{honor}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="py-14 bg-[#EFF4FF]" aria-labelledby="about-cta-heading">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <h2 id="about-cta-heading" class="text-2xl lg:text-3xl font-black text-navy-800 mb-4">想了解更多合作详情？</h2>
+      <p class="text-gray-600 mb-6">联系我们的商务团队，获取定制化解决方案</p>
+      <a
+        href="/contact"
+        class="inline-flex items-center px-7 py-3.5 bg-brand-orange text-white font-bold rounded-xl hover:bg-brand-orange-dark transition-colors"
+      >
+        立即联系
+      </a>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  const track = document.getElementById('history-track')
+  const dots = document.querySelectorAll('.history-dot')
+  const total = dots.length
+  let current = 0
+
+  function goTo(index: number) {
+    current = Math.max(0, Math.min(index, total - 1))
+    if (track) track.style.transform = `translateX(-${current * 100}%)`
+    dots.forEach((dot, i) => {
+      const circle = dot.querySelector('.history-dot-circle') as HTMLElement | null
+      const label = dot.querySelector('.history-dot-label') as HTMLElement | null
+      if (i === current) {
+        circle?.classList.add('bg-brand-orange', 'border-brand-orange')
+        circle?.classList.remove('bg-[#f8fafc]', 'border-gray-300')
+        label?.classList.add('text-navy-700', 'font-bold')
+        label?.classList.remove('text-gray-400')
+      } else {
+        circle?.classList.remove('bg-brand-orange', 'border-brand-orange')
+        circle?.classList.add('bg-[#f8fafc]', 'border-gray-300')
+        label?.classList.remove('text-navy-700', 'font-bold')
+        label?.classList.add('text-gray-400')
+      }
+    })
+  }
+
+  document.getElementById('history-prev')?.addEventListener('click', () => goTo(current - 1))
+  document.getElementById('history-next')?.addEventListener('click', () => goTo(current + 1))
+  dots.forEach((dot, i) => dot.addEventListener('click', () => goTo(i)))
+
+  // 初始化第一张激活状态
+  goTo(0)
+</script>
+
+<script>
+  // 数字滚动动画 — 关于页面 Hero 数据条
+  const DURATION = 1600
+
+  function parseVal(raw: string) {
+    const chineseSuffix = raw.match(/[亿万]+/)
+    const suffix = chineseSuffix ? chineseSuffix[0] : ''
+    const num = parseFloat(raw.replace(/[亿万]/g, ''))
+    const decimals = (raw.replace(/[亿万]/g, '').split('.')[1] ?? '').length
+    return { num, suffix, decimals }
+  }
+
+  function animateStat(el: HTMLElement) {
+    const raw = el.dataset.raw ?? el.textContent ?? ''
+    const { num, suffix, decimals } = parseVal(raw)
+    const start = performance.now()
+
+    function tick(now: number) {
+      const elapsed = now - start
+      const progress = Math.min(elapsed / DURATION, 1)
+      // cubic ease-out
+      const eased = 1 - Math.pow(1 - progress, 3)
+      const current = num * eased
+      el.textContent = current.toFixed(decimals) + suffix
+      if (progress < 1) requestAnimationFrame(tick)
+    }
+
+    requestAnimationFrame(tick)
+  }
+
+  const statsBar = document.getElementById('about-stats-bar')
+  if (statsBar) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            statsBar.querySelectorAll<HTMLElement>('.about-stat-num').forEach(animateStat)
+            observer.disconnect()
+          }
+        })
+      },
+      { threshold: 0.3 }
+    )
+    observer.observe(statsBar)
+  }
+</script>
+
+<style>
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+</style>

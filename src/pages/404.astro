@@ -1,0 +1,90 @@
+---
+export const prerender = true
+import Layout from '@/layouts/Layout.astro'
+---
+
+<Layout
+  title="页面未找到 404"
+  description="抱歉，您访问的页面不存在。"
+  noIndex={true}
+>
+  <section class="min-h-screen flex flex-col items-center justify-center px-6 py-24 bg-white">
+
+    <!-- 大号装饰数字 -->
+    <div class="relative mb-6 select-none" aria-hidden="true">
+      <span class="not-found-num">404</span>
+      <span class="not-found-badge">页面迷路了</span>
+    </div>
+
+    <h1 class="text-2xl lg:text-3xl font-black text-navy-800 text-center mb-3">
+      抱歉，您访问的页面不存在
+    </h1>
+    <p class="text-gray-500 text-base text-center max-w-md leading-relaxed mb-10">
+      可能是链接已过期、地址输入有误，或者这个页面从未存在过。
+      回到首页继续探索，或者直接联系我们。
+    </p>
+
+    <!-- 操作按钮 -->
+    <div class="flex flex-col sm:flex-row gap-3 mb-16">
+      <a
+        href="/"
+        class="inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-[#0A1A33] text-white font-bold rounded-xl hover:bg-navy-700 transition-colors"
+      >
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
+        回到首页
+      </a>
+      <a
+        href="/contact"
+        class="inline-flex items-center justify-center gap-2 px-7 py-3.5 border-2 border-brand-orange text-brand-orange font-bold rounded-xl hover:bg-brand-orange hover:text-white transition-colors"
+      >
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
+        联系我们
+      </a>
+    </div>
+
+    <!-- 快捷导航 -->
+    <div class="border-t border-gray-100 pt-8 text-center">
+      <p class="text-xs text-gray-400 font-medium tracking-wider uppercase mb-4">您可能在找</p>
+      <div class="flex flex-wrap justify-center gap-2">
+        {[
+          { href: '/product', label: '产品服务' },
+          { href: '/cases',   label: '合作案例' },
+          { href: '/about',   label: '关于我们' },
+          { href: '/news',    label: '行业资讯' },
+          { href: '/contact', label: '联系我们' },
+        ].map(({ href, label }) => (
+          <a href={href} class="px-4 py-2 rounded-full border border-gray-200 text-sm text-gray-600 hover:border-navy-300 hover:text-navy-800 font-medium transition-colors">
+            {label}
+          </a>
+        ))}
+      </div>
+    </div>
+
+  </section>
+</Layout>
+
+<style>
+.not-found-num {
+  display: block;
+  font-size: clamp(6rem, 20vw, 14rem);
+  font-weight: 900;
+  line-height: 1;
+  color: #EFF4FF;
+  letter-spacing: -0.04em;
+  user-select: none;
+}
+.not-found-badge {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #E85D26;
+  color: #fff;
+  font-size: 0.875rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  padding: 0.35rem 1rem;
+  border-radius: 9999px;
+  white-space: nowrap;
+}
+</style>

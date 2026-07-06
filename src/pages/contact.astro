@@ -1,0 +1,304 @@
+---
+export const prerender = true
+import Layout from '@/layouts/Layout.astro'
+import { BRAND } from '@/lib/brand'
+
+const localBusinessSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'LocalBusiness',
+  '@id': `${BRAND.url}/#localbusiness`,
+  name: BRAND.fullName,
+  url: BRAND.url,
+  telephone: [BRAND.phone.direct, BRAND.phone.toll],
+  openingHours: 'Mo-Fr 09:00-18:00',
+  location: [
+    {
+      '@type': 'Place',
+      name: '华南总部（广州）',
+      address: {
+        '@type': 'PostalAddress',
+        streetAddress: '果园一路2号',
+        addressLocality: '广州市黄埔区',
+        addressRegion: '广东省',
+        postalCode: '510700',
+        addressCountry: 'CN',
+      },
+      geo: { '@type': 'GeoCoordinates', latitude: 23.12, longitude: 113.48 },
+    },
+    {
+      '@type': 'Place',
+      name: '华东仓（上海）',
+      address: {
+        '@type': 'PostalAddress',
+        streetAddress: '汇金路889号2号楼三楼',
+        addressLocality: '上海市青浦区',
+        addressRegion: '上海',
+        addressCountry: 'CN',
+      },
+    },
+    {
+      '@type': 'Place',
+      name: '华中仓（湖北监利）',
+      address: {
+        '@type': 'PostalAddress',
+        streetAddress: '监利服装产业园3号楼',
+        addressLocality: '监利市',
+        addressRegion: '湖北省',
+        addressCountry: 'CN',
+      },
+    },
+  ],
+}
+---
+
+<Layout
+  title="联系新亦源 - 咨询鞋服云仓合作 | 广州新亦源供应链"
+  description="联系广州新亦源供应链，咨询鞋服云仓、后整质检、物流云合作方案。电话：020-82036224 / 400-6865-156，总部：广东省广州市黄埔区果园一路2号。"
+  jsonLd={localBusinessSchema}
+>
+  <!-- Hero -->
+  <section class="relative py-16 lg:py-20 overflow-hidden" aria-labelledby="contact-hero-heading">
+    <img
+      src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=1920&q=80&auto=format&fit=crop"
+      alt=""
+      aria-hidden="true"
+      class="absolute inset-0 w-full h-full object-cover"
+      fetchpriority="high"
+    />
+    <div
+      class="absolute inset-0"
+      style="background: linear-gradient(105deg, rgba(8,20,42,0.95) 0%, rgba(8,20,42,0.78) 40%, rgba(8,20,42,0.45) 100%);"
+      aria-hidden="true"
+    ></div>
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <p class="text-brand-orange font-semibold text-sm tracking-wider uppercase mb-3">联系我们</p>
+      <h1 id="contact-hero-heading" class="text-4xl lg:text-5xl font-black text-white leading-tight mb-4">
+        开始合作对话
+      </h1>
+      <p class="text-lg text-navy-100 max-w-xl leading-relaxed">
+        无论您是想了解具体报价、参观仓库，还是希望了解我们如何服务您的品类，我们的商务团队会在3个工作日内回复。
+      </p>
+    </div>
+  </section>
+
+  <!-- Contact Content -->
+  <section class="py-16 bg-white" aria-label="联系方式与表单">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="lg:grid lg:grid-cols-5 lg:gap-14">
+        <!-- Left: Info -->
+        <div class="lg:col-span-2 mb-12 lg:mb-0">
+          <h2 class="text-2xl font-black text-navy-800 mb-8">联系方式</h2>
+
+          <!-- Phone -->
+          <div class="mb-8">
+            <h3 class="text-xs font-bold text-navy-500 uppercase tracking-wider mb-4">电话咨询</h3>
+            <div class="space-y-3">
+              <a
+                href={`tel:${BRAND.phone.direct}`}
+                class="flex items-center gap-3 p-4 rounded-xl border border-gray-200 hover:border-navy-300 hover:bg-navy-50 transition-all group"
+              >
+                <div class="w-10 h-10 rounded-lg bg-navy-100 flex items-center justify-center flex-shrink-0 group-hover:bg-navy-200 transition-colors">
+                  <svg class="w-5 h-5 text-navy-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                  </svg>
+                </div>
+                <div>
+                  <div class="font-bold text-navy-800">{BRAND.phone.direct}</div>
+                  <div class="text-xs text-gray-500">工作时间：周一至周五 09:00–18:00</div>
+                </div>
+              </a>
+              <a
+                href={`tel:${BRAND.phone.toll}`}
+                class="flex items-center gap-3 p-4 rounded-xl border border-gray-200 hover:border-navy-300 hover:bg-navy-50 transition-all group"
+              >
+                <div class="w-10 h-10 rounded-lg bg-brand-orange/10 flex items-center justify-center flex-shrink-0 group-hover:bg-brand-orange/20 transition-colors">
+                  <svg class="w-5 h-5 text-brand-orange" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                  </svg>
+                </div>
+                <div>
+                  <div class="font-bold text-navy-800">{BRAND.phone.toll}</div>
+                  <div class="text-xs text-gray-500">全国免费热线，7×12小时</div>
+                </div>
+              </a>
+            </div>
+          </div>
+
+          <!-- Addresses -->
+          <div>
+            <h3 class="text-xs font-bold text-navy-500 uppercase tracking-wider mb-4">仓库地址</h3>
+            <div class="space-y-4">
+              {Object.values(BRAND.locations).map(({ label, address }) => (
+                <div class="flex items-start gap-3 p-4 rounded-xl bg-gray-50 border border-gray-100">
+                  <svg class="w-5 h-5 text-brand-orange flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                  <div>
+                    <div class="text-xs font-bold text-navy-700 mb-0.5">{label}</div>
+                    <address class="text-sm text-gray-600 not-italic leading-relaxed">{address}</address>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Form -->
+        <div class="lg:col-span-3">
+          <h2 class="text-2xl font-black text-navy-800 mb-8">在线留言</h2>
+          <form
+            id="contact-form"
+            action="/api/contact"
+            method="POST"
+            class="space-y-5"
+            novalidate
+          >
+            <div class="hidden" aria-hidden="true">
+              <label for="website">Website</label>
+              <input id="website" name="website" type="text" tabindex="-1" autocomplete="off" />
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div>
+                <label for="name" class="block text-sm font-semibold text-gray-700 mb-1.5">
+                  您的姓名 <span class="text-brand-orange" aria-hidden="true">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  required
+                  autocomplete="name"
+                  placeholder="请输入您的姓名"
+                  class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-navy-400 focus:ring-2 focus:ring-navy-100 outline-none text-sm transition-colors"
+                />
+              </div>
+              <div>
+                <label for="company" class="block text-sm font-semibold text-gray-700 mb-1.5">公司/品牌名称</label>
+                <input
+                  type="text"
+                  id="company"
+                  name="company"
+                  autocomplete="organization"
+                  placeholder="请输入公司或品牌名称"
+                  class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-navy-400 focus:ring-2 focus:ring-navy-100 outline-none text-sm transition-colors"
+                />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div>
+                <label for="phone" class="block text-sm font-semibold text-gray-700 mb-1.5">
+                  联系电话 <span class="text-brand-orange" aria-hidden="true">*</span>
+                </label>
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  required
+                  autocomplete="tel"
+                  placeholder="请输入您的手机号"
+                  class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-navy-400 focus:ring-2 focus:ring-navy-100 outline-none text-sm transition-colors"
+                />
+              </div>
+              <div>
+                <label for="email" class="block text-sm font-semibold text-gray-700 mb-1.5">邮箱</label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  autocomplete="email"
+                  placeholder="选填，用于接收方案"
+                  class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-navy-400 focus:ring-2 focus:ring-navy-100 outline-none text-sm transition-colors"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label for="service" class="block text-sm font-semibold text-gray-700 mb-1.5">咨询服务</label>
+              <select
+                id="service"
+                name="service"
+                class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-navy-400 focus:ring-2 focus:ring-navy-100 outline-none text-sm text-gray-700 transition-colors bg-white"
+              >
+                <option value="">请选择您感兴趣的服务</option>
+                <option value="cloud-warehouse">鞋服云仓</option>
+                <option value="quality-inspection">后整质检修复</option>
+                <option value="logistics-cloud">物流云</option>
+                <option value="all">全链路解决方案</option>
+                <option value="other">其他</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="message" class="block text-sm font-semibold text-gray-700 mb-1.5">
+                需求描述 <span class="text-brand-orange" aria-hidden="true">*</span>
+              </label>
+              <textarea
+                id="message"
+                name="message"
+                required
+                rows={5}
+                placeholder="请简要描述您的品类、当前规模（日均出库量/SKU数）和主要痛点，便于我们为您准备针对性方案"
+                class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-navy-400 focus:ring-2 focus:ring-navy-100 outline-none text-sm transition-colors resize-none"
+              ></textarea>
+            </div>
+
+            <button
+              type="submit"
+              id="submit-btn"
+              class="w-full sm:w-auto px-8 py-3.5 bg-brand-orange hover:bg-brand-orange-dark text-white font-bold rounded-xl text-base transition-colors shadow-lg shadow-orange-900/20 disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              提交咨询
+            </button>
+
+            <div id="form-result" class="hidden"></div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  const form = document.getElementById('contact-form') as HTMLFormElement | null
+  const btn = document.getElementById('submit-btn') as HTMLButtonElement | null
+  const result = document.getElementById('form-result')
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault()
+    if (!btn || !result) return
+
+    btn.disabled = true
+    btn.textContent = '提交中...'
+    result.className = 'hidden'
+
+    try {
+      const data = new FormData(form)
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(Object.fromEntries(data)),
+      })
+
+      const payload = await res.json().catch(() => ({}))
+
+      if (res.ok) {
+        result.className = 'mt-4 p-4 rounded-xl bg-green-50 border border-green-200 text-green-800 text-sm font-medium'
+        result.textContent = '提交成功！我们的商务团队将在3个工作日内与您联系。'
+        form.reset()
+      } else {
+        throw new Error(typeof payload.error === 'string' ? payload.error : 'server error')
+      }
+    } catch (err) {
+      result.className = 'mt-4 p-4 rounded-xl bg-red-50 border border-red-200 text-red-800 text-sm'
+      result.textContent = err instanceof Error && err.message !== 'server error'
+        ? err.message
+        : '提交失败，请直接拨打电话 020-82036224 联系我们。'
+    } finally {
+      btn.disabled = false
+      btn.textContent = '提交咨询'
+    }
+  })
+</script>
