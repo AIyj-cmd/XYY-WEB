@@ -1,5 +1,48 @@
 ---
 import ServiceLanding from '@/layouts/ServiceLanding.astro'
+
+const WAREHOUSE_LIST = [
+  {
+    name: '广州黄埔主仓',
+    tag: '华南总部',
+    tagColor: 'bg-brand-orange text-white',
+    address: '广州市黄埔区果园一路2号',
+    area: '15,000 ㎡',
+    traffic: '紧邻广园快速 + 京港澳高速，10台3吨货梯',
+    coverage: '广州同城4小时达，广东全省次日达，全国主要城市次日–两日达',
+    bestFor: 'B2C 全渠道高频出库 / 退货质检中心 / 唯品会联动运营',
+  },
+  {
+    name: '广州番禺仓',
+    tag: '番禺节点',
+    tagColor: 'bg-navy-700 text-white',
+    address: '广州市番禺区石楼镇市莲路石楼段6号',
+    area: '3,000 ㎡',
+    traffic: '番禺电商配送核心区，紧邻南沙港区',
+    coverage: '广州南部极速配送，广东全省次日达',
+    bestFor: '快时尚高SKU品牌 / 广州南部品牌前置仓',
+  },
+  {
+    name: '东莞多仓',
+    tag: '珠三角节点',
+    tagColor: 'bg-navy-600 text-white',
+    address: '东莞常平镇 / 桥头镇 / 朗州区（三仓联动）',
+    area: '多仓联动',
+    traffic: '紧邻莞深高速，珠三角制造业集中区',
+    coverage: '珠三角次日达，广深港同日配',
+    bestFor: 'OEM/ODM 工厂直出 / 珠三角制造业品牌就近仓储',
+  },
+  {
+    name: '肇庆四会仓',
+    tag: '唯品会专仓',
+    tagColor: 'bg-green-600 text-white',
+    address: '肇庆市四会市唯品会物流园（园区内）',
+    area: '50,000 ㎡',
+    traffic: '位于唯品会物流园内，多家快递公司驻仓，12米超高仓',
+    coverage: '唯品会JIT/JITX园区内直发，华南大仓大促保障',
+    bestFor: '唯品会 JIT/JITX 运营 / 大促弹性产能 / 规模化仓储',
+  },
+]
 ---
 
 <ServiceLanding
@@ -51,4 +94,40 @@ import ServiceLanding from '@/layouts/ServiceLanding.astro'
       a: '广州仓采用按需计费模式：仓储费按实际占用面积/货位计算；操作费按入/出库件数计算；系统费0元（含平台接口对接）；退货质检和修复按服务量单独计费。没有最低月费要求，适合不同规模品牌。具体报价根据商品品类、SKU数量和预计吞吐量定制，建议联系广州本地商务团队。',
     },
   ]}
-/>
+>
+  <section slot="unique" class="py-14 bg-gray-50 border-b border-gray-100" aria-labelledby="warehouse-map-heading">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 id="warehouse-map-heading" class="text-xl font-black text-navy-800 mb-1 text-center">广州 · 东莞 · 肇庆仓点覆盖详情</h2>
+      <p class="text-xs text-gray-400 text-center mb-8">华南四大仓点联动，覆盖珠三角所有主要配送场景</p>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {WAREHOUSE_LIST.map(({ name, tag, tagColor, address, area, traffic, coverage, bestFor }) => (
+          <div class="bg-white rounded-xl border border-gray-200 p-5 flex flex-col gap-3">
+            <div>
+              <span class={`inline-block text-[10px] font-black px-2 py-0.5 rounded-full mb-2 ${tagColor}`}>{tag}</span>
+              <h3 class="font-black text-navy-800 text-base">{name}</h3>
+              <p class="text-xs text-gray-400 mt-0.5">{address}</p>
+            </div>
+            <div class="space-y-2 text-xs">
+              <div class="flex gap-2">
+                <span class="text-gray-400 shrink-0 w-12">面积</span>
+                <span class="font-bold text-navy-800">{area}</span>
+              </div>
+              <div class="flex gap-2">
+                <span class="text-gray-400 shrink-0 w-12">交通</span>
+                <span class="text-gray-600 leading-snug">{traffic}</span>
+              </div>
+              <div class="flex gap-2">
+                <span class="text-gray-400 shrink-0 w-12">时效</span>
+                <span class="text-gray-600 leading-snug">{coverage}</span>
+              </div>
+            </div>
+            <div class="pt-2 border-t border-gray-100">
+              <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">最适合</p>
+              <p class="text-xs text-navy-700 font-medium leading-snug">{bestFor}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+</ServiceLanding>

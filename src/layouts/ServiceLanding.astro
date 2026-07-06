@@ -118,6 +118,9 @@ const faqSchema = {
     </div>
   </div>
 
+  <!-- Unique module slot (each page injects its own differentiating section here) -->
+  <slot name="unique" />
+
   <!-- Main content -->
   <section class="py-16 lg:py-24 bg-white" aria-labelledby="lp-detail-heading">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

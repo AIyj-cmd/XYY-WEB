@@ -1,5 +1,36 @@
 ---
 import ServiceLanding from '@/layouts/ServiceLanding.astro'
+
+const CATEGORY_TABLE = [
+  {
+    cat: '女装 / 快时尚',
+    storage: '挂装区 + 叠装分区，连衣裙/风衣走挂装，T恤/卫衣走叠装',
+    inspect: '跳针、污损、色差、吊牌完整、尺码一致性',
+    packing: '防尘袋 / OPP袋，挂装出库配挂钩',
+    note: '高SKU 精细管理，换季清点，滞销品定期盘库',
+  },
+  {
+    cat: '男装 / 商务装',
+    storage: '折叠标准化存储，西装/衬衫配独立包装盒区',
+    inspect: '版型平整、缝线做工、纽扣/拉链完好',
+    packing: '包装纸 + 平铺折叠，高价位商品配硬盒',
+    note: '尺码颜色分区，批次管理，商务服装防压痕',
+  },
+  {
+    cat: '内衣 / 袜类',
+    storage: '小件密集型货架，单件独立格位',
+    inspect: '尺码精确（S/M/L不混淆）、包装完整、无异味',
+    packing: '独立封装/透明袋，混装组合需逐件核对',
+    note: '单件条码绑定，防混淆，私密品类专区存储',
+  },
+  {
+    cat: '运动服 / 鞋类',
+    storage: '运动服走挂装；鞋类独立鞋盒区，配防变形填充',
+    inspect: '功能标签合规、配件齐全，鞋类查大小脚/色差/开胶',
+    packing: '运动服挂装发货 + 填充纸，鞋盒原装保护',
+    note: '鞋类专项：大小脚检查 + 溢胶/开胶/脏污三检',
+  },
+]
 ---
 
 <ServiceLanding
@@ -51,4 +82,35 @@ import ServiceLanding from '@/layouts/ServiceLanding.astro'
       a: '华南总部：广州黄埔果园一路2号+广州番禺石楼镇+东莞常平/桥头/朗州（三仓）+肇庆四会唯品会物流园；华东：上海青浦汇金路889号；华中：湖北监利服装产业园。华南仓区合计超30万㎡。',
     },
   ]}
-/>
+>
+  <section slot="unique" class="py-14 bg-gray-50 border-b border-gray-100" aria-labelledby="category-table-heading">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 id="category-table-heading" class="text-xl font-black text-navy-800 mb-1 text-center">各品类仓储服务要点</h2>
+      <p class="text-xs text-gray-400 text-center mb-8">女装/男装/内衣/运动服 — 不同品类的存储、质检与包装规范</p>
+      <div class="overflow-x-auto rounded-xl border border-gray-200">
+        <table class="w-full text-sm text-left">
+          <thead>
+            <tr class="bg-navy-800 text-white">
+              <th class="px-5 py-3.5 font-bold text-xs tracking-wider whitespace-nowrap">品类</th>
+              <th class="px-5 py-3.5 font-bold text-xs tracking-wider whitespace-nowrap">存储方式</th>
+              <th class="px-5 py-3.5 font-bold text-xs tracking-wider whitespace-nowrap">核心质检点</th>
+              <th class="px-5 py-3.5 font-bold text-xs tracking-wider whitespace-nowrap">包装规范</th>
+              <th class="px-5 py-3.5 font-bold text-xs tracking-wider whitespace-nowrap">特殊注意</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100 bg-white">
+            {CATEGORY_TABLE.map(({ cat, storage, inspect, packing, note }) => (
+              <tr class="hover:bg-orange-50/30 transition-colors">
+                <td class="px-5 py-4 font-bold text-navy-800 whitespace-nowrap align-top">{cat}</td>
+                <td class="px-5 py-4 text-gray-600 align-top text-xs leading-relaxed">{storage}</td>
+                <td class="px-5 py-4 text-gray-600 align-top text-xs leading-relaxed">{inspect}</td>
+                <td class="px-5 py-4 text-gray-600 align-top text-xs leading-relaxed">{packing}</td>
+                <td class="px-5 py-4 text-gray-500 align-top text-xs leading-relaxed">{note}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+</ServiceLanding>

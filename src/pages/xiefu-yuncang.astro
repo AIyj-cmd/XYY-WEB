@@ -1,5 +1,15 @@
 ---
 import ServiceLanding from '@/layouts/ServiceLanding.astro'
+
+const FLOW_STEPS = [
+  { num: '01', title: '收货入库', desc: '验收商品\n核对数量·SKU·规格' },
+  { num: '02', title: '入库质检', desc: '新货全检\n问题及时反馈品牌方' },
+  { num: '03', title: 'RFID上架', desc: '绑码建档\n智能定位存储' },
+  { num: '04', title: '订单下发', desc: '多平台实时同步\n波次智能拆分' },
+  { num: '05', title: '拣货复核', desc: '电子标签引导\nRFID防错复核' },
+  { num: '06', title: '质检打包', desc: '称重验货\n按标准包材打包' },
+  { num: '07', title: '发货出库', desc: '18:00截单\n24:00前全部出库' },
+]
 ---
 
 <ServiceLanding
@@ -51,4 +61,34 @@ import ServiceLanding from '@/layouts/ServiceLanding.astro'
       a: '可以。新亦源支持不同规模品牌入驻，没有强制最低库存量要求，费用按实际存储面积/操作量计算，系统接入零费用。小品牌可先以单仓试运营，扩规模后再接入三级仓网。',
     },
   ]}
-/>
+>
+  <section slot="unique" class="py-14 bg-white border-b border-gray-100" aria-labelledby="flow-heading">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 id="flow-heading" class="text-xl font-black text-navy-800 mb-1 text-center">鞋服云仓标准服务流程</h2>
+      <p class="text-xs text-gray-400 text-center mb-10">从货物到仓到发货出库，每步标准化操作，全程1080P监控可追溯</p>
+      <div class="overflow-x-auto -mx-4 px-4 pb-2">
+        <div class="flex items-start min-w-max">
+          {FLOW_STEPS.map(({ num, title, desc }, i) => (
+            <div class="flex items-start">
+              <div class="flex flex-col items-center text-center w-32 px-1">
+                <div class="w-11 h-11 rounded-2xl bg-brand-orange/10 border border-brand-orange/20 flex items-center justify-center mb-3 flex-shrink-0">
+                  <span class="text-[11px] font-black text-brand-orange tracking-widest">{num}</span>
+                </div>
+                <p class="text-sm font-bold text-navy-800 mb-1">{title}</p>
+                <p class="text-xs text-gray-400 leading-snug whitespace-pre-line">{desc}</p>
+              </div>
+              {i < FLOW_STEPS.length - 1 && (
+                <div class="flex-shrink-0 flex items-start pt-4 text-brand-orange/30 text-xl font-light px-1">›</div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+      <div class="mt-8 flex items-center justify-center gap-2">
+        <div class="h-px w-8 bg-brand-orange/20"></div>
+        <p class="text-xs text-gray-400">退货逆向：出库后退货自动流转质检中心，48小时内完成四级评定并二次上架，形成完整闭环</p>
+        <div class="h-px w-8 bg-brand-orange/20"></div>
+      </div>
+    </div>
+  </section>
+</ServiceLanding>

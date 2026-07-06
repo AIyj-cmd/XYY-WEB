@@ -1,5 +1,21 @@
 ---
 import ServiceLanding from '@/layouts/ServiceLanding.astro'
+
+const FORWARD_STEPS = [
+  { num: '01', title: '国内工厂 / 品牌方', desc: '备货生产完成' },
+  { num: '02', title: '广州华南仓', desc: '新货质检\nAQL 抽检验收' },
+  { num: '03', title: '换标 / 换包装', desc: '多语言洗水唛\n合规包装处理' },
+  { num: '04', title: '跨境物流发出', desc: 'EMS / 专线\n出境报关' },
+  { num: '05', title: '海外市场', desc: '目标国消费者\n或海外仓收货' },
+]
+
+const REVERSE_STEPS = [
+  { num: '01', title: '海外退货', desc: '消费者退回\n或平台统一退回' },
+  { num: '02', title: '国际物流回流', desc: '跨境专线揽收\n运抵广州' },
+  { num: '03', title: '广州仓拆包入库', desc: '按订单核对\nWMS 录入' },
+  { num: '04', title: '国际标准质检', desc: 'AQL 评级\n输出英文报告' },
+  { num: '05', title: '处置上架', desc: '良品上架\nB- 修复 / C 通知品牌' },
+]
 ---
 
 <ServiceLanding
@@ -51,4 +67,65 @@ import ServiceLanding from '@/layouts/ServiceLanding.astro'
       a: 'Urbanic（跨境快时尚，面向印度/英国市场）是新亦源跨境服务标杆案例，新亦源为其提供B2B+B2C一体化仓储，覆盖质检、包装、上架、库存管理及发货打包全流程，年处理量：发货1800-2300万件/年，质检800-1400万件/年，包装1500-2000万件/年。',
     },
   ]}
-/>
+>
+  <section slot="unique" class="py-14 bg-gray-50 border-b border-gray-100" aria-labelledby="chain-heading">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 id="chain-heading" class="text-xl font-black text-navy-800 mb-1 text-center">跨境全链路服务路径</h2>
+      <p class="text-xs text-gray-400 text-center mb-10">正向发货 + 退货逆向，广州华南仓为核心枢纽</p>
+      <div class="grid lg:grid-cols-2 gap-6">
+        <!-- 正向发货 -->
+        <div class="bg-white rounded-xl border border-gray-200 p-6">
+          <div class="flex items-center gap-2 mb-5">
+            <div class="w-1.5 h-5 rounded-full bg-brand-orange"></div>
+            <h3 class="font-black text-navy-800">正向发货链路</h3>
+            <span class="ml-auto text-xs text-gray-400">国内 → 海外</span>
+          </div>
+          <div class="space-y-3">
+            {FORWARD_STEPS.map(({ num, title, desc }, i) => (
+              <div class="flex items-start gap-3">
+                <div class="flex flex-col items-center flex-shrink-0">
+                  <div class="w-7 h-7 rounded-full bg-brand-orange/10 border border-brand-orange/20 flex items-center justify-center flex-shrink-0">
+                    <span class="text-[10px] font-black text-brand-orange">{num}</span>
+                  </div>
+                  {i < FORWARD_STEPS.length - 1 && (
+                    <div class="w-px h-4 bg-brand-orange/20 mt-1"></div>
+                  )}
+                </div>
+                <div class="pb-1">
+                  <p class="text-sm font-bold text-navy-800">{title}</p>
+                  <p class="text-xs text-gray-400 leading-snug whitespace-pre-line">{desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+        <!-- 逆向退货 -->
+        <div class="bg-white rounded-xl border border-gray-200 p-6">
+          <div class="flex items-center gap-2 mb-5">
+            <div class="w-1.5 h-5 rounded-full bg-navy-600"></div>
+            <h3 class="font-black text-navy-800">退货逆向链路</h3>
+            <span class="ml-auto text-xs text-gray-400">海外 → 国内</span>
+          </div>
+          <div class="space-y-3">
+            {REVERSE_STEPS.map(({ num, title, desc }, i) => (
+              <div class="flex items-start gap-3">
+                <div class="flex flex-col items-center flex-shrink-0">
+                  <div class="w-7 h-7 rounded-full bg-navy-100 border border-navy-200 flex items-center justify-center flex-shrink-0">
+                    <span class="text-[10px] font-black text-navy-600">{num}</span>
+                  </div>
+                  {i < REVERSE_STEPS.length - 1 && (
+                    <div class="w-px h-4 bg-navy-200 mt-1"></div>
+                  )}
+                </div>
+                <div class="pb-1">
+                  <p class="text-sm font-bold text-navy-800">{title}</p>
+                  <p class="text-xs text-gray-400 leading-snug whitespace-pre-line">{desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</ServiceLanding>

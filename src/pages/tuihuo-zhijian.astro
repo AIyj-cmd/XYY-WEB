@@ -1,5 +1,48 @@
 ---
 import ServiceLanding from '@/layouts/ServiceLanding.astro'
+
+const GRADE_TABLE = [
+  {
+    grade: 'A 级',
+    label: '良品',
+    color: 'bg-green-50 text-green-700 border-green-200',
+    dotColor: 'bg-green-500',
+    def: '全新完好，符合原价上架标准，无任何可见瑕疵',
+    cases: '包装完好 · 无折痕 · 吊牌齐全 · 无污损',
+    action: '直接上架，可正价销售',
+    sla: '即时上架',
+  },
+  {
+    grade: 'B+ 级',
+    label: '轻微可售',
+    color: 'bg-yellow-50 text-yellow-700 border-yellow-200',
+    dotColor: 'bg-yellow-400',
+    def: '轻微折痕或展示级瑕疵，整理后可上架销售，不影响实际使用',
+    cases: '轻微折痕 · 包装轻损 · 轻微皱褶',
+    action: '整烫 / 整理后上架，可正价或小折扣销售',
+    sla: '4–8 小时',
+  },
+  {
+    grade: 'B- 级',
+    label: '修复可售',
+    color: 'bg-orange-50 text-orange-700 border-orange-200',
+    dotColor: 'bg-brand-orange',
+    def: '有明显瑕疵，经专业修复后可二次上架，修复成功率 90%+',
+    cases: '开线 / 缝补 · 油污清洗 · 配件缺失 · 印绣脱落',
+    action: '流转修复车间，修复后二次质检通过再上架',
+    sla: '24–48 小时',
+  },
+  {
+    grade: 'C 级',
+    label: '报废处理',
+    color: 'bg-red-50 text-red-700 border-red-200',
+    dotColor: 'bg-red-500',
+    def: '严重损坏，无修复价值，不具备销售条件',
+    cases: '破损严重 · 结构性损坏 · 严重污损 · 异味不可去除',
+    action: '通知品牌方决策：退供应商 / 销毁 / 捐赠',
+    sla: '48 小时内通知',
+  },
+]
 ---
 
 <ServiceLanding
@@ -51,4 +94,38 @@ import ServiceLanding from '@/layouts/ServiceLanding.astro'
       a: '可以。新亦源同时提供新货质检服务：入库全检/AQL抽检、洗水测试、色牢度检验、缩率测试、对样比对等。全年新货质检量1.17亿件，与退货质检1.53亿件共用同一QC认证团队和标准体系。',
     },
   ]}
-/>
+>
+  <section slot="unique" class="py-14 bg-white border-b border-gray-100" aria-labelledby="grade-table-heading">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 id="grade-table-heading" class="text-xl font-black text-navy-800 mb-1 text-center">A / B+ / B- / C 四级质检处置规则</h2>
+      <p class="text-xs text-gray-400 text-center mb-8">每件退货按标准分级，对应不同处置方案，全程系统记录可追溯</p>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {GRADE_TABLE.map(({ grade, label, color, dotColor, def, cases, action, sla }) => (
+          <div class={`rounded-xl border p-5 ${color}`}>
+            <div class="flex items-center gap-2 mb-3">
+              <div class={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${dotColor}`}></div>
+              <span class="font-black text-base">{grade}</span>
+              <span class="text-xs font-semibold opacity-70">{label}</span>
+            </div>
+            <p class="text-xs leading-relaxed mb-3 opacity-80">{def}</p>
+            <div class="space-y-2 text-xs">
+              <div>
+                <span class="font-bold opacity-60 tracking-wider text-[10px] uppercase block mb-0.5">典型情况</span>
+                <p class="opacity-75 leading-snug">{cases}</p>
+              </div>
+              <div>
+                <span class="font-bold opacity-60 tracking-wider text-[10px] uppercase block mb-0.5">处置方案</span>
+                <p class="font-semibold leading-snug">{action}</p>
+              </div>
+              <div class="flex items-center gap-1.5 pt-1 border-t border-current/10">
+                <span class="font-bold opacity-50 text-[10px] uppercase">时效目标</span>
+                <span class="font-bold">{sla}</span>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+      <p class="text-xs text-gray-400 text-center mt-5">品牌方可按需自定义各级处置规则，新亦源按约定执行并输出质检报告</p>
+    </div>
+  </section>
+</ServiceLanding>

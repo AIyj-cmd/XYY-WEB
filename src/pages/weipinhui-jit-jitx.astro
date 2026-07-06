@@ -1,5 +1,45 @@
 ---
 import ServiceLanding from '@/layouts/ServiceLanding.astro'
+
+const COMPARE_ROWS = [
+  {
+    item: '模式定位',
+    jit: '按需供货，活动前备货到仓，活动开始后按单快速发货，降低库存积压',
+    jitx: 'JIT 升级版，极速供应链，适合爆款和高频复购商品，响应要求更严格',
+  },
+  {
+    item: '发货时效要求',
+    jit: '平日 48 小时内，活动期间 24 小时内',
+    jitx: '平日 24 小时内，活动期间 12 小时内',
+  },
+  {
+    item: '库存同步要求',
+    jit: '实时库存同步，订单下发后自动波次拣货',
+    jitx: '实时同步 + 提前预警机制，库存低于阈值自动提醒',
+  },
+  {
+    item: '系统对接要求',
+    jit: '标准奇门 / EDI 接口，WMS 与唯品会平台打通',
+    jitx: '同 JIT，另需满足 JITX 专属接口协议与数据反馈频率',
+  },
+  {
+    item: '主要扣分风险点',
+    jit: '延时发货 · 短发漏发 · 包装质量不达标',
+    jitx: '时间窗口违规 · 数量精确性误差 · 系统响应超时 · 标签错误',
+  },
+  {
+    item: '新亦源应对方案',
+    jit: '18:00 截单当日 24:00 全出 · 99.99% 准确率 · SLA 合同保障',
+    jitx: '肇庆唯品会物流园内直发 · 极速产能响应 · 大促专项排班',
+  },
+]
+
+const RISK_ITEMS = [
+  { risk: '延时发货', level: '高', tip: '仓配服务商未在活动时效内完成出库，直接触发唯品会平台扣分' },
+  { risk: '短发 / 漏发', level: '高', tip: '实际出库数量与订单不符，影响品牌评级和平台信任分' },
+  { risk: '包装不合规', level: '中', tip: '唯品会对包装规格、面单格式有严格要求，不合规将被退件' },
+  { risk: '系统响应超时', level: '中', tip: 'JITX 对 WMS 与平台系统的响应频率有要求，延迟将触发预警' },
+]
 ---
 
 <ServiceLanding
@@ -51,4 +91,54 @@ import ServiceLanding from '@/layouts/ServiceLanding.astro'
       a: '通常需要：①商品已在唯品会平台上线并开通JIT/JITX资格；②与新亦源签署仓配服务协议（含SLA条款）；③完成系统对接测试（通常1-2周）；④首批货物入库验收。新亦源提供全程对接支持，商务团队协助办理平台对接手续。',
     },
   ]}
-/>
+>
+  <section slot="unique" class="py-14 bg-white border-b border-gray-100" aria-labelledby="jit-compare-heading">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 id="jit-compare-heading" class="text-xl font-black text-navy-800 mb-1 text-center">JIT vs JITX — 要求对比与扣分风险</h2>
+      <p class="text-xs text-gray-400 text-center mb-8">了解两种模式的核心差异，规避仓配侧常见扣分风险</p>
+
+      <!-- 对比表 -->
+      <div class="overflow-x-auto rounded-xl border border-gray-200 mb-8">
+        <table class="w-full text-sm text-left">
+          <thead>
+            <tr class="bg-navy-800 text-white">
+              <th class="px-5 py-3.5 font-bold text-xs tracking-wider w-36">对比项</th>
+              <th class="px-5 py-3.5 font-bold text-xs tracking-wider">
+                <span class="inline-block px-2 py-0.5 rounded bg-brand-orange/20 text-brand-orange mr-1">JIT</span>
+                按需供货
+              </th>
+              <th class="px-5 py-3.5 font-bold text-xs tracking-wider">
+                <span class="inline-block px-2 py-0.5 rounded bg-white/20 mr-1">JITX</span>
+                极速供应链
+              </th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100 bg-white">
+            {COMPARE_ROWS.map(({ item, jit, jitx }) => (
+              <tr class="hover:bg-orange-50/20 transition-colors">
+                <td class="px-5 py-4 font-bold text-navy-700 text-xs align-top whitespace-nowrap">{item}</td>
+                <td class="px-5 py-4 text-gray-600 text-xs leading-relaxed align-top">{jit}</td>
+                <td class="px-5 py-4 text-gray-600 text-xs leading-relaxed align-top">{jitx}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 扣分风险提示 -->
+      <h3 class="text-sm font-bold text-navy-800 mb-3">仓配侧常见扣分风险提示</h3>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        {RISK_ITEMS.map(({ risk, level, tip }) => (
+          <div class={`rounded-lg border p-4 ${level === '高' ? 'border-red-200 bg-red-50' : 'border-yellow-200 bg-yellow-50'}`}>
+            <div class="flex items-center gap-2 mb-2">
+              <span class={`text-[10px] font-black px-1.5 py-0.5 rounded ${level === '高' ? 'bg-red-500 text-white' : 'bg-yellow-400 text-white'}`}>{level}风险</span>
+              <span class="text-sm font-bold text-navy-800">{risk}</span>
+            </div>
+            <p class="text-xs text-gray-500 leading-snug">{tip}</p>
+          </div>
+        ))}
+      </div>
+      <p class="text-xs text-gray-400 mt-4">新亦源历史合作期间未出现因仓配时效问题导致的唯品会平台降分记录</p>
+    </div>
+  </section>
+</ServiceLanding>
