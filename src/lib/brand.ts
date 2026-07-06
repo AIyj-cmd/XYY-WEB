@@ -217,7 +217,7 @@ export const CASE_DETAILS = {
     fullName: 'Urban Revivo（UR）',
     category: '头部快时尚女装',
     image:
-      'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1400&q=80&auto=format&fit=crop',
+      '/w-flower.webp',
     accent: '#2563EB',
     description:
       'UR 是中国头部快时尚女装品牌。在天猫超品日期间，UR 创下服饰类目 GMV 新纪录，官方旗舰店同比增长 116%；618 大促斩获天猫、抖音、京东三大平台女装榜首。全球门店超 400 家，覆盖新加坡、泰国、菲律宾等海外市场。',
@@ -237,7 +237,7 @@ export const CASE_DETAILS = {
     fullName: '玛克茜妮（MAXRIENY）',
     category: '高端设计师女装',
     image:
-      'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=1400&q=80&auto=format&fit=crop',
+      '/w-apparel.webp',
     accent: '#7C3AED',
     description:
       '深圳玛克茜妮（MAXRIENY）聚焦 28–38 岁独立都市高知女性，主打"精致职场"与"社交聚会"场景。以欧洲中世纪宫廷奇幻美学为核心，融合巴洛克艺术与街拍风格，产品均价春夏 800–3500 元、秋冬 1000–4500 元。曾获《深圳服装创新品牌奖》《原创设计师奖》，旗下涵盖高级成衣系列 SARAWONG、Lifestyle 系列及家居产品线 HOME。',
@@ -257,7 +257,7 @@ export const CASE_DETAILS = {
     fullName: '幸棉',
     category: '内衣基础品类',
     image:
-      'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=1400&q=80&auto=format&fit=crop',
+      '/w-returns.webp',
     accent: '#0D9488',
     description:
       '幸棉是国内内衣基础品类的代表性品牌。新亦源为其提供从多渠道订单聚合、运输平台连通，到新货退货质检、达播寄样、订单全程跟踪及次品分类返厂的全链路一体化服务，实现电商仓配与逆向物流的高效统一管理。',
@@ -276,7 +276,7 @@ export const CASE_DETAILS = {
     fullName: 'Urbanic（跨境快时尚）',
     category: '跨境快时尚',
     image:
-      'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=1400&q=80&auto=format&fit=crop',
+      '/w-fulfill.webp',
     accent: '#D97706',
     description:
       'Urbanic 是面向印度、英国等海外市场的跨境快时尚品牌，主营全品类女装。新亦源为其提供 B2B+B2C 一体化仓储服务，覆盖质检、包装、上架、库存管理及发货打包全流程，年处理量达千万件级别。',
