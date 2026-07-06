@@ -93,19 +93,19 @@ export const SERVICES = [
 
 export const DIGITAL_PRODUCTS = [
   {
-    id: 'logistics-cloud-digital',
-    tag: '数字供应链平台',
-    name: '物流云数字供应链',
-    subtitle: '供应链全链路数字化中台',
+    id: 'yundao-platform',
+    tag: '商圈物流O2O',
+    name: '运到智能寄件平台',
+    subtitle: '商圈零售门店一站式智能寄件',
     description:
-      '自研供应链数字中台，聚合多仓、多平台、多承运商数据，实现订单履约、库存能见度、时效预警与数据洞察的一体化管控，帮助中大型品牌消除信息孤岛、提升整体响应效率。',
+      '新亦源自研商圈物流O2O平台，聚合顺丰快运、京东物流、中通、圆通、韵达、德邦、申通、EMS、跨越速递、货拉拉、闪送等11家主流承运商，智能比价、智慧分配订单，为连锁门店、电商平台及企业机构提供全国任意区域运力服务，寄件费用节省高达50%。',
     features: [
-      '多仓库存实时同步，全渠道一盘货视图',
-      '订单履约看板，发货超时自动预警',
-      '数据洞察报表，辅助采购与补货决策',
-      'API开放接口，对接主流ERP/WMS/OMS',
+      '对接11家主流承运商，系统智能比价智能派单',
+      '覆盖全国6000+区县，门店开在哪都可寄取',
+      '超低折扣，寄件费用最高节省50%',
+      '专属客服+快速理赔，智能报表+数据保密',
     ],
-    href: '/product#logistics-cloud-digital',
+    href: '/product#yundao-platform',
   },
   {
     id: 'basic-supply',

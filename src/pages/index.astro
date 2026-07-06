@@ -10,7 +10,7 @@ const IMGS = {
   svc0:  '/w-ops.webp',
   svc1:  '/w-inspect.webp',
   svc2:  '/w-fulfill.webp',
-  prod0: '/w-scan.webp',
+  prod0: '/w-yundao.webp',
   prod1: '/w-apparel.webp',
 }
 
@@ -187,43 +187,41 @@ const faqSchema = {
 ))}
 
 <!-- ④  DIGITAL PRODUCTS -->
-<section id="s-products" class="s-products" aria-labelledby="products-heading">
-  <div class="products-inner">
-    <div class="products-head">
-      <p class="section-tag">平台产品</p>
-      <h2 id="products-heading" class="section-title">数字化赋能，覆盖供应链全环节</h2>
-      <p class="section-sub">从数字供应链中台到基础品类直供，为品牌提供一站式增值服务</p>
+{DIGITAL_PRODUCTS.map((p, i) => (
+  <section
+    class={`s-service ${(SERVICES.length + i) % 2 === 1 ? 'reverse' : ''}`}
+    id={`dp-${p.id}`}
+    aria-labelledby={`dp-title-${i}`}
+  >
+    <div class="svc-media">
+      <img
+        src={IMGS[`prod${i}` as keyof typeof IMGS]}
+        alt={p.name}
+        class={`svc-img${p.id === 'yundao-platform' ? ' svc-img--contain' : ''}`}
+        loading="lazy"
+      />
+      <div class="svc-num-badge">0{SERVICES.length + i + 1}</div>
     </div>
-    <div class="products-grid">
-      {DIGITAL_PRODUCTS.map((p, i) => (
-        <div class="prod-card" data-i={i}>
-          <div class="prod-media">
-            <img src={IMGS[`prod${i}` as keyof typeof IMGS]} alt={p.name} class="prod-img" loading="lazy" />
-            <div class="prod-overlay"></div>
-            <span class="prod-tag">{p.tag}</span>
-          </div>
-          <div class="prod-body">
-            <h3 class="prod-name">{p.name}</h3>
-            <p class="prod-sub">{p.subtitle}</p>
-            <p class="prod-desc">{p.description}</p>
-            <ul class="prod-features">
-              {p.features.map((f) => (
-                <li>
-                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-                    <circle cx="7" cy="7" r="7" fill="#2563EB" opacity="0.12"/>
-                    <path d="M4.5 7l1.75 1.75L9.5 5.25" stroke="#2563EB" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                  {f}
-                </li>
-              ))}
-            </ul>
-            <a href={p.href} class="prod-link">了解详情 →</a>
-          </div>
-        </div>
-      ))}
+    <div class="svc-body">
+      <p class="section-tag">{p.tag}</p>
+      <h2 id={`dp-title-${i}`} class="svc-title">{p.name}</h2>
+      <p class="svc-sub">{p.subtitle}</p>
+      <p class="svc-desc">{p.description}</p>
+      <ul class="svc-features">
+        {p.features.slice(0, 4).map((f) => (
+          <li>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <circle cx="8" cy="8" r="8" fill="#2563EB" opacity="0.12"/>
+              <path d="M5 8l2 2 4-4" stroke="#2563EB" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            {f}
+          </li>
+        ))}
+      </ul>
+      <a href={p.href} class="svc-link">查看详情 →</a>
     </div>
-  </div>
-</section>
+  </section>
+))}
 
 <!-- ⑤  CASES -->
 <section id="s-cases" class="s-cases" aria-labelledby="cases-heading">
@@ -670,6 +668,9 @@ const faqSchema = {
   object-position: center;
   transform: scale(1.05);
 }
+/* 运到图（白底）contain 显示 */
+#dp-yundao-platform .svc-media { background: #fff; }
+.svc-img--contain { object-fit: contain !important; transform: none !important; padding: 1.5rem; }
 .svc-num-badge {
   position: absolute;
   top: 2rem;

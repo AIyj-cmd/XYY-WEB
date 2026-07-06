@@ -33,14 +33,14 @@ const NAV_ITEMS = [
   { id: 'cloud-warehouse',       label: '鞋服云仓',         en: 'Cloud Warehouse' },
   { id: 'quality-inspection',    label: '后整质检修复',      en: 'QC & Repair' },
   { id: 'logistics-cloud',       label: '物流云',            en: 'Logistics Cloud' },
-  { id: 'logistics-cloud-digital', label: '数字供应链',      en: 'Digital Supply Chain' },
+  { id: 'yundao-platform',        label: '运到寄件',          en: 'YunDao Express' },
   { id: 'basic-supply',          label: '直供平台',          en: 'Direct Supply' },
 ]
 ---
 
 <Layout
-  title="产品服务 - 鞋服云仓 | 后整质检修复 | 物流云 | 数字供应链 | 直供平台 | 新亦源供应链"
-  description="新亦源供应链五大产品：鞋服云仓、后整质检修复、物流云、物流云数字供应链中台、服装基础品类直供平台，为鞋服品牌提供全链路一站式服务。"
+  title="产品服务 - 鞋服云仓 | 后整质检修复 | 物流云 | 运到寄件平台 | 直供平台 | 新亦源供应链"
+  description="新亦源供应链五大产品：鞋服云仓、后整质检修复、物流云、运到智能寄件平台、服装基础品类直供平台，为鞋服品牌提供全链路一站式服务。"
   jsonLd={[breadcrumbSchema, ...serviceSchemas]}
 >
 
@@ -260,7 +260,7 @@ const NAV_ITEMS = [
               { stat: '10+家', label: '承运商聚合', sub: '顺丰中通韵达等主流快递' },
               { stat: '实时', label: '轨迹可视化', sub: '全链路可追溯' },
               { stat: '主动', label: '发货超时预警', sub: '与快递系统实时对接' },
-              { stat: '0元', label: '系统接入费', sub: '按量付费，无门槛' },
+              { stat: '低门槛', label: '系统接入', sub: '按量计费，灵活接入' },
             ].map(({ stat, label, sub }) => (
               <div class="flex items-center py-4 gap-4">
                 <span class="w-32 flex-shrink-0 text-xl font-black text-brand-orange">{stat}</span>
@@ -331,7 +331,7 @@ const NAV_ITEMS = [
             {[
               { stat: '实时', label: '多仓库存同步', sub: '全渠道一盘货视图' },
               { stat: '6大', label: '系统模块', sub: 'WMS/LMS/OMS全覆盖' },
-              { stat: '0元', label: '系统使用费', sub: '按需付费，无门槛' },
+              { stat: '按需', label: '付费接入', sub: '灵活定价，无高额前期投入' },
               { stat: '98%+', label: '接口对接成功率', sub: '主流ERP/OMS无缝接入' },
             ].map(({ stat, label, sub }) => (
               <div class="flex items-center py-4 gap-4">
@@ -347,7 +347,7 @@ const NAV_ITEMS = [
           <p class="text-[11px] font-bold text-gray-400 tracking-[0.25em] uppercase mb-4">核心功能模块</p>
           <div class="divide-y divide-gray-200">
             {[
-              { title: '全渠道库存中台', desc: '聚合天猫、京东、拼多多、唯品会等多平台库存，实时同步，多仓视图统一管控，库存超卖率趋近于零。' },
+              { title: '全渠道库存中台', desc: '聚合天猫、京东、拼多多、唯品会等多平台库存，实时同步，多仓视图统一管控，有效降低库存超卖风险。' },
               { title: '订单履约看板', desc: '全平台订单集中处理，发货进度实时可视，超时订单自动预警推送，履约过程全透明。' },
               { title: '智能路由决策', desc: '根据收件地址、重量、时效要求自动匹配性价比最优承运商，降低物流成本8%-15%。' },
               { title: '数据洞察报表', desc: '库存周转率、品类销量趋势、退换货分析、承运商时效对比，辅助采购与补货决策。' },
@@ -371,6 +371,73 @@ const NAV_ITEMS = [
   <div class="h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" aria-hidden="true"></div>
 
   <!-- ⑤ 直供平台 -->
+  <!-- 运到智能寄件平台 -->
+  <section id="yundao-platform" class="py-16 lg:py-24 bg-gray-50 scroll-mt-32" aria-labelledby="yundao-heading">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <div class="mb-6">
+        <span class="text-[11px] font-bold text-brand-orange tracking-[0.35em] uppercase">产品四 · 商圈物流O2O</span>
+        <h2 id="yundao-heading" class="text-3xl lg:text-4xl font-black text-navy-800 mt-2 mb-2">运到智能寄件平台</h2>
+        <p class="text-brand-orange font-semibold">商圈零售门店一站式智能寄件</p>
+      </div>
+      <div class="w-full rounded-2xl overflow-hidden mb-10 bg-white flex items-center justify-center p-6">
+        <img
+          src="/w-yundao.webp"
+          alt="运到智能寄件平台 — 新亦源商圈物流O2O"
+          class="max-w-2xl w-full h-auto object-contain"
+          loading="lazy"
+        />
+      </div>
+
+      <div class="lg:grid lg:grid-cols-2 lg:gap-20 items-start">
+        <div>
+          <p class="text-gray-600 leading-relaxed mb-8">
+            新亦源自研商圈物流O2O平台"运到"，秉承共赢、公平开放的发展理念，通过链接围绕国内快递、快运的运输资源网络，
+            用信息驱动、数据链接，可以智能比价、智慧分配订单，为连锁门店、电商平台及企业机构提供全国、全网络的运力服务。
+            目前已对接顺丰快运、京东物流、韵达、德邦快运、圆通速递、跨越速递、申通快递、EMS、中通快递、货拉拉、闪送等11家主流承运商。
+          </p>
+
+          <div class="border-t border-gray-100 divide-y divide-gray-100 mb-8">
+            {[
+              { stat: '11家', label: '主流承运商聚合', sub: '智能比价一键切换' },
+              { stat: '50%', label: '寄件费用最高节省', sub: '超低折扣直出' },
+              { stat: '全国', label: '6000+区县覆盖', sub: '门店开在哪都可寄取' },
+              { stat: '实时', label: '物流轨迹可视化', sub: '在线客服工单流' },
+            ].map(({ stat, label, sub }) => (
+              <div class="flex items-center py-4 gap-4">
+                <span class="w-32 flex-shrink-0 text-xl font-black text-brand-orange">{stat}</span>
+                <span class="flex-1 text-sm font-semibold text-navy-800">{label}</span>
+                <span class="text-xs text-gray-400">{sub}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <p class="text-[11px] font-bold text-gray-400 tracking-[0.25em] uppercase mb-4">平台优势</p>
+          <div class="divide-y divide-gray-100">
+            {[
+              { title: '超低折扣寄件', desc: '与主流承运商深度合作，提供市场最低折扣价格，寄件费用相比散单最高节省50%，有效降低门店物流成本。' },
+              { title: '智能比价派单', desc: '系统根据货物重量、目的地、时效要求自动比较各家承运商价格与时效，推荐最优方案，真正做到省钱又省心。' },
+              { title: '全国任意寄取', desc: '覆盖全国6000+区县及服务区域，无论连锁门店开在哪里，均可就近寄件或上门取件，零盲区覆盖。' },
+              { title: '聚合物流管理', desc: '统一面板管理多家承运商订单，实时轨迹可视化，支持一键拦截、转寄，异常件在线客服工单全程跟进。' },
+              { title: '快速理赔保障', desc: '与承运商签署服务协议，丢件破损快速理赔，专属客服介入跟进，从报案到赔付全程代办，省去繁琐流程。' },
+              { title: '智能报表+数据保密', desc: '提供寄件数量、费用趋势、承运商对比等多维度智能报表，助力经营决策。所有数据加密存储，严格保密。' },
+            ].map(({ title, desc }) => (
+              <div class="py-4 flex gap-4 group hover:bg-orange-50/40 -mx-3 px-3 transition-colors">
+                <div class="w-1 flex-shrink-0 rounded-full bg-brand-orange/30 group-hover:bg-brand-orange transition-colors self-stretch"></div>
+                <div>
+                  <h4 class="text-sm font-bold text-navy-800 mb-1">{title}</h4>
+                  <p class="text-sm text-gray-500 leading-relaxed">{desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section id="basic-supply" class="py-16 lg:py-24 bg-white scroll-mt-32" aria-labelledby="basic-supply-heading">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
@@ -398,7 +465,7 @@ const NAV_ITEMS = [
 
           <div class="border-t border-gray-100 divide-y divide-gray-100 mb-8">
             {[
-              { stat: '小批量', label: '起订门槛', sub: '无最低MOQ限制' },
+              { stat: '小批量', label: '起订门槛', sub: '具体MOQ按品类与工艺确认' },
               { stat: '7天', label: '快速翻单周期', sub: '热销款极速补货' },
               { stat: '98%+', label: '货期履约率', sub: '违约赔付保障' },
               { stat: '20%+', label: '采购成本降幅', sub: '对比传统渠道' },
