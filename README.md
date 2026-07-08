@@ -31,8 +31,8 @@ src/
   components/          Header / Footer
   layouts/Layout.astro 全局 SEO、JSON-LD、字体、浮动联系按钮
   lib/site-config.ts   站点 URL 单一来源（读取 PUBLIC_SITE_URL 环境变量）
-  lib/brand.ts         品牌和静态业务数据
-  lib/directus.ts      Directus SDK 封装与公开资源 URL helper
+  lib/brand.ts         品牌常量、ABOUT_STATS、CASE_DETAILS（首页案例模态框富文本）
+  lib/directus.ts      Directus SDK 封装、60s 进程内缓存、公开资源 URL helper
   lib/sanitize.ts      CMS 富文本白名单过滤
   pages/               Astro 页面与 /api/contact
 scripts/
@@ -67,6 +67,21 @@ bash scripts/deploy.sh
 `DEPLOY_HOST` 为必填项，未设置时脚本直接退出报错。
 
 部署脚本会执行 `npm run verify`，上传 `dist`、`package*.json`、`server.mjs`、`ecosystem.config.cjs` 和 `.env.production`，远端执行 `npm install --omit=dev` 后重载 `xyy-web`。
+
+## 数据链路
+
+| 内容 | 来源 | 生效延迟 |
+|---|---|---|
+| 首页统计数字 | Directus `homepage_stats` | ≤ 60s |
+| 服务介绍（三大业务）| Directus `services` | ≤ 60s |
+| 首页案例卡片（前4条）| Directus `cases` | 实时 |
+| 案例页 `/cases` | Directus `cases` | 实时 |
+| 关于页仓库列表 | Directus `warehouses` | ≤ 60s |
+| 新闻 | Directus `news` | 实时 |
+| 首页案例模态框详情 | `brand.ts CASE_DETAILS` | 改代码后重新部署 |
+| 关于页质检数字栏 | `brand.ts ABOUT_STATS` | 改代码后重新部署 |
+
+修改 Directus 内容后若页面仍显示旧数据，等 60 秒缓存过期，或 `pm2 restart xyy-web` 立即清缓存。
 
 ## CMS
 
