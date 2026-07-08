@@ -123,7 +123,7 @@ async function requestItems<T>(collection: Collection, query: Record<string, unk
 
 const _cache = new Map<string, { data: unknown; expires: number }>()
 
-async function cached<T>(key: string, fetcher: () => Promise<T>, ttl = 5 * 60_000): Promise<T> {
+async function cached<T>(key: string, fetcher: () => Promise<T>, ttl = 60_000): Promise<T> {
   const hit = _cache.get(key)
   if (hit && hit.expires > Date.now()) return hit.data as T
   const data = await fetcher()

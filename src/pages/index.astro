@@ -1,9 +1,24 @@
 ---
 import Layout from '@/layouts/Layout.astro'
-import { BRAND, DIGITAL_PRODUCTS, CASES, CASE_DETAILS } from '@/lib/brand'
-import { getHomepageStats, getServices } from '@/lib/directus'
+import { BRAND, DIGITAL_PRODUCTS, CASE_DETAILS } from '@/lib/brand'
+import { getHomepageStats, getServices, getCases } from '@/lib/directus'
 
-const [STATS, SERVICES] = await Promise.all([getHomepageStats(), getServices()])
+const [STATS, SERVICES, allCases] = await Promise.all([getHomepageStats(), getServices(), getCases()])
+const CASES = allCases.slice(0, 4)
+
+// Parse "库存 260万件+ · ..." → { value: '260万件+', label: '库存' } for card display
+function parseFirstMetric(metrics: string) {
+  const first = metrics.split('·')[0].trim()
+  const spaceIdx = first.indexOf(' ')
+  return {
+    value: spaceIdx > 0 ? first.slice(spaceIdx + 1) : first,
+    label: spaceIdx > 0 ? first.slice(0, spaceIdx) : '',
+  }
+}
+const caseCardMeta = CASES.map(c => ({
+  shortName: (CASE_DETAILS as Record<string, { name: string }>)[c.label]?.name ?? c.label,
+  metric: parseFirstMetric(c.metrics),
+}))
 
 const IMGS = {
   hero:  '/index.webp',
@@ -234,18 +249,18 @@ const faqSchema = {
       <button
         class="case-card cl-row"
         data-i={i}
-        data-case={c.id}
-        aria-label={`查看 ${c.label} 合作详情`}
+        data-case={c.label}
+        aria-label={`查看 ${caseCardMeta[i].shortName} 合作详情`}
         type="button"
       >
         <span class="cl-idx">0{i + 1}</span>
         <div class="cl-info">
-          <span class="cl-name">{c.label}</span>
+          <span class="cl-name">{caseCardMeta[i].shortName}</span>
           <span class="cl-cat">{c.category}</span>
         </div>
         <div class="cl-metric">
-          <span class="cl-val">{c.stats[0].value}</span>
-          <span class="cl-unit">{c.stats[0].label}</span>
+          <span class="cl-val">{caseCardMeta[i].metric.value}</span>
+          <span class="cl-unit">{caseCardMeta[i].metric.label}</span>
         </div>
         <div class="cl-tags">{c.tags.map(t => <span>{t}</span>)}</div>
         <span class="cl-arrow" aria-hidden="true">→</span>

@@ -1,5 +1,7 @@
 ---
-import { BRAND, NAV_LINKS, SERVICES, DIGITAL_PRODUCTS } from '@/lib/brand'
+import { BRAND, NAV_LINKS, DIGITAL_PRODUCTS } from '@/lib/brand'
+import { getServices } from '@/lib/directus'
+const SERVICES = await getServices()
 ---
 
 <footer class="bg-navy-900 text-navy-100 pt-14 pb-8">

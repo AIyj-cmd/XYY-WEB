@@ -22,65 +22,6 @@ export const BRAND = {
   },
 } as const
 
-export const STATS = [
-  { value: '140+', label: '合作知名品牌', unit: '家', detail: '鞋服、潮玩、美妆、箱包等细分行业' },
-  { value: '50万', label: '直营鞋服仓储', unit: '㎡', detail: '三级仓网架构，按需配仓' },
-  { value: '6000+', label: '服务区域', unit: '个', detail: '覆盖全国主要城市及区县网络' },
-  { value: '2000+', label: '自有员工', unit: '人', detail: '固定员工占比约80%，行业内较高水平' },
-  { value: '1.17亿', label: '全年新货质检', unit: '件', detail: '专业质检团队，标准化流程' },
-  { value: '1.53亿', label: '全年退货质检', unit: '件', detail: '退货二次上架，降低损耗' },
-  { value: '99.99%', label: '库存准确率', unit: '+', detail: 'RFID + 系统双重校验' },
-  { value: '3000万', label: '包材二次利用', unit: '个/年', detail: '旧纸箱回收再利用，降本减碳' },
-] as const
-
-export const SERVICES = [
-  {
-    id: 'cloud-warehouse',
-    name: '鞋服云仓',
-    subtitle: '一仓发全国，全渠道一盘货',
-    description:
-      '以鞋服品类深度优化的仓储管理系统为核心，提供B2C+B2B+O2O全渠道发货、库存同步与智能补货服务。单仓单日峰值50万单，弹性产能保障大促不爆仓。',
-    features: [
-      '全渠道一盘货，库存准确率99.99%+',
-      '当日18:00前订单，当日24:00前全出',
-      '单仓峰值50万单/日，弹性人力调配',
-      'RFID全域识别，拣货效率+40%',
-      '支持唯品会JIT/JITX等主流平台',
-    ],
-    icon: 'warehouse',
-  },
-  {
-    id: 'quality-inspection',
-    name: '后整质检修复',
-    subtitle: '135+种缺陷识别，48小时二次上架',
-    description:
-      '与广检集团合作的QC认证质检团队，按AQL 1.0–6.5标准运行。新货全检/抽检、退货质检、瑕疵修复一站式服务，瑕疵修复成功率90%，退货48小时内完成质检并二次上架。',
-    features: [
-      '可识别缺陷135+种，覆盖污渍、面料外观、缝线、纽扣配件、后工艺印绣、吊牌标识、异味等7大类',
-      '退货质检+二次上架48小时内（加急24小时）',
-      '瑕疵修复成功率90%，专属9区修复分区',
-      '1080P拆包监控，电商争议全程可举证',
-      '全年新货质检1.17亿件，退货质检1.53亿件',
-    ],
-    icon: 'inspection',
-  },
-  {
-    id: 'logistics-cloud',
-    name: '物流云',
-    subtitle: '多承运商聚合，智能路由降本',
-    description:
-      '自研物流服务中台OTD，聚合顺丰快运、中通、圆通、韵达、德邦、京东物流、申通、跨越速递、安能、EMS等10家主流承运商，一键切换路由、实时轨迹可视化、发货超时预警。通过智能寄件平台"运到"，实现商圈零售门店正向+逆向网络统一管理。',
-    features: [
-      '顺丰、中通、圆通、韵达、德邦、申通等10家承运商聚合，一键拦截转寄',
-      '发货超时预警+签收时效监控',
-      '奇门/EDI接口，与主流ERP无缝对接',
-      '不收系统使用费，按需付费',
-      '物流轨迹可视化，在线客户工单流',
-    ],
-    icon: 'logistics',
-  },
-] as const
-
 export const DIGITAL_PRODUCTS = [
   {
     id: 'yundao-platform',
@@ -97,6 +38,17 @@ export const DIGITAL_PRODUCTS = [
     ],
     href: '/product#yundao-platform',
   },
+] as const
+
+export const ABOUT_STATS = [
+  { value: '1.17亿', unit: '件/年', label: '新货质检' },
+  { value: '1.53亿', unit: '件/年', label: '退货质检' },
+  { value: '99.99',  unit: '%+',    label: '库存准确率' },
+  { value: '135',    unit: '种+',   label: '缺陷识别' },
+  { value: '48',     unit: '小时',  label: '退货二次上架' },
+  { value: '90',     unit: '%',     label: '瑕疵修复成功率' },
+  { value: '40',     unit: '%↑',    label: 'RFID拣货提效' },
+  { value: '30',     unit: '%↑',    label: '人效提升' },
 ] as const
 
 export const CAPABILITIES = [
@@ -126,73 +78,13 @@ export const CAPABILITIES = [
   },
 ] as const
 
-export const CASES = [
-  {
-    id: 'ur',
-    label: 'UR',
-    category: '快时尚女装',
-    metrics: '库存 260万件+ · SKU 13万+ · 仓面积 10万㎡+ · 峰值B2C 10万件/日',
-    tags: ['合作自2017年', 'B2C+B2B全渠道', 'RFID全面上线', '唯品会JIT/JITX'],
-    stats: [
-      { value: '260万+', label: '件在库' },
-      { value: '10万+', label: '件/日 峰值B2C' },
-    ],
-  },
-  {
-    id: 'maxrieny',
-    label: '玛克茜妮',
-    category: '高端设计师女装',
-    metrics: '库存 90万件+ · SKU 1.7万+ · 峰值B2C 7.5万件/日 · 峰值B2B 6万件/日',
-    tags: ['B2C+B2B联动', '仓内质检修复'],
-    stats: [
-      { value: '7.5万', label: '件/日 峰值B2C' },
-      { value: '90万+', label: '件在库' },
-    ],
-  },
-  {
-    id: 'xingmian',
-    label: '幸棉',
-    category: '内衣基础品类',
-    metrics: '库存 370万件+ · SKU 5000+ · 仓 2.5万㎡ · 峰值B2C 10万件/日',
-    tags: ['多渠道接入', '达播寄样', '退货质检'],
-    stats: [
-      { value: '370万+', label: '件在库' },
-      { value: '10万+', label: '件/日 峰值B2C' },
-    ],
-  },
-  {
-    id: 'urbanic',
-    label: 'Urbanic',
-    category: '跨境快时尚',
-    metrics: '年发货 1800–2300万件 · 年质检 800–1400万件 · 年包装 1500–2000万件',
-    tags: ['跨境出海', '质检+包装+上架'],
-    stats: [
-      { value: '2300万', label: '件/年 出货' },
-      { value: '1400万', label: '件/年 质检' },
-    ],
-  },
-] as const
-
-export const CASES_ALL_EXTRA = [
-  {
-    label: '头部国际运动品牌',
-    metrics: '库存 320万+ · 专属仓 12万㎡ · 峰值 12万件/日',
-    tags: ['大货质检', 'B2B分拨', 'RFID管理'],
-  },
-  {
-    label: '头部潮玩品牌',
-    metrics: '库存 150万+ · SKU 1.2万+ · 峰值 8万件/日',
-    tags: ['非鞋服类目', '品质管控', '全渠道'],
-  },
-] as const
-
+// CASE_DETAILS keys match Directus cases.label so modal lookup works directly
 export const CASE_DETAILS = {
-  ur: {
+  'UR（Urban Revivo）': {
     name: 'UR',
     fullName: 'Urban Revivo（UR）',
     category: '头部快时尚女装',
-    image:
-      '/w-flower.webp',
+    image: '/w-flower.webp',
     accent: '#2563EB',
     description:
       'UR 是中国头部快时尚女装品牌。在天猫超品日期间，UR 创下服饰类目 GMV 新纪录，官方旗舰店同比增长 116%；618 大促斩获天猫、抖音、京东三大平台女装榜首。全球门店超 400 家，覆盖新加坡、泰国、菲律宾等海外市场。',
@@ -207,12 +99,11 @@ export const CASE_DETAILS = {
       { label: '日均退货量', value: '3万+', unit: '件/日' },
     ],
   },
-  maxrieny: {
+  '玛克茜妮（MAXRIENY）': {
     name: 'MAXRIENY',
     fullName: '玛克茜妮（MAXRIENY）',
     category: '高端设计师女装',
-    image:
-      '/w-apparel.webp',
+    image: '/w-apparel.webp',
     accent: '#7C3AED',
     description:
       '深圳玛克茜妮（MAXRIENY）聚焦 28–38 岁独立都市高知女性，主打"精致职场"与"社交聚会"场景。以欧洲中世纪宫廷奇幻美学为核心，融合巴洛克艺术与街拍风格，产品均价春夏 800–3500 元、秋冬 1000–4500 元。曾获《深圳服装创新品牌奖》《原创设计师奖》，旗下涵盖高级成衣系列 SARAWONG、Lifestyle 系列及家居产品线 HOME。',
@@ -227,12 +118,11 @@ export const CASE_DETAILS = {
       { label: '峰值 B2B', value: '6万+', unit: '件/日' },
     ],
   },
-  xingmian: {
+  '幸棉': {
     name: '幸棉',
     fullName: '幸棉',
     category: '内衣基础品类',
-    image:
-      '/w-returns.webp',
+    image: '/w-returns.webp',
     accent: '#0D9488',
     description:
       '幸棉是国内内衣基础品类的代表性品牌。新亦源为其提供从多渠道订单聚合、运输平台连通，到新货退货质检、达播寄样、订单全程跟踪及次品分类返厂的全链路一体化服务，实现电商仓配与逆向物流的高效统一管理。',
@@ -246,12 +136,11 @@ export const CASE_DETAILS = {
       { label: '日均退货量', value: '1.5万+', unit: '件/日' },
     ],
   },
-  urbanic: {
+  'Urbanic': {
     name: 'Urbanic',
     fullName: 'Urbanic（跨境快时尚）',
     category: '跨境快时尚',
-    image:
-      '/w-fulfill.webp',
+    image: '/w-fulfill.webp',
     accent: '#D97706',
     description:
       'Urbanic 是面向印度、英国等海外市场的跨境快时尚品牌，主营全品类女装。新亦源为其提供 B2B+B2C 一体化仓储服务，覆盖质检、包装、上架、库存管理及发货打包全流程，年处理量达千万件级别。',

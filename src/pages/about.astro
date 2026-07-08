@@ -1,7 +1,7 @@
 ---
 import Layout from '@/layouts/Layout.astro'
 import PageFAQ from '@/components/PageFAQ.astro'
-import { BRAND, HONORS } from '@/lib/brand'
+import { BRAND, HONORS, ABOUT_STATS } from '@/lib/brand'
 import { getWarehouses } from '@/lib/directus'
 
 const WAREHOUSES = await getWarehouses()
@@ -163,16 +163,7 @@ const orgSchema = {
     <!-- 底部数据条：黑色磨砂玻璃 -->
     <div id="about-stats-bar" class="absolute bottom-0 left-0 right-0 border-t border-white/10" style="background: rgba(8,20,42,0.60); backdrop-filter: blur(12px);">
       <div class="max-w-7xl mx-auto px-8 lg:px-12 py-4 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-x-6 gap-y-4 lg:gap-x-4">
-        {[
-          { value: '1.17亿', unit: '件/年', label: '新货质检' },
-          { value: '1.53亿', unit: '件/年', label: '退货质检' },
-          { value: '99.99',  unit: '%+',    label: '库存准确率' },
-          { value: '135',    unit: '种+',   label: '缺陷识别' },
-          { value: '48',     unit: '小时',  label: '退货二次上架' },
-          { value: '90',     unit: '%',     label: '瑕疵修复成功率' },
-          { value: '40',     unit: '%↑',    label: 'RFID拣货提效' },
-          { value: '30',     unit: '%↑',    label: '人效提升' },
-        ].map(({ value, unit, label }) => (
+        {ABOUT_STATS.map(({ value, unit, label }) => (
           <div class="flex flex-col items-center gap-1 text-center">
             <div class="flex items-baseline gap-1">
               <span class="about-stat-num text-lg font-black text-white" data-raw={value}>{value}</span>
