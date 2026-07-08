@@ -1,3 +1,5 @@
+import { SITE_URL } from './site-config'
+
 export const BRAND = {
   name: '新亦源供应链',
   fullName: '广州新亦源供应链管理有限公司',
@@ -6,7 +8,7 @@ export const BRAND = {
   mission: '让发货更准确、高效、快捷',
   description:
     '广州新亦源供应链管理有限公司，总部位于广州，2011年成立，深耕鞋服物流15年。专注鞋服、潮玩、美妆、箱包等行业的云仓、仓配一体、退货质检和全渠道一盘货服务，合作知名服饰品牌140+，直营鞋服仓储50万㎡，配送服务覆盖全国主要城市及6000+区县/服务区域。',
-  url: 'https://wz.tomatopia.top',
+  url: SITE_URL,
   icp: '粤ICP备17001688号',
   founded: 2011,
   phone: { direct: '020-82036224', toll: '400-6865-156' },

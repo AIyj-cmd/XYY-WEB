@@ -74,8 +74,9 @@ type Schema = {
 
 // ── Client ────────────────────────────────────────────────────
 
+import { SITE_URL } from './site-config'
+
 const DEFAULT_DIRECTUS_API_URL = 'http://127.0.0.1:8055'
-const DEFAULT_SITE_URL = 'https://wz.tomatopia.top'
 
 function trimTrailingSlash(value: string) {
   return value.replace(/\/+$/, '')
@@ -86,8 +87,7 @@ export function getDirectusApiUrl() {
 }
 
 export function getDirectusPublicUrl() {
-  const siteUrl = trimTrailingSlash(import.meta.env.PUBLIC_SITE_URL || DEFAULT_SITE_URL)
-  return trimTrailingSlash(import.meta.env.PUBLIC_DIRECTUS_URL || `${siteUrl}/cms`)
+  return trimTrailingSlash(import.meta.env.PUBLIC_DIRECTUS_URL || `${SITE_URL}/cms`)
 }
 
 export function getDirectusAssetUrl(fileId?: string | null) {

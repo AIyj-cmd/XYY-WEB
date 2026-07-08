@@ -34,7 +34,7 @@ app.use((_req, res, next) => {
       "img-src 'self' data: https:",
       "font-src 'self' data:",
       "media-src 'self'",
-      "connect-src 'self' https://wz.tomatopia.top",
+      `connect-src 'self' ${process.env.PUBLIC_SITE_URL ?? 'https://wz.tomatopia.top'}`,
     ].join('; ')
   )
   next()

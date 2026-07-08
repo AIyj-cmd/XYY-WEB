@@ -96,9 +96,9 @@ await seed('homepage_stats', [
   {
     sort: 3,
     value: '6000+',
-    label: '配送覆盖城市',
+    label: '服务区域',
     unit: '个',
-    detail: '全国城市网络，次日达覆盖主要城市',
+    detail: '覆盖全国主要城市及区县网络',
   },
   {
     sort: 4,

@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-DEPLOY_HOST="${DEPLOY_HOST:-root@47.82.105.103}"
+if [[ -z "${DEPLOY_HOST:-}" ]]; then
+  echo "Error: DEPLOY_HOST is not set. Usage: DEPLOY_HOST=root@<server> bash scripts/deploy.sh" >&2
+  exit 1
+fi
 REMOTE_DIR="${REMOTE_DIR:-/var/www/xyy-web}"
 NODE_BIN="${NODE_BIN:-/opt/node-v22/bin}"
 
