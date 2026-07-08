@@ -30,6 +30,7 @@ npm start             # 构建后启动 server.mjs
 src/
   components/          Header / Footer
   layouts/Layout.astro 全局 SEO、JSON-LD、字体、浮动联系按钮
+  lib/site-config.ts   站点 URL 单一来源（读取 PUBLIC_SITE_URL 环境变量）
   lib/brand.ts         品牌和静态业务数据
   lib/directus.ts      Directus SDK 封装与公开资源 URL helper
   lib/sanitize.ts      CMS 富文本白名单过滤
@@ -58,9 +59,12 @@ resources/
 服务器要求 Node.js `>=22.12.0`。当前服务器使用 `/opt/node-v22/bin/node`，PM2 配置见 `ecosystem.config.cjs`。
 
 ```bash
+export DEPLOY_HOST='root@<server-ip>'
 export XYY_DEPLOY_PASSWORD='******'
 bash scripts/deploy.sh
 ```
+
+`DEPLOY_HOST` 为必填项，未设置时脚本直接退出报错。
 
 部署脚本会执行 `npm run verify`，上传 `dist`、`package*.json`、`server.mjs`、`ecosystem.config.cjs` 和 `.env.production`，远端执行 `npm install --omit=dev` 后重载 `xyy-web`。
 
