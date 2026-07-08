@@ -123,7 +123,7 @@ async function requestItems<T>(collection: Collection, query: Record<string, unk
 
 const _cache = new Map<string, { data: unknown; expires: number }>()
 
-async function cached<T>(key: string, fetcher: () => Promise<T>, ttl = 60_000): Promise<T> {
+async function cached<T>(key: string, fetcher: () => Promise<T>, ttl = 300_000): Promise<T> {
   const hit = _cache.get(key)
   if (hit && hit.expires > Date.now()) return hit.data as T
   const data = await fetcher()
@@ -187,31 +187,35 @@ export async function getWarehouses(): Promise<Warehouse[]> {
 }
 
 export async function getCases(): Promise<Case[]> {
-  try {
-    return await requestItems<Case[]>('cases', {
-      filter: { status: { _eq: 'published' } },
-      sort: ['sort'],
-      fields: ['id', 'category', 'label', 'metrics', 'details', 'tags', 'img'],
-    })
-  } catch {
-    return []
-  }
+  return cached('cases', async () => {
+    try {
+      return await requestItems<Case[]>('cases', {
+        filter: { status: { _eq: 'published' } },
+        sort: ['sort'],
+        fields: ['id', 'category', 'label', 'metrics', 'details', 'tags', 'img'],
+      })
+    } catch {
+      return []
+    }
+  })
 }
 
 // ── News fetchers ─────────────────────────────────────────────
 
 export async function getPublishedNews(limit = 10, page = 1): Promise<NewsArticle[]> {
-  try {
-    return await requestItems<NewsArticle[]>('news', {
-      filter: { status: { _eq: 'published' } },
-      sort: ['-published_at'],
-      limit,
-      offset: (page - 1) * limit,
-      fields: ['id', 'title', 'slug', 'summary', 'category', 'published_at', 'cover_image'],
-    })
-  } catch {
-    return []
-  }
+  return cached(`news:${limit}:${page}`, async () => {
+    try {
+      return await requestItems<NewsArticle[]>('news', {
+        filter: { status: { _eq: 'published' } },
+        sort: ['-published_at'],
+        limit,
+        offset: (page - 1) * limit,
+        fields: ['id', 'title', 'slug', 'summary', 'category', 'published_at', 'cover_image'],
+      })
+    } catch {
+      return []
+    }
+  })
 }
 
 export async function getNewsArticle(slug: string): Promise<NewsArticle | null> {
