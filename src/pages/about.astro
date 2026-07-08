@@ -57,7 +57,7 @@ const orgSchema = {
   foundingLocation: { '@type': 'Place', name: '广州' },
   description: BRAND.description,
   numberOfEmployees: { '@type': 'QuantitativeValue', minValue: 2000 },
-  telephone: [BRAND.phone.direct, BRAND.phone.toll],
+  telephone: [BRAND.phone.toll],
   address: {
     '@type': 'PostalAddress',
     streetAddress: '果园一路2号',

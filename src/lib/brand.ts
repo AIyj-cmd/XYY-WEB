@@ -11,7 +11,7 @@ export const BRAND = {
   url: SITE_URL,
   icp: '粤ICP备17001688号',
   founded: 2011,
-  phone: { direct: '020-82036224', toll: '400-6865-156' },
+  phone: { toll: '400-6865-156' },
   locations: {
     south: {
       label: '华南总部',
