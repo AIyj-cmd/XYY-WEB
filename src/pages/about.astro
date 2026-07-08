@@ -1,5 +1,6 @@
 ---
 import Layout from '@/layouts/Layout.astro'
+import PageFAQ from '@/components/PageFAQ.astro'
 import { BRAND, HONORS } from '@/lib/brand'
 import { getWarehouses } from '@/lib/directus'
 
@@ -21,17 +22,20 @@ const HISTORY = [
 const CITY_CONFIG: Record<string, { color: string; label: string }> = {
   '广州': { color: '#E85D26', label: '广州' },
   '东莞': { color: '#3B6FCC', label: '东莞' },
+  '佛山': { color: '#7C3AED', label: '佛山' },
   '肇庆': { color: '#059669', label: '肇庆' },
+  '昆山': { color: '#0891B2', label: '昆山' },
+  '上海': { color: '#DC2626', label: '上海' },
+  '合肥': { color: '#D97706', label: '合肥' },
 }
-const CITY_ORDER = ['广州', '东莞', '肇庆']
-const warehouseGroups = CITY_ORDER.map(city => ({
-  city,
-  cfg: CITY_CONFIG[city],
-  items: WAREHOUSES.filter(w => w.city === city),
-}))
-const MAX_RENT = 50000
-function rentNum(s: string) { return parseInt(s.replace(/,/g, ''), 10) }
-function barPct(rent: string) { return Math.max(5, Math.round(rentNum(rent) / MAX_RENT * 100)) }
+const SOUTH_CITIES = ['广州', '东莞', '佛山', '肇庆']
+const EAST_CITIES  = ['昆山', '上海', '合肥']
+const southGroups = SOUTH_CITIES.map(city => ({
+  city, cfg: CITY_CONFIG[city], items: WAREHOUSES.filter(w => w.city === city),
+})).filter(g => g.items.length > 0)
+const eastGroups = EAST_CITIES.map(city => ({
+  city, cfg: CITY_CONFIG[city], items: WAREHOUSES.filter(w => w.city === city),
+})).filter(g => g.items.length > 0)
 
 const breadcrumbSchema = {
   '@context': 'https://schema.org',
@@ -409,13 +413,13 @@ const orgSchema = {
           {
             abbr: 'RDC', name: '区域仓', accent: '#3B6FCC',
             desc: '布局华东、华中，区域补铺 + 就近发货，降低干线物流成本与时效损耗',
-            location: BRAND.locations.east.address,
+            location: '上海市青浦区重固镇汇金路889号2号楼3层（昆山·上海·合肥）',
             tags: ['区域补货', '就近发货', '降低损耗'],
           },
           {
             abbr: 'FDC', name: '产地仓', accent: '#059669',
             desc: '直接对接生产端，产地直发，压缩仓储成本，加快新货上架时效',
-            location: BRAND.locations.central.address,
+            location: '湖北省监利市监利服装产业园3号楼',
             tags: ['产地直发', '快速上架', '弹性配置'],
           },
         ].map(({ abbr, name, accent, desc, location, tags }) => (
@@ -443,66 +447,81 @@ const orgSchema = {
   <section class="py-14 bg-gray-50" aria-labelledby="southwh-heading">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-      <!-- 标题栏 -->
-      <div class="flex items-end justify-between mb-12">
+      <!-- 华南标题 -->
+      <div class="flex items-end justify-between mb-10">
         <div>
           <p class="text-brand-orange font-bold text-[11px] tracking-[0.35em] uppercase mb-2">华南仓点</p>
-          <h3 id="southwh-heading" class="text-2xl font-black text-navy-800">广州 · 东莞 · 肇庆，6大仓点</h3>
+          <h3 id="southwh-heading" class="text-2xl font-black text-navy-800">广州 · 东莞 · 佛山 · 肇庆</h3>
         </div>
         <p class="text-xs text-gray-400 max-w-xs text-right leading-relaxed hidden sm:block">
           全部具备丙二类消防资质<br/>新货质检 · 退货质检 · 整烫修复全链路
         </p>
       </div>
 
-      <!-- 按城市分组 -->
-      <div class="space-y-10">
-        {warehouseGroups.map(({ city, cfg, items }) => (
+      <!-- 华南仓点按城市分组 -->
+      {(() => {
+        const renderGroup = (groups: typeof southGroups) => groups.map(({ city, cfg, items }) => (
           <div>
-            <!-- 城市分组 header -->
             <div class="flex items-center gap-3 mb-1">
               <div class="w-1 h-4 rounded-full flex-shrink-0" style={`background:${cfg.color}`}></div>
               <span class="text-xs font-bold tracking-[0.25em] uppercase" style={`color:${cfg.color}`}>{city}</span>
               <span class="text-xs text-gray-400">{items.length} 个仓点</span>
               <div class="flex-1 h-px bg-gray-200"></div>
             </div>
-
-            <!-- 仓点行列表 -->
             <div class="divide-y divide-gray-100 pl-4" style={`border-left: 2px solid ${cfg.color}22`}>
               {items.map((w) => (
                 <div class="py-5 flex flex-col lg:flex-row lg:items-center gap-3 lg:gap-0">
-
-                  <!-- 名称 + 年份 -->
                   <div class="lg:w-36 flex-shrink-0">
                     <div class="text-base font-black text-navy-800 leading-tight">{w.name}</div>
                     <div class="text-[11px] text-gray-400 mt-0.5">自 {w.since}</div>
                   </div>
-
-                  <!-- 地址 -->
-                  <div class="lg:w-60 flex-shrink-0 text-xs text-gray-500 leading-snug lg:px-5 lg:border-l lg:border-gray-100">
-                    {w.address}
+                  <div class="flex-1 text-xs text-gray-500 leading-snug lg:px-5 lg:border-l lg:border-gray-100">
+                    {w.address ? w.address : <span class="text-gray-300 italic">地址待公布</span>}
                   </div>
-
-                  <!-- 可承接面积（主要数字）+ 面积条 -->
-                  <div class="lg:w-52 flex-shrink-0 lg:px-5 lg:border-l lg:border-gray-100">
-                    <div class="flex items-baseline gap-1 mb-1.5">
-                      <span class="text-lg font-black text-navy-800">{w.rent}</span>
-                      <span class="text-xs text-gray-400">㎡ 可承接</span>
-                    </div>
-                    <!-- 面积比例条 -->
-                    <div class="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                      <div
-                        class="h-full rounded-full transition-all"
-                        style={`width:${barPct(w.rent)}%; background:${cfg.color}`}
-                      ></div>
-                    </div>
-                    <div class="text-[10px] text-gray-400 mt-1">园区 {w.park}㎡ · 层高 {w.height}</div>
-                  </div>
-
-                  <!-- 亮点 -->
                   <div class="flex-1 text-xs text-gray-500 leading-relaxed lg:px-5 lg:border-l lg:border-gray-100">
                     {w.highlight}
                   </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))
+        return <div class="space-y-8 mb-14">{renderGroup(southGroups)}</div>
+      })()}
 
+      <!-- 华东仓点 -->
+      <div class="flex items-end justify-between mb-10 pt-8 border-t border-gray-200">
+        <div>
+          <p class="text-[#0891B2] font-bold text-[11px] tracking-[0.35em] uppercase mb-2">华东仓点</p>
+          <h3 id="eastwh-heading" class="text-2xl font-black text-navy-800">昆山 · 上海 · 合肥</h3>
+        </div>
+        <p class="text-xs text-gray-400 max-w-xs text-right leading-relaxed hidden sm:block">
+          长三角核心节点<br/>就近发货，覆盖华东区域
+        </p>
+      </div>
+
+      <div class="space-y-8">
+        {eastGroups.map(({ city, cfg, items }) => (
+          <div>
+            <div class="flex items-center gap-3 mb-1">
+              <div class="w-1 h-4 rounded-full flex-shrink-0" style={`background:${cfg.color}`}></div>
+              <span class="text-xs font-bold tracking-[0.25em] uppercase" style={`color:${cfg.color}`}>{city}</span>
+              <span class="text-xs text-gray-400">{items.length} 个仓点</span>
+              <div class="flex-1 h-px bg-gray-200"></div>
+            </div>
+            <div class="divide-y divide-gray-100 pl-4" style={`border-left: 2px solid ${cfg.color}22`}>
+              {items.map((w) => (
+                <div class="py-5 flex flex-col lg:flex-row lg:items-center gap-3 lg:gap-0">
+                  <div class="lg:w-36 flex-shrink-0">
+                    <div class="text-base font-black text-navy-800 leading-tight">{w.name}</div>
+                    <div class="text-[11px] text-gray-400 mt-0.5">自 {w.since}</div>
+                  </div>
+                  <div class="flex-1 text-xs text-gray-500 leading-snug lg:px-5 lg:border-l lg:border-gray-100">
+                    {w.address ? w.address : <span class="text-gray-300 italic">地址待公布</span>}
+                  </div>
+                  <div class="flex-1 text-xs text-gray-500 leading-relaxed lg:px-5 lg:border-l lg:border-gray-100">
+                    {w.highlight}
+                  </div>
                 </div>
               ))}
             </div>
@@ -510,40 +529,45 @@ const orgSchema = {
         ))}
       </div>
 
-      <!-- 补充说明：其他区域仓库 -->
-      <p class="mt-8 text-xs font-bold text-navy-800">
-        佛山区域、湖北区域、上海区域均有仓库
-      </p>
-
     </div>
   </section>
 
   <!-- Honors -->
-  <section class="py-16 bg-white" aria-labelledby="honors-heading">
+  <section class="py-16 bg-[#f8fafc]" aria-labelledby="honors-heading">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-12">
+      <div class="text-center mb-10">
         <p class="text-brand-orange font-bold text-[11px] tracking-[0.35em] uppercase mb-3">资质与荣誉</p>
         <h2 id="honors-heading" class="text-3xl font-black text-navy-800">资质与荣誉</h2>
       </div>
-      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-5">
+      <div class="honors-grid">
         {HONORS.map((honor, i) => (
-          <div class="bg-gray-50 rounded-xl overflow-hidden hover:shadow-md hover:-translate-y-0.5 transition-all flex flex-col">
-            <div class="flex items-center justify-center p-4 aspect-[3/2]">
-              <img
-                src={`/about/honor/${i + 1}.png`}
-                alt={honor}
-                class="w-full h-full object-contain"
-                loading="lazy"
-              />
-            </div>
-            <div class="px-3 pb-3 text-center">
-              <p class="text-[11px] font-semibold text-navy-700 leading-snug">{honor}</p>
-            </div>
+          <div class="honor-card" role="button" tabindex="0" data-img={`/about/honor/${i + 1}.jpg`} data-alt={honor}>
+            {honor}
           </div>
         ))}
       </div>
     </div>
   </section>
+
+  <!-- Lightbox -->
+  <div id="hlb" role="dialog" aria-modal="true" aria-label="证书大图">
+    <img id="hlb-img" src="" alt="" />
+  </div>
+
+  <!-- FAQ -->
+  <PageFAQ
+    heading="关于新亦源的常见问题"
+    items={[
+      { q: '新亦源的核心服务承诺是什么？不达标会怎样？', a: '新亦源在合同中明确约定三类SLA并附赔偿条款：①出库时效——18:00截单当日24:00完成全部出库，延误按件补偿；②库存准确率——≥99.8%，超出误差阈值触发盘点赔付；③退货质检时效——标准48小时内完成质检上架，加急24小时。发货错漏按件全赔，不设免赔额。仓内1080P监控留存90天，操作日志全程可追溯。这些承诺写入合同，合作方可依据合同条款追责，不是销售话术。' },
+      { q: '新亦源的发展历程是怎样的？有哪些里程碑节点？', a: '2015年在广州成立，专注鞋服垂直仓储；2018年自研OTD中台上线，实现多平台订单集成；2020年推出退货质检+修复服务体系，形成闭环；2022年华东布局启动，昆山、上海仓点相继投运；2024年联合广检集团推进QC认证，建立行业标准质检流程；2025年华东扩容，合肥联亚仓正式启用，覆盖范围进一步延伸至华东内陆市场。' },
+      { q: '新亦源的仓点分布在哪里？各仓有什么分工？', a: '目前在华南和华东共有8个运营仓点。华南：广州兴泰仓（总部主仓，综合业务）、广州新塘仓（服装专项）、东莞云谷仓（B2B出货为主）、佛山宏盛仓（补量仓）、肇庆仓（大货仓储）；华东：苏州昆山花桥仓、上海青浦汇金仓、合肥联亚仓，三仓联动支撑华东业务。各仓根据货量、品类特性及发货需求进行协同分配。' },
+      { q: '新亦源有哪些行业认证和技术资质？', a: '新亦源持有ISO 9001质量管理体系认证，并与广检集团合作完成鞋服质检标准共建及QC人员认证，形成具备行业公信力的质检背书。在技术层面，OTD物流中台及相关系统工具持有软件著作权，部分核心技术模块申请了发明专利。如需查阅具体证书，可在商务洽谈时书面提供，资料以现行有效证书为准。' },
+      { q: '新亦源目前服务了哪些类型的品牌？有没有典型客户案例？', a: '新亦源服务的品牌横跨女装、男装、童装、鞋类、运动户外等品类，包含天猫TOP卖家、抖音直播品牌、跨境独立站商家及传统门店供应链客户。典型合作案例涵盖：单日50万单量级的女装品牌大促保障、退货质检年节省损耗超800万元的鞋类品牌、对接唯品会JIT/JITX的头部男装品牌等，具体案例可参阅"合作案例"页面。' },
+      { q: '新亦源的仓储团队是怎么配置的？旺季人力如何保障？', a: '新亦源采用"核心团队+弹性人力"双层用工模式。核心团队负责系统操作、质检管理及班组长岗位，确保操作标准不随人员变动而波动；弹性人力池由与合作劳务机构提前储备的季节性人员构成，大促前14天按发货预测完成招募和培训。这种结构保障了在旺季高峰期（如双11、618）产能快速扩张时，质量和时效不因新手比例提升而下降。' },
+      { q: '可以到仓参观考察吗？需要提前预约吗？', a: '欢迎品牌客户、合作伙伴到仓实地参观。请提前通过官网联系表单或商务电话预约，我们将根据您的行程安排专属接待。参观内容包含：仓内实地走访、系统演示、质检流程展示、服务团队对接等环节。参观无需额外费用，部分仓点因仓储安全要求需签署参访协议。' },
+      { q: '新亦源如何保障数据安全和库存信息保密？', a: '新亦源采用多层数据安全机制：WMS系统与客户OMS/ERP单独授权隔离，不同品牌间数据物理隔离，不共享；操作日志全程留档可追溯；全仓1080P高清视频监控，数据保留90天；签订严格的保密协议（NDA），未经授权不得对外披露任何客户库存、货量及订单数据。服务器及数据均部署于国内合规云环境。' },
+    ]}
+  />
 
   <!-- CTA -->
   <section class="py-14 bg-[#EFF4FF]" aria-labelledby="about-cta-heading">
@@ -624,6 +648,21 @@ const orgSchema = {
     requestAnimationFrame(tick)
   }
 
+  // Honors lightbox
+  const hlb = document.getElementById('hlb')!
+  const hlbImg = document.getElementById('hlb-img') as HTMLImageElement
+
+  document.querySelectorAll<HTMLElement>('.honor-card').forEach((card) => {
+    card.addEventListener('click', () => {
+      hlbImg.src = card.dataset.img!
+      hlbImg.alt = card.dataset.alt ?? ''
+      hlb.classList.add('open')
+    })
+  })
+
+  hlb.addEventListener('click', () => hlb.classList.remove('open'))
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') hlb.classList.remove('open') })
+
   const statsBar = document.getElementById('about-stats-bar')
   if (statsBar) {
     const observer = new IntersectionObserver(
@@ -644,4 +683,60 @@ const orgSchema = {
 <style>
   .no-scrollbar::-webkit-scrollbar { display: none; }
   .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+</style>
+
+<style is:global>
+  /* Honors grid */
+  .honors-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.875rem;
+  }
+  @media (max-width: 767px) { .honors-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 479px) { .honors-grid { grid-template-columns: 1fr; } }
+
+  .honor-card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.875rem 1rem;
+    background: #fff;
+    border-radius: 0.75rem;
+    border: 1px solid #e8edf5;
+    box-shadow: 0 1px 3px rgba(10,26,51,0.06);
+    cursor: zoom-in;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #1e2d4a;
+    line-height: 1.5;
+    text-align: center;
+    transition: box-shadow 0.2s, border-color 0.2s;
+    user-select: none;
+  }
+  .honor-card:hover {
+    box-shadow: 0 4px 14px rgba(10,26,51,0.12);
+    border-color: #c5d3e8;
+  }
+
+  /* Lightbox */
+  #hlb {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.78);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    cursor: zoom-out;
+    padding: 2rem;
+  }
+  #hlb.open { display: flex; }
+  #hlb img {
+    max-width: min(88vw, 860px);
+    max-height: 88vh;
+    object-fit: contain;
+    border-radius: 6px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+    cursor: zoom-out;
+  }
 </style>

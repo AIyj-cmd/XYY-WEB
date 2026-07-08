@@ -1,5 +1,6 @@
 ---
 import Layout from '@/layouts/Layout.astro'
+import PageFAQ from '@/components/PageFAQ.astro'
 import { BRAND } from '@/lib/brand'
 import { getServices } from '@/lib/directus'
 
@@ -34,13 +35,12 @@ const NAV_ITEMS = [
   { id: 'quality-inspection',    label: '后整质检修复',      en: 'QC & Repair' },
   { id: 'logistics-cloud',       label: '物流云',            en: 'Logistics Cloud' },
   { id: 'yundao-platform',        label: '运到寄件',          en: 'YunDao Express' },
-  { id: 'basic-supply',          label: '直供平台',          en: 'Direct Supply' },
 ]
 ---
 
 <Layout
-  title="产品服务 - 鞋服云仓 | 后整质检修复 | 物流云 | 运到寄件平台 | 直供平台 | 新亦源供应链"
-  description="新亦源供应链五大产品：鞋服云仓、后整质检修复、物流云、运到智能寄件平台、服装基础品类直供平台，为鞋服品牌提供全链路一站式服务。"
+  title="产品服务 - 鞋服云仓 | 后整质检修复 | 物流云 | 运到寄件平台 | 新亦源供应链"
+  description="新亦源供应链四大产品：鞋服云仓、后整质检修复、物流云、运到智能寄件平台，为鞋服品牌提供全链路一站式仓储物流服务。"
   jsonLd={[breadcrumbSchema, ...serviceSchemas]}
 >
 
@@ -370,8 +370,7 @@ const NAV_ITEMS = [
 
   <div class="h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" aria-hidden="true"></div>
 
-  <!-- ⑤ 直供平台 -->
-  <!-- 运到智能寄件平台 -->
+  <!-- ④ 运到智能寄件平台 -->
   <section id="yundao-platform" class="py-16 lg:py-24 bg-gray-50 scroll-mt-32" aria-labelledby="yundao-heading">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
@@ -438,73 +437,6 @@ const NAV_ITEMS = [
     </div>
   </section>
 
-  <section id="basic-supply" class="py-16 lg:py-24 bg-white scroll-mt-32" aria-labelledby="basic-supply-heading">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-      <div class="mb-6">
-        <span class="text-[11px] font-bold text-brand-orange tracking-[0.35em] uppercase">产品五 · 直供平台</span>
-        <h2 id="basic-supply-heading" class="text-3xl lg:text-4xl font-black text-navy-800 mt-2 mb-2">服装基础品类直供</h2>
-        <p class="text-brand-orange font-semibold">工厂直采，去中间层降成本</p>
-      </div>
-      <div class="w-full h-56 lg:h-72 rounded-2xl overflow-hidden mb-10">
-        <img
-          src="/w-apparel.webp"
-          alt="服装基础品类直供 — 工厂直连"
-          class="w-full h-full object-cover"
-          loading="lazy"
-        />
-      </div>
-
-      <div class="lg:grid lg:grid-cols-2 lg:gap-20 items-start">
-        <div>
-          <p class="text-gray-600 leading-relaxed mb-8">
-            聚合优质服装基础品类供应商，覆盖T恤、卫衣、袜类、内衣、打底衫等高频刚需品类。
-            提供版型设计与面料选择、成衣印花/印秀与二次加工、车标烫标、辅料定制、车唛改标等全链路深加工服务，
-            48小时内完成生产并支持一件代发，省去中间层级，帮助品牌降低采购成本20%+。
-          </p>
-
-          <div class="border-t border-gray-100 divide-y divide-gray-100 mb-8">
-            {[
-              { stat: '小批量', label: '起订门槛', sub: '具体MOQ按品类与工艺确认' },
-              { stat: '7天', label: '快速翻单周期', sub: '热销款极速补货' },
-              { stat: '98%+', label: '货期履约率', sub: '违约赔付保障' },
-              { stat: '20%+', label: '采购成本降幅', sub: '对比传统渠道' },
-            ].map(({ stat, label, sub }) => (
-              <div class="flex items-center py-4 gap-4">
-                <span class="w-32 flex-shrink-0 text-xl font-black text-brand-orange">{stat}</span>
-                <span class="flex-1 text-sm font-semibold text-navy-800">{label}</span>
-                <span class="text-xs text-gray-400">{sub}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div>
-          <p class="text-[11px] font-bold text-gray-400 tracking-[0.25em] uppercase mb-4">平台优势</p>
-          <div class="divide-y divide-gray-100">
-            {[
-              { title: '精选工厂直连', desc: '严格筛选优质服装基础品类工厂（袜类、内衣、T恤、打底等），省去层层中间商，出厂价直接对接品牌与零售商。' },
-              { title: '小批量柔性起订', desc: '支持小批量起订，降低库存积压风险。翻单周期短，市场热销品可快速补货，响应速度比传统采购提升50%+。' },
-              { title: '品质溯源保障', desc: '每批货物附带工厂检测报告，可追溯至原材料批次。支持买家送样比对，确保品质与商定标准一致。' },
-              { title: '货期承诺有保障', desc: '合作工厂签署货期协议，违约赔付。系统实时推送生产进度，提前预警异常，履约率稳定在98%以上。' },
-              { title: '印花/印秀深加工', desc: '支持成衣印花、印秀与二次加工，含车标烫标、辅料定制（纽扣/拉链等）、车唛改标；48小时内完成加工并可一件代发。' },
-              { title: '一站式服务', desc: '从选款打样、下单生产到入库质检、发货，全流程由新亦源统一协调，品牌无需对接多家工厂。' },
-              { title: '专属商务支持', desc: '专属BD经理跟进需求，按品类、规模定制采购方案，新合作伙伴免费提供首单样品评估。' },
-            ].map(({ title, desc }) => (
-              <div class="py-4 flex gap-4 group hover:bg-orange-50/40 -mx-3 px-3 transition-colors">
-                <div class="w-1 flex-shrink-0 rounded-full bg-brand-orange/30 group-hover:bg-brand-orange transition-colors self-stretch"></div>
-                <div>
-                  <h4 class="text-sm font-bold text-navy-800 mb-1">{title}</h4>
-                  <p class="text-sm text-gray-500 leading-relaxed">{desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <!-- 专题落地页内链 -->
   <section class="py-12 bg-white border-t border-gray-100" aria-labelledby="landing-pages-heading">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -520,7 +452,6 @@ const NAV_ITEMS = [
           { href: '/huanan-xiefu-yuncang', label: '华南鞋服云仓', sub: '广州+东莞+肇庆' },
           { href: '/guangzhou-xiefu-yuncang', label: '广州鞋服云仓', sub: '黄埔+番禺双仓' },
           { href: '/b2b-mendian-cangpei', label: 'B2B门店仓配', sub: '连锁补货·批发铺货' },
-          { href: '/chaowanmeizhang-yuncang', label: '潮玩美妆仓储', sub: '精细仓储·多品类' },
         ].map(({ href, label, sub }) => (
           <a
             href={href}
@@ -533,6 +464,21 @@ const NAV_ITEMS = [
       </div>
     </div>
   </section>
+
+  <!-- FAQ -->
+  <PageFAQ
+    heading="产品服务常见问题"
+    items={[
+      { q: '新亦源鞋服云仓的最小起储量是多少？', a: '新亦源没有固定最小起储量门槛，以实际货量、SKU复杂度和仓点匹配情况为准。中小品牌可从单品类、单仓点开始合作，随业务增长逐步扩展。具体方案建议联系商务团队评估。' },
+      { q: '系统如何与品牌现有ERP/OMS对接？', a: '新亦源自研OTD中台支持奇门（旺铺、ERP等）、EDI标准接口，可直接对接用友、金蝶、管易、旺店通、好订货等主流ERP，以及天猫、京东、抖音、唯品会等平台OMS。对接周期视接口复杂度通常为1–4周，免收系统接入费。' },
+      { q: '大促备战期间，新亦源如何提前锁定峰值产能？', a: '新亦源的大促产能锁定分三阶段执行：大促前21天提交货量预测模型，与品牌对齐日发货量目标；大促前14天完成仓内货位扩容、波次排班计划和弹性人力到岗安排；大促前72小时完成最后压测，确认系统稳定和全链路时效。大促期间SLA标准与日常相同，合同约定未达标即触发赔偿机制，不单独设大促"免责窗口"。' },
+      { q: '鞋服WMS如何防止高SKU货品发错码号或颜色？', a: '新亦源通过三重机制保障拣货准确：①RFID全域扫描——货品从上架到拣货全程绑定SKU标签，拣错即时报警，拒绝流转；②Pick-to-Light电子标签引导——拣货员按系统点亮的货架格取货，无需凭记忆找位；③复核台扫码二次确认——发货前逐包过扫，自动比对订单清单，异常件不允许出库。三重校验叠加后发货准确率可达99.99%，合同约定错漏全赔。' },
+      { q: '新亦源的物流云如何帮品牌降低运费支出？', a: 'OTD中台通过两个路径降低运费：①智能比价路由——按件重、目的地、时效要求自动匹配性价比最优承运商，相比品牌自行议价通常节省8%–15%；②规模协议价——新亦源与各承运商签订年度量价协议，多品牌发货量叠加后获得更优折扣，由合作方按实际发件量均摊享受。品牌也可设置自定义路由规则（如大件必走货运专线、指定省份走特定网络），系统优先执行品牌规则。' },
+      { q: '入库上架流程是怎样的？新货从收货到可发出需要多久？', a: '标准流程：承运商卸货→扫码收货→质检验货（全检或按比例抽检）→上架定位→系统同步库存。新货标准时效为到仓后48小时内完成上架，期间如发现质量问题即时出具质检报告并通知品牌方，支持照片/视频存证，全程1080P监控。' },
+      { q: '大货入仓前，品牌方需要做哪些准备工作？', a: '新货入仓前建议完成四步准备：①SKU数据清单——提供完整的款色码规格表（Excel或系统导出），包含条码与实物的对应关系；②包材与标签规范——确认是否需要新亦源代贴条码、换挂牌或加包装；③入仓通知单（ASN）——提前24小时在系统提交到货清单，仓方据此安排卸货和验货人力；④质检标准确认——新品入仓时明确验货比例（全检或按比例抽检）和异常处理授权。流程齐备后，一般可在到仓后48小时内完成上架。' },
+      { q: '新亦源的仓储和服务费用是如何计算的？', a: '费用结构通常包含：仓储费（按月/按件/按SKU计费，视货物特性和存储周期确定）、操作费（入库、出库、质检、包装等按操作量计费）、物流费（按实际承运商费率折扣结算）。不收取系统使用费和接入费，具体报价需根据货量、SKU数量、发货频次等因素定制，请联系商务团队获取方案。' },
+    ]}
+  />
 
   <!-- CTA -->
   <section class="py-14 bg-[#EFF4FF]" aria-labelledby="product-cta-heading">

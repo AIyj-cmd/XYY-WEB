@@ -8,14 +8,8 @@ import { BRAND, NAV_LINKS, SERVICES, DIGITAL_PRODUCTS } from '@/lib/brand'
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-10">
       <!-- Brand column -->
       <div class="lg:col-span-1">
-        <a href="/" class="flex items-center gap-3 mb-4" aria-label="新亦源供应链首页">
-          <div class="w-10 h-10 bg-brand-orange rounded-lg flex items-center justify-center text-white font-black text-xl flex-shrink-0">
-            新
-          </div>
-          <div>
-            <div class="text-white font-bold text-base leading-tight">新亦源供应链</div>
-            <div class="text-navy-200 text-xs">{BRAND.tagline}</div>
-          </div>
+        <a href="/" class="inline-block mb-5" aria-label="新亦源供应链首页">
+          <img src="/logo.png" alt="新亦源供应链" class="h-12 w-auto" loading="lazy" />
         </a>
         <p class="text-sm text-navy-200 leading-relaxed mb-5">
           2011年成立，深耕鞋服物流15年。140+知名服饰品牌的云仓伙伴，服务覆盖全国主要城市及6000+区县/服务区域。
@@ -85,14 +79,7 @@ import { BRAND, NAV_LINKS, SERVICES, DIGITAL_PRODUCTS } from '@/lib/brand'
             <span class="text-brand-orange font-medium">华南总部</span>
             <p class="text-navy-200 mt-0.5 leading-relaxed">{BRAND.locations.south.address}</p>
           </li>
-          <li class="text-sm">
-            <span class="text-navy-300 font-medium">华东仓</span>
-            <p class="text-navy-200 mt-0.5 leading-relaxed">{BRAND.locations.east.address}</p>
-          </li>
-          <li class="text-sm">
-            <span class="text-navy-300 font-medium">华中仓</span>
-            <p class="text-navy-200 mt-0.5 leading-relaxed">{BRAND.locations.central.address}</p>
-          </li>
+
         </ul>
       </div>
     </div>

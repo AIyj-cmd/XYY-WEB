@@ -1,0 +1,353 @@
+---
+import Layout from '@/layouts/Layout.astro'
+import PageFAQ from '@/components/PageFAQ.astro'
+import { BRAND } from '@/lib/brand'
+
+const ISSUES = [
+  {
+    issue: 14,
+    title: '森林期刊·第14期',
+    season: '',
+    summary: '最新一期！聚焦鞋服供应链数智化前沿，结合品牌实战案例，深度呈现新亦源在仓内自动化与全链路效能提升上的最新成果。',
+    cover: '/senlinqikan/covers/14.jpg',
+    pdf: '/senlinqikan/pdf/14.pdf',
+    date: '2025',
+    isLatest: true,
+  },
+  {
+    issue: 13,
+    title: '森林期刊·第13期',
+    season: '',
+    summary: '聚焦鞋服云仓最新动态与行业趋势，分享新亦源在数智化升级、跨境出海业务布局上的最新进展。',
+    cover: '/senlinqikan/covers/13.jpg',
+    pdf: '/senlinqikan/pdf/13.pdf',
+    date: '2025',
+    isLatest: false,
+  },
+  {
+    issue: 12,
+    title: '森林期刊·第12期',
+    season: '',
+    summary: '深度解析鞋服全渠道仓配协同策略，结合直播电商、B2B门店配送场景，呈现新亦源一体化仓配解决方案。',
+    cover: '/senlinqikan/covers/12.jpg',
+    pdf: '/senlinqikan/pdf/12.pdf',
+    date: '2025',
+    isLatest: false,
+  },
+  {
+    issue: 11,
+    title: '森林期刊·第11期',
+    season: '',
+    summary: '聚焦退货质检与售后修复全链路，结合品牌客户真实案例，拆解如何将退货损耗率降低20%以上。',
+    cover: '/senlinqikan/covers/11.jpg',
+    pdf: '/senlinqikan/pdf/11.pdf',
+    date: '2025',
+    isLatest: false,
+  },
+  {
+    issue: 10,
+    title: '森林期刊·第10期',
+    season: '夏',
+    summary: '首次转型电子书刊，响应ESG理念。聚焦2024年行业动态与员工发展，收录新亦源在绿色仓储与人才培养上的阶段性实践成果。',
+    cover: '/senlinqikan/covers/10.jpg',
+    pdf: '/senlinqikan/pdf/10.pdf',
+    date: '2024',
+    isLatest: false,
+  },
+  {
+    issue: 9,
+    title: '森林期刊·第9期',
+    season: '国风·绿',
+    summary: '以国风绿为主视觉，探讨鞋服物流行业的绿色低碳实践，以及新亦源在节能降耗方面的探索与成果。',
+    cover: '/senlinqikan/covers/9.jpg',
+    pdf: '/senlinqikan/pdf/9.pdf',
+    date: '2024',
+    isLatest: false,
+  },
+  {
+    issue: 8,
+    title: '森林期刊·第8期',
+    season: '国风·红',
+    summary: '以中国红为主题，回顾新亦源年度里程碑，展示鞋服供应链在大促备战与弹性产能方面的实战经验。',
+    cover: '/senlinqikan/covers/8.jpg',
+    pdf: '/senlinqikan/pdf/8.pdf',
+    date: '2024',
+    isLatest: false,
+  },
+  {
+    issue: 7,
+    title: '森林期刊·第7期',
+    season: '秋',
+    summary: '秋季特辑，解读鞋服电商大促物流备战方法论，双11仓储容量规划、波次拣货与时效保障实操指南。',
+    cover: '/senlinqikan/covers/7.jpg',
+    pdf: '/senlinqikan/pdf/7.pdf',
+    date: '2024',
+    isLatest: false,
+  },
+  {
+    issue: 6,
+    title: '森林期刊·第6期',
+    season: '夏',
+    summary: '夏季刊聚焦鞋服仓储效率提升，介绍智能分拣、RFID盘点及多温层存储在服饰品类上的应用实践。',
+    cover: '/senlinqikan/covers/6.jpg',
+    pdf: '/senlinqikan/pdf/6.pdf',
+    date: '2023',
+    isLatest: false,
+  },
+  {
+    issue: 5,
+    title: '森林双月刊·第5期',
+    season: '春',
+    summary: '以"用热爱奔跑，物流时光岁月"为主题，2023年收官之作。设木牛流马、森林玩家等特色栏目，聚焦员工成长故事与新亦源年度发展回顾。',
+    cover: '/senlinqikan/covers/5.jpg',
+    pdf: '/senlinqikan/pdf/5.pdf',
+    date: '2023',
+    isLatest: false,
+  },
+  {
+    issue: 4,
+    title: '森林双月刊·第4期',
+    season: '',
+    summary: '2022年度第四期双月刊，持续记录新亦源仓储团队的日常与成长，涵盖仓内培训实况、员工风采与运营管理经验分享。',
+    cover: '/senlinqikan/covers/4.jpg',
+    pdf: '/senlinqikan/pdf/4.pdf',
+    date: '2022',
+    isLatest: false,
+  },
+  {
+    issue: 3,
+    title: '森林双月刊·第3期',
+    season: '',
+    summary: '2022年度第三期双月刊，聚焦鞋服仓储一线团队建设与操作规范推广，记录新亦源在制度化管理和员工凝聚力建设上的探索实践。',
+    cover: '/senlinqikan/covers/3.jpg',
+    pdf: '/senlinqikan/pdf/3.pdf',
+    date: '2022',
+    isLatest: false,
+  },
+  {
+    issue: 2,
+    title: '森林双月刊·第2期',
+    season: '',
+    summary: '以"新亦源五周年司庆"为专题，记录即将突破600人规模团队的成长历程，回顾企业从0到1的关键里程碑，传递"新亦源与您同源"的品牌初心。',
+    cover: '/senlinqikan/covers/2.jpg',
+    pdf: '/senlinqikan/pdf/2.pdf',
+    date: '2022',
+    isLatest: false,
+  },
+  {
+    issue: 1,
+    title: '森林双月刊·创刊号',
+    season: '',
+    summary: '《新亦源森林》创刊号，2022年第1期。设森林公约、技能装备、执掌引风、森林活动、森林擂台五大栏目，以简洁语言和精彩图片，打造员工信息交流与自我展示的品牌内刊平台。',
+    cover: '/senlinqikan/covers/1.jpg',
+    pdf: '/senlinqikan/pdf/1.pdf',
+    date: '2022',
+    isLatest: false,
+  },
+]
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: '首页', item: BRAND.url },
+    { '@type': 'ListItem', position: 2, name: '森林期刊', item: `${BRAND.url}/senlinqikan` },
+  ],
+}
+
+const collectionSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: '新亦源森林期刊',
+  description: '新亦源供应链出品的鞋服物流行业内刊，聚焦云仓运营、质检修复、行业趋势与品牌动态。',
+  numberOfItems: ISSUES.length,
+  itemListElement: ISSUES.map((iss, idx) => ({
+    '@type': 'ListItem',
+    position: idx + 1,
+    name: iss.title,
+    url: `${BRAND.url}/senlinqikan/pdf/${iss.issue}.pdf`,
+  })),
+}
+---
+
+<Layout
+  title="森林期刊 — 新亦源鞋服供应链行业内刊"
+  description="《森林期刊》是广州新亦源供应链出品的品牌内刊，聚焦鞋服云仓运营实战、退货质检、直播仓配及行业趋势，持续输出鞋服供应链专业知识。"
+  jsonLd={[breadcrumbSchema, collectionSchema]}
+>
+
+  <!-- Hero -->
+  <section class="relative py-20 overflow-hidden" aria-labelledby="slj-hero-heading">
+    <img
+      src="/senlinqikan/covers/14.jpg"
+      alt="森林期刊封面"
+      class="absolute inset-0 w-full h-full object-cover object-center"
+      fetchpriority="high"
+    />
+    <div
+      class="absolute inset-0"
+      style="background: linear-gradient(105deg, rgba(8,20,42,0.97) 0%, rgba(8,20,42,0.85) 50%, rgba(8,20,42,0.55) 100%);"
+      aria-hidden="true"
+    ></div>
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <p class="text-brand-orange font-bold text-[11px] tracking-[0.4em] uppercase mb-4">新亦源出品</p>
+      <h1 id="slj-hero-heading" class="text-5xl lg:text-6xl font-black text-white leading-tight mb-5">
+        森林期刊
+      </h1>
+      <p class="text-lg text-navy-100 max-w-2xl leading-relaxed mb-8">
+        鞋服供应链行业内刊，聚焦云仓运营实战、退货质检、直播仓配及行业趋势，持续输出一线经验，助力鞋服品牌构建高效供应链体系。
+      </p>
+      <div class="flex flex-wrap gap-4">
+        <a
+          href={ISSUES[0].pdf}
+          target="_blank"
+          rel="noopener"
+          class="inline-flex items-center gap-2 px-6 py-3 bg-brand-orange text-white font-bold rounded-xl hover:bg-brand-orange-dark transition-colors"
+        >
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+          </svg>
+          阅读最新一期
+        </a>
+        <a
+          href="#issues"
+          class="inline-flex items-center gap-2 px-6 py-3 border border-white/30 text-white font-medium rounded-xl hover:bg-white/10 transition-colors"
+        >
+          浏览往期
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 简介 -->
+  <section class="py-12 bg-white border-b border-gray-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-8 text-center">
+        {[
+          { num: '14', label: '已出版期数' },
+          { num: '2022', label: '创刊年份' },
+          { num: '140+', label: '服务品牌' },
+          { num: '双月/季刊', label: '出版周期' },
+        ].map(({ num, label }) => (
+          <div>
+            <div class="text-3xl font-black text-navy-800 mb-1">{num}</div>
+            <div class="text-xs text-gray-400 font-medium">{label}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- 期刊列表 -->
+  <section id="issues" class="py-16 bg-gray-50" aria-labelledby="issues-heading">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="mb-10">
+        <p class="text-brand-orange font-bold text-[11px] tracking-[0.35em] uppercase mb-2">往期回顾</p>
+        <h2 id="issues-heading" class="text-3xl font-black text-navy-800">全部期次</h2>
+      </div>
+
+      <!-- 最新一期 — 大卡片 -->
+      <a
+        href={ISSUES[0].pdf}
+        target="_blank"
+        rel="noopener"
+        class="group block bg-white rounded-2xl border border-gray-100 overflow-hidden hover:border-navy-200 hover:shadow-xl transition-all duration-300 mb-8"
+        aria-label={`阅读 ${ISSUES[0].title}`}
+      >
+        <div class="flex flex-col lg:flex-row">
+          <div class="lg:w-96 flex-shrink-0 overflow-hidden" style="max-height:320px;">
+            <img
+              src={ISSUES[0].cover}
+              alt={ISSUES[0].title}
+              loading="eager"
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            />
+          </div>
+          <div class="flex-1 p-8 lg:p-12 flex flex-col justify-center">
+            <div class="flex items-center gap-3 mb-4">
+              <span class="text-xs font-bold text-white bg-brand-orange px-3 py-1 rounded-full">最新一期</span>
+              <span class="text-xs text-gray-400">{ISSUES[0].date}</span>
+            </div>
+            <h3 class="text-2xl font-black text-navy-800 mb-3">{ISSUES[0].title}</h3>
+            <p class="text-gray-500 leading-relaxed mb-6">{ISSUES[0].summary}</p>
+            <div class="flex items-center gap-2 text-brand-orange font-semibold text-sm">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+              </svg>
+              下载 PDF 阅读
+            </div>
+          </div>
+        </div>
+      </a>
+
+      <!-- 往期列表 — 3列网格 -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {ISSUES.slice(1).map((iss) => (
+          <a
+            href={iss.pdf}
+            target="_blank"
+            rel="noopener"
+            class="group bg-white rounded-2xl border border-gray-100 overflow-hidden hover:border-navy-200 hover:shadow-lg transition-all duration-300 flex flex-col"
+            aria-label={`阅读 ${iss.title}`}
+          >
+            <div class="aspect-[3/2] overflow-hidden">
+              <img
+                src={iss.cover}
+                alt={iss.title}
+                loading="lazy"
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+            </div>
+            <div class="p-5 flex flex-col flex-1">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="text-[11px] font-bold text-brand-orange bg-orange-50 px-2 py-0.5 rounded-full">
+                  第{iss.issue}期{iss.season ? `·${iss.season}` : ''}
+                </span>
+                <span class="text-xs text-gray-400">{iss.date}</span>
+              </div>
+              <h3 class="text-base font-black text-navy-800 mb-2">{iss.title}</h3>
+              <p class="text-xs text-gray-500 leading-relaxed flex-1">{iss.summary}</p>
+              <div class="flex items-center gap-1.5 text-brand-orange text-xs font-semibold mt-4">
+                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+                </svg>
+                下载阅读
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <PageFAQ
+    heading="森林期刊常见问题"
+    items={[
+      { q: '《森林期刊》是什么？面向哪类读者？', a: '《森林期刊》是广州新亦源供应链出品的专业内刊，创刊于2023年，每季度发行一期。内容聚焦鞋服供应链行业，涵盖云仓运营实战、退货质检方法论、直播仓配运营、行业趋势观察与品牌案例深度拆解。主要读者为鞋服品牌运营负责人、供应链经理、电商总监及业内从业者。' },
+      { q: '如何下载或获取各期PDF？', a: '您可以直接在本页面点击各期"下载阅读"按钮，即可获取PDF文件。目前第6期至第14期已全部上线，免费下载，无需注册。如需纸质版，请通过官网联系表单告知您的地址，我们会视存量情况安排寄送。' },
+      { q: '森林期刊的出版周期是多长？在哪里可以第一时间获取新刊？', a: '森林期刊为季刊，每年出版4期，通常在每季度末发布。新刊上线后会同步更新本页面，同时通过新亦源官方公众号、合作品牌社群进行推送。如需优先收到新刊通知，可联系我们留下联系方式，加入内刊读者名单。' },
+      { q: '期刊中的数据和案例是否来自真实合作经历？', a: '是的。森林期刊中所有数据、流程拆解和品牌案例均来源于新亦源在实际运营中积累的真实经验，部分案例为脱敏处理后的合作品牌实战记录。我们严格遵守保密协议，不在未获授权的情况下公开客户具体名称或特定数据，但案例的业务场景、数字量级和解决方案均为真实呈现。' },
+      { q: '我可以在公司内部培训或行业活动中引用期刊内容吗？', a: '欢迎在非商业用途（企业内训、行业交流、学术研究）下引用，请注明来源"新亦源供应链·森林期刊"及期次编号。如需用于商业出版、媒体转载或大规模分发，请提前联系我们获取书面授权，我们将尽快回复。' },
+      { q: '森林期刊是否接受投稿或行业专家合作？', a: '是的，我们欢迎供应链、物流、电商领域的从业者和专家参与内容共创。如果您有实操案例、行业洞察或专题研究希望在森林期刊发表，可通过官网联系页面提交投稿意向，我们的编辑团队会在5个工作日内与您沟通。质量优先，我们不接受广告软文形式的投稿。' },
+      { q: '为什么有些期次（如第10期）没有出现在目录里？', a: '森林期刊采用年度主题规划，部分年份期次有调整，不排除个别期次为内部专刊（仅发给合作伙伴）或内容整合后并入相邻期发布的情况。目前官网已上架的是面向公众开放的全部期次，如需了解特定期次，可通过联系页面咨询。' },
+      { q: '期刊中的工具、模板或清单是否可以直接复用？', a: '可以。期刊中发布的操作清单、质检分级参考表、大促备战模板等工具类内容，均为新亦源根据实际经验整理提供，允许读者在自身业务中直接参考和使用。如需定制化版本或希望与新亦源团队进一步探讨落地，欢迎通过联系页面预约沟通。' },
+    ]}
+  />
+
+  <!-- CTA -->
+  <section class="py-14 bg-white border-t border-gray-100" aria-labelledby="slj-cta-heading">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <h2 id="slj-cta-heading" class="text-2xl font-black text-navy-800 mb-3">想合作 · 想投稿 · 想收到期刊？</h2>
+      <p class="text-gray-500 mb-6 leading-relaxed">
+        森林期刊每季度出版，定向寄送至合作品牌。如需纸质版或了解合作方式，欢迎联系我们。
+      </p>
+      <a
+        href="/contact"
+        class="inline-flex items-center px-7 py-3.5 bg-brand-orange text-white font-bold rounded-xl hover:bg-brand-orange-dark transition-colors"
+      >
+        立即联系
+      </a>
+    </div>
+  </section>
+</Layout>

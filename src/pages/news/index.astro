@@ -1,6 +1,7 @@
 ---
 // No prerender = SSR, fetches fresh from Directus on each request
 import Layout from '@/layouts/Layout.astro'
+import PageFAQ from '@/components/PageFAQ.astro'
 import { BRAND } from '@/lib/brand'
 import { getPublishedNews, formatDate, NEWS_CATEGORIES, getDirectusAssetUrl } from '@/lib/directus'
 import type { NewsArticle } from '@/lib/directus'
@@ -120,6 +121,31 @@ const breadcrumbSchema = {
     </div>
   </div>
 
+  <!-- 森林期刊入口 Banner -->
+  <div class="bg-white border-b border-gray-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
+      <a
+        href="/senlinqikan"
+        class="group flex items-center gap-5 bg-navy-50 hover:bg-navy-100 rounded-2xl px-6 py-4 transition-colors"
+      >
+        <div class="flex-shrink-0 w-16 h-16 rounded-xl overflow-hidden">
+          <img src="/senlinqikan/covers/14.jpg" alt="森林期刊" class="w-full h-full object-cover" loading="lazy" />
+        </div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="text-[11px] font-bold text-brand-orange bg-orange-50 px-2 py-0.5 rounded-full">新亦源出品</span>
+            <span class="text-xs text-gray-400">第1–14期</span>
+          </div>
+          <p class="text-sm font-black text-navy-800 truncate">🌲 森林期刊 — 鞋服供应链行业内刊，14期内容免费下载</p>
+          <p class="text-xs text-gray-400 mt-0.5 truncate hidden sm:block">聚焦云仓运营、退货质检、直播仓配、行业趋势与品牌动态</p>
+        </div>
+        <svg class="w-5 h-5 text-gray-400 flex-shrink-0 group-hover:text-navy-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+      </a>
+    </div>
+  </div>
+
   <!-- Articles Grid -->
   <section class="py-12 bg-gray-50" aria-label="文章列表">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -197,6 +223,21 @@ const breadcrumbSchema = {
       )}
     </div>
   </section>
+
+  <!-- FAQ -->
+  <PageFAQ
+    heading="行业动态常见问题"
+    items={[
+      { q: '新亦源行业动态栏目的内容由谁撰写？', a: '内容由新亦源内部运营团队、供应链顾问及行业合作专家共同出品。所有文章均基于真实仓配操作数据、品牌合作积累及公开行业数据，不接受任何形式的付费软文发布。' },
+      { q: '文章中提到的"波次拣货"是什么意思？对发货时效有什么影响？', a: '波次拣货是将一段时间内的订单按照拣货路径、SKU集中度进行批量合并，由拣货员一次性完成多个订单的拣选动作，而非逐单处理。这种方式可将单仓日处理能力提升30%–50%，同时降低拣货错误率。对品牌而言，波次管理是大促当天出库量能否达峰的关键决定因素。' },
+      { q: 'B2B批发配货和B2C电商发货，仓库操作逻辑有什么根本区别？', a: '两种模式在仓内的核心差异体现在三个层面：①拣货颗粒度——B2C按单件拣货，精准到款色码；B2B按整箱或整托拣货，强调体积和重量控制；②包装标准——B2C面向消费者，需精装外包装和防损保护；B2B以效率优先，通常走栈板或大纸箱集货；③库存管理——B2C需实时扣减库存防超卖，B2B可接受周期性批次更新。新亦源WMS支持在同一仓点区分B2C和B2B货区，品牌同时运营两种渠道时系统自动按渠道走不同的拣配SOP。' },
+      { q: '唯品会JIT/JITX模式对仓库有什么具体要求？为什么很多品牌觉得难对接？', a: 'JIT（Just-In-Time）要求品牌在唯品会活动开始后，按照其实时下单量进行精准发货，不允许提前备货。JITX在此基础上进一步要求在规定时间窗内完成出库。主要挑战有：①库存数据需与唯品会系统实时同步，精准率要求≥99.5%；②出库时效要求严格，通常T+1日必须扫描上网；③超时或发错会触发扣分，严重影响商家评级。新亦源通过OTD中台实现与唯品会的直连对接，目前已有多个品牌稳定运营JIT/JITX模式。' },
+      { q: '直播电商的仓配逻辑和传统电商有什么本质区别？', a: '传统电商订单分散、可预测，按历史波形规划产能；直播电商订单高度集中（直播结束后30–120分钟内爆量），且实时无法精准预测。仓配层面的核心差异：①需要专属"直播仓区"预置当场货位，减少拣货路径；②人力需按场次弹性调配，不能按固定班次排；③出库SLA通常要求比普通订单更短（部分平台要求4小时内出库）。新亦源已形成标准化的直播场次仓配SOP，配合品牌做场前预布。' },
+      { q: '文章提到的"逆向物流"是什么概念？和退货处理是一回事吗？', a: '"逆向物流"是指商品从消费者端流回品牌/仓库的全链路，退货处理是其核心环节之一。但逆向物流还包括：退件运输管理、到仓验收、质检分级、修复翻新、二次上架或报废处置，以及退货数据统计与原因分析。新亦源的逆向物流体系将退货全流程纳入SLA管理，而非仅做"收货+上架"的动作，从而帮助品牌将退货变为可二次利用的资产。' },
+      { q: '如何订阅新亦源行业动态的更新通知？', a: '目前可通过以下方式获取内容更新：关注新亦源官方公众号（搜索"新亦源供应链"）；或通过官网联系页面留下邮箱，加入定期推送名单。我们通常每月输出4–8篇深度文章，不做流量填充，每篇均有实际操作参考价值。' },
+      { q: '我看到了一篇对我有参考价值的文章，可以转发给同事或行业伙伴吗？', a: '欢迎转发。您可以直接分享文章链接，或将内容截图/摘录用于内部培训和团队学习，无需额外授权。如需将文章内容用于媒体刊载、公开出版或白皮书引用，请注明来源"新亦源供应链"并通过官网联系我们。我们鼓励知识在行业中流通，但希望确保来源可溯。' },
+    ]}
+  />
 
   <!-- CTA -->
   <section class="py-12 bg-white border-t border-gray-100" aria-label="订阅与联系">
