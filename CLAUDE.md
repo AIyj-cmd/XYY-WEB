@@ -76,6 +76,6 @@ DEPLOY_HOST='root@47.82.105.103' XYY_DEPLOY_PASSWORD='...' bash scripts/deploy.s
 
 ## 渲染说明
 
-- `/contact`、`/estimate` 是预渲染静态页，不读 Directus
+- `/contact` 是预渲染静态页，不读 Directus
 - 新闻、案例、产品页在每次请求时从 Directus 拉数据
 - Directus 媒体 URL 用 `getDirectusAssetUrl(fileId)`，不要拼 `DIRECTUS_URL`

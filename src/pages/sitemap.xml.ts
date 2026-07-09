@@ -18,7 +18,6 @@ const STATIC_PAGES = [
   { url: '/cases', priority: '0.8', changefreq: 'monthly' },
   { url: '/news', priority: '0.8', changefreq: 'daily' },
   { url: '/contact', priority: '0.7', changefreq: 'monthly' },
-  { url: '/estimate', priority: '0.7', changefreq: 'monthly' },
 ]
 
 const today = new Date().toISOString().split('T')[0]
