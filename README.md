@@ -32,7 +32,7 @@ src/
   layouts/Layout.astro 全局 SEO、JSON-LD、字体、浮动联系按钮
   lib/site-config.ts   站点 URL 单一来源（读取 PUBLIC_SITE_URL 环境变量）
   lib/brand.ts         品牌常量、ABOUT_STATS、CASE_DETAILS（首页案例模态框富文本）
-  lib/directus.ts      Directus SDK 封装、60s 进程内缓存、公开资源 URL helper
+  lib/directus.ts      Directus SDK 封装、5分钟（300s）进程内缓存、公开资源 URL helper
   lib/sanitize.ts      CMS 富文本白名单过滤
   pages/               Astro 页面与 /api/contact
 scripts/
@@ -72,12 +72,12 @@ bash scripts/deploy.sh
 
 | 内容 | 来源 | 生效延迟 |
 |---|---|---|
-| 首页统计数字 | Directus `homepage_stats` | ≤ 60s |
-| 服务介绍（三大业务）| Directus `services` | ≤ 60s |
-| 首页案例卡片（前4条）| Directus `cases` | 实时 |
-| 案例页 `/cases` | Directus `cases` | 实时 |
-| 关于页仓库列表 | Directus `warehouses` | ≤ 60s |
-| 新闻 | Directus `news` | 实时 |
+| 首页统计数字 | Directus `homepage_stats` | ≤ 5分钟 |
+| 服务介绍（三大业务）| Directus `services` | ≤ 5分钟 |
+| 首页案例卡片（前4条）| Directus `cases` | ≤ 5分钟 |
+| 案例页 `/cases` | Directus `cases` | ≤ 5分钟 |
+| 关于页仓库列表 | Directus `warehouses` | ≤ 5分钟 |
+| 新闻 | Directus `news` | ≤ 5分钟 |
 | 首页案例模态框详情 | `brand.ts CASE_DETAILS` | 改代码后重新部署 |
 | 关于页质检数字栏 | `brand.ts ABOUT_STATS` | 改代码后重新部署 |
 

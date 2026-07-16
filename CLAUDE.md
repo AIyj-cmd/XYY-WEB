@@ -25,8 +25,8 @@ pm2 logs xyy-web
 | 数据 | 来源 | 修改方式 |
 |---|---|---|
 | 首页统计、服务介绍、仓库列表 | Directus（5分钟缓存）| CMS 后台编辑，最多5分钟生效；立即生效跑 `pm2 restart xyy-web` |
-| 首页案例卡片（前4条）、案例页 | Directus（实时）| CMS 后台编辑 |
-| 新闻 | Directus（实时）| CMS 后台编辑 |
+| 首页案例卡片（前4条）、案例页 | Directus（5分钟缓存）| CMS 后台编辑，最多5分钟生效；立即生效跑 `pm2 restart xyy-web` |
+| 新闻 | Directus（5分钟缓存）| CMS 后台编辑，最多5分钟生效；立即生效跑 `pm2 restart xyy-web` |
 | 首页案例模态框详情 `CASE_DETAILS` | `brand.ts` | 改代码 + 部署 |
 | 关于页质检数字 `ABOUT_STATS` | `brand.ts` | 改代码 + 部署 |
 | 品牌信息、导航、数字产品 | `brand.ts` | 改代码 + 部署 |
