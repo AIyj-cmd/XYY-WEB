@@ -109,7 +109,7 @@ const faqSchema = {
 ---
 
 <Layout
-  title="新亦源供应链 - 鞋服云仓专业服务商 | 140+品牌 50万㎡"
+  title="新亦源供应链 | 鞋服云仓·退货质检·全渠道仓配服务商"
   description="广州新亦源供应链，专注鞋服云仓15年，合作知名服饰品牌140+，直营仓储50万㎡，配送覆盖全国主要城市及6000+区县/服务区域。提供鞋服云仓、后整质检修复、物流云一站式服务。"
   jsonLd={[orgSchema, webSiteSchema, faqSchema]}
 >
@@ -370,6 +370,9 @@ const faqSchema = {
         <dd class="faq-a">支持。品牌方将货物入驻新亦源云仓后，平台订单实时推送，新亦源按单拣货、包装、发货，发货准确率99.99%，18:00截单当日24:00全部出库，对接天猫、京东、拼多多、抖音、唯品会等全渠道。</dd>
       </div>
     </dl>
+    <p class="faq-authority">
+      行业数据参考来源：<a href="https://www.spb.gov.cn" target="_blank" rel="noopener noreferrer">国家邮政局</a>、<a href="https://www.sac.gov.cn" target="_blank" rel="noopener noreferrer">国家标准化管理委员会</a>、<a href="https://www.customs.gov.cn" target="_blank" rel="noopener noreferrer">中华人民共和国海关总署</a>
+    </p>
   </div>
 </section>
 
@@ -1368,6 +1371,18 @@ const faqSchema = {
   line-height: 1.8;
   margin: 0;
 }
+.faq-authority {
+  margin-top: 2rem;
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+.faq-authority a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color 0.15s;
+}
+.faq-authority a:hover { color: #64748b; }
 
 .s-cta {
   min-height: 80vh;
