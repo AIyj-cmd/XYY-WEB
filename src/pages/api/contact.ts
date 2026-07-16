@@ -22,6 +22,10 @@ function clean(value: unknown, maxLength = 500) {
   return typeof value === 'string' ? value.trim().slice(0, maxLength) : ''
 }
 
+function maskPhone(phone: string): string {
+  return phone.length > 7 ? `${phone.slice(0, 3)}****${phone.slice(-4)}` : '***'
+}
+
 function getRequesterId(request: Request, clientAddress?: string) {
   const forwardedFor = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
   return forwardedFor || clientAddress || 'unknown'
@@ -114,16 +118,17 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
         })
 
         if (!response.ok) {
-          console.warn('[contact] Directus rejected lead:', {
+          console.error('[contact] Directus rejected lead:', {
             status: response.status,
             name,
-            phone,
+            phone: maskPhone(phone),
             company,
           })
+          return json({ error: '提交失败，请稍后重试或直接拨打客服热线' }, 503)
         }
       } catch {
-        // Directus unavailable - log to console, don't fail user
-        console.warn('[contact] Directus unavailable, lead not saved:', { name, phone, company })
+        console.error('[contact] Directus unavailable, lead not saved:', { name, phone: maskPhone(phone), company })
+        return json({ error: '提交失败，请稍后重试或直接拨打客服热线' }, 503)
       }
     }
 

@@ -35,5 +35,13 @@ public/fonts/
 public/logos/
 public/about/
 
+# Sensitive / non-repo assets
+public/Omission/
+public/yunliu.png
+
+# Generated outputs / scratch
+graphify-out/
+speed-optimization.plan.md
+
 # Temp
 *.tar.gz

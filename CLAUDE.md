@@ -24,7 +24,7 @@ pm2 logs xyy-web
 
 | 数据 | 来源 | 修改方式 |
 |---|---|---|
-| 首页统计、服务介绍、仓库列表 | Directus（60s 缓存）| CMS 后台编辑，60s 内生效；立即生效跑 `pm2 restart xyy-web` |
+| 首页统计、服务介绍、仓库列表 | Directus（5分钟缓存）| CMS 后台编辑，最多5分钟生效；立即生效跑 `pm2 restart xyy-web` |
 | 首页案例卡片（前4条）、案例页 | Directus（实时）| CMS 后台编辑 |
 | 新闻 | Directus（实时）| CMS 后台编辑 |
 | 首页案例模态框详情 `CASE_DETAILS` | `brand.ts` | 改代码 + 部署 |
@@ -69,7 +69,7 @@ DEPLOY_HOST='root@47.82.105.103' XYY_DEPLOY_PASSWORD='...' bash scripts/deploy.s
 
 - `src/lib/site-config.ts`：站点 URL 单一来源，读 `PUBLIC_SITE_URL` 环境变量
 - `src/lib/brand.ts`：品牌常量、`ABOUT_STATS`、`CASE_DETAILS`
-- `src/lib/directus.ts`：Directus SDK 封装，60s 进程内缓存
+- `src/lib/directus.ts`：Directus SDK 封装，5分钟（300s）进程内缓存
 - `src/lib/sanitize.ts`：CMS 富文本用 `set:html` 前必须先过此函数
 - `server.mjs`：生产用 Express 包装层，含压缩、安全头、CSP
 - `scripts/deploy.sh`：本地 verify → rsync → PM2 重载 → 健康检查
