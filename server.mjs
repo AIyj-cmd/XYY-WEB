@@ -67,6 +67,7 @@ app.use(compression({ threshold: 512 }))
 // Static assets with immutable long cache (content-hashed by Astro build)
 app.use(
   express.static(clientDir, {
+    redirect: false,
     setHeaders(res, filePath) {
       if (/_astro\//.test(filePath)) {
         // Hashed filenames — cache forever
