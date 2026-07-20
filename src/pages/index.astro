@@ -77,11 +77,6 @@ const webSiteSchema = {
   name: BRAND.name,
   description: BRAND.description,
   inLanguage: 'zh-Hans',
-  potentialAction: {
-    '@type': 'SearchAction',
-    target: { '@type': 'EntryPoint', urlTemplate: `${BRAND.url}/news?q={search_term_string}` },
-    'query-input': 'required name=search_term_string',
-  },
 }
 
 const faqSchema = {
