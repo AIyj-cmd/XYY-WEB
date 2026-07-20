@@ -39,6 +39,10 @@ public/about/
 public/Omission/
 public/yunliu.png
 
+# Audit / review documents — not for public serving
+public/*.html
+project-inspection-report.md
+
 # Generated outputs / scratch
 graphify-out/
 speed-optimization.plan.md

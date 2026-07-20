@@ -49,9 +49,15 @@ app.get('/healthz', (_req, res) => {
   res.status(200).json({ status: 'ok' })
 })
 
-// Canonical URL enforcement — redirect trailing-slash variants before static middleware
-app.get('/contact/', (_req, res) => res.redirect(301, '/contact'))
-app.get('/about/', (_req, res) => res.redirect(301, '/about'))
+// Global trailing-slash redirect — keeps canonical URLs consistent across all pages
+app.use((req, res, next) => {
+  if (req.path !== '/' && req.path.endsWith('/')) {
+    const qs = req.url.slice(req.path.length)
+    return res.redirect(301, req.path.slice(0, -1) + qs)
+  }
+  next()
+})
+
 // Serve prerendered contact page at the canonical no-slash URL
 app.get('/contact', (_req, res) => res.sendFile(join(clientDir, 'contact/index.html')))
 
