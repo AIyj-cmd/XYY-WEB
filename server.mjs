@@ -17,11 +17,16 @@ const app = express()
 app.disable('x-powered-by')
 app.set('trust proxy', 1)
 
+const IS_PRODUCTION_DOMAIN = (process.env.PUBLIC_SITE_URL ?? '').includes('56xyy.com')
+
 app.use((_req, res, next) => {
   res.setHeader('X-Content-Type-Options', 'nosniff')
   res.setHeader('X-Frame-Options', 'SAMEORIGIN')
   res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin')
   res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()')
+  if (!IS_PRODUCTION_DOMAIN) {
+    res.setHeader('X-Robots-Tag', 'noindex, nofollow')
+  }
   res.setHeader(
     'Content-Security-Policy',
     [

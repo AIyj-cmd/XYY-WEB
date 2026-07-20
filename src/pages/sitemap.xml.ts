@@ -14,6 +14,8 @@ const STATIC_PAGES = [
   { url: '/huanan-xiefu-yuncang', priority: '0.85', changefreq: 'monthly' },
   { url: '/guangzhou-xiefu-yuncang', priority: '0.85', changefreq: 'monthly' },
   { url: '/b2b-mendian-cangpei', priority: '0.85', changefreq: 'monthly' },
+  { url: '/fuzhuang-yuncang', priority: '0.8', changefreq: 'monthly' },
+  { url: '/weipinhui-jit-jitx', priority: '0.8', changefreq: 'monthly' },
   { url: '/about', priority: '0.8', changefreq: 'monthly' },
   { url: '/cases', priority: '0.8', changefreq: 'monthly' },
   { url: '/news', priority: '0.8', changefreq: 'daily' },
