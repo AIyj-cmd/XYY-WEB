@@ -17,6 +17,7 @@ const STATIC_PAGES = [
   { url: '/about', priority: '0.8', changefreq: 'monthly' },
   { url: '/cases', priority: '0.8', changefreq: 'monthly' },
   { url: '/news', priority: '0.8', changefreq: 'daily' },
+  { url: '/senlinqikan', priority: '0.75', changefreq: 'monthly' },
   { url: '/contact', priority: '0.7', changefreq: 'monthly' },
 ]
 
@@ -35,14 +36,12 @@ export const GET: APIRoute = async () => {
   </url>`
   ).join('\n')
 
+  const TWO_DAYS_MS = 2 * 24 * 60 * 60 * 1000
   const newsEntries = newsArticles
-    .map(
-      (a) =>
-        `  <url>
-    <loc>${BRAND.url}/news/${a.slug}</loc>
-    <lastmod>${a.date_updated ? a.date_updated.split('T')[0] : a.published_at.split('T')[0]}</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    .map((a) => {
+      const isRecent = Date.now() - new Date(a.published_at).getTime() < TWO_DAYS_MS
+      const newsBlock = isRecent
+        ? `
     <news:news>
       <news:publication>
         <news:name>${BRAND.name}</news:name>
@@ -50,9 +49,15 @@ export const GET: APIRoute = async () => {
       </news:publication>
       <news:publication_date>${a.published_at}</news:publication_date>
       <news:title>${a.title.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</news:title>
-    </news:news>
+    </news:news>`
+        : ''
+      return `  <url>
+    <loc>${BRAND.url}/news/${a.slug}</loc>
+    <lastmod>${a.date_updated ? a.date_updated.split('T')[0] : a.published_at.split('T')[0]}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>${newsBlock}
   </url>`
-    )
+    })
     .join('\n')
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
