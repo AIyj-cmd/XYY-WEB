@@ -136,19 +136,19 @@ export const CASE_DETAILS = {
       { label: '日均退货量', value: '1.5万+', unit: '件/日' },
     ],
   },
-  'Urbanic': {
-    name: 'Urbanic',
-    fullName: 'Urbanic（跨境快时尚）',
-    category: '跨境快时尚',
-    image: '/w-fulfill.webp',
+  '美一(MEIYI)': {
+    name: '美一(MEIYI)',
+    fullName: '美一（MEIYI）',
+    category: '跨境全品类女装',
+    image: 'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=800&q=75&auto=format&fit=crop',
     accent: '#D97706',
     description:
-      'Urbanic 是面向印度、英国等海外市场的跨境快时尚品牌，主营全品类女装。新亦源为其提供 B2B+B2C 一体化仓储服务，覆盖质检、包装、上架、库存管理及发货打包全流程，年处理量达千万件级别。',
+      '美一（MEIYI）是专注跨境全品类女装的服饰品牌。新亦源为其提供 B2B+B2C 一体化仓储服务，涵盖收货验货、新货质检、包装整理、库存上架及发货打包全流程，年综合处理量达百万件级别。',
     stats: [
-      { label: '年质检量', value: '800–1400', unit: '万件/年' },
-      { label: '年包装量', value: '1500–2000', unit: '万件/年' },
-      { label: '年上架量', value: '1300–1900', unit: '万件/年' },
-      { label: '年发货量', value: '1800–2300', unit: '万件/年' },
+      { label: '年发货量', value: '100~150', unit: '万件/年' },
+      { label: '年质检量', value: '120~200', unit: '万件/年' },
+      { label: '年上架量', value: '130~180', unit: '万件/年' },
+      { label: '年包装量', value: '80~160', unit: '万件/年' },
     ],
   },
 } as const
