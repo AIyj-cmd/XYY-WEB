@@ -95,6 +95,7 @@ export const CAPABILITIES = [
 // CASE_DETAILS keys match Directus cases.label so modal lookup works directly
 export const CASE_DETAILS = {
   'UR（Urban Revivo）': {
+    slug: 'ur',
     name: 'UR',
     fullName: 'Urban Revivo（UR）',
     category: '头部快时尚女装',
@@ -114,6 +115,7 @@ export const CASE_DETAILS = {
     ],
   },
   '玛克茜妮（MAXRIENY）': {
+    slug: 'maxrieny',
     name: 'MAXRIENY',
     fullName: '玛克茜妮（MAXRIENY）',
     category: '高端设计师女装',
@@ -133,6 +135,7 @@ export const CASE_DETAILS = {
     ],
   },
   幸棉: {
+    slug: 'xingmian',
     name: '幸棉',
     fullName: '幸棉',
     category: '内衣基础品类',
@@ -151,6 +154,7 @@ export const CASE_DETAILS = {
     ],
   },
   '美一(MEIYI)': {
+    slug: 'meiyi',
     name: '美一(MEIYI)',
     fullName: '美一（MEIYI）',
     category: '跨境全品类女装',

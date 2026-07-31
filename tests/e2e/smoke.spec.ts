@@ -3,11 +3,22 @@ import { expect, test } from '@playwright/test'
 test('homepage loads the shoe-apparel fulfillment message and primary CTA', async ({ page }) => {
   await page.goto('/')
 
+  await expect(page.getByText('新亦源鞋服云仓', { exact: true }).first()).toBeVisible()
   await expect(
-    page.getByRole('heading', { name: /新亦源鞋服云仓.*从入库质检到退货上架.*鞋服仓配一次解决/ }),
+    page.getByRole('heading', { name: /从入库质检到退货上架，.*鞋服仓配一次解决/ }),
   ).toBeVisible()
   await expect(page.getByRole('link', { name: '获取仓配方案' }).first()).toBeVisible()
+  await expect(page.locator('#s-stats .sr-only')).toHaveCount(0)
+  await expect(page.locator('a.case-card[href="/cases/ur"]')).toHaveCount(1)
   await expect(page.getByRole('link', { name: /在线估算费用|仓储成本估算器/ })).toHaveCount(0)
+})
+
+test('case detail has a crawlable URL and project data', async ({ page }) => {
+  await page.goto('/cases/ur')
+
+  await expect(page.getByRole('heading', { name: 'Urban Revivo（UR）' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: '品牌背景与服务场景' })).toBeVisible()
+  await expect(page.getByText('数据来源于新亦源内部项目运营统计', { exact: false })).toBeVisible()
 })
 
 test('contact form shows API validation errors', async ({ page }) => {

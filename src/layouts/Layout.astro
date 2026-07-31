@@ -68,6 +68,16 @@ const schemas = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : []
         font-display: swap;
         src: url('/fonts/puhuiti-900.woff2') format('woff2');
       }
+      @media (max-width: 767px) {
+        #float-contact {
+          right: 0.75rem;
+          bottom: 0.75rem;
+        }
+        #btn-scroll-top,
+        #float-contact .float-phone {
+          display: none;
+        }
+      }
     </style>
 
     <!-- Favicon -->
@@ -102,7 +112,7 @@ const schemas = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : []
       <!-- 在线咨询 -->
       <a
         href="/contact"
-        class="w-11 h-11 rounded-full bg-navy-800 shadow-md flex items-center justify-center text-white hover:bg-navy-700 hover:shadow-lg transition-all duration-200"
+        class="float-chat w-11 h-11 rounded-full bg-navy-800 shadow-md flex items-center justify-center text-white hover:bg-navy-700 hover:shadow-lg transition-all duration-200"
         aria-label="在线咨询"
         title="在线咨询"
       >
@@ -112,7 +122,7 @@ const schemas = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : []
       </a>
 
       <!-- 电话咨询（hover 展开号码卡片） -->
-      <div class="relative group">
+      <div class="float-phone relative group">
         <button
           class="w-11 h-11 rounded-full bg-brand-orange shadow-md flex items-center justify-center text-white hover:bg-brand-orange-dark hover:shadow-lg transition-all duration-200"
           aria-label="电话咨询"

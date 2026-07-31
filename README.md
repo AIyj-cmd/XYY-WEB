@@ -71,7 +71,7 @@ tests/                 单元与端到端测试
 | 内容 | 来源 | 生效方式 |
 |---|---|---|
 | 首页统计、服务、案例、仓库、新闻 | Directus | 后台保存后，下次页面请求读取 |
-| 首页案例弹窗、品牌常量 | `src/lib/brand.ts` | 修改代码并部署 |
+| 首页案例弹窗、案例详情页、品牌常量 | `src/lib/brand.ts`、`src/pages/cases/[slug].astro` | 修改代码并部署 |
 | 官网统一运营口径 | `src/lib/claims.ts` | 修改代码并部署 |
 | SEO、FAQ、结构化数据 | 页面代码与 `src/lib/seo.ts` | 修改代码并部署 |
 

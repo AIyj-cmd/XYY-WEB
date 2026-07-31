@@ -23,7 +23,7 @@ npm run verify
 | 统一数字与运营口径 | `src/lib/claims.ts` | 改代码并部署 |
 | JSON-LD、FAQ Schema、canonical | 页面与 `src/lib/seo.ts` | 改代码并部署 |
 
-`CASE_DETAILS` 键名必须与 Directus `cases.label` 完全一致。Directus 资源 URL 必须使用 `getDirectusAssetUrl()`，CMS 富文本在 `set:html` 前必须经过 `sanitize.ts`。
+`CASE_DETAILS` 键名必须与 Directus `cases.label` 完全一致，`slug` 同时用于首页链接、案例详情页和 sitemap。Directus 资源 URL 必须使用 `getDirectusAssetUrl()`，CMS 富文本在 `set:html` 前必须经过 `sanitize.ts`。
 
 ## 首页设计状态
 

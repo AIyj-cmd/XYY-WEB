@@ -17,6 +17,10 @@ const STATIC_PAGES = [
   { url: '/weipinhui-jit-jitx', priority: '0.8', changefreq: 'monthly' },
   { url: '/about', priority: '0.8', changefreq: 'monthly' },
   { url: '/cases', priority: '0.8', changefreq: 'monthly' },
+  { url: '/cases/ur', priority: '0.75', changefreq: 'monthly' },
+  { url: '/cases/maxrieny', priority: '0.75', changefreq: 'monthly' },
+  { url: '/cases/xingmian', priority: '0.75', changefreq: 'monthly' },
+  { url: '/cases/meiyi', priority: '0.75', changefreq: 'monthly' },
   { url: '/news', priority: '0.6', changefreq: 'monthly' },
   { url: '/senlinqikan', priority: '0.75', changefreq: 'monthly' },
   { url: '/contact', priority: '0.7', changefreq: 'monthly' },
@@ -24,7 +28,7 @@ const STATIC_PAGES = [
 ]
 
 // Update this only when the static-page content is materially revised.
-const STATIC_CONTENT_LASTMOD = '2026-07-29'
+const STATIC_CONTENT_LASTMOD = '2026-07-31'
 
 export const GET: APIRoute = async () => {
   const staticEntries = STATIC_PAGES.map(

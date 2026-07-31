@@ -2,10 +2,14 @@
 // No prerender = SSR, fetches fresh from Directus on each request
 import Layout from '@/layouts/Layout.astro'
 import PageFAQ from '@/components/PageFAQ.astro'
-import { BRAND } from '@/lib/brand'
+import { BRAND, CASE_DETAILS } from '@/lib/brand'
 import { getCases, getServices } from '@/lib/directus'
 
 const [displayCases, SERVICES] = await Promise.all([getCases(), getServices()])
+const getCasePath = (label: string) => {
+  const slug = (CASE_DETAILS as Record<string, { slug: string }>)[label]?.slug
+  return slug ? `/cases/${slug}` : null
+}
 
 const LOGO_BRANDS: Record<number, string> = {
   6: 'UR Urban Revivo 快时尚', 7: 'New Balance 运动鞋服', 8: 'adidas 阿迪达斯',
@@ -57,6 +61,7 @@ const caseListSchema = {
     position: i + 1,
     name: c.label,
     description: c.metrics,
+    url: getCasePath(c.label) ? `${BRAND.url}${getCasePath(c.label)}` : undefined,
   })),
 }
 ---
@@ -149,6 +154,14 @@ const caseListSchema = {
                   <span class="text-xs px-2.5 py-1 rounded-full bg-navy-50 text-navy-700 font-medium">{tag}</span>
                 ))}
               </div>
+              {getCasePath(c.label) && (
+                <a
+                  href={getCasePath(c.label)!}
+                  class="mt-5 inline-flex items-center text-sm font-bold text-blue-600 hover:text-blue-700"
+                >
+                  查看案例详情 →
+                </a>
+              )}
             </div>
           </article>
         ))}
