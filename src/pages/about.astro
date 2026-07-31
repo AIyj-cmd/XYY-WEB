@@ -2,21 +2,20 @@
 import Layout from '@/layouts/Layout.astro'
 import PageFAQ from '@/components/PageFAQ.astro'
 import { BRAND, HONORS, ABOUT_STATS } from '@/lib/brand'
-import { getWarehouses } from '@/lib/directus'
+import { getServices, getWarehouses } from '@/lib/directus'
 
-const WAREHOUSES = await getWarehouses()
+const [WAREHOUSES, SERVICES] = await Promise.all([getWarehouses(), getServices()])
 
 const HISTORY = [
-  { year: '2017', subtitle: '夯实·天使投资',      text: '获千万级天使投资，战略定位服饰专业化物流，创始团队完成核心搭建',     img: '/about/history/2017.png' },
-  { year: '2018', subtitle: '启航·战略定位',      text: '开始布局服装仓储中心，建立仓配服务体系，鞋服垂直物流正式成型',       img: '/about/history/2018.png' },
-  { year: '2019', subtitle: '逐梦·A轮融资',       text: 'A轮融资落地，全国物流中心网络布局完成，线上线下一体化模式跑通',     img: '/about/history/2019.png' },
-  { year: '2020', subtitle: '聚智·行业大布局',    text: '布局"三架马车"，全国区域后整检品服务落地，退货仓储中心覆盖华南华东', img: '/about/history/2020.png' },
-  { year: '2021', subtitle: '旋风年·PreA轮',      text: 'PreA轮融资，上市公司参股，启明星人才计划启动，O2O物流平台上线',    img: '/about/history/2021.png' },
-  { year: '2022', subtitle: '内修外行·OTD上线',   text: '物流服务中台OTD正式上线，O2O平台全面升级，系统能力跃上新台阶',    img: '/about/history/2022.png' },
-  { year: '2023', subtitle: '业绩增长·数字化升级', text: '业绩持续增长，仓内作业全面数字化升级，服务效率与准确率再创新高',   img: '/about/history/2023.jpg' },
-  { year: '2024', subtitle: '逆势增长·深耕鞋服',  text: '深耕鞋服战略持续推进，仓内数字化纵深迭代，服务品牌数量突破新高',  img: '/about/history/2024.jpg' },
-  { year: '2025', subtitle: '出海布局·数智升级',  text: '布局跨境出海业务，从数字化全面迈向数智化，开启第二增长曲线',       img: '/about/history/2025.jpg' },
-  { year: '2026', subtitle: '持续进化·敬请期待', text: '新的里程碑正在书写中……',                                          img: '' },
+  { year: '2011', subtitle: '起点·团队成立',       text: '团队在广州成立，开始深耕鞋服物流与仓配服务',                         img: '' },
+  { year: '2017', subtitle: '夯实·天使投资',       text: '获千万级天使投资，定位服饰客户专业化物流',                           img: '/about/history/2017.png' },
+  { year: '2019', subtitle: '聚焦·战略定位',       text: '完成战略定位，布局服装仓储中心并建立仓配服务SOP',                    img: '/about/history/2019.png' },
+  { year: '2020', subtitle: '发展·A轮融资',        text: '完成A轮融资，布局全国物流中心，打造线上线下融合新物流模式',            img: '/about/history/2020.png' },
+  { year: '2021', subtitle: '协同·三架马车',       text: '布局行业垂直整合“三架马车”，建设全国区域后整检品服务',                img: '/about/history/2021.png' },
+  { year: '2022', subtitle: '成长·PRE-A轮',        text: '完成PRE-A轮融资并获上市公司参股，启动“启明星计划”',                  img: '/about/history/2022.png' },
+  { year: '2023', subtitle: '升级·OTD上线',        text: '物流服务中台OTD上线，人效通和店配O2O平台升级，推进内部阿米巴管理',   img: '/about/history/2023.jpg' },
+  { year: '2024', subtitle: '深耕·数字化升级',     text: '业绩逆势持续增长，深耕鞋服战略，推进仓内作业数字化升级',                img: '/about/history/2024.jpg' },
+  { year: '2025', subtitle: '出海·数智化升级',     text: '布局跨境出海业务，从数字化过渡到数智化，建设中高层管理人才培养体系',    img: '/about/history/2025.jpg' },
 ]
 
 const CITY_CONFIG: Record<string, { color: string; label: string }> = {
@@ -56,7 +55,6 @@ const orgSchema = {
   foundingDate: String(BRAND.founded),
   foundingLocation: { '@type': 'Place', name: '广州' },
   description: BRAND.description,
-  numberOfEmployees: { '@type': 'QuantitativeValue', minValue: 2000 },
   telephone: [BRAND.phone.toll],
   address: {
     '@type': 'PostalAddress',
@@ -69,9 +67,10 @@ const orgSchema = {
 ---
 
 <Layout
-  title="关于新亦源 - 广州新亦源供应链管理有限公司"
-  description="广州新亦源供应链管理有限公司，2011年成立，深耕鞋服物流15年，已完成多轮融资。合作知名服饰品牌140+，自有员工2000+。了解新亦源的发展历程、核心理念与荣誉资质。"
+  title="关于新亦源｜广州新亦源供应链管理有限公司"
+  description="广州新亦源供应链管理有限公司2011年成立，专注鞋服仓配、退货质检和瑕疵修复，服务140+品牌。了解新亦源的发展历程、仓网与服务能力。"
   jsonLd={[breadcrumbSchema, orgSchema]}
+  services={SERVICES}
 >
   <!-- Hero -->
   <section
@@ -113,7 +112,7 @@ const orgSchema = {
         </h1>
         <p class="text-white/55 text-sm leading-relaxed max-w-sm mb-10">
           从仓储质检到履约交付，我们为鞋服品牌提前解决出货链路中的复杂问题。<br />
-          15年、2000名自有员工、6大仓点，只为一件事：让你的货准时、准确地到达消费者手中。
+          15年、2000+名自有员工、50万㎡直营仓储，只为一件事：让发货更准确、高效、快捷。
         </p>
 
         <!-- 播放 + 音量控制 -->
@@ -274,7 +273,7 @@ const orgSchema = {
       <p class="text-[11px] font-bold text-brand-orange tracking-[0.35em] uppercase mb-4">关于新亦源</p>
       <h2 id="company-overview-heading" class="sr-only">公司概述</h2>
       <p class="text-gray-700 leading-[1.9] text-base lg:text-[1.05rem]">
-        新亦源供应链总部位于广州，是国内细分行业物流专业化、数字化变革的重要推动者之一。自创立以来，新亦源较早聚焦商圈物流与细分行业履约场景，围绕服饰、潮玩、美妆、箱包等品类，构建仓储管理、质检修复、门店配送、线上履约和系统协同的一体化服务能力。目前，新亦源已服务上百家国内外知名品牌，覆盖万家门店及线上消费场景，服务网络触达全国主要城市及6000+区县/服务区域，持续连接上亿消费者的商品履约需求。
+        新亦源供应链总部位于广州，是专注鞋服垂直领域的云仓服务商。公司以鞋服为核心，延伸服务潮玩、美妆、箱包、IT电子、快消、医药、安防、智能家居等行业，围绕鞋服质检中心、鞋服仓配中心和商圈寄件平台“运到”构建一体化服务能力。目前合作品牌140+、服务门店10000+、覆盖6000+城市、管理SKU 45万+。
       </p>
     </div>
   </section>
@@ -285,7 +284,7 @@ const orgSchema = {
       <h2 id="history-heading" class="text-3xl font-black text-navy-800 text-center">发展历程</h2>
       <p class="mt-4 text-sm text-gray-500 text-center max-w-2xl mx-auto leading-relaxed">
         新亦源主体创立于2011年，早期深耕鞋服物流与仓配服务；<br>
-        2017年完成服饰专业化物流战略定位，并进入品牌化、系统化、规模化发展阶段。
+        2017年获千万级天使投资；2019年完成战略定位，布局服装仓储中心并建立仓配服务SOP。
       </p>
     </div>
 
@@ -326,7 +325,7 @@ const orgSchema = {
                       />
                     ) : (
                       <div class="w-full h-full bg-orange-50 border border-orange-100 flex flex-col items-center justify-center gap-2">
-                        <span class="text-brand-orange/30 text-[11px] tracking-[0.3em] uppercase font-bold">即将揭晓</span>
+                        <span class="text-brand-orange/30 text-[11px] tracking-[0.3em] uppercase font-bold"></span>
                         <span class="text-brand-orange text-4xl font-black leading-none">{year}</span>
                       </div>
                     )}
@@ -380,16 +379,16 @@ const orgSchema = {
       <!-- 左下角说明 -->
       <div class="absolute bottom-8 left-8 lg:left-10">
         <p class="text-navy-800/40 text-[10px] tracking-[0.3em] uppercase font-bold mb-1">仓网布局</p>
-        <p class="text-navy-800/70 text-xs">华南 · 华东 · 华中，覆盖全国</p>
+        <p class="text-navy-800/70 text-xs">华南 · 华东 · 华中，区域仓网协同</p>
       </div>
     </div>
 
     <!-- 右：三级仓网详情 -->
     <div class="flex-1 bg-white flex flex-col justify-center px-12 lg:px-20 py-14">
       <p class="text-brand-orange font-bold text-[11px] tracking-[0.35em] uppercase mb-3">仓网布局</p>
-      <h2 id="warehouse-heading" class="text-3xl font-black text-navy-800 mb-2">战略三仓，覆盖全国</h2>
+      <h2 id="warehouse-heading" class="text-3xl font-black text-navy-800 mb-2">CDC/RDC/FDC三级仓网，覆盖华南、华东与华中节点</h2>
       <p class="text-gray-400 text-sm leading-relaxed mb-10 max-w-sm">
-        CDC + RDC + FDC 三级仓网，按需配仓、就近发货，干线成本最优
+        CDC + RDC + FDC 三级仓网，按项目配置仓点、库存与订单路由
       </p>
 
       <!-- 三行列表，无卡片 -->
@@ -403,14 +402,14 @@ const orgSchema = {
           },
           {
             abbr: 'RDC', name: '区域仓', accent: '#3B6FCC',
-            desc: '布局华东、华中，区域补铺 + 就近发货，降低干线物流成本与时效损耗',
-            location: '上海市青浦区重固镇汇金路889号2号楼3层（昆山·上海·合肥）',
+            desc: '布局华东区域节点，支持区域补铺与就近发货，帮助优化跨区域干线运输成本和到达时效',
+            location: '昆山 · 上海 · 合肥，其中上海仓位于上海市青浦区白鹤镇外青松公路3939号B-3-3',
             tags: ['区域补货', '就近发货', '降低损耗'],
           },
           {
             abbr: 'FDC', name: '产地仓', accent: '#059669',
             desc: '直接对接生产端，产地直发，压缩仓储成本，加快新货上架时效',
-            location: '湖北省监利市监利服装产业园3号楼',
+            location: '湖北监利仓点，具体地址与启用范围按项目核验',
             tags: ['产地直发', '快速上架', '弹性配置'],
           },
         ].map(({ abbr, name, accent, desc, location, tags }) => (
@@ -445,7 +444,7 @@ const orgSchema = {
           <h3 id="southwh-heading" class="text-2xl font-black text-navy-800">广州 · 东莞 · 佛山 · 肇庆</h3>
         </div>
         <p class="text-xs text-gray-400 max-w-xs text-right leading-relaxed hidden sm:block">
-          全部具备丙二类消防资质<br/>新货质检 · 退货质检 · 整烫修复全链路
+          仓点状态与资质按项目核验<br/>新货质检 · 退货质检 · 整烫修复
         </p>
       </div>
 
@@ -464,7 +463,7 @@ const orgSchema = {
                 <div class="py-5 flex flex-col lg:flex-row lg:items-center gap-3 lg:gap-0">
                   <div class="lg:w-36 flex-shrink-0">
                     <div class="text-base font-black text-navy-800 leading-tight">{w.name}</div>
-                    <div class="text-[11px] text-gray-400 mt-0.5">自 {w.since}</div>
+                    {w.since && <div class="text-[11px] text-gray-400 mt-0.5">自 {w.since}</div>}
                   </div>
                   <div class="flex-1 text-xs text-gray-500 leading-snug lg:px-5 lg:border-l lg:border-gray-100">
                     {w.address ? w.address : <span class="text-gray-300 italic">地址待公布</span>}
@@ -487,7 +486,7 @@ const orgSchema = {
           <h3 id="eastwh-heading" class="text-2xl font-black text-navy-800">昆山 · 上海 · 合肥</h3>
         </div>
         <p class="text-xs text-gray-400 max-w-xs text-right leading-relaxed hidden sm:block">
-          长三角核心节点<br/>就近发货，覆盖华东区域
+          长三角区域节点<br/>实际启用范围按项目确认
         </p>
       </div>
 
@@ -505,7 +504,7 @@ const orgSchema = {
                 <div class="py-5 flex flex-col lg:flex-row lg:items-center gap-3 lg:gap-0">
                   <div class="lg:w-36 flex-shrink-0">
                     <div class="text-base font-black text-navy-800 leading-tight">{w.name}</div>
-                    <div class="text-[11px] text-gray-400 mt-0.5">自 {w.since}</div>
+                    {w.since && <div class="text-[11px] text-gray-400 mt-0.5">自 {w.since}</div>}
                   </div>
                   <div class="flex-1 text-xs text-gray-500 leading-snug lg:px-5 lg:border-l lg:border-gray-100">
                     {w.address ? w.address : <span class="text-gray-300 italic">地址待公布</span>}
@@ -549,14 +548,14 @@ const orgSchema = {
   <PageFAQ
     heading="关于新亦源的常见问题"
     items={[
-      { q: '新亦源的核心服务承诺是什么？不达标会怎样？', a: '新亦源在合同中明确约定三类SLA并附赔偿条款：①出库时效——18:00截单当日24:00完成全部出库，延误按件补偿；②库存准确率——≥99.8%，超出误差阈值触发盘点赔付；③退货质检时效——标准48小时内完成质检上架，加急24小时。发货错漏按件全赔，不设免赔额。仓内1080P监控留存90天，操作日志全程可追溯。这些承诺写入合同，合作方可依据合同条款追责，不是销售话术。' },
-      { q: '新亦源的发展历程是怎样的？有哪些里程碑节点？', a: '2015年在广州成立，专注鞋服垂直仓储；2018年自研OTD中台上线，实现多平台订单集成；2020年推出退货质检+修复服务体系，形成闭环；2022年华东布局启动，昆山、上海仓点相继投运；2024年联合广检集团推进QC认证，建立行业标准质检流程；2025年华东扩容，合肥联亚仓正式启用，覆盖范围进一步延伸至华东内陆市场。' },
-      { q: '新亦源的仓点分布在哪里？各仓有什么分工？', a: '目前在华南和华东共有8个运营仓点。华南：广州兴泰仓（总部主仓，综合业务）、广州新塘仓（服装专项）、东莞云谷仓（B2B出货为主）、佛山宏盛仓（补量仓）、肇庆仓（大货仓储）；华东：苏州昆山花桥仓、上海青浦汇金仓、合肥联亚仓，三仓联动支撑华东业务。各仓根据货量、品类特性及发货需求进行协同分配。' },
-      { q: '新亦源有哪些行业认证和技术资质？', a: '新亦源持有ISO 9001质量管理体系认证，并与广检集团合作完成鞋服质检标准共建及QC人员认证，形成具备行业公信力的质检背书。在技术层面，OTD物流中台及相关系统工具持有软件著作权，部分核心技术模块申请了发明专利。如需查阅具体证书，可在商务洽谈时书面提供，资料以现行有效证书为准。' },
-      { q: '新亦源目前服务了哪些类型的品牌？有没有典型客户案例？', a: '新亦源服务的品牌横跨女装、男装、童装、鞋类、运动户外等品类，包含天猫TOP卖家、抖音直播品牌、跨境独立站商家及传统门店供应链客户。典型合作案例涵盖：单日50万单量级的女装品牌大促保障、退货质检年节省损耗超800万元的鞋类品牌、对接唯品会JIT/JITX的头部男装品牌等，具体案例可参阅"合作案例"页面。' },
-      { q: '新亦源的仓储团队是怎么配置的？旺季人力如何保障？', a: '新亦源采用"核心团队+弹性人力"双层用工模式。核心团队负责系统操作、质检管理及班组长岗位，确保操作标准不随人员变动而波动；弹性人力池由与合作劳务机构提前储备的季节性人员构成，大促前14天按发货预测完成招募和培训。这种结构保障了在旺季高峰期（如双11、618）产能快速扩张时，质量和时效不因新手比例提升而下降。' },
-      { q: '可以到仓参观考察吗？需要提前预约吗？', a: '欢迎品牌客户、合作伙伴到仓实地参观。请提前通过官网联系表单或商务电话预约，我们将根据您的行程安排专属接待。参观内容包含：仓内实地走访、系统演示、质检流程展示、服务团队对接等环节。参观无需额外费用，部分仓点因仓储安全要求需签署参访协议。' },
-      { q: '新亦源如何保障数据安全和库存信息保密？', a: '新亦源采用多层数据安全机制：WMS系统与客户OMS/ERP单独授权隔离，不同品牌间数据物理隔离，不共享；操作日志全程留档可追溯；全仓1080P高清视频监控，数据保留90天；签订严格的保密协议（NDA），未经授权不得对外披露任何客户库存、货量及订单数据。服务器及数据均部署于国内合规云环境。' },
+      { q: '新亦源的核心服务时效是什么？', a: '仓内正向履约口径为18:00前截单，当日24:00前发出；退货质检与二次上架24小时完成，平均拆包4小时、质检12小时；发货准确率为99.99%。具体项目的入仓、质检、监控留存和异常处理方式以双方确认的服务方案为准。' },
+      { q: '新亦源的发展历程是怎样的？有哪些里程碑节点？', a: '2011年团队成立；2017年获千万级天使投资；2019年完成战略定位并建立仓配服务SOP；2020年完成A轮融资并布局全国物流中心；2021年布局“三架马车”；2022年完成PRE-A轮融资并启动启明星计划；2023年OTD上线、人效通及店配O2O平台升级；2024年深耕鞋服并升级仓内数字化；2025年布局跨境出海和数智化。' },
+      { q: '新亦源的仓网如何分工？', a: '新亦源按CDC中心仓、RDC区域仓和FDC产地仓配置仓网。华南覆盖广州、东莞、佛山、肇庆，华东覆盖上海、昆山、合肥，湖北监利归华中产地仓。详细仓点以本页统一仓网区为准，各仓根据货量、品类特性、仓容和发货需求协同；项目实际启用仓点、地址、仓容和作业范围在启动前由双方确认。' },
+      { q: '新亦源有哪些行业认证和技术资质？', a: '新亦源公开资料包括纳税信用A级、广东省科技型中小企业、两化融合管理体系A级数字化仓储管控能力，以及相关专利、软件著作权和商标。质检方面，与广检集团合作QC团队，按AQL 1.0–6.5执行；质检技师经广检集团资深讲师培训认证。如需核验，可在商务洽谈时申请查阅对应文件，具体以现行有效资料为准。' },
+      { q: '新亦源目前服务了哪些类型的品牌？有没有典型客户案例？', a: '新亦源服务的品牌横跨女装、男装、童装、鞋类、运动户外等品类，包含天猫TOP卖家、抖音直播品牌、跨境独立站商家及传统门店供应链客户。典型合作案例涵盖：单日50万单量级的女装品牌大促保障、退货质检年节省损耗超800万元的鞋类品牌、对接唯品会JIT/JITX的头部男装品牌等，具体案例可参阅“合作案例”页面。' },
+      { q: '新亦源的仓储团队是怎么配置的？旺季人力如何保障？', a: '新亦源采用核心团队与弹性人力协同的用工模式。核心团队负责系统操作、质检管理和班组管理，弹性人力根据品牌预测货量提前组织培训和排班；大促保障周期、人数和项目产能由双方结合仓容、订单和物流资源确认。' },
+      { q: '可以到仓参观考察吗？需要提前预约吗？', a: '欢迎品牌客户、合作伙伴到仓实地参观。请提前通过官网联系表单或商务电话预约，我们将根据您的行程安排专属接待。参观内容包含仓内实地走访、系统演示、质检流程展示、服务团队对接等环节。参观无需额外费用，部分仓点因仓储安全要求需签署参访协议。' },
+      { q: '新亦源如何保障数据安全和库存信息保密？', a: '新亦源采用多层数据安全机制：WMS与客户OMS/ERP按品牌账号和权限单独授权隔离，不同品牌间数据不共享；操作日志全程留档可追溯；全仓配置1080P高清视频监控，官网现有服务口径为监控数据保留90天；合作时可签订保密协议（NDA），未经授权不得对外披露客户库存、货量及订单数据。服务器及数据部署于国内合规云环境，具体权限、保存期限和保密责任以双方协议为准。' },
     ]}
   />
 

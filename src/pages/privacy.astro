@@ -1,0 +1,58 @@
+---
+export const prerender = true
+import Layout from '@/layouts/Layout.astro'
+import { BRAND } from '@/lib/brand'
+---
+
+<Layout
+  title="个人信息保护说明"
+  description="广州新亦源供应链管理有限公司官网咨询表单的个人信息收集、使用、保存与权利说明。"
+  canonical={`${BRAND.url}/privacy`}
+>
+  <section class="bg-navy-900 py-14" aria-labelledby="privacy-heading">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6">
+      <p class="text-brand-orange text-sm font-semibold mb-3">个人信息保护</p>
+      <h1 id="privacy-heading" class="text-3xl lg:text-4xl font-black text-white">个人信息保护说明</h1>
+      <p class="text-navy-200 mt-4">更新日期：2026年7月27日</p>
+    </div>
+  </section>
+
+  <article class="max-w-4xl mx-auto px-4 sm:px-6 py-12 prose prose-gray prose-headings:text-navy-800">
+    <p>
+      本说明适用于广州新亦源供应链管理有限公司（以下简称“新亦源”）官网的业务咨询表单。
+      我们仅在处理咨询、联系用户和准备合作方案所必需的范围内处理个人信息。
+    </p>
+
+    <h2>我们收集的信息</h2>
+    <p>
+      表单必填信息包括姓名、联系电话和需求描述；公司或品牌名称、邮箱及咨询服务类型为选填信息。
+      系统还会使用必要的网络请求信息进行安全校验和频率限制。
+    </p>
+
+    <h2>使用目的</h2>
+    <p>
+      上述信息用于识别咨询需求、联系咨询人、评估服务方案、安排商务跟进，以及防止恶意或重复提交。
+      未经另行同意，我们不会将其用于与本次咨询无关的营销目的。
+    </p>
+
+    <h2>保存与安全</h2>
+    <p>
+      咨询信息保存于新亦源使用的业务内容管理系统，仅向完成咨询处理所需的授权人员开放。
+      信息仅在实现咨询处理、履行约定或满足适用法律要求所需的期限内保存，期满后删除或匿名化处理。
+    </p>
+
+    <h2>您的权利</h2>
+    <p>
+      您可以申请查阅、更正或删除已提交的个人信息，也可以撤回同意。请发送邮件至
+      <a href="mailto:yufengzhen@56xyy.com">yufengzhen@56xyy.com</a>
+      并提供足以核验本次提交的信息，我们将在核验身份后处理。
+    </p>
+
+    <h2>联系我们</h2>
+    <p>
+      如对本说明或个人信息处理有疑问，可通过
+      <a href="/contact">官网联系页面</a>
+      或全国服务热线 {BRAND.phone.toll} 联系新亦源。
+    </p>
+  </article>
+</Layout>

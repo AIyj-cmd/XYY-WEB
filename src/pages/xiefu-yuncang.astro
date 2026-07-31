@@ -1,92 +1,128 @@
 ---
 import ServiceLanding from '@/layouts/ServiceLanding.astro'
+import { CLAIM_TEXT } from '@/lib/claims'
 
 const FLOW_STEPS = [
   { num: '01', title: '收货入库', desc: '验收商品\n核对数量·SKU·规格' },
-  { num: '02', title: '入库质检', desc: '新货全检\n问题及时反馈品牌方' },
+  { num: '02', title: '入库质检', desc: '按项目约定进行新货抽检或全检\n问题及时反馈品牌方' },
   { num: '03', title: 'RFID上架', desc: '绑码建档\n智能定位存储' },
   { num: '04', title: '订单下发', desc: '多平台实时同步\n波次智能拆分' },
   { num: '05', title: '拣货复核', desc: '电子标签引导\nRFID防错复核' },
   { num: '06', title: '质检打包', desc: '称重验货\n按标准包材打包' },
-  { num: '07', title: '发货出库', desc: '18:00截单\n24:00前全部出库' },
+  { num: '07', title: '发货出库', desc: '18:00前截单\n当日24:00前发出' },
 ]
 ---
 
 <ServiceLanding
-  title="鞋服云仓服务商 — B2C+B2B+O2O全渠道仓配，单仓日峰50万单 | 新亦源供应链"
-  description="新亦源鞋服云仓，华南/华东/华中三级仓网，单仓日峰50万单，18:00截单当日24:00全出，RFID智能仓三代演进，支持唯品会JIT/JITX，合作品牌140+。"
+  title="鞋服云仓服务｜B2C+B2B+O2O全渠道仓配｜新亦源"
+  description={`新亦源鞋服云仓采用CDC/RDC/FDC三级仓网架构，实际单仓单日峰值${CLAIM_TEXT.singleWarehousePeak}，${CLAIM_TEXT.shippingSla}，支持B2C+B2B+O2O全渠道一盘货。`}
   slug="xiefu-yuncang"
+  variant="journey"
   breadcrumbLabel="鞋服云仓"
   eyebrow="鞋服云仓 · 专注鞋服行业的仓配服务商"
-  h1="鞋服云仓"
-  h1sub="一仓发全国，全渠道一盘货"
-  heroDesc="新亦源专注鞋服物流15年，RFID智能仓三代演进，支持B2C+B2B+O2O全渠道发货，华南/华东/华中三级仓网，合作品牌140+，单仓日峰50万单，18:00截单当日24:00全出。"
+  h1="鞋服云仓：全渠道一盘货与鞋服专用仓配"
+  h1sub="B2C+B2B+O2O全渠道库存协同"
+  heroDesc="新亦源专注鞋服物流15年，RFID智能仓三代演进，支持B2C+B2B+O2O全渠道发货，采用CDC/RDC/FDC三级仓网架构，合作品牌140+，单仓单日峰值50万单。"
   imgSrc="/w-apparel.webp"
   imgAlt="鞋服云仓 — 专业鞋服仓储配送"
   stats={[
-    { stat: '99.99%', label: '发货准确率', sub: '错漏全赔，合同保障' },
+    { stat: '99.99%', label: '发货准确率', sub: '出库扫码复核' },
     { stat: '50万单/日', label: '单仓峰值', sub: '弹性产能保大促' },
-    { stat: '18:00截单', label: '当日全出', sub: '当日24:00前出库' },
+    { stat: '18:00前', label: '截单时间', sub: '当日24:00前发出' },
     { stat: '140+', label: '合作品牌', sub: '多数涉及全渠道运营' },
   ]}
-  contentDesc="适合全渠道鞋服品牌，从初创到年销十亿级均有合作案例。专解高SKU管理混乱、大促爆仓、多仓库存割裂三大痛点。三代智能仓演进（RFID+电子标签+自动化分拣），弹性人力池，华南/华东/华中三级仓网覆盖全国次日达主要城市。18:00截单当日24:00全出，库存准确率99.99%+，综合损耗下降20%。"
+  contentDesc="适合需要全渠道一盘货管理的鞋服品牌，重点解决高SKU管理、旺季产能波动和多仓库存协同问题。三代智能仓采用RFID、电子标签和自动化分拣，配合动态人力池与CDC/RDC/FDC三级仓网。库存准确率99.99%，综合损耗下降20%。"
   featuresLabel="核心能力"
   features={[
-    { title: '全渠道一盘货', desc: 'B2C+B2B+O2O库存实时同步，支持天猫、京东、拼多多、唯品会JIT/JITX、抖音、小程序等全渠道，避免超卖与空单。' },
-    { title: 'RFID智能识别', desc: '三代智能仓RFID全域识别+电子标签拣货+自动化分拣，人效提升30%，仓内运营成本降低18%，拣货效率+40%。' },
-    { title: '弹性产能机制', desc: '动态人力池+小时级极速人力调配，单仓单日峰值50万单，地区峰值100万单，大促期间稳定发货不延迟。' },
-    { title: '深度定制WMS', desc: '针对鞋服优化的WMS，支持序列号/RFID/线上线下一体管理，可二次开发，奇门/EDI无缝对接，不收系统费。' },
-    { title: '精细库存管控', desc: '日动盘+周抽盘+月实盘+季忙盘+年度全盘体系，库存准确率99.99%+，综合损耗下降20%。' },
-    { title: '全程风控保障', desc: '1080P高清拆包监控，360°安防追溯，仓库财产险+运输险保额100亿，满足电商平台争议举证。' },
+    {
+      title: '全渠道一盘货',
+      desc: 'B2C+B2B+O2O库存实时同步，支持天猫、京东、拼多多、唯品会JIT/JITX、抖音、小程序等全渠道，降低超卖与空单风险。',
+    },
+    {
+      title: 'RFID智能识别',
+      desc: '三代智能仓通过RFID、电子标签与自动化分拣协同管理鞋服款色码，减少拣货和复核差错。',
+    },
+    {
+      title: '弹性产能机制',
+      desc: `动态人力池配合多仓协同，实际单仓单日峰值${CLAIM_TEXT.singleWarehousePeak}、地区单日峰值${CLAIM_TEXT.regionalPeak}。`,
+    },
+    {
+      title: '深度定制WMS',
+      desc: '针对鞋服优化的WMS支持序列号、RFID、款色码管理和线上线下一体协同，可按项目使用奇门、EDI或定制接口；不收系统使用费，实施和定制费用按方案确认。',
+    },
+    {
+      title: '精细库存管控',
+      desc: '日动盘+周抽盘+月实盘+季忙盘+年度全盘体系，库存准确率99.99%，综合损耗下降20%。',
+    },
+    {
+      title: '全程监控追溯',
+      desc: '1080P拆包监控、操作台高低位双摄和关键区域监控，支持按订单调取录像与平台争议举证。',
+    },
   ]}
   faqs={[
     {
       q: '鞋服云仓和普通仓库有什么区别？',
-      a: '鞋服云仓是专为鞋服品类设计的仓储管理系统，区别在于：一是WMS针对高SKU（序列号/RFID识别）专项优化，普通仓库难以应对鞋服的SKU复杂度；二是内置全渠道发货能力，可同时对接天猫/京东/唯品会/抖音等多平台；三是具备退货质检与二次上架能力，形成正向+逆向全链路闭环；四是弹性人力池机制，保障大促爆单不延迟。',
+      a: '鞋服云仓围绕鞋服高SKU、多色多码、退货率高和季节性波动等特点配置系统与流程：WMS针对序列号、RFID和款色码管理进行优化，可同时对接天猫、京东、唯品会、抖音等多平台订单；仓内提供退货质检、瑕疵修复和二次上架，形成正向与逆向履约闭环；动态人力池和多仓协同用于应对旺季货量变化。',
     },
     {
       q: '新亦源鞋服云仓支持哪些电商平台对接？',
-      a: '支持全渠道对接，包括：B2C——天猫、京东、拼多多、唯品会JIT/JITX、抖音/快手、小红书、微信小程序；B2B——批发/门店分仓/零售连锁；O2O——线下门店库存+线上订单融合管理。接口采用标准奇门/EDI协议，首次对接零系统费。',
+      a: '支持B2C、B2B和O2O全渠道对接。B2C平台包括天猫、淘宝、京东、唯品会JIT/JITX、拼多多、抖音、快手、小红书、得物和微信小程序；B2B支持批发、门店分仓和零售连锁补货；O2O支持线下门店库存与线上订单融合管理。可采用奇门、EDI等标准协议或客户定制接口，具体实施与定制范围以项目方案为准。',
     },
     {
       q: '鞋服云仓如何应对618/双11大促爆仓？',
-      a: '新亦源弹性产能机制：①动态人力池，提前1-2周启动人力蓄备，高峰期可小时级扩充产能；②多仓协同，华南/华东/华中三级仓网相互备援；③智能波次优化，RFID+自动化分拣保障高峰期拣货精准率。历史单仓单日峰值50万单，地区峰值100万单，从未因爆仓导致SLA违约。',
+      a: `新亦源通常在大促前根据品牌预测货量启动人力储备，并通过动态人力池、多仓协同、智能波次、RFID识别和自动化分拣应对旺季货量。实际单仓单日峰值${CLAIM_TEXT.singleWarehousePeak}、地区单日峰值${CLAIM_TEXT.regionalPeak}；具体项目会提前核对库存分布、仓容、人力、包材和物流通道，并在服务方案中确认峰值安排。`,
     },
     {
       q: '新亦源鞋服云仓发货时效是多少？',
-      a: '标准SLA：18:00截单当日24:00前全部出库；普通件次日达覆盖全国主要城市；加急件可对接顺丰/跨越速递等优先时效承运商。发货准确率合同承诺99.99%，错漏全赔。',
+      a: `${CLAIM_TEXT.shippingSla}，发货准确率为${CLAIM_TEXT.shippingAccuracy}。承运商运输时效受线路、目的地和平台规则影响，按项目确认。`,
     },
     {
       q: '小型品牌也可以入驻新亦源鞋服云仓吗？',
-      a: '可以。新亦源支持不同规模品牌入驻，没有强制最低库存量要求，费用按实际存储面积/操作量计算，系统接入零费用。小品牌可先以单仓试运营，扩规模后再接入三级仓网。',
+      a: '可以。新亦源支持不同规模品牌按项目评估合作，费用根据存储、操作、系统实施和增值服务需求确认。品牌可先以单仓方案开始，业务规模扩大后再评估三级仓网协同。',
     },
   ]}
 >
-  <section slot="unique" class="py-14 bg-white border-b border-gray-100" aria-labelledby="flow-heading">
+  <section
+    slot="unique"
+    class="py-14 bg-white border-b border-gray-100"
+    aria-labelledby="flow-heading"
+  >
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <h2 id="flow-heading" class="text-xl font-black text-navy-800 mb-1 text-center">鞋服云仓标准服务流程</h2>
-      <p class="text-xs text-gray-400 text-center mb-10">从货物到仓到发货出库，每步标准化操作，全程1080P监控可追溯</p>
+      <h2 id="flow-heading" class="text-xl font-black text-navy-800 mb-1 text-center">
+        鞋服云仓标准服务流程
+      </h2>
+      <p class="text-xs text-gray-400 text-center mb-10">
+        从货物到仓到发货出库，每步标准化操作，全程1080P监控可追溯
+      </p>
       <div class="overflow-x-auto -mx-4 px-4 pb-2">
         <div class="flex items-start min-w-max">
-          {FLOW_STEPS.map(({ num, title, desc }, i) => (
-            <div class="flex items-start">
-              <div class="flex flex-col items-center text-center w-32 px-1">
-                <div class="w-11 h-11 rounded-2xl bg-brand-orange/10 border border-brand-orange/20 flex items-center justify-center mb-3 flex-shrink-0">
-                  <span class="text-[11px] font-black text-brand-orange tracking-widest">{num}</span>
+          {
+            FLOW_STEPS.map(({ num, title, desc }, i) => (
+              <div class="flex items-start">
+                <div class="flex flex-col items-center text-center w-32 px-1">
+                  <div class="w-11 h-11 rounded-2xl bg-brand-orange/10 border border-brand-orange/20 flex items-center justify-center mb-3 flex-shrink-0">
+                    <span class="text-[11px] font-black text-brand-orange tracking-widest">
+                      {num}
+                    </span>
+                  </div>
+                  <p class="text-sm font-bold text-navy-800 mb-1">{title}</p>
+                  <p class="text-xs text-gray-400 leading-snug whitespace-pre-line">{desc}</p>
                 </div>
-                <p class="text-sm font-bold text-navy-800 mb-1">{title}</p>
-                <p class="text-xs text-gray-400 leading-snug whitespace-pre-line">{desc}</p>
+                {i < FLOW_STEPS.length - 1 && (
+                  <div class="flex-shrink-0 flex items-start pt-4 text-brand-orange/30 text-xl font-light px-1">
+                    ›
+                  </div>
+                )}
               </div>
-              {i < FLOW_STEPS.length - 1 && (
-                <div class="flex-shrink-0 flex items-start pt-4 text-brand-orange/30 text-xl font-light px-1">›</div>
-              )}
-            </div>
-          ))}
+            ))
+          }
         </div>
       </div>
       <div class="mt-8 flex items-center justify-center gap-2">
         <div class="h-px w-8 bg-brand-orange/20"></div>
-        <p class="text-xs text-gray-400">退货逆向：出库后退货自动流转质检中心，48小时内完成四级评定并二次上架，形成完整闭环</p>
+        <p class="text-xs text-gray-400">
+          退货逆向：退件进入质检中心后完成四级评定、修复分流与二次上架，全流程时效为24小时；具体分级条件和处置方式按客户确认标准执行
+        </p>
         <div class="h-px w-8 bg-brand-orange/20"></div>
       </div>
     </div>

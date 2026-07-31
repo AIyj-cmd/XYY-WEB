@@ -33,6 +33,11 @@ function getRequesterId(request: Request, clientAddress?: string) {
 
 function isRateLimited(key: string) {
   const now = Date.now()
+  if (rateLimitBuckets.size > 1000) {
+    for (const [bucketKey, value] of rateLimitBuckets) {
+      if (value.resetAt <= now) rateLimitBuckets.delete(bucketKey)
+    }
+  }
   const bucket = rateLimitBuckets.get(key)
 
   if (!bucket || bucket.resetAt <= now) {
@@ -82,9 +87,13 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     const email = clean(body.email, 120)
     const service = clean(body.service, 80)
     const message = clean(body.message, 1200)
+    const privacyConsent = clean(body.privacyConsent, 10)
 
     if (!name || !phone || !message) {
       return json({ error: '请填写姓名、电话和需求描述' }, 400)
+    }
+    if (privacyConsent !== 'on' && privacyConsent !== 'true') {
+      return json({ error: '请先同意个人信息使用说明' }, 400)
     }
 
     // Phone format validation

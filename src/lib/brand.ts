@@ -1,4 +1,5 @@
 import { SITE_URL } from './site-config'
+import { CLAIM_TEXT } from './claims'
 
 export const BRAND = {
   name: '新亦源供应链',
@@ -6,8 +7,7 @@ export const BRAND = {
   shortName: '新亦源',
   tagline: '让物流更简单·让服务更快捷',
   mission: '让发货更准确、高效、快捷',
-  description:
-    '广州新亦源供应链管理有限公司，总部位于广州，2011年成立，深耕鞋服物流15年。专注鞋服、潮玩、美妆、箱包等行业的云仓、仓配一体、退货质检和全渠道一盘货服务，合作知名服饰品牌140+，直营鞋服仓储50万㎡，配送服务覆盖全国主要城市及6000+区县/服务区域。',
+  description: `广州新亦源供应链管理有限公司，总部位于广州，2011年成立，专注鞋服仓配与质检服务。合作品牌${CLAIM_TEXT.partnerBrands}，直营仓储${CLAIM_TEXT.warehouseArea}，服务门店${CLAIM_TEXT.servedStores}，管理SKU ${CLAIM_TEXT.managedSkus}。`,
   url: SITE_URL,
   icp: '粤ICP备17001688号',
   founded: 2011,
@@ -22,6 +22,20 @@ export const BRAND = {
   },
 } as const
 
+export const SERVICE_FACTS = {
+  shippingSla: CLAIM_TEXT.shippingSla,
+  returnTurnaround: CLAIM_TEXT.returnTurnaround,
+  orderPickupCutoff: '18:00',
+  orderDispatchDeadline: '24:00',
+  shippingAccuracy: CLAIM_TEXT.shippingAccuracy,
+  inventoryAccuracy: CLAIM_TEXT.inventoryAccuracy,
+  returnInspectionAnnual: CLAIM_TEXT.returnInspectionAnnual,
+  newGoodsInspectionAnnual: CLAIM_TEXT.newGoodsInspectionAnnual,
+  repairSuccessRate: CLAIM_TEXT.repairSuccessRate,
+  recognizableDefects: CLAIM_TEXT.recognizableAnomalies,
+  defectCategories: '7大类',
+} as const
+
 export const DIGITAL_PRODUCTS = [
   {
     id: 'yundao-platform',
@@ -29,12 +43,12 @@ export const DIGITAL_PRODUCTS = [
     name: '运到智能寄件平台',
     subtitle: '商圈零售门店一站式智能寄件',
     description:
-      '新亦源自研商圈物流O2O平台，聚合顺丰快运、京东物流、中通、圆通、韵达、德邦、申通、EMS、跨越速递、货拉拉、闪送等11家主流承运商，智能比价、智慧分配订单，为连锁门店、电商平台及企业机构提供全国任意区域运力服务，部分场景寄件费用节省可达50%。',
+      '新亦源自研商圈物流O2O平台，以信息和数据协同运输资源，已对接顺丰、京东、EMS等11家主流承运商，可根据线路、货量和时效要求智能匹配方案，为连锁门店、电商平台及企业机构提供正向与逆向寄件协同服务。',
     features: [
-      '对接11家主流承运商，系统智能比价智能派单',
-      '覆盖全国6000+区县，门店开在哪都可寄取',
-      '部分场景寄件费用可节省高达50%，以实际线路报价为准',
-      '专属客服+快速理赔，智能报表+数据保密',
+      '对接顺丰、京东、EMS等11家主流承运商',
+      '覆盖门店寄件、调拨、退仓等正向与逆向场景',
+      '服务网络覆盖多地，部分线路费用最高可节省50%，具体以实际线路和报价为准',
+      '专属客服+在线工单，智能报表+数据保密',
     ],
     href: '/product#yundao-platform',
   },
@@ -43,26 +57,26 @@ export const DIGITAL_PRODUCTS = [
 export const ABOUT_STATS = [
   { value: '1.17亿', unit: '件/年', label: '新货质检' },
   { value: '1.53亿', unit: '件/年', label: '退货质检' },
-  { value: '99.99',  unit: '%+',    label: '库存准确率' },
-  { value: '135',    unit: '种+',   label: '缺陷识别' },
-  { value: '48',     unit: '小时',  label: '退货二次上架' },
-  { value: '90',     unit: '%',     label: '瑕疵修复成功率' },
-  { value: '40',     unit: '%↑',    label: 'RFID拣货提效' },
-  { value: '30',     unit: '%↑',    label: '人效提升' },
+  { value: '99.99', unit: '%', label: '库存准确率' },
+  { value: '135', unit: '种+', label: '缺陷识别' },
+  { value: '24', unit: '小时', label: '退货二次上架' },
+  { value: '90', unit: '%', label: '瑕疵修复成功率' },
+  { value: '40', unit: '%↑', label: 'RFID拣货提效' },
+  { value: '30', unit: '%↑', label: '人效提升' },
 ] as const
 
 export const CAPABILITIES = [
   {
     title: '99.99% 发货准确率',
-    desc: '错漏全赔，当天 18:00 前订单当天 24:00 前全出',
+    desc: `${CLAIM_TEXT.shippingSla}，发货全流程扫码复核`,
   },
   {
-    title: '三级仓网覆盖全国',
-    desc: 'CDC中心仓 / RDC区域仓 / FDC产地仓，灵活配置',
+    title: '三级仓网协同',
+    desc: 'CDC中心仓 / RDC区域仓 / FDC产地仓按项目配置',
   },
   {
-    title: 'RFID 智能仓提效40%',
-    desc: '三代智能仓，人效提升30%，仓内成本降低18%',
+    title: 'RFID 智能仓',
+    desc: '三代智能仓结合RFID、电子标签与自动化分拣',
   },
   {
     title: '全渠道一盘货',
@@ -70,11 +84,11 @@ export const CAPABILITIES = [
   },
   {
     title: '弹性产能保大促',
-    desc: '动态人力池+小时级调配，地区单日峰值100万单',
+    desc: `动态人力池+小时级调配，地区单日峰值${CLAIM_TEXT.regionalPeak}`,
   },
   {
-    title: '100亿保额风控保障',
-    desc: '仓库财产险+运输险，1080P监控全程可追溯',
+    title: '全流程监控可追溯',
+    desc: '1080P拆包监控+操作台高低位双摄，按订单调取录像',
   },
 ] as const
 
@@ -118,7 +132,7 @@ export const CASE_DETAILS = {
       { label: '峰值 B2B', value: '6万+', unit: '件/日' },
     ],
   },
-  '幸棉': {
+  幸棉: {
     name: '幸棉',
     fullName: '幸棉',
     category: '内衣基础品类',
@@ -140,7 +154,8 @@ export const CASE_DETAILS = {
     name: '美一(MEIYI)',
     fullName: '美一（MEIYI）',
     category: '跨境全品类女装',
-    image: 'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=800&q=75&auto=format&fit=crop',
+    image:
+      'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=800&q=75&auto=format&fit=crop',
     accent: '#D97706',
     description:
       '美一（MEIYI）是专注跨境全品类女装的服饰品牌。新亦源为其提供 B2B+B2C 一体化仓储服务，涵盖收货验货、新货质检、包装整理、库存上架及发货打包全流程，年综合处理量达百万件级别。',
@@ -154,14 +169,15 @@ export const CASE_DETAILS = {
 } as const
 
 export const MILESTONES = [
-  { year: '2011', text: '创始团队在广州成立，聚焦服饰供应链' },
-  { year: '2017', text: '获千万级天使投资，战略定位服饰专业化物流' },
-  { year: '2019', text: 'A轮融资，全国物流中心网络布局完成' },
-  { year: '2020', text: '布局"三架马车"，全国区域后整检品服务落地' },
-  { year: '2021', text: 'PreA轮融资，上市公司参股，启明星人才计划启动' },
-  { year: '2022', text: '物流服务中台OTD上线，O2O平台全面升级' },
-  { year: '2023', text: '业绩持续增长，仓内作业全面数字化升级' },
-  { year: '2025', text: '布局跨境出海，从数字化迈向数智化' },
+  { year: '2011', text: '团队成立' },
+  { year: '2017', text: '获千万级天使投资，定位服饰客户专业化物流' },
+  { year: '2019', text: '完成战略定位，布局服装仓储中心并建立仓配服务SOP' },
+  { year: '2020', text: '完成A轮融资，布局全国物流中心，打造线上线下融合新物流模式' },
+  { year: '2021', text: '布局行业垂直整合“三架马车”，建设全国区域后整检品服务' },
+  { year: '2022', text: '完成PRE-A轮融资并获上市公司参股，启动“启明星计划”' },
+  { year: '2023', text: '物流服务中台OTD上线，人效通与店配O2O平台升级' },
+  { year: '2024', text: '深耕鞋服战略，推进仓内作业数字化升级' },
+  { year: '2025', text: '布局跨境出海，从数字化过渡到数智化，建设管理人才体系' },
 ] as const
 
 export const HONORS = [
@@ -194,14 +210,14 @@ export const WAREHOUSES = [
     highlight: '紧邻广园快速、京港澳高速，10台3吨货梯，进出货效率高',
   },
   {
-    name: '番禺仓',
+    name: '兴泰仓',
     city: '广州',
     since: '2023',
-    address: '广州市番禺区石楼镇市莲路石楼段6号',
+    address: '具体地址以双方确认信息为准',
     park: '6,000',
     rent: '200',
     height: '6m',
-    highlight: '番禺石楼核心区，3台电梯，丙二类消防，开仓即用',
+    highlight: '与黄埔仓合计运营面积1.8万㎡，具体服务范围按项目方案确认',
   },
   {
     name: '肇庆仓',
@@ -224,10 +240,10 @@ export const WAREHOUSES = [
     highlight: '高速出口3公里，一层层高12米，10个升降平台，8部货梯',
   },
   {
-    name: '朗州仓',
+    name: '东莞仓点',
     city: '东莞',
     since: '2017',
-    address: '东莞市常平镇朗洲村鸿腾缘工业园',
+    address: '具体地址以双方确认信息为准',
     park: '30,000',
     rent: '5,000',
     height: '4.5m',

@@ -1,0 +1,2100 @@
+---
+type ServiceVariant =
+  | 'journey'
+  | 'showroom'
+  | 'guangzhou-hub'
+  | 'south-network'
+  | 'east-radius'
+  | 'store-rhythm'
+  | 'global-tower'
+  | 'live-command'
+  | 'jit-radar'
+  | 'evidence-lab'
+  | 'repair-workshop'
+
+interface StatItem {
+  stat: string
+  label: string
+  sub: string
+}
+
+interface FeatureItem {
+  title: string
+  desc: string
+}
+
+interface Props {
+  variant: ServiceVariant
+  h1: string
+  contentDesc: string
+  stats: [StatItem, StatItem, StatItem, StatItem]
+  features: FeatureItem[]
+}
+
+const { variant, h1, contentDesc, stats, features } = Astro.props
+
+const CONFIG: Record<
+  ServiceVariant,
+  { code: string; kicker: string; heading: string; summary: string }
+> = {
+  journey: {
+    code: 'FLOW / 01',
+    kicker: '一件货的仓内旅程',
+    heading: '让每一次入仓、流转与出库都有明确下一站',
+    summary:
+      '以货物流为页面主轴，把高 SKU 管理、RFID 识别、全渠道履约和峰值产能串成一条连续作业线。',
+  },
+  showroom: {
+    code: 'SPACE / 02',
+    kicker: '面料友好型仓储展厅',
+    heading: '不同服装，不应被放进同一种仓储逻辑',
+    summary: '挂装、叠装、鞋类和特殊面料采用不同空间与作业方式，页面以仓内展厅呈现品类差异。',
+  },
+  'guangzhou-hub': {
+    code: 'HUB / GZ',
+    kicker: '广州核心枢纽',
+    heading: '从广州仓点出发，连接珠三角订单与货源',
+    summary: '用本地仓点、订单区域和协同线路组织服务，而不是把广州方案缩写成一组通用能力。',
+  },
+  'south-network': {
+    code: 'NETWORK / S',
+    kicker: '华南多仓协同网络',
+    heading: '仓容、人力、物流与系统在区域内一起调度',
+    summary: '广州、东莞、佛山与肇庆节点按项目组合，通过四类资源协同承接日常履约与货量波动。',
+  },
+  'east-radius': {
+    code: 'RADIUS / E',
+    kicker: '华东时效覆盖面板',
+    heading: '库存前置到区域节点，再由时效圈组织履约',
+    summary: '以华东节点和订单覆盖为中心，呈现区域仓配、签收监控与华南华东协同关系。',
+  },
+  'store-rhythm': {
+    code: 'STORE / B2B',
+    kicker: '门店补货节奏轴',
+    heading: '不是一次发完，而是让每家门店按节奏收到正确货品',
+    summary: '把铺货、补货、调拨和退仓放进同一张作业单，清楚呈现门店仓配与普通电商小包的差异。',
+  },
+  'global-tower': {
+    code: 'ROUTE / GLOBAL',
+    kicker: '世界航线控制塔',
+    heading: '正向出海与逆向回流，共用一套可追踪节点',
+    summary:
+      '围绕跨境仓、质检、包装、上架、发货与退货回流组织双向链路，业务边界在每个节点清晰可见。',
+  },
+  'live-command': {
+    code: 'LIVE / NOW',
+    kicker: '直播履约战情中心',
+    heading: '围绕开播时间组织库存、波次、人力与异常处理',
+    summary: '订单波峰不是事后统计，而是在直播前、直播中和直播后被连续监控和调度。',
+  },
+  'jit-radar': {
+    code: 'SLA / JIT',
+    kicker: 'JIT / JITX 时限与风险雷达',
+    heading: '两种模式并行运行，每个风险点提前进入视野',
+    summary: '将库存同步、订单响应、复核出库和异常工单放到双轨时钟上，突出平台履约的过程控制。',
+  },
+  'evidence-lab': {
+    code: 'EVIDENCE / QC',
+    kicker: '订单证据实验室',
+    heading: '从拆包到分级，每个判断都能回到操作证据',
+    summary: '录像、订单核验、缺陷图片、质检分级和系统报表组成一条可追溯的退货处理证据链。',
+  },
+  'repair-workshop': {
+    code: 'WORKSHOP / 09',
+    kicker: '蓝色修复工坊',
+    heading: '让不同瑕疵进入对应工位，再以二次质检结束',
+    summary: '洗护、清污、缝补、配饰、鞋类、整烫与标识处理采用不同工艺，不以一套模板概括全部修复。',
+  },
+}
+
+const config = CONFIG[variant]
+---
+
+<section
+  class:list={['signature', `signature--${variant}`]}
+  aria-labelledby={`signature-heading-${variant}`}
+>
+  <div class="signature__inner">
+    <header class="signature__header">
+      <div>
+        <p class="signature__code">{config.code}</p>
+        <p class="signature__kicker">{config.kicker}</p>
+      </div>
+      <div class="signature__heading-wrap">
+        <h2 id={`signature-heading-${variant}`}>{config.heading}</h2>
+        <p>{config.summary}</p>
+      </div>
+    </header>
+
+    {
+      variant === 'journey' && (
+        <div class="journey">
+          <figure class="journey__scene">
+            <img
+              src="/images/services/warehouse-panorama.webp"
+              alt={`${h1}仓内作业实景`}
+              loading="lazy"
+            />
+            <figcaption>
+              <span>WAREHOUSE JOURNEY</span>
+              <strong>从到仓开始建立可追踪货品档案</strong>
+            </figcaption>
+          </figure>
+          <ol class="journey__rail">
+            {features.slice(0, 5).map(({ title, desc }, index) => (
+              <li>
+                <span class="journey__index">{String(index + 1).padStart(2, '0')}</span>
+                <div>
+                  <h3>{title}</h3>
+                  <p>{desc}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+          <div class="journey__instruments">
+            {stats.map(({ stat, label, sub }) => (
+              <div>
+                <strong>{stat}</strong>
+                <span>{label}</span>
+                <small>{sub}</small>
+              </div>
+            ))}
+          </div>
+        </div>
+      )
+    }
+
+    {
+      variant === 'showroom' && (
+        <div class="showroom">
+          <div class="showroom__gallery">
+            <figure class="showroom__hero">
+              <img
+                src="/images/services/warehouse-hanging.webp"
+                alt="挂装服饰仓储实景"
+                loading="lazy"
+              />
+              <figcaption>挂装空间 / 保持版型</figcaption>
+            </figure>
+            <figure>
+              <img
+                src="/images/services/storage-environment.webp"
+                alt="服装分类存储环境"
+                loading="lazy"
+              />
+              <figcaption>环境分区</figcaption>
+            </figure>
+            <figure>
+              <img src="/images/services/storage-shoes.webp" alt="鞋类分区存储" loading="lazy" />
+              <figcaption>鞋类货位</figcaption>
+            </figure>
+          </div>
+          <div class="showroom__catalogue">
+            <p class="showroom__lead">{contentDesc}</p>
+            <ol>
+              {features.slice(0, 4).map(({ title, desc }, index) => (
+                <li>
+                  <span>{String(index + 1).padStart(2, '0')}</span>
+                  <h3>{title}</h3>
+                  <p>{desc}</p>
+                </li>
+              ))}
+            </ol>
+            <div class="showroom__labels">
+              {stats.map(({ stat, label }) => (
+                <div>
+                  <strong>{stat}</strong>
+                  <span>{label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )
+    }
+
+    {
+      variant === 'guangzhou-hub' && (
+        <div class="hub">
+          <div class="hub__map" aria-label="广州及珠三角协同示意">
+            <div class="hub__rings" aria-hidden="true" />
+            <span class="hub__node hub__node--gz">
+              <b>广州</b>
+              <small>核心枢纽</small>
+            </span>
+            <span class="hub__node hub__node--dg">东莞</span>
+            <span class="hub__node hub__node--fs">佛山</span>
+            <span class="hub__node hub__node--zq">肇庆</span>
+            <span class="hub__route hub__route--one" aria-hidden="true" />
+            <span class="hub__route hub__route--two" aria-hidden="true" />
+            <span class="hub__route hub__route--three" aria-hidden="true" />
+            <p>PRD · LOCAL FULFILMENT</p>
+          </div>
+          <div class="hub__ledger">
+            {stats.map(({ stat, label, sub }, index) => (
+              <div>
+                <span>{String(index + 1).padStart(2, '0')}</span>
+                <strong>{stat}</strong>
+                <div>
+                  <b>{label}</b>
+                  <small>{sub}</small>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div class="hub__capabilities">
+            {features.slice(0, 4).map(({ title, desc }) => (
+              <article>
+                <h3>{title}</h3>
+                <p>{desc}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      )
+    }
+
+    {
+      variant === 'south-network' && (
+        <div class="south">
+          <figure class="south__scene">
+            <img
+              src="/images/services/warehouse-shelves.webp"
+              alt="华南鞋服仓储货架实景"
+              loading="lazy"
+            />
+            <figcaption>
+              <span>REGIONAL ORCHESTRATION</span>
+              <strong>区域资源按项目组合</strong>
+            </figcaption>
+          </figure>
+          <div class="south__orchestra">
+            {features.slice(0, 4).map(({ title, desc }, index) => (
+              <article>
+                <span>{['仓容', '人力', '物流', '系统'][index]}</span>
+                <h3>{title}</h3>
+                <p>{desc}</p>
+              </article>
+            ))}
+          </div>
+          <div class="south__pulse">
+            {stats.map(({ stat, label, sub }) => (
+              <div>
+                <strong>{stat}</strong>
+                <span>{label}</span>
+                <small>{sub}</small>
+              </div>
+            ))}
+          </div>
+        </div>
+      )
+    }
+
+    {
+      variant === 'east-radius' && (
+        <div class="east">
+          <div class="east__coverage">
+            <div class="east__orbit east__orbit--one" aria-hidden="true" />
+            <div class="east__orbit east__orbit--two" aria-hidden="true" />
+            <div class="east__orbit east__orbit--three" aria-hidden="true" />
+            <span class="east__city east__city--ks">昆山</span>
+            <span class="east__city east__city--sh">上海</span>
+            <span class="east__city east__city--hf">合肥</span>
+            <div class="east__core">
+              <small>FULFILMENT CORE</small>
+              <strong>华东</strong>
+              <span>库存前置 · 区域履约</span>
+            </div>
+          </div>
+          <div class="east__screen">
+            <div class="east__screen-bar">
+              <span />
+              <span />
+              <span />
+              <b>签收与时效面板</b>
+            </div>
+            <img
+              src="/images/services/delivery-dashboard.webp"
+              alt="物流签收与时效监控界面"
+              loading="lazy"
+            />
+          </div>
+          <div class="east__metrics">
+            {stats.map(({ stat, label, sub }) => (
+              <div>
+                <strong>{stat}</strong>
+                <span>{label}</span>
+                <small>{sub}</small>
+              </div>
+            ))}
+          </div>
+        </div>
+      )
+    }
+
+    {
+      variant === 'store-rhythm' && (
+        <div class="stores">
+          <div class="stores__manifest">
+            <div class="stores__manifest-head">
+              <span>STORE REPLENISHMENT MANIFEST</span>
+              <b>门店补货作业单</b>
+            </div>
+            <ol>
+              {features.slice(0, 5).map(({ title, desc }, index) => (
+                <li>
+                  <time>{['MON', 'WED', 'FRI', 'WAVE', 'RETURN'][index]}</time>
+                  <span class="stores__dot" aria-hidden="true" />
+                  <div>
+                    <h3>{title}</h3>
+                    <p>{desc}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </div>
+          <aside class="stores__summary">
+            <p>{contentDesc}</p>
+            <div>
+              {stats.map(({ stat, label, sub }) => (
+                <article>
+                  <strong>{stat}</strong>
+                  <span>{label}</span>
+                  <small>{sub}</small>
+                </article>
+              ))}
+            </div>
+          </aside>
+        </div>
+      )
+    }
+
+    {
+      variant === 'global-tower' && (
+        <div class="global">
+          <div class="global__map">
+            <img src="/images/services/global-map.webp" alt="跨境仓配世界航线示意" loading="lazy" />
+            <span class="global__point global__point--one">中国仓</span>
+            <span class="global__point global__point--two">海外仓</span>
+            <span class="global__point global__point--three">消费市场</span>
+            <span class="global__flight global__flight--out">正向履约</span>
+            <span class="global__flight global__flight--back">逆向回流</span>
+          </div>
+          <div class="global__tower">
+            <p>{contentDesc}</p>
+            <ol>
+              {features.slice(0, 4).map(({ title, desc }, index) => (
+                <li>
+                  <span>{String(index + 1).padStart(2, '0')}</span>
+                  <div>
+                    <h3>{title}</h3>
+                    <p>{desc}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </div>
+          <div class="global__metrics">
+            {stats.map(({ stat, label, sub }) => (
+              <div>
+                <strong>{stat}</strong>
+                <span>{label}</span>
+                <small>{sub}</small>
+              </div>
+            ))}
+          </div>
+        </div>
+      )
+    }
+
+    {
+      variant === 'live-command' && (
+        <div class="live">
+          <div class="live__console">
+            <div class="live__console-top">
+              <span>LIVE FULFILMENT</span>
+              <b>
+                <i /> 直播履约监控中
+              </b>
+            </div>
+            <img
+              src="/images/services/operations-dashboard.webp"
+              alt="直播仓配运营驾驶舱"
+              loading="lazy"
+            />
+            <div class="live__signals">
+              {stats.map(({ stat, label }) => (
+                <div>
+                  <strong>{stat}</strong>
+                  <span>{label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+          <ol class="live__timeline">
+            {features.slice(0, 5).map(({ title, desc }, index) => (
+              <li>
+                <time>{['开播前', '开播', '订单波峰', '持续履约', '复盘'][index]}</time>
+                <div>
+                  <h3>{title}</h3>
+                  <p>{desc}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
+      )
+    }
+
+    {
+      variant === 'jit-radar' && (
+        <div class="jit">
+          <div class="jit__radar">
+            <div class="jit__sweep" aria-hidden="true" />
+            <div class="jit__center">
+              <small>RISK CONTROL</small>
+              <strong>JIT / JITX</strong>
+              <span>库存 · 时效 · 异常</span>
+            </div>
+            {stats.map(({ stat, label }, index) => (
+              <span class={`jit__blip jit__blip--${index + 1}`}>
+                <b>{stat}</b>
+                <small>{label}</small>
+              </span>
+            ))}
+          </div>
+          <div class="jit__rails">
+            <div class="jit__rail-head">
+              <span>JIT</span>
+              <span>JITX</span>
+            </div>
+            {features.slice(0, 5).map(({ title, desc }, index) => (
+              <article>
+                <span class="jit__time">{String(index + 1).padStart(2, '0')}</span>
+                <div class="jit__line" aria-hidden="true">
+                  <i />
+                  <i />
+                </div>
+                <div>
+                  <h3>{title}</h3>
+                  <p>{desc}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      )
+    }
+
+    {
+      variant === 'evidence-lab' && (
+        <div class="evidence">
+          <div class="evidence__strip">
+            {[
+              {
+                src: '/images/services/inspection-unpack.webp',
+                title: '01 拆包',
+                alt: '退货拆包操作',
+              },
+              {
+                src: '/images/services/inspection-scan.webp',
+                title: '02 核验',
+                alt: '退货订单扫码核验',
+              },
+              {
+                src: '/images/services/inspection-workbench.webp',
+                title: '03 质检',
+                alt: '服装质检工作台',
+              },
+              {
+                src: '/images/services/inspection-sort.webp',
+                title: '04 分流',
+                alt: '质检完成后的商品分流',
+              },
+            ].map(({ src, title, alt }) => (
+              <figure>
+                <img src={src} alt={alt} loading="lazy" />
+                <figcaption>{title}</figcaption>
+              </figure>
+            ))}
+          </div>
+          <div class="evidence__bench">
+            <div class="evidence__screen">
+              <div>
+                <>
+                  <span />
+                  <span />
+                  <span />
+                  <b>QC EVIDENCE SYSTEM</b>
+                </>
+              </div>
+              <img
+                src="/images/services/inspection-system.webp"
+                alt="质检图片与报表系统界面"
+                loading="lazy"
+              />
+            </div>
+            <div class="evidence__findings">
+              {stats.map(({ stat, label, sub }, index) => (
+                <article>
+                  <span>0{index + 1}</span>
+                  <strong>{stat}</strong>
+                  <div>
+                    <b>{label}</b>
+                    <small>{sub}</small>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </div>
+      )
+    }
+
+    {
+      variant === 'repair-workshop' && (
+        <div class="workshop">
+          <div class="workshop__gallery">
+            <figure class="workshop__wide">
+              <img
+                src="/images/services/repair-handwash.webp"
+                alt="服装手工洗护工位"
+                loading="lazy"
+              />
+              <figcaption>洗护 / WASH</figcaption>
+            </figure>
+            <figure>
+              <img
+                src="/images/services/repair-stitch.webp"
+                alt="服装精细缝补工位"
+                loading="lazy"
+              />
+              <figcaption>缝补 / STITCH</figcaption>
+            </figure>
+            <figure>
+              <img
+                src="/images/services/repair-ironing.webp"
+                alt="服装整烫定型工位"
+                loading="lazy"
+              />
+              <figcaption>整烫 / FINISH</figcaption>
+            </figure>
+          </div>
+          <div class="workshop__board">
+            <p>{contentDesc}</p>
+            <ol>
+              {features.map(({ title, desc }, index) => (
+                <li>
+                  <span>{String(index + 1).padStart(2, '0')}</span>
+                  <div>
+                    <h3>{title}</h3>
+                    <p>{desc}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </div>
+          <div class="workshop__results">
+            {stats.map(({ stat, label, sub }) => (
+              <div>
+                <strong>{stat}</strong>
+                <span>{label}</span>
+                <small>{sub}</small>
+              </div>
+            ))}
+          </div>
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .signature {
+    --ink: #132b50;
+    --blue: #144297;
+    --signal: #e85d26;
+    --line: #dce5f1;
+    padding: clamp(4rem, 8vw, 7.5rem) 0;
+    overflow: hidden;
+    background: #fff;
+    color: var(--ink);
+  }
+
+  .signature__inner {
+    width: min(80rem, calc(100% - 2rem));
+    margin: 0 auto;
+  }
+
+  .signature__header {
+    display: grid;
+    grid-template-columns: minmax(12rem, 0.7fr) minmax(0, 1.6fr);
+    gap: clamp(2rem, 8vw, 8rem);
+    align-items: end;
+    margin-bottom: clamp(2.5rem, 6vw, 5rem);
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .signature__code {
+    margin: 0 0 0.35rem;
+    color: var(--signal);
+    font-size: 0.68rem;
+    font-weight: 900;
+    letter-spacing: 0.24em;
+  }
+
+  .signature__kicker {
+    margin: 0;
+    color: #5e6f87;
+    font-size: 0.82rem;
+    font-weight: 700;
+  }
+
+  .signature__heading-wrap h2 {
+    margin: 0;
+    max-width: 20ch;
+    font-size: clamp(2rem, 4.2vw, 4rem);
+    line-height: 1.12;
+    letter-spacing: -0.04em;
+  }
+
+  .signature__heading-wrap p {
+    max-width: 46rem;
+    margin: 1rem 0 0;
+    color: #607087;
+    font-size: clamp(0.95rem, 1.5vw, 1.08rem);
+    line-height: 1.85;
+  }
+
+  .signature img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .signature h3,
+  .signature p,
+  .signature figure {
+    margin-top: 0;
+  }
+
+  .journey {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(20rem, 0.95fr);
+    gap: clamp(2rem, 5vw, 5rem);
+    align-items: start;
+  }
+
+  .journey__scene {
+    position: sticky;
+    top: 7.5rem;
+    margin: 0;
+  }
+
+  .journey__scene img {
+    aspect-ratio: 4 / 5;
+  }
+
+  .journey__scene figcaption {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .journey__scene figcaption span,
+  .journey__scene figcaption strong {
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+  }
+
+  .journey__scene figcaption span {
+    color: var(--signal);
+    font-weight: 900;
+  }
+
+  .journey__rail {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .journey__rail li {
+    position: relative;
+    display: grid;
+    grid-template-columns: 3.5rem 1fr;
+    gap: 1.1rem;
+    padding: 0 0 2.2rem;
+  }
+
+  .journey__rail li:not(:last-child)::before {
+    position: absolute;
+    top: 2.8rem;
+    bottom: 0.35rem;
+    left: 1.38rem;
+    width: 1px;
+    background: linear-gradient(var(--signal), var(--line));
+    content: '';
+  }
+
+  .journey__index {
+    display: grid;
+    width: 2.8rem;
+    height: 2.8rem;
+    place-items: center;
+    border: 1px solid #f2b79e;
+    border-radius: 50%;
+    background: #fff7f2;
+    color: var(--signal);
+    font-size: 0.68rem;
+    font-weight: 900;
+  }
+
+  .journey__rail h3,
+  .showroom__catalogue h3,
+  .hub__capabilities h3,
+  .south__orchestra h3,
+  .stores h3,
+  .global h3,
+  .live h3,
+  .jit h3,
+  .workshop h3 {
+    margin-bottom: 0.45rem;
+    font-size: 1rem;
+  }
+
+  .journey__rail p,
+  .showroom__catalogue li p,
+  .hub__capabilities p,
+  .south__orchestra p,
+  .stores p,
+  .global p,
+  .live p,
+  .jit p,
+  .workshop p {
+    margin-bottom: 0;
+    color: #65758b;
+    font-size: 0.86rem;
+    line-height: 1.75;
+  }
+
+  .journey__instruments {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    margin-top: 1rem;
+    border-top: 1px solid var(--ink);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .journey__instruments div,
+  .south__pulse div,
+  .east__metrics div,
+  .global__metrics div,
+  .workshop__results div {
+    display: flex;
+    min-height: 7rem;
+    padding: 1.3rem;
+    flex-direction: column;
+    border-right: 1px solid var(--line);
+  }
+
+  .journey__instruments div:last-child,
+  .south__pulse div:last-child,
+  .east__metrics div:last-child,
+  .global__metrics div:last-child,
+  .workshop__results div:last-child {
+    border-right: 0;
+  }
+
+  .journey__instruments strong,
+  .south__pulse strong,
+  .east__metrics strong,
+  .global__metrics strong,
+  .workshop__results strong {
+    color: var(--signal);
+    font-size: clamp(1.35rem, 2.5vw, 2.1rem);
+  }
+
+  .journey__instruments span,
+  .south__pulse span,
+  .east__metrics span,
+  .global__metrics span,
+  .workshop__results span {
+    margin-top: 0.2rem;
+    font-size: 0.8rem;
+    font-weight: 800;
+  }
+
+  .journey__instruments small,
+  .south__pulse small,
+  .east__metrics small,
+  .global__metrics small,
+  .workshop__results small {
+    margin-top: auto;
+    color: #8a98aa;
+    font-size: 0.67rem;
+  }
+
+  .signature--showroom {
+    background: #f7f9fc;
+  }
+
+  .showroom {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(20rem, 0.8fr);
+    gap: clamp(2rem, 5vw, 5rem);
+  }
+
+  .showroom__gallery {
+    display: grid;
+    grid-template-columns: 1.4fr 0.6fr;
+    grid-template-rows: auto auto;
+    gap: 0.7rem;
+  }
+
+  .showroom__gallery figure {
+    position: relative;
+    min-height: 13rem;
+    margin: 0;
+    overflow: hidden;
+    background: #e8eef6;
+  }
+
+  .showroom__gallery .showroom__hero {
+    grid-row: 1 / 3;
+    min-height: 38rem;
+  }
+
+  .showroom__gallery figcaption,
+  .workshop__gallery figcaption {
+    position: absolute;
+    right: 0.8rem;
+    bottom: 0.8rem;
+    padding: 0.45rem 0.65rem;
+    background: rgb(255 255 255 / 88%);
+    color: var(--ink);
+    font-size: 0.66rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+  }
+
+  .showroom__lead {
+    margin: 0 0 2rem;
+    color: #5d6e84;
+    line-height: 1.85;
+  }
+
+  .showroom__catalogue ol {
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--ink);
+    list-style: none;
+  }
+
+  .showroom__catalogue li {
+    display: grid;
+    grid-template-columns: 2rem 7rem 1fr;
+    gap: 0.9rem;
+    padding: 1.1rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .showroom__catalogue li > span {
+    color: var(--signal);
+    font-size: 0.67rem;
+    font-weight: 900;
+  }
+
+  .showroom__labels {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    margin-top: 2rem;
+    background: var(--line);
+    border: 1px solid var(--line);
+  }
+
+  .showroom__labels div {
+    display: flex;
+    min-height: 7rem;
+    padding: 1rem;
+    flex-direction: column;
+    justify-content: space-between;
+    background: #fff;
+  }
+
+  .showroom__labels strong {
+    color: var(--signal);
+    font-size: 1.7rem;
+  }
+
+  .showroom__labels span {
+    color: #65758b;
+    font-size: 0.75rem;
+    font-weight: 800;
+  }
+
+  .hub {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(18rem, 0.8fr);
+    gap: 2rem clamp(2rem, 5vw, 5rem);
+  }
+
+  .hub__map {
+    position: relative;
+    min-height: 34rem;
+    overflow: hidden;
+    background:
+      linear-gradient(90deg, rgb(20 66 151 / 5%) 1px, transparent 1px),
+      linear-gradient(rgb(20 66 151 / 5%) 1px, transparent 1px), #f3f7fd;
+    background-size: 2.5rem 2.5rem;
+  }
+
+  .hub__map::before {
+    position: absolute;
+    inset: 10% 14%;
+    border: 1px solid #bdd0eb;
+    border-radius: 42% 58% 52% 48%;
+    content: '';
+    transform: rotate(-9deg);
+  }
+
+  .hub__rings {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20rem;
+    height: 20rem;
+    border: 1px solid rgb(232 93 38 / 20%);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow:
+      0 0 0 4rem rgb(20 66 151 / 3%),
+      0 0 0 8rem rgb(20 66 151 / 2%);
+  }
+
+  .hub__node {
+    position: absolute;
+    z-index: 2;
+    display: grid;
+    min-width: 4.5rem;
+    min-height: 4.5rem;
+    padding: 0.55rem;
+    place-items: center;
+    border: 1px solid #b9cce7;
+    border-radius: 50%;
+    background: #fff;
+    color: var(--blue);
+    font-size: 0.75rem;
+    font-weight: 900;
+    box-shadow: 0 0.8rem 2rem rgb(20 66 151 / 10%);
+  }
+
+  .hub__node--gz {
+    top: 44%;
+    left: 43%;
+    width: 7rem;
+    height: 7rem;
+    border-color: #f1a98b;
+    background: #fff7f2;
+    color: var(--signal);
+  }
+
+  .hub__node--gz b,
+  .hub__node--gz small {
+    display: block;
+    text-align: center;
+  }
+
+  .hub__node--gz b {
+    font-size: 1.15rem;
+  }
+
+  .hub__node--gz small {
+    color: #8d715f;
+    font-size: 0.58rem;
+  }
+
+  .hub__node--dg {
+    top: 25%;
+    right: 15%;
+  }
+
+  .hub__node--fs {
+    bottom: 15%;
+    left: 19%;
+  }
+
+  .hub__node--zq {
+    top: 18%;
+    left: 12%;
+  }
+
+  .hub__map > p {
+    position: absolute;
+    right: 1rem;
+    bottom: 0.9rem;
+    margin: 0;
+    color: #7e90a8;
+    font-size: 0.62rem;
+    font-weight: 900;
+    letter-spacing: 0.18em;
+  }
+
+  .hub__ledger {
+    align-self: stretch;
+    border-top: 1px solid var(--ink);
+  }
+
+  .hub__ledger > div {
+    display: grid;
+    grid-template-columns: 1.8rem minmax(6rem, 0.8fr) 1fr;
+    gap: 0.85rem;
+    align-items: center;
+    padding: 1.35rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .hub__ledger > div > span {
+    color: var(--signal);
+    font-size: 0.64rem;
+    font-weight: 900;
+  }
+
+  .hub__ledger strong {
+    color: var(--blue);
+    font-size: 1.3rem;
+  }
+
+  .hub__ledger b,
+  .hub__ledger small {
+    display: block;
+  }
+
+  .hub__ledger b {
+    font-size: 0.78rem;
+  }
+
+  .hub__ledger small {
+    margin-top: 0.3rem;
+    color: #8795a7;
+    font-size: 0.66rem;
+  }
+
+  .hub__capabilities {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border-top: 1px solid var(--ink);
+  }
+
+  .hub__capabilities article {
+    padding: 1.4rem 1.4rem 0 0;
+    border-right: 1px solid var(--line);
+  }
+
+  .hub__capabilities article:not(:first-child) {
+    padding-left: 1.4rem;
+  }
+
+  .hub__capabilities article:last-child {
+    border-right: 0;
+  }
+
+  .signature--south-network {
+    background: #f7faff;
+  }
+
+  .south {
+    display: grid;
+    grid-template-columns: minmax(18rem, 0.78fr) minmax(0, 1.22fr);
+    gap: 2.5rem;
+  }
+
+  .south__scene {
+    position: relative;
+    min-height: 36rem;
+    margin: 0;
+    overflow: hidden;
+  }
+
+  .south__scene figcaption {
+    position: absolute;
+    inset: auto 0 0;
+    padding: 4rem 1.5rem 1.4rem;
+    background: linear-gradient(transparent, rgb(8 20 42 / 78%));
+    color: #fff;
+  }
+
+  .south__scene figcaption span,
+  .south__scene figcaption strong {
+    display: block;
+  }
+
+  .south__scene figcaption span {
+    color: #ff9369;
+    font-size: 0.65rem;
+    font-weight: 900;
+    letter-spacing: 0.15em;
+  }
+
+  .south__scene figcaption strong {
+    margin-top: 0.45rem;
+    font-size: 1.25rem;
+  }
+
+  .south__orchestra {
+    border-top: 1px solid var(--ink);
+  }
+
+  .south__orchestra article {
+    display: grid;
+    grid-template-columns: 4.5rem 8rem 1fr;
+    gap: 1rem;
+    align-items: start;
+    padding: 1.35rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .south__orchestra article > span {
+    display: grid;
+    height: 2rem;
+    place-items: center;
+    border: 1px solid #c9d8ec;
+    color: var(--blue);
+    font-size: 0.68rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+  }
+
+  .south__pulse,
+  .east__metrics,
+  .global__metrics,
+  .workshop__results {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border-top: 1px solid var(--ink);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .east {
+    display: grid;
+    grid-template-columns: minmax(18rem, 0.82fr) minmax(0, 1.18fr);
+    gap: 2rem;
+    align-items: stretch;
+  }
+
+  .east__coverage {
+    position: relative;
+    min-height: 34rem;
+    overflow: hidden;
+    background: #f1f6fd;
+  }
+
+  .east__orbit {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    border: 1px solid rgb(20 66 151 / 16%);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .east__orbit--one {
+    width: 13rem;
+    height: 13rem;
+    border-color: rgb(232 93 38 / 35%);
+  }
+
+  .east__orbit--two {
+    width: 24rem;
+    height: 24rem;
+  }
+
+  .east__orbit--three {
+    width: 37rem;
+    height: 37rem;
+  }
+
+  .east__core {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 2;
+    display: grid;
+    width: 9rem;
+    height: 9rem;
+    place-content: center;
+    border-radius: 50%;
+    background: #fff;
+    text-align: center;
+    box-shadow: 0 1rem 3rem rgb(20 66 151 / 14%);
+    transform: translate(-50%, -50%);
+  }
+
+  .east__core small,
+  .east__core span {
+    color: #7d8da2;
+    font-size: 0.56rem;
+  }
+
+  .east__core strong {
+    color: var(--signal);
+    font-size: 1.8rem;
+  }
+
+  .east__city {
+    position: absolute;
+    z-index: 3;
+    padding: 0.42rem 0.7rem;
+    border: 1px solid #c8d8ec;
+    background: #fff;
+    color: var(--blue);
+    font-size: 0.69rem;
+    font-weight: 900;
+    box-shadow: 0 0.6rem 1.5rem rgb(20 66 151 / 10%);
+  }
+
+  .east__city--ks {
+    top: 24%;
+    left: 20%;
+  }
+
+  .east__city--sh {
+    top: 26%;
+    right: 16%;
+  }
+
+  .east__city--hf {
+    bottom: 17%;
+    left: 21%;
+  }
+
+  .east__screen,
+  .evidence__screen {
+    align-self: center;
+    padding: 0.65rem;
+    border: 1px solid #ced9e8;
+    border-radius: 0.8rem;
+    background: #14263f;
+    box-shadow: 0 1.5rem 4rem rgb(19 43 80 / 15%);
+  }
+
+  .east__screen-bar,
+  .evidence__screen > div:first-child {
+    display: flex;
+    gap: 0.3rem;
+    align-items: center;
+    padding: 0.15rem 0.1rem 0.6rem;
+  }
+
+  .east__screen-bar span,
+  .evidence__screen > div:first-child span {
+    width: 0.42rem;
+    height: 0.42rem;
+    border-radius: 50%;
+    background: #6d819a;
+  }
+
+  .east__screen-bar b,
+  .evidence__screen > div:first-child b {
+    margin-left: auto;
+    color: #cbd7e6;
+    font-size: 0.58rem;
+    letter-spacing: 0.08em;
+  }
+
+  .east__screen img,
+  .evidence__screen img {
+    height: auto;
+    border-radius: 0.3rem;
+  }
+
+  .stores {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(18rem, 0.85fr);
+    gap: clamp(2rem, 7vw, 6rem);
+  }
+
+  .stores__manifest {
+    border-top: 2px solid var(--ink);
+  }
+
+  .stores__manifest-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .stores__manifest-head span {
+    color: var(--signal);
+    font-size: 0.62rem;
+    font-weight: 900;
+    letter-spacing: 0.16em;
+  }
+
+  .stores__manifest-head b {
+    font-size: 0.76rem;
+  }
+
+  .stores__manifest ol {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .stores__manifest li {
+    position: relative;
+    display: grid;
+    grid-template-columns: 4rem 1.25rem 1fr;
+    gap: 0.8rem;
+    padding: 1.15rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .stores__manifest time {
+    padding-top: 0.2rem;
+    color: #8291a4;
+    font-size: 0.62rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+  }
+
+  .stores__dot {
+    position: relative;
+    z-index: 2;
+    width: 0.7rem;
+    height: 0.7rem;
+    margin-top: 0.35rem;
+    border: 2px solid var(--signal);
+    border-radius: 50%;
+    background: #fff;
+  }
+
+  .stores__manifest li:not(:last-child) .stores__dot::after {
+    position: absolute;
+    top: 0.7rem;
+    bottom: -5.6rem;
+    left: 0.18rem;
+    width: 1px;
+    background: #efb9a3;
+    content: '';
+  }
+
+  .stores__summary {
+    align-self: start;
+    padding: 2rem 0 0 2rem;
+    border-left: 1px solid var(--line);
+  }
+
+  .stores__summary > p {
+    font-size: 0.92rem;
+    line-height: 1.9;
+  }
+
+  .stores__summary > div {
+    margin-top: 2rem;
+    border-top: 1px solid var(--ink);
+  }
+
+  .stores__summary article {
+    display: grid;
+    grid-template-columns: minmax(5.5rem, 0.6fr) 1fr;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .stores__summary article strong {
+    grid-row: 1 / 3;
+    color: var(--signal);
+    font-size: 1.35rem;
+  }
+
+  .stores__summary article span {
+    font-size: 0.78rem;
+    font-weight: 800;
+  }
+
+  .stores__summary article small {
+    color: #8492a5;
+    font-size: 0.65rem;
+  }
+
+  .signature--global-tower {
+    background: #f7faff;
+  }
+
+  .global {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(19rem, 0.8fr);
+    gap: clamp(2rem, 5vw, 4rem);
+  }
+
+  .global__map {
+    position: relative;
+    min-height: 34rem;
+    overflow: hidden;
+    border: 1px solid #d8e4f2;
+    background: #eef5fd;
+  }
+
+  .global__map img {
+    object-fit: contain;
+  }
+
+  .global__point,
+  .global__flight {
+    position: absolute;
+    z-index: 2;
+    padding: 0.38rem 0.6rem;
+    background: #fff;
+    font-size: 0.62rem;
+    font-weight: 900;
+    box-shadow: 0 0.6rem 1.5rem rgb(20 66 151 / 12%);
+  }
+
+  .global__point::before {
+    display: inline-block;
+    width: 0.45rem;
+    height: 0.45rem;
+    margin-right: 0.35rem;
+    border-radius: 50%;
+    background: var(--signal);
+    content: '';
+  }
+
+  .global__point--one {
+    top: 46%;
+    left: 69%;
+  }
+
+  .global__point--two {
+    top: 25%;
+    left: 18%;
+  }
+
+  .global__point--three {
+    right: 8%;
+    bottom: 22%;
+  }
+
+  .global__flight {
+    border: 1px solid #bfd1e9;
+    color: var(--blue);
+  }
+
+  .global__flight--out {
+    top: 18%;
+    left: 48%;
+  }
+
+  .global__flight--back {
+    bottom: 16%;
+    left: 36%;
+    color: var(--signal);
+  }
+
+  .global__tower {
+    border-top: 1px solid var(--ink);
+  }
+
+  .global__tower > p {
+    padding: 1.2rem 0 1.6rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .global__tower ol {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .global__tower li {
+    display: grid;
+    grid-template-columns: 2rem 1fr;
+    gap: 0.8rem;
+    padding: 1.1rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .global__tower li > span {
+    color: var(--signal);
+    font-size: 0.66rem;
+    font-weight: 900;
+  }
+
+  .signature--live-command {
+    background: radial-gradient(circle at 7% 18%, rgb(3 157 221 / 9%), transparent 24rem), #f4f8fd;
+  }
+
+  .live {
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(18rem, 0.65fr);
+    gap: clamp(2rem, 5vw, 4.5rem);
+    align-items: center;
+  }
+
+  .live__console {
+    padding: 0.8rem;
+    border: 1px solid #cbd8e8;
+    border-radius: 0.9rem;
+    background: #14263f;
+    box-shadow: 0 1.8rem 5rem rgb(19 43 80 / 18%);
+  }
+
+  .live__console-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.2rem 0.2rem 0.75rem;
+    color: #d9e5f3;
+    font-size: 0.6rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+  }
+
+  .live__console-top b {
+    color: #ffb69b;
+  }
+
+  .live__console-top i {
+    display: inline-block;
+    width: 0.45rem;
+    height: 0.45rem;
+    margin-right: 0.3rem;
+    border-radius: 50%;
+    background: #ff6a3d;
+    box-shadow: 0 0 0 0.25rem rgb(255 106 61 / 18%);
+  }
+
+  .live__console > img {
+    height: auto;
+    border-radius: 0.35rem;
+  }
+
+  .live__signals {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+    margin-top: 0.6rem;
+  }
+
+  .live__signals div {
+    padding: 0.7rem;
+    border: 1px solid rgb(219 232 255 / 12%);
+    background: rgb(255 255 255 / 4%);
+  }
+
+  .live__signals strong,
+  .live__signals span {
+    display: block;
+  }
+
+  .live__signals strong {
+    color: #ff8f66;
+    font-size: 1rem;
+  }
+
+  .live__signals span {
+    margin-top: 0.2rem;
+    color: #aebed2;
+    font-size: 0.58rem;
+  }
+
+  .live__timeline {
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--ink);
+    list-style: none;
+  }
+
+  .live__timeline li {
+    display: grid;
+    grid-template-columns: 4rem 1fr;
+    gap: 1rem;
+    padding: 1.1rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .live__timeline time {
+    color: var(--signal);
+    font-size: 0.67rem;
+    font-weight: 900;
+  }
+
+  .jit {
+    display: grid;
+    grid-template-columns: minmax(19rem, 0.82fr) minmax(0, 1.18fr);
+    gap: clamp(2rem, 7vw, 6rem);
+    align-items: center;
+  }
+
+  .jit__radar {
+    position: relative;
+    min-height: 35rem;
+    overflow: hidden;
+    border: 1px solid #d4e0ee;
+    border-radius: 50%;
+    background:
+      radial-gradient(circle, transparent 16%, rgb(20 66 151 / 8%) 16.4%, transparent 17%),
+      radial-gradient(circle, transparent 32%, rgb(20 66 151 / 8%) 32.4%, transparent 33%),
+      radial-gradient(circle, transparent 48%, rgb(20 66 151 / 8%) 48.4%, transparent 49%),
+      conic-gradient(
+        from 20deg,
+        rgb(3 157 221 / 12%),
+        transparent 20%,
+        transparent 75%,
+        rgb(232 93 38 / 9%)
+      );
+  }
+
+  .jit__radar::before,
+  .jit__radar::after {
+    position: absolute;
+    content: '';
+    background: rgb(20 66 151 / 10%);
+  }
+
+  .jit__radar::before {
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 1px;
+  }
+
+  .jit__radar::after {
+    top: 50%;
+    right: 0;
+    left: 0;
+    height: 1px;
+  }
+
+  .jit__center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 2;
+    display: grid;
+    width: 10rem;
+    height: 10rem;
+    place-content: center;
+    border-radius: 50%;
+    background: #fff;
+    text-align: center;
+    box-shadow: 0 1rem 3rem rgb(20 66 151 / 15%);
+    transform: translate(-50%, -50%);
+  }
+
+  .jit__center small,
+  .jit__center span {
+    color: #8290a4;
+    font-size: 0.57rem;
+  }
+
+  .jit__center strong {
+    color: var(--blue);
+    font-size: 1.15rem;
+  }
+
+  .jit__blip {
+    position: absolute;
+    z-index: 3;
+    padding: 0.55rem 0.7rem;
+    border: 1px solid #c8d8ec;
+    background: #fff;
+    box-shadow: 0 0.5rem 1.4rem rgb(20 66 151 / 10%);
+  }
+
+  .jit__blip b,
+  .jit__blip small {
+    display: block;
+  }
+
+  .jit__blip b {
+    color: var(--signal);
+    font-size: 0.88rem;
+  }
+
+  .jit__blip small {
+    color: #7f8da0;
+    font-size: 0.56rem;
+  }
+
+  .jit__blip--1 {
+    top: 12%;
+    left: 25%;
+  }
+
+  .jit__blip--2 {
+    top: 27%;
+    right: 7%;
+  }
+
+  .jit__blip--3 {
+    bottom: 12%;
+    right: 22%;
+  }
+
+  .jit__blip--4 {
+    bottom: 19%;
+    left: 8%;
+  }
+
+  .jit__rails {
+    border-top: 1px solid var(--ink);
+  }
+
+  .jit__rail-head {
+    display: grid;
+    grid-template-columns: 4rem 5rem 1fr;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .jit__rail-head span {
+    grid-column: 2;
+    color: var(--signal);
+    font-size: 0.64rem;
+    font-weight: 900;
+  }
+
+  .jit__rail-head span:last-child {
+    grid-column: 3;
+    color: var(--blue);
+  }
+
+  .jit__rails article {
+    display: grid;
+    grid-template-columns: 3rem 5rem 1fr;
+    gap: 0.8rem;
+    padding: 1.1rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .jit__time {
+    color: #8492a4;
+    font-size: 0.64rem;
+    font-weight: 900;
+  }
+
+  .jit__line {
+    display: flex;
+    gap: 2rem;
+    padding-top: 0.35rem;
+  }
+
+  .jit__line i {
+    width: 0.65rem;
+    height: 0.65rem;
+    border: 2px solid var(--signal);
+    border-radius: 50%;
+  }
+
+  .jit__line i:last-child {
+    border-color: var(--blue);
+  }
+
+  .signature--evidence-lab {
+    background: #f5f8fc;
+  }
+
+  .evidence__strip {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr 1.2fr 0.8fr;
+    gap: 0.65rem;
+  }
+
+  .evidence__strip figure {
+    position: relative;
+    height: 20rem;
+    margin: 0;
+    overflow: hidden;
+  }
+
+  .evidence__strip figure:nth-child(even) {
+    margin-top: 3rem;
+  }
+
+  .evidence__strip figcaption {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: 3rem 0.8rem 0.8rem;
+    background: linear-gradient(transparent, rgb(8 20 42 / 72%));
+    color: #fff;
+    font-size: 0.68rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+  }
+
+  .evidence__bench {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(17rem, 0.8fr);
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: center;
+    margin-top: 3.5rem;
+  }
+
+  .evidence__findings {
+    border-top: 1px solid var(--ink);
+  }
+
+  .evidence__findings article {
+    display: grid;
+    grid-template-columns: 2rem 6.5rem 1fr;
+    gap: 0.7rem;
+    align-items: center;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .evidence__findings article > span {
+    color: var(--signal);
+    font-size: 0.62rem;
+    font-weight: 900;
+  }
+
+  .evidence__findings article > strong {
+    color: var(--blue);
+    font-size: 1.2rem;
+  }
+
+  .evidence__findings b,
+  .evidence__findings small {
+    display: block;
+  }
+
+  .evidence__findings b {
+    font-size: 0.75rem;
+  }
+
+  .evidence__findings small {
+    margin-top: 0.15rem;
+    color: #8190a4;
+    font-size: 0.62rem;
+  }
+
+  .workshop {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(20rem, 0.85fr);
+    gap: clamp(2rem, 5vw, 4rem);
+  }
+
+  .workshop__gallery {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: 1fr 0.68fr;
+    gap: 0.65rem;
+  }
+
+  .workshop__gallery figure {
+    position: relative;
+    min-height: 15rem;
+    margin: 0;
+    overflow: hidden;
+  }
+
+  .workshop__gallery .workshop__wide {
+    grid-column: 1 / -1;
+  }
+
+  .workshop__board {
+    align-self: start;
+    border-top: 1px solid var(--ink);
+  }
+
+  .workshop__board > p {
+    padding: 1.15rem 0 1.5rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .workshop__board ol {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .workshop__board li {
+    display: grid;
+    grid-template-columns: 2rem 1fr;
+    gap: 0.7rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .workshop__board li > span {
+    color: var(--signal);
+    font-size: 0.62rem;
+    font-weight: 900;
+  }
+
+  @media (max-width: 960px) {
+    .signature__header,
+    .journey,
+    .showroom,
+    .hub,
+    .south,
+    .east,
+    .stores,
+    .global,
+    .live,
+    .jit,
+    .evidence__bench,
+    .workshop {
+      grid-template-columns: 1fr;
+    }
+
+    .journey__scene {
+      position: relative;
+      top: auto;
+    }
+
+    .journey__scene img {
+      aspect-ratio: 16 / 9;
+    }
+
+    .hub__capabilities {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .south__scene {
+      min-height: 28rem;
+    }
+
+    .stores__summary {
+      padding: 0;
+      border-left: 0;
+    }
+
+    .evidence__strip {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .evidence__strip figure:nth-child(even) {
+      margin-top: 0;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .signature {
+      padding: 3.75rem 0;
+    }
+
+    .signature__inner {
+      width: min(100% - 1.5rem, 80rem);
+    }
+
+    .signature__header {
+      gap: 1.3rem;
+      margin-bottom: 2rem;
+    }
+
+    .signature__heading-wrap h2 {
+      font-size: 2rem;
+    }
+
+    .journey__instruments,
+    .south__pulse,
+    .east__metrics,
+    .global__metrics,
+    .workshop__results {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .journey__instruments div:nth-child(2),
+    .south__pulse div:nth-child(2),
+    .east__metrics div:nth-child(2),
+    .global__metrics div:nth-child(2),
+    .workshop__results div:nth-child(2) {
+      border-right: 0;
+    }
+
+    .showroom__gallery {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .showroom__gallery .showroom__hero {
+      grid-row: auto;
+      grid-column: 1 / -1;
+      min-height: 24rem;
+    }
+
+    .showroom__catalogue li,
+    .south__orchestra article {
+      grid-template-columns: 2rem 1fr;
+    }
+
+    .showroom__catalogue li p,
+    .south__orchestra article p {
+      grid-column: 2;
+    }
+
+    .hub__map,
+    .east__coverage,
+    .global__map,
+    .jit__radar {
+      min-height: 26rem;
+    }
+
+    .hub__capabilities {
+      grid-template-columns: 1fr;
+    }
+
+    .hub__capabilities article,
+    .hub__capabilities article:not(:first-child) {
+      padding: 1.1rem 0;
+      border-right: 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .east__screen,
+    .evidence__screen {
+      padding: 0.4rem;
+    }
+
+    .live__signals {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .jit__rails article {
+      grid-template-columns: 2rem 3.5rem 1fr;
+    }
+
+    .jit__rail-head {
+      grid-template-columns: 3rem 3.5rem 1fr;
+    }
+
+    .jit__line {
+      gap: 1.2rem;
+    }
+
+    .evidence__strip {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .evidence__strip figure {
+      height: 13rem;
+    }
+
+    .evidence__findings article {
+      grid-template-columns: 1.5rem 5.3rem 1fr;
+    }
+
+    .workshop__gallery {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto;
+    }
+
+    .workshop__gallery .workshop__wide {
+      grid-column: auto;
+    }
+  }
+</style>

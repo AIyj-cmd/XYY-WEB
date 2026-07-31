@@ -1,33 +1,116 @@
 ---
-interface FaqItem { q: string; a: string }
+interface FaqItem {
+  q: string
+  a: string
+}
 interface Props {
   heading?: string
   tag?: string
   items: FaqItem[]
+  layout?: 'accordion' | 'stacked'
 }
-const { heading = '常见问题', tag = 'FAQ', items } = Astro.props
+const { heading = '常见问题', tag = 'FAQ', items, layout = 'accordion' } = Astro.props
 ---
 
 <section class="py-16 bg-white" aria-labelledby="page-faq-heading">
-  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="mb-10">
+  <div
+    class:list={[layout === 'stacked' ? 'max-w-5xl' : 'max-w-3xl', 'mx-auto px-4 sm:px-6 lg:px-8']}
+  >
+    <header class="mb-10 text-left">
       <p class="text-brand-orange font-bold text-[11px] tracking-[0.35em] uppercase mb-2">{tag}</p>
-      <h2 id="page-faq-heading" class="text-3xl font-black text-navy-800">{heading}</h2>
-    </div>
-    <dl class="divide-y divide-gray-100 border-t border-gray-100">
-      {items.map(({ q, a }) => (
-        <details class="group py-5">
-          <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
-            <dt class="text-base font-bold text-navy-800 leading-snug flex-1">{q}</dt>
-            <span class="flex-shrink-0 mt-0.5 w-5 h-5 text-gray-400 group-open:rotate-45 transition-transform duration-200" aria-hidden="true">
-              <svg viewBox="0 0 20 20" fill="currentColor">
-                <path d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"/>
-              </svg>
-            </span>
-          </summary>
-          <dd class="mt-3 text-sm text-gray-500 leading-relaxed">{a}</dd>
-        </details>
-      ))}
-    </dl>
+      <h2
+        id="page-faq-heading"
+        class="text-[2rem] lg:text-[2.5rem] leading-tight font-black text-navy-800"
+      >
+        {heading}
+      </h2>
+    </header>
+
+    {
+      layout === 'stacked' ? (
+        <dl class="faq-stacked">
+          {items.map(({ q, a }, index) => (
+            <div class="faq-stacked__item">
+              <dt>
+                <span>{String(index + 1).padStart(2, '0')}</span>
+                <strong>{q}</strong>
+              </dt>
+              <dd>{a}</dd>
+            </div>
+          ))}
+        </dl>
+      ) : (
+        <dl class="divide-y divide-gray-100 border-t border-gray-100">
+          {items.map(({ q, a }) => (
+            <details class="group py-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <dt class="text-base font-bold text-navy-800 leading-snug flex-1">{q}</dt>
+                <span
+                  class="flex-shrink-0 mt-0.5 w-5 h-5 text-gray-400 group-open:rotate-45 transition-transform duration-200"
+                  aria-hidden="true"
+                >
+                  <svg viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
+                  </svg>
+                </span>
+              </summary>
+              <dd class="mt-3 text-sm text-gray-500 leading-relaxed">{a}</dd>
+            </details>
+          ))}
+        </dl>
+      )
+    }
   </div>
 </section>
+
+<style>
+  .faq-stacked {
+    margin: 0;
+    border-top: 1px solid #dce5f1;
+  }
+
+  .faq-stacked__item {
+    padding: 1.5rem 0;
+    border-bottom: 1px solid #dce5f1;
+  }
+
+  .faq-stacked__item dt {
+    display: grid;
+    grid-template-columns: 2rem minmax(0, 1fr);
+    gap: 0.75rem;
+    align-items: start;
+  }
+
+  .faq-stacked__item dt span {
+    padding-top: 0.15rem;
+    color: #e85d26;
+    font-size: 0.6875rem;
+    line-height: 1.5;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+  }
+
+  .faq-stacked__item dt strong {
+    color: #132b50;
+    font-size: 1rem;
+    line-height: 1.65;
+    font-weight: 800;
+  }
+
+  .faq-stacked__item dd {
+    margin: 0.75rem 0 0 2.75rem;
+    color: #334155;
+    font-size: 0.875rem;
+    line-height: 1.85;
+  }
+
+  @media (max-width: 640px) {
+    .faq-stacked__item {
+      padding: 1.25rem 0;
+    }
+
+    .faq-stacked__item dd {
+      margin-top: 0.65rem;
+    }
+  }
+</style>

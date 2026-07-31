@@ -1,7 +1,12 @@
 ---
 import { BRAND, NAV_LINKS, DIGITAL_PRODUCTS } from '@/lib/brand'
-import { getServices } from '@/lib/directus'
-const SERVICES = await getServices()
+import { getServices, type Service } from '@/lib/directus'
+
+interface Props {
+  services?: Service[]
+}
+
+const SERVICES = Astro.props.services ?? await getServices()
 ---
 
 <footer class="bg-navy-900 text-navy-100 pt-14 pb-8">
@@ -14,7 +19,7 @@ const SERVICES = await getServices()
           <img src="/logo.png" alt="新亦源供应链" class="h-12 w-auto" loading="lazy" />
         </a>
         <p class="text-sm text-navy-200 leading-relaxed mb-5">
-          2011年成立，深耕鞋服物流15年。140+知名服饰品牌的云仓伙伴，服务覆盖全国主要城市及6000+区县/服务区域。
+          2011年成立，深耕鞋服物流15年。服务140+品牌、10000+门店，覆盖6000+城市，直营仓储50万㎡。
         </p>
         <div class="space-y-1.5">
           <a
@@ -35,7 +40,7 @@ const SERVICES = await getServices()
         <ul class="space-y-2.5">
           {SERVICES.map((s) => (
             <li>
-              <a href={`/product#${s.id}`} class="text-sm text-navy-200 hover:text-white transition-colors">
+              <a href={`/product#${s.slug}`} class="text-sm text-navy-200 hover:text-white transition-colors">
                 {s.name}
               </a>
             </li>
@@ -82,14 +87,19 @@ const SERVICES = await getServices()
       <p class="text-xs text-navy-300">
         © {new Date().getFullYear()} {BRAND.fullName}. 保留所有权利.
       </p>
-      <a
-        href="https://beian.miit.gov.cn/"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="text-xs text-navy-300 hover:text-navy-100 transition-colors"
-      >
-        {BRAND.icp}
-      </a>
+      <div class="flex items-center gap-4">
+        <a href="/privacy" class="text-xs text-navy-300 hover:text-navy-100 transition-colors">
+          个人信息保护说明
+        </a>
+        <a
+          href="https://beian.miit.gov.cn/"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-xs text-navy-300 hover:text-navy-100 transition-colors"
+        >
+          {BRAND.icp}
+        </a>
+      </div>
     </div>
   </div>
 </footer>

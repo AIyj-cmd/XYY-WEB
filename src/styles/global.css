@@ -20,3 +20,14 @@
 
   --background-image-hero-gradient: linear-gradient(135deg, #0a1a33 0%, #1b3a6b 50%, #132b50 100%);
 }
+
+/* 浅色页面的辅助文案统一使用深灰蓝，提高正文和说明信息的阅读对比度。 */
+body .text-gray-300,
+body .text-gray-400,
+body .text-gray-500,
+body .text-gray-600,
+body .text-slate-400,
+body .text-slate-500,
+body .text-slate-600 {
+  color: #334155;
+}

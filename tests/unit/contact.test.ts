@@ -4,7 +4,7 @@ import { POST, __resetContactRateLimitForTests } from '@/pages/api/contact'
 
 function request(body: Record<string, unknown>, headers: Record<string, string> = {}) {
   const payload = JSON.stringify(body)
-  return new Request('https://wz.tomatopia.top/api/contact', {
+  return new Request('https://56xyy.com/api/contact', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -57,6 +57,7 @@ describe('contact API', () => {
         email: 'test@example.com',
         service: 'cloud-warehouse',
         message: '想了解仓配一体方案',
+        privacyConsent: 'on',
       }),
     } as any)
 
@@ -68,7 +69,7 @@ describe('contact API', () => {
   })
 
   it('rate limits repeated submissions from the same IP', async () => {
-    const body = { name: '张三', phone: '13800138000', message: '咨询' }
+    const body = { name: '张三', phone: '13800138000', message: '咨询', privacyConsent: 'on' }
     let lastResponse = new Response(null)
 
     for (let i = 0; i < 6; i += 1) {

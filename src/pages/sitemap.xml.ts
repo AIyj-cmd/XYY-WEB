@@ -1,6 +1,5 @@
 import type { APIRoute } from 'astro'
 import { BRAND } from '@/lib/brand'
-import { getPublishedNews } from '@/lib/directus'
 
 const STATIC_PAGES = [
   { url: '/', priority: '1.0', changefreq: 'weekly' },
@@ -18,57 +17,29 @@ const STATIC_PAGES = [
   { url: '/weipinhui-jit-jitx', priority: '0.8', changefreq: 'monthly' },
   { url: '/about', priority: '0.8', changefreq: 'monthly' },
   { url: '/cases', priority: '0.8', changefreq: 'monthly' },
-  { url: '/news', priority: '0.8', changefreq: 'daily' },
+  { url: '/news', priority: '0.6', changefreq: 'monthly' },
   { url: '/senlinqikan', priority: '0.75', changefreq: 'monthly' },
   { url: '/contact', priority: '0.7', changefreq: 'monthly' },
+  { url: '/privacy', priority: '0.3', changefreq: 'yearly' },
 ]
 
-const today = new Date().toISOString().split('T')[0]
+// Update this only when the static-page content is materially revised.
+const STATIC_CONTENT_LASTMOD = '2026-07-29'
 
 export const GET: APIRoute = async () => {
-  const newsArticles = await getPublishedNews(100, 1)
-
   const staticEntries = STATIC_PAGES.map(
     ({ url, priority, changefreq }) =>
       `  <url>
     <loc>${BRAND.url}${url}</loc>
-    <lastmod>${today}</lastmod>
+    <lastmod>${STATIC_CONTENT_LASTMOD}</lastmod>
     <changefreq>${changefreq}</changefreq>
     <priority>${priority}</priority>
   </url>`
   ).join('\n')
 
-  const TWO_DAYS_MS = 2 * 24 * 60 * 60 * 1000
-  const newsEntries = newsArticles
-    .map((a) => {
-      const isRecent = Date.now() - new Date(a.published_at).getTime() < TWO_DAYS_MS
-      const newsBlock = isRecent
-        ? `
-    <news:news>
-      <news:publication>
-        <news:name>${BRAND.name}</news:name>
-        <news:language>zh-Hans</news:language>
-      </news:publication>
-      <news:publication_date>${a.published_at}</news:publication_date>
-      <news:title>${a.title.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</news:title>
-    </news:news>`
-        : ''
-      return `  <url>
-    <loc>${BRAND.url}/news/${a.slug}</loc>
-    <lastmod>${a.date_updated ? a.date_updated.split('T')[0] : a.published_at.split('T')[0]}</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>${newsBlock}
-  </url>`
-    })
-    .join('\n')
-
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset
-  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-  xmlns:news="http://www.google.com/schemas/sitemap-news/0.9"
->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${staticEntries}
-${newsEntries}
 </urlset>`
 
   return new Response(xml, {

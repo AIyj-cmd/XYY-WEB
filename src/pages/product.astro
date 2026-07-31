@@ -2,6 +2,7 @@
 import Layout from '@/layouts/Layout.astro'
 import PageFAQ from '@/components/PageFAQ.astro'
 import { BRAND } from '@/lib/brand'
+import { CLAIM_TEXT } from '@/lib/claims'
 import { getServices } from '@/lib/directus'
 
 const SERVICES = await getServices()
@@ -31,19 +32,142 @@ const breadcrumbSchema = {
 }
 
 const NAV_ITEMS = [
-  { id: 'cloud-warehouse',       label: '鞋服云仓',         en: 'Cloud Warehouse' },
-  { id: 'quality-inspection',    label: '后整质检修复',      en: 'QC & Repair' },
-  { id: 'logistics-cloud',       label: '物流云',            en: 'Logistics Cloud' },
-  { id: 'yundao-platform',        label: '运到寄件',          en: 'YunDao Express' },
+  { id: 'cloud-warehouse', label: '鞋服云仓', en: 'Cloud Warehouse' },
+  { id: 'quality-inspection', label: '后整质检修复', en: 'QC & Repair' },
+  { id: 'logistics-cloud', label: '数字化能力', en: 'Digital Capability' },
+  { id: 'yundao-platform', label: '运到寄件', en: 'YunDao Express' },
+]
+
+const SERVICE_HUBS = [
+  {
+    index: '01',
+    name: '鞋服仓配中心',
+    role: '库存与订单执行',
+    scope: '入仓验收 · RFID建档 · 多渠道仓配',
+  },
+  {
+    index: '02',
+    name: '质检修复中心',
+    role: '商品状态再判断',
+    scope: '退货拆包 · 分级质检 · 后整修复',
+  },
+  {
+    index: '03',
+    name: '物流数据中心',
+    role: '运输与运营协同',
+    scope: 'OTD中台 · 运到平台 · 轨迹监控',
+  },
+]
+
+const ORCHESTRATION_STEPS = [
+  { index: '01', title: '入仓', detail: '收货验收 / SKU建档' },
+  { index: '02', title: '质检', detail: '抽检全检 / 状态分级' },
+  { index: '03', title: '仓配', detail: '一盘货 / 波次履约' },
+  { index: '04', title: '物流', detail: '智能路由 / 轨迹监控' },
+  { index: '05', title: '数据', detail: '库存 / 时效 / 人效回流' },
+]
+
+const FORWARD_CHAIN = [
+  '新品与补货入仓',
+  '款色码建档',
+  '多渠道库存同步',
+  '智能波次拣选',
+  CLAIM_TEXT.shippingSla,
+  '轨迹与签收监控',
+]
+
+const REVERSE_CHAIN = [
+  '退货回仓',
+  '视频拆包核对',
+  'A / B+ / B- / C分级',
+  '修复或处置分流',
+  `质检与二次上架${CLAIM_TEXT.returnTurnaround}`,
+  '可售库存回补',
+]
+
+const SCENE_FRAMES = [
+  {
+    src: '/images/services/warehouse-panorama.webp',
+    alt: '新亦源鞋服仓储作业现场',
+    eyebrow: 'WAREHOUSE / 01',
+    title: '高SKU鞋服仓内现场',
+    desc: '货位、款色码和作业波次在同一套仓内节奏中协同。',
+    className: 'scene-frame scene-frame--wide',
+  },
+  {
+    src: '/images/services/inspection-wide.webp',
+    alt: '新亦源鞋服质检作业现场',
+    eyebrow: 'QUALITY / 02',
+    title: '质检与商品状态判断',
+    desc: '从拆包核对到异常识别，每一步留下可追溯依据。',
+    className: 'scene-frame scene-frame--tall',
+  },
+  {
+    src: '/images/services/repair-stitch.webp',
+    alt: '新亦源后整缝补修复现场',
+    eyebrow: 'REPAIR / 03',
+    title: '后整修复工位',
+    desc: '让可修复商品经过处理与复检后重回后续流程。',
+    className: 'scene-frame scene-frame--half',
+  },
+  {
+    src: '/images/services/global-map.webp',
+    alt: '新亦源供应链服务网络示意',
+    eyebrow: 'NETWORK / 04',
+    title: '区域仓网与线路协同',
+    desc: '根据货源、库存与订单分布组织仓点和运输方案。',
+    className: 'scene-frame scene-frame--map',
+  },
+]
+
+const DIGITAL_MODULES = [
+  { index: '01', name: '物流网关', desc: '衔接业务系统与承运商，统一订单和运单数据入口。' },
+  { index: '02', name: '仓储管理 WMS', desc: '围绕鞋服款色码、库存、波次与复核组织仓内作业。' },
+  { index: '03', name: '物流管理 LMS', desc: '统一查看承运商、轨迹、签收与异常处理状态。' },
+  { index: '04', name: '人效通', desc: '记录作业量、效率与质量，为排班和峰值准备提供依据。' },
+  { index: '05', name: '发货时效监控', desc: '跟踪订单关键节点，对超时风险进行识别和协同。' },
+  { index: '06', name: '轨迹与签收监控', desc: '从揽收到签收持续跟踪，异常件进入客服工单流程。' },
+]
+
+const SERVICE_DIRECTORY = [
+  {
+    axis: '区域',
+    en: 'REGION',
+    items: [
+      { label: '广州鞋服云仓', href: '/guangzhou-xiefu-yuncang' },
+      { label: '华南鞋服云仓', href: '/huanan-xiefu-yuncang' },
+      { label: '华东鞋服云仓', href: '/huadong-xiefu-yuncang' },
+    ],
+  },
+  {
+    axis: '渠道',
+    en: 'CHANNEL',
+    items: [
+      { label: 'B2B门店仓配', href: '/b2b-mendian-cangpei' },
+      { label: '直播电商仓配', href: '/zhibo-cangpei' },
+      { label: '唯品会JIT / JITX', href: '/weipinhui-jit-jitx' },
+      { label: '跨境云仓', href: '/kuajing-yuncang' },
+    ],
+  },
+  {
+    axis: '品类与逆向',
+    en: 'CATEGORY & REVERSE',
+    items: [
+      { label: '鞋服云仓', href: '/xiefu-yuncang' },
+      { label: '服装云仓', href: '/fuzhuang-yuncang' },
+      { label: '退货质检', href: '/tuihuo-zhijian' },
+      { label: '后整修复', href: '/houzheng-xiufu' },
+    ],
+  },
 ]
 ---
 
 <Layout
-  title="产品服务 - 鞋服云仓 | 后整质检修复 | 物流云 | 运到寄件平台 | 新亦源供应链"
-  description="新亦源供应链四大产品：鞋服云仓、后整质检修复、物流云、运到智能寄件平台，为鞋服品牌提供全链路一站式仓储物流服务。"
+  title="鞋服仓配与质检服务｜云仓、退货修复、数字化系统｜新亦源"
+  description="新亦源供应链围绕鞋服仓配中心、鞋服质检中心和商圈寄件平台“运到”提供三大核心服务，并以OTD物流服务中台为底座，由物流网关、WMS、LMS、人效通、发货时效监控、轨迹与签收监控六大模块支撑全链路数字化运营。"
   jsonLd={[breadcrumbSchema, ...serviceSchemas]}
+  services={SERVICES}
 >
-
   <!-- Hero -->
   <section class="relative py-16 lg:py-28 overflow-hidden" aria-labelledby="product-hero-heading">
     <!-- 背景大图 -->
@@ -59,472 +183,1508 @@ const NAV_ITEMS = [
       class="absolute inset-0"
       style="background: linear-gradient(105deg, rgba(8,20,42,0.95) 0%, rgba(8,20,42,0.80) 40%, rgba(8,20,42,0.50) 70%, rgba(8,20,42,0.25) 100%);"
       aria-hidden="true"
-    ></div>
+    >
+    </div>
     <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <p class="text-brand-orange font-semibold text-sm tracking-wider uppercase mb-3">产品服务</p>
       <p class="text-[0.8rem] font-bold tracking-[0.05em] text-brand-orange mb-2">新亦源供应链</p>
-      <h1 id="product-hero-heading" class="text-4xl lg:text-5xl font-black text-white leading-tight mb-5">
-        鞋服云仓、后整质检修复<br />
-        <span class="text-brand-orange">与物流云一体化服务</span>
+      <h1
+        id="product-hero-heading"
+        class="text-4xl lg:text-5xl font-black text-white leading-tight mb-5"
+      >
+        鞋服仓配、质检修复<br />
+        <span class="text-brand-orange">与物流数字化服务</span>
       </h1>
       <p class="text-lg text-navy-100 max-w-2xl leading-relaxed mb-10">
-        从入库质检到出库发货，从正向仓配到逆向退货，新亦源提供五大产品板块，满足鞋服品牌全链路需求。
+        从入库质检到出库发货，从正向仓配到逆向退货，新亦源以三大核心服务和数字化系统能力支撑鞋服品牌全链路需求。
       </p>
       <!-- 产品快速导航 -->
       <div class="flex flex-wrap gap-3">
-        {NAV_ITEMS.map(({ id, label }) => (
-          <a
-            href={`#${id}`}
-            class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/20 text-white/80 hover:border-brand-orange hover:text-brand-orange text-sm font-medium transition-colors"
-          >
-            {label}
-          </a>
-        ))}
+        {
+          NAV_ITEMS.map(({ id, label }) => (
+            <a
+              href={`#${id}`}
+              class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/20 text-white/80 hover:border-brand-orange hover:text-brand-orange text-sm font-medium transition-colors"
+            >
+              {label}
+            </a>
+          ))
+        }
       </div>
     </div>
   </section>
 
-  <!-- ① 鞋服云仓 -->
-  <section id="cloud-warehouse" class="py-16 lg:py-24 bg-white scroll-mt-32" aria-labelledby="cloud-warehouse-heading">
+  <!-- 供应链服务编排台 -->
+  <section
+    id="cloud-warehouse"
+    class="orchestration-section scroll-mt-28"
+    aria-labelledby="orchestration-heading"
+  >
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-      <!-- 标题区 -->
-      <div class="mb-6">
-        <span class="text-[11px] font-bold text-brand-orange tracking-[0.35em] uppercase">产品一 · 鞋服云仓</span>
-        <h2 id="cloud-warehouse-heading" class="text-3xl lg:text-4xl font-black text-navy-800 mt-2 mb-2">鞋服云仓</h2>
-        <p class="text-brand-orange font-semibold">一仓发全国，全渠道一盘货</p>
-      </div>
-      <!-- 题图 -->
-      <div class="w-full h-56 lg:h-72 rounded-2xl overflow-hidden mb-10">
-        <img
-          src="/w-ops.webp"
-          alt="鞋服云仓 — 专业服装仓储"
-          class="w-full h-full object-cover"
-          loading="lazy"
-        />
-      </div>
-
-      <div class="lg:grid lg:grid-cols-2 lg:gap-20 items-start">
-        <!-- 左：描述 + 数据行 -->
+      <header class="section-intro section-intro--split">
         <div>
-          <p class="text-gray-600 leading-relaxed mb-8">
-            以鞋服品类深度优化的WMS为核心，提供B2C+B2B+O2O全渠道发货、库存同步与智能补货服务。
-            三代智能仓演进至RFID全域识别+自动化分拣，配合弹性人力池，应对大促不爆仓。
-            全年支持唯品会JIT/JITX等主流平台，140+品牌中60+涉及唯品会运营。
+          <p class="section-kicker">SERVICE ORCHESTRATION / 01</p>
+          <h2 id="orchestration-heading">不是服务清单，是一套供应链编排台</h2>
+        </div>
+        <p class="section-lead">
+          品牌只需要给出货品、渠道、区域和时效要求，新亦源把仓内、质检、物流与数据能力编排成一条连续作业链。
+          三个服务中枢不是彼此割裂的产品，而是围绕同一件商品接力工作。
+        </p>
+      </header>
+
+      <div class="hub-register" aria-label="三大服务中枢">
+        {
+          SERVICE_HUBS.map(({ index, name, role, scope }) => (
+            <article class="hub-register__item">
+              <div class="hub-register__head">
+                <span>{index}</span>
+                <strong>{name}</strong>
+              </div>
+              <p>{role}</p>
+              <small>{scope}</small>
+            </article>
+          ))
+        }
+      </div>
+
+      <div class="orchestration-console">
+        <div class="console-meta">
+          <span>FULL-CHAIN CONTROL</span>
+          <span>从货品进入仓库，到经营数据重新回到决策端</span>
+        </div>
+        <div class="orchestration-rail" role="list" aria-label="供应链五段编排轨道">
+          {
+            ORCHESTRATION_STEPS.map(({ index, title, detail }) => (
+              <div class="rail-stop" role="listitem">
+                <span class="rail-stop__index">{index}</span>
+                <span class="rail-stop__node" aria-hidden="true" />
+                <strong>{title}</strong>
+                <small>{detail}</small>
+              </div>
+            ))
+          }
+        </div>
+        <div class="console-foot">
+          <p>
+            <span>履约基准</span>
+            <strong>{CLAIM_TEXT.shippingSla}</strong>
           </p>
-
-          <!-- 数据行 -->
-          <div class="border-t border-gray-100 divide-y divide-gray-100 mb-8">
-            {[
-              { stat: '99.99%', label: '发货准确率', sub: '错漏全赔' },
-              { stat: '50万单/日', label: '单仓峰值', sub: '弹性产能保大促' },
-              { stat: '18:00截单', label: '当日出库', sub: '当日24:00前全出' },
-              { stat: '+40%', label: 'RFID拣货效率', sub: '三代智能仓' },
-            ].map(({ stat, label, sub }) => (
-              <div class="flex items-center py-4 gap-4">
-                <span class="w-32 flex-shrink-0 text-xl font-black text-brand-orange">{stat}</span>
-                <span class="flex-1 text-sm font-semibold text-navy-800">{label}</span>
-                <span class="text-xs text-gray-400">{sub}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <!-- 右：核心能力行列表 -->
-        <div>
-          <p class="text-[11px] font-bold text-gray-400 tracking-[0.25em] uppercase mb-4">核心能力</p>
-          <div class="divide-y divide-gray-100">
-            {[
-              { title: '全渠道一盘货', desc: 'B2C+B2B+O2O库存实时同步，支持多平台聚合发货，含天猫、京东、拼多多、唯品会JIT/JITX、抖音、小程序等全渠道。' },
-              { title: '智能波次拣货', desc: 'RFID全域识别+电子标签拣货+自动化分拣系统，人效提升30%，仓内运营成本降低18%。' },
-              { title: '弹性产能机制', desc: '动态人力池+小时级极速人力调配，保障百万级大促订单发货时效，单仓单日峰值50万单，地区峰值100万单。' },
-              { title: '深度定制WMS', desc: '针对鞋服优化的WMS，支持序列号/RFID/线上线下一体管理，可二次开发，与主流ERP奇门/EDI无缝对接，不收系统费。' },
-              { title: '精细库存管控', desc: '日动盘+周抽盘+月实盘+季忙盘+年度全盘，库存准确率99.99%+，综合损耗下降20%。' },
-              { title: '全程风控保障', desc: '1080P高清拆包监控，360°安防追溯，仓库财产险+运输险保额100亿，满足电商平台争议举证。' },
-            ].map(({ title, desc }) => (
-              <div class="py-4 flex gap-4 group hover:bg-orange-50/40 -mx-3 px-3 transition-colors">
-                <div class="w-1 flex-shrink-0 rounded-full bg-brand-orange/30 group-hover:bg-brand-orange transition-colors self-stretch"></div>
-                <div>
-                  <h4 class="text-sm font-bold text-navy-800 mb-1">{title}</h4>
-                  <p class="text-sm text-gray-500 leading-relaxed">{desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <div class="h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" aria-hidden="true"></div>
-
-  <!-- ② 后整质检修复 -->
-  <section id="quality-inspection" class="py-16 lg:py-24 bg-gray-50 scroll-mt-32" aria-labelledby="quality-heading">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-      <div class="mb-6">
-        <span class="text-[11px] font-bold text-brand-orange tracking-[0.35em] uppercase">产品二 · 后整质检修复</span>
-        <h2 id="quality-heading" class="text-3xl lg:text-4xl font-black text-navy-800 mt-2 mb-2">后整质检修复</h2>
-        <p class="text-brand-orange font-semibold">135+种缺陷识别，48小时二次上架</p>
-      </div>
-      <div class="w-full h-56 lg:h-72 rounded-2xl overflow-hidden mb-10">
-        <img
-          src="/w-inspect.webp"
-          alt="后整质检修复 — 专业质检团队"
-          class="w-full h-full object-cover"
-          loading="lazy"
-        />
-      </div>
-
-      <div class="lg:grid lg:grid-cols-2 lg:gap-20 items-start">
-        <!-- 左：描述 + 数据行 -->
-        <div>
-          <p class="text-gray-600 leading-relaxed mb-8">
-            鞋服退货是行业公认的"最后一公里"难题。新亦源专属质检中心，与广检集团合作的QC认证团队，
-            可识别135+种常见缺陷，覆盖污渍、面料外观、缝线、纽扣配件、后工艺印绣、吊牌标识、异味等7大类；质检结果按A/B+/B-/C四级评定，
-            服装重点核查吊牌、跳针、开裂、污损、变色、少配饰等，鞋类检查大小脚、色差、溢胶、开胶、脏污等。
-            退货质检+二次上架标准时效48小时内（加急24小时），让退货商品快速重新创造价值。
+          <p>
+            <span>逆向基准</span>
+            <strong>退货质检与二次上架{CLAIM_TEXT.returnTurnaround}</strong>
           </p>
-
-          <div class="border-t border-gray-200 divide-y divide-gray-200 mb-8">
-            {[
-              { stat: '135+种', label: '可识别缺陷种类', sub: '7大类，覆盖全场景' },
-              { stat: '90%', label: '瑕疵修复成功率', sub: '专属9区修复分区' },
-              { stat: '48小时', label: '退货质检标准时效', sub: '加急24小时内' },
-              { stat: '1.53亿件', label: '年退货质检量', sub: '据公司公开资料' },
-            ].map(({ stat, label, sub }) => (
-              <div class="flex items-center py-4 gap-4">
-                <span class="w-32 flex-shrink-0 text-xl font-black text-brand-orange">{stat}</span>
-                <span class="flex-1 text-sm font-semibold text-navy-800">{label}</span>
-                <span class="text-xs text-gray-400">{sub}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <!-- 右：服务内容行列表 -->
-        <div>
-          <p class="text-[11px] font-bold text-gray-400 tracking-[0.25em] uppercase mb-4">服务内容</p>
-          <div class="divide-y divide-gray-200">
-            {[
-              { cat: '质检类', items: '新货抽检/全检（洗水测试、色牢度、缩率）、退货质检、工艺检查、对样比对' },
-              { cat: '修复类', items: '135+种缺陷修复：清污、缝补、更换配件、熨烫整理、鞋类修复、除味晾晒' },
-              { cat: '加工类', items: '车唛换唛、贴标换标、换吊牌、换包装、熨烫整理、印花一件代发' },
-              { cat: '存储类', items: '恒温恒湿仓（真丝/羽绒/皮草专储）、立体挂装存储、防尘防蛀处理' },
-              { cat: '质检背书', items: '与广检集团合作QC认证质检团队，按AQL 1.0–6.5国际标准运行' },
-              { cat: '风控类', items: '1080P高清拆包监控全程录像，支持电商平台售后争议举证，360°安防追溯' },
-            ].map(({ cat, items }) => (
-              <div class="py-4 flex gap-4 group hover:bg-orange-50/40 -mx-3 px-3 transition-colors">
-                <div class="w-1 flex-shrink-0 rounded-full bg-brand-orange/30 group-hover:bg-brand-orange transition-colors self-stretch"></div>
-                <div class="flex gap-3 items-start">
-                  <span class="text-[11px] font-bold text-brand-orange flex-shrink-0 mt-0.5 w-14">{cat}</span>
-                  <p class="text-sm text-gray-500 leading-relaxed">{items}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <div class="h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" aria-hidden="true"></div>
-
-  <!-- ③ 物流云 -->
-  <section id="logistics-cloud" class="py-16 lg:py-24 bg-white scroll-mt-32" aria-labelledby="logistics-heading">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-      <div class="mb-6">
-        <span class="text-[11px] font-bold text-brand-orange tracking-[0.35em] uppercase">产品三 · 物流云</span>
-        <h2 id="logistics-heading" class="text-3xl lg:text-4xl font-black text-navy-800 mt-2 mb-2">物流云</h2>
-        <p class="text-brand-orange font-semibold">多承运商聚合，智能路由降本</p>
-      </div>
-      <div class="w-full h-56 lg:h-72 rounded-2xl overflow-hidden mb-10">
-        <img
-          src="/w-fulfill.webp"
-          alt="物流云 — 智慧物流网络"
-          class="w-full h-full object-cover"
-          loading="lazy"
-        />
-      </div>
-
-      <div class="lg:grid lg:grid-cols-2 lg:gap-20 items-start">
-        <div>
-          <p class="text-gray-600 leading-relaxed mb-8">
-            自研物流服务中台OTD，聚合顺丰快运、中通、圆通、韵达、德邦、京东物流、申通、跨越速递、安能、EMS等10家主流承运商，提供智能路由、实时轨迹可视化、发货超时预警等能力。
-            自研商圈寄件平台"运到"，支持零售门店正向+逆向统一网络管理，帮助品牌实现更低物流成本和更优时效表现。
+          <p>
+            <span>准确率</span>
+            <strong>{CLAIM_TEXT.shippingAccuracy}</strong>
           </p>
-
-          <div class="border-t border-gray-100 divide-y divide-gray-100 mb-8">
-            {[
-              { stat: '10+家', label: '承运商聚合', sub: '顺丰中通韵达等主流快递' },
-              { stat: '实时', label: '轨迹可视化', sub: '全链路可追溯' },
-              { stat: '主动', label: '发货超时预警', sub: '与快递系统实时对接' },
-              { stat: '低门槛', label: '系统接入', sub: '按量计费，灵活接入' },
-            ].map(({ stat, label, sub }) => (
-              <div class="flex items-center py-4 gap-4">
-                <span class="w-32 flex-shrink-0 text-xl font-black text-brand-orange">{stat}</span>
-                <span class="flex-1 text-sm font-semibold text-navy-800">{label}</span>
-                <span class="text-xs text-gray-400">{sub}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div>
-          <p class="text-[11px] font-bold text-gray-400 tracking-[0.25em] uppercase mb-4">六大系统模块</p>
-          <div class="divide-y divide-gray-100">
-            {[
-              { n: '01', title: '物流网关', desc: '标准奇门接口+定制接口，快速打通业务系统' },
-              { n: '02', title: '物流管理系统（LMS）', desc: '物流服务全面信息化、实时可视化' },
-              { n: '03', title: '仓储管理系统（WMS）', desc: '服装云仓深度优化，单仓百万级，可二次开发' },
-              { n: '04', title: '人效通', desc: '精细化管理人员产能、效率与质量，降低管理成本' },
-              { n: '05', title: '发货超时预警', desc: '与电商平台及快递实时对接，主动预警异常单' },
-              { n: '06', title: '全程可视化', desc: '轨迹追踪+签收监控+全平台承运商管理+一键拦截转寄' },
-            ].map(({ n, title, desc }) => (
-              <div class="py-4 flex gap-4 group hover:bg-orange-50/40 -mx-3 px-3 transition-colors">
-                <div class="w-1 flex-shrink-0 rounded-full bg-brand-orange/30 group-hover:bg-brand-orange transition-colors self-stretch"></div>
-                <div class="flex gap-3 items-start">
-                  <span class="text-xs font-black text-brand-orange flex-shrink-0 w-6 mt-0.5">{n}</span>
-                  <div>
-                    <h4 class="text-sm font-bold text-navy-800 mb-0.5">{title}</h4>
-                    <p class="text-sm text-gray-500">{desc}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <div class="h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" aria-hidden="true"></div>
-
-  <!-- ④ 数字供应链 -->
-  <section id="logistics-cloud-digital" class="py-16 lg:py-24 bg-gray-50 scroll-mt-32" aria-labelledby="digital-chain-heading">
+  <!-- 正向与逆向双链 -->
+  <section
+    id="quality-inspection"
+    class="chain-section scroll-mt-28"
+    aria-labelledby="dual-chain-heading"
+  >
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <header class="section-intro">
+        <p class="section-kicker">DUAL FLOW / 02</p>
+        <h2 id="dual-chain-heading">一条链把货发出去，另一条链把库存价值带回来</h2>
+        <p class="section-lead">
+          正向履约与逆向退货共用商品档案、库存状态和作业数据，减少“发货是一套系统、退货又是另一套流程”的信息断点。
+        </p>
+      </header>
 
-      <div class="mb-6">
-        <span class="text-[11px] font-bold text-brand-orange tracking-[0.35em] uppercase">产品四 · 数字供应链</span>
-        <h2 id="digital-chain-heading" class="text-3xl lg:text-4xl font-black text-navy-800 mt-2 mb-2">物流云数字供应链</h2>
-        <p class="text-brand-orange font-semibold">供应链全链路数字化中台</p>
-      </div>
-      <div class="w-full h-56 lg:h-72 rounded-2xl overflow-hidden mb-10">
-        <img
-          src="/w-scan.webp"
-          alt="数字供应链 — 供应链数字化中台"
-          class="w-full h-full object-cover"
-          loading="lazy"
-        />
-      </div>
-
-      <div class="lg:grid lg:grid-cols-2 lg:gap-20 items-start">
-        <div>
-          <p class="text-gray-600 leading-relaxed mb-8">
-            自研供应链数字中台，聚合多仓、多平台、多承运商数据，实现订单履约、库存能见度、
-            时效预警与数据洞察的一体化管控。帮助中大型鞋服品牌消除信息孤岛，提升整体运营响应效率，
-            无需额外系统费，按需付费接入。
-          </p>
-
-          <div class="border-t border-gray-200 divide-y divide-gray-200 mb-8">
-            {[
-              { stat: '实时', label: '多仓库存同步', sub: '全渠道一盘货视图' },
-              { stat: '6大', label: '系统模块', sub: 'WMS/LMS/OMS全覆盖' },
-              { stat: '按需', label: '付费接入', sub: '灵活定价，无高额前期投入' },
-              { stat: '98%+', label: '接口对接成功率', sub: '主流ERP/OMS无缝接入' },
-            ].map(({ stat, label, sub }) => (
-              <div class="flex items-center py-4 gap-4">
-                <span class="w-32 flex-shrink-0 text-xl font-black text-brand-orange">{stat}</span>
-                <span class="flex-1 text-sm font-semibold text-navy-800">{label}</span>
-                <span class="text-xs text-gray-400">{sub}</span>
-              </div>
-            ))}
+      <div class="flow-lanes">
+        <article class="flow-lane flow-lane--forward">
+          <header>
+            <div>
+              <span class="flow-lane__index">A</span>
+              <h3>正向履约链</h3>
+            </div>
+            <p>FORWARD FULFILLMENT</p>
+          </header>
+          <div class="flow-lane__scroll">
+            <ol>
+              {
+                FORWARD_CHAIN.map((item, index) => (
+                  <li>
+                    <span>{String(index + 1).padStart(2, '0')}</span>
+                    <strong>{item}</strong>
+                  </li>
+                ))
+              }
+            </ol>
           </div>
-        </div>
+        </article>
 
-        <div>
-          <p class="text-[11px] font-bold text-gray-400 tracking-[0.25em] uppercase mb-4">核心功能模块</p>
-          <div class="divide-y divide-gray-200">
-            {[
-              { title: '全渠道库存中台', desc: '聚合天猫、京东、拼多多、唯品会等多平台库存，实时同步，多仓视图统一管控，有效降低库存超卖风险。' },
-              { title: '订单履约看板', desc: '全平台订单集中处理，发货进度实时可视，超时订单自动预警推送，履约过程全透明。' },
-              { title: '智能路由决策', desc: '根据收件地址、重量、时效要求自动匹配性价比最优承运商，降低物流成本8%-15%。' },
-              { title: '数据洞察报表', desc: '库存周转率、品类销量趋势、退换货分析、承运商时效对比，辅助采购与补货决策。' },
-              { title: 'API开放接口', desc: '提供标准奇门/EDI接口及定制化对接方案，适配SAP、金蝶、用友、自研ERP等主流系统。' },
-              { title: '逆向物流管理', desc: '退货收件、入库质检、二次上架全流程数字化管理，退货从揽收到处理全链路可追溯。' },
-            ].map(({ title, desc }) => (
-              <div class="py-4 flex gap-4 group hover:bg-orange-50/40 -mx-3 px-3 transition-colors">
-                <div class="w-1 flex-shrink-0 rounded-full bg-brand-orange/30 group-hover:bg-brand-orange transition-colors self-stretch"></div>
-                <div>
-                  <h4 class="text-sm font-bold text-navy-800 mb-1">{title}</h4>
-                  <p class="text-sm text-gray-500 leading-relaxed">{desc}</p>
-                </div>
-              </div>
-            ))}
+        <article class="flow-lane flow-lane--reverse">
+          <header>
+            <div>
+              <span class="flow-lane__index">B</span>
+              <h3>逆向价值链</h3>
+            </div>
+            <p>REVERSE VALUE RECOVERY</p>
+          </header>
+          <div class="flow-lane__scroll">
+            <ol>
+              {
+                REVERSE_CHAIN.map((item, index) => (
+                  <li>
+                    <span>{String(index + 1).padStart(2, '0')}</span>
+                    <strong>{item}</strong>
+                  </li>
+                ))
+              }
+            </ol>
           </div>
-        </div>
+        </article>
+      </div>
+
+      <div class="chain-note">
+        <span>同一件商品</span>
+        <p>订单状态、质检结果、修复记录、库存状态与物流轨迹可以沿链路持续衔接。</p>
       </div>
     </div>
   </section>
 
-  <div class="h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" aria-hidden="true"></div>
-
-  <!-- ④ 运到智能寄件平台 -->
-  <section id="yundao-platform" class="py-16 lg:py-24 bg-gray-50 scroll-mt-32" aria-labelledby="yundao-heading">
+  <!-- 真实场景剧场 -->
+  <section class="scene-section" aria-labelledby="scene-heading">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-      <div class="mb-6">
-        <span class="text-[11px] font-bold text-brand-orange tracking-[0.35em] uppercase">产品四 · 商圈物流O2O</span>
-        <h2 id="yundao-heading" class="text-3xl lg:text-4xl font-black text-navy-800 mt-2 mb-2">运到智能寄件平台</h2>
-        <p class="text-brand-orange font-semibold">商圈零售门店一站式智能寄件</p>
-      </div>
-      <div class="w-full rounded-2xl overflow-hidden mb-10 bg-white flex items-center justify-center p-6">
-        <img
-          src="/w-yundao.webp"
-          alt="运到智能寄件平台 — 新亦源商圈物流O2O"
-          class="max-w-2xl w-full h-auto object-contain"
-          loading="lazy"
-        />
-      </div>
-
-      <div class="lg:grid lg:grid-cols-2 lg:gap-20 items-start">
+      <header class="section-intro section-intro--split">
         <div>
-          <p class="text-gray-600 leading-relaxed mb-8">
-            新亦源自研商圈物流O2O平台"运到"，秉承共赢、公平开放的发展理念，通过链接围绕国内快递、快运的运输资源网络，
-            用信息驱动、数据链接，可以智能比价、智慧分配订单，为连锁门店、电商平台及企业机构提供全国、全网络的运力服务。
-            目前已对接顺丰快运、京东物流、韵达、德邦快运、圆通速递、跨越速递、申通快递、EMS、中通快递、货拉拉、闪送等11家主流承运商。
-          </p>
-
-          <div class="border-t border-gray-100 divide-y divide-gray-100 mb-8">
-            {[
-              { stat: '11家', label: '主流承运商聚合', sub: '智能比价一键切换' },
-              { stat: '50%', label: '寄件费用最高节省', sub: '超低折扣直出' },
-              { stat: '全国', label: '6000+区县覆盖', sub: '门店开在哪都可寄取' },
-              { stat: '实时', label: '物流轨迹可视化', sub: '在线客服工单流' },
-            ].map(({ stat, label, sub }) => (
-              <div class="flex items-center py-4 gap-4">
-                <span class="w-32 flex-shrink-0 text-xl font-black text-brand-orange">{stat}</span>
-                <span class="flex-1 text-sm font-semibold text-navy-800">{label}</span>
-                <span class="text-xs text-gray-400">{sub}</span>
-              </div>
-            ))}
-          </div>
+          <p class="section-kicker">OPERATION THEATRE / 03</p>
+          <h2 id="scene-heading">从仓库全景，到一个针脚的修复现场</h2>
         </div>
+        <p class="section-lead">
+          页面中的能力最终要落到真实作业现场：货位是否清楚、质检动作是否规范、修复工位是否专业、数据能否回到同一套管理界面。
+        </p>
+      </header>
 
-        <div>
-          <p class="text-[11px] font-bold text-gray-400 tracking-[0.25em] uppercase mb-4">平台优势</p>
-          <div class="divide-y divide-gray-100">
-            {[
-              { title: '协议折扣寄件', desc: '与主流承运商深度合作，具备较有竞争力的协议价格，部分场景下寄件费用相比散单最高可节省50%，以实际线路和承运商报价为准。' },
-              { title: '智能比价派单', desc: '系统根据货物重量、目的地、时效要求自动比较各家承运商价格与时效，推荐最优方案，帮助门店降低寄件决策与操作成本。' },
-              { title: '全国广覆盖寄取', desc: '覆盖全国6000+区县及服务区域，无论连锁门店开在哪里，均可就近寄件或上门取件，提升门店寄取覆盖能力。' },
-              { title: '聚合物流管理', desc: '统一面板管理多家承运商订单，实时轨迹可视化，支持一键拦截、转寄，异常件在线客服工单全程跟进。' },
-              { title: '快速理赔保障', desc: '与承运商签署服务协议，丢件破损快速理赔，专属客服介入跟进，从报案到赔付全程代办，省去繁琐流程。' },
-              { title: '智能报表+数据保密', desc: '提供寄件数量、费用趋势、承运商对比等多维度智能报表，助力经营决策。所有数据加密存储，严格保密。' },
-            ].map(({ title, desc }) => (
-              <div class="py-4 flex gap-4 group hover:bg-orange-50/40 -mx-3 px-3 transition-colors">
-                <div class="w-1 flex-shrink-0 rounded-full bg-brand-orange/30 group-hover:bg-brand-orange transition-colors self-stretch"></div>
-                <div>
-                  <h4 class="text-sm font-bold text-navy-800 mb-1">{title}</h4>
-                  <p class="text-sm text-gray-500 leading-relaxed">{desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+      <div class="scene-theatre">
+        {
+          SCENE_FRAMES.map(({ src, alt, eyebrow, title, desc, className }) => (
+            <figure class={className}>
+              <img src={src} alt={alt} loading="lazy" />
+              <figcaption>
+                <span>{eyebrow}</span>
+                <strong>{title}</strong>
+                <p>{desc}</p>
+              </figcaption>
+            </figure>
+          ))
+        }
       </div>
     </div>
   </section>
 
-  <!-- 专题落地页内链 -->
-  <section class="py-12 bg-white border-t border-gray-100" aria-labelledby="landing-pages-heading">
+  <!-- 数字控制塔 -->
+  <section id="logistics-cloud" class="tower-section scroll-mt-28" aria-labelledby="tower-heading">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <p class="text-[11px] font-bold text-gray-400 tracking-[0.25em] uppercase mb-6" id="landing-pages-heading">专题服务页面</p>
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        {[
-          { href: '/xiefu-yuncang', label: '鞋服云仓', sub: 'B2C+B2B+O2O全渠道' },
-          { href: '/huadong-xiefu-yuncang', label: '华东鞋服云仓', sub: '上海仓·长三角覆盖' },
-          { href: '/tuihuo-zhijian', label: '退货质检', sub: 'AQL 1.0–6.5 / 135+缺陷' },
-          { href: '/houzheng-xiufu', label: '后整修复', sub: '修复成功率90%+' },
-          { href: '/kuajing-yuncang', label: '跨境云仓', sub: '跨境退货+国际质检' },
-          { href: '/zhibo-cangpei', label: '直播电商仓配', sub: '抖音/快手/淘宝直播' },
-          { href: '/huanan-xiefu-yuncang', label: '华南鞋服云仓', sub: '广州+东莞+肇庆' },
-          { href: '/guangzhou-xiefu-yuncang', label: '广州鞋服云仓', sub: '黄埔+番禺双仓' },
-          { href: '/b2b-mendian-cangpei', label: 'B2B门店仓配', sub: '连锁补货·批发铺货' },
-        ].map(({ href, label, sub }) => (
-          <a
-            href={href}
-            class="flex flex-col gap-0.5 px-4 py-3 rounded-xl border border-gray-100 hover:border-brand-orange/40 hover:bg-orange-50/40 transition-colors group"
-          >
-            <span class="text-sm font-bold text-navy-800 group-hover:text-brand-orange transition-colors">{label}</span>
-            <span class="text-xs text-gray-400">{sub}</span>
-          </a>
-        ))}
+      <header class="section-intro section-intro--split">
+        <div>
+          <p class="section-kicker">DIGITAL CONTROL TOWER / 04</p>
+          <h2 id="tower-heading">让订单、库存、人员与物流处在同一张图上</h2>
+        </div>
+        <p class="section-lead">
+          OTD物流服务中台连接仓内WMS、物流LMS、承运商与运营监控。系统能力不单独悬空展示，而是直接服务每个作业节点。
+        </p>
+      </header>
+
+      <div class="tower-layout">
+        <figure class="device-shell">
+          <div class="device-shell__bar">
+            <span></span><span></span><span></span>
+            <small>XYYS · OPERATIONS DASHBOARD</small>
+          </div>
+          <div class="device-shell__screen">
+            <img
+              src="/images/services/operations-dashboard.webp"
+              alt="新亦源供应链数字运营控制塔界面"
+              loading="lazy"
+            />
+          </div>
+          <figcaption>
+            <span>实时状态汇集</span>
+            <p>多仓库存、订单节点、发货时效与物流轨迹按项目接入范围统一呈现。</p>
+          </figcaption>
+        </figure>
+
+        <div class="tower-modules" role="list" aria-label="六大数字系统模块">
+          {
+            DIGITAL_MODULES.map(({ index, name, desc }) => (
+              <div class="tower-module" role="listitem">
+                <span>{index}</span>
+                <strong>{name}</strong>
+                <p>{desc}</p>
+              </div>
+            ))
+          }
+        </div>
       </div>
+
+      <div class="tower-protocol">
+        <p><span>承运商</span><strong>已对接顺丰、京东、EMS等11家主流承运商</strong></p>
+        <p><span>接口方式</span><strong>可采用奇门、EDI、API或项目定制接口</strong></p>
+        <p><span>系统费用</span><strong>不收系统使用费，实施与定制等费用按方案确认</strong></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 运到与服务目录 -->
+  <section
+    id="yundao-platform"
+    class="directory-section scroll-mt-28"
+    aria-labelledby="directory-heading"
+  >
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="yundao-band">
+        <div class="yundao-band__identity">
+          <span>产品三 · 商圈物流 O2O</span>
+          <h2>运到智能寄件平台</h2>
+          <p>把门店寄件、调拨、退仓与多承运商订单放进一个统一入口。</p>
+        </div>
+        <div class="yundao-band__visual">
+          <img src="/w-yundao.webp" alt="运到智能寄件平台界面" loading="lazy" />
+        </div>
+        <div class="yundao-band__facts">
+          <p><strong>11家</strong><span>主流承运商</span></p>
+          <p><strong>正向 + 逆向</strong><span>门店寄件场景</span></p>
+          <p><strong>实时</strong><span>轨迹与异常工单</span></p>
+        </div>
+      </div>
+
+      <header class="section-intro section-intro--split directory-heading">
+        <div>
+          <p class="section-kicker">SERVICE DIRECTORY / 05</p>
+          <h2 id="directory-heading">按区域、渠道与品类进入服务目录</h2>
+        </div>
+        <p class="section-lead">
+          同一套能力会因库存位置、销售渠道与商品属性而采用不同编排方式，选择最接近当前业务的入口即可。
+        </p>
+      </header>
+
+      <dl class="service-directory">
+        {
+          SERVICE_DIRECTORY.map(({ axis, en, items }) => (
+            <div class="directory-row">
+              <dt>
+                <small>{en}</small>
+                <strong>{axis}</strong>
+              </dt>
+              <dd>
+                {items.map(({ label, href }) => (
+                  <a href={href}>
+                    <span>{label}</span>
+                    <span aria-hidden="true">↗</span>
+                  </a>
+                ))}
+              </dd>
+            </div>
+          ))
+        }
+      </dl>
     </div>
   </section>
 
   <!-- FAQ -->
   <PageFAQ
     heading="产品服务常见问题"
+    layout="stacked"
     items={[
-      { q: '新亦源鞋服云仓的最小起储量是多少？', a: '新亦源没有固定最小起储量门槛，以实际货量、SKU复杂度和仓点匹配情况为准。中小品牌可从单品类、单仓点开始合作，随业务增长逐步扩展。具体方案建议联系商务团队评估。' },
-      { q: '系统如何与品牌现有ERP/OMS对接？', a: '新亦源自研OTD中台支持奇门（旺铺、ERP等）、EDI标准接口，可直接对接用友、金蝶、管易、旺店通、好订货等主流ERP，以及天猫、京东、抖音、唯品会等平台OMS。对接周期视接口复杂度通常为1–4周，免收系统接入费。' },
-      { q: '大促备战期间，新亦源如何提前锁定峰值产能？', a: '新亦源的大促产能锁定分三阶段执行：大促前21天提交货量预测模型，与品牌对齐日发货量目标；大促前14天完成仓内货位扩容、波次排班计划和弹性人力到岗安排；大促前72小时完成最后压测，确认系统稳定和全链路时效。大促期间SLA标准与日常相同，合同约定未达标即触发赔偿机制，不单独设大促"免责窗口"。' },
-      { q: '鞋服WMS如何防止高SKU货品发错码号或颜色？', a: '新亦源通过三重机制保障拣货准确：①RFID全域扫描——货品从上架到拣货全程绑定SKU标签，拣错即时报警，拒绝流转；②Pick-to-Light电子标签引导——拣货员按系统点亮的货架格取货，无需凭记忆找位；③复核台扫码二次确认——发货前逐包过扫，自动比对订单清单，异常件不允许出库。三重校验叠加后发货准确率可达99.99%，合同约定错漏全赔。' },
-      { q: '新亦源的物流云如何帮品牌降低运费支出？', a: 'OTD中台通过两个路径降低运费：①智能比价路由——按件重、目的地、时效要求自动匹配性价比最优承运商，相比品牌自行议价通常节省8%–15%；②规模协议价——新亦源与各承运商签订年度量价协议，多品牌发货量叠加后获得更优折扣，由合作方按实际发件量均摊享受。品牌也可设置自定义路由规则（如大件必走货运专线、指定省份走特定网络），系统优先执行品牌规则。' },
-      { q: '入库上架流程是怎样的？新货从收货到可发出需要多久？', a: '标准流程：承运商卸货→扫码收货→质检验货（全检或按比例抽检）→上架定位→系统同步库存。新货标准时效为到仓后48小时内完成上架，期间如发现质量问题即时出具质检报告并通知品牌方，支持照片/视频存证，全程1080P监控。' },
-      { q: '大货入仓前，品牌方需要做哪些准备工作？', a: '新货入仓前建议完成四步准备：①SKU数据清单——提供完整的款色码规格表（Excel或系统导出），包含条码与实物的对应关系；②包材与标签规范——确认是否需要新亦源代贴条码、换挂牌或加包装；③入仓通知单（ASN）——提前24小时在系统提交到货清单，仓方据此安排卸货和验货人力；④质检标准确认——新品入仓时明确验货比例（全检或按比例抽检）和异常处理授权。流程齐备后，一般可在到仓后48小时内完成上架。' },
-      { q: '新亦源的仓储和服务费用是如何计算的？', a: '费用结构通常包含：仓储费（按月/按件/按SKU计费，视货物特性和存储周期确定）、操作费（入库、出库、质检、包装等按操作量计费）、物流费（按实际承运商费率折扣结算）。不收取系统使用费和接入费，具体报价需根据货量、SKU数量、发货频次等因素定制，请联系商务团队获取方案。' },
+      {
+        q: '新亦源鞋服云仓的最小起储量是多少？',
+        a: '新亦源没有固定最小起储量门槛，以实际货量、SKU复杂度和仓点匹配情况为准。中小品牌可从单品类、单仓点开始合作，随业务增长逐步扩展。具体方案建议联系商务团队评估。',
+      },
+      {
+        q: '系统如何与品牌现有ERP/OMS对接？',
+        a: '新亦源OTD中台及物流网关可采用奇门、EDI、API或客户定制接口，已对接百胜E3、聚水潭、伯俊、吉客云、丽晶、浪潮、恒康等主流ERP。具体支持范围、授权条件、字段和联调周期由双方确认；不收系统使用费，实施、接口联调、定制开发和其他服务费用按方案确认。',
+      },
+      {
+        q: '大促备战期间，新亦源如何提前锁定峰值产能？',
+        a: '新亦源的大促产能锁定分三阶段执行：大促前21天提交货量预测模型，与品牌对齐日发货量目标；大促前14天完成仓内货位扩容、波次排班计划和弹性人力到岗安排；大促前72小时完成最后压测，确认系统稳定和全链路时效。大促期间的订单处理、库存准确和异常处置指标不设置统一口径，由双方根据预测货量和资源方案在项目SLA中确认。',
+      },
+      {
+        q: '鞋服WMS如何防止高SKU货品发错码号或颜色？',
+        a: `新亦源通过三重流程管理款色码：入库与上架环节以RFID或条码绑定SKU；拣货环节由电子标签引导，并在识别异常时停止流转；复核台在发货前逐包扫码并比对订单清单。当前公开的发货准确率为${CLAIM_TEXT.shippingAccuracy}。`,
+      },
+      {
+        q: '新亦源的物流云如何帮品牌优化运费支出？',
+        a: 'OTD中台可按件重、目的地、服务要求和品牌规则比较11家主流承运商方案，并汇总订单、轨迹和费用数据。实际节省幅度受线路、货物、承运商报价和原有合同影响；部分线路费用最高可节省50%，具体以实际线路和报价为准。',
+      },
+      {
+        q: '入库上架流程是怎样的？新货从收货到可发出需要多久？',
+        a: '标准流程包括承运商卸货、扫码收货、全检或按比例抽检、上架定位和库存同步。实际完成时间受到仓时间、货量、SKU数据、质检比例和异常商品数量影响，品牌与仓方应在入仓计划中确认验收标准和上架节点。',
+      },
+      {
+        q: '大货入仓前，品牌方需要做哪些准备工作？',
+        a: '新货入仓前建议完成四步准备：①SKU数据清单——提供完整的款色码规格表（Excel或系统导出），包含条码与实物的对应关系；②包材与标签规范——确认是否需要新亦源代贴条码、换挂牌或加包装；③入仓通知单（ASN）——提前24小时在系统提交到货清单，仓方据此安排卸货和验货人力；④质检标准确认——新品入仓时明确验货比例（全检或按比例抽检）和异常处理授权。资料齐备后，仓方会结合到仓计划、货量和质检要求确认实际上架节点；正向订单按18:00前截单、当日24:00前发出的口径执行。',
+      },
+      {
+        q: '新亦源的仓储和服务费用是如何计算的？',
+        a: '费用通常包含仓储、入出库操作、质检包装、物流等项目；不收系统使用费，实施、接口联调、定制开发和其他服务费用按方案确认。具体计费方式需结合货物特性、SKU、库存周期、操作量和增值服务范围确认，可联系商务团队获取项目报价。',
+      },
     ]}
   />
 
   <!-- CTA -->
-  <section class="py-14 bg-[#EFF4FF]" aria-labelledby="product-cta-heading">
-    <div class="max-w-4xl mx-auto px-4 text-center">
-      <h2 id="product-cta-heading" class="text-2xl lg:text-3xl font-black text-navy-800 mb-4">想了解哪项服务适合您？</h2>
-      <p class="text-gray-600 mb-8">告诉我们您的品类、规模和当前痛点，我们会为您定制最优方案</p>
-      <div class="flex flex-wrap gap-4 justify-center">
-        <a href="/contact" class="inline-flex items-center px-7 py-3.5 bg-brand-orange hover:bg-brand-orange-dark text-white font-bold rounded-xl transition-colors">
-          免费获取方案
-        </a>
-        <a href="/cases" class="inline-flex items-center px-7 py-3.5 border border-navy-300 hover:border-navy-500 text-navy-700 font-semibold rounded-xl transition-colors">
-          查看合作案例
-        </a>
+  <section class="product-cta" aria-labelledby="product-cta-heading">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="product-cta__inner">
+        <div class="product-cta__number" aria-hidden="true">06</div>
+        <div class="product-cta__copy">
+          <p>START FROM YOUR OPERATION</p>
+          <h2 id="product-cta-heading">把您的货品、渠道与订单节奏告诉我们</h2>
+          <span>我们会从仓点、流程、系统、质检与物流五个维度，组合成适合当前项目的方案。</span>
+        </div>
+        <div class="product-cta__actions">
+          <a href="/contact" class="product-cta__primary">
+            获取项目方案
+            <span aria-hidden="true">↗</span>
+          </a>
+          <a href="/cases" class="product-cta__secondary">查看合作案例</a>
+        </div>
       </div>
     </div>
   </section>
-
 </Layout>
 
 <style>
-.no-scrollbar { scrollbar-width: none; }
-.no-scrollbar::-webkit-scrollbar { display: none; }
+  .section-intro {
+    max-width: 52rem;
+    margin-bottom: 3rem;
+  }
 
-.product-nav-link.active {
-  color: #fff;
-  border-bottom-color: #E85D26;
-}
+  .section-intro--split {
+    max-width: none;
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(19rem, 0.7fr);
+    gap: 4rem;
+    align-items: end;
+  }
+
+  .section-kicker {
+    margin-bottom: 0.75rem;
+    color: #e85d26;
+    font-size: 0.68rem;
+    line-height: 1;
+    font-weight: 800;
+    letter-spacing: 0.28em;
+  }
+
+  .section-intro h2 {
+    color: #10284b;
+    font-size: clamp(2rem, 4vw, 3.7rem);
+    line-height: 1.12;
+    font-weight: 900;
+    letter-spacing: -0.035em;
+  }
+
+  .section-lead {
+    color: #60708a;
+    font-size: 0.95rem;
+    line-height: 1.9;
+  }
+
+  .orchestration-section {
+    position: relative;
+    overflow: hidden;
+    padding: 6rem 0;
+    background:
+      linear-gradient(rgba(65, 111, 183, 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(65, 111, 183, 0.06) 1px, transparent 1px), #f3f7ff;
+    background-size: 44px 44px;
+  }
+
+  .orchestration-section::before {
+    position: absolute;
+    top: 5rem;
+    right: -7rem;
+    width: 22rem;
+    height: 22rem;
+    border: 1px solid rgba(63, 105, 170, 0.12);
+    border-radius: 999px;
+    content: '';
+  }
+
+  .hub-register {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    border-top: 1px solid #ccd8ea;
+    border-bottom: 1px solid #ccd8ea;
+    background: rgba(255, 255, 255, 0.72);
+  }
+
+  .hub-register__item {
+    padding: 1.45rem 1.6rem;
+  }
+
+  .hub-register__item + .hub-register__item {
+    border-left: 1px solid #ccd8ea;
+  }
+
+  .hub-register__head {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  .hub-register__head span {
+    color: #e85d26;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.72rem;
+    font-weight: 800;
+  }
+
+  .hub-register__head strong {
+    color: #10284b;
+    font-size: 1.05rem;
+    font-weight: 850;
+  }
+
+  .hub-register__item p {
+    margin-top: 0.7rem;
+    color: #2e5d9f;
+    font-size: 0.78rem;
+    font-weight: 750;
+  }
+
+  .hub-register__item small {
+    display: block;
+    margin-top: 0.25rem;
+    color: #7b899d;
+    font-size: 0.72rem;
+  }
+
+  .orchestration-console {
+    position: relative;
+    margin-top: 1.25rem;
+    padding: 1.25rem 2rem 1.5rem;
+    border: 1px solid #d6e0ef;
+    background: #fff;
+    box-shadow: 0 24px 55px rgba(34, 65, 112, 0.08);
+  }
+
+  .console-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+    padding-bottom: 1.1rem;
+    border-bottom: 1px solid #e5ebf4;
+    color: #8491a4;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.13em;
+  }
+
+  .orchestration-rail {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    padding: 2.75rem 0 2.25rem;
+  }
+
+  .orchestration-rail::before {
+    position: absolute;
+    top: 4.15rem;
+    right: 10%;
+    left: 10%;
+    height: 2px;
+    background: linear-gradient(90deg, #3271c7 0%, #4a8ee6 50%, #e85d26 100%);
+    content: '';
+  }
+
+  .rail-stop {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 0;
+    text-align: center;
+  }
+
+  .rail-stop__index {
+    margin-bottom: 0.55rem;
+    color: #8c9aae;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.66rem;
+    font-weight: 800;
+  }
+
+  .rail-stop__node {
+    width: 1rem;
+    height: 1rem;
+    margin-bottom: 0.8rem;
+    border: 4px solid #fff;
+    border-radius: 999px;
+    background: #3271c7;
+    box-shadow: 0 0 0 1px #3271c7;
+  }
+
+  .rail-stop:last-child .rail-stop__node {
+    background: #e85d26;
+    box-shadow: 0 0 0 1px #e85d26;
+  }
+
+  .rail-stop strong {
+    color: #10284b;
+    font-size: 1.05rem;
+    font-weight: 850;
+  }
+
+  .rail-stop small {
+    margin-top: 0.35rem;
+    padding: 0 0.5rem;
+    color: #7b899d;
+    font-size: 0.7rem;
+    line-height: 1.5;
+  }
+
+  .console-foot {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    border-top: 1px solid #e5ebf4;
+  }
+
+  .console-foot p {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 1rem 1.25rem 0;
+  }
+
+  .console-foot p + p {
+    border-left: 1px solid #e5ebf4;
+  }
+
+  .console-foot span {
+    color: #8c98a9;
+    font-size: 0.65rem;
+  }
+
+  .console-foot strong {
+    color: #16345e;
+    font-size: 0.82rem;
+    font-weight: 800;
+  }
+
+  .chain-section {
+    padding: 6rem 0;
+    background: #fff;
+  }
+
+  .flow-lanes {
+    border-top: 1px solid #dfe5ee;
+  }
+
+  .flow-lane {
+    display: grid;
+    grid-template-columns: 15rem minmax(0, 1fr);
+    min-height: 12rem;
+    border-bottom: 1px solid #dfe5ee;
+  }
+
+  .flow-lane > header {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 1.8rem 1.6rem 1.8rem 0;
+    border-right: 1px solid #dfe5ee;
+  }
+
+  .flow-lane > header > div {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+  }
+
+  .flow-lane__index {
+    display: inline-flex;
+    width: 2.1rem;
+    height: 2.1rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    background: #e85d26;
+    color: #fff;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.75rem;
+    font-weight: 900;
+  }
+
+  .flow-lane--reverse .flow-lane__index {
+    background: #2f6fc4;
+  }
+
+  .flow-lane h3 {
+    color: #10284b;
+    font-size: 1.25rem;
+    font-weight: 900;
+  }
+
+  .flow-lane > header > p {
+    color: #9aa5b5;
+    font-size: 0.62rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+  }
+
+  .flow-lane__scroll {
+    min-width: 0;
+    overflow-x: auto;
+  }
+
+  .flow-lane ol {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(8.5rem, 1fr));
+    min-width: 52rem;
+    height: 100%;
+  }
+
+  .flow-lane li {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 2rem 1rem 2rem 1.4rem;
+  }
+
+  .flow-lane li + li {
+    border-left: 1px solid #edf0f5;
+  }
+
+  .flow-lane li:not(:last-child)::after {
+    position: absolute;
+    top: 50%;
+    right: -0.45rem;
+    z-index: 1;
+    width: 0.9rem;
+    height: 0.9rem;
+    border-top: 1px solid #e85d26;
+    border-right: 1px solid #e85d26;
+    background: #fff;
+    content: '';
+    transform: translateY(-50%) rotate(45deg);
+  }
+
+  .flow-lane--reverse li:not(:last-child)::after {
+    border-color: #2f6fc4;
+  }
+
+  .flow-lane li span {
+    color: #e85d26;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.64rem;
+    font-weight: 900;
+  }
+
+  .flow-lane--reverse li span {
+    color: #2f6fc4;
+  }
+
+  .flow-lane li strong {
+    margin-top: 0.55rem;
+    color: #243c5d;
+    font-size: 0.78rem;
+    line-height: 1.5;
+  }
+
+  .chain-note {
+    display: flex;
+    gap: 1.2rem;
+    align-items: center;
+    margin-left: 15rem;
+    padding: 1.25rem 1.5rem;
+    background: #f6f8fb;
+  }
+
+  .chain-note span {
+    flex: 0 0 auto;
+    color: #e85d26;
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+  }
+
+  .chain-note p {
+    color: #67758a;
+    font-size: 0.8rem;
+  }
+
+  .scene-section {
+    padding: 6rem 0;
+    background: #fff;
+  }
+
+  .scene-theatre {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-template-rows: 22rem 19rem;
+    gap: 1rem;
+  }
+
+  .scene-frame {
+    position: relative;
+    overflow: hidden;
+    margin: 0;
+    background: #e9eef5;
+  }
+
+  .scene-frame--wide {
+    grid-column: 1 / span 8;
+    grid-row: 1;
+  }
+
+  .scene-frame--tall {
+    grid-column: 9 / span 4;
+    grid-row: 1 / span 2;
+  }
+
+  .scene-frame--half {
+    grid-column: 1 / span 5;
+    grid-row: 2;
+  }
+
+  .scene-frame--map {
+    grid-column: 6 / span 3;
+    grid-row: 2;
+  }
+
+  .scene-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 600ms ease;
+  }
+
+  .scene-frame--map img {
+    object-fit: contain;
+    padding: 1.5rem;
+    background: #edf4ff;
+  }
+
+  .scene-frame:hover img {
+    transform: scale(1.025);
+  }
+
+  .scene-frame figcaption {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: 2.7rem 1.25rem 1.2rem;
+    background: linear-gradient(transparent, rgba(8, 24, 48, 0.88));
+    color: #fff;
+  }
+
+  .scene-frame--map figcaption {
+    background: linear-gradient(transparent, rgba(20, 54, 99, 0.9));
+  }
+
+  .scene-frame figcaption span {
+    display: block;
+    margin-bottom: 0.4rem;
+    color: #ff8b56;
+    font-size: 0.6rem;
+    font-weight: 800;
+    letter-spacing: 0.13em;
+  }
+
+  .scene-frame figcaption strong {
+    display: block;
+    font-size: 1rem;
+    font-weight: 850;
+  }
+
+  .scene-frame figcaption p {
+    margin-top: 0.3rem;
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 0.7rem;
+    line-height: 1.5;
+  }
+
+  .tower-section {
+    padding: 6rem 0;
+    background:
+      radial-gradient(circle at 84% 20%, rgba(54, 112, 194, 0.1), transparent 30%), #eff5ff;
+  }
+
+  .tower-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(19rem, 0.65fr);
+    gap: 2rem;
+    align-items: start;
+  }
+
+  .device-shell {
+    margin: 0;
+    padding: 0.65rem;
+    border: 1px solid #263c5e;
+    border-radius: 1.25rem;
+    background: #0e1e37;
+    box-shadow: 0 2rem 4rem rgba(23, 55, 100, 0.2);
+  }
+
+  .device-shell__bar {
+    display: flex;
+    gap: 0.38rem;
+    align-items: center;
+    height: 2rem;
+    padding: 0 0.45rem;
+  }
+
+  .device-shell__bar > span {
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 999px;
+    background: #47607f;
+  }
+
+  .device-shell__bar > span:first-child {
+    background: #e85d26;
+  }
+
+  .device-shell__bar small {
+    margin-left: auto;
+    color: #7f92ae;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.52rem;
+    letter-spacing: 0.12em;
+  }
+
+  .device-shell__screen {
+    overflow: hidden;
+    aspect-ratio: 16 / 9;
+    border: 1px solid #253b5c;
+    border-radius: 0.65rem;
+    background: #09162a;
+  }
+
+  .device-shell__screen img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+  }
+
+  .device-shell figcaption {
+    display: flex;
+    gap: 1.25rem;
+    align-items: baseline;
+    padding: 1rem 0.7rem 0.65rem;
+  }
+
+  .device-shell figcaption span {
+    flex: 0 0 auto;
+    color: #ff8650;
+    font-size: 0.68rem;
+    font-weight: 800;
+  }
+
+  .device-shell figcaption p {
+    color: #8293ac;
+    font-size: 0.7rem;
+    line-height: 1.6;
+  }
+
+  .tower-modules {
+    border-top: 1px solid #c8d5e8;
+  }
+
+  .tower-module {
+    display: grid;
+    grid-template-columns: 2rem 8.5rem minmax(0, 1fr);
+    gap: 0.75rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid #c8d5e8;
+  }
+
+  .tower-module > span {
+    color: #e85d26;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.66rem;
+    font-weight: 900;
+  }
+
+  .tower-module strong {
+    color: #16345e;
+    font-size: 0.8rem;
+    font-weight: 850;
+  }
+
+  .tower-module p {
+    color: #6d7d94;
+    font-size: 0.72rem;
+    line-height: 1.55;
+  }
+
+  .tower-protocol {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin-top: 2.5rem;
+    border-top: 1px solid #c8d5e8;
+    border-bottom: 1px solid #c8d5e8;
+  }
+
+  .tower-protocol p {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    padding: 1.15rem 1.5rem;
+  }
+
+  .tower-protocol p + p {
+    border-left: 1px solid #c8d5e8;
+  }
+
+  .tower-protocol span {
+    color: #8493a8;
+    font-size: 0.64rem;
+  }
+
+  .tower-protocol strong {
+    color: #1b3b67;
+    font-size: 0.75rem;
+    font-weight: 750;
+  }
+
+  .directory-section {
+    padding: 6rem 0;
+    background: #fff;
+  }
+
+  .yundao-band {
+    display: grid;
+    grid-template-columns: minmax(17rem, 0.8fr) minmax(20rem, 1fr) minmax(14rem, 0.55fr);
+    align-items: stretch;
+    border-top: 1px solid #cad4e2;
+    border-bottom: 1px solid #cad4e2;
+  }
+
+  .yundao-band__identity {
+    padding: 2rem 2rem 2rem 0;
+  }
+
+  .yundao-band__identity > span {
+    color: #e85d26;
+    font-size: 0.64rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+  }
+
+  .yundao-band__identity h2 {
+    margin-top: 0.7rem;
+    color: #10284b;
+    font-size: clamp(1.7rem, 3vw, 2.5rem);
+    line-height: 1.15;
+    font-weight: 900;
+  }
+
+  .yundao-band__identity p {
+    margin-top: 1rem;
+    color: #6b7b91;
+    font-size: 0.8rem;
+    line-height: 1.75;
+  }
+
+  .yundao-band__visual {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 15rem;
+    padding: 1.5rem;
+    border-right: 1px solid #dce3ec;
+    border-left: 1px solid #dce3ec;
+    background: #f4f7fb;
+  }
+
+  .yundao-band__visual img {
+    width: 100%;
+    max-height: 13rem;
+    object-fit: contain;
+  }
+
+  .yundao-band__facts {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-left: 1.5rem;
+  }
+
+  .yundao-band__facts p {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.85rem 0;
+    border-bottom: 1px solid #e5eaf1;
+  }
+
+  .yundao-band__facts p:last-child {
+    border-bottom: 0;
+  }
+
+  .yundao-band__facts strong {
+    color: #e85d26;
+    font-size: 1rem;
+    font-weight: 900;
+  }
+
+  .yundao-band__facts span {
+    color: #7c899b;
+    font-size: 0.7rem;
+  }
+
+  .directory-heading {
+    margin-top: 6rem;
+  }
+
+  .service-directory {
+    border-top: 1px solid #cfd8e4;
+  }
+
+  .directory-row {
+    display: grid;
+    grid-template-columns: 13rem minmax(0, 1fr);
+    min-height: 7.5rem;
+    border-bottom: 1px solid #dce3ec;
+  }
+
+  .directory-row dt {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-right: 2rem;
+    border-right: 1px solid #dce3ec;
+  }
+
+  .directory-row dt small {
+    color: #e85d26;
+    font-size: 0.58rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+  }
+
+  .directory-row dt strong {
+    margin-top: 0.4rem;
+    color: #15345e;
+    font-size: 1rem;
+    font-weight: 900;
+  }
+
+  .directory-row dd {
+    display: flex;
+    align-items: stretch;
+    min-width: 0;
+    padding-left: 1rem;
+  }
+
+  .directory-row dd a {
+    display: flex;
+    flex: 1 1 0;
+    gap: 1rem;
+    align-items: center;
+    justify-content: space-between;
+    min-width: 0;
+    padding: 1.5rem 1rem;
+    color: #4b5f79;
+    font-size: 0.78rem;
+    font-weight: 750;
+    transition:
+      color 180ms ease,
+      background 180ms ease;
+  }
+
+  .directory-row dd a + a {
+    border-left: 1px solid #edf0f4;
+  }
+
+  .directory-row dd a:hover {
+    background: #f6f8fb;
+    color: #e85d26;
+  }
+
+  .directory-row dd a span:last-child {
+    color: #e85d26;
+  }
+
+  .product-cta {
+    padding: 4.5rem 0;
+    background: linear-gradient(135deg, rgba(72, 125, 198, 0.09), transparent 58%), #edf4ff;
+  }
+
+  .product-cta__inner {
+    position: relative;
+    display: grid;
+    grid-template-columns: 6rem minmax(0, 1fr) auto;
+    gap: 2.5rem;
+    align-items: center;
+    padding: 3rem 0;
+    border-top: 1px solid #bfcde0;
+    border-bottom: 1px solid #bfcde0;
+  }
+
+  .product-cta__number {
+    color: rgba(36, 85, 151, 0.15);
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 4.5rem;
+    line-height: 1;
+    font-weight: 900;
+  }
+
+  .product-cta__copy > p {
+    color: #e85d26;
+    font-size: 0.62rem;
+    font-weight: 900;
+    letter-spacing: 0.17em;
+  }
+
+  .product-cta__copy h2 {
+    margin-top: 0.65rem;
+    color: #10284b;
+    font-size: clamp(1.75rem, 3vw, 2.7rem);
+    line-height: 1.2;
+    font-weight: 900;
+  }
+
+  .product-cta__copy > span {
+    display: block;
+    margin-top: 0.75rem;
+    color: #6c7c91;
+    font-size: 0.82rem;
+    line-height: 1.65;
+  }
+
+  .product-cta__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    min-width: 12rem;
+  }
+
+  .product-cta__actions a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.9rem 1.1rem;
+    font-size: 0.78rem;
+    font-weight: 850;
+    transition:
+      transform 180ms ease,
+      background 180ms ease;
+  }
+
+  .product-cta__actions a:hover {
+    transform: translateX(0.2rem);
+  }
+
+  .product-cta__primary {
+    background: #e85d26;
+    color: #fff;
+  }
+
+  .product-cta__primary:hover {
+    background: #d94f1c;
+  }
+
+  .product-cta__secondary {
+    border: 1px solid #aebed3;
+    color: #234974;
+  }
+
+  @media (max-width: 1023px) {
+    .section-intro--split {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+      align-items: start;
+    }
+
+    .flow-lane {
+      grid-template-columns: 12rem minmax(0, 1fr);
+    }
+
+    .chain-note {
+      margin-left: 12rem;
+    }
+
+    .scene-theatre {
+      grid-template-rows: 19rem 17rem;
+    }
+
+    .tower-layout {
+      grid-template-columns: 1fr;
+    }
+
+    .tower-modules {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .tower-module:nth-child(odd) {
+      padding-right: 1rem;
+      border-right: 1px solid #c8d5e8;
+    }
+
+    .tower-module:nth-child(even) {
+      padding-left: 1rem;
+    }
+
+    .yundao-band {
+      grid-template-columns: minmax(15rem, 0.7fr) minmax(20rem, 1fr);
+    }
+
+    .yundao-band__facts {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      padding: 0;
+      border-top: 1px solid #dce3ec;
+    }
+
+    .yundao-band__facts p {
+      padding: 1rem;
+      border-bottom: 0;
+    }
+
+    .yundao-band__facts p + p {
+      border-left: 1px solid #dce3ec;
+    }
+
+    .directory-row {
+      grid-template-columns: 9rem minmax(0, 1fr);
+    }
+
+    .product-cta__inner {
+      grid-template-columns: 4rem minmax(0, 1fr);
+    }
+
+    .product-cta__number {
+      font-size: 3.5rem;
+    }
+
+    .product-cta__actions {
+      grid-column: 2;
+      flex-direction: row;
+      min-width: 0;
+    }
+
+    .product-cta__actions a {
+      min-width: 10rem;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .orchestration-section,
+    .chain-section,
+    .scene-section,
+    .tower-section,
+    .directory-section {
+      padding: 4.5rem 0;
+    }
+
+    .section-intro {
+      margin-bottom: 2.25rem;
+    }
+
+    .section-intro h2 {
+      font-size: 2.15rem;
+    }
+
+    .hub-register {
+      grid-template-columns: 1fr;
+    }
+
+    .hub-register__item {
+      padding: 1.15rem 1.1rem;
+    }
+
+    .hub-register__item + .hub-register__item {
+      border-top: 1px solid #ccd8ea;
+      border-left: 0;
+    }
+
+    .orchestration-console {
+      overflow: hidden;
+      padding: 1rem 0;
+    }
+
+    .console-meta {
+      padding: 0 1rem 1rem;
+    }
+
+    .console-meta span:last-child {
+      display: none;
+    }
+
+    .orchestration-rail {
+      grid-template-columns: repeat(5, 7.5rem);
+      overflow-x: auto;
+      padding: 2.25rem 1rem 1.8rem;
+    }
+
+    .orchestration-rail::before {
+      top: 3.65rem;
+      right: auto;
+      left: 4.75rem;
+      width: 30rem;
+    }
+
+    .console-foot {
+      grid-template-columns: 1fr;
+      padding: 0 1rem;
+    }
+
+    .console-foot p {
+      padding: 0.85rem 0;
+    }
+
+    .console-foot p + p {
+      border-top: 1px solid #e5ebf4;
+      border-left: 0;
+    }
+
+    .flow-lane {
+      grid-template-columns: 1fr;
+    }
+
+    .flow-lane > header {
+      min-height: 7rem;
+      padding: 1.3rem 0;
+      border-right: 0;
+      border-bottom: 1px solid #e6ebf2;
+    }
+
+    .flow-lane ol {
+      grid-template-columns: repeat(6, 8.7rem);
+    }
+
+    .chain-note {
+      margin-left: 0;
+    }
+
+    .scene-theatre {
+      grid-template-columns: 1fr;
+      grid-template-rows: none;
+    }
+
+    .scene-frame--wide,
+    .scene-frame--tall,
+    .scene-frame--half,
+    .scene-frame--map {
+      grid-column: auto;
+      grid-row: auto;
+      height: 18rem;
+    }
+
+    .scene-frame--tall {
+      height: 23rem;
+    }
+
+    .tower-modules {
+      grid-template-columns: 1fr;
+    }
+
+    .tower-module,
+    .tower-module:nth-child(odd),
+    .tower-module:nth-child(even) {
+      grid-template-columns: 2rem 7rem minmax(0, 1fr);
+      padding: 1rem 0;
+      border-right: 0;
+    }
+
+    .tower-protocol {
+      grid-template-columns: 1fr;
+    }
+
+    .tower-protocol p {
+      padding: 1rem 0;
+    }
+
+    .tower-protocol p + p {
+      border-top: 1px solid #c8d5e8;
+      border-left: 0;
+    }
+
+    .yundao-band {
+      grid-template-columns: 1fr;
+    }
+
+    .yundao-band__identity {
+      padding: 1.5rem 0;
+    }
+
+    .yundao-band__visual {
+      border: 0;
+      border-top: 1px solid #dce3ec;
+      border-bottom: 1px solid #dce3ec;
+    }
+
+    .yundao-band__facts {
+      grid-template-columns: 1fr;
+    }
+
+    .yundao-band__facts p {
+      padding: 0.9rem 0;
+    }
+
+    .yundao-band__facts p + p {
+      border-top: 1px solid #dce3ec;
+      border-left: 0;
+    }
+
+    .directory-heading {
+      margin-top: 4.5rem;
+    }
+
+    .directory-row {
+      grid-template-columns: 1fr;
+      padding: 1.25rem 0;
+    }
+
+    .directory-row dt {
+      padding: 0 0 0.9rem;
+      border-right: 0;
+    }
+
+    .directory-row dd {
+      flex-direction: column;
+      padding-left: 0;
+    }
+
+    .directory-row dd a {
+      padding: 0.85rem 0;
+      border-top: 1px solid #edf0f4;
+    }
+
+    .directory-row dd a + a {
+      border-left: 0;
+    }
+
+    .product-cta {
+      padding: 3.5rem 0;
+    }
+
+    .product-cta__inner {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+      padding: 2.25rem 0;
+    }
+
+    .product-cta__number {
+      display: none;
+    }
+
+    .product-cta__actions {
+      grid-column: auto;
+      flex-direction: column;
+    }
+
+    .product-cta__actions a {
+      min-width: 0;
+    }
+  }
 </style>
-
-<script>
-  // 滚动高亮当前产品锚点
-  const sections = document.querySelectorAll<HTMLElement>('section[id]')
-  const navLinks = document.querySelectorAll<HTMLElement>('.product-nav-link')
-
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          navLinks.forEach((link) => {
-            link.classList.toggle('active', link.dataset.navId === entry.target.id)
-          })
-        }
-      })
-    },
-    { rootMargin: '-30% 0px -60% 0px' }
-  )
-
-  sections.forEach((s) => observer.observe(s))
-</script>

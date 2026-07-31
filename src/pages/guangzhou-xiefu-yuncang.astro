@@ -3,83 +3,99 @@ import ServiceLanding from '@/layouts/ServiceLanding.astro'
 
 const WAREHOUSE_LIST = [
   {
-    name: '广州黄埔主仓',
-    tag: '华南总部',
+    name: '黄埔仓',
+    tag: '华南节点',
     tagColor: 'bg-brand-orange text-white',
-    address: '广州市黄埔区果园一路2号',
-    area: '15,000 ㎡',
-    traffic: '紧邻广园快速 + 京港澳高速，10台3吨货梯',
-    coverage: '广州同城4小时达，广东全省次日达，全国主要城市次日–两日达',
+    address: '广东省广州市黄埔区果园一路2号',
+    area: '与兴泰仓合计1.8万㎡',
+    traffic: '根据入仓来源和订单区域配置',
+    coverage: '线路与时效按项目确认',
     bestFor: 'B2C 全渠道高频出库 / 退货质检中心 / 唯品会联动运营',
   },
   {
-    name: '广州番禺仓',
-    tag: '番禺节点',
+    name: '兴泰仓',
+    tag: '广州节点',
     tagColor: 'bg-navy-700 text-white',
-    address: '广州市番禺区石楼镇市莲路石楼段6号',
-    area: '3,000 ㎡',
-    traffic: '番禺电商配送核心区，紧邻南沙港区',
-    coverage: '广州南部极速配送，广东全省次日达',
-    bestFor: '快时尚高SKU品牌 / 广州南部品牌前置仓',
+    address: '具体地址以双方确认信息为准',
+    area: '与黄埔仓合计1.8万㎡',
+    traffic: '服务广州及珠三角项目',
+    coverage: '广州同城最快4小时',
+    bestFor: '鞋服库存管理 / 区域发货 / 退货处理',
   },
   {
-    name: '东莞多仓',
-    tag: '珠三角节点',
+    name: '新塘仓',
+    tag: '广州节点',
     tagColor: 'bg-navy-600 text-white',
-    address: '东莞常平镇 / 桥头镇 / 朗州区（三仓联动）',
-    area: '多仓联动',
-    traffic: '紧邻莞深高速，珠三角制造业集中区',
-    coverage: '珠三角次日达，广深港同日配',
-    bestFor: 'OEM/ODM 工厂直出 / 珠三角制造业品牌就近仓储',
+    address: '具体地址以双方确认信息为准',
+    area: '按项目确认',
+    traffic: '服务广州及珠三角项目',
+    coverage: '全国主要城市参考次日至三日达',
+    bestFor: '区域仓配 / 门店补货 / 全渠道发货',
   },
   {
-    name: '肇庆四会仓',
-    tag: '唯品会专仓',
+    name: '华南协同仓网',
+    tag: '区域协同',
     tagColor: 'bg-green-600 text-white',
-    address: '肇庆市四会市唯品会物流园（园区内）',
-    area: '50,000 ㎡',
-    traffic: '位于唯品会物流园内，多家快递公司驻仓，12米超高仓',
-    coverage: '唯品会JIT/JITX园区内直发，华南大仓大促保障',
-    bestFor: '唯品会 JIT/JITX 运营 / 大促弹性产能 / 规模化仓储',
+    address: '覆盖东莞、佛山、肇庆',
+    area: '按项目确认',
+    traffic: '结合品牌供应商与订单分布协同',
+    coverage: '具体以线路SLA为准',
+    bestFor: '跨区域库存协同 / 大促弹性产能 / 规模化仓储',
   },
 ]
 ---
 
 <ServiceLanding
-  title="广州鞋服云仓 — 黄埔+番禺双仓，广州同城当日达，全国次日达 | 新亦源"
-  description="新亦源广州鞋服云仓位于黄埔果园一路和番禺石楼，紧邻广园快速/京港澳高速，广州同城4小时达，18:00截单当日24:00全出，支持B2C+B2B+退货质检全业务。"
+  title="广州鞋服云仓｜鞋服仓储、发货与退货质检｜新亦源"
+  description="新亦源广州鞋服云仓现有黄埔、兴泰、新塘3个仓点，其中黄埔仓与兴泰仓合计1.8万㎡，支持B2C、B2B、O2O、退货质检和瑕疵修复。广州同城最快4小时，全国主要城市参考次日至三日达。"
   slug="guangzhou-xiefu-yuncang"
+  variant="guangzhou-hub"
   breadcrumbLabel="广州鞋服云仓"
-  eyebrow="广州鞋服云仓 · 黄埔+番禺双仓布局"
-  h1="广州鞋服云仓"
-  h1sub="广州本地仓储，同城当日达，次日全国达"
-  heroDesc="新亦源广州鞋服云仓覆盖黄埔区和番禺区两个核心节点，紧邻广园快速/京港澳高速，广州同城4小时达，支持B2C/B2B/O2O全渠道及退货质检全业务。"
+  eyebrow="广州鞋服云仓 · 珠三角区域仓配"
+  h1="广州鞋服云仓：服务广州及珠三角鞋服品牌"
+  h1sub="广州同城最快4小时，全国主要城市参考次日至三日达"
+  heroDesc="广州现有黄埔、兴泰、新塘3个仓点，其中黄埔仓与兴泰仓合计1.8万㎡。支持B2C、B2B、O2O全渠道仓配和退货质检；18:00前截单，当日24:00前发出。"
   imgSrc="/index.webp"
   imgAlt="广州鞋服云仓 — 广州本地仓储配送"
   stats={[
-    { stat: '广州双仓', label: '黄埔+番禺布局', sub: '总面积超1.8万㎡' },
-    { stat: '4小时', label: '广州同城配送', sub: '广州本地极速达' },
-    { stat: '18:00截单', label: '当日24:00全出', sub: 'SLA合同保障' },
-    { stat: '0元', label: '系统接入费', sub: '奇门/EDI免费对接' },
+    { stat: '3个', label: '广州仓点', sub: '黄埔、兴泰、新塘' },
+    { stat: '全渠道', label: '仓配模式', sub: 'B2C+B2B+O2O' },
+    { stat: '18:00前', label: '截单时间', sub: '当日24:00前发出' },
+    { stat: '不收', label: '系统使用费', sub: '实施、联调周期和费用按项目确认' },
   ]}
-  contentDesc="适合主要销售市场在广州及珠三角的鞋服品牌。广州本地仓配分散、大促时效无保障是主要痛点。新亦源广州覆盖黄埔主仓（果园一路2号）+番禺卫星仓双节点，广州同城4小时达、广东全省次日达，10台3吨货梯保障进出货效率，B2C电商与B2B门店全渠道均可承接，开仓即用。"
+  contentDesc="适合供应商、库存或主要消费市场位于广州及珠三角的鞋服品牌。广州现有黄埔、兴泰、新塘3个仓点，其中黄埔仓与兴泰仓合计1.8万㎡，可提供B2C电商发货、B2B门店补货、O2O库存协同、退货质检和瑕疵修复。广州同城最快4小时，全国主要城市参考次日至三日达；具体仓点、仓容、承运商和线路SLA由双方确认。"
   featuresLabel="核心能力"
   features={[
-    { title: '广州双仓覆盖', desc: '黄埔果园一路主仓+番禺石楼卫星仓，双仓互为备援，根据订单量和商品属性灵活调配，避免单仓爆仓。' },
-    { title: '广州同城极速达', desc: '广州本地订单可实现4小时内配送，支持O2O门店紧急补货、同城B2C订单极速履约，满足商超/门店/直播即时需求。' },
-    { title: '全渠道广州仓配', desc: '广州仓支持B2C（天猫/京东/拼多多等）+B2B（批发/连锁门店补货）+O2O（广州本地门店库存融合），全渠道一盘货管理。' },
-    { title: '广州退货质检中心', desc: '黄埔主仓设专属退货质检与后整修复区，广州/广东区域退货就近处理，48小时内完成质检和二次上架。' },
-    { title: '零门槛系统接入', desc: '与天猫/京东/唯品会/抖音等主流平台奇门/EDI接口免费对接，与品牌方ERP/OMS免费打通，上线周期1-2周。' },
-    { title: '广州本地服务支持', desc: '专属广州BD经理，可上门洽谈方案，方便广州本地品牌和制造商快速开始合作，首单免费试运营支持。' },
+    {
+      title: '广州区域仓配',
+      desc: '广州现有黄埔、兴泰、新塘3个仓点，其中黄埔仓与兴泰仓合计1.8万㎡。',
+    },
+    {
+      title: '运输线路规划',
+      desc: '广州同城最快4小时，全国主要城市参考次日至三日达；具体以线路SLA为准。',
+    },
+    {
+      title: '全渠道广州仓配',
+      desc: '广州仓支持B2C（天猫/京东/拼多多等）+B2B（批发/连锁门店补货）+O2O（广州本地门店库存融合），全渠道一盘货管理。',
+    },
+    {
+      title: '广州退货质检',
+      desc: '广州及广东区域退货可按项目进入质检与后整修复流程，退货质检和二次上架24小时完成。',
+    },
+    { title: '系统接口协同', desc: '不收系统使用费；实施、联调周期和费用按项目确认。' },
+    {
+      title: '广州本地服务支持',
+      desc: '专属广州BD经理，可上门洽谈方案，方便广州本地品牌和制造商快速开始合作。',
+    },
   ]}
   faqs={[
     {
       q: '新亦源广州仓位置在哪里，交通方便吗？',
-      a: '两个位置：①黄埔仓：广州市黄埔区果园一路2号，紧邻广园快速出口和京港澳高速，货车进出极为方便；②番禺仓：番禺区石楼镇市莲路石楼段6号，番禺电商集散核心区，适合广州南部品牌就近配货。',
+      a: '广州现有黄埔、兴泰、新塘3个仓点。黄埔仓地址为广东省广州市黄埔区果园一路2号；其他仓点的实际启用地址、仓容和车辆要求在项目启动前确认。',
     },
     {
-      q: '广州仓能做同城当日达吗？',
-      a: '可以。广州仓支持同城极速配送，与广州本地即时物流/同城快递合作，广州市区订单最快4小时内送达，适合O2O线下门店补货、直播订单即时发货场景。标准B2C订单按18:00截单当日24:00全出的SLA执行。',
+      q: '广州仓的发货和运输时效如何确认？',
+      a: '18:00前截单，当日24:00前发出。广州同城最快4小时，全国主要城市参考次日至三日达；具体以线路SLA为准。',
     },
     {
       q: '广州仓适合什么类型的鞋服品牌？',
@@ -87,46 +103,64 @@ const WAREHOUSE_LIST = [
     },
     {
       q: '广州仓的规模是多少？能支持大促爆单吗？',
-      a: '广州黄埔主仓：使用面积15,000㎡，配10台3吨货梯；番禺仓：使用面积3,000㎡+，可按需扩展。结合东莞/肇庆仓，华南地区合计峰值处理能力超100万件/日。大促期间启动弹性人力机制，历史无因仓容问题导致SLA违约记录。',
+      a: '广州现有黄埔、兴泰、新塘3个仓点，其中黄埔仓与兴泰仓合计1.8万㎡。公司华南地区单日运营峰值为100万单，具体项目保障方案在大促前根据预测货量确认。',
     },
     {
       q: '新亦源广州仓收费模式是什么？',
-      a: '广州仓采用按需计费模式：仓储费按实际占用面积/货位计算；操作费按入/出库件数计算；系统费0元（含平台接口对接）；退货质检和修复按服务量单独计费。没有最低月费要求，适合不同规模品牌。具体报价根据商品品类、SKU数量和预计吞吐量定制，建议联系广州本地商务团队。',
+      a: '费用通常由仓储、入出库操作以及退货质检或修复等增值服务组成。不收系统使用费；实施、联调周期和费用按项目确认。',
     },
   ]}
 >
-  <section slot="unique" class="py-14 bg-gray-50 border-b border-gray-100" aria-labelledby="warehouse-map-heading">
+  <section
+    slot="unique"
+    class="py-14 bg-gray-50 border-b border-gray-100"
+    aria-labelledby="warehouse-map-heading"
+  >
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <h2 id="warehouse-map-heading" class="text-xl font-black text-navy-800 mb-1 text-center">广州 · 东莞 · 肇庆仓点覆盖详情</h2>
-      <p class="text-xs text-gray-400 text-center mb-8">华南四大仓点联动，覆盖珠三角所有主要配送场景</p>
+      <h2 id="warehouse-map-heading" class="text-xl font-black text-navy-800 mb-1 text-center">
+        广州及华南仓网协同
+      </h2>
+      <p class="text-xs text-gray-400 text-center mb-8">
+        广州现有黄埔、兴泰、新塘3个仓点，并与东莞、佛山、肇庆仓网协同
+      </p>
       <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {WAREHOUSE_LIST.map(({ name, tag, tagColor, address, area, traffic, coverage, bestFor }) => (
-          <div class="bg-white rounded-xl border border-gray-200 p-5 flex flex-col gap-3">
-            <div>
-              <span class={`inline-block text-[10px] font-black px-2 py-0.5 rounded-full mb-2 ${tagColor}`}>{tag}</span>
-              <h3 class="font-black text-navy-800 text-base">{name}</h3>
-              <p class="text-xs text-gray-400 mt-0.5">{address}</p>
-            </div>
-            <div class="space-y-2 text-xs">
-              <div class="flex gap-2">
-                <span class="text-gray-400 shrink-0 w-12">面积</span>
-                <span class="font-bold text-navy-800">{area}</span>
+        {
+          WAREHOUSE_LIST.map(
+            ({ name, tag, tagColor, address, area, traffic, coverage, bestFor }) => (
+              <div class="bg-white rounded-xl border border-gray-200 p-5 flex flex-col gap-3">
+                <div>
+                  <span
+                    class={`inline-block text-[10px] font-black px-2 py-0.5 rounded-full mb-2 ${tagColor}`}
+                  >
+                    {tag}
+                  </span>
+                  <h3 class="font-black text-navy-800 text-base">{name}</h3>
+                  <p class="text-xs text-gray-400 mt-0.5">{address}</p>
+                </div>
+                <div class="space-y-2 text-xs">
+                  <div class="flex gap-2">
+                    <span class="text-gray-400 shrink-0 w-12">面积</span>
+                    <span class="font-bold text-navy-800">{area}</span>
+                  </div>
+                  <div class="flex gap-2">
+                    <span class="text-gray-400 shrink-0 w-12">交通</span>
+                    <span class="text-gray-600 leading-snug">{traffic}</span>
+                  </div>
+                  <div class="flex gap-2">
+                    <span class="text-gray-400 shrink-0 w-12">时效</span>
+                    <span class="text-gray-600 leading-snug">{coverage}</span>
+                  </div>
+                </div>
+                <div class="pt-2 border-t border-gray-100">
+                  <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">
+                    最适合
+                  </p>
+                  <p class="text-xs text-navy-700 font-medium leading-snug">{bestFor}</p>
+                </div>
               </div>
-              <div class="flex gap-2">
-                <span class="text-gray-400 shrink-0 w-12">交通</span>
-                <span class="text-gray-600 leading-snug">{traffic}</span>
-              </div>
-              <div class="flex gap-2">
-                <span class="text-gray-400 shrink-0 w-12">时效</span>
-                <span class="text-gray-600 leading-snug">{coverage}</span>
-              </div>
-            </div>
-            <div class="pt-2 border-t border-gray-100">
-              <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">最适合</p>
-              <p class="text-xs text-navy-700 font-medium leading-snug">{bestFor}</p>
-            </div>
-          </div>
-        ))}
+            )
+          )
+        }
       </div>
     </div>
   </section>

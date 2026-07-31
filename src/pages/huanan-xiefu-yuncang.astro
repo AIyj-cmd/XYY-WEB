@@ -1,54 +1,218 @@
 ---
 import ServiceLanding from '@/layouts/ServiceLanding.astro'
+
+const SOUTH_NETWORK_NODES = [
+  {
+    city: '广州',
+    code: 'GZ / 主节点',
+    role: '电商仓配 · 门店补货 · 退货质检',
+    note: '项目库存与订单在此汇总编排',
+  },
+  {
+    city: '东莞',
+    code: 'DG / 制造协同',
+    role: '货源入仓 · 仓储 · 发货',
+    note: '衔接制造业与品牌货源',
+  },
+  {
+    city: '佛山',
+    code: 'FS / 区域协同',
+    role: '区域仓配 · 周边履约',
+    note: '按项目确认仓点与启用条件',
+  },
+  {
+    city: '肇庆',
+    code: 'ZQ / 平台协同',
+    role: '唯品会 JIT / JITX 等相关项目',
+    note: '平台规则与作业范围按项目核验',
+  },
+]
+
+const SOUTH_COLLAB_BANDS = [
+  {
+    num: '01',
+    title: '仓容协同',
+    desc: '依据SKU、库存深度与业务类型，确认实际启用仓点和库存分布。',
+    signal: '库存布局',
+  },
+  {
+    num: '02',
+    title: '人力协同',
+    desc: '结合日常订单与活动预测，组织各节点作业班次和弹性资源。',
+    signal: '峰值准备',
+  },
+  {
+    num: '03',
+    title: '物流协同',
+    desc: '按目的地、渠道和线路SLA配置承运资源，仓内按统一截单口径履约。',
+    signal: '线路编排',
+  },
+  {
+    num: '04',
+    title: '系统协同',
+    desc: '以项目系统方案连接订单、库存、仓内作业与退货处理状态。',
+    signal: '状态贯通',
+  },
+]
 ---
 
 <ServiceLanding
-  title="华南鞋服云仓 — 广州+东莞+肇庆三地仓网，华南次日达 | 新亦源供应链"
-  description="新亦源华南鞋服云仓总部广州黄埔，布局东莞常平/桥头/朗州及肇庆四会唯品会物流园，华南直营仓面积超30万㎡，覆盖华南全区域次日达，合作品牌140+。"
+  title="华南鞋服云仓｜广州、东莞、佛山、肇庆仓网｜新亦源"
+  description="新亦源华南鞋服云仓直营仓储30万㎡+，华南多仓布局覆盖广州、东莞、佛山、肇庆，支持B2C、B2B、全渠道库存协同及退货质检，具体启用仓点和线路方案由双方确认。"
   slug="huanan-xiefu-yuncang"
+  variant="south-network"
   breadcrumbLabel="华南鞋服云仓"
-  eyebrow="华南鞋服云仓 · 广州+东莞+肇庆三地仓网"
-  h1="华南鞋服云仓"
-  h1sub="广州黄埔 · 东莞常平 · 肇庆四会 三地七库"
-  heroDesc="新亦源华南鞋服云仓以广州黄埔为总部核心仓，布局东莞三仓+肇庆唯品会园区仓，华南直营仓面积超30万㎡，覆盖华南全区域次日达，2011年成立深耕华南15年。"
+  eyebrow="华南鞋服云仓 · 珠三角区域仓配"
+  h1="华南鞋服云仓：广州、东莞、佛山、肇庆仓网"
+  h1sub="华南区域库存与鞋服仓配协同"
+  heroDesc="新亦源华南鞋服云仓直营仓储30万㎡+，华南多仓布局覆盖广州、东莞、佛山、肇庆，支持B2C、B2B、全渠道库存协同及退货质检。广州同城最快4小时；广东主要区域参考次日达；华南主要城市次日至两日；具体启用仓点、仓容和到达时效以项目方案及线路SLA为准。"
   imgSrc="/w-hanging1.webp"
-  imgAlt="华南鞋服云仓 — 广州东莞肇庆三地仓网"
+  imgAlt="华南鞋服云仓 — 广州东莞佛山肇庆仓网"
   stats={[
-    { stat: '30万㎡+', label: '华南直营仓储面积', sub: '广州+东莞+肇庆' },
-    { stat: '7个', label: '华南仓库节点', sub: '广州+东莞+肇庆全覆盖' },
-    { stat: '华南', label: '次日达全覆盖', sub: '部分同城当日达' },
-    { stat: '2011年', label: '深耕华南', sub: '15年鞋服物流经验' },
+    { stat: '4区域', label: '华南仓网', sub: '广州+东莞+佛山+肇庆' },
+    { stat: '全渠道', label: '仓配模式', sub: 'B2C+B2B+退货处理' },
+    { stat: '18:00前', label: '截单时间', sub: '当日24:00前发出' },
+    { stat: '30万㎡+', label: '华南直营仓储', sub: '多仓协同布局' },
   ]}
-  contentDesc="适合华南地区鞋服电商品牌，尤其唯品会、抖音、天猫主营品牌。华南仓配时效承诺难兑现是行业痛点。广州+东莞+肇庆三地七仓（直营超30万㎡），18:00截单当日24:00全出，广东全省次日达。140+合作品牌中60+涉及唯品会JIT/JITX专项运营，已具备完善的大促爆单应急预案。"
+  contentDesc="适合需要在华南布局库存的鞋服品牌，尤其涉及电商订单、门店补货、唯品会JIT/JITX和退货处理的项目。华南多仓布局覆盖广州、东莞、佛山、肇庆，18:00前截单，当日24:00前发出。广州同城最快4小时；广东主要区域参考次日达；华南主要城市次日至两日；具体启用仓点、仓容、承运商和到达时效以项目方案及线路SLA为准。"
   featuresLabel="华南仓网节点"
   features={[
-    { title: '广州总部仓（双仓）', desc: '黄埔主仓：果园一路2号，紧邻广园快速/京港澳高速，10台3吨货梯；番禺卫星仓：石楼镇，番禺核心区，开仓即用。' },
-    { title: '东莞三仓群', desc: '常平智谷仓（110,000㎡园区/12米高仓）+ 桥头仓（近东高速/弹性扩容）+ 朗州仓（电商专配货梯），东莞全境覆盖。' },
-    { title: '肇庆唯品会仓', desc: '四会市唯品会物流园内，园区100,000㎡，12米超高仓，多条自动打包线，快递资源发达，是唯品会JIT/JITX专项对接仓。' },
-    { title: '华南次日达网络', desc: '广州/深圳/东莞/佛山/惠州/汕头等华南主要城市均可次日达，广州同城当日达；配合顺丰/德邦等优选承运商实现全国时效优化。' },
-    { title: '华南退货质检中心', desc: '广州主仓设置专属退货质检与后整修复中心，华南区域退货可就近处理，减少跨城运输成本，退货48小时内完成质检二次上架。' },
-    { title: '华南产业链协同', desc: '广州/东莞是中国服装制造核心产区，新亦源华南仓可直接对接周边制造商，支持工厂直供一件代发，供应链协同成本最低。' },
+    {
+      title: '广州区域节点',
+      desc: '服务广州及珠三角鞋服品牌的电商仓配、门店补货和退货处理；实际启用仓点与仓容按项目确认。',
+    },
+    {
+      title: '东莞区域节点',
+      desc: '可结合东莞制造业和品牌货源组织入库、仓储与发货，具体地址、面积和业务范围以项目核验为准。',
+    },
+    {
+      title: '佛山区域节点',
+      desc: '面向佛山及周边鞋服项目提供区域仓配协同，具体仓点和启用条件由双方确认。',
+    },
+    {
+      title: '肇庆区域节点',
+      desc: '可承接唯品会JIT/JITX等相关项目，平台规则、仓点与作业范围以项目核验和双方方案为准。',
+    },
+    {
+      title: '华南退货质检中心',
+      desc: '广州主仓设置专属退货质检与后整修复中心，华南区域退货可就近处理，减少跨城运输成本，退货24小时内完成质检二次上架。',
+    },
+    {
+      title: '华南产业链协同',
+      desc: '可结合广州、东莞、佛山等地鞋服产业资源组织工厂入仓、库存管理和订单履约，具体流程按项目确认。',
+    },
   ]}
   faqs={[
     {
-      q: '华南鞋服云仓有哪些具体仓库地址？',
-      a: '华南7个仓库节点：①广州黄埔仓：广州市黄埔区果园一路2号（主仓）；②广州番禺仓：番禺区石楼镇市莲路石楼段6号；③东莞常平仓：东莞常平镇多宝路2号常平智谷；④东莞朗州仓：东莞常平镇朗洲村鸿腾缘工业园；⑤东莞桥头仓：东莞桥头镇多宝路2号常平桥头；⑥肇庆四会仓：肇庆市四会市东城街道唯品会物流园20号库。',
+      q: '华南鞋服云仓覆盖哪些区域？',
+      a: '华南多仓布局覆盖广州、东莞、佛山、肇庆，华南直营仓储30万㎡+。每个项目实际启用的仓点、地址、仓容和业务范围在启动前确认。',
     },
     {
       q: '华南鞋服云仓发货到全国时效怎么样？',
-      a: '华南仓发货时效：广州同城当日达（4小时内）；深圳/东莞/佛山次日达；广东省内次日达；华南地区（广西/海南/湖南等）次日达到两日达；全国主要城市次日达到三日达。具体时效根据承运商选择有所不同，物流云OTD系统自动优化路由。',
+      a: '仓内正向履约口径为18:00前截单，当日24:00前发出。广州同城最快4小时；广东主要区域参考次日达；华南主要城市次日至两日；具体以线路SLA为准。',
     },
     {
       q: '华南仓储费用有没有地区优势？',
-      a: '华南仓有多方面优势：①仓储土地成本低于北上深，单位仓储费有竞争力；②物流网络发达，快递资源集中，物流费有议价空间；③距制造商近，入库运费低；④肇庆仓在唯品会园区内，JIT/JITX对接没有园区外的额外转运费用。',
+      a: '具体仓储和转运成本按仓点、货量及线路测算。',
     },
     {
       q: '新亦源华南仓适合哪类鞋服品牌？',
-      a: '特别适合：①主要客群在华南/华东的品牌，利用广州仓的时效优势；②有唯品会JIT/JITX运营需求的品牌（肇庆园区内）；③广东/广西制造商需要本地仓配服务的；④跨境出海品牌，利用广州港/白云机场的国际物流优势。',
+      a: '适合主要库存、供应商或消费市场位于华南，需要电商发货、连锁门店补货、唯品会JIT/JITX、退货质检或跨境国内端仓储配套的鞋服品牌。',
     },
     {
       q: '华南仓能支持多大规模的品牌？',
-      a: '华南仓资源可支持从初创小品牌到头部大品牌：小品牌可从共享仓位起步（最小面积可灵活设置）；大品牌可申请专属分区甚至独立仓（UR合作仓达10万㎡以上）。华南地区单日处理峰值超100万件。',
+      a: '华南仓网可按品牌的SKU、库存、订单峰值和增值服务需求评估共享仓位、专属分区或多仓协同方案。公司公开的地区单日运营峰值为100万单，具体项目产能需结合当期仓容与资源确认。',
     },
   ]}
-/>
+>
+  <section
+    slot="unique"
+    class="overflow-hidden border-b border-slate-200 bg-[#f5f8fe]"
+    aria-labelledby="south-network-heading"
+  >
+    <div
+      class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20"
+      style="background-image:linear-gradient(rgba(30,73,141,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(30,73,141,.05) 1px,transparent 1px);background-size:32px 32px"
+    >
+      <div class="grid gap-10 lg:grid-cols-[0.75fr_1.25fr] lg:items-end">
+        <div>
+          <p class="mb-4 font-mono text-xs font-bold tracking-[0.24em] text-blue-700">
+            SOUTH CHINA NETWORK / 04 NODES
+          </p>
+          <h2
+            id="south-network-heading"
+            class="max-w-xl text-3xl font-black leading-tight text-navy-800 sm:text-4xl"
+          >
+            一张华南协同图，<br />连接四个区域节点
+          </h2>
+        </div>
+        <p class="max-w-2xl text-sm leading-7 text-slate-600 lg:justify-self-end">
+          不是把四个仓点简单并列，而是围绕品牌的货源位置、渠道订单、退货去向与线路SLA，确定每个项目实际启用的节点和协同方式。
+        </p>
+      </div>
+
+      <div
+        class="relative mt-12 overflow-hidden border-y border-blue-200/80 bg-white/85 px-5 py-8 shadow-[0_28px_70px_rgba(30,64,120,.08)] sm:px-8 lg:px-10"
+      >
+        <div
+          class="pointer-events-none absolute inset-x-0 top-1/2 hidden h-px bg-gradient-to-r from-transparent via-blue-300 to-transparent lg:block"
+        >
+        </div>
+        <div class="relative grid gap-8 sm:grid-cols-2 lg:grid-cols-4 lg:gap-0">
+          {
+            SOUTH_NETWORK_NODES.map(({ city, code, role, note }, index) => (
+              <article
+                class={`relative min-w-0 lg:px-7 ${index > 0 ? 'lg:border-l lg:border-slate-200' : ''}`}
+              >
+                <div class="mb-6 flex items-center gap-3">
+                  <span
+                    class={`relative z-10 block rounded-full border-[5px] border-white shadow-[0_0_0_1px_rgba(37,99,235,.25)] ${index === 0 ? 'h-5 w-5 bg-brand-orange' : 'h-4 w-4 bg-blue-600'}`}
+                  />
+                  <span class="font-mono text-[10px] font-bold tracking-[0.18em] text-blue-600">
+                    {code}
+                  </span>
+                </div>
+                <h3 class="text-2xl font-black text-navy-800">{city}</h3>
+                <p class="mt-3 text-sm font-bold leading-6 text-slate-700">{role}</p>
+                <p class="mt-2 text-xs leading-5 text-slate-500">{note}</p>
+              </article>
+            ))
+          }
+        </div>
+      </div>
+
+      <div class="mt-12 border-b border-slate-200">
+        <div
+          class="grid grid-cols-[4rem_1fr] border-t border-slate-300 py-3 sm:grid-cols-[5rem_11rem_1fr_7rem]"
+        >
+          <span class="font-mono text-[10px] font-bold tracking-[0.16em] text-slate-400">BAND</span>
+          <span class="hidden text-[10px] font-bold tracking-[0.16em] text-slate-400 sm:block"
+            >协同维度</span
+          >
+          <span class="text-[10px] font-bold tracking-[0.16em] text-slate-400">项目动作</span>
+          <span
+            class="hidden text-right text-[10px] font-bold tracking-[0.16em] text-slate-400 sm:block"
+            >输出</span
+          >
+        </div>
+        {
+          SOUTH_COLLAB_BANDS.map(({ num, title, desc, signal }) => (
+            <article class="grid grid-cols-[4rem_1fr] items-start border-t border-slate-200 py-5 sm:grid-cols-[5rem_11rem_1fr_7rem] sm:items-center">
+              <span class="font-mono text-xs font-black text-brand-orange">{num}</span>
+              <h3 class="text-base font-black text-navy-800">{title}</h3>
+              <p class="col-start-2 mt-2 text-sm leading-6 text-slate-600 sm:col-start-auto sm:mt-0 sm:pr-8">
+                {desc}
+              </p>
+              <span class="col-start-2 mt-3 w-fit border-b border-blue-500 pb-1 text-xs font-bold text-blue-700 sm:col-start-auto sm:mt-0 sm:justify-self-end">
+                {signal}
+              </span>
+            </article>
+          ))
+        }
+      </div>
+      <p class="mt-5 text-xs leading-5 text-slate-500">
+        说明：图中节点用于展示华南多仓协同思路，具体启用仓点、地址、仓容、承运商与到达时效以项目方案及线路SLA为准。
+      </p>
+    </div>
+  </section>
+</ServiceLanding>

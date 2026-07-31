@@ -6,7 +6,7 @@ export default defineConfig({
   output: 'server',
   adapter: node({ mode: 'middleware' }),
   integrations: [],
-  site: process.env.PUBLIC_SITE_URL ?? 'https://wz.tomatopia.top',
+  site: process.env.PUBLIC_SITE_URL ?? 'https://56xyy.com',
   server: { port: 4321, host: '0.0.0.0' },
   vite: {
     plugins: [tailwindcss()],
