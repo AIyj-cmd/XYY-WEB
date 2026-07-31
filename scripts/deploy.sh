@@ -30,6 +30,8 @@ rsync -az -e "$RSYNC_RSH" \
 "${ssh_cmd[@]}" "$DEPLOY_HOST" "set -euo pipefail
 cd '$REMOTE_DIR'
 test -f .env
+find dist -type d -exec chmod 755 {} +
+find dist -type f -exec chmod 644 {} +
 PATH='$NODE_BIN':\$PATH npm install --omit=dev
 PATH='$NODE_BIN':\$PATH pm2 restart xyy-web --update-env || PATH='$NODE_BIN':\$PATH pm2 start ecosystem.config.cjs --update-env
 PATH='$NODE_BIN':\$PATH pm2 save"
