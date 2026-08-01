@@ -8,8 +8,15 @@ interface Props {
   tag?: string
   items: FaqItem[]
   layout?: 'accordion' | 'stacked'
+  openFirst?: boolean
 }
-const { heading = '常见问题', tag = 'FAQ', items, layout = 'accordion' } = Astro.props
+const {
+  heading = '常见问题',
+  tag = 'FAQ',
+  items,
+  layout = 'accordion',
+  openFirst = false,
+} = Astro.props
 ---
 
 <section class="py-16 bg-white" aria-labelledby="page-faq-heading">
@@ -41,8 +48,8 @@ const { heading = '常见问题', tag = 'FAQ', items, layout = 'accordion' } = A
         </dl>
       ) : (
         <dl class="divide-y divide-gray-100 border-t border-gray-100">
-          {items.map(({ q, a }) => (
-            <details class="group py-5">
+          {items.map(({ q, a }, index) => (
+            <details class="group py-5" open={openFirst && index === 0}>
               <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
                 <dt class="text-base font-bold text-navy-800 leading-snug flex-1">{q}</dt>
                 <span

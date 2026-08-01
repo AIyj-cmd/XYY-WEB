@@ -13,6 +13,29 @@ test('homepage loads the shoe-apparel fulfillment message and primary CTA', asyn
   await expect(page.getByRole('link', { name: /在线估算费用|仓储成本估算器/ })).toHaveCount(0)
 })
 
+test('product page presents four selectable solutions and an accessible FAQ', async ({ page }) => {
+  await page.goto('/product')
+
+  await expect(
+    page.getByRole('heading', {
+      level: 1,
+      name: '一套鞋服供应链能力覆盖商品从入仓到再次销售',
+    }),
+  ).toBeVisible()
+  await expect(page.getByRole('navigation', { name: '产品页章节导航' })).toHaveCount(1)
+  await expect(page.getByRole('navigation', { name: '产品页章节导航' }).getByRole('link')).toHaveCount(4)
+  await expect(page.locator('#cloud-warehouse')).toHaveCount(1)
+  await expect(page.locator('#quality-inspection')).toHaveCount(1)
+  await expect(page.locator('#logistics-cloud')).toHaveCount(1)
+  await expect(page.locator('#yundao-platform')).toHaveCount(1)
+  await expect(page.locator('#product-faq details[open]')).toHaveCount(1)
+
+  await page.locator('.dashboard-frame').click()
+  await expect(page.getByRole('dialog', { name: '系统界面大图预览' })).toBeVisible()
+  await page.getByRole('button', { name: '关闭大图' }).click()
+  await expect(page.getByRole('dialog', { name: '系统界面大图预览' })).not.toBeVisible()
+})
+
 test('case detail has a crawlable URL and project data', async ({ page }) => {
   await page.goto('/cases/ur')
 

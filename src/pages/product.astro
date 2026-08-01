@@ -7,19 +7,68 @@ import { getServices } from '@/lib/directus'
 
 const SERVICES = await getServices()
 
-const serviceSchemas = SERVICES.map((s) => ({
+const SOLUTIONS = [
+  {
+    id: 'cloud-warehouse',
+    index: '01',
+    name: '鞋服云仓',
+    shortName: '鞋服云仓',
+    value: '商品入仓、库存管理与多渠道订单履约',
+    problem: '多渠道订单和复杂SKU，需要一套真正懂鞋服的仓配体系',
+    fit: ['SKU数量多', '多平台同时销售', '大促波动明显', '需要门店补货'],
+    result: '库存、订单和仓内作业统一管理。',
+    href: '/xiefu-yuncang',
+  },
+  {
+    id: 'quality-inspection',
+    index: '02',
+    name: '退货质检与瑕疵修复',
+    shortName: '退货质检',
+    value: '质检分级、专业修复与二次上架',
+    problem: '退货不是终点，关键是让可售商品尽快重新进入库存',
+    fit: ['退货率较高', '异常类型复杂', '需要恢复可售库存', '门店退仓较多'],
+    result: '从拆包、质检、分级到修复和二次上架。',
+    href: '/tuihuo-zhijian',
+  },
+  {
+    id: 'logistics-cloud',
+    index: '03',
+    name: '物流数字化能力',
+    shortName: '数字化能力',
+    value: '订单、库存、仓内作业与物流数据协同',
+    problem: '平台、仓库和物流数据分散，履约状态难以及时掌握',
+    fit: ['ERP数据分散', '需要多仓协同', '履约状态不可视', '需要接口定制'],
+    result: '统一订单、库存、仓内与物流数据。',
+    href: '#logistics-cloud',
+  },
+  {
+    id: 'yundao-platform',
+    index: '04',
+    name: '运到智能寄件平台',
+    shortName: '智能寄件',
+    value: '多承运商、智能路由与门店寄件管理',
+    problem: '门店寄件渠道分散、价格不透明，需要统一管理运输资源',
+    fit: ['连锁门店寄件', '多承运商管理', '门店调拨退仓', '异常件追踪'],
+    result: '统一承运商、路由、轨迹和客服工单。',
+    href: '#yundao-platform',
+  },
+] as const
+
+const LOCAL_NAV = SOLUTIONS.map(({ id, shortName }) => ({ id, label: shortName }))
+
+const serviceSchemas = SOLUTIONS.map((solution) => ({
   '@context': 'https://schema.org',
   '@type': 'Service',
-  '@id': `${BRAND.url}/product#${s.slug}`,
-  name: s.name,
-  description: s.description,
+  '@id': `${BRAND.url}/product#${solution.id}`,
+  name: solution.name,
+  description: solution.value,
   provider: {
     '@type': 'Organization',
     '@id': `${BRAND.url}/#organization`,
     name: BRAND.fullName,
   },
   areaServed: { '@type': 'Country', name: '中国' },
-  url: `${BRAND.url}/product#${s.slug}`,
+  url: solution.href.startsWith('/') ? `${BRAND.url}${solution.href}` : `${BRAND.url}/product#${solution.id}`,
 }))
 
 const breadcrumbSchema = {
@@ -31,1660 +80,993 @@ const breadcrumbSchema = {
   ],
 }
 
-const NAV_ITEMS = [
-  { id: 'cloud-warehouse', label: '鞋服云仓', en: 'Cloud Warehouse' },
-  { id: 'quality-inspection', label: '后整质检修复', en: 'QC & Repair' },
-  { id: 'logistics-cloud', label: '数字化能力', en: 'Digital Capability' },
-  { id: 'yundao-platform', label: '运到寄件', en: 'YunDao Express' },
-]
-
-const SERVICE_HUBS = [
+const WAREHOUSE_GROUPS = [
   {
-    index: '01',
-    name: '鞋服仓配中心',
-    role: '库存与订单执行',
-    scope: '入仓验收 · RFID建档 · 多渠道仓配',
+    index: 'A',
+    title: '商品管理',
+    items: ['多SKU、款色码管理', 'RFID与电子标签', '日动盘、周抽盘、月实盘'],
   },
   {
-    index: '02',
-    name: '质检修复中心',
-    role: '商品状态再判断',
-    scope: '退货拆包 · 分级质检 · 后整修复',
+    index: 'B',
+    title: '订单履约',
+    items: ['B2C + B2B + O2O', '智能波次拣货', '峰值弹性产能'],
   },
   {
-    index: '03',
-    name: '物流数据中心',
-    role: '运输与运营协同',
-    scope: 'OTD中台 · 运到平台 · 轨迹监控',
+    index: 'C',
+    title: '系统与风控',
+    items: ['WMS与ERP对接', '多渠道库存同步', '监控与争议追溯'],
   },
 ]
 
-const ORCHESTRATION_STEPS = [
-  { index: '01', title: '入仓', detail: '收货验收 / SKU建档' },
-  { index: '02', title: '质检', detail: '抽检全检 / 状态分级' },
-  { index: '03', title: '仓配', detail: '一盘货 / 波次履约' },
-  { index: '04', title: '物流', detail: '智能路由 / 轨迹监控' },
-  { index: '05', title: '数据', detail: '库存 / 时效 / 人效回流' },
-]
-
-const FORWARD_CHAIN = [
-  '新品与补货入仓',
-  '款色码建档',
-  '多渠道库存同步',
-  '智能波次拣选',
-  CLAIM_TEXT.shippingSla,
-  '轨迹与签收监控',
-]
-
-const REVERSE_CHAIN = [
-  '退货回仓',
-  '视频拆包核对',
+const INSPECTION_STEPS = [
+  '拆包登记',
+  '标准质检',
   'A / B+ / B- / C分级',
-  '修复或处置分流',
-  `质检与二次上架${CLAIM_TEXT.returnTurnaround}`,
-  '可售库存回补',
+  '清洁或修复',
+  '品牌标准复检',
+  '二次上架 / 退供 / 报废',
 ]
 
-const SCENE_FRAMES = [
-  {
-    src: '/images/services/warehouse-panorama.webp',
-    alt: '新亦源鞋服仓储作业现场',
-    eyebrow: 'WAREHOUSE / 01',
-    title: '高SKU鞋服仓内现场',
-    desc: '货位、款色码和作业波次在同一套仓内节奏中协同。',
-    className: 'scene-frame scene-frame--wide',
-  },
-  {
-    src: '/images/services/inspection-wide.webp',
-    alt: '新亦源鞋服质检作业现场',
-    eyebrow: 'QUALITY / 02',
-    title: '质检与商品状态判断',
-    desc: '从拆包核对到异常识别，每一步留下可追溯依据。',
-    className: 'scene-frame scene-frame--tall',
-  },
-  {
-    src: '/images/services/repair-stitch.webp',
-    alt: '新亦源后整缝补修复现场',
-    eyebrow: 'REPAIR / 03',
-    title: '后整修复工位',
-    desc: '让可修复商品经过处理与复检后重回后续流程。',
-    className: 'scene-frame scene-frame--half',
-  },
-  {
-    src: '/images/services/global-map.webp',
-    alt: '新亦源供应链服务网络示意',
-    eyebrow: 'NETWORK / 04',
-    title: '区域仓网与线路协同',
-    desc: '根据货源、库存与订单分布组织仓点和运输方案。',
-    className: 'scene-frame scene-frame--map',
-  },
+const DEFECT_CATEGORIES = [
+  { name: '外观问题', example: '污渍、色差、破损与穿着痕迹' },
+  { name: '面料问题', example: '勾丝、起球、褪色与面料损伤' },
+  { name: '缝线问题', example: '开线、跳针、脱线与线头异常' },
+  { name: '配件问题', example: '拉链、纽扣、饰品与鞋服附件异常' },
+  { name: '工艺问题', example: '整烫、粘合、车缝与成型工艺异常' },
+  { name: '吊牌标识', example: '吊牌、洗唛、尺码标识与包装信息异常' },
+  { name: '异味问题', example: '仓储、运输或退货环节产生的气味异常' },
 ]
 
 const DIGITAL_MODULES = [
-  { index: '01', name: '物流网关', desc: '衔接业务系统与承运商，统一订单和运单数据入口。' },
-  { index: '02', name: '仓储管理 WMS', desc: '围绕鞋服款色码、库存、波次与复核组织仓内作业。' },
-  { index: '03', name: '物流管理 LMS', desc: '统一查看承运商、轨迹、签收与异常处理状态。' },
-  { index: '04', name: '人效通', desc: '记录作业量、效率与质量，为排班和峰值准备提供依据。' },
-  { index: '05', name: '发货时效监控', desc: '跟踪订单关键节点，对超时风险进行识别和协同。' },
-  { index: '06', name: '轨迹与签收监控', desc: '从揽收到签收持续跟踪，异常件进入客服工单流程。' },
+  ['01', '物流网关', '统一订单和运单数据入口'],
+  ['02', '仓储管理 WMS', '管理款色码、库存与波次作业'],
+  ['03', '物流管理 LMS', '管理承运商、轨迹与异常状态'],
+  ['04', '人效通', '记录作业量、效率与质量'],
+  ['05', '发货时效监控', '识别订单节点与超时风险'],
+  ['06', '轨迹与签收监控', '跟踪揽收、运输和签收回传'],
+] as const
+
+const DIGITAL_FLOW = ['平台订单', '库存同步', '仓内作业', '物流路由', '异常预警', '签收回传']
+const DIGITAL_RESULTS = ['多平台订单统一', '多仓库存可视', '异常主动预警', '经营数据报表']
+const DIGITAL_CALLOUTS = [
+  ['orders', '01', '订单履约', '多平台订单进入统一履约队列'],
+  ['inventory', '02', '库存同步', '多仓与多渠道库存状态可视'],
+  ['alerts', '03', '异常预警', '超时与异常节点主动提示'],
+  ['tracking', '04', '物流轨迹', '揽收、运输与签收状态回传'],
+] as const
+
+const YUNDAO_CAPABILITIES = [
+  ['多承运商统一接入', '已对接顺丰、京东、EMS等11家主流承运商'],
+  ['智能路由与比价', '根据线路、货量、价格和时效匹配寄件方案'],
+  ['正逆向寄件协同', '支持门店寄件、调拨、退仓及企业寄件'],
+  ['全程服务管理', '支持轨迹查询、异常处理、在线工单和数据报表'],
+] as const
+
+const BUNDLES = [
+  {
+    index: '01',
+    name: '成长型电商品牌',
+    services: ['鞋服云仓', '物流数字化'],
+    fit: ['多平台订单增长', '需要统一库存', '暂时没有复杂退货处理'],
+    result: '统一库存与订单履约，支撑业务增长。',
+    scene: '天猫、抖音、品牌小程序',
+    recommended: false,
+  },
+  {
+    index: '02',
+    name: '高退货鞋服品牌',
+    services: ['鞋服云仓', '退货质检与修复', '物流数字化'],
+    fit: ['直播电商', '女装与鞋类', '退货率和异常率较高'],
+    result: '缩短退货商品重新进入可售库存的路径。',
+    scene: '直播电商、女装、鞋类',
+    recommended: true,
+  },
+  {
+    index: '03',
+    name: '连锁门店品牌',
+    services: ['鞋服云仓', '物流数字化', '运到智能寄件'],
+    fit: ['全国门店', '门店调拨', '门店退仓与多承运商寄件'],
+    result: '统一门店补货、调拨、退仓与寄件管理。',
+    scene: '全国门店、区域调拨、门店退仓',
+    recommended: false,
+  },
 ]
 
 const SERVICE_DIRECTORY = [
   {
-    axis: '区域',
-    en: 'REGION',
+    axis: '按区域',
+    desc: '根据库存位置和销售半径选择仓网',
     items: [
-      { label: '广州鞋服云仓', href: '/guangzhou-xiefu-yuncang' },
-      { label: '华南鞋服云仓', href: '/huanan-xiefu-yuncang' },
-      { label: '华东鞋服云仓', href: '/huadong-xiefu-yuncang' },
+      ['华南仓网', '/huanan-xiefu-yuncang'],
+      ['华东仓网', '/huadong-xiefu-yuncang'],
+      ['广州鞋服云仓', '/guangzhou-xiefu-yuncang'],
     ],
   },
   {
-    axis: '渠道',
-    en: 'CHANNEL',
+    axis: '按渠道',
+    desc: '按订单来源和渠道规则匹配履约',
     items: [
-      { label: 'B2B门店仓配', href: '/b2b-mendian-cangpei' },
-      { label: '直播电商仓配', href: '/zhibo-cangpei' },
-      { label: '唯品会JIT / JITX', href: '/weipinhui-jit-jitx' },
-      { label: '跨境云仓', href: '/kuajing-yuncang' },
+      ['直播电商', '/zhibo-cangpei'],
+      ['唯品会 JIT / JITX', '/weipinhui-jit-jitx'],
+      ['B2B门店仓配', '/b2b-mendian-cangpei'],
     ],
   },
   {
-    axis: '品类与逆向',
-    en: 'CATEGORY & REVERSE',
+    axis: '按业务',
+    desc: '围绕特殊商品与逆向流程组合服务',
     items: [
-      { label: '鞋服云仓', href: '/xiefu-yuncang' },
-      { label: '服装云仓', href: '/fuzhuang-yuncang' },
-      { label: '退货质检', href: '/tuihuo-zhijian' },
-      { label: '后整修复', href: '/houzheng-xiufu' },
+      ['跨境云仓', '/kuajing-yuncang'],
+      ['退货质检', '/tuihuo-zhijian'],
+      ['后整修复', '/houzheng-xiufu'],
     ],
+  },
+] as const
+
+const PRODUCT_FAQS = [
+  {
+    q: '新亦源鞋服云仓的最小起储量是多少？',
+    a: '新亦源没有固定最小起储量门槛，会根据实际货量、SKU复杂度、订单渠道和仓点匹配情况评估。中小品牌可从单品类、单仓点开始合作，再随业务增长逐步扩展。',
+  },
+  {
+    q: '系统如何与品牌现有ERP或OMS对接？',
+    a: 'OTD中台及物流网关支持奇门、EDI、API或客户定制接口，可根据现有系统确认字段、授权方式和联调周期。系统使用本身不收费，实施、接口联调和定制开发费用按具体方案确认。',
+  },
+  {
+    q: '大促期间如何提前准备峰值产能？',
+    a: '项目团队会结合预测货量提前规划货位、波次、班次、弹性人力和系统压测。实际峰值目标与订单处理SLA会根据品牌预测和资源方案在项目启动阶段确认。',
+  },
+  {
+    q: '如何减少高SKU商品发错尺码或颜色？',
+    a: `入库时通过RFID或条码绑定款色码，拣货时使用电子标签或系统指引，发货前逐包扫码复核并比对订单。当前公开发货准确率为${CLAIM_TEXT.shippingAccuracy}。`,
+  },
+  {
+    q: '是否支持退货质检、修复和二次上架？',
+    a: `支持。退货商品可进入拆包、质检、分级、修复、复检和处置流程。当前公开口径为退货质检与二次上架${CLAIM_TEXT.returnTurnaround}，具体处理规则按品牌标准和项目范围确认。`,
+  },
+  {
+    q: '物流数字化能力可以解决哪些问题？',
+    a: '主要解决订单、库存、仓内作业和物流状态分散的问题。通过物流网关、WMS、LMS和履约监控模块，可统一查看多平台订单、多仓库存、物流轨迹、异常预警与签收回传。',
+  },
+  {
+    q: '运到智能寄件平台适合哪些业务？',
+    a: '适合连锁门店寄件、门店调拨、门店退仓、电商平台和企业寄件等场景。平台统一接入多家承运商，并提供路由匹配、轨迹查询、异常处理、在线工单和数据报表。',
+  },
+  {
+    q: '仓储和增值服务费用如何计算？',
+    a: '费用通常包含仓储、入出库操作、质检包装、物流和增值服务等项目，具体需要结合商品特性、SKU数量、库存周期、日均订单、退货比例和系统对接范围确认。',
   },
 ]
 ---
 
 <Layout
-  title="鞋服仓配与质检服务｜云仓、退货修复、数字化系统｜新亦源"
-  description="新亦源供应链围绕鞋服仓配中心、鞋服质检中心和商圈寄件平台“运到”提供三大核心服务，并以OTD物流服务中台为底座，由物流网关、WMS、LMS、人效通、发货时效监控、轨迹与签收监控六大模块支撑全链路数字化运营。"
+  title="产品服务｜鞋服云仓、退货质检、物流数字化与智能寄件｜新亦源"
+  description="新亦源提供鞋服云仓、退货质检与瑕疵修复、物流数字化能力和运到智能寄件平台四项核心解决方案，覆盖商品从入仓、履约到退货处理与再次销售。"
   jsonLd={[breadcrumbSchema, ...serviceSchemas]}
   services={SERVICES}
 >
-  <!-- Hero -->
-  <section class="relative py-16 lg:py-28 overflow-hidden" aria-labelledby="product-hero-heading">
-    <!-- 背景大图 -->
-    <img
-      src="/w-flower.webp"
-      alt=""
-      aria-hidden="true"
-      class="absolute inset-0 w-full h-full object-cover"
-      fetchpriority="high"
-    />
-    <!-- 遮罩：左深右透，确保文字可读 -->
-    <div
-      class="absolute inset-0"
-      style="background: linear-gradient(105deg, rgba(8,20,42,0.95) 0%, rgba(8,20,42,0.80) 40%, rgba(8,20,42,0.50) 70%, rgba(8,20,42,0.25) 100%);"
-      aria-hidden="true"
-    >
-    </div>
-    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <p class="text-brand-orange font-semibold text-sm tracking-wider uppercase mb-3">产品服务</p>
-      <p class="text-[0.8rem] font-bold tracking-[0.05em] text-brand-orange mb-2">新亦源供应链</p>
-      <h1
-        id="product-hero-heading"
-        class="text-4xl lg:text-5xl font-black text-white leading-tight mb-5"
-      >
-        鞋服仓配、质检修复<br />
-        <span class="text-brand-orange">与物流数字化服务</span>
-      </h1>
-      <p class="text-lg text-navy-100 max-w-2xl leading-relaxed mb-10">
-        从入库质检到出库发货，从正向仓配到逆向退货，新亦源以三大核心服务和数字化系统能力支撑鞋服品牌全链路需求。
-      </p>
-      <!-- 产品快速导航 -->
-      <div class="flex flex-wrap gap-3">
-        {
-          NAV_ITEMS.map(({ id, label }) => (
-            <a
-              href={`#${id}`}
-              class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/20 text-white/80 hover:border-brand-orange hover:text-brand-orange text-sm font-medium transition-colors"
-            >
-              {label}
-            </a>
-          ))
-        }
-      </div>
-    </div>
-  </section>
-
-  <!-- 供应链服务编排台 -->
-  <section
-    id="cloud-warehouse"
-    class="orchestration-section scroll-mt-28"
-    aria-labelledby="orchestration-heading"
-  >
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <header class="section-intro section-intro--split">
-        <div>
-          <p class="section-kicker">SERVICE ORCHESTRATION / 01</p>
-          <h2 id="orchestration-heading">不是服务清单，是一套供应链编排台</h2>
+  <div class="product-page">
+    <section class="product-hero" aria-labelledby="product-hero-heading">
+      <img
+        class="product-hero__background"
+        src="/w-hanging1.webp"
+        alt="新亦源鞋服挂装仓储空间"
+        fetchpriority="high"
+      />
+      <div class="product-hero__overlay" aria-hidden="true"></div>
+      <div class="product-shell product-hero__layout">
+        <div class="product-hero__copy">
+          <p class="eyebrow eyebrow--light">产品服务 / PRODUCT SERVICES</p>
+          <h1
+            id="product-hero-heading"
+            aria-label="一套鞋服供应链能力覆盖商品从入仓到再次销售"
+          >
+            <span>一套鞋服供应链能力</span>
+            <span>覆盖商品从入仓到再次销售</span>
+          </h1>
+          <p class="product-hero__lead">
+            从仓储、质检到系统与物流协同，根据品牌的业务阶段自由组合服务能力。
+          </p>
+          <div class="hero-actions">
+            <a href="/contact" class="button button--orange">获取适配方案 <span aria-hidden="true">→</span></a>
+            <a href="#service-overview" class="button button--ghost-light">查看服务地图 <span aria-hidden="true">↓</span></a>
+          </div>
+          <dl class="hero-proof">
+            <div><dt>4项</dt><dd>核心解决方案</dd></div>
+            <div><dt>{CLAIM_TEXT.managedSkus}</dt><dd>管理SKU</dd></div>
+            <div><dt>{CLAIM_TEXT.partnerBrands}</dt><dd>服务品牌</dd></div>
+          </dl>
         </div>
-        <p class="section-lead">
-          品牌只需要给出货品、渠道、区域和时效要求，新亦源把仓内、质检、物流与数据能力编排成一条连续作业链。
-          三个服务中枢不是彼此割裂的产品，而是围绕同一件商品接力工作。
-        </p>
-      </header>
 
-      <div class="hub-register" aria-label="三大服务中枢">
-        {
-          SERVICE_HUBS.map(({ index, name, role, scope }) => (
-            <article class="hub-register__item">
-              <div class="hub-register__head">
-                <span>{index}</span>
-                <strong>{name}</strong>
-              </div>
-              <p>{role}</p>
-              <small>{scope}</small>
+        <div class="lifecycle-map" aria-label="四项核心解决方案关系图">
+          <div class="lifecycle-map__core">
+            <span>商品生命周期</span>
+            <strong>入仓 → 履约 → 退货 → 再售</strong>
+          </div>
+          <ol>
+            {SOLUTIONS.map(({ id, index, name, value }, solutionIndex) => (
+              <li>
+                <a href={`#${id}`} class:list={{ 'is-active': solutionIndex === 0 }} data-lifecycle-link>
+                  <span>{index}</span>
+                  <div><strong>{name}</strong><small>{value}</small></div>
+                  <i aria-hidden="true">↘</i>
+                </a>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <nav class="product-local-nav" aria-label="产品页章节导航">
+      <div class="product-local-nav__inner">
+        {LOCAL_NAV.map(({ id, label }) => (
+          <a href={`#${id}`} data-section-link={id}>{label}</a>
+        ))}
+      </div>
+    </nav>
+
+    <section id="service-overview" class="section section--soft anchor-section" aria-labelledby="overview-heading">
+      <div class="product-shell">
+        <header class="section-heading section-heading--split">
+          <div>
+            <p class="eyebrow">服务选择 / SERVICE SELECTOR</p>
+            <h2 id="overview-heading">不同业务问题<br />对应不同解决方案</h2>
+          </div>
+          <p>先判断当前最需要解决的问题，再决定使用单项服务还是组合方案。四项能力既可独立接入，也能沿商品生命周期连续协同。</p>
+        </header>
+
+        <div class="selector-assist">
+          <p><strong>四项能力可以独立接入</strong>，也可以根据品牌订单、退货和门店业务组合使用。</p>
+          <a href="/contact">不确定该选哪项服务？根据SKU、订单量、退货率和销售渠道快速匹配 <span aria-hidden="true">→</span></a>
+        </div>
+
+        <div class="selector-grid">
+          {SOLUTIONS.map(({ id, index, name, fit, result }) => (
+            <article class:list={['selector-card', `selector-card--${id}`]}>
+              <header><span>{index}</span><small>CORE SOLUTION</small></header>
+              <h3>{name}</h3>
+              <div class="selector-card__visual" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+              <p class="selector-card__label">适合您的情况</p>
+              <ul>{fit.map((item) => <li>{item}</li>)}</ul>
+              <div class="selector-card__result"><small>解决</small><strong>{result}</strong></div>
+              <a href={`#${id}`}>查看方案 <span aria-hidden="true">→</span></a>
             </article>
-          ))
-        }
-      </div>
-
-      <div class="orchestration-console">
-        <div class="console-meta">
-          <span>FULL-CHAIN CONTROL</span>
-          <span>从货品进入仓库，到经营数据重新回到决策端</span>
-        </div>
-        <div class="orchestration-rail" role="list" aria-label="供应链五段编排轨道">
-          {
-            ORCHESTRATION_STEPS.map(({ index, title, detail }) => (
-              <div class="rail-stop" role="listitem">
-                <span class="rail-stop__index">{index}</span>
-                <span class="rail-stop__node" aria-hidden="true" />
-                <strong>{title}</strong>
-                <small>{detail}</small>
-              </div>
-            ))
-          }
-        </div>
-        <div class="console-foot">
-          <p>
-            <span>履约基准</span>
-            <strong>{CLAIM_TEXT.shippingSla}</strong>
-          </p>
-          <p>
-            <span>逆向基准</span>
-            <strong>退货质检与二次上架{CLAIM_TEXT.returnTurnaround}</strong>
-          </p>
-          <p>
-            <span>准确率</span>
-            <strong>{CLAIM_TEXT.shippingAccuracy}</strong>
-          </p>
+          ))}
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- 正向与逆向双链 -->
-  <section
-    id="quality-inspection"
-    class="chain-section scroll-mt-28"
-    aria-labelledby="dual-chain-heading"
-  >
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <header class="section-intro">
-        <p class="section-kicker">DUAL FLOW / 02</p>
-        <h2 id="dual-chain-heading">一条链把货发出去，另一条链把库存价值带回来</h2>
-        <p class="section-lead">
-          正向履约与逆向退货共用商品档案、库存状态和作业数据，减少“发货是一套系统、退货又是另一套流程”的信息断点。
-        </p>
-      </header>
+    <section id="cloud-warehouse" class="section warehouse-section product-solution-section anchor-section" data-section-number="01" aria-labelledby="warehouse-heading">
+      <div class="product-shell">
+        <header class="solution-heading">
+          <div class="solution-heading__index"><span>01</span><small>鞋服云仓</small></div>
+          <div>
+            <p class="eyebrow">APPAREL CLOUD WAREHOUSE</p>
+            <h2 id="warehouse-heading">多渠道订单和复杂SKU<br />需要一套真正懂鞋服的仓配体系</h2>
+          </div>
+          <p>围绕款色码、库存、订单和仓内作业建立一盘货管理，让不同渠道共享库存并保持稳定履约。</p>
+        </header>
 
-      <div class="flow-lanes">
-        <article class="flow-lane flow-lane--forward">
-          <header>
-            <div>
-              <span class="flow-lane__index">A</span>
-              <h3>正向履约链</h3>
+        <div class="warehouse-stage">
+          <img src="/images/services/warehouse-panorama.webp" alt="新亦源鞋服云仓仓内作业现场" loading="lazy" />
+          <div class="warehouse-stage__shade" aria-hidden="true"></div>
+          <div class="warehouse-stage__caption">
+            <span>真实仓内作业现场</span>
+            <strong>鞋服仓储 · 分拣 · 履约</strong>
+          </div>
+          <dl class="warehouse-metrics">
+            <div><dt class="count-value" data-count-to="99.99" data-count-decimals="2" data-count-suffix="%">{CLAIM_TEXT.shippingAccuracy}</dt><dd>发货准确率</dd></div>
+            <div><dt class="count-value" data-count-to="99.99" data-count-decimals="2" data-count-suffix="%">{CLAIM_TEXT.inventoryAccuracy}</dt><dd>库存准确率</dd></div>
+            <div><dt>18:00</dt><dd>截单时间</dd></div>
+            <div><dt class="count-value" data-count-to="50" data-count-decimals="0" data-count-suffix="万单/日">{CLAIM_TEXT.singleWarehousePeak}</dt><dd>单仓日峰值</dd></div>
+          </dl>
+        </div>
+
+        <div class="warehouse-groups">
+          {WAREHOUSE_GROUPS.map(({ index, title, items }) => (
+            <article>
+              <header><span>{index}</span><h3>{title}</h3></header>
+              <ul>{items.map((item) => <li>{item}</li>)}</ul>
+            </article>
+          ))}
+        </div>
+        <div class="solution-links">
+          <a href="/xiefu-yuncang" class="text-link">查看鞋服云仓完整方案 <span aria-hidden="true">→</span></a>
+          <a href="/cases/ur" class="related-case"><span>相关案例</span> UR｜多渠道库存与订单协同 <i aria-hidden="true">→</i></a>
+        </div>
+      </div>
+    </section>
+
+    <section id="quality-inspection" class="section inspection-section product-solution-section anchor-section" data-section-number="02" aria-labelledby="inspection-heading">
+      <div class="product-shell">
+        <header class="solution-heading solution-heading--light">
+          <div class="solution-heading__index"><span>02</span><small>退货质检</small></div>
+          <div>
+            <p class="eyebrow">RETURN INSPECTION & REPAIR</p>
+            <h2 id="inspection-heading">退货不是终点<br />关键是让可售商品尽快重新进入库存</h2>
+          </div>
+          <p>从退货拆包、标准质检到分级处置、清洁修复和二次上架，为鞋服品牌建立可追溯的逆向处理体系。</p>
+        </header>
+
+        <div class="inspection-layout">
+          <figure class="inspection-photo">
+            <img src="/images/services/inspection-wide.webp" alt="新亦源退货质检与瑕疵修复作业现场" loading="lazy" />
+            <figcaption><span>真实质检作业区</span><strong>拆包核对｜外观检查｜分级处置</strong></figcaption>
+          </figure>
+          <div class="inspection-facts">
+            <div><strong>{CLAIM_TEXT.recognizableAnomalies}</strong><span>异常识别</span></div>
+            <div><strong>7大类</strong><span>异常分类</span></div>
+            <div><strong>9个</strong><span>修复专区</span></div>
+            <div><strong>{CLAIM_TEXT.repairSuccessRate}</strong><span>瑕疵修复成功率</span></div>
+          </div>
+        </div>
+
+        <ol class="inspection-flow" aria-label="退货质检与修复处理流程">
+          {INSPECTION_STEPS.map((step, index) => (
+            <li><span>{String(index + 1).padStart(2, '0')}</span><strong>{step}</strong></li>
+          ))}
+        </ol>
+
+        <div class="defect-panel">
+          <div class="defect-panel__intro">
+            <p class="eyebrow">异常分类</p>
+            <h3>按商品状态进入对应流程</h3>
+            <p>选择分类可查看常见异常示例。最终判定以品牌质检标准和项目SOP为准。</p>
+            <div class="return-sla"><span>处理时效</span><strong>退货质检 + 二次上架 {CLAIM_TEXT.returnTurnaround}</strong></div>
+          </div>
+          <div class="defect-list">
+            {DEFECT_CATEGORIES.map(({ name, example }, index) => (
+              <details open={index === 0}>
+                <summary><span>{String(index + 1).padStart(2, '0')}</span><strong>{name}</strong><i aria-hidden="true">＋</i></summary>
+                <p>{example}</p>
+              </details>
+            ))}
+          </div>
+        </div>
+        <a href="/tuihuo-zhijian" class="text-link">查看退货处理完整方案 <span aria-hidden="true">→</span></a>
+      </div>
+    </section>
+
+    <section id="logistics-cloud" class="section digital-section product-solution-section anchor-section" data-section-number="03" aria-labelledby="digital-heading">
+      <div class="product-shell">
+        <header class="solution-heading">
+          <div class="solution-heading__index"><span>03</span><small>数字化能力</small></div>
+          <div>
+            <p class="eyebrow">LOGISTICS DIGITAL CAPABILITY</p>
+            <h2 id="digital-heading">让订单、库存、仓内作业和物流状态<br />在同一条链路中协同</h2>
+          </div>
+          <p>以OTD物流服务中台为数字化底座，连接订单、库存、仓内作业、物流轨迹与签收数据，支持异常预警和履约状态查询。</p>
+        </header>
+
+        <div class="digital-foundation" data-active-focus="">
+          <button class="dashboard-frame" type="button" data-lightbox-src="/images/services/operations-dashboard.webp" data-lightbox-alt="OTD物流服务中台实际系统界面">
+            <span class="dashboard-frame__bar">OTD物流服务中台 · 实际系统界面 <i>点击放大 ↗</i></span>
+            <img src="/images/services/operations-dashboard.webp" alt="OTD物流服务中台实际系统界面" loading="lazy" />
+            <span class="dashboard-highlight" aria-hidden="true"></span>
+          </button>
+          <div class="digital-callouts" aria-label="系统界面重点能力">
+            {DIGITAL_CALLOUTS.map(([focus, index, title, desc]) => (
+              <button type="button" data-digital-focus={focus}>
+                <span>{index}</span><div><strong>{title}</strong><small>{desc}</small></div>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div class="digital-module-nav" aria-label="六大系统模块">
+          {DIGITAL_MODULES.map(([index, name]) => <span><i>{index}</i>{name}</span>)}
+        </div>
+
+        <div class="digital-application">
+          <div class="digital-application__heading"><span>业务应用层</span><strong>从平台订单到签收回传</strong></div>
+          <ol>
+            {DIGITAL_FLOW.map((step, index) => (
+              <li><span>{String(index + 1).padStart(2, '0')}</span><strong>{step}</strong></li>
+            ))}
+          </ol>
+          <div class="digital-results">{DIGITAL_RESULTS.map((result) => <span>{result}</span>)}</div>
+        </div>
+        <p class="digital-note"><strong>接口方式：</strong>支持奇门、EDI、API及客户定制接口；不收系统使用费，实施、接口联调及定制开发费用根据具体方案确认。</p>
+        <div class="solution-links">
+          <a href="/contact" class="text-link">查看系统对接方案 <span aria-hidden="true">→</span></a>
+          <a href="/cases" class="related-case"><span>相关案例</span> 多仓订单与履约数据协同 <i aria-hidden="true">→</i></a>
+        </div>
+      </div>
+    </section>
+
+    <section id="yundao-platform" class="section yundao-section product-solution-section anchor-section" data-section-number="04" aria-labelledby="yundao-heading">
+      <div class="product-shell">
+        <header class="solution-heading">
+          <div class="solution-heading__index"><span>04</span><small>智能寄件</small></div>
+          <div>
+            <p class="eyebrow">YUNDAO EXPRESS PLATFORM</p>
+            <h2 id="yundao-heading">统一管理门店寄件<br />承运商选择和物流异常</h2>
+          </div>
+          <p>为连锁门店、电商平台及企业机构提供正向与逆向寄件服务，统一承运商接入、线路匹配、轨迹查询和异常工单。</p>
+        </header>
+
+        <div class="yundao-layout">
+          <div class="yundao-collage" aria-label="运到智能寄件平台真实系统界面">
+            <button class="yundao-shot yundao-shot--main" type="button" aria-label="放大物流运单管理系统主界面" data-lightbox-src="/yundao-logistics-list.png" data-lightbox-alt="物流运单管理系统主界面"><img src="/yundao-logistics-list.png" alt="物流运单管理系统主界面" loading="lazy" /></button>
+            <button class="yundao-shot yundao-shot--side-one" type="button" aria-label="放大订单信息对接系统界面" data-lightbox-src="/yundao-order-list.png" data-lightbox-alt="订单信息对接系统界面"><img src="/yundao-order-list.png" alt="订单信息对接系统界面" loading="lazy" /></button>
+            <button class="yundao-shot yundao-shot--side-two" type="button" aria-label="放大发货预警系统界面" data-lightbox-src="/yundao-alerts.png" data-lightbox-alt="发货预警系统界面"><img src="/yundao-alerts.png" alt="发货预警系统界面" loading="lazy" /></button>
+            <button class="yundao-shot yundao-shot--detail" type="button" aria-label="放大发货统计报表界面" data-lightbox-src="/yundao-report.png" data-lightbox-alt="发货统计报表界面"><img src="/yundao-report.png" alt="发货统计报表界面" loading="lazy" /></button>
+          </div>
+          <div class="yundao-copy">
+            <p class="eyebrow">平台能力</p>
+            <div class="capability-list">
+              {YUNDAO_CAPABILITIES.map(([title, desc], index) => (
+                <article><span>{String(index + 1).padStart(2, '0')}</span><div><h3>{title}</h3><p>{desc}</p></div></article>
+              ))}
             </div>
-            <p>FORWARD FULFILLMENT</p>
-          </header>
-          <div class="flow-lane__scroll">
-            <ol>
-              {
-                FORWARD_CHAIN.map((item, index) => (
-                  <li>
-                    <span>{String(index + 1).padStart(2, '0')}</span>
-                    <strong>{item}</strong>
-                  </li>
-                ))
-              }
-            </ol>
-          </div>
-        </article>
-
-        <article class="flow-lane flow-lane--reverse">
-          <header>
-            <div>
-              <span class="flow-lane__index">B</span>
-              <h3>逆向价值链</h3>
+            <p class="saving-note"><strong>费用优势：</strong>部分线路费用最高可节省50%，具体以实际线路和报价为准。</p>
+            <div class="scene-tags" aria-label="运到平台适用场景">
+              {['连锁门店', '电商平台', '门店调拨', '门店退仓', '企业寄件'].map((item) => <span>{item}</span>)}
             </div>
-            <p>REVERSE VALUE RECOVERY</p>
-          </header>
-          <div class="flow-lane__scroll">
-            <ol>
-              {
-                REVERSE_CHAIN.map((item, index) => (
-                  <li>
-                    <span>{String(index + 1).padStart(2, '0')}</span>
-                    <strong>{item}</strong>
-                  </li>
-                ))
-              }
-            </ol>
+            <a href="/contact" class="text-link">查看智能寄件方案 <span aria-hidden="true">→</span></a>
           </div>
-        </article>
+        </div>
       </div>
+    </section>
 
-      <div class="chain-note">
-        <span>同一件商品</span>
-        <p>订单状态、质检结果、修复记录、库存状态与物流轨迹可以沿链路持续衔接。</p>
+    <section id="solution-bundles" class="section bundle-section anchor-section" aria-labelledby="bundle-heading">
+      <div class="product-shell">
+        <header class="section-heading section-heading--split">
+          <div><p class="eyebrow">组合方案 / SERVICE BUNDLES</p><h2 id="bundle-heading">单项服务可以独立使用<br />也可以组合成完整方案</h2></div>
+          <p>根据渠道结构、订单规模、退货比例和门店网络，选择更贴近当前业务阶段的能力组合。</p>
+        </header>
+        <div class="bundle-grid">
+          {BUNDLES.map(({ index, name, services, fit, result, scene, recommended }) => (
+            <article class:list={{ 'is-recommended': recommended }}>
+              <header><span>{index}</span><small>{recommended ? '推荐组合' : '组合方案'}</small></header>
+              <h3>{name}</h3>
+              <p>适合谁</p>
+              <ul>{fit.map((item) => <li>{item}</li>)}</ul>
+              <p>包含哪些服务</p>
+              <div class="bundle-services">{services.map((service, index) => <><strong>{service}</strong>{index < services.length - 1 && <i>＋</i>}</>)}</div>
+              <p>解决什么问题</p>
+              <strong class="bundle-result">{result}</strong>
+              <p>典型业务场景</p>
+              <span class="bundle-scene">{scene}</span>
+              <a href="/contact">获取组合方案 <span aria-hidden="true">→</span></a>
+            </article>
+          ))}
+        </div>
       </div>
+    </section>
+
+    <section class="section directory-section" aria-labelledby="directory-heading">
+      <div class="product-shell">
+        <header class="section-heading section-heading--split">
+          <div><p class="eyebrow">场景导航 / SERVICE DIRECTORY</p><h2 id="directory-heading">按业务场景找方案</h2></div>
+          <p>区域、渠道与商品处理方式不同，方案的仓点、流程和系统配置也会不同。选择最接近当前业务的入口继续了解。</p>
+        </header>
+        <div class="directory-grid">
+          {SERVICE_DIRECTORY.map(({ axis, desc, items }, index) => (
+            <article>
+              <span>{String(index + 1).padStart(2, '0')}</span>
+              <h3>{axis}</h3><p>{desc}</p>
+              <div>{items.map(([label, href]) => <a href={href}>{label}<i aria-hidden="true">↗</i></a>)}</div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <div id="product-faq" class="anchor-section product-faq-wrap">
+      <PageFAQ heading="选择产品服务前，品牌通常会问这些问题" tag="产品服务 FAQ" items={PRODUCT_FAQS} openFirst />
     </div>
-  </section>
 
-  <!-- 真实场景剧场 -->
-  <section class="scene-section" aria-labelledby="scene-heading">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <header class="section-intro section-intro--split">
+    <section class="product-cta" aria-labelledby="product-cta-heading">
+      <div class="product-shell product-cta__inner">
         <div>
-          <p class="section-kicker">OPERATION THEATRE / 03</p>
-          <h2 id="scene-heading">从仓库全景，到一个针脚的修复现场</h2>
+          <p class="eyebrow eyebrow--light">开始合作 / START A PROJECT</p>
+          <h2 id="product-cta-heading">不知道应该选择哪项服务？</h2>
+          <p>告诉我们商品品类、SKU数量、日均订单量、退货比例和销售渠道，新亦源将据此组合仓储、质检、数字化与物流服务。</p>
         </div>
-        <p class="section-lead">
-          页面中的能力最终要落到真实作业现场：货位是否清楚、质检动作是否规范、修复工位是否专业、数据能否回到同一套管理界面。
-        </p>
-      </header>
-
-      <div class="scene-theatre">
-        {
-          SCENE_FRAMES.map(({ src, alt, eyebrow, title, desc, className }) => (
-            <figure class={className}>
-              <img src={src} alt={alt} loading="lazy" />
-              <figcaption>
-                <span>{eyebrow}</span>
-                <strong>{title}</strong>
-                <p>{desc}</p>
-              </figcaption>
-            </figure>
-          ))
-        }
-      </div>
-    </div>
-  </section>
-
-  <!-- 数字控制塔 -->
-  <section id="logistics-cloud" class="tower-section scroll-mt-28" aria-labelledby="tower-heading">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <header class="section-intro section-intro--split">
-        <div>
-          <p class="section-kicker">DIGITAL CONTROL TOWER / 04</p>
-          <h2 id="tower-heading">让订单、库存、人员与物流处在同一张图上</h2>
-        </div>
-        <p class="section-lead">
-          OTD物流服务中台连接仓内WMS、物流LMS、承运商与运营监控。系统能力不单独悬空展示，而是直接服务每个作业节点。
-        </p>
-      </header>
-
-      <div class="tower-layout">
-        <figure class="device-shell">
-          <div class="device-shell__bar">
-            <span></span><span></span><span></span>
-            <small>XYYS · OPERATIONS DASHBOARD</small>
-          </div>
-          <div class="device-shell__screen">
-            <img
-              src="/images/services/operations-dashboard.webp"
-              alt="新亦源供应链数字运营控制塔界面"
-              loading="lazy"
-            />
-          </div>
-          <figcaption>
-            <span>实时状态汇集</span>
-            <p>多仓库存、订单节点、发货时效与物流轨迹按项目接入范围统一呈现。</p>
-          </figcaption>
-        </figure>
-
-        <div class="tower-modules" role="list" aria-label="六大数字系统模块">
-          {
-            DIGITAL_MODULES.map(({ index, name, desc }) => (
-              <div class="tower-module" role="listitem">
-                <span>{index}</span>
-                <strong>{name}</strong>
-                <p>{desc}</p>
-              </div>
-            ))
-          }
-        </div>
-      </div>
-
-      <div class="tower-protocol">
-        <p><span>承运商</span><strong>已对接顺丰、京东、EMS等11家主流承运商</strong></p>
-        <p><span>接口方式</span><strong>可采用奇门、EDI、API或项目定制接口</strong></p>
-        <p><span>系统费用</span><strong>不收系统使用费，实施与定制等费用按方案确认</strong></p>
-      </div>
-    </div>
-  </section>
-
-  <!-- 运到与服务目录 -->
-  <section
-    id="yundao-platform"
-    class="directory-section scroll-mt-28"
-    aria-labelledby="directory-heading"
-  >
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="yundao-band">
-        <div class="yundao-band__identity">
-          <span>产品三 · 商圈物流 O2O</span>
-          <h2>运到智能寄件平台</h2>
-          <p>把门店寄件、调拨、退仓与多承运商订单放进一个统一入口。</p>
-        </div>
-        <div class="yundao-band__visual">
-          <img src="/w-yundao.webp" alt="运到智能寄件平台界面" loading="lazy" />
-        </div>
-        <div class="yundao-band__facts">
-          <p><strong>11家</strong><span>主流承运商</span></p>
-          <p><strong>正向 + 逆向</strong><span>门店寄件场景</span></p>
-          <p><strong>实时</strong><span>轨迹与异常工单</span></p>
-        </div>
-      </div>
-
-      <header class="section-intro section-intro--split directory-heading">
-        <div>
-          <p class="section-kicker">SERVICE DIRECTORY / 05</p>
-          <h2 id="directory-heading">按区域、渠道与品类进入服务目录</h2>
-        </div>
-        <p class="section-lead">
-          同一套能力会因库存位置、销售渠道与商品属性而采用不同编排方式，选择最接近当前业务的入口即可。
-        </p>
-      </header>
-
-      <dl class="service-directory">
-        {
-          SERVICE_DIRECTORY.map(({ axis, en, items }) => (
-            <div class="directory-row">
-              <dt>
-                <small>{en}</small>
-                <strong>{axis}</strong>
-              </dt>
-              <dd>
-                {items.map(({ label, href }) => (
-                  <a href={href}>
-                    <span>{label}</span>
-                    <span aria-hidden="true">↗</span>
-                  </a>
-                ))}
-              </dd>
-            </div>
-          ))
-        }
-      </dl>
-    </div>
-  </section>
-
-  <!-- FAQ -->
-  <PageFAQ
-    heading="产品服务常见问题"
-    layout="stacked"
-    items={[
-      {
-        q: '新亦源鞋服云仓的最小起储量是多少？',
-        a: '新亦源没有固定最小起储量门槛，以实际货量、SKU复杂度和仓点匹配情况为准。中小品牌可从单品类、单仓点开始合作，随业务增长逐步扩展。具体方案建议联系商务团队评估。',
-      },
-      {
-        q: '系统如何与品牌现有ERP/OMS对接？',
-        a: '新亦源OTD中台及物流网关可采用奇门、EDI、API或客户定制接口，已对接百胜E3、聚水潭、伯俊、吉客云、丽晶、浪潮、恒康等主流ERP。具体支持范围、授权条件、字段和联调周期由双方确认；不收系统使用费，实施、接口联调、定制开发和其他服务费用按方案确认。',
-      },
-      {
-        q: '大促备战期间，新亦源如何提前锁定峰值产能？',
-        a: '新亦源的大促产能锁定分三阶段执行：大促前21天提交货量预测模型，与品牌对齐日发货量目标；大促前14天完成仓内货位扩容、波次排班计划和弹性人力到岗安排；大促前72小时完成最后压测，确认系统稳定和全链路时效。大促期间的订单处理、库存准确和异常处置指标不设置统一口径，由双方根据预测货量和资源方案在项目SLA中确认。',
-      },
-      {
-        q: '鞋服WMS如何防止高SKU货品发错码号或颜色？',
-        a: `新亦源通过三重流程管理款色码：入库与上架环节以RFID或条码绑定SKU；拣货环节由电子标签引导，并在识别异常时停止流转；复核台在发货前逐包扫码并比对订单清单。当前公开的发货准确率为${CLAIM_TEXT.shippingAccuracy}。`,
-      },
-      {
-        q: '新亦源的物流云如何帮品牌优化运费支出？',
-        a: 'OTD中台可按件重、目的地、服务要求和品牌规则比较11家主流承运商方案，并汇总订单、轨迹和费用数据。实际节省幅度受线路、货物、承运商报价和原有合同影响；部分线路费用最高可节省50%，具体以实际线路和报价为准。',
-      },
-      {
-        q: '入库上架流程是怎样的？新货从收货到可发出需要多久？',
-        a: '标准流程包括承运商卸货、扫码收货、全检或按比例抽检、上架定位和库存同步。实际完成时间受到仓时间、货量、SKU数据、质检比例和异常商品数量影响，品牌与仓方应在入仓计划中确认验收标准和上架节点。',
-      },
-      {
-        q: '大货入仓前，品牌方需要做哪些准备工作？',
-        a: '新货入仓前建议完成四步准备：①SKU数据清单——提供完整的款色码规格表（Excel或系统导出），包含条码与实物的对应关系；②包材与标签规范——确认是否需要新亦源代贴条码、换挂牌或加包装；③入仓通知单（ASN）——提前24小时在系统提交到货清单，仓方据此安排卸货和验货人力；④质检标准确认——新品入仓时明确验货比例（全检或按比例抽检）和异常处理授权。资料齐备后，仓方会结合到仓计划、货量和质检要求确认实际上架节点；正向订单按18:00前截单、当日24:00前发出的口径执行。',
-      },
-      {
-        q: '新亦源的仓储和服务费用是如何计算的？',
-        a: '费用通常包含仓储、入出库操作、质检包装、物流等项目；不收系统使用费，实施、接口联调、定制开发和其他服务费用按方案确认。具体计费方式需结合货物特性、SKU、库存周期、操作量和增值服务范围确认，可联系商务团队获取项目报价。',
-      },
-    ]}
-  />
-
-  <!-- CTA -->
-  <section class="product-cta" aria-labelledby="product-cta-heading">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="product-cta__inner">
-        <div class="product-cta__number" aria-hidden="true">06</div>
-        <div class="product-cta__copy">
-          <p>START FROM YOUR OPERATION</p>
-          <h2 id="product-cta-heading">把您的货品、渠道与订单节奏告诉我们</h2>
-          <span>我们会从仓点、流程、系统、质检与物流五个维度，组合成适合当前项目的方案。</span>
+        <div class="product-cta__fields" aria-label="方案评估所需信息">
+          {['商品品类', 'SKU数量', '日均订单量', '退货比例', '销售渠道'].map((item, index) => <span><i>{String(index + 1).padStart(2, '0')}</i>{item}</span>)}
         </div>
         <div class="product-cta__actions">
-          <a href="/contact" class="product-cta__primary">
-            获取项目方案
-            <span aria-hidden="true">↗</span>
-          </a>
-          <a href="/cases" class="product-cta__secondary">查看合作案例</a>
+          <a href="/contact" class="button button--orange">获取适配方案 <span aria-hidden="true">→</span></a>
+          <a href="/contact" class="button button--ghost-light">预约仓库考察</a>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
+  </div>
+
+  <dialog class="image-lightbox" aria-label="系统界面大图预览">
+    <button type="button" class="image-lightbox__close" aria-label="关闭大图">×</button>
+    <img src="" alt="" />
+  </dialog>
 </Layout>
 
 <style>
-  .section-intro {
-    max-width: 52rem;
-    margin-bottom: 3rem;
-  }
-
-  .section-intro--split {
-    max-width: none;
-    display: grid;
-    grid-template-columns: minmax(0, 1.05fr) minmax(19rem, 0.7fr);
-    gap: 4rem;
-    align-items: end;
-  }
-
-  .section-kicker {
-    margin-bottom: 0.75rem;
-    color: #e85d26;
-    font-size: 0.68rem;
-    line-height: 1;
-    font-weight: 800;
-    letter-spacing: 0.28em;
-  }
-
-  .section-intro h2 {
-    color: #10284b;
-    font-size: clamp(2rem, 4vw, 3.7rem);
-    line-height: 1.12;
-    font-weight: 900;
-    letter-spacing: -0.035em;
-  }
-
-  .section-lead {
-    color: #60708a;
-    font-size: 0.95rem;
-    line-height: 1.9;
-  }
-
-  .orchestration-section {
-    position: relative;
-    overflow: hidden;
-    padding: 6rem 0;
-    background:
-      linear-gradient(rgba(65, 111, 183, 0.06) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(65, 111, 183, 0.06) 1px, transparent 1px), #f3f7ff;
-    background-size: 44px 44px;
-  }
-
-  .orchestration-section::before {
-    position: absolute;
-    top: 5rem;
-    right: -7rem;
-    width: 22rem;
-    height: 22rem;
-    border: 1px solid rgba(63, 105, 170, 0.12);
-    border-radius: 999px;
-    content: '';
-  }
-
-  .hub-register {
-    position: relative;
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    border-top: 1px solid #ccd8ea;
-    border-bottom: 1px solid #ccd8ea;
-    background: rgba(255, 255, 255, 0.72);
-  }
-
-  .hub-register__item {
-    padding: 1.45rem 1.6rem;
-  }
-
-  .hub-register__item + .hub-register__item {
-    border-left: 1px solid #ccd8ea;
-  }
-
-  .hub-register__head {
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-  }
-
-  .hub-register__head span {
-    color: #e85d26;
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-    font-size: 0.72rem;
-    font-weight: 800;
-  }
-
-  .hub-register__head strong {
-    color: #10284b;
-    font-size: 1.05rem;
-    font-weight: 850;
-  }
-
-  .hub-register__item p {
-    margin-top: 0.7rem;
-    color: #2e5d9f;
-    font-size: 0.78rem;
-    font-weight: 750;
-  }
-
-  .hub-register__item small {
-    display: block;
-    margin-top: 0.25rem;
-    color: #7b899d;
-    font-size: 0.72rem;
-  }
-
-  .orchestration-console {
-    position: relative;
-    margin-top: 1.25rem;
-    padding: 1.25rem 2rem 1.5rem;
-    border: 1px solid #d6e0ef;
-    background: #fff;
-    box-shadow: 0 24px 55px rgba(34, 65, 112, 0.08);
-  }
-
-  .console-meta {
-    display: flex;
-    justify-content: space-between;
-    gap: 2rem;
-    padding-bottom: 1.1rem;
-    border-bottom: 1px solid #e5ebf4;
-    color: #8491a4;
-    font-size: 0.65rem;
-    font-weight: 700;
-    letter-spacing: 0.13em;
-  }
-
-  .orchestration-rail {
-    position: relative;
-    display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    padding: 2.75rem 0 2.25rem;
-  }
-
-  .orchestration-rail::before {
-    position: absolute;
-    top: 4.15rem;
-    right: 10%;
-    left: 10%;
-    height: 2px;
-    background: linear-gradient(90deg, #3271c7 0%, #4a8ee6 50%, #e85d26 100%);
-    content: '';
-  }
-
-  .rail-stop {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-width: 0;
-    text-align: center;
-  }
-
-  .rail-stop__index {
-    margin-bottom: 0.55rem;
-    color: #8c9aae;
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-    font-size: 0.66rem;
-    font-weight: 800;
-  }
-
-  .rail-stop__node {
-    width: 1rem;
-    height: 1rem;
-    margin-bottom: 0.8rem;
-    border: 4px solid #fff;
-    border-radius: 999px;
-    background: #3271c7;
-    box-shadow: 0 0 0 1px #3271c7;
-  }
-
-  .rail-stop:last-child .rail-stop__node {
-    background: #e85d26;
-    box-shadow: 0 0 0 1px #e85d26;
-  }
-
-  .rail-stop strong {
-    color: #10284b;
-    font-size: 1.05rem;
-    font-weight: 850;
-  }
-
-  .rail-stop small {
-    margin-top: 0.35rem;
-    padding: 0 0.5rem;
-    color: #7b899d;
-    font-size: 0.7rem;
-    line-height: 1.5;
-  }
-
-  .console-foot {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    border-top: 1px solid #e5ebf4;
-  }
-
-  .console-foot p {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-    padding: 1rem 1.25rem 0;
-  }
-
-  .console-foot p + p {
-    border-left: 1px solid #e5ebf4;
-  }
-
-  .console-foot span {
-    color: #8c98a9;
-    font-size: 0.65rem;
-  }
-
-  .console-foot strong {
-    color: #16345e;
-    font-size: 0.82rem;
-    font-weight: 800;
-  }
-
-  .chain-section {
-    padding: 6rem 0;
-    background: #fff;
-  }
-
-  .flow-lanes {
-    border-top: 1px solid #dfe5ee;
-  }
-
-  .flow-lane {
-    display: grid;
-    grid-template-columns: 15rem minmax(0, 1fr);
-    min-height: 12rem;
-    border-bottom: 1px solid #dfe5ee;
-  }
-
-  .flow-lane > header {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 1.8rem 1.6rem 1.8rem 0;
-    border-right: 1px solid #dfe5ee;
-  }
-
-  .flow-lane > header > div {
-    display: flex;
-    align-items: center;
-    gap: 0.85rem;
-  }
-
-  .flow-lane__index {
-    display: inline-flex;
-    width: 2.1rem;
-    height: 2.1rem;
-    align-items: center;
-    justify-content: center;
-    border-radius: 999px;
-    background: #e85d26;
-    color: #fff;
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-    font-size: 0.75rem;
-    font-weight: 900;
-  }
-
-  .flow-lane--reverse .flow-lane__index {
-    background: #2f6fc4;
-  }
-
-  .flow-lane h3 {
-    color: #10284b;
-    font-size: 1.25rem;
-    font-weight: 900;
-  }
-
-  .flow-lane > header > p {
-    color: #9aa5b5;
-    font-size: 0.62rem;
-    font-weight: 800;
-    letter-spacing: 0.14em;
-  }
-
-  .flow-lane__scroll {
-    min-width: 0;
-    overflow-x: auto;
-  }
-
-  .flow-lane ol {
-    display: grid;
-    grid-template-columns: repeat(6, minmax(8.5rem, 1fr));
-    min-width: 52rem;
-    height: 100%;
-  }
-
-  .flow-lane li {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 2rem 1rem 2rem 1.4rem;
-  }
-
-  .flow-lane li + li {
-    border-left: 1px solid #edf0f5;
-  }
-
-  .flow-lane li:not(:last-child)::after {
-    position: absolute;
-    top: 50%;
-    right: -0.45rem;
-    z-index: 1;
-    width: 0.9rem;
-    height: 0.9rem;
-    border-top: 1px solid #e85d26;
-    border-right: 1px solid #e85d26;
-    background: #fff;
-    content: '';
-    transform: translateY(-50%) rotate(45deg);
-  }
-
-  .flow-lane--reverse li:not(:last-child)::after {
-    border-color: #2f6fc4;
-  }
-
-  .flow-lane li span {
-    color: #e85d26;
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-    font-size: 0.64rem;
-    font-weight: 900;
-  }
-
-  .flow-lane--reverse li span {
-    color: #2f6fc4;
-  }
-
-  .flow-lane li strong {
-    margin-top: 0.55rem;
-    color: #243c5d;
-    font-size: 0.78rem;
-    line-height: 1.5;
-  }
-
-  .chain-note {
-    display: flex;
-    gap: 1.2rem;
-    align-items: center;
-    margin-left: 15rem;
-    padding: 1.25rem 1.5rem;
-    background: #f6f8fb;
-  }
-
-  .chain-note span {
-    flex: 0 0 auto;
-    color: #e85d26;
-    font-size: 0.68rem;
-    font-weight: 800;
-    letter-spacing: 0.12em;
-  }
-
-  .chain-note p {
-    color: #67758a;
-    font-size: 0.8rem;
-  }
-
-  .scene-section {
-    padding: 6rem 0;
-    background: #fff;
-  }
-
-  .scene-theatre {
-    display: grid;
-    grid-template-columns: repeat(12, minmax(0, 1fr));
-    grid-template-rows: 22rem 19rem;
-    gap: 1rem;
-  }
-
-  .scene-frame {
-    position: relative;
-    overflow: hidden;
-    margin: 0;
-    background: #e9eef5;
-  }
-
-  .scene-frame--wide {
-    grid-column: 1 / span 8;
-    grid-row: 1;
-  }
-
-  .scene-frame--tall {
-    grid-column: 9 / span 4;
-    grid-row: 1 / span 2;
-  }
-
-  .scene-frame--half {
-    grid-column: 1 / span 5;
-    grid-row: 2;
-  }
-
-  .scene-frame--map {
-    grid-column: 6 / span 3;
-    grid-row: 2;
-  }
-
-  .scene-frame img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 600ms ease;
-  }
-
-  .scene-frame--map img {
-    object-fit: contain;
-    padding: 1.5rem;
-    background: #edf4ff;
-  }
-
-  .scene-frame:hover img {
-    transform: scale(1.025);
-  }
-
-  .scene-frame figcaption {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    padding: 2.7rem 1.25rem 1.2rem;
-    background: linear-gradient(transparent, rgba(8, 24, 48, 0.88));
-    color: #fff;
-  }
-
-  .scene-frame--map figcaption {
-    background: linear-gradient(transparent, rgba(20, 54, 99, 0.9));
-  }
-
-  .scene-frame figcaption span {
-    display: block;
-    margin-bottom: 0.4rem;
-    color: #ff8b56;
-    font-size: 0.6rem;
-    font-weight: 800;
-    letter-spacing: 0.13em;
-  }
-
-  .scene-frame figcaption strong {
-    display: block;
-    font-size: 1rem;
-    font-weight: 850;
-  }
-
-  .scene-frame figcaption p {
-    margin-top: 0.3rem;
-    color: rgba(255, 255, 255, 0.72);
-    font-size: 0.7rem;
-    line-height: 1.5;
-  }
-
-  .tower-section {
-    padding: 6rem 0;
-    background:
-      radial-gradient(circle at 84% 20%, rgba(54, 112, 194, 0.1), transparent 30%), #eff5ff;
-  }
-
-  .tower-layout {
-    display: grid;
-    grid-template-columns: minmax(0, 1.35fr) minmax(19rem, 0.65fr);
-    gap: 2rem;
-    align-items: start;
-  }
-
-  .device-shell {
-    margin: 0;
-    padding: 0.65rem;
-    border: 1px solid #263c5e;
-    border-radius: 1.25rem;
-    background: #0e1e37;
-    box-shadow: 0 2rem 4rem rgba(23, 55, 100, 0.2);
-  }
-
-  .device-shell__bar {
-    display: flex;
-    gap: 0.38rem;
-    align-items: center;
-    height: 2rem;
-    padding: 0 0.45rem;
-  }
-
-  .device-shell__bar > span {
-    width: 0.45rem;
-    height: 0.45rem;
-    border-radius: 999px;
-    background: #47607f;
-  }
-
-  .device-shell__bar > span:first-child {
-    background: #e85d26;
-  }
-
-  .device-shell__bar small {
-    margin-left: auto;
-    color: #7f92ae;
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-    font-size: 0.52rem;
-    letter-spacing: 0.12em;
-  }
-
-  .device-shell__screen {
-    overflow: hidden;
-    aspect-ratio: 16 / 9;
-    border: 1px solid #253b5c;
-    border-radius: 0.65rem;
-    background: #09162a;
-  }
-
-  .device-shell__screen img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: top center;
-  }
-
-  .device-shell figcaption {
-    display: flex;
-    gap: 1.25rem;
-    align-items: baseline;
-    padding: 1rem 0.7rem 0.65rem;
-  }
-
-  .device-shell figcaption span {
-    flex: 0 0 auto;
-    color: #ff8650;
-    font-size: 0.68rem;
-    font-weight: 800;
-  }
-
-  .device-shell figcaption p {
-    color: #8293ac;
-    font-size: 0.7rem;
-    line-height: 1.6;
-  }
-
-  .tower-modules {
-    border-top: 1px solid #c8d5e8;
-  }
-
-  .tower-module {
-    display: grid;
-    grid-template-columns: 2rem 8.5rem minmax(0, 1fr);
-    gap: 0.75rem;
-    padding: 1rem 0;
-    border-bottom: 1px solid #c8d5e8;
-  }
-
-  .tower-module > span {
-    color: #e85d26;
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-    font-size: 0.66rem;
-    font-weight: 900;
-  }
-
-  .tower-module strong {
-    color: #16345e;
-    font-size: 0.8rem;
-    font-weight: 850;
-  }
-
-  .tower-module p {
-    color: #6d7d94;
-    font-size: 0.72rem;
-    line-height: 1.55;
-  }
-
-  .tower-protocol {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    margin-top: 2.5rem;
-    border-top: 1px solid #c8d5e8;
-    border-bottom: 1px solid #c8d5e8;
-  }
-
-  .tower-protocol p {
-    display: flex;
-    flex-direction: column;
-    gap: 0.35rem;
-    padding: 1.15rem 1.5rem;
-  }
-
-  .tower-protocol p + p {
-    border-left: 1px solid #c8d5e8;
-  }
-
-  .tower-protocol span {
-    color: #8493a8;
-    font-size: 0.64rem;
-  }
-
-  .tower-protocol strong {
-    color: #1b3b67;
-    font-size: 0.75rem;
-    font-weight: 750;
-  }
-
-  .directory-section {
-    padding: 6rem 0;
-    background: #fff;
-  }
-
-  .yundao-band {
-    display: grid;
-    grid-template-columns: minmax(17rem, 0.8fr) minmax(20rem, 1fr) minmax(14rem, 0.55fr);
-    align-items: stretch;
-    border-top: 1px solid #cad4e2;
-    border-bottom: 1px solid #cad4e2;
-  }
-
-  .yundao-band__identity {
-    padding: 2rem 2rem 2rem 0;
-  }
-
-  .yundao-band__identity > span {
-    color: #e85d26;
-    font-size: 0.64rem;
-    font-weight: 800;
-    letter-spacing: 0.14em;
-  }
-
-  .yundao-band__identity h2 {
-    margin-top: 0.7rem;
-    color: #10284b;
-    font-size: clamp(1.7rem, 3vw, 2.5rem);
-    line-height: 1.15;
-    font-weight: 900;
-  }
-
-  .yundao-band__identity p {
-    margin-top: 1rem;
-    color: #6b7b91;
-    font-size: 0.8rem;
-    line-height: 1.75;
-  }
-
-  .yundao-band__visual {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 15rem;
-    padding: 1.5rem;
-    border-right: 1px solid #dce3ec;
-    border-left: 1px solid #dce3ec;
-    background: #f4f7fb;
-  }
-
-  .yundao-band__visual img {
-    width: 100%;
-    max-height: 13rem;
-    object-fit: contain;
-  }
-
-  .yundao-band__facts {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding-left: 1.5rem;
-  }
-
-  .yundao-band__facts p {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 1rem;
-    padding: 0.85rem 0;
-    border-bottom: 1px solid #e5eaf1;
-  }
-
-  .yundao-band__facts p:last-child {
-    border-bottom: 0;
-  }
-
-  .yundao-band__facts strong {
-    color: #e85d26;
-    font-size: 1rem;
-    font-weight: 900;
-  }
-
-  .yundao-band__facts span {
-    color: #7c899b;
-    font-size: 0.7rem;
-  }
-
-  .directory-heading {
-    margin-top: 6rem;
-  }
-
-  .service-directory {
-    border-top: 1px solid #cfd8e4;
-  }
-
-  .directory-row {
-    display: grid;
-    grid-template-columns: 13rem minmax(0, 1fr);
-    min-height: 7.5rem;
-    border-bottom: 1px solid #dce3ec;
-  }
-
-  .directory-row dt {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding-right: 2rem;
-    border-right: 1px solid #dce3ec;
-  }
-
-  .directory-row dt small {
-    color: #e85d26;
-    font-size: 0.58rem;
-    font-weight: 800;
-    letter-spacing: 0.14em;
-  }
-
-  .directory-row dt strong {
-    margin-top: 0.4rem;
-    color: #15345e;
-    font-size: 1rem;
-    font-weight: 900;
-  }
-
-  .directory-row dd {
-    display: flex;
-    align-items: stretch;
-    min-width: 0;
-    padding-left: 1rem;
-  }
-
-  .directory-row dd a {
-    display: flex;
-    flex: 1 1 0;
-    gap: 1rem;
-    align-items: center;
-    justify-content: space-between;
-    min-width: 0;
-    padding: 1.5rem 1rem;
-    color: #4b5f79;
-    font-size: 0.78rem;
-    font-weight: 750;
-    transition:
-      color 180ms ease,
-      background 180ms ease;
-  }
-
-  .directory-row dd a + a {
-    border-left: 1px solid #edf0f4;
-  }
-
-  .directory-row dd a:hover {
-    background: #f6f8fb;
-    color: #e85d26;
-  }
-
-  .directory-row dd a span:last-child {
-    color: #e85d26;
-  }
-
-  .product-cta {
-    padding: 4.5rem 0;
-    background: linear-gradient(135deg, rgba(72, 125, 198, 0.09), transparent 58%), #edf4ff;
-  }
-
-  .product-cta__inner {
-    position: relative;
-    display: grid;
-    grid-template-columns: 6rem minmax(0, 1fr) auto;
-    gap: 2.5rem;
-    align-items: center;
-    padding: 3rem 0;
-    border-top: 1px solid #bfcde0;
-    border-bottom: 1px solid #bfcde0;
-  }
-
-  .product-cta__number {
-    color: rgba(36, 85, 151, 0.15);
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-    font-size: 4.5rem;
-    line-height: 1;
-    font-weight: 900;
-  }
-
-  .product-cta__copy > p {
-    color: #e85d26;
-    font-size: 0.62rem;
-    font-weight: 900;
-    letter-spacing: 0.17em;
-  }
-
-  .product-cta__copy h2 {
-    margin-top: 0.65rem;
-    color: #10284b;
-    font-size: clamp(1.75rem, 3vw, 2.7rem);
-    line-height: 1.2;
-    font-weight: 900;
-  }
-
-  .product-cta__copy > span {
-    display: block;
-    margin-top: 0.75rem;
-    color: #6c7c91;
-    font-size: 0.82rem;
-    line-height: 1.65;
-  }
-
-  .product-cta__actions {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    min-width: 12rem;
-  }
-
-  .product-cta__actions a {
-    display: inline-flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.9rem 1.1rem;
-    font-size: 0.78rem;
-    font-weight: 850;
-    transition:
-      transform 180ms ease,
-      background 180ms ease;
-  }
-
-  .product-cta__actions a:hover {
-    transform: translateX(0.2rem);
-  }
-
-  .product-cta__primary {
-    background: #e85d26;
-    color: #fff;
-  }
-
-  .product-cta__primary:hover {
-    background: #d94f1c;
-  }
-
-  .product-cta__secondary {
-    border: 1px solid #aebed3;
-    color: #234974;
-  }
-
-  @media (max-width: 1023px) {
-    .section-intro--split {
-      grid-template-columns: 1fr;
-      gap: 1.5rem;
-      align-items: start;
-    }
-
-    .flow-lane {
-      grid-template-columns: 12rem minmax(0, 1fr);
-    }
-
-    .chain-note {
-      margin-left: 12rem;
-    }
-
-    .scene-theatre {
-      grid-template-rows: 19rem 17rem;
-    }
-
-    .tower-layout {
-      grid-template-columns: 1fr;
-    }
-
-    .tower-modules {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .tower-module:nth-child(odd) {
-      padding-right: 1rem;
-      border-right: 1px solid #c8d5e8;
-    }
-
-    .tower-module:nth-child(even) {
-      padding-left: 1rem;
-    }
-
-    .yundao-band {
-      grid-template-columns: minmax(15rem, 0.7fr) minmax(20rem, 1fr);
-    }
-
-    .yundao-band__facts {
-      grid-column: 1 / -1;
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      padding: 0;
-      border-top: 1px solid #dce3ec;
-    }
-
-    .yundao-band__facts p {
-      padding: 1rem;
-      border-bottom: 0;
-    }
-
-    .yundao-band__facts p + p {
-      border-left: 1px solid #dce3ec;
-    }
-
-    .directory-row {
-      grid-template-columns: 9rem minmax(0, 1fr);
-    }
-
-    .product-cta__inner {
-      grid-template-columns: 4rem minmax(0, 1fr);
-    }
-
-    .product-cta__number {
-      font-size: 3.5rem;
-    }
-
-    .product-cta__actions {
-      grid-column: 2;
-      flex-direction: row;
-      min-width: 0;
-    }
-
-    .product-cta__actions a {
-      min-width: 10rem;
-    }
-  }
-
-  @media (max-width: 767px) {
-    .orchestration-section,
-    .chain-section,
-    .scene-section,
-    .tower-section,
-    .directory-section {
-      padding: 4.5rem 0;
-    }
-
-    .section-intro {
-      margin-bottom: 2.25rem;
-    }
-
-    .section-intro h2 {
-      font-size: 2.15rem;
-    }
-
-    .hub-register {
-      grid-template-columns: 1fr;
-    }
-
-    .hub-register__item {
-      padding: 1.15rem 1.1rem;
-    }
-
-    .hub-register__item + .hub-register__item {
-      border-top: 1px solid #ccd8ea;
-      border-left: 0;
-    }
-
-    .orchestration-console {
-      overflow: hidden;
-      padding: 1rem 0;
-    }
-
-    .console-meta {
-      padding: 0 1rem 1rem;
-    }
-
-    .console-meta span:last-child {
-      display: none;
-    }
-
-    .orchestration-rail {
-      grid-template-columns: repeat(5, 7.5rem);
-      overflow-x: auto;
-      padding: 2.25rem 1rem 1.8rem;
-    }
-
-    .orchestration-rail::before {
-      top: 3.65rem;
-      right: auto;
-      left: 4.75rem;
-      width: 30rem;
-    }
-
-    .console-foot {
-      grid-template-columns: 1fr;
-      padding: 0 1rem;
-    }
-
-    .console-foot p {
-      padding: 0.85rem 0;
-    }
-
-    .console-foot p + p {
-      border-top: 1px solid #e5ebf4;
-      border-left: 0;
-    }
-
-    .flow-lane {
-      grid-template-columns: 1fr;
-    }
-
-    .flow-lane > header {
-      min-height: 7rem;
-      padding: 1.3rem 0;
-      border-right: 0;
-      border-bottom: 1px solid #e6ebf2;
-    }
-
-    .flow-lane ol {
-      grid-template-columns: repeat(6, 8.7rem);
-    }
-
-    .chain-note {
-      margin-left: 0;
-    }
-
-    .scene-theatre {
-      grid-template-columns: 1fr;
-      grid-template-rows: none;
-    }
-
-    .scene-frame--wide,
-    .scene-frame--tall,
-    .scene-frame--half,
-    .scene-frame--map {
-      grid-column: auto;
-      grid-row: auto;
-      height: 18rem;
-    }
-
-    .scene-frame--tall {
-      height: 23rem;
-    }
-
-    .tower-modules {
-      grid-template-columns: 1fr;
-    }
-
-    .tower-module,
-    .tower-module:nth-child(odd),
-    .tower-module:nth-child(even) {
-      grid-template-columns: 2rem 7rem minmax(0, 1fr);
-      padding: 1rem 0;
-      border-right: 0;
-    }
-
-    .tower-protocol {
-      grid-template-columns: 1fr;
-    }
-
-    .tower-protocol p {
-      padding: 1rem 0;
-    }
-
-    .tower-protocol p + p {
-      border-top: 1px solid #c8d5e8;
-      border-left: 0;
-    }
-
-    .yundao-band {
-      grid-template-columns: 1fr;
-    }
-
-    .yundao-band__identity {
-      padding: 1.5rem 0;
-    }
-
-    .yundao-band__visual {
-      border: 0;
-      border-top: 1px solid #dce3ec;
-      border-bottom: 1px solid #dce3ec;
-    }
-
-    .yundao-band__facts {
-      grid-template-columns: 1fr;
-    }
-
-    .yundao-band__facts p {
-      padding: 0.9rem 0;
-    }
-
-    .yundao-band__facts p + p {
-      border-top: 1px solid #dce3ec;
-      border-left: 0;
-    }
-
-    .directory-heading {
-      margin-top: 4.5rem;
-    }
-
-    .directory-row {
-      grid-template-columns: 1fr;
-      padding: 1.25rem 0;
-    }
-
-    .directory-row dt {
-      padding: 0 0 0.9rem;
-      border-right: 0;
-    }
-
-    .directory-row dd {
-      flex-direction: column;
-      padding-left: 0;
-    }
-
-    .directory-row dd a {
-      padding: 0.85rem 0;
-      border-top: 1px solid #edf0f4;
-    }
-
-    .directory-row dd a + a {
-      border-left: 0;
-    }
-
-    .product-cta {
-      padding: 3.5rem 0;
-    }
-
-    .product-cta__inner {
-      grid-template-columns: 1fr;
-      gap: 1.5rem;
-      padding: 2.25rem 0;
-    }
-
-    .product-cta__number {
-      display: none;
-    }
-
-    .product-cta__actions {
-      grid-column: auto;
-      flex-direction: column;
-    }
-
-    .product-cta__actions a {
-      min-width: 0;
-    }
+  :global(html) { scroll-behavior: smooth; }
+  .product-page { color: #11294c; background: #fff; }
+  .product-shell { width: min(1180px, calc(100% - 2rem)); margin: 0 auto; }
+  .anchor-section { scroll-margin-top: 8.5rem; }
+  .section { padding: 7rem 0; }
+  .section--soft { background: #f4f7fb; }
+  .eyebrow { margin: 0 0 1rem; color: #2767db; font-size: .7rem; line-height: 1; font-weight: 900; letter-spacing: .18em; text-transform: uppercase; }
+  .eyebrow--light { color: #79b7ff; }
+  .button { display: inline-flex; align-items: center; justify-content: center; gap: .75rem; min-height: 3.25rem; padding: 0 1.5rem; border: 1px solid transparent; border-radius: .75rem; font-size: .9rem; font-weight: 850; text-decoration: none; transition: transform .2s ease, background .2s ease, border-color .2s ease; }
+  .button:hover { transform: translateY(-2px); }
+  .button--orange { color: #fff; background: #f06423; }
+  .button--orange:hover { background: #dc5017; }
+  .button--ghost-light { color: #fff; border-color: rgba(255,255,255,.36); background: rgba(255,255,255,.04); }
+  .button--ghost-light:hover { border-color: rgba(255,255,255,.65); background: rgba(255,255,255,.08); }
+  .text-link { display: inline-flex; align-items: center; gap: .6rem; margin-top: 2.25rem; padding-bottom: .35rem; border-bottom: 1px solid #83aef2; color: #1761d4; font-size: .9rem; font-weight: 850; text-decoration: none; }
+  .text-link--light { color: #fff; border-color: rgba(255,255,255,.45); }
+
+  .product-hero { position: relative; overflow: hidden; padding: 10rem 0 6rem; color: #fff; background: #0b1e3a; }
+  .product-hero::before { position: absolute; z-index: 1; inset: 0; content: ''; background: linear-gradient(rgba(110,153,214,.07) 1px, transparent 1px), linear-gradient(90deg, rgba(110,153,214,.07) 1px, transparent 1px); background-size: 48px 48px; mask-image: linear-gradient(90deg,#000 12%,transparent 62%); }
+  .product-hero__background { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 48%; }
+  .product-hero__overlay { position: absolute; inset: 0; background: linear-gradient(90deg,rgba(6,20,43,.96) 0%,rgba(6,20,43,.88) 38%,rgba(6,20,43,.48) 68%,rgba(6,20,43,.18) 100%), linear-gradient(0deg,rgba(6,20,43,.38),transparent 50%); }
+  .product-hero__layout { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, 1fr) 25rem; gap: 3rem; align-items: center; }
+  .product-hero h1 { margin: 0; max-width: 48rem; color: #fff; font-size: clamp(2.7rem, 4.2vw, 3.75rem); line-height: 1.1; font-weight: 900; letter-spacing: -.045em; }
+  .product-hero h1 span { display: block; white-space: nowrap; }
+  .product-hero__lead { max-width: 37rem; margin: 1.75rem 0 0; color: #c1cfe3; font-size: 1.05rem; line-height: 1.9; }
+  .hero-actions { display: flex; flex-wrap: wrap; gap: .8rem; margin-top: 2rem; }
+  .hero-proof { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); max-width: 38rem; margin: 3rem 0 0; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,.15); }
+  .hero-proof div + div { padding-left: 1.5rem; border-left: 1px solid rgba(255,255,255,.15); }
+  .hero-proof dt { color: #fff; font-size: 1.5rem; line-height: 1; font-weight: 900; }
+  .hero-proof dd { margin: .55rem 0 0; color: #8fa3bf; font-size: .72rem; }
+  .lifecycle-map { position: relative; padding: 1rem; border: 1px solid rgba(255,255,255,.74); border-radius: 1.25rem; background: rgba(255,255,255,.92); box-shadow: 0 28px 70px rgba(0,18,45,.22); backdrop-filter: blur(14px); }
+  .lifecycle-map__core { display: flex; justify-content: space-between; gap: 1rem; padding: 1rem 1.15rem 1.2rem; border-bottom: 1px solid #dce5f1; }
+  .lifecycle-map__core span { color: #2466cb; font-size: .68rem; font-weight: 800; letter-spacing: .14em; }
+  .lifecycle-map__core strong { color: #10284b; font-size: .78rem; }
+  .lifecycle-map ol { margin: 0; padding: 0; list-style: none; }
+  .lifecycle-map li + li { border-top: 1px solid #dce5f1; }
+  .lifecycle-map a { position: relative; display: grid; grid-template-columns: 2rem 1fr auto; gap: 1rem; align-items: center; padding: 1.05rem 1.1rem; color: inherit; text-decoration: none; transition: background .25s ease; }
+  .lifecycle-map a::before { position: absolute; top: .65rem; bottom: .65rem; left: 0; width: 2px; content: ''; border-radius: 2px; background: #2466cb; transform: scaleY(0); transition: transform .25s ease; }
+  .lifecycle-map a:hover, .lifecycle-map a.is-active { background: #f1f6fd; }
+  .lifecycle-map a:hover::before, .lifecycle-map a.is-active::before { transform: scaleY(1); }
+  .lifecycle-map a > span { color: #f47732; font: 800 .68rem ui-monospace, monospace; }
+  .lifecycle-map a div { display: flex; flex-direction: column; gap: .32rem; }
+  .lifecycle-map a strong { color: #10284b; font-size: .92rem; }
+  .lifecycle-map a small { color: #677a93; font-size: .68rem; line-height: 1.45; }
+  .lifecycle-map a i { color: #7891b2; font-style: normal; transition: transform .25s ease; }
+  .lifecycle-map a:hover i, .lifecycle-map a.is-active i { transform: translateX(4px); }
+
+  .product-local-nav { position: sticky; top: 5.5rem; z-index: 35; width: max-content; max-width: calc(100% - 2rem); height: 0; margin: 0 auto; pointer-events: none; opacity: 1; transform: translateY(.75rem); transition: opacity .25s ease, transform .25s ease; }
+  .product-local-nav.is-hidden { pointer-events: none; opacity: 0; transform: translateY(-.75rem); }
+  .product-local-nav__inner { display: flex; justify-content: center; width: max-content; max-width: 100%; padding: .28rem; overflow-x: auto; border: 1px solid rgba(184,200,222,.85); border-radius: 999px; background: rgba(255,255,255,.9); box-shadow: 0 10px 30px rgba(25,57,99,.12); pointer-events: auto; backdrop-filter: blur(16px); scrollbar-width: none; }
+  .product-local-nav__inner::-webkit-scrollbar { display: none; }
+  .product-local-nav a { position: relative; flex: 0 0 auto; padding: .68rem .9rem; border-radius: 999px; color: #62728a; font-size: .72rem; font-weight: 800; text-decoration: none; white-space: nowrap; transition: color .2s ease, background .2s ease; }
+  .product-local-nav a.is-active { color: #175fc8; background: #eef5ff; }
+  .product-local-nav + #service-overview { padding-top: 10rem; }
+
+  .product-solution-section { position: relative; overflow: hidden; }
+  .product-solution-section::before { position: absolute; top: 2.5rem; right: 2vw; content: attr(data-section-number); color: rgba(20,57,103,.026); font-size: clamp(11rem,18vw,20rem); line-height: 1; font-weight: 950; letter-spacing: -.08em; pointer-events: none; }
+  .product-solution-section > .product-shell { position: relative; z-index: 1; }
+
+  .section-heading { margin-bottom: 3rem; }
+  .section-heading--split { display: grid; grid-template-columns: minmax(0,1fr) minmax(18rem,.72fr); gap: 5rem; align-items: end; }
+  .section-heading h2, .solution-heading h2 { margin: 0; color: #10284b; font-size: clamp(2.1rem,4.2vw,3.85rem); line-height: 1.1; font-weight: 900; letter-spacing: -.04em; }
+  .section-heading > p, .solution-heading > p { margin: 0; color: #536780; font-size: .9rem; line-height: 1.9; }
+  .selector-assist { display: flex; justify-content: space-between; gap: 2rem; align-items: center; margin: -1rem 0 2rem; padding: 1rem 0; border-top: 1px solid #d7e2ef; border-bottom: 1px solid #d7e2ef; }
+  .selector-assist p { margin: 0; color: #5e7188; font-size: .76rem; }
+  .selector-assist strong { color: #17365d; }
+  .selector-assist a { color: #1761d4; font-size: .72rem; font-weight: 850; text-decoration: none; white-space: nowrap; }
+  .selector-assist a span { display: inline-block; transition: transform .25s ease; }
+  .selector-assist a:hover span { transform: translateX(4px); }
+  .selector-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); grid-template-rows: repeat(2,minmax(14rem,auto)); gap: 1rem; }
+  .selector-card { position: relative; display: flex; flex-direction: column; min-height: 0; padding: 1.45rem; overflow: hidden; border: 1px solid #dce5f1; border-radius: 1.1rem; background: #fff; transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease, background .3s ease; }
+  .selector-card::after { position: absolute; bottom: 0; left: 1.45rem; width: 2.5rem; height: 3px; content: ''; background: #f06423; transform: scaleX(0); transform-origin: left; transition: transform .3s ease; }
+  .selector-card:first-child { grid-row: 1 / 3; grid-column: 1 / 3; padding: 2rem; }
+  .selector-card:nth-child(2) { grid-row: 1; grid-column: 3; }
+  .selector-card:nth-child(3) { grid-row: 1; grid-column: 4; }
+  .selector-card:nth-child(4) { grid-row: 2; grid-column: 3 / 5; }
+  .selector-card:hover { transform: translateY(-5px); border-color: #8eb8f2; background: linear-gradient(145deg,#fff 55%,#f3f8ff); box-shadow: 0 22px 50px rgba(32,69,121,.1); }
+  .selector-card:hover::after { transform: scaleX(1); }
+  .selector-card header { display: flex; justify-content: space-between; color: #7d8ca1; font: 800 .62rem ui-monospace,monospace; letter-spacing: .08em; }
+  .selector-card header span { color: #f06423; }
+  .selector-card h3 { margin: 1.15rem 0 .75rem; color: #10284b; font-size: 1.12rem; line-height: 1.35; font-weight: 900; }
+  .selector-card:first-child h3 { margin-top: 2rem; font-size: 2.15rem; }
+  .selector-card__visual { display: flex; gap: .4rem; align-items: end; height: 2.5rem; margin-bottom: .8rem; }
+  .selector-card__visual i { display: block; flex: 1; height: .35rem; border-radius: 999px; background: #cfe0f7; }
+  .selector-card--cloud-warehouse .selector-card__visual { position: absolute; top: 8rem; right: 2.2rem; display: grid; grid-template-columns: repeat(2,1fr); grid-template-rows: repeat(2,1fr); gap: .55rem; align-items: stretch; width: 15rem; height: 15rem; }
+  .selector-card--cloud-warehouse .selector-card__visual i { width: auto; height: auto; border: 1px solid #c7daf4; border-radius: .75rem; background: linear-gradient(135deg,#f3f7fd,#d9e8fb); box-shadow: inset 0 0 0 6px rgba(255,255,255,.5); }
+  .selector-card--quality-inspection .selector-card__visual i:nth-child(1) { height: .7rem; }
+  .selector-card--quality-inspection .selector-card__visual i:nth-child(2) { height: 1.35rem; background: #8fb8f3; }
+  .selector-card--quality-inspection .selector-card__visual i:nth-child(3) { height: 2rem; background: #f4a06f; }
+  .selector-card--quality-inspection .selector-card__visual i:nth-child(4) { height: 1.1rem; }
+  .selector-card--logistics-cloud .selector-card__visual i { height: 1px; background: #8fb8f3; transform: rotate(-12deg); }
+  .selector-card--logistics-cloud .selector-card__visual i:nth-child(even) { transform: rotate(12deg); }
+  .selector-card--yundao-platform .selector-card__visual i:nth-child(1) { flex: 2; background: #8fb8f3; }
+  .selector-card--yundao-platform .selector-card__visual i:nth-child(2) { flex: .3; height: 1.1rem; background: #f06423; }
+  .selector-card__label { margin: 0 0 .65rem; color: #2d68c4; font-size: .68rem; font-weight: 850; }
+  .selector-card ul { display: grid; gap: .55rem; margin: 0; padding: 0; list-style: none; }
+  .selector-card li { position: relative; padding-left: 1rem; color: #52657e; font-size: .78rem; }
+  .selector-card li::before { position: absolute; top: .48em; left: 0; width: .34rem; height: .34rem; content: ''; border-radius: 50%; background: #8fb8f3; }
+  .selector-card__result { display: flex; flex-direction: column; gap: .4rem; margin-top: auto; padding: .8rem 0; border-top: 1px solid #e4eaf2; }
+  .selector-card__result small { color: #f06423; font-size: .65rem; font-weight: 850; }
+  .selector-card__result strong { color: #1c385f; font-size: .8rem; line-height: 1.6; }
+  .selector-card a { color: #1761d4; font-size: .78rem; font-weight: 850; text-decoration: none; }
+  .selector-card a span { display: inline-block; transition: transform .25s ease; }
+  .selector-card:hover a span { transform: translateX(4px); }
+
+  .warehouse-section { background: #fff; }
+  .solution-heading { display: grid; grid-template-columns: 7.5rem minmax(0,1fr) minmax(18rem,.62fr); gap: 2.5rem; align-items: end; margin-bottom: 3.5rem; }
+  .solution-heading__index { display: flex; flex-direction: column; gap: .45rem; padding-top: .8rem; border-top: 2px solid #f06423; }
+  .solution-heading__index span { color: #f06423; font: 900 1.65rem ui-monospace,monospace; }
+  .solution-heading__index small { color: #61738d; font-size: .72rem; font-weight: 800; }
+  .warehouse-stage { position: relative; overflow: hidden; min-height: 34rem; border-radius: 1.4rem; background: #0d2343; }
+  .warehouse-stage > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .5s ease; }
+  .warehouse-stage:hover > img { transform: scale(1.015); }
+  .warehouse-stage__shade { position: absolute; inset: 0; background: linear-gradient(90deg,rgba(6,20,42,.82) 0%,rgba(6,20,42,.22) 65%,rgba(6,20,42,.1) 100%), linear-gradient(0deg,rgba(6,20,42,.68),transparent 52%); }
+  .warehouse-stage__caption { position: absolute; top: 2rem; left: 2rem; display: flex; flex-direction: column; gap: .4rem; color: #fff; }
+  .warehouse-stage__caption span { color: #8fc1ff; font-size: .68rem; font-weight: 850; letter-spacing: .12em; }
+  .warehouse-stage__caption strong { font-size: 1.15rem; }
+  .warehouse-metrics { position: absolute; right: 1.5rem; bottom: 1.5rem; left: 1.5rem; display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); margin: 0; border: 1px solid rgba(255,255,255,.16); border-radius: 1rem; background: rgba(8,25,51,.83); backdrop-filter: blur(12px); }
+  .warehouse-metrics div { padding: 1.3rem 1.5rem; }
+  .warehouse-metrics div + div { border-left: 1px solid rgba(255,255,255,.13); }
+  .warehouse-metrics dt { color: #fff; font-size: 1.7rem; line-height: 1; font-weight: 900; }
+  .warehouse-metrics dd { margin: .5rem 0 0; color: #9fb1c9; font-size: .68rem; }
+  .warehouse-groups { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 0; margin-top: 1.4rem; border-top: 1px solid #dce5f1; border-bottom: 1px solid #dce5f1; }
+  .warehouse-groups article { padding: 1.75rem 2rem; background: transparent; }
+  .warehouse-groups article + article { border-left: 1px solid #dce5f1; }
+  .warehouse-groups header { display: flex; gap: .8rem; align-items: center; }
+  .warehouse-groups header span { color: #f06423; font: 900 .72rem ui-monospace,monospace; }
+  .warehouse-groups h3 { margin: 0; color: #10284b; font-size: 1rem; font-weight: 900; }
+  .warehouse-groups ul { display: grid; gap: .7rem; margin: 1rem 0 0; padding: 0; list-style: none; }
+  .warehouse-groups li { color: #52657e; font-size: .78rem; }
+  .solution-links { display: flex; justify-content: space-between; gap: 2rem; align-items: center; margin-top: 1.5rem; }
+  .related-case { display: inline-flex; gap: .55rem; align-items: center; color: #526a87; font-size: .72rem; font-weight: 750; text-decoration: none; }
+  .related-case span { color: #f06423; font-size: .64rem; letter-spacing: .08em; }
+  .related-case i { color: #1761d4; font-style: normal; transition: transform .25s ease; }
+  .related-case:hover i { transform: translateX(4px); }
+
+  .inspection-section { color: #10284b; background: #f5f8fc; }
+  .solution-heading--light h2 { color: #10284b; }
+  .solution-heading--light > p { color: #536780; }
+  .solution-heading--light .solution-heading__index small { color: #61738d; }
+  .inspection-layout { display: grid; grid-template-columns: minmax(18rem,.72fr) minmax(0,1.28fr); gap: 1rem; }
+  .inspection-photo { position: relative; overflow: hidden; min-height: 31rem; margin: 0; border-radius: 1.25rem; }
+  .inspection-photo { grid-column: 2; grid-row: 1; }
+  .inspection-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .5s ease; }
+  .inspection-photo:hover img { transform: scale(1.015); }
+  .inspection-photo::after { position: absolute; inset: 0; content: ''; background: linear-gradient(0deg,rgba(5,18,37,.78),transparent 54%); }
+  .inspection-photo figcaption { position: absolute; z-index: 1; right: 1.5rem; bottom: 1.5rem; left: 1.5rem; display: flex; justify-content: space-between; gap: 1rem; color: #fff; font-size: .72rem; }
+  .inspection-photo figcaption span { color: #8fc1ff; font-weight: 800; }
+  .inspection-facts { display: grid; grid-column: 1; grid-row: 1; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 0; border-top: 1px solid #d6e1ef; border-bottom: 1px solid #d6e1ef; background: rgba(255,255,255,.28); }
+  .inspection-facts div { display: flex; flex-direction: column; justify-content: flex-end; min-height: 15rem; padding: 1.6rem; }
+  .inspection-facts div:nth-child(odd) { border-right: 1px solid #d6e1ef; }
+  .inspection-facts div:nth-child(n+3) { border-top: 1px solid #d6e1ef; }
+  .inspection-facts strong { color: #f06423; font-size: 2rem; line-height: 1; font-weight: 900; }
+  .inspection-facts span { margin-top: .65rem; color: #60738c; font-size: .7rem; }
+  .inspection-flow { position: relative; display: grid; grid-template-columns: repeat(6,minmax(0,1fr)); margin: 2.25rem 0 0; padding: 0; list-style: none; }
+  .inspection-flow::before, .inspection-flow::after { position: absolute; top: 1rem; right: 8%; left: 8%; height: 2px; content: ''; transform-origin: left; }
+  .inspection-flow::before { background: #bfd0e5; }
+  .inspection-flow::after { background: #f06423; transform: scaleX(0); transition: transform 1s cubic-bezier(.22,1,.36,1); }
+  .inspection-section.is-in-view .inspection-flow::after { transform: scaleX(1); }
+  .inspection-flow li { position: relative; z-index: 1; padding: 0 .6rem; text-align: center; }
+  .inspection-flow span { display: flex; align-items: center; justify-content: center; width: 2rem; height: 2rem; margin: 0 auto .75rem; border: 1px solid #f06423; border-radius: 50%; color: #f06423; background: #f5f8fc; font: 800 .58rem ui-monospace,monospace; transition: color .25s ease, background .25s ease; transition-delay: calc(var(--flow-index, 0) * 120ms); }
+  .inspection-section.is-in-view .inspection-flow span { color: #fff; background: #f06423; }
+  .inspection-flow li:nth-child(2) span { transition-delay: 120ms; }
+  .inspection-flow li:nth-child(3) span { transition-delay: 240ms; }
+  .inspection-flow li:nth-child(4) span { transition-delay: 360ms; }
+  .inspection-flow li:nth-child(5) span { transition-delay: 480ms; }
+  .inspection-flow li:nth-child(6) span { transition-delay: 600ms; }
+  .inspection-flow strong { color: #274464; font-size: .72rem; line-height: 1.45; }
+  .defect-panel { display: grid; grid-template-columns: minmax(18rem,.75fr) minmax(0,1.25fr); gap: 4rem; margin-top: 4rem; padding-top: 4rem; border-top: 1px solid #d6e1ef; }
+  .defect-panel__intro h3 { margin: 0; color: #10284b; font-size: 2rem; font-weight: 900; }
+  .defect-panel__intro > p:not(.eyebrow) { color: #5f728b; font-size: .82rem; line-height: 1.8; }
+  .return-sla { display: flex; flex-direction: column; gap: .5rem; margin-top: 2rem; padding: 1.2rem; border: 1px solid #dce5f1; border-left: 3px solid #f06423; background: #fff; }
+  .return-sla span { color: #71849c; font-size: .65rem; }
+  .return-sla strong { color: #10284b; font-size: .9rem; }
+  .defect-list details { border-bottom: 1px solid #d6e1ef; }
+  .defect-list summary { display: grid; grid-template-columns: 2rem 1fr auto; align-items: center; padding: 1rem 0; cursor: pointer; list-style: none; }
+  .defect-list summary::-webkit-details-marker { display: none; }
+  .defect-list summary span { color: #f47732; font: 800 .65rem ui-monospace,monospace; }
+  .defect-list summary strong { color: #17365d; font-size: .85rem; }
+  .defect-list summary i { color: #7f93ae; font-style: normal; transition: transform .2s ease; }
+  .defect-list details[open] summary i { transform: rotate(45deg); }
+  .defect-list details p { margin: -.2rem 0 1rem 2rem; color: #667990; font-size: .75rem; }
+
+  .digital-section { background: #fff; }
+  .digital-foundation { display: grid; grid-template-columns: minmax(0,1.5fr) minmax(19rem,.5fr); gap: 2rem; align-items: center; }
+  .dashboard-frame { position: relative; overflow: hidden; padding: 0; border: 1px solid #cbd9ec; border-radius: 1.15rem; background: #09111d; box-shadow: 0 26px 60px rgba(38,71,117,.15); cursor: zoom-in; clip-path: inset(0 40px round 1.15rem); transition: clip-path .8s cubic-bezier(.22,1,.36,1); }
+  .digital-section.is-in-view .dashboard-frame { clip-path: inset(0 round 1.15rem); }
+  .dashboard-frame__bar { display: flex; justify-content: space-between; padding: .9rem 1.1rem; color: #d6e5f8; background: #142b4d; font-size: .68rem; font-weight: 750; text-align: left; }
+  .dashboard-frame__bar i { color: #85baff; font-style: normal; }
+  .dashboard-frame img { display: block; width: 102%; height: 100%; max-height: 34rem; margin-bottom: -12.5%; transform: translateY(-12.5%); object-fit: cover; object-position: top; }
+  .dashboard-highlight { position: absolute; z-index: 2; border: 2px solid #2b75e3; border-radius: .35rem; opacity: 0; box-shadow: 0 0 0 999px rgba(7,18,34,.36), 0 0 24px rgba(75,146,255,.42); pointer-events: none; transition: top .25s ease, right .25s ease, bottom .25s ease, left .25s ease, opacity .2s ease; }
+  .digital-foundation[data-active-focus="orders"] .dashboard-highlight { top: 14%; right: 61%; bottom: 55%; left: 7%; opacity: 1; }
+  .digital-foundation[data-active-focus="inventory"] .dashboard-highlight { top: 15%; right: 6%; bottom: 57%; left: 62%; opacity: 1; }
+  .digital-foundation[data-active-focus="alerts"] .dashboard-highlight { top: 39%; right: 7%; bottom: 30%; left: 54%; opacity: 1; }
+  .digital-foundation[data-active-focus="tracking"] .dashboard-highlight { top: 39%; right: 44%; bottom: 28%; left: 8%; opacity: 1; }
+  .digital-callouts { border-top: 1px solid #d6e1ef; }
+  .digital-callouts button { display: grid; grid-template-columns: 2.2rem 1fr; gap: .7rem; width: 100%; padding: 1.15rem 0; border: 0; border-bottom: 1px solid #d6e1ef; color: inherit; background: transparent; text-align: left; cursor: pointer; }
+  .digital-callouts button > span { color: #f06423; font: 850 .65rem ui-monospace,monospace; }
+  .digital-callouts button div { display: flex; flex-direction: column; gap: .35rem; }
+  .digital-callouts strong { color: #10284b; font-size: .9rem; }
+  .digital-callouts small { color: #65778e; font-size: .7rem; line-height: 1.55; }
+  .digital-callouts button:hover strong, .digital-callouts button:focus-visible strong { color: #1761d4; }
+  .digital-module-nav { display: grid; grid-template-columns: repeat(6,minmax(0,1fr)); margin-top: 2rem; border-top: 1px solid #d6e1ef; border-bottom: 1px solid #d6e1ef; }
+  .digital-module-nav span { display: flex; gap: .55rem; align-items: center; justify-content: center; min-height: 4.25rem; padding: .75rem; color: #304d70; font-size: .7rem; font-weight: 800; text-align: center; }
+  .digital-module-nav span + span { border-left: 1px solid #d6e1ef; }
+  .digital-module-nav i { color: #f06423; font: 850 .55rem ui-monospace,monospace; }
+  .digital-application { margin-top: 1.25rem; padding: 1.5rem 0; border-top: 1px solid #d6e1ef; border-bottom: 1px solid #d6e1ef; background: transparent; }
+  .digital-application__heading { display: flex; justify-content: space-between; padding-bottom: 1rem; border-bottom: 1px solid #e2e9f2; }
+  .digital-application__heading span { color: #2767db; font-size: .68rem; font-weight: 850; }
+  .digital-application__heading strong { color: #10284b; font-size: .78rem; }
+  .digital-application ol { position: relative; display: grid; grid-template-columns: repeat(6,minmax(0,1fr)); margin: 0; padding: 2rem 0; list-style: none; }
+  .digital-application ol::before { position: absolute; top: 2.75rem; right: 8%; left: 8%; height: 2px; content: ''; background: linear-gradient(90deg,#407ed9,#78a9ef 70%,#f06423); }
+  .digital-application li { position: relative; z-index: 1; text-align: center; }
+  .digital-application li span { display: flex; align-items: center; justify-content: center; width: 1.55rem; height: 1.55rem; margin: 0 auto .75rem; border: 3px solid #fff; border-radius: 50%; color: transparent; background: #407ed9; box-shadow: 0 0 0 1px #407ed9; }
+  .digital-application li:last-child span { background: #f06423; box-shadow: 0 0 0 1px #f06423; }
+  .digital-application li strong { color: #274464; font-size: .7rem; }
+  .digital-results { display: flex; flex-wrap: wrap; gap: .5rem; padding-top: 1rem; border-top: 1px solid #e2e9f2; }
+  .digital-results span, .scene-tags span { padding: .55rem .8rem; border: 1px solid #bfd5f4; border-radius: 999px; color: #214d86; background: #eff6ff; font-size: .68rem; font-weight: 800; }
+  .digital-note { margin: 1.4rem 0 0; color: #64758c; font-size: .7rem; line-height: 1.7; }
+  .digital-note strong { color: #304966; }
+
+  .yundao-section { background: #f5f8fd; }
+  .yundao-layout { display: grid; grid-template-columns: minmax(0,1.2fr) minmax(22rem,.8fr); gap: 4rem; align-items: center; }
+  .yundao-collage { position: relative; min-height: 39rem; background: linear-gradient(rgba(77,123,190,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(77,123,190,.08) 1px,transparent 1px),#f5f8fd; background-size: 36px 36px; }
+  .yundao-shot { position: absolute; overflow: hidden; padding: 0; border: 0; border-radius: .7rem; background: #fff; box-shadow: 0 18px 45px rgba(26,60,106,.16); cursor: zoom-in; transition: transform .25s ease; }
+  .yundao-shot:hover { z-index: 3; transform: translateY(-4px); }
+  .yundao-shot img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top; }
+  .yundao-shot--main { top: 9%; left: 4%; z-index: 1; width: 59%; height: 51%; }
+  .yundao-shot--side-one { top: 8%; right: 3%; width: 31%; height: 28%; }
+  .yundao-shot--side-two { top: 41%; right: 3%; width: 31%; height: 27%; }
+  .yundao-shot--detail { bottom: 5%; left: 29%; z-index: 2; width: 42%; height: 29%; }
+  .capability-list { border-top: 1px solid #dce5f1; }
+  .capability-list article { display: grid; grid-template-columns: 2.2rem 1fr; gap: .7rem; padding: 1rem 0; border-bottom: 1px solid #dce5f1; }
+  .capability-list article > span { color: #f06423; font: 850 .65rem ui-monospace,monospace; }
+  .capability-list h3 { margin: 0; color: #10284b; font-size: .9rem; font-weight: 900; }
+  .capability-list p { margin: .35rem 0 0; color: #65778e; font-size: .72rem; line-height: 1.6; }
+  .saving-note { margin: 1.25rem 0; color: #65778e; font-size: .72rem; line-height: 1.7; }
+  .saving-note strong { color: #304966; }
+  .scene-tags { display: flex; flex-wrap: wrap; gap: .45rem; }
+
+  .bundle-section { color: #10284b; background: #fff; }
+  .bundle-section .section-heading h2 { color: #10284b; }
+  .bundle-section .section-heading > p { color: #536780; }
+  .bundle-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 1rem; }
+  .bundle-grid article { position: relative; display: flex; flex-direction: column; min-height: 36rem; padding: 1.6rem; border: 1px solid #d6e1ef; border-radius: 1rem; background: #fff; box-shadow: 0 12px 34px rgba(34,66,109,.05); transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease; }
+  .bundle-grid article.is-recommended { min-height: calc(36rem + 1.25rem); margin-top: -.65rem; margin-bottom: -.6rem; border-color: #8fb8f3; background: #f4f8ff; box-shadow: 0 20px 50px rgba(34,66,109,.12); }
+  .bundle-grid article.is-recommended::before { position: absolute; top: 0; right: 1.4rem; width: 4.4rem; height: 3px; content: ''; background: #f06423; }
+  .bundle-grid article:hover { transform: translateY(-5px); border-color: #8db5ee; box-shadow: 0 20px 46px rgba(34,66,109,.1); }
+  .bundle-grid header { display: flex; justify-content: space-between; color: #8090a5; font: 800 .62rem ui-monospace,monospace; letter-spacing: .08em; }
+  .bundle-grid header span { color: #f47732; }
+  .bundle-grid h3 { margin: 2rem 0 1.5rem; color: #10284b; font-size: 1.5rem; font-weight: 900; }
+  .bundle-services { display: flex; flex-wrap: wrap; gap: .45rem; align-content: flex-start; }
+  .bundle-services strong { padding: .55rem .7rem; border: 1px solid #c9dcf6; border-radius: .55rem; color: #285a98; background: #eef5ff; font-size: .7rem; }
+  .bundle-services i { align-self: center; color: #f47732; font-style: normal; }
+  .bundle-grid article > p { margin: 1rem 0 .7rem; color: #80b9ff; font-size: .65rem; font-weight: 850; }
+  .bundle-grid ul { display: grid; gap: .55rem; margin: 0; padding: 0; list-style: none; }
+  .bundle-grid li { color: #60738c; font-size: .75rem; }
+  .bundle-result { color: #24476f; font-size: .78rem; line-height: 1.65; }
+  .bundle-scene { color: #60738c; font-size: .72rem; line-height: 1.6; }
+  .bundle-grid a { align-self: flex-start; margin-top: auto; padding: .7rem .95rem; border: 1px solid #a9c5ea; border-radius: .65rem; color: #1d5cba; font-size: .78rem; font-weight: 850; text-decoration: none; transition: color .2s ease, background .2s ease, border-color .2s ease; }
+  .bundle-grid article:hover a { color: #fff; border-color: #f06423; background: #f06423; }
+
+  .directory-section { background: #f5f8fd; }
+  .directory-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); border-top: 1px solid #cfdbea; border-bottom: 1px solid #cfdbea; }
+  .directory-grid article { padding: 1.6rem; }
+  .directory-grid article + article { border-left: 1px solid #cfdbea; }
+  .directory-grid article > span { color: #f06423; font: 850 .65rem ui-monospace,monospace; }
+  .directory-grid h3 { margin: .9rem 0 .45rem; color: #10284b; font-size: 1.2rem; font-weight: 900; }
+  .directory-grid p { min-height: 2.8rem; color: #697b91; font-size: .72rem; }
+  .directory-grid article > div { display: grid; margin-top: 1.3rem; border-top: 1px solid #d8e2ef; }
+  .directory-grid a { position: relative; display: flex; justify-content: space-between; padding: .9rem 0; border-bottom: 1px solid #d8e2ef; color: #244467; font-size: .78rem; font-weight: 800; text-decoration: none; transition: color .25s ease, padding-left .25s ease; }
+  .directory-grid a::after { position: absolute; right: 0; bottom: -1px; left: 0; height: 1px; content: ''; background: #1761d4; transform: scaleX(0); transform-origin: left; transition: transform .25s ease; }
+  .directory-grid a:hover { padding-left: .3rem; color: #1761d4; }
+  .directory-grid a:hover::after { transform: scaleX(1); }
+  .directory-grid i { color: #7890ad; font-style: normal; transition: color .25s ease, transform .25s ease; }
+  .directory-grid a:hover i { color: #f06423; transform: translateX(3px); }
+  .product-faq-wrap { background: #fff; }
+
+  .product-cta { padding: 6rem 0; color: #fff; background: #0a1d38; }
+  .product-cta__inner { display: grid; grid-template-columns: minmax(0,1fr) minmax(16rem,.6fr); gap: 2rem 5rem; align-items: center; }
+  .product-cta h2 { margin: 0; color: #fff; font-size: clamp(2rem,4vw,3.5rem); line-height: 1.1; font-weight: 900; letter-spacing: -.035em; }
+  .product-cta p:not(.eyebrow) { max-width: 43rem; margin: 1.2rem 0 0; color: #aebed3; font-size: .88rem; line-height: 1.85; }
+  .product-cta__fields { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); border: 1px solid rgba(255,255,255,.14); }
+  .product-cta__fields span { padding: .85rem; color: #d7e4f5; font-size: .72rem; }
+  .product-cta__fields span:nth-child(odd) { border-right: 1px solid rgba(255,255,255,.14); }
+  .product-cta__fields span:nth-child(n+3) { border-top: 1px solid rgba(255,255,255,.14); }
+  .product-cta__fields i { margin-right: .55rem; color: #f47732; font: 800 .6rem ui-monospace,monospace; }
+  .product-cta__actions { display: flex; flex-wrap: wrap; gap: .8rem; grid-column: 1 / -1; }
+
+  .image-lightbox { width: min(92vw,1100px); max-width: none; padding: 2.8rem 1rem 1rem; border: 1px solid #38506e; border-radius: 1rem; background: #0a1628; box-shadow: 0 30px 100px rgba(0,0,0,.55); }
+  .image-lightbox::backdrop { background: rgba(4,12,24,.82); backdrop-filter: blur(6px); }
+  .image-lightbox img { display: block; max-width: 100%; max-height: 80vh; margin: 0 auto; object-fit: contain; }
+  .image-lightbox__close { position: absolute; top: .55rem; right: .8rem; width: 2rem; height: 2rem; border: 0; border-radius: 50%; color: #fff; background: rgba(255,255,255,.1); font-size: 1.25rem; cursor: pointer; }
+
+  @media (max-width: 1024px) {
+    .product-hero__layout { grid-template-columns: 1fr 26rem; gap: 2.5rem; }
+    .selector-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+    .selector-card:first-child, .selector-card:nth-child(2), .selector-card:nth-child(3), .selector-card:nth-child(4) { grid-row: auto; grid-column: auto; }
+    .selector-card:first-child { padding: 1.45rem; }
+    .selector-card:first-child h3 { margin-top: 1.15rem; font-size: 1.5rem; }
+    .selector-card--cloud-warehouse .selector-card__visual { position: static; align-items: stretch; width: 9rem; height: 4.5rem; }
+    .solution-heading { grid-template-columns: 6rem 1fr; }
+    .solution-heading > p { grid-column: 2; }
+    .digital-foundation { grid-template-columns: 1fr; }
+    .dashboard-frame img { max-height: none; }
+    .digital-callouts { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); }
+    .digital-callouts button:nth-child(odd) { padding-right: 1rem; }
+    .digital-callouts button:nth-child(even) { padding-left: 1rem; border-left: 1px solid #d6e1ef; }
+    .digital-module-nav { grid-template-columns: repeat(3,minmax(0,1fr)); }
+    .digital-module-nav span:nth-child(4) { border-top: 1px solid #d6e1ef; border-left: 0; }
+    .digital-module-nav span:nth-child(n+5) { border-top: 1px solid #d6e1ef; }
+    .yundao-layout { grid-template-columns: 1fr; gap: 2.5rem; }
+    .yundao-collage { min-height: 36rem; }
+  }
+
+  @media (max-width: 760px) {
+    .product-shell { width: min(100% - 1.25rem,1180px); }
+    .section { padding: 4.5rem 0; }
+    .anchor-section { scroll-margin-top: 9rem; }
+    .product-hero { padding: 8.5rem 0 4.5rem; }
+    .product-hero__layout { grid-template-columns: 1fr; }
+    .product-hero h1 { font-size: clamp(2.35rem,11vw,3.3rem); }
+    .product-hero h1 span { white-space: normal; }
+    .product-hero__lead { font-size: .92rem; }
+    .hero-proof dt { font-size: 1.2rem; }
+    .hero-proof div { padding-right: .6rem; }
+    .hero-proof div + div { padding-left: .7rem; }
+    .lifecycle-map { border-radius: 1rem; }
+    .product-local-nav { top: 4.75rem; width: calc(100% - 1rem); max-width: none; }
+    .product-local-nav__inner { justify-content: flex-start; width: 100%; padding: .25rem; }
+    .product-local-nav a { padding: .65rem .75rem; }
+    .section-heading--split { grid-template-columns: 1fr; gap: 1.2rem; }
+    .section-heading h2, .solution-heading h2 { font-size: 2.2rem; }
+    .selector-assist { align-items: flex-start; flex-direction: column; gap: .7rem; }
+    .selector-assist a { white-space: normal; }
+    .selector-grid { display: flex; gap: .8rem; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
+    .selector-grid::-webkit-scrollbar { display: none; }
+    .selector-card { flex: 0 0 84%; min-height: auto; scroll-snap-align: start; }
+    .selector-card h3 { min-height: 0; }
+    .selector-card__result { margin-top: 1.5rem; }
+    .solution-heading { grid-template-columns: 4.4rem 1fr; gap: 1.2rem; margin-bottom: 2.5rem; }
+    .solution-heading > p { grid-column: 1 / -1; }
+    .solution-heading__index span { font-size: 1.2rem; }
+    .warehouse-stage { min-height: 37rem; }
+    .warehouse-stage__caption { top: 1.2rem; left: 1.2rem; }
+    .warehouse-metrics { grid-template-columns: repeat(2,minmax(0,1fr)); right: .75rem; bottom: .75rem; left: .75rem; }
+    .warehouse-metrics div { padding: 1rem; }
+    .warehouse-metrics div:nth-child(3) { border-top: 1px solid rgba(255,255,255,.13); border-left: 0; }
+    .warehouse-metrics div:nth-child(4) { border-top: 1px solid rgba(255,255,255,.13); }
+    .warehouse-metrics dt { font-size: 1.3rem; }
+    .warehouse-groups { grid-template-columns: 1fr; }
+    .warehouse-groups article + article { border-top: 1px solid #dce5f1; border-left: 0; }
+    .solution-links { align-items: flex-start; flex-direction: column; }
+    .inspection-layout { grid-template-columns: 1fr; }
+    .inspection-photo, .inspection-facts { grid-column: 1; grid-row: auto; }
+    .inspection-photo { min-height: 25rem; }
+    .inspection-facts div { min-height: 9rem; }
+    .inspection-flow { display: grid; grid-template-columns: 1fr; gap: 0; padding-left: 1rem; }
+    .inspection-flow::before, .inspection-flow::after { top: 1rem; bottom: 1rem; left: 1rem; width: 2px; height: auto; transform-origin: top; }
+    .inspection-flow::after { transform: scaleY(0); }
+    .inspection-section.is-in-view .inspection-flow::after { transform: scaleY(1); }
+    .inspection-flow li { display: grid; grid-template-columns: 2rem 1fr; gap: 1rem; align-items: center; padding: .65rem 0; text-align: left; }
+    .inspection-flow span { margin: 0; }
+    .defect-panel { grid-template-columns: 1fr; gap: 2rem; margin-top: 3rem; padding-top: 3rem; }
+    .digital-callouts { grid-template-columns: 1fr; }
+    .digital-callouts button:nth-child(odd), .digital-callouts button:nth-child(even) { padding-right: 0; padding-left: 0; border-left: 0; }
+    .digital-module-nav { display: flex; overflow-x: auto; }
+    .digital-module-nav span { flex: 0 0 8.5rem; }
+    .digital-module-nav span:nth-child(4), .digital-module-nav span:nth-child(n+5) { border-top: 0; }
+    .digital-application ol { display: flex; overflow-x: auto; }
+    .digital-application ol::before { display: none; }
+    .digital-application li { flex: 0 0 7rem; }
+    .yundao-collage { min-height: 28rem; }
+    .bundle-grid, .directory-grid { grid-template-columns: 1fr; }
+    .bundle-grid article { min-height: 25rem; }
+    .bundle-grid article.is-recommended { min-height: 25rem; margin: 0; }
+    .directory-grid article + article { border-top: 1px solid #cfdbea; border-left: 0; }
+    .product-cta__inner { grid-template-columns: 1fr; gap: 2rem; }
+    .product-cta__actions { grid-column: auto; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :global(html) { scroll-behavior: auto; }
+    .button, .selector-card, .bundle-grid article, .yundao-shot, .dashboard-frame, .inspection-flow::after, .inspection-flow span { transition: none; }
   }
 </style>
+
+<script>
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  const localNavLinks = Array.from(document.querySelectorAll<HTMLElement>('[data-section-link]'))
+  const localNav = document.querySelector<HTMLElement>('.product-local-nav')
+  const observedSections = localNavLinks
+    .map((link) => document.getElementById(link.dataset.sectionLink ?? ''))
+    .filter((section): section is HTMLElement => section instanceof HTMLElement)
+
+  const navObserver = new IntersectionObserver(
+    (entries) => {
+      const visible = entries
+        .filter((entry) => entry.isIntersecting)
+        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0]
+      if (!visible) return
+      localNavLinks.forEach((link) => {
+        link.classList.toggle('is-active', link.dataset.sectionLink === visible.target.id)
+      })
+    },
+    { rootMargin: '-28% 0px -58% 0px', threshold: [0.05, 0.25, 0.5] },
+  )
+  observedSections.forEach((section) => navObserver.observe(section))
+
+  let previousScrollY = window.scrollY
+  window.addEventListener('scroll', () => {
+    if (!localNav) return
+    const currentScrollY = window.scrollY
+    const movingDown = currentScrollY > previousScrollY
+    localNav.classList.toggle('is-hidden', movingDown && currentScrollY > window.innerHeight)
+    previousScrollY = currentScrollY
+  }, { passive: true })
+
+  const lifecycleLinks = Array.from(document.querySelectorAll<HTMLElement>('[data-lifecycle-link]'))
+  lifecycleLinks.forEach((link) => {
+    link.addEventListener('mouseenter', () => {
+      lifecycleLinks.forEach((item) => item.classList.toggle('is-active', item === link))
+    })
+  })
+  document.querySelector('.lifecycle-map')?.addEventListener('mouseleave', () => {
+    lifecycleLinks.forEach((item, index) => item.classList.toggle('is-active', index === 0))
+  })
+
+  const animateCount = (element: HTMLElement) => {
+    if (element.dataset.counted === 'true') return
+    element.dataset.counted = 'true'
+    const target = Number(element.dataset.countTo ?? 0)
+    const decimals = Number(element.dataset.countDecimals ?? 0)
+    const suffix = element.dataset.countSuffix ?? ''
+    if (reduceMotion) {
+      element.textContent = `${target.toFixed(decimals)}${suffix}`
+      return
+    }
+    const startTime = performance.now()
+    const duration = 1100
+    const update = (time: number) => {
+      const progress = Math.min((time - startTime) / duration, 1)
+      const eased = 1 - Math.pow(1 - progress, 3)
+      element.textContent = `${(target * eased).toFixed(decimals)}${suffix}`
+      if (progress < 1) requestAnimationFrame(update)
+    }
+    requestAnimationFrame(update)
+  }
+
+  const visualSections = Array.from(document.querySelectorAll<HTMLElement>('.product-solution-section'))
+  const visualObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return
+      const section = entry.target as HTMLElement
+      section.classList.add('is-in-view')
+      section.querySelectorAll<HTMLElement>('.count-value').forEach(animateCount)
+      visualObserver.unobserve(section)
+    })
+  }, { threshold: .18 })
+  visualSections.forEach((section) => visualObserver.observe(section))
+
+  const digitalFoundation = document.querySelector<HTMLElement>('.digital-foundation')
+  document.querySelectorAll<HTMLElement>('[data-digital-focus]').forEach((trigger) => {
+    const activate = () => {
+      if (digitalFoundation) digitalFoundation.dataset.activeFocus = trigger.dataset.digitalFocus ?? ''
+    }
+    trigger.addEventListener('mouseenter', activate)
+    trigger.addEventListener('focus', activate)
+  })
+  document.querySelector('.digital-callouts')?.addEventListener('mouseleave', () => {
+    if (digitalFoundation) digitalFoundation.dataset.activeFocus = ''
+  })
+
+  const lightbox = document.querySelector<HTMLDialogElement>('.image-lightbox')
+  const lightboxImage = lightbox?.querySelector<HTMLImageElement>('img')
+  document.querySelectorAll<HTMLElement>('[data-lightbox-src]').forEach((trigger) => {
+    trigger.addEventListener('click', () => {
+      if (!lightbox || !lightboxImage) return
+      lightboxImage.src = trigger.dataset.lightboxSrc ?? ''
+      lightboxImage.alt = trigger.dataset.lightboxAlt ?? ''
+      lightbox.showModal()
+    })
+  })
+  lightbox?.querySelector('.image-lightbox__close')?.addEventListener('click', () => lightbox.close())
+  lightbox?.addEventListener('click', (event) => {
+    if (event.target === lightbox) lightbox.close()
+  })
+</script>
