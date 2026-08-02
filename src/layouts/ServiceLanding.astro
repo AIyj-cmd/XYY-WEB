@@ -33,6 +33,7 @@ type ServiceVariant =
   | 'jit-radar'
   | 'evidence-lab'
   | 'repair-workshop'
+  | 'delivery-desk'
 
 interface Props {
   variant: ServiceVariant
@@ -141,6 +142,12 @@ const EXPERIENCE_COPY: Record<
     detailTitle: '不同瑕疵进入不同工位',
     faqCode: 'WORKSHOP NOTES',
     ctaPrompt: '提供样品与验收标准，我们一起评估可采用的修复工艺',
+  },
+  'delivery-desk': {
+    detailCode: 'DELIVERY OPERATIONS',
+    detailTitle: '把寄件选择、运输状态与异常处理放进同一条链路',
+    faqCode: 'DELIVERY NOTES',
+    ctaPrompt: '带上门店数量、寄件线路和货量，我们一起确认寄件协同方案',
   },
 }
 

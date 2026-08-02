@@ -11,6 +11,7 @@ type ServiceVariant =
   | 'jit-radar'
   | 'evidence-lab'
   | 'repair-workshop'
+  | 'delivery-desk'
 
 interface StatItem {
   stat: string
@@ -104,6 +105,12 @@ const CONFIG: Record<
     kicker: '蓝色修复工坊',
     heading: '让不同瑕疵进入对应工位，再以二次质检结束',
     summary: '洗护、清污、缝补、配饰、鞋类、整烫与标识处理采用不同工艺，不以一套模板概括全部修复。',
+  },
+  'delivery-desk': {
+    code: 'DELIVERY / 11',
+    kicker: '智能寄件协同台',
+    heading: '从寄件入口一直管到签收与异常闭环',
+    summary: '承运商、运单、轨迹、签收、异常和报表统一在一个业务入口内协同，不再分散到多个查询后台。',
   },
 }
 
@@ -365,6 +372,48 @@ const config = CONFIG[variant]
               ))}
             </div>
           </aside>
+        </div>
+      )
+    }
+
+    {
+      variant === 'delivery-desk' && (
+        <div class="delivery">
+          <figure class="delivery__console">
+            <div class="delivery__console-bar">
+              <span>YUNDAO DELIVERY DESK</span>
+              <b>运单管理 / 实际系统界面</b>
+            </div>
+            <img
+              src="/yundao-logistics-list.png"
+              alt="运到智能寄件平台运单管理界面"
+              loading="lazy"
+              width="926"
+              height="490"
+            />
+            <figcaption>承运商、来源平台、运输状态和最后跟踪时间集中查询</figcaption>
+          </figure>
+          <aside class="delivery__summary">
+            <p>{contentDesc}</p>
+            <div>
+              {stats.map(({ stat, label, sub }) => (
+                <article>
+                  <strong>{stat}</strong>
+                  <span>{label}</span>
+                  <small>{sub}</small>
+                </article>
+              ))}
+            </div>
+          </aside>
+          <ol class="delivery__capabilities">
+            {features.slice(0, 6).map(({ title, desc }, index) => (
+              <li>
+                <span>{String(index + 1).padStart(2, '0')}</span>
+                <h3>{title}</h3>
+                <p>{desc}</p>
+              </li>
+            ))}
+          </ol>
         </div>
       )
     }
@@ -1427,6 +1476,134 @@ const config = CONFIG[variant]
     font-size: 0.65rem;
   }
 
+  .signature--delivery-desk {
+    background: #f7f9fc;
+  }
+
+  .delivery {
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(18rem, 0.65fr);
+    gap: clamp(2rem, 5vw, 4.5rem);
+    align-items: start;
+  }
+
+  .delivery__console {
+    margin: 0;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    background: #fff;
+    box-shadow: 1rem 1rem 0 #eaf0f7;
+  }
+
+  .delivery__console-bar {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .delivery__console-bar span {
+    color: var(--signal);
+    font-size: 0.62rem;
+    font-weight: 900;
+    letter-spacing: 0.16em;
+  }
+
+  .delivery__console-bar b,
+  .delivery__console figcaption {
+    color: #6b7c91;
+    font-size: 0.68rem;
+  }
+
+  .delivery__console img {
+    height: auto;
+  }
+
+  .delivery__console figcaption {
+    padding: 0.85rem 1rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .delivery__summary {
+    padding-left: 2rem;
+    border-left: 1px solid var(--line);
+  }
+
+  .delivery__summary > p {
+    margin: 0;
+    color: #65758b;
+    font-size: 0.92rem;
+    line-height: 1.9;
+  }
+
+  .delivery__summary > div {
+    margin-top: 1.75rem;
+    border-top: 1px solid var(--ink);
+  }
+
+  .delivery__summary article {
+    display: grid;
+    grid-template-columns: minmax(5.5rem, 0.65fr) 1fr;
+    padding: 0.9rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .delivery__summary article strong {
+    grid-row: 1 / 3;
+    color: var(--signal);
+    font-size: 1.3rem;
+  }
+
+  .delivery__summary article span {
+    font-size: 0.76rem;
+    font-weight: 800;
+  }
+
+  .delivery__summary article small {
+    color: #8492a5;
+    font-size: 0.65rem;
+  }
+
+  .delivery__capabilities {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    margin: 1rem 0 0;
+    padding: 0;
+    border-top: 1px solid var(--ink);
+    list-style: none;
+  }
+
+  .delivery__capabilities li {
+    min-height: 10.5rem;
+    padding: 1.25rem 1.4rem 1.2rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .delivery__capabilities li:not(:nth-child(3n + 1)) {
+    padding-left: 1.4rem;
+    border-left: 1px solid var(--line);
+  }
+
+  .delivery__capabilities li > span {
+    color: var(--signal);
+    font-size: 0.64rem;
+    font-weight: 900;
+  }
+
+  .delivery__capabilities h3 {
+    margin: 1rem 0 0.45rem;
+    font-size: 1rem;
+  }
+
+  .delivery__capabilities p {
+    margin: 0;
+    color: #65758b;
+    font-size: 0.86rem;
+    line-height: 1.75;
+  }
+
   .signature--global-tower {
     background: #f7faff;
   }
@@ -1944,6 +2121,7 @@ const config = CONFIG[variant]
     .south,
     .east,
     .stores,
+    .delivery,
     .global,
     .live,
     .jit,
@@ -1970,6 +2148,11 @@ const config = CONFIG[variant]
     }
 
     .stores__summary {
+      padding: 0;
+      border-left: 0;
+    }
+
+    .delivery__summary {
       padding: 0;
       border-left: 0;
     }
@@ -2015,6 +2198,17 @@ const config = CONFIG[variant]
     .global__metrics div:nth-child(2),
     .workshop__results div:nth-child(2) {
       border-right: 0;
+    }
+
+    .delivery__capabilities {
+      grid-template-columns: 1fr;
+    }
+
+    .delivery__capabilities li,
+    .delivery__capabilities li:not(:nth-child(3n + 1)) {
+      min-height: 0;
+      padding: 1.2rem 0;
+      border-left: 0;
     }
 
     .showroom__gallery {

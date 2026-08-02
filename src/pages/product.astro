@@ -26,10 +26,10 @@ const SERVICE_SERIES = [
     description: '适合需要稳定完成入库、仓储、拣货、复核、打包和发货的鞋服品牌。',
     steps: null,
     services: [
-      ['入库质检', '/tuihuo-zhijian'],
-      ['仓储管理', '/product#foundation'],
+      ['入库质检', '/xiefu-yuncang'],
+      ['仓储管理', '/xiefu-yuncang'],
       ['订单履约', '/xiefu-yuncang'],
-      ['系统与平台对接', '/product#assurance'],
+      ['系统与平台对接', '/wuliu-shuzihua'],
     ],
     image: '/images/services/inspection-workbench.webp', alt: '新亦源鞋服入库质检与作业工作台', href: '/xiefu-yuncang', link: '查看基础仓配服务',
   },
@@ -37,16 +37,16 @@ const SERVICE_SERIES = [
     id: 'returns', number: '02', eyebrow: 'RETURNS & REVERSE LOGISTICS', title: '退货与逆向处理',
     description: '退回来的商品，我们进行拆包、验收、分类与评估，并根据商品状态提供二次上架、退供应商或其他处理方案，实现高效、合规的逆向物流闭环。',
     steps: [
-      ['退货接收', '与登记'],
-      ['商品状态', '判断'],
-      ['分类处理', '与决策'],
-      ['二次上架或', '退件处理'],
+      ['退货接收', '与登记', '/tuihuo-zhijian'],
+      ['商品状态', '判断', '/tuihuo-zhijian'],
+      ['分类处理', '与决策', '/tuihuo-zhijian'],
+      ['二次上架或', '退件处理', '/tuihuo-zhijian'],
     ],
     services: [
       ['退货接收与质检', '/tuihuo-zhijian'],
-      ['二次上架', '/product#returns'],
-      ['退回供应商', '/product#returns'],
-      ['整批退仓', '/product#returns'],
+      ['二次上架', '/tuihuo-zhijian'],
+      ['退回供应商', '/tuihuo-zhijian'],
+      ['整批退仓', '/tuihuo-zhijian'],
     ],
     image: '/images/services/return-inspection-operator.jpg', alt: '新亦源工作人员处理鞋服退货商品', href: '/tuihuo-zhijian', link: '查看退货处理服务',
   },
@@ -55,23 +55,23 @@ const SERVICE_SERIES = [
     description: '根据商品状态，提供标签更换、包装升级、蒸汽熨烫、外观整理、轻微瑕疵处理及组合加工等精细化服务，提升商品呈现，助力销售转化。',
     steps: null,
     services: [
-      ['换标与包装', '/product#product-care'],
-      ['熨烫与外观整理', '/product#product-care'],
-      ['轻微瑕疵处理', '/product#product-care'],
-      ['组合加工', '/product#product-care'],
+      ['换标与包装', '/houzheng-xiufu'],
+      ['熨烫与外观整理', '/houzheng-xiufu'],
+      ['轻微瑕疵处理', '/houzheng-xiufu'],
+      ['组合加工', '/houzheng-xiufu'],
     ],
     image: '/images/services/quality-inspection-operator.jpg', alt: '新亦源工作人员进行鞋服商品整理与检查', href: '/houzheng-xiufu', link: '查看商品整理与增值处理',
   },
 ] as const
 
 const BUSINESS_NEEDS = [
-  { id: 'inbound', number: '01', title: '新品到仓，需要清点和质检', service: '入库质检', description: '对到货商品进行清点与质检，确保数量准确、质量合格并完成信息登记。', checks: ['到货清点与数量核对', '外观与质量检测', '商品信息登记与系统录入', '异常商品记录与处理'], image: '/images/services/warehouse-panorama.webp', alt: '新亦源鞋服商品入库质检作业区' },
-  { id: 'inventory', number: '02', title: 'SKU多，库存容易混乱', service: '仓储管理', description: '按款色码、货位和渠道管理库存，并保持商品状态可查。', checks: ['商品分类与货位管理', '库存状态实时可查', '多SKU精准盘点', '库存异常及时预警'], image: '/images/services/warehouse-shelves.webp', alt: '新亦源多SKU商品分类货位' },
-  { id: 'fulfillment', number: '03', title: '订单量波动大，需要稳定履约', service: '订单履约', description: '通过拣货、复核、打包与发运协同，承接日常及大促订单。', checks: ['订单拣货与复核', '打包与发运协同', '多平台订单同步', '出库状态及时回传'], image: '/images/services/warehouse-fulfillment-actual.jpg', alt: '新亦源仓内订单履约作业现场' },
-  { id: 'returns', number: '04', title: '退货到仓，需要快速拆包、质检和分类', service: '退货接收、质检分流', description: '退货到仓后，先完成拆包登记、状态判断与分类分流，确定商品下一步的处理路径。', checks: ['退货拆包与登记', '商品状态判断与质检', '可售、修复、退供分流', '异常商品记录与处理'], image: '/images/services/inspection-unpack.webp', alt: '新亦源退货拆包处理现场' },
-  { id: 'restock', number: '05', title: '已确认可售，需要整理后重新上架', service: '外观整理、信息更新、二次上架', description: '对已确认可售的商品完成外观整理、信息更新与复核，再恢复至可销售库存。', checks: ['外观整理与复原', '商品信息更新', '二次质检与重新上架', '处理结果可追溯'], image: '/images/services/inspection-sort.webp', alt: '新亦源服饰质检分类作业现场' },
-  { id: 'care', number: '06', title: '商品需要换标、换包装或简单修复', service: '商品整理与增值处理', description: '围绕品牌标准执行标签、包装、外观整理和轻微修复。', checks: ['标签与条码处理', '包装更换与组合', '轻微瑕疵处理', '品牌标准可配置'], image: '/images/services/garment-repair-stitching.jpg', alt: '新亦源服饰轻微瑕疵处理现场' },
-  { id: 'transfer', number: '07', title: '过季库存需要退回或转仓', service: '整批退仓', description: '按清点、核验、交接与数据回传要求处理整批商品流转。', checks: ['数量清点与核验', '批次整理与交接', '转仓运输协同', '数据结果回传'], image: '/images/services/warehouse-aisle-202.jpg', alt: '新亦源仓内鞋服库存通道' },
+  { id: 'inbound', number: '01', title: '新品到仓，需要清点和质检', service: '入库质检', href: '/xiefu-yuncang', description: '对到货商品进行清点与质检，确保数量准确、质量合格并完成信息登记。', checks: ['到货清点与数量核对', '外观与质量检测', '商品信息登记与系统录入', '异常商品记录与处理'], image: '/images/services/warehouse-panorama.webp', alt: '新亦源鞋服商品入库质检作业区' },
+  { id: 'inventory', number: '02', title: 'SKU多，库存容易混乱', service: '仓储管理', href: '/xiefu-yuncang', description: '按款色码、货位和渠道管理库存，并保持商品状态可查。', checks: ['商品分类与货位管理', '库存状态实时可查', '多SKU精准盘点', '库存异常及时预警'], image: '/images/services/warehouse-shelves.webp', alt: '新亦源多SKU商品分类货位' },
+  { id: 'fulfillment', number: '03', title: '订单量波动大，需要稳定履约', service: '订单履约', href: '/xiefu-yuncang', description: '通过拣货、复核、打包与发运协同，承接日常及大促订单。', checks: ['订单拣货与复核', '打包与发运协同', '多平台订单同步', '出库状态及时回传'], image: '/images/services/warehouse-fulfillment-actual.jpg', alt: '新亦源仓内订单履约作业现场' },
+  { id: 'returns', number: '04', title: '退货到仓，需要快速拆包、质检和分类', service: '退货接收、质检分流', href: '/tuihuo-zhijian', description: '退货到仓后，先完成拆包登记、状态判断与分类分流，确定商品下一步的处理路径。', checks: ['退货拆包与登记', '商品状态判断与质检', '可售、修复、退供分流', '异常商品记录与处理'], image: '/images/services/inspection-unpack.webp', alt: '新亦源退货拆包处理现场' },
+  { id: 'restock', number: '05', title: '已确认可售，需要整理后重新上架', service: '外观整理、信息更新、二次上架', href: '/tuihuo-zhijian', description: '对已确认可售的商品完成外观整理、信息更新与复核，再恢复至可销售库存。', checks: ['外观整理与复原', '商品信息更新', '二次质检与重新上架', '处理结果可追溯'], image: '/images/services/inspection-sort.webp', alt: '新亦源服饰质检分类作业现场' },
+  { id: 'care', number: '06', title: '商品需要换标、换包装或简单修复', service: '商品整理与增值处理', href: '/houzheng-xiufu', description: '围绕品牌标准执行标签、包装、外观整理和轻微修复。', checks: ['标签与条码处理', '包装更换与组合', '轻微瑕疵处理', '品牌标准可配置'], image: '/images/services/garment-repair-stitching.jpg', alt: '新亦源服饰轻微瑕疵处理现场' },
+  { id: 'transfer', number: '07', title: '过季库存需要退回或转仓', service: '整批退仓', href: '/tuihuo-zhijian', description: '按清点、核验、交接与数据回传要求处理整批商品流转。', checks: ['数量清点与核验', '批次整理与交接', '转仓运输协同', '数据结果回传'], image: '/images/services/warehouse-aisle-202.jpg', alt: '新亦源仓内鞋服库存通道' },
 ] as const
 
 const DIRECTORY_NEEDS = BUSINESS_NEEDS.slice(0, 6)
@@ -182,7 +182,7 @@ const breadcrumbSchema = {
                 <h3>{title}</h3>
                 <p>{description}</p>
                 {id === 'returns' && steps && <div class="series-spread__steps">
-                  {steps.map(([stepTitle, stepSubtitle], stepIndex) => <div class="series-spread__step"><span>{String(stepIndex + 1).padStart(2, '0')}</span><i aria-hidden="true"></i><strong>{stepTitle}<br />{stepSubtitle}</strong></div>)}
+                  {steps.map(([stepTitle, stepSubtitle, stepHref], stepIndex) => <a href={stepHref} class="series-spread__step"><span>{String(stepIndex + 1).padStart(2, '0')}</span><i aria-hidden="true"></i><strong>{stepTitle}<br />{stepSubtitle}</strong></a>)}
                 </div>}
                 {id !== 'returns' && <ul>{services.map(([item, itemHref], serviceIndex) => <li><a href={itemHref}>
                   {(index === 0 || id === 'care') && <span class="series-spread__service-icon" aria-hidden="true">
@@ -206,10 +206,10 @@ const breadcrumbSchema = {
         <header class="needs-intro" data-reveal="copy"><p class="kicker">SERVICE DIRECTORY</p><span class="needs-intro__rule" aria-hidden="true"></span><h2 id="needs-heading">你现在需要<br />解决什么问题？</h2><p>从业务痛点出发，找到对应的仓配服务方案，精准匹配您的需求，让仓储与履约更高效、更安心。</p><div class="needs-intro__watermark" aria-hidden="true"><strong>56</strong><span>FASHION<br />WAREHOUSE<br />EXPERT</span></div></header>
           <div class="needs-directory" data-need-directory>
             <div class="needs-directory__list" role="tablist" aria-label="按业务问题选择服务">
-            {DIRECTORY_NEEDS.map(({ id, number, title, service }, index) => <button id={`need-tab-${id}`} type="button" role="tab" aria-selected={index === 0 ? 'true' : 'false'} aria-controls={`need-panel-${id}`} tabindex={index === 0 ? 0 : -1} data-need-tab={id} data-reveal="copy"><span>{number}</span><strong>{title}</strong><em>{service}</em><i aria-hidden="true">→</i></button>)}
+            {DIRECTORY_NEEDS.map(({ id, number, title, service, href }, index) => <div id={`need-tab-${id}`} data-need-tab={id} data-selected={index === 0 ? 'true' : 'false'} data-reveal="copy"><span>{number}</span><strong>{title}</strong><em>{service}</em><a href={href} aria-label={`查看${service}详情`}>查看详情 <i aria-hidden="true">→</i></a></div>)}
           </div>
           <div class="needs-directory__visuals" data-reveal="image">
-            {DIRECTORY_NEEDS.map(({ id, service, description, checks, image, alt }, index) => <article id={`need-panel-${id}`} role="tabpanel" aria-labelledby={`need-tab-${id}`} data-need-panel={id} hidden={index !== 0}><figure><img src={image} alt={alt} width="1600" height="1000" loading="lazy" /></figure><div><p class="needs-panel__current">当前服务</p><h3>{service}</h3><p class="needs-panel__description">{description}</p><ul>{checks.map((check) => <li>{check}</li>)}</ul></div></article>)}
+            {DIRECTORY_NEEDS.map(({ id, service, href, description, checks, image, alt }, index) => <article id={`need-panel-${id}`} role="tabpanel" aria-labelledby={`need-tab-${id}`} data-need-panel={id} hidden={index !== 0}><figure><img src={image} alt={alt} width="1600" height="1000" loading="lazy" /></figure><div><p class="needs-panel__current">当前服务</p><h3>{service}</h3><p class="needs-panel__description">{description}</p><ul>{checks.map((check) => <li>{check}</li>)}</ul><a class="needs-panel__link" href={href}>查看服务详情 <span aria-hidden="true">→</span></a></div></article>)}
           </div>
         </div>
       </div>
@@ -386,10 +386,12 @@ const breadcrumbSchema = {
   .series-spread--returns h3 { font-size:clamp(2.55rem,3.8vw,3.8rem); }
   .series-spread--returns .series-spread__copy > p:not(.series-spread__number):not(.series-spread__eyebrow) { max-width:32rem; margin-top:1.25rem; font-size:1rem; }
   .series-spread__steps { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:.55rem; width:100%; margin:2.15rem 0 1.9rem; }
-  .series-spread__step { display:grid; grid-template-columns:2.2rem minmax(0,1fr); grid-template-rows:2.2rem auto; gap:.45rem .45rem; min-width:0; }
+  .series-spread__step { display:grid; grid-template-columns:2.2rem minmax(0,1fr); grid-template-rows:2.2rem auto; gap:.45rem .45rem; min-width:0; color:inherit; text-decoration:none; transition:color .2s ease,transform .2s ease; }
   .series-spread__step > span { display:grid; width:2.2rem; height:2.2rem; place-items:center; border:1.5px solid var(--accent); border-radius:50%; color:var(--accent); font:900 .76rem ui-monospace,SFMono-Regular,Menlo,monospace; }
   .series-spread__step > i { align-self:center; height:1px; background:#e9a88d; }
-  .series-spread__step > strong { grid-column:1 / -1; color:var(--body); font-size:.78rem; font-weight:850; line-height:1.45; }
+  .series-spread__step > strong { grid-column:1 / -1; color:var(--body); font-size:.92rem; font-weight:850; line-height:1.48; }
+  .series-spread__step:hover { color:var(--accent); transform:translateY(-.15rem); }
+  .series-spread__step:hover > strong { color:var(--accent); }
 
   .series-spread--care { grid-template-columns:minmax(0,1.16fr) minmax(0,.84fr); background:#fff; }
   .series-spread__care-gallery { display:grid; grid-template-rows:minmax(0,1fr) 5.6rem; gap:.45rem; min-height:34rem; }
@@ -409,7 +411,7 @@ const breadcrumbSchema = {
   .series-spread--care li a:hover { color:var(--accent); transform:none; }
   .series-spread--care li a > span:first-child { display:grid; width:2.35rem; height:2.35rem; margin:0 auto; place-items:center; color:var(--accent); }
   .series-spread--care li a > span:first-child svg { width:2rem; height:2rem; }
-  .series-spread--care li a > span:nth-child(2) { color:var(--body); font-size:.78rem; font-weight:850; white-space:nowrap; }
+  .series-spread--care li a > span:nth-child(2) { color:var(--body); font-size:.9rem; font-weight:850; white-space:nowrap; }
   .series-spread--care li a > span:last-child { display:none; }
   .needs-section { padding:7rem 0 8rem; background:#f3f4f1; }
   .needs-layout { display:grid; grid-template-columns:minmax(17rem,2.25fr) minmax(0,7.75fr); gap:4.5rem; align-items:start; }
@@ -422,13 +424,15 @@ const breadcrumbSchema = {
   .needs-intro__watermark span { margin-top:.75rem; color:#969c98; font:800 .48rem/1.5 ui-monospace,SFMono-Regular,Menlo,monospace; letter-spacing:.3em; }
   .needs-directory { display:grid; grid-template-columns:minmax(0,1fr) minmax(17rem,.48fr); gap:1.2rem; align-items:stretch; border:0; }
   .needs-directory__list { overflow:hidden; border:1px solid #dfe2de; border-radius:.25rem; background:rgba(255,255,255,.36); }
-  .needs-directory__list button { position:relative; display:grid; grid-template-columns:3.1rem minmax(0,1fr) auto 1.2rem; gap:.8rem; align-items:center; width:100%; min-height:5.35rem; padding:1rem 1.3rem; border:0; border-bottom:1px solid #dfe2de; color:#616b6b; background:transparent; text-align:left; cursor:pointer; transition:color .25s ease,background .25s ease,box-shadow .25s ease; }
-  .needs-directory__list button:last-child { border-bottom:0; }
-  .needs-directory__list button:hover,.needs-directory__list button[aria-selected='true'] { z-index:1; color:var(--ink); background:#fff5ed; box-shadow:inset 0 0 0 1px var(--accent); }
+  .needs-directory__list [data-need-tab] { position:relative; display:grid; grid-template-columns:3.1rem minmax(0,1fr) auto auto; gap:.8rem; align-items:center; width:100%; min-height:5.35rem; padding:1rem 1.3rem; border:0; border-bottom:1px solid #dfe2de; color:#616b6b; background:transparent; text-align:left; transition:color .25s ease,background .25s ease,box-shadow .25s ease; }
+  .needs-directory__list [data-need-tab]:last-child { border-bottom:0; }
+  .needs-directory__list [data-need-tab]:hover,.needs-directory__list [data-need-tab][data-selected='true'] { z-index:1; color:var(--ink); background:#fff5ed; box-shadow:inset 0 0 0 1px var(--accent); }
   .needs-directory__list span { color:var(--accent); font:900 1.25rem ui-monospace,SFMono-Regular,Menlo,monospace; }
   .needs-directory__list strong { font-size:1.03rem; font-weight:900; line-height:1.45; }
-  .needs-directory__list em { color:#4f5959; font-size:.85rem; font-style:normal; font-weight:800; white-space:nowrap; }
-  .needs-directory__list i { color:var(--accent); font-size:1.35rem; font-style:normal; }
+  .needs-directory__list em { color:#4f5959; font-size:.9rem; font-style:normal; font-weight:800; white-space:nowrap; }
+  .needs-directory__list a { display:inline-flex; align-items:center; gap:.35rem; color:var(--accent); font-size:.82rem; font-weight:900; text-decoration:none; white-space:nowrap; }
+  .needs-directory__list a:hover { text-decoration:underline; text-underline-offset:.25rem; }
+  .needs-directory__list i { color:var(--accent); font-size:1.2rem; font-style:normal; }
   .needs-directory__visuals { position:relative; min-height:35rem; margin:0; }
   .needs-directory__visuals article { position:absolute; inset:0; display:flex; flex-direction:column; overflow:hidden; border:1px solid #dfe2de; border-radius:.45rem; background:#fff; box-shadow:0 .9rem 2rem rgba(39,45,42,.05); animation:need-switch .3s ease both; }
   .needs-directory__visuals figure { flex:0 0 12.2rem; min-height:0; margin:0; overflow:hidden; background:#d9dddb; }
@@ -436,10 +440,13 @@ const breadcrumbSchema = {
   .needs-directory__visuals article > div { display:block; padding:1.15rem 1.35rem 1.25rem; }
   .needs-panel__current { margin:0; color:var(--accent); font-size:.74rem; font-weight:900; }
   .needs-directory__visuals h3 { margin:.45rem 0 .7rem; color:var(--ink); font-size:1.45rem; font-weight:950; letter-spacing:-.04em; }
-  .needs-directory__visuals .needs-panel__description { margin:0; color:var(--body); font-size:.82rem; line-height:1.7; }
+  .needs-directory__visuals .needs-panel__description { margin:0; color:var(--body); font-size:.96rem; line-height:1.72; }
   .needs-directory__visuals ul { display:grid; gap:.55rem; margin:1rem 0 0; padding:0; list-style:none; }
-  .needs-directory__visuals li { position:relative; padding-left:1.4rem; color:#596160; font-size:.78rem; font-weight:750; line-height:1.45; }
+  .needs-directory__visuals li { position:relative; padding-left:1.4rem; color:#596160; font-size:.9rem; font-weight:750; line-height:1.5; }
   .needs-directory__visuals li::before { position:absolute; top:.05rem; left:0; display:grid; width:.95rem; height:.95rem; place-items:center; border:1px solid var(--accent); border-radius:50%; color:var(--accent); content:'✓'; font-size:.58rem; font-weight:900; }
+  .needs-panel__link { display:inline-flex; gap:.45rem; margin-top:1.15rem; color:var(--ink); font-size:.9rem; font-weight:900; text-decoration:none; }
+  .needs-panel__link span { color:var(--accent); transition:transform .2s ease; }
+  .needs-panel__link:hover span { transform:translateX(.25rem); }
   @keyframes need-switch { from { opacity:.35; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
 
   .care-section { padding:8.5rem 0; background:#fff; }
@@ -491,7 +498,7 @@ const breadcrumbSchema = {
   .assurance-mechanism__icon { display:grid; flex:0 0 3rem; width:3rem; height:3rem; place-items:center; color:var(--ink); }
   .assurance-mechanism__icon svg { width:3rem; height:3rem; }
   .assurance-mechanisms h4 { margin:0; font-size:.95rem; font-weight:950; }
-  .assurance-mechanisms p { margin:.25rem 0 0; color:var(--body); font-size:.73rem; line-height:1.45; white-space:nowrap; }
+  .assurance-mechanisms p { margin:.25rem 0 0; color:var(--body); font-size:.85rem; line-height:1.5; white-space:nowrap; }
 
   .warehouse-cta { padding:6.5rem 0 6.8rem; background:var(--mist); }
   .warehouse-cta__inner { display:grid; grid-template-columns:minmax(0,6fr) minmax(22rem,4fr); gap:clamp(4rem,8vw,9rem); align-items:end; }
@@ -555,19 +562,20 @@ const breadcrumbSchema = {
     .series-spread__step { display:block; }
     .series-spread__step > span { width:1.9rem; height:1.9rem; margin-bottom:.55rem; font-size:.66rem; }
     .series-spread__step > i { display:none; }
-    .series-spread__step > strong { font-size:.68rem; }
+    .series-spread__step > strong { font-size:.84rem; }
     .series-spread--care { display:flex; flex-direction:column; }
     .series-spread__care-gallery { min-height:25rem; grid-template-rows:19rem 5rem; }
     .series-spread__care-gallery-thumbs { gap:.25rem; }
     .series-spread--care h3 { font-size:2.45rem; }
     .series-spread--care ul { gap:.5rem; margin-top:1.8rem; }
-    .series-spread--care li a > span:nth-child(2) { font-size:.68rem; }
+    .series-spread--care li a > span:nth-child(2) { font-size:.82rem; }
     .needs-layout { display:block; }
     .needs-intro { position:static; min-height:0; margin-bottom:2.5rem; }
     .needs-intro__watermark { display:none; }
     .needs-directory__list { display:flex; gap:1.1rem; overflow:auto; padding-bottom:1rem; scrollbar-width:none; }
-    .needs-directory__list button { flex:0 0 16rem; grid-template-columns:1.7rem 1fr 1rem; min-height:7.2rem; padding:1rem 0; border-top:1px solid #cfd3d1; }
+    .needs-directory__list [data-need-tab] { flex:0 0 16rem; grid-template-columns:1.7rem 1fr; min-height:7.2rem; padding:1rem 0; border-top:1px solid #cfd3d1; }
     .needs-directory__list em { display:none; }
+    .needs-directory__list a { grid-column:2; }
     .needs-directory__visuals { min-height:23rem; margin-top:1rem; }
     .care-stage { grid-template-columns:1fr 1fr; grid-template-rows:16rem 16rem; min-height:32rem; }
     .care-stage__main { grid-column:1 / -1; grid-row:1; }
@@ -619,31 +627,22 @@ const breadcrumbSchema = {
 
   const directory = document.querySelector<HTMLElement>('[data-need-directory]')
   if (directory) {
-    const tabs = Array.from(directory.querySelectorAll<HTMLButtonElement>('[data-need-tab]'))
+    const tabs = Array.from(directory.querySelectorAll<HTMLElement>('[data-need-tab]'))
     const panels = Array.from(directory.querySelectorAll<HTMLElement>('[data-need-panel]'))
-    const selectNeed = (id: string, focus = false) => {
+    const selectNeed = (id: string) => {
       tabs.forEach((tab) => {
         const active = tab.dataset.needTab === id
-        tab.setAttribute('aria-selected', String(active))
-        tab.tabIndex = active ? 0 : -1
-        if (active && focus) tab.focus()
+        tab.dataset.selected = String(active)
       })
       panels.forEach((panel) => {
         const active = panel.dataset.needPanel === id
         panel.hidden = !active
       })
     }
-    tabs.forEach((tab, index) => {
+    tabs.forEach((tab) => {
       const choose = () => selectNeed(tab.dataset.needTab ?? '')
       tab.addEventListener('mouseenter', choose)
-      tab.addEventListener('focus', choose)
-      tab.addEventListener('click', choose)
-      tab.addEventListener('keydown', (event) => {
-        if (!['ArrowDown', 'ArrowRight', 'ArrowUp', 'ArrowLeft', 'Home', 'End'].includes(event.key)) return
-        event.preventDefault()
-        const target = event.key === 'Home' ? 0 : event.key === 'End' ? tabs.length - 1 : event.key === 'ArrowDown' || event.key === 'ArrowRight' ? (index + 1) % tabs.length : (index - 1 + tabs.length) % tabs.length
-        selectNeed(tabs[target]?.dataset.needTab ?? '', true)
-      })
+      tab.addEventListener('focusin', choose)
     })
   }
 

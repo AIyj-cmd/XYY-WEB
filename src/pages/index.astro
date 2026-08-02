@@ -76,6 +76,13 @@ const IMGS = {
   prod0: '/w-yundao.webp',
 }
 
+function serviceDetailHref(service: { slug: string; name: string }, index: number) {
+  if (service.slug.includes('yuncang') || service.name.includes('云仓')) return '/xiefu-yuncang'
+  if (service.slug.includes('tuihuo') || service.name.includes('退货')) return '/tuihuo-zhijian'
+  if (service.slug.includes('shuzihua') || service.name.includes('数字化')) return '/wuliu-shuzihua'
+  return ['/xiefu-yuncang', '/tuihuo-zhijian', '/wuliu-shuzihua'][index] ?? '/contact'
+}
+
 const orgSchema = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
@@ -518,7 +525,7 @@ const faqSchema = createFaqSchema(HOME_FAQS)
               <p class="svc-fee-note"><strong>费用说明：</strong>不收取系统使用费；实施、接口联调及定制开发费用根据具体方案确认。</p>
             </>
           )}
-          <a href={`/product#${svc.slug}`} class="svc-link">
+          <a href={serviceDetailHref(svc, i)} class="svc-link">
             {i === 0
               ? '查看仓配方案 →'
               : i === 1

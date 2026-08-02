@@ -8,6 +8,8 @@ const STATIC_PAGES = [
   { url: '/huadong-xiefu-yuncang', priority: '0.85', changefreq: 'monthly' },
   { url: '/tuihuo-zhijian', priority: '0.85', changefreq: 'monthly' },
   { url: '/houzheng-xiufu', priority: '0.85', changefreq: 'monthly' },
+  { url: '/wuliu-shuzihua', priority: '0.8', changefreq: 'monthly' },
+  { url: '/yundao-zhineng-jijian', priority: '0.8', changefreq: 'monthly' },
   { url: '/kuajing-yuncang', priority: '0.85', changefreq: 'monthly' },
   { url: '/zhibo-cangpei', priority: '0.85', changefreq: 'monthly' },
   { url: '/huanan-xiefu-yuncang', priority: '0.85', changefreq: 'monthly' },

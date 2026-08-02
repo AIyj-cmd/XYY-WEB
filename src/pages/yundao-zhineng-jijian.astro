@@ -1,0 +1,410 @@
+---
+import ServiceLanding from '@/layouts/ServiceLanding.astro'
+
+const CAPABILITIES = [
+  {
+    title: '多承运商统一接入',
+    desc: '已对接顺丰、京东、EMS等11家主流承运商，门店和企业可从同一业务入口发起寄件。',
+  },
+  {
+    title: '线路与服务匹配',
+    desc: '结合寄件线路、货量、价格和时效要求匹配承运方案，减少门店人工反复比较。',
+  },
+  {
+    title: '正向与逆向协同',
+    desc: '覆盖门店寄件、门店调拨、退仓寄回和企业日常寄件等不同业务方向。',
+  },
+  {
+    title: '运单与轨迹查询',
+    desc: '集中查看运单生成、运输轨迹、签收和异常状态，方便业务与客服持续跟进。',
+  },
+  {
+    title: '异常工单处理',
+    desc: '通过在线工单和专属客服保留异常处理记录，明确责任节点并推动问题闭环。',
+  },
+  {
+    title: '数据与权限管理',
+    desc: '按组织、门店和角色配置操作权限，汇总寄件数据、承运表现与结果报表。',
+  },
+] as const
+
+const FLOW = [
+  ['01', '需求进入', '门店或企业提交寄件、调拨或退仓需求'],
+  ['02', '信息校验', '核对地址、货量、服务类型与业务要求'],
+  ['03', '方案匹配', '结合线路、价格和时效选择承运方案'],
+  ['04', '下单交运', '生成运单并完成揽收或现场交接'],
+  ['05', '状态跟踪', '持续查询轨迹、签收与运输异常'],
+  ['06', '结果沉淀', '工单与寄件数据形成可回看的记录'],
+] as const
+
+const SCENARIOS = [
+  ['连锁门店', '日常寄件、门店调拨、过季商品退仓及多门店统一管理。'],
+  ['电商业务', '平台订单寄件、售后退回及正逆向物流状态协同。'],
+  ['企业机构', '文件、样品、物料以及批量寄件需求统一处理。'],
+] as const
+---
+
+<ServiceLanding
+  title="运到智能寄件平台｜门店寄件、调拨与退仓协同｜新亦源"
+  description="运到智能寄件平台统一接入顺丰、京东、EMS等主流承运商，为连锁门店、电商平台和企业机构提供寄件、调拨、退仓、轨迹查询与异常工单协同。"
+  slug="yundao-zhineng-jijian"
+  variant="delivery-desk"
+  breadcrumbLabel="运到智能寄件平台"
+  eyebrow="运到智能寄件平台 · 商圈物流O2O服务"
+  h1="门店寄件、调拨与退仓协同"
+  h1sub="11家主流承运商统一接入"
+  heroDesc="运到连接连锁门店、电商平台、企业机构与主流承运商，统一管理下单、线路匹配、轨迹查询、异常工单和寄件报表。"
+  imgSrc="/images/services/carrier-console.webp"
+  imgAlt="运到智能寄件平台运单管理界面"
+  stats={[
+    { stat: '11家', label: '主流承运商接入', sub: '顺丰、京东、EMS等' },
+    { stat: '多场景', label: '正逆向寄件', sub: '寄件、调拨与退仓' },
+    { stat: '全链路', label: '运单状态查询', sub: '轨迹、签收与异常' },
+    { stat: '最高50%', label: '部分线路费用节省', sub: '以实际线路报价为准' },
+  ]}
+  contentDesc="适合需要统一管理多门店、多组织或多承运商寄件业务的品牌与企业。运到不是单一快递下单工具，而是将需求提交、方案匹配、运单生成、运输跟踪、异常处理和数据回看连接在同一条业务链路中；具体承运范围、计费与时效以实际线路和承运服务规则为准。"
+  featuresLabel="平台服务能力"
+  features={CAPABILITIES.map(({ title, desc }) => ({ title, desc }))}
+  faqs={[
+    {
+      q: '运到智能寄件平台主要解决什么问题？',
+      a: '主要解决门店或企业寄件渠道分散、线路选择依赖经验、运单状态难以集中查询、异常处理缺少记录以及寄件数据难以统一汇总的问题。',
+    },
+    {
+      q: '平台目前可以接入哪些承运商？',
+      a: '目前已接入顺丰、京东、EMS等11家主流承运商。具体可选承运商、线路范围和服务类型，会根据寄件地址、货量、时效及项目合作方案确认。',
+    },
+    {
+      q: '门店调拨和退仓寄回也可以统一管理吗？',
+      a: '可以。平台可承接门店日常寄件、门店间调拨、过季商品退仓寄回和企业日常寄件等正逆向业务，并集中保留相应运单和状态记录。',
+    },
+    {
+      q: '平台会自动保证最低价格或固定时效吗？',
+      a: '不会做无条件承诺。平台会结合实际线路、货量、价格和时效要求辅助匹配方案，最终价格、承运范围与时效以承运商规则和双方确认的合作方案为准。',
+    },
+    {
+      q: '发生运输异常后如何处理？',
+      a: '业务人员可以根据运单状态识别异常，并通过在线工单或专属客服发起处理。处理过程和结果可形成记录，便于后续查询、复盘与业务管理。',
+    },
+  ]}
+>
+  <section slot="unique" class="yd-operations" aria-labelledby="yd-interface-heading">
+    <div class="yd-operations__inner">
+      <header class="yd-operations__header">
+        <div>
+          <p>ACTUAL INTERFACE / OPERATION RECORD</p>
+          <h2 id="yd-interface-heading">业务人员需要看到的，<br />是每一票货现在在哪里。</h2>
+        </div>
+        <p>订单、运单、轨迹、签收与异常不再散落在多个查询入口；界面承接日常操作，流程负责把每个结果继续向后推进。</p>
+      </header>
+
+      <div class="yd-interface">
+        <figure class="yd-interface__main">
+          <img
+            src="/yundao-order-list.png"
+            alt="运到智能寄件平台订单信息界面"
+            loading="lazy"
+            width="926"
+            height="490"
+          />
+          <figcaption><span>01</span><strong>订单与寄件信息统一管理</strong></figcaption>
+        </figure>
+        <div class="yd-interface__side">
+          <figure>
+            <img
+              src="/yundao-alerts.png"
+              alt="运到智能寄件平台发货预警界面"
+              loading="lazy"
+              width="543"
+              height="451"
+            />
+            <figcaption><span>02</span><strong>异常节点及时进入视野</strong></figcaption>
+          </figure>
+          <figure>
+            <img
+              src="/yundao-report.png"
+              alt="运到智能寄件平台统计报表界面"
+              loading="lazy"
+              width="570"
+              height="472"
+            />
+            <figcaption><span>03</span><strong>寄件结果沉淀为报表</strong></figcaption>
+          </figure>
+        </div>
+      </div>
+
+      <div class="yd-flow">
+        <header>
+          <p>SERVICE FLOW</p>
+          <h2>一次寄件如何完成？</h2>
+          <span>从需求进入到结果沉淀，六个环节分别对应明确的业务状态。</span>
+        </header>
+        <ol>
+          {FLOW.map(([number, title, note]) => (
+            <li>
+              <span>{number}</span>
+              <h3>{title}</h3>
+              <p>{note}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+
+      <div class="yd-scenarios">
+        <header>
+          <p>SUITABLE FOR</p>
+          <h2>三类常见接入场景</h2>
+        </header>
+        <div>
+          {SCENARIOS.map(([title, note], index) => (
+            <article>
+              <span>{String(index + 1).padStart(2, '0')}</span>
+              <h3>{title}</h3>
+              <p>{note}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+</ServiceLanding>
+
+<style>
+  .yd-operations {
+    --ink: #132b50;
+    --signal: #e85d26;
+    --line: #dce5f1;
+    padding: clamp(4rem, 8vw, 7rem) 0;
+    background: #fff;
+    color: var(--ink);
+  }
+
+  .yd-operations__inner {
+    width: min(80rem, calc(100% - 2rem));
+    margin: 0 auto;
+  }
+
+  .yd-operations__header {
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(18rem, 0.75fr);
+    gap: clamp(2rem, 7vw, 7rem);
+    align-items: end;
+    margin-bottom: clamp(2.5rem, 5vw, 4rem);
+  }
+
+  .yd-operations__header div > p,
+  .yd-flow header > p,
+  .yd-scenarios header > p {
+    margin: 0 0 0.65rem;
+    color: var(--signal);
+    font-size: 0.65rem;
+    font-weight: 900;
+    letter-spacing: 0.2em;
+  }
+
+  .yd-operations__header h2,
+  .yd-flow h2,
+  .yd-scenarios h2 {
+    margin: 0;
+    font-size: clamp(2rem, 3.7vw, 3.5rem);
+    line-height: 1.14;
+    letter-spacing: -0.04em;
+  }
+
+  .yd-operations__header > p,
+  .yd-flow header > span {
+    margin: 0;
+    color: #607087;
+    font-size: 0.95rem;
+    line-height: 1.85;
+  }
+
+  .yd-interface {
+    display: grid;
+    grid-template-columns: minmax(0, 1.45fr) minmax(18rem, 0.55fr);
+    gap: 0.85rem;
+  }
+
+  .yd-interface figure {
+    position: relative;
+    margin: 0;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    background: #f4f7fb;
+  }
+
+  .yd-interface img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .yd-interface__main {
+    min-height: 34rem;
+  }
+
+  .yd-interface__side {
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    gap: 0.85rem;
+  }
+
+  .yd-interface__side figure {
+    min-height: 16.5rem;
+  }
+
+  .yd-interface figcaption {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    gap: 0.75rem;
+    padding: 2.6rem 1rem 0.9rem;
+    background: linear-gradient(transparent, rgb(8 20 42 / 78%));
+    color: #fff;
+    font-size: 0.76rem;
+  }
+
+  .yd-interface figcaption span {
+    color: #ff9369;
+    font-weight: 900;
+  }
+
+  .yd-flow {
+    display: grid;
+    grid-template-columns: minmax(16rem, 0.5fr) minmax(0, 1.5fr);
+    gap: clamp(3rem, 7vw, 7rem);
+    margin-top: clamp(4rem, 8vw, 7rem);
+  }
+
+  .yd-flow header > span {
+    display: block;
+    margin-top: 1.2rem;
+  }
+
+  .yd-flow ol {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--ink);
+    list-style: none;
+  }
+
+  .yd-flow li {
+    display: grid;
+    grid-template-columns: 2.5rem 7rem 1fr;
+    gap: 0.8rem;
+    align-items: baseline;
+    padding: 1.2rem 1.2rem 1.2rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .yd-flow li:nth-child(even) {
+    padding-right: 0;
+    padding-left: 1.2rem;
+    border-left: 1px solid var(--line);
+  }
+
+  .yd-flow li > span,
+  .yd-scenarios article > span {
+    color: var(--signal);
+    font-size: 0.65rem;
+    font-weight: 900;
+  }
+
+  .yd-flow h3,
+  .yd-scenarios h3 {
+    margin: 0;
+    font-size: 0.95rem;
+  }
+
+  .yd-flow li p,
+  .yd-scenarios article p {
+    margin: 0;
+    color: #65758b;
+    font-size: 0.83rem;
+    line-height: 1.7;
+  }
+
+  .yd-scenarios {
+    display: grid;
+    grid-template-columns: minmax(16rem, 0.5fr) minmax(0, 1.5fr);
+    gap: clamp(3rem, 7vw, 7rem);
+    margin-top: clamp(4rem, 7vw, 6rem);
+    padding-top: clamp(3rem, 6vw, 5rem);
+    border-top: 1px solid var(--line);
+  }
+
+  .yd-scenarios > div {
+    border-top: 1px solid var(--ink);
+  }
+
+  .yd-scenarios article {
+    display: grid;
+    grid-template-columns: 2.5rem 8rem 1fr;
+    gap: 0.8rem;
+    align-items: baseline;
+    padding: 1.25rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  @media (max-width: 860px) {
+    .yd-operations__header,
+    .yd-interface,
+    .yd-flow,
+    .yd-scenarios {
+      grid-template-columns: 1fr;
+    }
+
+    .yd-operations__header {
+      gap: 1.25rem;
+    }
+
+    .yd-interface__main {
+      min-height: 19rem;
+    }
+
+    .yd-interface__side {
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr;
+    }
+
+    .yd-interface__side figure {
+      min-height: 12rem;
+    }
+
+    .yd-flow,
+    .yd-scenarios {
+      gap: 2rem;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .yd-operations {
+      padding: 3.75rem 0;
+    }
+
+    .yd-operations__inner {
+      width: min(100% - 1.5rem, 80rem);
+    }
+
+    .yd-interface__side,
+    .yd-flow ol {
+      grid-template-columns: 1fr;
+    }
+
+    .yd-flow li,
+    .yd-flow li:nth-child(even) {
+      grid-template-columns: 2rem 6rem 1fr;
+      padding: 1rem 0;
+      border-left: 0;
+    }
+
+    .yd-scenarios article {
+      grid-template-columns: 2rem 6rem 1fr;
+    }
+  }
+</style>

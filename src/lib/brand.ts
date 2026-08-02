@@ -50,7 +50,7 @@ export const DIGITAL_PRODUCTS = [
       '服务网络覆盖多地，部分线路费用最高可节省50%，具体以实际线路和报价为准',
       '专属客服+在线工单，智能报表+数据保密',
     ],
-    href: '/product#yundao-platform',
+    href: '/yundao-zhineng-jijian',
   },
 ] as const
 
