@@ -454,6 +454,12 @@ const faqSchema = createFaqSchema(HOME_FAQS)
                   ? '六大系统模块协同，订单履约全程可视'
                 : svc.subtitle}
           </p>
+          {i === 1 && (
+            <div class="svc-quality-assurance" aria-label="广检集团合作质检能力">
+              <p>与广检集团合作 QC 团队</p>
+              <span>按 AQL 1.0–6.5 执行，质检技师经广检集团资深讲师培训认证</span>
+            </div>
+          )}
           <p class="svc-desc">
             {i === 0
               ? '从商品入仓、库存管理到订单履约与退货处理，为鞋服品牌打造稳定、高效的一体化仓配体系。'
@@ -605,35 +611,35 @@ const faqSchema = createFaqSchema(HOME_FAQS)
     <div class="cases-head">
       <p class="section-tag">合作案例</p>
       <h2 id="cases-heading" class="section-title">140+ 品牌的共同选择</h2>
-      <p class="section-sub">服务鞋服、潮玩、美妆、箱包等多个细分行业的头部及成长型品牌</p>
+      <p class="section-sub">服务鞋服、潮玩、美妆、箱包等多个细分行业，并覆盖库存协同、全渠道履约、退货质检与跨境出海等场景</p>
     </div>
-    <div class="cases-list">
+    <div class="cases-gallery" aria-label="部分合作案例，悬停查看品牌合作数据">
       {
         CASES.map((c, i) => (
           <a
-            class="case-card cl-row"
+            class="case-card cg-panel"
             data-i={i}
             data-case={c.label}
             href={caseCardMeta[i].slug ? `/cases/${caseCardMeta[i].slug}` : '/cases'}
             aria-label={`查看 ${caseCardMeta[i].shortName} 合作详情`}
           >
-            <span class="cl-idx">0{i + 1}</span>
-            <div class="cl-info">
-              <span class="cl-name">{caseCardMeta[i].shortName}</span>
-              <span class="cl-cat">{c.category}</span>
+            <img src={c.img} alt={`${caseCardMeta[i].shortName} 合作案例业务场景`} loading="lazy" />
+            <div class="cg-shade" aria-hidden="true"></div>
+            <div class="cg-label">
+              <span>0{i + 1}</span>
+              <strong>{caseCardMeta[i].shortName}</strong>
+              <small>{c.category}</small>
             </div>
-            <div class="cl-metric">
-              <span class="cl-metric-context">{caseCardMeta[i].metricContext}</span>
-              <span class="cl-val">{caseCardMeta[i].metric.value}</span>
+            <div class="cg-detail">
+              <span>{c.category}</span>
+              <strong>{caseCardMeta[i].metric.value}</strong>
+              <small>{caseCardMeta[i].metricContext}</small>
+              <p>{c.details}</p>
+              <div class="cg-tags">
+                {c.tags.slice(0, 3).map((tag) => <span>{tag}</span>)}
+              </div>
+              <i aria-hidden="true">查看案例 →</i>
             </div>
-            <div class="cl-tags">
-              {c.tags.map((t) => (
-                <span>{t}</span>
-              ))}
-            </div>
-            <span class="cl-arrow" aria-hidden="true">
-              →
-            </span>
           </a>
         ))
       }
@@ -2177,6 +2183,28 @@ const faqSchema = createFaqSchema(HOME_FAQS)
     margin-bottom: 1.5rem;
     opacity: 0;
   }
+  .svc-quality-assurance {
+    max-width: 37rem;
+    margin: -0.35rem 0 1.55rem;
+    padding: 0.15rem 0 0.15rem 1rem;
+    border-left: 3px solid #2563eb;
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  .svc-quality-assurance p {
+    margin: 0 0 0.35rem;
+    color: #0a1a33;
+    font-size: 0.92rem;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+  }
+  .svc-quality-assurance span {
+    display: block;
+    color: #64748b;
+    font-size: 0.82rem;
+    font-weight: 600;
+    line-height: 1.65;
+  }
   .svc-desc {
     font-size: 1.125rem;
     color: #475569;
@@ -2259,6 +2287,9 @@ const faqSchema = createFaqSchema(HOME_FAQS)
     }
     .svc-system-overlay span + span::before {
       margin: 0 0.18rem;
+    }
+    .svc-quality-assurance {
+      margin-bottom: 1.35rem;
     }
   }
   .svc-features svg {
@@ -2415,151 +2446,192 @@ const faqSchema = createFaqSchema(HOME_FAQS)
 
   /* ── ⑤ Cases ─────────────────────────────────────────────────── */
   .s-cases {
-    background: #fff;
-    padding: 6rem 2rem 4.5rem;
+    background: #f6f8fc;
+    padding: 4rem 2rem 3rem;
   }
   .cases-head {
-    max-width: 1200px;
-    margin: 0 auto 3rem;
+    max-width: 1360px;
+    margin: 0 auto 2rem;
     text-align: center;
   }
 
-  /* List container */
-  .cases-list {
-    max-width: 1200px;
+  .cases-gallery {
+    display: flex;
+    width: min(1360px, 100%);
+    height: 34rem;
     margin: 0 auto;
-    border-top: 1px solid #e8e8e4;
+    overflow: hidden;
+    border-radius: 1.2rem;
+    background: #10284b;
   }
 
-  /* Per-brand color tokens — keys match Directus cases.label */
-  .cl-row[data-case='UR（Urban Revivo）'] {
-    --cr: #2563eb;
-    --cr-tint: rgba(37, 99, 235, 0.04);
+  .cg-panel[data-case='UR（Urban Revivo）'] {
+    --case-color: #5b93ff;
   }
-  .cl-row[data-case='玛克茜妮（MAXRIENY）'] {
-    --cr: #be123c;
-    --cr-tint: rgba(190, 18, 60, 0.04);
+  .cg-panel[data-case='玛克茜妮（MAXRIENY）'] {
+    --case-color: #f78aa3;
   }
-  .cl-row[data-case='幸棉'] {
-    --cr: #15803d;
-    --cr-tint: rgba(21, 128, 61, 0.04);
+  .cg-panel[data-case='幸棉'] {
+    --case-color: #6fd08f;
   }
-  .cl-row[data-case='美一(MEIYI)'] {
-    --cr: #b45309;
-    --cr-tint: rgba(180, 83, 9, 0.04);
+  .cg-panel[data-case='美一(MEIYI)'] {
+    --case-color: #f6ad63;
   }
 
-  /* Row */
-  .cl-row {
-    display: grid;
-    grid-template-columns: 3rem 1fr 18rem 1fr 1.5rem;
-    align-items: center;
-    column-gap: 2.5rem;
-    padding: 2.75rem 1.5rem;
-    width: 100%;
-    border: none;
-    border-bottom: 1px solid #e8e8e4;
-    background: transparent;
+  .cg-panel {
+    position: relative;
+    flex: 1 1 0;
+    min-width: 0;
+    overflow: hidden;
     cursor: pointer;
-    text-align: left;
-    font-family: inherit;
-    color: inherit;
     text-decoration: none;
-    opacity: 0;
-    transform: translateY(20px);
-    transition: background 0.2s;
-    border-radius: 0;
+    isolation: isolate;
+    transition: flex-grow 0.52s cubic-bezier(0.22, 1, 0.36, 1);
   }
-  .cl-row:hover {
-    background: var(--cr-tint);
+  .cg-panel + .cg-panel {
+    border-left: 1px solid rgba(255, 255, 255, 0.38);
   }
-
-  /* Index number */
-  .cl-idx {
-    font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    color: #c8c8c2;
-    font-variant-numeric: tabular-nums;
+  .cases-gallery:has(.cg-panel:hover) .cg-panel:not(:hover) {
+    flex-grow: 0.72;
   }
-
-  /* Brand info */
-  .cl-info {
+  .cg-panel:hover,
+  .cg-panel:focus-visible {
+    flex-grow: 2.7;
+    outline: none;
+  }
+  .cg-panel > img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: saturate(0.8) brightness(0.78);
+    transform: scale(1.03);
+    transition: filter 0.45s ease, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .cg-panel:hover > img,
+  .cg-panel:focus-visible > img {
+    filter: saturate(1) brightness(0.95);
+    transform: scale(1.08);
+  }
+  .cg-shade {
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(8, 20, 42, 0.06) 25%, rgba(8, 20, 42, 0.78) 100%);
+    transition: background 0.4s ease;
+  }
+  .cg-panel:hover .cg-shade,
+  .cg-panel:focus-visible .cg-shade {
+    background: linear-gradient(90deg, rgba(8, 20, 42, 0.56), rgba(8, 20, 42, 0.12) 72%), linear-gradient(0deg, rgba(8, 20, 42, 0.72), transparent 62%);
+  }
+  .cg-label {
+    position: absolute;
+    z-index: 2;
+    bottom: 1.4rem;
+    left: 1.3rem;
     display: flex;
     flex-direction: column;
     gap: 0.3rem;
+    color: #fff;
+    transition: opacity 0.25s ease, transform 0.35s ease;
   }
-  .cl-name {
-    font-size: 1.4rem;
+  .cg-label span {
+    color: var(--case-color, #fff);
+    font: 900 0.64rem ui-monospace, monospace;
+    letter-spacing: 0.12em;
+  }
+  .cg-label strong {
+    font-size: clamp(0.95rem, 1.35vw, 1.35rem);
     font-weight: 900;
-    color: #0a1a33;
-    letter-spacing: -0.02em;
-    line-height: 1.15;
+    white-space: nowrap;
   }
-  .cl-cat {
-    font-size: 0.72rem;
+  .cg-label small {
+    color: rgba(227, 238, 250, 0.78);
+    font-size: 0.66rem;
     font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: #a3a39c;
+    line-height: 1.45;
   }
-
-  /* Metric — big number, small unit baseline-aligned */
-  .cl-metric {
+  .cg-panel:hover .cg-label,
+  .cg-panel:focus-visible .cg-label {
+    opacity: 0;
+    transform: translateY(0.65rem);
+  }
+  .cg-detail {
+    position: absolute;
+    z-index: 2;
+    bottom: 1.55rem;
+    left: 1.7rem;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 0.35rem;
+    max-width: 21rem;
+    color: #fff;
+    opacity: 0;
+    transform: translateY(1rem);
+    transition: opacity 0.3s ease 0.08s, transform 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.08s;
   }
-  .cl-metric-context {
-    color: #64748b;
-    font-size: 0.68rem;
-    font-weight: 800;
+  .cg-detail > span {
+    color: var(--case-color, #fff);
+    font-size: 0.72rem;
+    font-weight: 850;
     letter-spacing: 0.08em;
-    line-height: 1.2;
   }
-  .cl-val {
-    font-size: clamp(2.5rem, 3.5vw, 3.5rem);
-    font-weight: 900;
-    color: var(--cr);
-    letter-spacing: -0.04em;
+  .cg-detail > strong {
+    margin-top: 0.45rem;
+    color: #fff;
+    font-size: clamp(2.25rem, 3.5vw, 3.75rem);
+    font-weight: 950;
+    letter-spacing: -0.05em;
     line-height: 1;
+    white-space: nowrap;
   }
-  /* Tags */
-  .cl-tags {
+  .cg-detail > small {
+    margin-top: 0.4rem;
+    color: #d6e4f5;
+    font-size: 0.72rem;
+  }
+  .cg-detail > p {
+    max-width: 20rem;
+    margin: 0.85rem 0 0;
+    color: #e1ebf8;
+    font-size: 0.72rem;
+    line-height: 1.6;
+  }
+  .cg-tags {
     display: flex;
     flex-wrap: wrap;
     gap: 0.35rem;
-    align-content: center;
+    margin-top: 0.75rem;
   }
-  .cl-tags span {
-    font-size: 0.68rem;
-    font-weight: 600;
-    letter-spacing: 0.03em;
-    color: #334155;
-    background: #f1f5f9;
-    padding: 0.25rem 0.7rem;
+  .cg-tags span {
+    padding: 0.22rem 0.5rem;
+    border: 1px solid rgba(214, 231, 250, 0.32);
     border-radius: 999px;
+    color: #edf5ff;
+    background: rgba(217, 233, 250, 0.12);
+    font-size: 0.6rem;
+    font-weight: 750;
     white-space: nowrap;
   }
-
-  /* Arrow */
-  .cl-arrow {
-    font-size: 1rem;
-    color: #c8c8c2;
-    transition:
-      color 0.2s,
-      transform 0.2s;
+  .cg-detail > i {
+    margin-top: 1.25rem;
+    padding-bottom: 0.2rem;
+    border-bottom: 1px solid currentColor;
+    color: #fff;
+    font-size: 0.76rem;
+    font-style: normal;
+    font-weight: 850;
   }
-  .cl-row:hover .cl-arrow {
-    color: var(--cr);
-    transform: translateX(4px);
+  .cg-panel:hover .cg-detail,
+  .cg-panel:focus-visible .cg-detail {
+    opacity: 1;
+    transform: translateY(0);
   }
 
-  /* "查看全部" button */
   .cases-more {
     text-align: center;
-    margin-top: 3.5rem;
+    margin-top: 1.25rem;
   }
   .btn-outline-dark {
     display: inline-flex;
@@ -2582,39 +2654,23 @@ const faqSchema = createFaqSchema(HOME_FAQS)
   }
 
   @media (max-width: 900px) {
-    .cl-row {
-      grid-template-columns: 2.5rem 1fr 1fr;
-      grid-template-rows: auto auto;
-      column-gap: 1.5rem;
-      row-gap: 1rem;
-    }
-    .cl-metric {
-      grid-column: 3;
-      grid-row: 1;
-      justify-self: end;
-    }
-    .cl-tags {
-      grid-column: 2 / 4;
-      grid-row: 2;
-    }
-    .cl-arrow {
-      display: none;
-    }
+    .s-cases { padding-right: 1.5rem; padding-left: 1.5rem; }
+    .cases-gallery { width: calc(100vw - 3rem); height: 28rem; }
+    .cg-panel { flex: 0 0 38%; }
+    .cases-gallery { overflow-x: auto; scroll-snap-type: x mandatory; }
+    .cg-panel { scroll-snap-align: start; }
+    .cases-gallery:has(.cg-panel:hover) .cg-panel:not(:hover),
+    .cg-panel:hover,
+    .cg-panel:focus-visible { flex-grow: 0; }
+    .cg-label { opacity: 0; }
+    .cg-detail { opacity: 1; transform: none; }
   }
   @media (max-width: 560px) {
-    .cl-row {
-      grid-template-columns: 2.5rem 1fr;
-      grid-template-rows: auto auto auto;
-    }
-    .cl-metric {
-      grid-column: 2;
-      grid-row: 2;
-      justify-self: start;
-    }
-    .cl-tags {
-      grid-column: 2;
-      grid-row: 3;
-    }
+    .cases-head { margin-bottom: 2rem; }
+    .cases-gallery { width: calc(100vw - 2rem); height: 25rem; }
+    .cg-panel { flex-basis: 76%; }
+    .cg-detail { left: 1.2rem; bottom: 1.25rem; }
+    .cg-detail > p { font-size: 0.68rem; }
   }
 
   /* ── Case Modal ─────────────────────────────────────────────── */
@@ -3646,7 +3702,7 @@ const faqSchema = createFaqSchema(HOME_FAQS)
   document.querySelectorAll<HTMLElement>('.s-service').forEach((panel) => {
     const img = panel.querySelector('.svc-img')
     const toAnimate = panel.querySelectorAll(
-      '.svc-problem, .svc-title, .svc-sub, .svc-desc, .svc-features, .svc-scenarios, .svc-link'
+      '.svc-problem, .svc-title, .svc-sub, .svc-quality-assurance, .svc-desc, .svc-features, .svc-scenarios, .svc-link'
     )
 
     const tl = gsap.timeline({

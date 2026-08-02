@@ -22,12 +22,29 @@ test('product page presents four selectable solutions and an accessible FAQ', as
       name: '一套鞋服供应链能力覆盖商品从入仓到再次销售',
     }),
   ).toBeVisible()
-  await expect(page.getByRole('navigation', { name: '产品页章节导航' })).toHaveCount(1)
-  await expect(page.getByRole('navigation', { name: '产品页章节导航' }).getByRole('link')).toHaveCount(4)
+  const selector = page.locator('[data-service-selector]')
+  await expect(selector.getByRole('tab')).toHaveCount(4)
+  await expect(selector.getByRole('tabpanel')).toHaveCount(1)
+  for (const [question, solution] of [
+    ['SKU多、平台多', '鞋服云仓'],
+    ['退货率高', '退货质检与瑕疵修复'],
+    ['平台、仓库和物流', '物流数字化能力'],
+    ['门店寄件、退仓', '运到智能寄件平台'],
+  ]) {
+    await selector.getByRole('tab', { name: new RegExp(question) }).click()
+    await expect(selector.getByRole('tabpanel')).toContainText(solution)
+  }
+  await expect(page.getByRole('navigation', { name: '产品页章节导航' })).toHaveCount(0)
   await expect(page.locator('#cloud-warehouse')).toHaveCount(1)
   await expect(page.locator('#quality-inspection')).toHaveCount(1)
   await expect(page.locator('#logistics-cloud')).toHaveCount(1)
   await expect(page.locator('#yundao-platform')).toHaveCount(1)
+  await expect(page.locator('.dashboard-frame img')).toHaveAttribute(
+    'src',
+    '/images/services/operations-dashboard-ui.webp',
+  )
+  await expect(page.locator('.brand-proof-wall a')).toHaveCount(4)
+  await expect(page.locator('.product-cta__fields span')).toHaveCount(6)
   await expect(page.locator('#product-faq details[open]')).toHaveCount(1)
 
   await page.locator('.dashboard-frame').click()

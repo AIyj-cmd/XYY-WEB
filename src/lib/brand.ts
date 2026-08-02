@@ -267,7 +267,7 @@ export const WAREHOUSES = [
 
 export const NAV_LINKS = [
   { href: '/', label: '首页' },
-  { href: '/product', label: '产品服务' },
+  { href: '/product', label: '仓配服务' },
   { href: '/about', label: '关于我们' },
   { href: '/cases', label: '合作案例' },
   { href: '/news', label: '行业动态' },

@@ -1,12 +1,11 @@
 ---
-import { BRAND, NAV_LINKS, DIGITAL_PRODUCTS } from '@/lib/brand'
-import { getServices, type Service } from '@/lib/directus'
-
-interface Props {
-  services?: Service[]
-}
-
-const SERVICES = Astro.props.services ?? await getServices()
+import { BRAND, NAV_LINKS } from '@/lib/brand'
+const PRODUCT_SERVICES = [
+  { name: '仓配服务中心', href: '/product' },
+  { name: '基础仓配', href: '/product#foundation' },
+  { name: '退货与逆向处理', href: '/product#returns' },
+  { name: '商品整理与增值处理', href: '/product#product-care' },
+]
 ---
 
 <footer class="bg-navy-900 text-navy-100 pt-14 pb-8">
@@ -36,19 +35,12 @@ const SERVICES = Astro.props.services ?? await getServices()
 
       <!-- Products -->
       <div>
-        <h3 class="text-white font-semibold text-sm uppercase tracking-wider mb-4">产品服务</h3>
+        <h3 class="text-white font-semibold text-sm uppercase tracking-wider mb-4">仓配服务</h3>
         <ul class="space-y-2.5">
-          {SERVICES.map((s) => (
+          {PRODUCT_SERVICES.map((s) => (
             <li>
-              <a href={`/product#${s.slug}`} class="text-sm text-navy-200 hover:text-white transition-colors">
+              <a href={s.href} class="text-sm text-navy-200 hover:text-white transition-colors">
                 {s.name}
-              </a>
-            </li>
-          ))}
-          {DIGITAL_PRODUCTS.map((p) => (
-            <li>
-              <a href={`/product#${p.id}`} class="text-sm text-navy-200 hover:text-white transition-colors">
-                {p.name}
               </a>
             </li>
           ))}
