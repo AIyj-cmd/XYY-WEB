@@ -119,78 +119,74 @@ async function requestItems<T>(collection: Collection, query: Record<string, unk
   return getClient().request(readItems(collection as any, query as any)) as Promise<T>
 }
 
-// ── Cache (in-process, 5-min TTL) ────────────────────────────
-
-const _cache = new Map<string, { data: unknown; expires: number }>()
-
-async function cached<T>(key: string, fetcher: () => Promise<T>, ttl = 300_000): Promise<T> {
-  const hit = _cache.get(key)
-  if (hit && hit.expires > Date.now()) return hit.data as T
+async function freshItems<T>(collection: Collection, query: Record<string, unknown>): Promise<T[]> {
   try {
-    const data = await fetcher()
-    _cache.set(key, { data, expires: Date.now() + ttl })
-    return data
+    return await requestItems<T[]>(collection, query)
   } catch (err) {
-    console.error('[directus] fetch failed for', key, err instanceof Error ? err.message : String(err))
-    if (hit) return hit.data as T
-    return [] as unknown as T
+    console.error(
+      '[directus] fetch failed for',
+      collection,
+      err instanceof Error ? err.message : String(err)
+    )
+    return []
   }
 }
 
 // ── Structured data fetchers ──────────────────────────────────
 
 export async function getHomepageStats(): Promise<HomepageStat[]> {
-  return cached('homepage_stats', () =>
-    requestItems<HomepageStat[]>('homepage_stats', {
-      filter: { status: { _eq: 'published' } },
-      sort: ['sort'],
-      fields: ['id', 'sort', 'value', 'label', 'unit', 'detail'],
-    })
-  )
+  return freshItems<HomepageStat>('homepage_stats', {
+    filter: { status: { _eq: 'published' } },
+    sort: ['sort'],
+    fields: ['id', 'sort', 'value', 'label', 'unit', 'detail'],
+  })
 }
 
 export async function getServices(): Promise<Service[]> {
-  return cached('services', () =>
-    requestItems<Service[]>('services', {
-      filter: { status: { _eq: 'published' } },
-      sort: ['sort'],
-      fields: ['id', 'sort', 'slug', 'icon', 'name', 'subtitle', 'description', 'features'],
-    })
-  )
+  return freshItems<Service>('services', {
+    filter: { status: { _eq: 'published' } },
+    sort: ['sort'],
+    fields: ['id', 'sort', 'slug', 'icon', 'name', 'subtitle', 'description', 'features'],
+  })
 }
 
 export async function getWarehouses(): Promise<Warehouse[]> {
-  return cached('warehouses', () =>
-    requestItems<Warehouse[]>('warehouses', {
-      filter: { status: { _eq: 'published' } },
-      sort: ['sort'],
-      fields: ['id', 'sort', 'name', 'city', 'since', 'address', 'park', 'rent', 'height', 'highlight'],
-    })
-  )
+  return freshItems<Warehouse>('warehouses', {
+    filter: { status: { _eq: 'published' } },
+    sort: ['sort'],
+    fields: [
+      'id',
+      'sort',
+      'name',
+      'city',
+      'since',
+      'address',
+      'park',
+      'rent',
+      'height',
+      'highlight',
+    ],
+  })
 }
 
 export async function getCases(): Promise<Case[]> {
-  return cached('cases', () =>
-    requestItems<Case[]>('cases', {
-      filter: { status: { _eq: 'published' } },
-      sort: ['sort'],
-      fields: ['id', 'category', 'label', 'metrics', 'details', 'tags', 'img'],
-    })
-  )
+  return freshItems<Case>('cases', {
+    filter: { status: { _eq: 'published' } },
+    sort: ['sort'],
+    fields: ['id', 'category', 'label', 'metrics', 'details', 'tags', 'img'],
+  })
 }
 
 // ── News fetchers ─────────────────────────────────────────────
 
 export async function getPublishedNews(limit = 10, page = 1): Promise<NewsArticle[]> {
-  return cached(`news:${limit}:${page}`, () =>
-    requestItems<NewsArticle[]>('news', {
-      filter: { status: { _eq: 'published' } },
-      sort: ['-published_at'],
-      limit,
-      offset: (page - 1) * limit,
-      fields: ['id', 'title', 'slug', 'summary', 'category', 'published_at', 'cover_image'],
-    })
-  )
+  return freshItems<NewsArticle>('news', {
+    filter: { status: { _eq: 'published' } },
+    sort: ['-published_at'],
+    limit,
+    offset: (page - 1) * limit,
+    fields: ['id', 'title', 'slug', 'summary', 'category', 'published_at', 'cover_image'],
+  })
 }
 
 export async function getNewsArticle(slug: string): Promise<NewsArticle | null> {
@@ -206,16 +202,12 @@ export async function getNewsArticle(slug: string): Promise<NewsArticle | null> 
 }
 
 export async function getNewsByCategory(category: string, limit = 6): Promise<NewsArticle[]> {
-  try {
-    return await requestItems<NewsArticle[]>('news', {
-      filter: { category: { _eq: category }, status: { _eq: 'published' } },
-      sort: ['-published_at'],
-      limit,
-      fields: ['id', 'title', 'slug', 'summary', 'category', 'published_at'],
-    })
-  } catch {
-    return []
-  }
+  return freshItems<NewsArticle>('news', {
+    filter: { category: { _eq: category }, status: { _eq: 'published' } },
+    sort: ['-published_at'],
+    limit,
+    fields: ['id', 'title', 'slug', 'summary', 'category', 'published_at'],
+  })
 }
 
 // ── Utilities ─────────────────────────────────────────────────

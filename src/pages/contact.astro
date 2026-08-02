@@ -10,7 +10,6 @@ const localBusinessSchema = {
   name: BRAND.fullName,
   url: BRAND.url,
   telephone: [BRAND.phone.toll],
-  openingHours: 'Mo-Fr 09:00-18:00',
   location: [
     {
       '@type': 'Place',
@@ -32,6 +31,7 @@ const localBusinessSchema = {
 <Layout
   title="联系新亦源 - 咨询鞋服云仓合作 | 广州新亦源供应链"
   description="联系广州新亦源供应链，咨询鞋服云仓、后整质检、物流云合作方案。电话：400-6865-156，总部：广东省广州市黄埔区果园一路2号。"
+  canonical={`${BRAND.url}/contact`}
   jsonLd={localBusinessSchema}
 >
   <!-- Hero -->
@@ -54,7 +54,7 @@ const localBusinessSchema = {
         开始合作对话
       </h1>
       <p class="text-lg text-navy-100 max-w-xl leading-relaxed">
-        无论您是想了解具体报价、参观仓库，还是希望了解我们如何服务您的品类，我们的商务团队会在3个工作日内回复。
+        无论您是想了解具体报价、参观仓库，还是希望了解我们如何服务您的品类，都可以提交需求，由商务团队跟进。
       </p>
     </div>
   </section>
@@ -208,11 +208,21 @@ const localBusinessSchema = {
               ></textarea>
             </div>
 
-            <p class="text-xs text-gray-400 leading-relaxed">
-              提交即表示您同意广州新亦源供应链管理有限公司收集并使用上述信息，用于业务咨询回复和方案对接，信息将保存不超过 3 年。您可随时发送邮件至
-              <a href="mailto:info@56xyy.com" class="underline underline-offset-2 hover:text-gray-600 transition-colors">info@56xyy.com</a>
-              申请查阅、更正或删除个人信息，或撤回本次同意。
-            </p>
+            <label class="flex items-start gap-3 text-xs text-gray-500 leading-relaxed">
+              <input
+                type="checkbox"
+                name="privacyConsent"
+                required
+                class="mt-0.5 h-4 w-4 rounded border-gray-300 text-brand-orange focus:ring-brand-orange"
+              />
+              <span>
+                我已阅读并同意
+                <a href="/privacy" target="_blank" class="underline underline-offset-2 hover:text-gray-600 transition-colors">《个人信息保护说明》</a>，
+                同意广州新亦源供应链管理有限公司为业务咨询回复和方案对接收集并使用上述信息，并仅在实现该目的所需期限内保存。可发送邮件至
+                <a href="mailto:yufengzhen@56xyy.com" class="underline underline-offset-2 hover:text-gray-600 transition-colors">yufengzhen@56xyy.com</a>
+                申请查阅、更正、删除个人信息或撤回同意。
+              </span>
+            </label>
 
             <button
               type="submit"
@@ -255,7 +265,7 @@ const localBusinessSchema = {
 
       if (res.ok) {
         result.className = 'mt-4 p-4 rounded-xl bg-green-50 border border-green-200 text-green-800 text-sm font-medium'
-        result.textContent = '提交成功！我们的商务团队将在3个工作日内与您联系。'
+        result.textContent = '提交成功！商务团队将根据您的需求与您联系。'
         form.reset()
       } else {
         throw new Error(typeof payload.error === 'string' ? payload.error : 'server error')

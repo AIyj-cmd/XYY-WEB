@@ -1,5 +1,6 @@
 ---
 import ServiceLanding from '@/layouts/ServiceLanding.astro'
+import { CLAIM_TEXT } from '@/lib/claims'
 
 const COMPARE_ROWS = [
   { item: '订单规模', b2c: '单笔1–5件，SKU少', b2b: '单笔几十到数千件，多SKU混发' },
@@ -39,31 +40,50 @@ const SCENARIO_ITEMS = [
 ---
 
 <ServiceLanding
-  title="B2B门店仓配服务商 — 连锁门店补货、批发铺货、分货标签一体化 | 新亦源"
-  description="新亦源B2B门店仓配，专为连锁品牌、批发商、加盟商提供门店补货配送、分色分码分货、货架标签、分货明细单等B2B仓配服务，支持ERP系统对接，全国门店覆盖。"
+  title="B2B门店仓配｜连锁补货、分货与全渠道一盘货｜新亦源"
+  description="新亦源B2B门店仓配覆盖6000+城市，为连锁品牌、批发商、加盟商提供门店补货配送、分色分码分货、货架标签、分货明细单及ERP系统对接等全流程服务。"
   slug="b2b-mendian-cangpei"
+  variant="store-rhythm"
   breadcrumbLabel="B2B门店仓配"
   eyebrow="B2B门店仓配 · 连锁补货 + 批发铺货专业服务"
-  h1="B2B门店仓配"
-  h1sub="连锁门店补货、批发铺货，分色分码精准配货"
+  h1="B2B门店仓配与连锁门店补货"
+  h1sub="批发铺货、分色分码与全渠道库存协同"
   heroDesc="新亦源B2B门店仓配专为鞋服连锁品牌、批发商和加盟体系设计，提供门店补货配送、按门店分货分拣、货架标签制作、ERP系统对接等全流程B2B仓配服务，服务合作品牌遍布全国的门店网络。"
   imgSrc="/w-hanging3.webp"
   imgAlt="B2B门店仓配 — 连锁门店批量补货配送"
   stats={[
     { stat: '140+', label: '合作品牌', sub: '含多家连锁零售品牌' },
-    { stat: '6000+', label: '服务区域', sub: '覆盖全国主要城市及区县' },
+    { stat: '6000+', label: '覆盖城市', sub: '公司运营统计' },
     { stat: '分色分码', label: '精准分货', sub: '按门店SKU规格独立分拣' },
-    { stat: '0元', label: 'ERP对接费用', sub: '支持主流进销存系统' },
+    { stat: '不收', label: '系统使用费', sub: '接口实施和定制费用按方案确认' },
   ]}
-  contentDesc="适合有连锁门店补货需求的服饰品牌，尤其季节性铺货、按需补货、紧急调货场景。B2B仓配难点是按门店SKU精准分货并与品牌ERP打通。新亦源B2B仓配支持零担/整车/同城快运混合发货，系统自动接收补货指令并执行出库，已服务多家连锁鞋服品牌，积累完善门店分货流程，错发率低于0.01%。"
+  contentDesc={`适合有连锁门店补货需求的服饰品牌，尤其季节性铺货、按需补货和紧急调货场景。新亦源B2B仓配支持按门店SKU分货、零担/整车/同城快运混合发货，并可与品牌ERP协同处理补货指令，发货准确率${CLAIM_TEXT.shippingAccuracy}。`}
   featuresLabel="B2B仓配核心能力"
   features={[
-    { title: '门店分货精准分拣', desc: '按门店编号独立分区拣货，分色分码分规格，每箱附分货明细单（门店名称、SKU清单、数量），减少门店收货时的清点差错。' },
-    { title: '货架标签 / 吊牌加工', desc: '根据门店或客户要求制作货架价格标签、商品条码、吊牌，支持不同门店使用不同标签格式，出库前完成贴标，门店收货即可上架。' },
-    { title: 'ERP / 进销存系统对接', desc: '与品牌方ERP、进销存或门店管理系统免费打通，自动接收补货指令、生成出库单，发货后自动回传物流单号，无需人工二次录入。' },
-    { title: '零担 / 整车 / 快递混合发货', desc: '根据门店距离和货量灵活选择物流方式：近郊门店同城货运当日送达，跨省门店零担次日到两日，单件轻货走快递，降低综合物流成本。' },
-    { title: 'B2C+B2B一盘货管理', desc: '同一批库存同时支持线上B2C发货和线下门店B2B补货，库存统一管理，系统自动按订单类型选择出库模式，无需分仓备货。' },
-    { title: '季节集中铺货保障', desc: '春夏/秋冬换季时集中铺货，提前预排班，保障在约定时间内完成全国门店补货，历史大规模铺货（千家门店级别）零违约记录。' },
+    {
+      title: '门店分货精准分拣',
+      desc: '按门店编号独立分区拣货，分色分码分规格，每箱附分货明细单（门店名称、SKU清单、数量），减少门店收货时的清点差错。',
+    },
+    {
+      title: '货架标签 / 吊牌加工',
+      desc: '根据门店或客户要求制作货架价格标签、商品条码、吊牌，支持不同门店使用不同标签格式，出库前完成贴标，门店收货即可上架。',
+    },
+    {
+      title: 'ERP / 进销存系统对接',
+      desc: '已对接百胜E3、聚水潭、伯俊、吉客云、丽晶、浪潮、恒康等主流ERP，可自动接收补货指令、生成出库单并回传物流信息；不收系统使用费，接口实施和定制费用按方案确认。',
+    },
+    {
+      title: '零担 / 整车 / 快递混合发货',
+      desc: '根据门店距离、货量和交付要求选择零担、整车、同城货运或快递；运输为参考时效，以线路和合同SLA为准。',
+    },
+    {
+      title: 'B2C+B2B一盘货管理',
+      desc: '同一批库存同时支持线上B2C发货和线下门店B2B补货，库存统一管理，系统自动按订单类型选择出库模式，无需分仓备货。',
+    },
+    {
+      title: '季节集中铺货保障',
+      desc: '春夏、秋冬换季集中铺货前提前预排班，并通过动态用工与波次计划保障约定的门店补货节奏。',
+    },
   ]}
   faqs={[
     {
@@ -76,11 +96,11 @@ const SCENARIO_ITEMS = [
     },
     {
       q: '新亦源支持与哪些ERP系统对接？',
-      a: '支持主流进销存和ERP系统，包括：用友、金蝶、SAP、管家婆、旺店通、聚水潭、飞书多维表格等。也支持品牌方自研系统通过API接口对接。对接费用免费，通常1-2周完成联调上线。',
+      a: '已对接百胜E3、聚水潭、伯俊、吉客云、丽晶、浪潮、恒康等主流ERP，也支持品牌自研系统通过API接入，可协同接收补货指令、生成出库单并回传物流信息。具体接口方式、字段范围和联调周期由双方确认；不收系统使用费，接口实施和定制费用按方案确认。',
     },
     {
       q: '季节换新集中铺货时，能在多少天内完成全国发货？',
-      a: '取决于门店数量和SKU规模。通常情况下：100家门店以内，3-5天完成全国铺货；500家门店，7-10天；1000家以上，提前规划预排班，通常14天内完成。建议品牌提前1-2个月告知铺货计划，我们提前备仓和排班，确保时效。',
+      a: '参考铺货时效：100家门店约3—5天、500家约7—10天、1000家约14天；具体按SKU数量、分货方式、门店区域和运输线路确认。',
     },
     {
       q: 'B2B发货的货架标签和分货明细单怎么定制？',
@@ -88,10 +108,18 @@ const SCENARIO_ITEMS = [
     },
   ]}
 >
-  <section slot="unique" class="py-14 bg-white border-b border-gray-100" aria-labelledby="b2b-compare-heading">
+  <section
+    slot="unique"
+    class="py-14 bg-white border-b border-gray-100"
+    aria-labelledby="b2b-compare-heading"
+  >
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <h2 id="b2b-compare-heading" class="text-xl font-black text-navy-800 mb-1 text-center">B2B门店仓配 vs B2C电商仓配 — 核心差异</h2>
-      <p class="text-xs text-gray-400 text-center mb-8">两种模式作业逻辑不同，新亦源同时支持，一盘货统一管理</p>
+      <h2 id="b2b-compare-heading" class="text-xl font-black text-navy-800 mb-1 text-center">
+        B2B门店仓配 vs B2C电商仓配 — 核心差异
+      </h2>
+      <p class="text-xs text-gray-400 text-center mb-8">
+        两种模式作业逻辑不同，新亦源同时支持，一盘货统一管理
+      </p>
 
       <div class="overflow-x-auto rounded-xl border border-gray-200 mb-10">
         <table class="w-full text-sm text-left">
@@ -99,34 +127,51 @@ const SCENARIO_ITEMS = [
             <tr class="bg-navy-800 text-white">
               <th class="px-5 py-3.5 font-bold text-xs tracking-wider w-28">对比项</th>
               <th class="px-5 py-3.5 font-bold text-xs tracking-wider">
-                <span class="inline-block px-2 py-0.5 rounded bg-white/20 mr-1 text-[10px]">B2C</span>电商发货
+                <span class="inline-block px-2 py-0.5 rounded bg-white/20 mr-1 text-[10px]"
+                  >B2C</span
+                >电商发货
               </th>
               <th class="px-5 py-3.5 font-bold text-xs tracking-wider">
-                <span class="inline-block px-2 py-0.5 rounded bg-brand-orange/20 text-brand-orange mr-1 text-[10px]">B2B</span>门店补货
+                <span
+                  class="inline-block px-2 py-0.5 rounded bg-brand-orange/20 text-brand-orange mr-1 text-[10px]"
+                  >B2B</span
+                >门店补货
               </th>
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-100 bg-white">
-            {COMPARE_ROWS.map(({ item, b2c, b2b }) => (
-              <tr class="hover:bg-orange-50/20 transition-colors">
-                <td class="px-5 py-4 font-bold text-navy-700 text-xs align-top whitespace-nowrap">{item}</td>
-                <td class="px-5 py-4 text-gray-500 text-xs leading-relaxed align-top">{b2c}</td>
-                <td class="px-5 py-4 text-gray-600 text-xs leading-relaxed align-top font-medium">{b2b}</td>
-              </tr>
-            ))}
+            {
+              COMPARE_ROWS.map(({ item, b2c, b2b }) => (
+                <tr class="hover:bg-orange-50/20 transition-colors">
+                  <td class="px-5 py-4 font-bold text-navy-700 text-xs align-top whitespace-nowrap">
+                    {item}
+                  </td>
+                  <td class="px-5 py-4 text-gray-500 text-xs leading-relaxed align-top">{b2c}</td>
+                  <td class="px-5 py-4 text-gray-600 text-xs leading-relaxed align-top font-medium">
+                    {b2b}
+                  </td>
+                </tr>
+              ))
+            }
           </tbody>
         </table>
       </div>
 
       <h3 class="text-sm font-bold text-navy-800 mb-4">典型B2B仓配使用场景</h3>
       <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {SCENARIO_ITEMS.map(({ title, desc, tag, tagColor }) => (
-          <div class="bg-gray-50 rounded-xl border border-gray-200 p-4 flex flex-col gap-3">
-            <span class={`inline-block text-[10px] font-black px-2 py-0.5 rounded-full w-fit ${tagColor}`}>{tag}</span>
-            <h4 class="font-black text-navy-800 text-sm">{title}</h4>
-            <p class="text-xs text-gray-500 leading-snug">{desc}</p>
-          </div>
-        ))}
+        {
+          SCENARIO_ITEMS.map(({ title, desc, tag, tagColor }) => (
+            <div class="bg-gray-50 rounded-xl border border-gray-200 p-4 flex flex-col gap-3">
+              <span
+                class={`inline-block text-[10px] font-black px-2 py-0.5 rounded-full w-fit ${tagColor}`}
+              >
+                {tag}
+              </span>
+              <h4 class="font-black text-navy-800 text-sm">{title}</h4>
+              <p class="text-xs text-gray-500 leading-snug">{desc}</p>
+            </div>
+          ))
+        }
       </div>
     </div>
   </section>

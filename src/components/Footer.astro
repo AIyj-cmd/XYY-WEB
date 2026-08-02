@@ -1,7 +1,11 @@
 ---
-import { BRAND, NAV_LINKS, DIGITAL_PRODUCTS } from '@/lib/brand'
-import { getServices } from '@/lib/directus'
-const SERVICES = await getServices()
+import { BRAND, NAV_LINKS } from '@/lib/brand'
+const PRODUCT_SERVICES = [
+  { name: '仓配服务中心', href: '/product' },
+  { name: '基础仓配', href: '/product#foundation' },
+  { name: '退货与逆向处理', href: '/product#returns' },
+  { name: '商品整理与增值处理', href: '/product#product-care' },
+]
 ---
 
 <footer class="bg-navy-900 text-navy-100 pt-14 pb-8">
@@ -14,7 +18,7 @@ const SERVICES = await getServices()
           <img src="/logo.png" alt="新亦源供应链" class="h-12 w-auto" loading="lazy" />
         </a>
         <p class="text-sm text-navy-200 leading-relaxed mb-5">
-          2011年成立，深耕鞋服物流15年。140+知名服饰品牌的云仓伙伴，服务覆盖全国主要城市及6000+区县/服务区域。
+          2011年成立，深耕鞋服物流15年。服务140+品牌、10000+门店，覆盖6000+城市，直营仓储50万㎡。
         </p>
         <div class="space-y-1.5">
           <a
@@ -31,19 +35,12 @@ const SERVICES = await getServices()
 
       <!-- Products -->
       <div>
-        <h3 class="text-white font-semibold text-sm uppercase tracking-wider mb-4">产品服务</h3>
+        <h3 class="text-white font-semibold text-sm uppercase tracking-wider mb-4">仓配服务</h3>
         <ul class="space-y-2.5">
-          {SERVICES.map((s) => (
+          {PRODUCT_SERVICES.map((s) => (
             <li>
-              <a href={`/product#${s.id}`} class="text-sm text-navy-200 hover:text-white transition-colors">
+              <a href={s.href} class="text-sm text-navy-200 hover:text-white transition-colors">
                 {s.name}
-              </a>
-            </li>
-          ))}
-          {DIGITAL_PRODUCTS.map((p) => (
-            <li>
-              <a href={`/product#${p.id}`} class="text-sm text-navy-200 hover:text-white transition-colors">
-                {p.name}
               </a>
             </li>
           ))}
@@ -82,14 +79,19 @@ const SERVICES = await getServices()
       <p class="text-xs text-navy-300">
         © {new Date().getFullYear()} {BRAND.fullName}. 保留所有权利.
       </p>
-      <a
-        href="https://beian.miit.gov.cn/"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="text-xs text-navy-300 hover:text-navy-100 transition-colors"
-      >
-        {BRAND.icp}
-      </a>
+      <div class="flex items-center gap-4">
+        <a href="/privacy" class="text-xs text-navy-300 hover:text-navy-100 transition-colors">
+          个人信息保护说明
+        </a>
+        <a
+          href="https://beian.miit.gov.cn/"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-xs text-navy-300 hover:text-navy-100 transition-colors"
+        >
+          {BRAND.icp}
+        </a>
+      </div>
     </div>
   </div>
 </footer>

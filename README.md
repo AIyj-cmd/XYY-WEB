@@ -1,109 +1,128 @@
-# 新亦源供应链官网 — wz.tomatopia.top
+# 新亦源供应链官网
 
-广州新亦源供应链管理有限公司官方网站。项目基于 Astro SSR、Directus CMS、PostgreSQL 和 PM2 部署。
+广州新亦源供应链管理有限公司官方网站。项目采用 Astro SSR、Directus CMS、PostgreSQL、PM2 与 Nginx，覆盖鞋服云仓、退货质检、瑕疵修复、数字化履约和智能寄件等业务。
+
+- 当前服务器环境：<https://wz.tomatopia.top>
+- 正式域名规划：<https://56xyy.com>（尚未切换到本项目服务器）
+- 项目状态：[docs/PROJECT_STATUS.md](docs/PROJECT_STATUS.md)
 
 ## 技术栈
 
 | 层 | 技术 |
 |---|---|
-| 前端框架 | Astro 7 SSR（`@astrojs/node` middleware） |
-| 样式 | Tailwind CSS 4 + 页面级原生 CSS |
-| 动画 | GSAP 3 + Lenis |
-| CMS | Directus 12 + PostgreSQL 16 |
-| 进程管理 | PM2（`xyy-web`、`xyy-cms`） |
-| 反向代理 | Nginx，同域 `/cms/` 代理 Directus |
+| 前端 | Astro 7 SSR、TypeScript、Tailwind CSS 4、页面级 CSS |
+| 交互 | GSAP 3、Lenis、原生 IntersectionObserver |
+| CMS | Directus 12、PostgreSQL 16 |
+| 服务 | Express 5、PM2、Nginx |
+| 测试 | Astro Check、ESLint、Vitest、Playwright、Lighthouse CI |
 
-## 常用命令
+## 本地开发
+
+Node.js 要求 `>=22.12.0`。
 
 ```bash
-npm install
+npm ci
 npm run dev
-npm run verify        # typecheck + lint + unit tests + build
-npm run test:e2e      # Playwright 桌面/移动冒烟测试
-npm run audit         # 生产依赖安全审计
-npm start             # 构建后启动 server.mjs
+```
+
+本地 `.env` 可连接远程 CMS，真实密钥不得提交。环境变量模板见 `.env.example`。
+
+常用命令：
+
+```bash
+npm run typecheck            # Astro 类型与模板诊断
+npm run lint                 # ESLint
+npm run test                 # Vitest 单元测试
+npm run test:e2e             # Playwright 桌面/移动冒烟测试
+npm run build:local-preview  # 使用开发环境配置构建本地验收版本
+npm run verify               # typecheck + lint + test + production build
+npm run audit                # 生产依赖安全审计
 ```
 
 ## 目录结构
 
 ```text
 src/
-  components/          Header / Footer
-  layouts/Layout.astro 全局 SEO、JSON-LD、字体、浮动联系按钮
-  lib/site-config.ts   站点 URL 单一来源（读取 PUBLIC_SITE_URL 环境变量）
-  lib/brand.ts         品牌常量、ABOUT_STATS、CASE_DETAILS（首页案例模态框富文本）
-  lib/directus.ts      Directus SDK 封装、5分钟（300s）进程内缓存、公开资源 URL helper
-  lib/sanitize.ts      CMS 富文本白名单过滤
-  pages/               Astro 页面与 /api/contact
-scripts/
-  deploy.sh            本地验证、打包、远端 PM2 重载
-  health-check.mjs     线上站点和 Directus 健康检查
+  components/          全局组件与服务页视觉组件
+  layouts/             全局 Layout 与服务落地页布局
+  lib/                 品牌事实、CMS、SEO、站点配置和安全工具
+  pages/               Astro 页面与 API 路由
+  styles/              全局样式
 public/
-  introduce-720p.mp4   关于页 hero 视频优化版
-  introduce-poster.jpg 视频 poster
-resources/
-  original-media/      不发布的原始大资源备份
+  images/services/     服务页已优化图片
+scripts/
+  deploy.sh            验证、构建、上传、PM2 重启和健康检查
+  health-check.mjs     官网、Web 进程与 Directus 健康检查
+  bootstrap-cms-server.sh  服务器端 CMS 初始化脚本
+  setup-cms.mjs        Directus 集合与字段初始化
+  sync-approved-cms-content.mjs  审核内容同步
+deploy/
+  nginx-56xyy.conf     正式域名迁移参考配置，当前未启用
+docs/
+  PROJECT_STATUS.md    当前发布、环境与待办状态
+  archive/             历史检查报告和优化计划
+tests/                 单元与端到端测试
 ```
+
+生成目录 `.astro/`、`dist/`、`output/`、`test-results/`、`.playwright-cli/` 不进入 Git。
+
+## 数据来源
+
+| 内容 | 来源 | 生效方式 |
+|---|---|---|
+| 首页统计、服务、案例、仓库、新闻 | Directus | 后台保存后，下次页面请求读取 |
+| 首页案例弹窗、案例详情页、品牌常量 | `src/lib/brand.ts`、`src/pages/cases/[slug].astro` | 修改代码并部署 |
+| 官网统一运营口径 | `src/lib/claims.ts` | 修改代码并部署 |
+| SEO、FAQ、结构化数据 | 页面代码与 `src/lib/seo.ts` | 修改代码并部署 |
+
+Directus 读取失败时使用安全降级，不在进程内缓存 CMS 内容。动态页面响应设置为 `no-store`。
 
 ## 环境变量
 
 | 变量 | 说明 |
 |---|---|
-| `DIRECTUS_URL` | 服务端访问 Directus 的地址，服务器上建议 `http://127.0.0.1:8055` |
-| `DIRECTUS_TOKEN` | Directus 静态 token |
-| `PUBLIC_SITE_URL` | `https://wz.tomatopia.top` |
-| `PUBLIC_DIRECTUS_URL` | `https://wz.tomatopia.top/cms` |
+| `DIRECTUS_URL` | 服务端 Directus 地址；服务器建议 `http://127.0.0.1:8055` |
+| `DIRECTUS_TOKEN` | Directus 静态 Token，敏感信息 |
+| `PUBLIC_SITE_URL` | 当前构建与 canonical 使用的站点地址 |
+| `PUBLIC_DIRECTUS_URL` | 浏览器可访问的 CMS 地址 |
+| `ENABLE_DOMAIN_REDIRECTS` | 正式域名切换完成后才可设为 `true` |
+| `LEGACY_DOMAINS` | 正式切换后需要 301 的旧域名列表 |
+
+`.env`、`.env.production` 仅保存在本地和服务器，不提交 GitHub，也不由部署脚本上传。
 
 ## 部署
 
-服务器要求 Node.js `>=22.12.0`。当前服务器使用 `/opt/node-v22/bin/node`，PM2 配置见 `ecosystem.config.cjs`。
+目标服务器必须已配置 SSH 公钥、Node.js、PM2、Nginx 和 `/var/www/xyy-web/.env`。
 
 ```bash
-export DEPLOY_HOST='root@<server-ip>'
-export XYY_DEPLOY_PASSWORD='******'
+DEPLOY_HOST='root@47.82.105.103' \
+SITE_URL='https://wz.tomatopia.top' \
 bash scripts/deploy.sh
 ```
 
-`DEPLOY_HOST` 为必填项，未设置时脚本直接退出报错。
+部署脚本会：
 
-部署脚本会执行 `npm run verify`，上传 `dist`、`package*.json`、`server.mjs`、`ecosystem.config.cjs` 和 `.env.production`，远端执行 `npm install --omit=dev` 后重载 `xyy-web`。
+1. 以 `SITE_URL` 覆盖构建期公开地址并运行 `npm run verify`；
+2. 用 `rsync` 上传 `dist` 和运行所需文件；
+3. 保留服务器现有 `.env`，安装生产依赖并重启 `xyy-web`；
+4. 检查首页、`/healthz` 和 Directus ping。
 
-## 数据链路
-
-| 内容 | 来源 | 生效延迟 |
-|---|---|---|
-| 首页统计数字 | Directus `homepage_stats` | ≤ 5分钟 |
-| 服务介绍（三大业务）| Directus `services` | ≤ 5分钟 |
-| 首页案例卡片（前4条）| Directus `cases` | ≤ 5分钟 |
-| 案例页 `/cases` | Directus `cases` | ≤ 5分钟 |
-| 关于页仓库列表 | Directus `warehouses` | ≤ 5分钟 |
-| 新闻 | Directus `news` | ≤ 5分钟 |
-| 首页案例模态框详情 | `brand.ts CASE_DETAILS` | 改代码后重新部署 |
-| 关于页质检数字栏 | `brand.ts ABOUT_STATS` | 改代码后重新部署 |
-
-修改 Directus 内容后若页面仍显示旧数据，等 60 秒缓存过期，或 `pm2 restart xyy-web` 立即清缓存。
+在 `56xyy.com` DNS、证书与 Nginx 未切换到目标服务器前，不得启用旧域名跳转。迁移参考配置位于 `deploy/nginx-56xyy.conf`。
 
 ## CMS
 
-- 后台：`https://wz.tomatopia.top/cms/admin/`
-- 公开存活检查：`https://wz.tomatopia.top/cms/server/ping`
-- 详细健康检查：`/cms/server/health`（Directus 12 需要登录态或授权）
-- 安装目录：`/var/www/xyy-cms`
-- 重新创建/补齐集合：`DIRECTUS_URL=http://127.0.0.1:8055 DIRECTUS_TOKEN=... node scripts/setup-cms.mjs`
+- 当前后台：<https://wz.tomatopia.top/cms/admin/>
+- Ping：<https://wz.tomatopia.top/cms/server/ping>
+- 服务器目录：`/var/www/xyy-cms`
 
-## Nginx
+```bash
+# 预检审核内容同步
+npm run cms:sync-approved
 
-参考配置：`nginx.conf`
+# 执行同步
+npm run cms:sync-approved -- --apply
+```
 
-- `/` 代理 Astro SSR：`127.0.0.1:4321`
-- `/cms/` 代理 Directus：`127.0.0.1:8055`
-- 静态资源增加缓存头
-- 配置 HSTS、nosniff、Referrer-Policy、Permissions-Policy
+## 提交边界
 
-## 质量门禁
-
-- `astro check`：类型与 Astro 诊断
-- `eslint .`：JS/TS/Astro 静态检查
-- `vitest run`：Directus helper、富文本过滤、联系 API 单元测试
-- `playwright test`：首页、联系表单、新闻页桌面/移动冒烟测试
-- `lhci autorun`：Lighthouse 本地性能/SEO/可访问性门槛
+禁止提交：真实环境变量、Token、服务器密钥、构建产物、测试截图、原始大媒体和临时补丁。`public/` 中被页面引用且已优化的图片可以提交。

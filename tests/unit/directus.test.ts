@@ -3,9 +3,13 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   __setDirectusRequesterForTests,
   formatDate,
+  getCases,
   getDirectusAssetUrl,
   getDirectusPublicUrl,
+  getHomepageStats,
   getPublishedNews,
+  getServices,
+  getWarehouses,
 } from '@/lib/directus'
 
 describe('Directus helpers', () => {
@@ -48,5 +52,50 @@ describe('Directus helpers', () => {
         offset: 0,
       })
     )
+  })
+
+  it.each([
+    ['homepage_stats', getHomepageStats],
+    ['services', getServices],
+    ['warehouses', getWarehouses],
+  ] as const)('reads %s from Directus instead of local constants', async (collection, fetcher) => {
+    const item = { id: 1, marker: collection }
+    const requester = vi.fn(async () => [item])
+    __setDirectusRequesterForTests(requester)
+
+    await expect(fetcher()).resolves.toEqual([item])
+    expect(requester).toHaveBeenCalledTimes(1)
+    expect(requester).toHaveBeenCalledWith(
+      collection,
+      expect.objectContaining({
+        filter: { status: { _eq: 'published' } },
+        sort: ['sort'],
+      })
+    )
+  })
+
+  it.each([
+    ['cases', () => getCases()],
+    ['published news', () => getPublishedNews(1, 1)],
+  ])('requests fresh %s data on every call', async (_name, fetcher) => {
+    const requester = vi
+      .fn()
+      .mockResolvedValueOnce([{ id: 1, label: '第一次' }])
+      .mockResolvedValueOnce([{ id: 2, label: '第二次' }])
+    __setDirectusRequesterForTests(requester)
+
+    await expect(fetcher()).resolves.toEqual([{ id: 1, label: '第一次' }])
+    await expect(fetcher()).resolves.toEqual([{ id: 2, label: '第二次' }])
+    expect(requester).toHaveBeenCalledTimes(2)
+  })
+
+  it('returns an empty list when a collection request fails', async () => {
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+    __setDirectusRequesterForTests(async () => {
+      throw new Error('CMS unavailable')
+    })
+
+    await expect(getHomepageStats()).resolves.toEqual([])
+    expect(errorSpy).toHaveBeenCalled()
   })
 })

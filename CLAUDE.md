@@ -1,81 +1,92 @@
 # CLAUDE.md
 
-项目：广州新亦源供应链官网 — Astro 7 SSR + Directus 12 CMS。
+项目：广州新亦源供应链官网。技术栈为 Astro 7 SSR、Directus 12、Express 5、PM2 和 Nginx。
 
-## 常用命令
-
-```bash
-npm run dev          # 本地开发
-npm run verify       # typecheck + lint + test + build（部署前必跑）
-npm run typecheck    # 单独类型检查
-npm run test         # 单元测试
-```
-
-PM2（生产）：
+## 开发与验证
 
 ```bash
-pm2 restart xyy-web  # 重启前端，同时清空 Directus 数据缓存
-pm2 logs xyy-web
+npm run dev
+npm run typecheck
+npm run lint
+npm run test
+npm run verify
 ```
 
-## 数据架构
+提交或部署前必须至少通过 `npm run verify`。涉及交互或响应式布局时，再运行 `npm run test:e2e` 或使用浏览器检查桌面与移动端。
 
-**两个数据来源，职责明确，不要混用：**
+## 数据职责
 
 | 数据 | 来源 | 修改方式 |
 |---|---|---|
-| 首页统计、服务介绍、仓库列表 | Directus（5分钟缓存）| CMS 后台编辑，最多5分钟生效；立即生效跑 `pm2 restart xyy-web` |
-| 首页案例卡片（前4条）、案例页 | Directus（5分钟缓存）| CMS 后台编辑，最多5分钟生效；立即生效跑 `pm2 restart xyy-web` |
-| 新闻 | Directus（5分钟缓存）| CMS 后台编辑，最多5分钟生效；立即生效跑 `pm2 restart xyy-web` |
-| 首页案例模态框详情 `CASE_DETAILS` | `brand.ts` | 改代码 + 部署 |
-| 关于页质检数字 `ABOUT_STATS` | `brand.ts` | 改代码 + 部署 |
-| 品牌信息、导航、数字产品 | `brand.ts` | 改代码 + 部署 |
+| 首页统计、服务、案例、仓库、新闻 | Directus，无内容缓存 | CMS 保存后刷新页面 |
+| `CASE_DETAILS`、品牌与导航常量 | `src/lib/brand.ts` | 改代码并部署 |
+| 统一数字与运营口径 | `src/lib/claims.ts` | 改代码并部署 |
+| JSON-LD、FAQ Schema、canonical | 页面与 `src/lib/seo.ts` | 改代码并部署 |
 
-`brand.ts` 中**已删除** `STATS` 和 `SERVICES` 导出（无人引用），不要重新加。
+`CASE_DETAILS` 键名必须与 Directus `cases.label` 完全一致，`slug` 同时用于首页链接、案例详情页和 sitemap。Directus 资源 URL 必须使用 `getDirectusAssetUrl()`，CMS 富文本在 `set:html` 前必须经过 `sanitize.ts`。
 
-`CASE_DETAILS` 的键名必须和 Directus `cases.label` 完全一致（如 `'UR（Urban Revivo）'`），这是首页案例模态框的查找依据。
+## 首页设计状态
 
-## 设计规则
+首页于 2026-07-31 完成当前版本。继续修改时保持以下约束：
 
-- **不用深色大背景**：section 背景用白/浅灰/浅蓝；Hero 可以用背景图+遮罩，纯色深色 section 不用
-- **列表型内容用横向行，不用卡片**：1px 线分隔，没有 box/card 容器
-- **Astro scoped style 对 innerHTML 注入的元素无效**：动态插入的 DOM 必须用 `:global()` 或内联样式
+- 首屏使用鞋服云仓实景与深色遮罩；主要 CTA 为橙色。
+- 顶部导航保留原有内容，使用居中的半透明悬浮胶囊样式。
+- 主体 section 以白、浅灰、浅蓝为主，深色仅用于页脚等收束区域。
+- 解决方案模块保持统一结构：客户问题、服务名称、核心价值、能力项、场景与 CTA。
+- 履约流程为正向七步链路，蓝色底线进入视区后由橙线从左向右覆盖。
+- 首页 FAQ 使用左侧转化信息与右侧单开手风琴；答案保持简短。
+- 列表型内容优先使用横向行与 1px 分隔线，避免堆叠装饰性卡片。
+- 动态插入 DOM 的样式使用 `:global()` 或明确的全局选择器。
 
-## Git 与部署
+## 产品服务页设计状态
 
-GitHub 推送需绕过本地代理：
+产品服务页于 2026-08-01 完成当前版本。继续修改时保持以下约束：
+
+- 四项核心方案固定为鞋服云仓、退货质检与瑕疵修复、物流数字化能力、运到智能寄件平台；
+- 产品页承担服务选择和方案理解，不重复首页的产品简介结构；
+- 只有服务选择与组合方案大量使用卡片，其余模块优先使用实景图、流程、数据、截图和目录列表；
+- 桌面端章节导航为居中悬浮胶囊，向上滚动显示、向下滚动隐藏；移动端使用横向标签；
+- 系统类能力使用真实截图并支持放大，不使用低清旧信息图或虚构后台界面；
+- 页面主要使用白色与浅灰蓝背景，深蓝仅用于最终 CTA、页脚和系统截图容器；
+- 动效保持一次性、低干扰，并尊重 `prefers-reduced-motion`。
+
+## Git 与仓库卫生
+
+不得提交：
+
+- `.env`、`.env.production` 或任何 Token、密码和私钥；
+- `.astro/`、`dist/`、`output/`、`test-results/`、`.playwright-cli/`；
+- `resources/` 原始大媒体；
+- 临时截图、备份补丁和本地审计输出。
+
+技术文档放入 `docs/`，部署配置放入 `deploy/`，自动化脚本放入 `scripts/`。不要在项目根目录新增临时报告或一次性脚本。
+
+## 部署安全
+
+当前应用服务器为 `47.82.105.103`，线上验收域名为 `wz.tomatopia.top`。`56xyy.com` 目前仍指向另一台服务器，目标服务器也尚无对应证书；切换 DNS 和证书前，不得启用域名重定向。
 
 ```bash
-no_proxy=github.com NO_PROXY=github.com https_proxy= HTTPS_PROXY= HTTP_PROXY= http_proxy= ALL_PROXY= all_proxy= git push origin main
+DEPLOY_HOST='root@47.82.105.103' \
+SITE_URL='https://wz.tomatopia.top' \
+bash scripts/deploy.sh
 ```
 
-部署命令（`DEPLOY_HOST` 必填，不填直接报错退出）：
+部署脚本必须保留服务器 `/var/www/xyy-web/.env`，不得从本地上传环境文件。完成后检查：
 
 ```bash
-DEPLOY_HOST='root@47.82.105.103' XYY_DEPLOY_PASSWORD='...' bash scripts/deploy.sh
+SITE_URL='https://wz.tomatopia.top' node scripts/health-check.mjs
+ssh root@47.82.105.103 'pm2 status'
 ```
 
-## 提交规则
-
-**以下文件禁止提交：**
-
-- `.env`、`.env.production`（含真实密钥）
-- `public/logos/`（已 gitignore）
-- `public/Omission/`、`public/yunliu.png`
-
-`public/` 下的图片、PDF、视频等资源文件正常提交。
+正式域名迁移配置位于 `deploy/nginx-56xyy.conf`，只有在 DNS、证书、Nginx 和 CMS 公网地址全部就绪后才能启用。
 
 ## 关键文件
 
-- `src/lib/site-config.ts`：站点 URL 单一来源，读 `PUBLIC_SITE_URL` 环境变量
-- `src/lib/brand.ts`：品牌常量、`ABOUT_STATS`、`CASE_DETAILS`
-- `src/lib/directus.ts`：Directus SDK 封装，5分钟（300s）进程内缓存
-- `src/lib/sanitize.ts`：CMS 富文本用 `set:html` 前必须先过此函数
-- `server.mjs`：生产用 Express 包装层，含压缩、安全头、CSP
-- `scripts/deploy.sh`：本地 verify → rsync → PM2 重载 → 健康检查
-
-## 渲染说明
-
-- `/contact` 是预渲染静态页，不读 Directus
-- 新闻、案例、产品页在每次请求时从 Directus 拉数据
-- Directus 媒体 URL 用 `getDirectusAssetUrl(fileId)`，不要拼 `DIRECTUS_URL`
+- `src/components/Header.astro`：全站悬浮导航与移动菜单
+- `src/pages/index.astro`：首页内容、交互与页面级样式
+- `src/layouts/ServiceLanding.astro`：服务专题页公共布局
+- `src/components/service/ServiceSignature.astro`：服务页差异化视觉模块
+- `src/lib/directus.ts`：Directus SDK、查询和安全降级
+- `src/lib/claims.ts`：统一运营事实与数字口径
+- `server.mjs`：Express 包装层、安全头、静态资源与重定向
+- `scripts/deploy.sh`：构建、同步、PM2 重启和健康检查

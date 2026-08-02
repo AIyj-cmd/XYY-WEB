@@ -3,9 +3,9 @@ import ServiceLanding from '@/layouts/ServiceLanding.astro'
 
 const FORWARD_STEPS = [
   { num: '01', title: '国内工厂 / 品牌方', desc: '备货生产完成' },
-  { num: '02', title: '广州华南仓', desc: '新货质检\nAQL 抽检验收' },
+  { num: '02', title: '广州华南仓', desc: '按客户及目标市场确认标准质检\nAQL 1.0–6.5抽检' },
   { num: '03', title: '换标 / 换包装', desc: '多语言洗水唛\n合规包装处理' },
-  { num: '04', title: '跨境物流发出', desc: 'EMS / 专线\n出境报关' },
+  { num: '04', title: '跨境物流协同', desc: '协同EMS及跨境专线资源\n责任按合同约定' },
   { num: '05', title: '海外市场', desc: '目标国消费者\n或海外仓收货' },
 ]
 
@@ -13,50 +13,69 @@ const REVERSE_STEPS = [
   { num: '01', title: '海外退货', desc: '消费者退回\n或平台统一退回' },
   { num: '02', title: '国际物流回流', desc: '跨境专线揽收\n运抵广州' },
   { num: '03', title: '广州仓拆包入库', desc: '按订单核对\nWMS 录入' },
-  { num: '04', title: '国际标准质检', desc: 'AQL 评级\n输出英文报告' },
-  { num: '05', title: '处置上架', desc: '良品上架\nB- 修复 / C 通知品牌' },
+  { num: '04', title: '项目质检', desc: '按约定规则抽检\n输出项目报告' },
+  { num: '05', title: '处置上架', desc: '按跨境项目与客户要求\n确认分级和处置' },
 ]
 ---
 
 <ServiceLanding
-  title="跨境云仓服务 — 跨境退货处理+国际质检+换标换包装，年处理千万件 | 新亦源"
-  description="新亦源跨境云仓，支持天猫国际、Amazon等跨境平台备货发货，跨境退货国内逆向处理，AQL国际标准质检，换标换包装合规处理，年跨境处理量达千万件级。"
+  title="跨境出海仓配服务｜国内仓储、质检与换标包装｜新亦源"
+  description="新亦源为跨境出海项目提供国内端仓储、按项目标准质检、换标换包装和退货整理，并可协同EMS及跨境专线资源；运输与清关责任以合同约定为准。"
   slug="kuajing-yuncang"
+  variant="global-tower"
   breadcrumbLabel="跨境云仓"
-  eyebrow="跨境云仓 · 国内仓储+跨境退货全链路"
-  h1="跨境云仓"
-  h1sub="跨境退货处理 · 国际质检 · 换标换包装"
-  heroDesc="新亦源跨境云仓以广州华南总部为核心节点，支持天猫国际、Amazon等跨境电商平台备货发货及跨境退货国内处理，年跨境质检处理量达千万件级（Urbanic案例）。"
+  eyebrow="跨境出海仓配 · 国内端仓储与配套服务"
+  h1="跨境出海鞋服仓配配套服务"
+  h1sub="国内仓储 · 项目质检 · 换标换包装"
+  heroDesc="新亦源跨境云仓以广州华南总部为核心节点，支持天猫国际、Amazon等跨境电商平台的国内备货发货及跨境退货国内处理；Urbanic项目年处理1800万—2300万件。"
   imgSrc="/w-flower.webp"
   imgAlt="跨境云仓 — 跨境电商仓储发货"
   stats={[
-    { stat: '千万件/年', label: '跨境质检处理量', sub: 'Urbanic等合作案例' },
-    { stat: '48小时', label: '退货质检时效', sub: '国际/国内双标准' },
-    { stat: 'AQL 1.0–6.5', label: '国际质检标准', sub: '广检集团认证' },
-    { stat: 'EMS等', label: '国际承运商对接', sub: '含跨境专线物流' },
+    { stat: '千万件级', label: '处理规模', sub: 'Urbanic合作案例' },
+    { stat: '24小时', label: '国内仓退货处理', sub: '质检与二次处理' },
+    { stat: 'AQL 1.0–6.5', label: '合作QC团队', sub: '按客户及目标市场标准执行' },
+    { stat: 'EMS等', label: '物流资源协同', sub: '含跨境专线资源' },
   ]}
-  contentDesc="适合开拓海外市场的鞋服品牌，尤其天猫国际、Amazon、Shopee等平台卖家。跨境退货周期长、合规换标换包装复杂是最大难点。新亦源以广州华南总部为核心，支持跨境订单备货发货与退货逆向处理，AQL国际标准质检，已服务Urbanic（印度/英国市场快时尚），年处理量1800-2300万件。"
+  contentDesc="适合需要国内端仓储、质检、换标换包装和退货整理的跨境鞋服项目。新亦源以广州华南仓为核心提供仓内服务，可协同EMS及跨境专线资源；报关、清关和运输责任以项目合同约定为准。Urbanic项目为千万件级处理规模。"
   featuresLabel="跨境服务内容"
   features={[
-    { title: '跨境备货仓配', desc: '支持天猫国际、Amazon、Shopee等跨境平台订单的国内备货、质检、换标、换包装合规处理，再对接跨境物流发出。' },
-    { title: '国际标准质检', desc: '按AQL 1.0–6.5国际抽检标准执行，可输出英文质检报告，满足Amazon、速卖通等跨境平台的质检要求与争议举证。' },
-    { title: '换标换包装', desc: '针对跨境合规需求，提供换洗水唛（多语言标签）、换外包装（当地合规包装）、贴FNSKU/EAN等跨境条码服务。' },
-    { title: '跨境退货处理', desc: '海外退货回流国内后，在新亦源仓完成收件拆包、国际标准质检、A/B+/B-/C分级、修复整理、二次上架，降低跨境退货损耗。' },
-    { title: '国际承运商对接', desc: '物流云OTD中台对接EMS国际快递及跨境专线承运商，提供跨境物流揽收、轨迹追踪、关税面单生成等服务。' },
-    { title: '跨境品牌专属支持', desc: '针对出海品牌提供专属商务支持：境内备货仓+境外发货建议、跨境合规包装方案、海外退货逆向链路设计。' },
+    {
+      title: '跨境备货仓配',
+      desc: '支持天猫国际、Amazon、Shopee等跨境项目的国内备货、质检、换标和换包装，再按项目方案交接物流资源。',
+    },
+    {
+      title: '项目质检',
+      desc: '按客户及目标市场确认的质检标准执行；与广检集团合作QC团队按AQL 1.0–6.5开展抽检，并按项目约定输出质检报告。',
+    },
+    {
+      title: '换标换包装',
+      desc: '可按品牌提供并确认的目标市场规范，更换多语言洗水唛、外包装以及FNSKU/EAN等条码；合规责任边界以合同为准。',
+    },
+    {
+      title: '跨境退货处理',
+      desc: '包裹到达新亦源国内仓后，质检与二次处理24小时完成；具体分级与处置标准按跨境项目和客户要求确认。',
+    },
+    {
+      title: '物流资源协同',
+      desc: '可协同EMS及跨境专线资源并回传可获得的物流轨迹；报关、清关与运输责任以项目合同约定为准。',
+    },
+    {
+      title: '跨境项目支持',
+      desc: '可结合境内备货、仓内包装和海外退货逆向需求设计项目流程，具体服务范围由双方确认。',
+    },
   ]}
   faqs={[
     {
       q: '新亦源跨境云仓支持哪些跨境平台？',
-      a: '支持天猫国际、Amazon（FBA备货前质检及FBM发货）、Shopee、Lazada、速卖通、Temu等主流跨境平台的国内仓储和备货服务。跨境退货处理支持上述所有平台的逆向物流收件和国内处理。',
+      a: '可按项目评估天猫国际、Amazon、Shopee、Lazada、速卖通、Temu等平台对应的国内仓储、备货和退货整理需求。平台接口、标签、包装和质检规则以平台当前要求及品牌提供的项目规范为准。',
     },
     {
       q: '跨境退货从海外回来后怎么处理？',
-      a: '标准流程：①跨境物流揽收后运抵新亦源广州仓；②拆包录入WMS，按订单号/SKU核对；③执行国际标准质检（AQL）并分级（A/B+/B-/C）；④B-级进修复车间，A/B+级重新入库上架；⑤输出质检报告供品牌方审核。全程48小时内完成，1080P监控录像可举证。',
+      a: '包裹到达新亦源国内仓后，可按项目完成拆包入库、订单与SKU核对、质检分级、修复分流和二次上架，质检与二次处理24小时完成。跨境运输、报关和清关不计入该仓内时效，责任以合同约定为准；具体分级与处置标准按跨境项目和客户要求确认。',
     },
     {
       q: '跨境换标换包装需要注意什么？',
-      a: '跨境换标需符合目标市场合规要求，新亦源提供：多语言洗水唛（中英/中英法/CE标等）更换；Amazon FNSKU/EAN等条码贴标；当地合规外包装（欧盟/美国/东南亚不同要求）。建议品牌提前提供目标市场合规说明，新亦源按标准执行。',
+      a: '品牌应先提供目标市场、平台和商品对应的标签与包装规范。新亦源可按确认模板执行多语言洗水唛、FNSKU/EAN等条码和外包装作业，并记录处理结果；法规判断、商品合规和最终标签内容由合同约定的责任方负责。',
     },
     {
       q: '跨境仓储费用和国内仓储有差异吗？',
@@ -64,14 +83,22 @@ const REVERSE_STEPS = [
     },
     {
       q: '新亦源跨境云仓有实际合作案例吗？',
-      a: 'Urbanic（跨境快时尚，面向印度/英国市场）是新亦源跨境服务标杆案例，新亦源为其提供B2B+B2C一体化仓储，覆盖质检、包装、上架、库存管理及发货打包全流程，年处理量：发货1800-2300万件/年，质检800-1400万件/年，包装1500-2000万件/年。',
+      a: 'Urbanic（跨境快时尚，面向印度/英国市场）是新亦源公开的跨境服务案例。案例范围覆盖B2B+B2C仓储、质检、包装、上架、库存管理及发货打包；公开数据为年发货1800–2300万件、年质检800–1400万件、年包装1500–2000万件，具体统计口径以案例资料为准。',
     },
   ]}
 >
-  <section slot="unique" class="py-14 bg-gray-50 border-b border-gray-100" aria-labelledby="chain-heading">
+  <section
+    slot="unique"
+    class="py-14 bg-gray-50 border-b border-gray-100"
+    aria-labelledby="chain-heading"
+  >
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <h2 id="chain-heading" class="text-xl font-black text-navy-800 mb-1 text-center">跨境全链路服务路径</h2>
-      <p class="text-xs text-gray-400 text-center mb-10">正向发货 + 退货逆向，广州华南仓为核心枢纽</p>
+      <h2 id="chain-heading" class="text-xl font-black text-navy-800 mb-1 text-center">
+        跨境全链路服务路径
+      </h2>
+      <p class="text-xs text-gray-400 text-center mb-10">
+        正向发货 + 退货逆向，广州华南仓为核心枢纽
+      </p>
       <div class="grid lg:grid-cols-2 gap-6">
         <!-- 正向发货 -->
         <div class="bg-white rounded-xl border border-gray-200 p-6">
@@ -81,22 +108,24 @@ const REVERSE_STEPS = [
             <span class="ml-auto text-xs text-gray-400">国内 → 海外</span>
           </div>
           <div class="space-y-3">
-            {FORWARD_STEPS.map(({ num, title, desc }, i) => (
-              <div class="flex items-start gap-3">
-                <div class="flex flex-col items-center flex-shrink-0">
-                  <div class="w-7 h-7 rounded-full bg-brand-orange/10 border border-brand-orange/20 flex items-center justify-center flex-shrink-0">
-                    <span class="text-[10px] font-black text-brand-orange">{num}</span>
+            {
+              FORWARD_STEPS.map(({ num, title, desc }, i) => (
+                <div class="flex items-start gap-3">
+                  <div class="flex flex-col items-center flex-shrink-0">
+                    <div class="w-7 h-7 rounded-full bg-brand-orange/10 border border-brand-orange/20 flex items-center justify-center flex-shrink-0">
+                      <span class="text-[10px] font-black text-brand-orange">{num}</span>
+                    </div>
+                    {i < FORWARD_STEPS.length - 1 && (
+                      <div class="w-px h-4 bg-brand-orange/20 mt-1" />
+                    )}
                   </div>
-                  {i < FORWARD_STEPS.length - 1 && (
-                    <div class="w-px h-4 bg-brand-orange/20 mt-1"></div>
-                  )}
+                  <div class="pb-1">
+                    <p class="text-sm font-bold text-navy-800">{title}</p>
+                    <p class="text-xs text-gray-400 leading-snug whitespace-pre-line">{desc}</p>
+                  </div>
                 </div>
-                <div class="pb-1">
-                  <p class="text-sm font-bold text-navy-800">{title}</p>
-                  <p class="text-xs text-gray-400 leading-snug whitespace-pre-line">{desc}</p>
-                </div>
-              </div>
-            ))}
+              ))
+            }
           </div>
         </div>
         <!-- 逆向退货 -->
@@ -107,22 +136,22 @@ const REVERSE_STEPS = [
             <span class="ml-auto text-xs text-gray-400">海外 → 国内</span>
           </div>
           <div class="space-y-3">
-            {REVERSE_STEPS.map(({ num, title, desc }, i) => (
-              <div class="flex items-start gap-3">
-                <div class="flex flex-col items-center flex-shrink-0">
-                  <div class="w-7 h-7 rounded-full bg-navy-100 border border-navy-200 flex items-center justify-center flex-shrink-0">
-                    <span class="text-[10px] font-black text-navy-600">{num}</span>
+            {
+              REVERSE_STEPS.map(({ num, title, desc }, i) => (
+                <div class="flex items-start gap-3">
+                  <div class="flex flex-col items-center flex-shrink-0">
+                    <div class="w-7 h-7 rounded-full bg-navy-100 border border-navy-200 flex items-center justify-center flex-shrink-0">
+                      <span class="text-[10px] font-black text-navy-600">{num}</span>
+                    </div>
+                    {i < REVERSE_STEPS.length - 1 && <div class="w-px h-4 bg-navy-200 mt-1" />}
                   </div>
-                  {i < REVERSE_STEPS.length - 1 && (
-                    <div class="w-px h-4 bg-navy-200 mt-1"></div>
-                  )}
+                  <div class="pb-1">
+                    <p class="text-sm font-bold text-navy-800">{title}</p>
+                    <p class="text-xs text-gray-400 leading-snug whitespace-pre-line">{desc}</p>
+                  </div>
                 </div>
-                <div class="pb-1">
-                  <p class="text-sm font-bold text-navy-800">{title}</p>
-                  <p class="text-xs text-gray-400 leading-snug whitespace-pre-line">{desc}</p>
-                </div>
-              </div>
-            ))}
+              ))
+            }
           </div>
         </div>
       </div>

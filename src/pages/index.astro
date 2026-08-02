@@ -1,9 +1,15 @@
 ---
 import Layout from '@/layouts/Layout.astro'
 import { BRAND, DIGITAL_PRODUCTS, CASE_DETAILS } from '@/lib/brand'
+import { CLAIM_TEXT } from '@/lib/claims'
 import { getHomepageStats, getServices, getCases } from '@/lib/directus'
+import { ORGANIZATION_ID, createBreadcrumbSchema, createFaqSchema } from '@/lib/seo'
 
-const [STATS, SERVICES, allCases] = await Promise.all([getHomepageStats(), getServices(), getCases()])
+const [STATS, SERVICES, allCases] = await Promise.all([
+  getHomepageStats(),
+  getServices(),
+  getCases(),
+])
 const CASES = allCases.slice(0, 4)
 
 // Parse "库存 260万件+ · ..." → { value: '260万件+', label: '库存' } for card display
@@ -15,27 +21,67 @@ function parseFirstMetric(metrics: string) {
     label: spaceIdx > 0 ? first.slice(0, spaceIdx) : '',
   }
 }
-const caseCardMeta = CASES.map(c => ({
+const caseCardMeta = CASES.map((c) => ({
   shortName: (CASE_DETAILS as Record<string, { name: string }>)[c.label]?.name ?? c.label,
+  slug: (CASE_DETAILS as Record<string, { slug: string }>)[c.label]?.slug,
   metric: parseFirstMetric(c.metrics),
+  metricContext: c.metrics.split('·')[0].includes('年发货') ? '年度发货规模' : '库存管理规模',
 }))
 
+const pickStats = (...ids: number[]) =>
+  ids
+    .map((id) => STATS.find((stat) => stat.id === id))
+    .filter((stat): stat is (typeof STATS)[number] => Boolean(stat))
+
+const STAT_GROUPS = {
+  warehouse: pickStats(2, 4),
+  network: pickStats(1, 8, 3),
+  inspection: pickStats(5, 6),
+  accuracy: pickStats(7),
+}
+
+const CLOUD_WAREHOUSE_FEATURES = [
+  { title: '多渠道订单履约', detail: '电商平台、门店订单、批发订单统一协同' },
+  { title: '鞋服库存管理', detail: '支持多SKU、多尺码、多颜色与批次管理' },
+  { title: '快速订单处理', detail: '18:00前截单，当日24:00前发出；单仓日峰值50万单' },
+  { title: '智能仓储管理', detail: 'RFID、电子标签与系统流程协同管理' },
+]
+
+const RETURN_QUALITY_FEATURES = [
+  { title: '标准化质检', detail: '按AQL标准执行，可识别7大类135+种鞋服异常' },
+  { title: '分级处置', detail: '根据质检结果进入可售、修复、退供或报废流程' },
+  { title: '瑕疵修复', detail: '设置九大修复专区，完成后按照品牌标准重新复检' },
+  { title: '快速二次上架', detail: '退货质检+二次上架24h，平均拆包4小时、质检12小时' },
+]
+
+const DIGITAL_LOGISTICS_FEATURES = [
+  { title: '多系统协同', detail: '物流网关、WMS、LMS、人效管理及履约监控模块统一协作' },
+  { title: '全链路可视', detail: '订单、库存、仓内作业、物流轨迹与签收状态实时查看' },
+  { title: '灵活系统对接', detail: '支持奇门、EDI、API及客户定制接口，适配不同业务系统' },
+  { title: '物流履约管理', detail: '对接顺丰、京东、EMS等主流承运商，支持路由匹配、轨迹查询与异常处理' },
+]
+
+const YUNDAO_FEATURES = [
+  { title: '多承运商统一接入', detail: '已对接顺丰、京东、EMS等11家主流承运商' },
+  { title: '智能路由匹配', detail: '根据线路、货量、价格和时效要求匹配寄件方案' },
+  { title: '正逆向寄件协同', detail: '支持门店寄件、门店调拨、退仓及企业寄件场景' },
+  { title: '全程服务管理', detail: '支持轨迹查询、异常处理、在线工单和数据报表' },
+]
+
 const IMGS = {
-  hero:  '/index.webp',
-  svc0:  '/w-apparel.webp',
-  svc1:  '/w-inspect2.webp',
-  svc2:  '/w-fulfill.webp',
+  hero: '/index.webp',
+  svc0: '/w-apparel.webp',
+  svc1: '/w-inspect2.webp',
+  svc2: '/w-fulfill-system-dashboard.png',
   prod0: '/w-yundao.webp',
 }
 
-
-
 const orgSchema = {
   '@context': 'https://schema.org',
-  '@type': ['Organization', 'LocalBusiness'],
-  '@id': `${BRAND.url}/#organization`,
+  '@type': 'Organization',
+  '@id': ORGANIZATION_ID,
   name: BRAND.fullName,
-  alternateName: ['新亦源', '新亦源供应链', '56xyy'],
+  alternateName: ['新亦源', '新亦源供应链'],
   url: BRAND.url,
   logo: `${BRAND.url}/logo.png`,
   description: BRAND.description,
@@ -48,23 +94,6 @@ const orgSchema = {
     addressRegion: '广东省',
     addressCountry: 'CN',
   },
-  location: [
-    {
-      '@type': 'Place',
-      name: '新亦源华南总部',
-      address: { '@type': 'PostalAddress', streetAddress: '果园一路2号', addressLocality: '广州市黄埔区', addressRegion: '广东省', addressCountry: 'CN' },
-    },
-    {
-      '@type': 'Place',
-      name: '新亦源华东仓',
-      address: { '@type': 'PostalAddress', streetAddress: '汇金路889号2号楼三楼', addressLocality: '上海市青浦区', addressRegion: '上海市', addressCountry: 'CN' },
-    },
-    {
-      '@type': 'Place',
-      name: '新亦源华中仓',
-      address: { '@type': 'PostalAddress', streetAddress: '监利服装产业园3号楼', addressLocality: '湖北省监利市', addressRegion: '湖北省', addressCountry: 'CN' },
-    },
-  ],
   areaServed: { '@type': 'Country', name: '中国' },
 }
 
@@ -78,1575 +107,3763 @@ const webSiteSchema = {
   inLanguage: 'zh-Hans',
 }
 
-const faqSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'FAQPage',
-  mainEntity: [
-    { '@type': 'Question', name: '新亦源是谁？',
-      acceptedAnswer: { '@type': 'Answer', text: '新亦源供应链（XYY）是专注鞋服行业的供应链一体化服务商，总部位于广州市黄埔区，在上海青浦设华东仓、湖北监利设华中仓。现合作品牌140+，覆盖零售门店10000+，年退货质检量超1.53亿件，直营鞋服仓储面积50万㎡。' } },
-    { '@type': 'Question', name: '新亦源做什么？',
-      acceptedAnswer: { '@type': 'Answer', text: '新亦源提供四大产品：鞋服云仓（B2C+B2B+O2O全渠道仓配，单仓日峰50万单）；后整质检修复（135+种缺陷识别，A/B+/B-/C四级评定，48小时标准时效）；物流云（OTD中台聚合顺丰、中通、圆通等10家主流承运商）；运到智能寄件平台（商圈物流O2O，11家承运商聚合，全国6000+区县覆盖）。' } },
-    { '@type': 'Question', name: '新亦源为什么适合鞋服品牌？',
-      acceptedAnswer: { '@type': 'Answer', text: '鞋服品类有高SKU、高退货率、季节性大促爆单等特点。新亦源针对性配置了RFID全域识别（解决SKU复杂管理）、弹性人力池（大促不爆仓）、与广检集团合作的QC认证质检体系（7大类135+种缺陷），以及唯品会JIT/JITX等主流平台深度对接，并支持系统深度定制接入。当前140+合作品牌中60+涉及唯品会运营。' } },
-    { '@type': 'Question', name: '新亦源和普通云仓、普通仓配公司有什么区别？',
-      acceptedAnswer: { '@type': 'Answer', text: '三大核心差异：一是专注鞋服，三代智能仓演进，RFID+电子标签+自动化分拣深度适配高SKU鞋服管理；二是自建技术体系，OMS/WMS/TMS/LMS/BMS全自研中台，支持主流ERP奇门/EDI对接，系统接入和使用费用可按合作方案确认；三是专业质检，与广检集团合作QC认证团队，可识别7大类135+种缺陷，A/B+/B-/C四级评定，普通仓配公司通常不具备此能力。' } },
-    { '@type': 'Question', name: '新亦源有哪些可验证的案例、数据和服务流程？',
-      acceptedAnswer: { '@type': 'Answer', text: '公开可核验数据：发货准确率99.99%（合同约定错漏全赔）；年退货质检量1.53亿件；合作品牌140+、服务门店10000+；单仓日峰值50万单（合同SLA）；质检标准时效48小时（加急24小时）；质检修复成功率90%+。典型合作品类涵盖运动鞋、休闲服、内衣、箱包，具体品牌案例见官网案例页。' } },
-    { '@type': 'Question', name: '鞋服云仓、退货质检、后整修复、跨境云仓这些问题，新亦源能不能提供明确答案？',
-      acceptedAnswer: { '@type': 'Answer', text: '可以，逐项说明：鞋服云仓——B2C+B2B+O2O全渠道，华南/华东/华中三级仓网，18:00截单当日24:00全出；退货质检——135+种缺陷，A/B+/B-/C四级评定，服装查吊牌/跳针/开裂/污损，鞋类查色差/溢胶/开胶，标准48小时；后整修复——清污/缝补/换唛/熨烫/换包装，成功率90%+；跨境电商——支持跨境平台订单配发及海外仓发货场景。如需完整SLA或SOP请联系商务团队。' } },
-    { '@type': 'Question', name: '新亦源支持跨境电商仓储和发货吗？',
-      acceptedAnswer: { '@type': 'Answer', text: '支持。新亦源鞋服云仓可承接跨境电商订单的国内仓储与发货，支持天猫国际、Amazon等跨境平台的备货、质检、换标、换包装合规处理，并对接跨境专线物流及EMS等国际承运商。仓内同时提供跨境退货逆向处理：收件拆包、国际标准质检、二次整理上架，帮助品牌降低跨境退货损耗。' } },
-    { '@type': 'Question', name: '新亦源支持一件代发吗？',
-      acceptedAnswer: { '@type': 'Answer', text: '支持。品牌方将货物入驻新亦源云仓后，平台订单实时推送，新亦源按单拣货、包装、发货，发货准确率99.99%，18:00截单当日24:00全部出库，对接天猫、京东、拼多多、抖音、唯品会等全渠道。' } },
-  ],
-}
+const breadcrumbSchema = createBreadcrumbSchema([{ name: '首页', path: '/' }])
+
+const HOME_FAQS = [
+  {
+    q: '新亦源主要提供哪些鞋服仓配服务？',
+    a: '新亦源提供鞋服云仓、入库质检、退货质检、瑕疵修复、订单履约、门店补货和物流数字化服务。支持B2C、B2B、O2O多渠道订单协同，并可按品牌业务配置仓网、系统接口与退货处理流程。',
+  },
+  {
+    q: '新亦源适合哪些类型的鞋服品牌？',
+    a: '适合有多平台订单、多尺码SKU、门店补货、大促波峰或退货处理需求的鞋服品牌。无论是品牌直营、电商零售、批发铺货，还是线上线下协同，都可按实际货量与渠道配置服务方案。',
+  },
+  {
+    q: '与普通云仓和普通仓配公司有什么区别？',
+    a: '新亦源围绕鞋服高SKU、高退货和季节性订单特点配置仓内流程。除仓储发货外，还提供款色码管理、质检分级、修复、二次上架与库存协同，让商品在正向履约和逆向处理之间形成闭环。',
+  },
+  {
+    q: '能否处理退货质检、瑕疵修复和二次上架？',
+    a: `可以。退货商品可完成拆包、质检分级、清洁修复与二次上架；按AQL标准可识别7大类${CLAIM_TEXT.recognizableAnomalies}鞋服异常。退货质检与二次上架时效为${CLAIM_TEXT.returnTurnaround}，具体处置规则可按品牌要求配置。`,
+  },
+  {
+    q: '是否支持抖音、天猫、唯品会和线下门店订单？',
+    a: '支持。平台订单、品牌ERP、门店订单及批发订单可统一进入履约队列，按库存、时效和仓网匹配发货。可支持主流平台接口及客户定制系统对接，减少多渠道库存和订单的重复操作。',
+  },
+  {
+    q: '是否支持一件代发和跨境仓配？',
+    a: `支持一件代发。货物完成入仓与系统对接后，订单可按单完成拣货、复核、包装、发货和物流回传，${CLAIM_TEXT.shippingSla}。跨境项目可提供国内端仓储、项目质检、换标换包装与物流协同。`,
+  },
+  {
+    q: '有哪些可以验证的案例和运营数据？',
+    a: `目前服务${CLAIM_TEXT.partnerBrands}鞋服及相关品牌、${CLAIM_TEXT.servedStores}门店，直营仓储${CLAIM_TEXT.warehouseArea}。网站案例页展示不同业务场景；发货、库存和退货处理等数据均以对应统计周期、项目范围及经营记录为准。`,
+  },
+  {
+    q: '如何获取仓配方案和报价？',
+    a: '提交SKU数量、日均订单量、发货渠道、仓储区域和退货情况后，我们会结合业务流程评估仓网、履约与系统对接需求，并提供对应的仓配建议与报价方案。',
+  },
+]
+
+const faqSchema = createFaqSchema(HOME_FAQS)
 ---
 
 <Layout
-  title="新亦源供应链 | 鞋服云仓·退货质检·全渠道仓配服务商"
-  description="广州新亦源供应链，专注鞋服云仓15年，合作知名服饰品牌140+，直营仓储50万㎡，配送覆盖全国主要城市及6000+区县/服务区域。提供鞋服云仓、后整质检修复、物流云一站式服务。"
-  jsonLd={[orgSchema, webSiteSchema, faqSchema]}
+  title="新亦源鞋服云仓｜鞋服仓储、质检、发货一体化服务"
+  description={`新亦源2011年成立，提供鞋服仓配、退货质检、瑕疵修复及全渠道库存管理。直营仓储${CLAIM_TEXT.warehouseArea}，服务${CLAIM_TEXT.partnerBrands}品牌，发货准确率与库存准确率${CLAIM_TEXT.shippingAccuracy}。`}
+  jsonLd={[orgSchema, webSiteSchema, breadcrumbSchema, faqSchema]}
+  services={SERVICES}
 >
-
-<!-- ①  HERO -->
-<section id="s-hero" class="s-hero" aria-labelledby="hero-heading">
-  <img src={IMGS.hero} alt="新亦源现代化仓储中心" class="hero-img" fetchpriority="high" />
-  <div class="hero-overlay" aria-hidden="true"></div>
-  <div class="hero-body">
-    <p class="hero-eyebrow">专注鞋服供应链 · 深耕15年</p>
-    <h1 id="hero-heading" class="hero-title">
-      <span class="hl hero-brand-kw">新亦源鞋服云仓</span>
-      <span class="hl">让物流更简单</span>
-      <span class="hl">让服务更快捷</span>
-    </h1>
-    <p class="hero-sub hl">覆盖全国主要城市及6000+区县/服务区域，直营50万㎡仓储，服务140+知名服饰品牌</p>
-    <div class="hero-actions hl">
-      <a href="/contact" class="btn-solid">免费咨询</a>
-      <a href="/product" class="btn-ghost">了解服务 →</a>
-    </div>
-  </div>
-  <div class="scroll-cue" aria-hidden="true">
-    <span></span><span></span><span></span>
-  </div>
-</section>
-
-<!-- ②  STATS -->
-<section id="s-stats" class="s-stats" aria-label="核心数据">
-  <!-- 装饰层 -->
-  <div class="stats-deco" aria-hidden="true">
-    <div class="deco-watermark">15Y</div>
-  </div>
-
-  <div class="stats-inner">
-    <p class="section-tag">数字说话</p>
-    <h2 class="stats-headline">15年深耕，实力可见</h2>
-    <div class="stats-grid">
-      {STATS.map(({ value, label, unit, detail }) => (
-        <div class="stat-card">
-          <div class="stat-val">
-            <span class="stat-num" data-raw={value}>{value}</span>
-            <span class="stat-unit">{unit}</span>
-          </div>
-          <p class="stat-label">{label}</p>
-          <p class="stat-detail">{detail}</p>
-        </div>
-      ))}
-    </div>
-    <p class="stats-footnote">综合收益：综合损耗下降20%、为客户降损30%+、耗材节约10%</p>
-    <p class="stats-disclaimer">注：页面所涉仓储面积、质检量、库存准确率、修复成功率等数据来源于新亦源内部运营统计及企业公开资料，具体服务效果会因品类、订单规模、系统接入程度和合作模式不同而有所差异。</p>
-  </div>
-</section>
-
-<!-- ③  SERVICES  (3 full-screen panels) -->
-{SERVICES.map((svc, i) => (
-  <section
-    class={`s-service ${i % 2 === 1 ? 'reverse' : ''}`}
-    id={`svc-${svc.slug}`}
-    aria-labelledby={`svc-title-${i}`}
-  >
-    <div class="svc-media">
-      <img
-        src={IMGS[`svc${i}` as keyof typeof IMGS]}
-        alt={svc.name}
-        class="svc-img"
-        loading="lazy"
-      />
-      <div class="svc-num-badge">0{i + 1}</div>
-    </div>
-    <div class="svc-body">
-      <p class="section-tag">{i === 0 ? '核心产品' : i === 1 ? '品质保障' : '物流优化'}</p>
-      <h2 id={`svc-title-${i}`} class="svc-title">{svc.name}</h2>
-      <p class="svc-sub">{svc.subtitle}</p>
-      <p class="svc-desc">{svc.description}</p>
-      <ul class="svc-features">
-        {svc.features.slice(0, 4).map((f) => (
-          <li>
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-              <circle cx="8" cy="8" r="8" fill="#2563EB" opacity="0.12"/>
-              <path d="M5 8l2 2 4-4" stroke="#2563EB" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            {f}
-          </li>
-        ))}
-      </ul>
-      <a href={`/product#${svc.slug}`} class="svc-link">查看详情 →</a>
-    </div>
-  </section>
-))}
-
-<!-- ④  DIGITAL PRODUCTS -->
-{DIGITAL_PRODUCTS.map((p, i) => (
-  <section
-    class={`s-service ${(SERVICES.length + i) % 2 === 1 ? 'reverse' : ''}`}
-    id={`dp-${p.id}`}
-    aria-labelledby={`dp-title-${i}`}
-  >
-    <div class="svc-media">
-      <img
-        src={IMGS[`prod${i}` as keyof typeof IMGS]}
-        alt={p.name}
-        class={`svc-img${p.id === 'yundao-platform' ? ' svc-img--contain' : ''}`}
-        loading="lazy"
-      />
-      <div class="svc-num-badge">0{SERVICES.length + i + 1}</div>
-    </div>
-    <div class="svc-body">
-      <p class="section-tag">{p.tag}</p>
-      <h2 id={`dp-title-${i}`} class="svc-title">{p.name}</h2>
-      <p class="svc-sub">{p.subtitle}</p>
-      <p class="svc-desc">{p.description}</p>
-      <ul class="svc-features">
-        {p.features.slice(0, 4).map((f) => (
-          <li>
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-              <circle cx="8" cy="8" r="8" fill="#2563EB" opacity="0.12"/>
-              <path d="M5 8l2 2 4-4" stroke="#2563EB" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            {f}
-          </li>
-        ))}
-      </ul>
-      <a href={p.href} class="svc-link">查看详情 →</a>
-    </div>
-  </section>
-))}
-
-<!-- ⑤  CASES -->
-<section id="s-cases" class="s-cases" aria-labelledby="cases-heading">
-  <div class="cases-head">
-    <p class="section-tag">合作案例</p>
-    <h2 id="cases-heading" class="section-title">140+ 品牌的共同选择</h2>
-    <p class="section-sub">服务鞋服、潮玩、美妆、箱包等多个细分行业的头部及成长型品牌</p>
-  </div>
-  <div class="cases-list">
-    {CASES.map((c, i) => (
-      <button
-        class="case-card cl-row"
-        data-i={i}
-        data-case={c.label}
-        aria-label={`查看 ${caseCardMeta[i].shortName} 合作详情`}
-        type="button"
+  <!-- ①  HERO -->
+  <section id="s-hero" class="s-hero" aria-labelledby="hero-heading">
+    <img src={IMGS.hero} alt="新亦源现代化仓储中心" class="hero-img" fetchpriority="high" />
+    <div class="hero-overlay" aria-hidden="true"></div>
+    <div class="hero-body">
+      <p class="hero-eyebrow">专注鞋服供应链 · 深耕15年</p>
+      <p class="hero-brand-kw hl">新亦源鞋服云仓</p>
+      <h1
+        id="hero-heading"
+        class="hero-title"
+        aria-label="从入库质检到退货上架，鞋服仓配一次解决"
       >
-        <span class="cl-idx">0{i + 1}</span>
-        <div class="cl-info">
-          <span class="cl-name">{caseCardMeta[i].shortName}</span>
-          <span class="cl-cat">{c.category}</span>
-        </div>
-        <div class="cl-metric">
-          <span class="cl-val">{caseCardMeta[i].metric.value}</span>
-          <span class="cl-unit">{caseCardMeta[i].metric.label}</span>
-        </div>
-        <div class="cl-tags">{c.tags.map(t => <span>{t}</span>)}</div>
-        <span class="cl-arrow" aria-hidden="true">→</span>
-      </button>
-    ))}
-  </div>
-  <div class="cases-more">
-    <a href="/cases" class="btn-outline-dark">查看全部案例 →</a>
-  </div>
-</section>
-
-<!-- Case Modal -->
-<div id="case-modal" class="case-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" hidden>
-  <div class="modal-backdrop"></div>
-  <div class="modal-panel">
-    <!-- Hero image -->
-    <div class="modal-hero">
-      <img id="modal-hero-img" src="" alt="" class="modal-hero-img" loading="eager" />
-      <div class="modal-hero-overlay"></div>
-      <div class="modal-hero-content">
-        <span id="modal-category" class="modal-category-tag"></span>
-        <h2 id="modal-title" class="modal-title"></h2>
+        <strong class="hl">从入库质检到退货上架<span class="hero-punctuation">，</span></strong>
+        <strong class="hl">鞋服仓配一次解决</strong>
+      </h1>
+      <p class="hero-sub hl">
+        为鞋服品牌提供入库质检、库存管理、订单履约、退货处理与二次上架服务，支持多平台、多仓协同。
+      </p>
+      <p class="hero-data hl">50万㎡+直营仓储 ｜ 140+服务品牌 ｜ 10000+覆盖门店 ｜ 6000+覆盖城市</p>
+      <div class="hero-actions hl">
+        <a href="/contact" class="btn-solid">获取仓配方案</a>
+        <a href="/product" class="btn-ghost">了解服务 →</a>
       </div>
-      <button class="modal-close" aria-label="关闭" type="button">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true">
-          <path d="M18 6 6 18M6 6l12 12"/>
-        </svg>
-      </button>
     </div>
-    <!-- Body -->
-    <div class="modal-body">
-      <p id="modal-desc" class="modal-desc"></p>
-      <div id="modal-stats" class="modal-stats"></div>
+    <div class="scroll-cue" aria-hidden="true">
+      <span></span><span></span><span></span>
+    </div>
+  </section>
+
+  <!-- ②  STATS -->
+  <section id="s-stats" class="s-stats" aria-labelledby="stats-heading">
+    <div class="stats-deco" aria-hidden="true">
+      <div class="deco-watermark">15Y</div>
+    </div>
+
+    <div class="stats-inner">
+      <header class="stats-heading">
+        <div>
+          <p class="section-tag">数字说话</p>
+          <h2 id="stats-heading" class="stats-headline">不只是仓库<br />更是一套鞋服供应链能力体系</h2>
+        </div>
+        <p class="stats-intro">
+          覆盖仓储管理、商品质检、订单履约与逆向处理，为鞋服品牌提供稳定、高效的供应链支持。
+        </p>
+      </header>
+
+      <div class="stats-bento">
+        <article class="stats-tenure">
+          <div class="tenure-topline">
+            <span>运营年限</span>
+            <span class="tenure-status"><i></i>仓网协同中</span>
+          </div>
+          <div class="tenure-value" aria-label="十五年">
+            <strong data-raw="15">15</strong>
+            <span>YEARS</span>
+          </div>
+          <p class="tenure-label">鞋服供应链经验</p>
+          <div class="tenure-coverage">
+            <ul>
+              <li>仓储管理</li>
+              <li>订单履约</li>
+              <li>退货处理</li>
+              <li>库存协同</li>
+            </ul>
+          </div>
+          <div class="tenure-range" aria-label="2011年至2026年">
+            <span>2011</span>
+            <i aria-hidden="true"></i>
+            <span>2026</span>
+          </div>
+          <svg
+            class="tenure-route"
+            viewBox="0 0 320 180"
+            fill="none"
+            preserveAspectRatio="none"
+            aria-hidden="true"
+          >
+            <path
+              class="tenure-route-track"
+              d="M-12 145C54 145 50 65 119 65s70 63 125 28 82-58 104-47"></path>
+            <path
+              class="tenure-route-progress"
+              pathLength="1"
+              d="M-12 145C54 145 50 65 119 65s70 63 125 28 82-58 104-47"></path>
+            <circle class="tenure-route-node" cx="52" cy="111" r="5"></circle>
+            <circle class="tenure-route-node" cx="119" cy="65" r="5"></circle>
+            <circle class="tenure-route-node" cx="244" cy="93" r="5"></circle>
+            <circle class="tenure-route-node tenure-route-node--accent" cx="313" cy="53" r="6"
+            ></circle>
+          </svg>
+        </article>
+
+        <article class="stat-card stats-warehouse" data-flow="warehouse">
+          <header class="stat-card-heading">
+            <span class="stat-card-kicker">仓储规模</span>
+            <span class="stat-card-index">01</span>
+          </header>
+          <div class="stat-metrics stat-metrics--warehouse">
+            {
+              STAT_GROUPS.warehouse.map(({ value, label, unit, detail }) => (
+                <div class="stat-metric">
+                  <div class="stat-val">
+                    <span class="stat-num" data-raw={value}>
+                      {value}
+                    </span>
+                    <span class="stat-unit">{unit}</span>
+                  </div>
+                  <h3 class="stat-label">{label}</h3>
+                  <p class="stat-detail">
+                    {label === '管理SKU' ? '覆盖多品类、多款式、多尺码商品管理' : detail}
+                  </p>
+                </div>
+              ))
+            }
+          </div>
+          <div class="warehouse-schematic" aria-hidden="true">
+            <span></span><span></span><span></span><span></span>
+          </div>
+        </article>
+
+        <article class="stat-card stats-network" data-flow="network">
+          <header class="stat-card-heading">
+            <span class="stat-card-kicker">服务网络</span>
+            <span class="stat-card-index">02</span>
+          </header>
+          <div class="stat-metrics stat-metrics--network">
+            {
+              STAT_GROUPS.network.map(({ value, label, unit, detail }) => (
+                <div class="stat-metric">
+                  <div class="stat-val">
+                    <span class="stat-num" data-raw={value}>
+                      {value}
+                    </span>
+                    <span class="stat-unit">{unit}</span>
+                  </div>
+                  <h3 class="stat-label">{label}</h3>
+                  <p class="stat-detail">{detail}</p>
+                </div>
+              ))
+            }
+          </div>
+          <div class="network-orbit" aria-hidden="true">
+            <i></i><i></i><i></i><i></i>
+          </div>
+        </article>
+
+        <article class="stat-card stats-inspection" data-flow="inspection">
+          <header class="stat-card-heading">
+            <span class="stat-card-kicker">质检履约</span>
+            <span class="stat-card-index">03</span>
+          </header>
+          <div class="stat-metrics stat-metrics--inspection">
+            {
+              STAT_GROUPS.inspection.map(({ value, label, unit, detail }, index) => (
+                <div class="stat-metric">
+                  <span class="inspection-direction">{index === 0 ? '正向入仓' : '逆向回流'}</span>
+                  <div class="stat-val">
+                    <span class="stat-num" data-raw={value}>
+                      {value}
+                    </span>
+                    <span class="stat-unit">{unit}</span>
+                  </div>
+                  <h3 class="stat-label">{label}</h3>
+                  <p class="stat-detail">{detail}</p>
+                </div>
+              ))
+            }
+          </div>
+        </article>
+
+        <article class="stat-card stats-accuracy" data-flow="accuracy">
+          <header class="stat-card-heading">
+            <span class="stat-card-kicker">库存协同</span>
+            <span class="stat-card-index">04</span>
+          </header>
+          {
+            STAT_GROUPS.accuracy.map(({ value, label, unit, detail }) => (
+              <div class="stat-metric stat-metric--accuracy">
+                <div class="accuracy-ring" aria-hidden="true">
+                  <span />
+                </div>
+                <div class="stat-val">
+                  <span class="stat-num" data-raw={value}>
+                    {value}
+                  </span>
+                  <span class="stat-unit">{unit}</span>
+                </div>
+                <h3 class="stat-label">{label}</h3>
+                <p class="stat-detail">
+                  {label === '库存准确率' ? '条码化管理 + 系统流程协同' : detail}
+                </p>
+              </div>
+            ))
+          }
+        </article>
+      </div>
+
+      <div class="stats-flow" aria-label="商品全生命周期闭环">
+        <div class="stats-flow-heading">
+          <span>全生命周期闭环</span>
+          <strong>一套仓配体系，覆盖商品全生命周期</strong>
+        </div>
+        <div class="stats-flow-rail" aria-hidden="true">
+          <span class="stats-flow-progress"></span>
+        </div>
+        <ol class="stats-flow-list">
+          <li class="stats-flow-step">
+            <span class="flow-index">01</span><i aria-hidden="true"></i><strong>品牌接入</strong>
+          </li>
+          <li class="stats-flow-step">
+            <span class="flow-index">02</span><i aria-hidden="true"></i><strong>商品入仓</strong>
+          </li>
+          <li class="stats-flow-step">
+            <span class="flow-index">03</span><i aria-hidden="true"></i><strong>质检分流</strong>
+          </li>
+          <li class="stats-flow-step">
+            <span class="flow-index">04</span><i aria-hidden="true"></i><strong>库存管理</strong>
+          </li>
+          <li class="stats-flow-step">
+            <span class="flow-index">05</span><i aria-hidden="true"></i><strong>订单履约</strong>
+          </li>
+          <li class="stats-flow-step">
+            <span class="flow-index">06</span><i aria-hidden="true"></i><strong>退货处理</strong>
+          </li>
+          <li class="stats-flow-step">
+            <span class="flow-index">07</span><i aria-hidden="true"></i><strong>再次销售</strong>
+          </li>
+        </ol>
+      </div>
+
+      <details class="stats-notes">
+        <summary>数据说明</summary>
+        <div class="stats-notes-body">
+        <p class="stats-footnote">
+          <span>数据口径</span>
+          以上为截至公司运营统计的公开核心数据，具体统计周期与项目范围以对应经营记录为准。
+        </p>
+        <p class="stats-disclaimer">
+          注：页面所涉仓储面积、质检量、库存准确率、修复成功率等数据来源于新亦源内部运营统计及企业公开资料，具体服务效果会因品类、订单规模、系统接入程度和合作模式不同而有所差异。
+        </p>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ③  SERVICES  (3 full-screen panels) -->
+  {
+    SERVICES.map((svc, i) => (
+      <section
+        class={`s-service ${i % 2 === 1 ? 'reverse' : ''}`}
+        id={`svc-${svc.slug}`}
+        aria-labelledby={`svc-title-${i}`}
+      >
+        <div class="svc-media">
+          {i === 2 ? (
+            <div class="svc-dashboard-frame">
+              <p class="svc-dashboard-heading">OTD物流服务中台 · 实际系统界面</p>
+              <div class="svc-dashboard-viewport">
+                <img
+                  src={IMGS[`svc${i}` as keyof typeof IMGS]}
+                  alt="OTD物流服务中台订单与履约数据看板"
+                  class="svc-img"
+                  loading="lazy"
+                />
+              </div>
+            </div>
+          ) : (
+            <img
+              src={IMGS[`svc${i}` as keyof typeof IMGS]}
+              alt={svc.name}
+              class="svc-img"
+              loading="lazy"
+            />
+          )}
+          <div class:list={['svc-num-badge', { 'svc-num-badge--solution': i < 3 }]}>
+            <span>0{i + 1}</span>
+            {i === 0 && <small>鞋服仓储挂装区</small>}
+            {i === 1 && <small>退货质检作业区</small>}
+            {i === 2 && <small>数字化运营中心</small>}
+          </div>
+          {i === 0 && <p class="svc-media-caption">恒温仓储 <i>｜</i> 分类存储 <i>｜</i> 条码管理</p>}
+          {i === 1 && <p class="svc-media-caption">外观检查 <i>｜</i> 内里检查 <i>｜</i> 配饰检查 <i>｜</i> 分级修复</p>}
+          {i === 2 && <p class="svc-media-caption">订单履约 <i>｜</i> 库存同步 <i>｜</i> 物流监控 <i>｜</i> 异常预警 <i>｜</i> 签收回传</p>}
+        </div>
+        <div class="svc-body">
+          <p class="section-tag">{i < 3 ? '核心解决方案' : '物流优化'}</p>
+          {i === 0 && <p class="svc-problem">订单越来越复杂，品牌需要更懂鞋服的仓配体系</p>}
+          {i === 1 && <p class="svc-problem">退货真正难的，不是收回来，而是判断还能不能再次销售</p>}
+          {i === 2 && <p class="svc-problem">平台、仓库和物流数据分散，品牌很难及时掌握真实履约状态</p>}
+          <h2 id={`svc-title-${i}`} class="svc-title">
+            {svc.name}
+          </h2>
+          <p class="svc-sub">
+            {i === 0
+              ? '全渠道一盘货，让库存和订单高效协同'
+              : i === 1
+                ? '135+种异常识别，退货质检+二次上架24h'
+                : i === 2
+                  ? '六大系统模块协同，订单履约全程可视'
+                : svc.subtitle}
+          </p>
+          {i === 1 && (
+            <div class="svc-quality-assurance" aria-label="广检集团合作质检能力">
+              <p>与广检集团合作 QC 团队</p>
+              <span>按 AQL 1.0–6.5 执行，质检技师经广检集团资深讲师培训认证</span>
+            </div>
+          )}
+          <p class="svc-desc">
+            {i === 0
+              ? '从商品入仓、库存管理到订单履约与退货处理，为鞋服品牌打造稳定、高效的一体化仓配体系。'
+              : i === 1
+                ? '从退货拆包、质检分级到清洁修复和二次上架，为鞋服品牌建立标准化的逆向处理体系。'
+                : i === 2
+                  ? '以OTD物流服务中台为数字化底座，连接订单、库存、仓内作业、物流轨迹与签收数据，支持异常预警和履约状态查询。'
+                : svc.description}
+          </p>
+          <ul class="svc-features">
+            {(i === 0
+              ? CLOUD_WAREHOUSE_FEATURES
+              : i === 1
+                ? RETURN_QUALITY_FEATURES
+                : i === 2
+                  ? DIGITAL_LOGISTICS_FEATURES
+                : svc.features.slice(0, 4)
+            ).map((f) => (
+              <li>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <circle cx="8" cy="8" r="8" fill="#2563EB" opacity="0.12" />
+                  <path
+                    d="M5 8l2 2 4-4"
+                    stroke="#2563EB"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+                {typeof f === 'string' ? (
+                  f
+                ) : (
+                  <span class="svc-feature-solution"><strong>{f.title}</strong><small>{f.detail}</small></span>
+                )}
+              </li>
+            ))}
+          </ul>
+          {i === 0 && (
+            <div class="svc-scenarios" aria-label="支持业务场景">
+              <span>支持业务场景</span>
+              <div><b>直播电商</b><b>品牌直营</b><b>线下门店</b></div>
+            </div>
+          )}
+          {i === 1 && (
+            <div class="svc-scenarios" aria-label="适用业务场景">
+              <span>适用业务场景</span>
+              <div><b>电商退货</b><b>大促退货</b><b>门店退仓</b><b>供应商退货</b></div>
+            </div>
+          )}
+          {i === 2 && (
+            <>
+              <div class="svc-scenarios" aria-label="适用业务场景">
+                <span>适用业务场景</span>
+                <div><b>多平台订单</b><b>多仓协同</b><b>物流路由</b><b>异常预警</b><b>系统对接</b></div>
+              </div>
+              <p class="svc-fee-note"><strong>费用说明：</strong>不收取系统使用费；实施、接口联调及定制开发费用根据具体方案确认。</p>
+            </>
+          )}
+          <a href={`/product#${svc.slug}`} class="svc-link">
+            {i === 0
+              ? '查看仓配方案 →'
+              : i === 1
+                ? '查看退货处理方案 →'
+                : i === 2
+                  ? '查看系统对接方案 →'
+                  : '查看详情 →'}
+          </a>
+        </div>
+      </section>
+    ))
+  }
+
+  <!-- ④  DIGITAL PRODUCTS -->
+  {
+    DIGITAL_PRODUCTS.map((p, i) => (
+      <section
+        class={`s-service ${(SERVICES.length + i) % 2 === 1 ? 'reverse' : ''}`}
+        id={`dp-${p.id}`}
+        aria-labelledby={`dp-title-${i}`}
+      >
+        <div class="svc-media">
+          {p.id === 'yundao-platform' ? (
+            <div class="yundao-visual" aria-label="智能寄件业务流程">
+              <div class="yundao-interface-grid" aria-label="真实系统界面示例">
+                <img class="yundao-interface-main" src="/yundao-logistics-list.png" alt="物流运单管理系统主界面" loading="lazy" />
+                <img class="yundao-interface-side-1" src="/yundao-order-list.png" alt="订单信息对接系统界面" loading="lazy" />
+                <img class="yundao-interface-side-2" src="/yundao-alerts.png" alt="发货预警系统界面" loading="lazy" />
+                <img class="yundao-interface-detail" src="/yundao-report.png" alt="发货统计报表界面" loading="lazy" />
+              </div>
+            </div>
+          ) : (
+            <img
+              src={IMGS[`prod${i}` as keyof typeof IMGS]}
+              alt={p.name}
+              class="svc-img"
+              loading="lazy"
+            />
+          )}
+          {p.id === 'yundao-platform' && <p class="svc-media-caption">智能比价 <i>｜</i> 全国覆盖 <i>｜</i> 专属客服 <i>｜</i> 数据报表</p>}
+          <div class:list={['svc-num-badge', { 'svc-num-badge--solution': p.id === 'yundao-platform' }]}>
+            <span>0{SERVICES.length + i + 1}</span>
+            {p.id === 'yundao-platform' && <small>智能寄件平台</small>}
+          </div>
+        </div>
+        <div class="svc-body">
+          <p class="section-tag">{p.id === 'yundao-platform' ? '核心解决方案' : p.tag}</p>
+          {p.id === 'yundao-platform' && <p class="svc-problem">门店寄件渠道分散、价格不透明，品牌需要统一管理运输资源</p>}
+          <h2 id={`dp-title-${i}`} class="svc-title">
+            {p.name}
+          </h2>
+          <p class="svc-sub">{p.id === 'yundao-platform' ? '商圈零售门店一站式智能寄件' : p.subtitle}</p>
+          <p class="svc-desc">
+            {p.id === 'yundao-platform'
+              ? '以信息和数据协同运输资源，为连锁门店、电商平台及企业机构提供正向与逆向寄件协同服务。'
+              : p.description}
+          </p>
+          <ul class="svc-features">
+            {(p.id === 'yundao-platform' ? YUNDAO_FEATURES : p.features.slice(0, 4)).map((f) => (
+              <li>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <circle cx="8" cy="8" r="8" fill="#2563EB" opacity="0.12" />
+                  <path
+                    d="M5 8l2 2 4-4"
+                    stroke="#2563EB"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+                {typeof f === 'string' ? (
+                  f
+                ) : (
+                  <span class="svc-feature-solution"><strong>{f.title}</strong><small>{f.detail}</small></span>
+                )}
+              </li>
+            ))}
+          </ul>
+          {p.id === 'yundao-platform' && (
+            <p class="svc-fee-note"><strong>费用优势：</strong>部分线路费用最高可节省50%，具体以实际线路和报价为准。</p>
+          )}
+          <a href={p.href} class="svc-link">{p.id === 'yundao-platform' ? '查看智能寄件方案 →' : '查看详情 →'}</a>
+        </div>
+      </section>
+    ))
+  }
+
+  <!-- ⑤  CASES -->
+  <section id="s-cases" class="s-cases" aria-labelledby="cases-heading">
+    <div class="cases-head">
+      <p class="section-tag">合作案例</p>
+      <h2 id="cases-heading" class="section-title">140+ 品牌的共同选择</h2>
+      <p class="section-sub">服务鞋服、潮玩、美妆、箱包等多个细分行业，并覆盖库存协同、全渠道履约、退货质检与跨境出海等场景</p>
+    </div>
+    <div class="cases-gallery" aria-label="部分合作案例，悬停查看品牌合作数据">
+      {
+        CASES.map((c, i) => (
+          <a
+            class="case-card cg-panel"
+            data-i={i}
+            data-case={c.label}
+            href={caseCardMeta[i].slug ? `/cases/${caseCardMeta[i].slug}` : '/cases'}
+            aria-label={`查看 ${caseCardMeta[i].shortName} 合作详情`}
+          >
+            <img src={c.img} alt={`${caseCardMeta[i].shortName} 合作案例业务场景`} loading="lazy" />
+            <div class="cg-shade" aria-hidden="true"></div>
+            <div class="cg-label">
+              <span>0{i + 1}</span>
+              <strong>{caseCardMeta[i].shortName}</strong>
+              <small>{c.category}</small>
+            </div>
+            <div class="cg-detail">
+              <span>{c.category}</span>
+              <strong>{caseCardMeta[i].metric.value}</strong>
+              <small>{caseCardMeta[i].metricContext}</small>
+              <p>{c.details}</p>
+              <div class="cg-tags">
+                {c.tags.slice(0, 3).map((tag) => <span>{tag}</span>)}
+              </div>
+              <i aria-hidden="true">查看案例 →</i>
+            </div>
+          </a>
+        ))
+      }
+    </div>
+    <div class="cases-more">
+      <a href="/cases" class="btn-outline-dark">查看全部案例 →</a>
+    </div>
+  </section>
+
+  <!-- Case Modal -->
+  <div
+    id="case-modal"
+    class="case-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="modal-title"
+    hidden
+  >
+    <div class="modal-backdrop"></div>
+    <div class="modal-panel">
+      <!-- Hero image -->
+      <div class="modal-hero">
+        <img id="modal-hero-img" src="" alt="" class="modal-hero-img" loading="eager" />
+        <div class="modal-hero-overlay"></div>
+        <div class="modal-hero-content">
+          <span id="modal-category" class="modal-category-tag"></span>
+          <h2 id="modal-title" class="modal-title"></h2>
+        </div>
+        <button class="modal-close" aria-label="关闭" type="button">
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            aria-hidden="true"
+          >
+            <path d="M18 6 6 18M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+      <!-- Body -->
+      <div class="modal-body">
+        <p id="modal-desc" class="modal-desc"></p>
+        <div id="modal-stats" class="modal-stats"></div>
+        <a id="modal-detail-link" class="modal-detail-link" href="/cases">查看完整案例 →</a>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- embed case detail data for JS -->
-<script is:inline id="case-data" type="application/json" set:html={JSON.stringify(CASE_DETAILS)}></script>
+  <!-- embed case detail data for JS -->
+  <script
+    is:inline
+    id="case-data"
+    type="application/json"
+    set:html={JSON.stringify(CASE_DETAILS)}
+  />
 
-<!-- ⑥ Order Fulfillment -->
-<section id="s-fulfillment" class="s-fulfillment" aria-labelledby="fulfillment-heading">
+  <!-- ⑥ Order Fulfillment -->
+  <section id="s-fulfillment" class="s-fulfillment" aria-labelledby="fulfillment-heading">
   <div class="fulfillment-header">
     <p class="section-tag">履约流程</p>
-    <h2 id="fulfillment-heading" class="fulfillment-title">从订单到签收，每一步都可视化调度</h2>
-    <p class="fulfillment-sub">订单进入系统后，仓网、质检和物流云协同完成出库与交付，全链路实时可见。</p>
-  </div>
-  <div class="fulfillment-track" role="list">
-    {[
-      { num: '01', title: '订单接入', desc: '天猫、抖音、唯品会、ERP 多渠道订单统一进入履约队列。' },
-      { num: '02', title: '智能分仓', desc: '根据库存、距离、时效和仓内负载自动匹配最优仓点。' },
-      { num: '03', title: '波次拣货', desc: '系统生成拣货波次，RFID 与库位校验降低错漏。' },
-      { num: '04', title: '质检修复', desc: '新货、退货进入标准化质检流程，异常商品可二次修复上架。' },
-      { num: '05', title: '包装出库', desc: '自动打包线与包材复用机制协同，减少损耗和耗材成本。' },
-      { num: '06', title: '物流路由', desc: '物流云聚合承运商，按时效、价格和风险动态切换路由。' },
-      { num: '07', title: '签收回传', desc: '轨迹、异常、签收数据回传，形成可复盘的履约闭环。' },
-    ].map(({ num, title, desc }, i) => (
-      <div class="fulfillment-step" role="listitem" style={`--i:${i}`}>
-        <div class="fulfillment-connector" aria-hidden="true"></div>
-        <div class="fulfillment-num-wrap">
-          <div class="fulfillment-num">{num}</div>
-          <div class="fulfillment-num-ring"></div>
+    <h2 id="fulfillment-heading" class="fulfillment-title">从订单接入到签收回传，全链路可视化调度</h2>
+    <p class="fulfillment-sub">
+      订单进入系统后，仓网与物流协同完成拣货、复核、出库和交付，履约状态全程可查。
+      </p>
+    </div>
+    <div class="fulfillment-track" role="list">
+      {
+        [
+          {
+          num: '01',
+          title: '订单接入',
+          desc: '天猫、抖音、唯品会及ERP订单统一进入履约队列。',
+          },
+          {
+            num: '02',
+            title: '智能分仓',
+            desc: '根据库存、距离、时效和仓内负载自动匹配最优仓点。',
+          },
+          { num: '03', title: '波次拣货', desc: '系统生成拣货波次，RFID 与库位校验降低错漏。' },
+          {
+          num: '04',
+          title: '出库复核',
+          desc: '核对商品、数量、尺码及订单信息，异常订单进入复核处理。',
+          },
+          {
+          num: '05',
+          title: '包装出库',
+          desc: '自动打包与包材复用协同，减少商品损耗与耗材成本。',
+          },
+          {
+          num: '06',
+          title: '物流路由',
+          desc: '按时效、价格与风险动态匹配物流路由。',
+          },
+          {
+            num: '07',
+            title: '签收回传',
+            desc: '轨迹、异常、签收数据回传，形成可复盘的履约闭环。',
+          },
+        ].map(({ num, title, desc }, i) => (
+        <div
+          class={`fulfillment-step ${i === 0 || i === 6 ? 'is-terminal' : ''}`}
+          role="listitem"
+          style={`--i:${i}`}
+        >
+            <div class="fulfillment-connector" aria-hidden="true" />
+            <div class="fulfillment-num-wrap">
+              <div class="fulfillment-num">{num}</div>
+              <div class="fulfillment-num-ring" />
+            </div>
+            <p class="fulfillment-step-title">{title}</p>
+            <p class="fulfillment-step-desc">{desc}</p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- ⑦  FAQ -->
+  <section id="s-faq" class="s-faq" aria-labelledby="faq-heading">
+    <div class="faq-inner">
+      <aside class="faq-intro">
+        <p class="section-tag">常见问题</p>
+        <h2 id="faq-heading" class="faq-title">关于鞋服仓配<br />你可能还想了解这些</h2>
+        <p class="faq-intro-copy">合作前，品牌通常会从服务范围、履约能力和合作方式开始了解。</p>
+        <div class="faq-contact-actions">
+          <a href="/contact" class="faq-side-cta">获取仓配方案 <span aria-hidden="true">→</span></a>
+          <a href={`tel:${BRAND.phone.toll.replace(/-/g, '')}`} class="faq-phone">咨询热线：{BRAND.phone.toll}</a>
         </div>
-        <p class="fulfillment-step-title">{title}</p>
-        <p class="fulfillment-step-desc">{desc}</p>
+      </aside>
+      <div class="faq-content">
+        <div class="faq-list">
+        {
+          HOME_FAQS.map(({ q, a }, i) => (
+            <details class="faq-item" open={i === 0}>
+              <summary class="faq-q">
+                <span class="faq-index">{String(i + 1).padStart(2, '0')}</span>
+                <span>{q}</span>
+                <span class="faq-toggle" aria-hidden="true"></span>
+              </summary>
+              <div class="faq-answer">
+                <p class="faq-a">{a}</p>
+              </div>
+            </details>
+          ))
+        }
+        </div>
+        <p class="faq-authority">
+          数据说明：本页涉及的新亦源服务与运营数据来源于新亦源内部运营统计，具体以对应统计周期和经营记录为准。
+        </p>
       </div>
-    ))}
-  </div>
-</section>
-
-<!-- ⑦  FAQ -->
-<section id="s-faq" class="s-faq" aria-labelledby="faq-heading">
-  <div class="faq-inner">
-    <p class="section-tag">常见问题</p>
-    <h2 id="faq-heading" class="section-title">关于新亦源鞋服云仓</h2>
-    <dl class="faq-list">
-      <div class="faq-item">
-        <dt class="faq-q">新亦源是谁？</dt>
-        <dd class="faq-a">新亦源供应链（XYY）是专注鞋服行业的供应链一体化服务商，总部位于广州市黄埔区，在上海青浦设华东仓、湖北监利设华中仓。现合作品牌140+，覆盖零售门店10000+，年退货质检量超1.53亿件，直营鞋服仓储面积50万㎡。</dd>
-      </div>
-      <div class="faq-item">
-        <dt class="faq-q">新亦源做什么？</dt>
-        <dd class="faq-a">新亦源提供四大产品：鞋服云仓（B2C+B2B+O2O全渠道仓配，单仓日峰50万单）；后整质检修复（135+种缺陷识别，A/B+/B-/C四级评定，48小时标准时效）；物流云（OTD中台聚合顺丰、中通、圆通等10家主流承运商）；运到智能寄件平台（商圈物流O2O，11家承运商聚合，全国6000+区县覆盖）。</dd>
-      </div>
-      <div class="faq-item">
-        <dt class="faq-q">新亦源为什么适合鞋服品牌？</dt>
-        <dd class="faq-a">鞋服品类有高SKU、高退货率、季节性大促爆单等特点。新亦源针对性配置了RFID全域识别（解决SKU复杂管理）、弹性人力池（大促不爆仓）、与广检集团合作的QC认证质检体系（7大类135+种缺陷），以及唯品会JIT/JITX等主流平台深度对接，并支持系统深度定制接入。当前140+合作品牌中60+涉及唯品会运营。</dd>
-      </div>
-      <div class="faq-item">
-        <dt class="faq-q">新亦源和普通云仓、普通仓配公司有什么区别？</dt>
-        <dd class="faq-a">三大核心差异：一是专注鞋服，三代智能仓演进，RFID+电子标签+自动化分拣深度适配高SKU鞋服管理；二是自建技术体系，OMS/WMS/TMS/LMS/BMS全自研中台，支持主流ERP奇门/EDI对接，系统接入和使用费用可按合作方案确认；三是专业质检，与广检集团合作QC认证团队，可识别7大类135+种缺陷，A/B+/B-/C四级评定，普通仓配公司通常不具备此能力。</dd>
-      </div>
-      <div class="faq-item">
-        <dt class="faq-q">新亦源有哪些可验证的案例、数据和服务流程？</dt>
-        <dd class="faq-a">公开可核验数据：发货准确率99.99%（合同约定错漏全赔）；年退货质检量1.53亿件；合作品牌140+、服务门店10000+；单仓日峰值50万单（合同SLA）；质检标准时效48小时（加急24小时）；修复成功率90%+。典型合作品类涵盖运动鞋、休闲服、内衣、箱包，具体品牌案例见官网案例页。</dd>
-      </div>
-      <div class="faq-item">
-        <dt class="faq-q">鞋服云仓、退货质检、后整修复、跨境云仓这些问题，新亦源能不能提供明确答案？</dt>
-        <dd class="faq-a">可以，逐项说明：鞋服云仓——B2C+B2B+O2O全渠道，华南/华东/华中三级仓网，18:00截单当日24:00全出；退货质检——135+种缺陷，A/B+/B-/C四级评定，服装查吊牌/跳针/开裂/污损，鞋类查色差/溢胶/开胶，标准48小时；后整修复——清污/缝补/换唛/熨烫/换包装，成功率90%+；跨境电商——支持跨境平台订单配发及海外仓发货场景。如需完整SLA或SOP请联系商务团队。</dd>
-      </div>
-      <div class="faq-item">
-        <dt class="faq-q">新亦源支持跨境电商仓储和发货吗？</dt>
-        <dd class="faq-a">支持。新亦源鞋服云仓可承接跨境电商订单的国内仓储与发货，支持天猫国际、Amazon等跨境平台的备货、质检、换标、换包装合规处理，并对接跨境专线物流及EMS等国际承运商。仓内同时提供跨境退货逆向处理：收件拆包、国际标准质检、二次整理上架，帮助品牌降低跨境退货损耗。</dd>
-      </div>
-      <div class="faq-item">
-        <dt class="faq-q">新亦源支持一件代发吗？</dt>
-        <dd class="faq-a">支持。品牌方将货物入驻新亦源云仓后，平台订单实时推送，新亦源按单拣货、包装、发货，发货准确率99.99%，18:00截单当日24:00全部出库，对接天猫、京东、拼多多、抖音、唯品会等全渠道。</dd>
-      </div>
-    </dl>
-    <p class="faq-authority">
-      行业数据参考来源：<a href="https://www.spb.gov.cn" target="_blank" rel="noopener noreferrer">国家邮政局</a>、<a href="https://www.sac.gov.cn" target="_blank" rel="noopener noreferrer">国家标准化管理委员会</a>、<a href="https://www.customs.gov.cn" target="_blank" rel="noopener noreferrer">中华人民共和国海关总署</a>
-    </p>
-  </div>
-</section>
-
-<!-- ⑧  CTA -->
-<section id="s-cta" class="s-cta" aria-labelledby="cta-heading">
-  <div class="cta-inner">
-    <p class="section-tag">开始合作</p>
-    <h2 id="cta-heading" class="cta-title">准备好优化您的鞋服物流了吗？</h2>
-    <p class="cta-sub">免费咨询 给您专属方案报价</p>
-    <div class="cta-phones">
-      <a href={`tel:${BRAND.phone.toll.replace(/-/g, '')}`} class="phone-link">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.68A2 2 0 012 .18h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
-        {BRAND.phone.toll}
-      </a>
     </div>
-    <div class="cta-actions">
-      <a href="/contact" class="btn-cta">立即免费咨询</a>
-    </div>
-  </div>
-</section>
+  </section>
 
 </Layout>
 
 <style>
-/* ── Reset for full-screen layout ────────────────────────────── */
-:global(html) { scroll-behavior: auto; } /* Lenis handles smooth scroll */
+  /* ── Reset for full-screen layout ────────────────────────────── */
+  :global(html) {
+    scroll-behavior: auto;
+  } /* Lenis handles smooth scroll */
 
-/* ── Shared tokens ───────────────────────────────────────────── */
-.section-tag {
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: #2563EB;
-  margin-bottom: 0.75rem;
-}
-.section-tag.light { color: #93c5fd; }
-.section-title {
-  font-size: clamp(1.75rem, 3vw, 2.5rem);
-  font-weight: 900;
-  color: #0A1A33;
-  line-height: 1.2;
-  margin-bottom: 1rem;
-}
-.section-title.light { color: #fff; }
-.section-sub { font-size: 1rem; color: #475569; line-height: 1.7; }
-.section-sub.light { color: #bfdbfe; }
-
-/* ── ① Hero ──────────────────────────────────────────────────── */
-.s-hero {
-  position: relative;
-  height: 100vh;
-  min-height: 600px;
-  display: flex;
-  align-items: center;
-  overflow: hidden;
-}
-.hero-img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-}
-.hero-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(105deg, rgba(10,26,51,0.90) 0%, rgba(10,26,51,0.60) 60%, rgba(10,26,51,0.35) 100%);
-}
-.hero-body {
-  position: relative;
-  z-index: 2;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 2rem;
-  width: 100%;
-}
-.hero-eyebrow {
-  font-size: 0.8rem;
-  font-weight: 700;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: #93c5fd;
-  margin-bottom: 1.25rem;
-  opacity: 0;
-}
-.hero-title {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-  font-size: clamp(2.5rem, 6vw, 5rem);
-  font-weight: 900;
-  color: #fff;
-  line-height: 1.1;
-  margin-bottom: 1.5rem;
-}
-.hero-title .hl { opacity: 0; }
-.hero-brand-kw {
-  font-size: 0.52em;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  color: #fb923c;
-}
-.hero-sub {
-  font-size: clamp(1rem, 1.5vw, 1.2rem);
-  color: #cbd5e1;
-  line-height: 1.7;
-  max-width: 540px;
-  margin-bottom: 2.5rem;
-  opacity: 0;
-}
-.hero-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  opacity: 0;
-}
-.btn-solid {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.875rem 2rem;
-  background: #2563EB;
-  color: #fff;
-  font-weight: 700;
-  border-radius: 0.75rem;
-  font-size: 1rem;
-  text-decoration: none;
-  transition: background 0.2s, transform 0.2s;
-}
-.btn-solid:hover { background: #1d4ed8; transform: translateY(-1px); }
-.btn-ghost {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.875rem 2rem;
-  border: 2px solid rgba(255,255,255,0.4);
-  color: #fff;
-  font-weight: 600;
-  border-radius: 0.75rem;
-  font-size: 1rem;
-  text-decoration: none;
-  transition: border-color 0.2s, background 0.2s;
-  backdrop-filter: blur(4px);
-}
-.btn-ghost:hover { border-color: #fff; background: rgba(255,255,255,0.1); }
-.scroll-cue {
-  position: absolute;
-  bottom: 2.5rem;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  z-index: 2;
-}
-.scroll-cue span {
-  display: block;
-  width: 2px;
-  height: 8px;
-  background: rgba(255,255,255,0.4);
-  border-radius: 1px;
-  animation: scroll-bounce 1.4s ease-in-out infinite;
-}
-.scroll-cue span:nth-child(2) { animation-delay: 0.2s; }
-.scroll-cue span:nth-child(3) { animation-delay: 0.4s; }
-@keyframes scroll-bounce {
-  0%, 100% { opacity: 0.3; transform: scaleY(0.6); }
-  50% { opacity: 1; transform: scaleY(1); }
-}
-
-/* ── ② Stats ─────────────────────────────────────────────────── */
-.s-stats {
-  min-height: 100vh;
-  background: #fff;
-  display: flex;
-  align-items: center;
-  padding: 6rem 2rem;
-  position: relative;
-}
-
-/* 装饰层独立裁剪，不影响卡片 */
-.stats-deco {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  overflow: hidden;
-}
-
-.deco-watermark {
-  position: absolute;
-  right: -2rem;
-  bottom: -3rem;
-  font-size: clamp(10rem, 20vw, 18rem);
-  font-weight: 900;
-  color: transparent;
-  -webkit-text-stroke: 2px rgba(37,99,235,0.07);
-  letter-spacing: -0.05em;
-  line-height: 1;
-  user-select: none;
-}
-
-/* 内容层 */
-.stats-inner {
-  position: relative;
-  z-index: 1;
-  max-width: 1200px;
-  margin: 0 auto;
-  width: 100%;
-  text-align: center;
-}
-.stats-headline {
-  font-size: clamp(1.75rem, 3vw, 2.5rem);
-  font-weight: 900;
-  color: #0A1A33;
-  margin-bottom: 4rem;
-}
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1.5rem;
-}
-.stat-card {
-  padding: 2rem 1.25rem;
-  border-radius: 1.5rem;
-  background: #EFF4FF;
-  border: 1px solid #E2E8F0;
-  overflow: hidden;
-  opacity: 0;
-  transform: translateY(40px);
-}
-.stat-val {
-  display: flex;
-  align-items: baseline;
-  justify-content: center;
-  gap: 0.2rem;
-  margin-bottom: 0.75rem;
-  flex-wrap: wrap;
-}
-.stat-num {
-  font-size: clamp(1.75rem, 3vw, 3rem);
-  font-weight: 900;
-  color: #E85D26;
-  font-variant-numeric: tabular-nums;
-  line-height: 1;
-  white-space: nowrap;
-}
-.stat-unit {
-  font-size: 1.125rem;
-  font-weight: 700;
-  color: #2563EB;
-  white-space: nowrap;
-}
-.stat-label {
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: #1e3a5f;
-  margin-bottom: 0.5rem;
-}
-.stat-detail { font-size: 0.75rem; color: #475569; line-height: 1.5; }
-.stats-footnote {
-  margin-top: 1.25rem;
-  text-align: left;
-  font-size: 0.75rem;
-  color: #94a3b8;
-  line-height: 1.6;
-}
-.stats-disclaimer {
-  margin-top: 0.75rem;
-  text-align: left;
-  font-size: 0.7rem;
-  color: #64748b;
-  line-height: 1.7;
-  opacity: 0.75;
-}
-
-@media (max-width: 900px) {
-  .stats-grid { grid-template-columns: repeat(2, 1fr); }
-}
-@media (max-width: 480px) {
-  .stats-grid { grid-template-columns: 1fr; }
-}
-
-/* ── ③ Services ──────────────────────────────────────────────── */
-.s-service {
-  min-height: 100vh;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  overflow: hidden;
-}
-.s-service.reverse { direction: rtl; }
-.s-service.reverse > * { direction: ltr; }
-@media (max-width: 768px) {
-  .s-service { grid-template-columns: 1fr; direction: ltr !important; }
-  .s-service > * { direction: ltr !important; }
-}
-.svc-media {
-  position: relative;
-  overflow: hidden;
-  min-height: 400px;
-}
-.svc-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-  transform: scale(1.05);
-}
-/* 运到图（白底）contain 显示 */
-#dp-yundao-platform .svc-media { background: #fff; }
-.svc-img--contain { object-fit: contain !important; transform: none !important; padding: 1.5rem; }
-.svc-num-badge {
-  position: absolute;
-  top: 2rem;
-  left: 2rem;
-  width: 3rem;
-  height: 3rem;
-  border-radius: 50%;
-  background: #fff;
-  color: #2563EB;
-  font-size: 1.1rem;
-  font-weight: 900;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-}
-.svc-body {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 4rem 3.5rem;
-  background: #fff;
-}
-.s-service:nth-child(odd) .svc-body { background: #fff; }
-.svc-title {
-  font-size: clamp(2.25rem, 3.5vw, 4rem);
-  font-weight: 900;
-  color: #0A1A33;
-  margin-bottom: 0.75rem;
-  opacity: 0;
-  transform: translateX(30px);
-}
-.s-service.reverse .svc-title { transform: translateX(-30px); }
-.svc-sub {
-  font-size: 1.375rem;
-  color: #2563EB;
-  font-weight: 600;
-  margin-bottom: 1.5rem;
-  opacity: 0;
-}
-.svc-desc {
-  font-size: 1.125rem;
-  color: #475569;
-  line-height: 1.85;
-  margin-bottom: 1.75rem;
-  opacity: 0;
-}
-.svc-features {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 2rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.875rem;
-  opacity: 0;
-}
-.svc-features li {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.75rem;
-  font-size: 1.075rem;
-  color: #334155;
-  line-height: 1.6;
-}
-.svc-features svg { flex-shrink: 0; margin-top: 3px; }
-.svc-link {
-  align-self: flex-start;
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: #2563EB;
-  text-decoration: none;
-  border-bottom: 2px solid #BFDBFE;
-  padding-bottom: 2px;
-  transition: border-color 0.2s, color 0.2s;
-  opacity: 0;
-}
-.svc-link:hover { color: #1d4ed8; border-color: #1d4ed8; }
-
-/* ── ④ Products ──────────────────────────────────────────────── */
-.s-products {
-  background: #f8fafc;
-  padding: 6rem 2rem;
-}
-.products-inner { max-width: 1200px; margin: 0 auto; }
-.products-head {
-  text-align: center;
-  margin-bottom: 3.5rem;
-}
-.products-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.75rem;
-}
-.prod-card {
-  background: #fff;
-  border-radius: 1.5rem;
-  overflow: hidden;
-  border: 1px solid #E2E8F0;
-  box-shadow: 0 4px 24px rgba(10,26,51,0.07);
-  opacity: 0;
-  transform: translateY(40px);
-  transition: box-shadow 0.25s, transform 0.25s;
-}
-.prod-card:hover {
-  box-shadow: 0 8px 40px rgba(37,99,235,0.14);
-  transform: translateY(-3px);
-}
-.prod-media {
-  position: relative;
-  height: 220px;
-  overflow: hidden;
-}
-.prod-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-  transition: transform 0.4s ease;
-}
-.prod-card:hover .prod-img { transform: scale(1.04); }
-.prod-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(10,26,51,0.1) 0%, rgba(10,26,51,0.55) 100%);
-}
-.prod-tag {
-  position: absolute;
-  top: 1.25rem;
-  left: 1.25rem;
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-  padding: 0.3rem 0.8rem;
-  border-radius: 999px;
-  background: rgba(37,99,235,0.88);
-  color: #fff;
-  backdrop-filter: blur(4px);
-}
-.prod-body { padding: 2rem 1.75rem 2.25rem; }
-.prod-name {
-  font-size: 1.375rem;
-  font-weight: 900;
-  color: #0A1A33;
-  margin-bottom: 0.35rem;
-}
-.prod-sub {
-  font-size: 0.875rem;
-  color: #2563EB;
-  font-weight: 600;
-  margin-bottom: 1rem;
-}
-.prod-desc {
-  font-size: 0.875rem;
-  color: #475569;
-  line-height: 1.8;
-  margin-bottom: 1.25rem;
-}
-.prod-features {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 1.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-.prod-features li {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.5rem;
-  font-size: 0.82rem;
-  color: #334155;
-  line-height: 1.5;
-}
-.prod-features svg { flex-shrink: 0; margin-top: 1px; }
-.prod-link {
-  font-size: 0.875rem;
-  font-weight: 700;
-  color: #2563EB;
-  text-decoration: none;
-  border-bottom: 2px solid #BFDBFE;
-  padding-bottom: 2px;
-  transition: border-color 0.2s, color 0.2s;
-}
-.prod-link:hover { color: #1d4ed8; border-color: #1d4ed8; }
-@media (max-width: 768px) {
-  .products-grid { grid-template-columns: 1fr; }
-}
-
-/* ── ⑤ Cases ─────────────────────────────────────────────────── */
-.s-cases {
-  background: #fff;
-  padding: 6rem 2rem;
-}
-.cases-head {
-  max-width: 1200px;
-  margin: 0 auto 3rem;
-  text-align: center;
-}
-
-/* List container */
-.cases-list {
-  max-width: 1200px;
-  margin: 0 auto;
-  border-top: 1px solid #E8E8E4;
-}
-
-/* Per-brand color tokens — keys match Directus cases.label */
-.cl-row[data-case="UR（Urban Revivo）"]   { --cr: #2563EB; --cr-tint: rgba(37,99,235,0.04); }
-.cl-row[data-case="玛克茜妮（MAXRIENY）"] { --cr: #BE123C; --cr-tint: rgba(190,18,60,0.04); }
-.cl-row[data-case="幸棉"]                 { --cr: #15803D; --cr-tint: rgba(21,128,61,0.04); }
-.cl-row[data-case="美一(MEIYI)"]          { --cr: #B45309; --cr-tint: rgba(180,83,9,0.04); }
-
-/* Row */
-.cl-row {
-  display: grid;
-  grid-template-columns: 3rem 1fr 18rem 1fr 1.5rem;
-  align-items: center;
-  column-gap: 2.5rem;
-  padding: 2.75rem 1.5rem;
-  width: 100%;
-  border: none;
-  border-bottom: 1px solid #E8E8E4;
-  background: transparent;
-  cursor: pointer;
-  text-align: left;
-  font-family: inherit;
-  opacity: 0;
-  transform: translateY(20px);
-  transition: background 0.2s;
-  border-radius: 0;
-}
-.cl-row:hover { background: var(--cr-tint); }
-
-/* Index number */
-.cl-idx {
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  color: #C8C8C2;
-  font-variant-numeric: tabular-nums;
-}
-
-/* Brand info */
-.cl-info { display: flex; flex-direction: column; gap: 0.3rem; }
-.cl-name {
-  font-size: 1.4rem;
-  font-weight: 900;
-  color: #0A1A33;
-  letter-spacing: -0.02em;
-  line-height: 1.15;
-}
-.cl-cat {
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: #A3A39C;
-}
-
-/* Metric — big number, small unit baseline-aligned */
-.cl-metric {
-  display: flex;
-  align-items: baseline;
-  gap: 0.4rem;
-}
-.cl-val {
-  font-size: clamp(2.5rem, 3.5vw, 3.5rem);
-  font-weight: 900;
-  color: var(--cr);
-  letter-spacing: -0.04em;
-  line-height: 1;
-}
-.cl-unit {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: color-mix(in srgb, var(--cr) 50%, #9CA3AF);
-  letter-spacing: 0.02em;
-  max-width: 5.5rem;
-  line-height: 1.3;
-}
-
-/* Tags */
-.cl-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem;
-  align-content: center;
-}
-.cl-tags span {
-  font-size: 0.68rem;
-  font-weight: 600;
-  letter-spacing: 0.03em;
-  color: #64748B;
-  background: #F1F5F9;
-  padding: 0.25rem 0.7rem;
-  border-radius: 999px;
-  white-space: nowrap;
-}
-
-/* Arrow */
-.cl-arrow {
-  font-size: 1rem;
-  color: #C8C8C2;
-  transition: color 0.2s, transform 0.2s;
-}
-.cl-row:hover .cl-arrow { color: var(--cr); transform: translateX(4px); }
-
-/* "查看全部" button */
-.cases-more { text-align: center; margin-top: 3.5rem; }
-.btn-outline-dark {
-  display: inline-flex;
-  align-items: center;
-  border: 1.5px solid #0A1A33;
-  color: #0A1A33;
-  padding: 0.75rem 2rem;
-  border-radius: 999px;
-  font-size: 0.875rem;
-  font-weight: 700;
-  text-decoration: none;
-  letter-spacing: 0.03em;
-  transition: background 0.22s, color 0.22s;
-}
-.btn-outline-dark:hover { background: #0A1A33; color: #fff; }
-
-@media (max-width: 900px) {
-  .cl-row {
-    grid-template-columns: 2.5rem 1fr 1fr;
-    grid-template-rows: auto auto;
-    column-gap: 1.5rem;
-    row-gap: 1rem;
+  /* ── Shared tokens ───────────────────────────────────────────── */
+  .section-tag {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #2563eb;
+    margin-bottom: 0.75rem;
   }
-  .cl-metric { grid-column: 3; grid-row: 1; justify-self: end; }
-  .cl-tags   { grid-column: 2 / 4; grid-row: 2; }
-  .cl-arrow  { display: none; }
-}
-@media (max-width: 560px) {
-  .cl-row {
-    grid-template-columns: 2.5rem 1fr;
-    grid-template-rows: auto auto auto;
+  .section-tag.light {
+    color: #93c5fd;
   }
-  .cl-metric { grid-column: 2; grid-row: 2; justify-self: start; }
-  .cl-tags   { grid-column: 2; grid-row: 3; }
-}
+  .section-title {
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    font-weight: 900;
+    color: #0a1a33;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+  }
+  .section-title.light {
+    color: #fff;
+  }
+  .section-sub {
+    font-size: 1rem;
+    color: #475569;
+    line-height: 1.7;
+  }
+  .section-sub.light {
+    color: #bfdbfe;
+  }
 
-/* ── Case Modal ─────────────────────────────────────────────── */
-.case-modal {
-  position: fixed;
-  inset: 0;
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
-}
-.case-modal[hidden] { display: none; }
-.modal-backdrop {
-  position: absolute;
-  inset: 0;
-  background: rgba(5,15,35,0.75);
-  backdrop-filter: blur(8px);
-}
-.modal-panel {
-  position: relative;
-  z-index: 1;
-  background: #fff;
-  border-radius: 1.75rem;
-  max-width: 760px;
-  width: 100%;
-  max-height: 92vh;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  box-shadow: 0 40px 100px rgba(0,0,0,0.45);
-  opacity: 0;
-  transform: translateY(28px) scale(0.96);
-  transition: opacity 0.28s cubic-bezier(0.16,1,0.3,1), transform 0.28s cubic-bezier(0.16,1,0.3,1);
-}
-.modal-panel.visible { opacity: 1; transform: translateY(0) scale(1); }
+  /* ── ① Hero ──────────────────────────────────────────────────── */
+  .s-hero {
+    position: relative;
+    height: 100vh;
+    min-height: 600px;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+  }
+  .hero-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      105deg,
+      rgba(10, 26, 51, 0.9) 0%,
+      rgba(10, 26, 51, 0.6) 60%,
+      rgba(10, 26, 51, 0.35) 100%
+    );
+  }
+  .hero-body {
+    position: relative;
+    z-index: 2;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    width: 100%;
+  }
+  .hero-eyebrow {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #93c5fd;
+    margin-bottom: 1.25rem;
+    opacity: 0;
+  }
+  .hero-title {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    font-size: clamp(2.5rem, 5.5vw, 4.6rem);
+    font-weight: 900;
+    color: #fff;
+    line-height: 1.1;
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+  }
+  .hero-title .hl {
+    display: block;
+    font-weight: 900;
+    opacity: 0;
+  }
 
-/* Hero image */
-.modal-hero {
-  position: relative;
-  height: 200px;
-  overflow: hidden;
-  border-radius: 1.75rem 1.75rem 0 0;
-  flex-shrink: 0;
-}
-.modal-hero-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center 30%;
-}
-.modal-hero-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    165deg,
-    rgba(5,15,35,0.25) 0%,
-    rgba(5,15,35,0.65) 60%,
-    rgba(5,15,35,0.88) 100%
-  );
-}
-.modal-hero-content {
-  position: absolute;
-  bottom: 1.75rem;
-  left: 2rem;
-  right: 4rem;
-}
-.modal-category-tag {
-  display: inline-block;
-  font-size: 0.65rem;
-  font-weight: 800;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: #fff;
-  background: var(--modal-accent, #2563EB);
-  padding: 0.25rem 0.75rem;
-  border-radius: 999px;
-  margin-bottom: 0.625rem;
-  opacity: 0.95;
-}
-.modal-title {
-  font-size: clamp(1.5rem, 4vw, 2rem);
-  font-weight: 900;
-  color: #fff;
-  line-height: 1.2;
-  text-shadow: 0 2px 12px rgba(0,0,0,0.3);
-}
-.modal-close {
-  position: absolute;
-  top: 1.25rem;
-  right: 1.25rem;
-  width: 2.25rem;
-  height: 2.25rem;
-  border-radius: 50%;
-  border: none;
-  background: rgba(255,255,255,0.2);
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  backdrop-filter: blur(4px);
-  transition: background 0.15s;
-  z-index: 2;
-}
-.modal-close:hover { background: rgba(255,255,255,0.35); }
+  .hero-punctuation {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+  .hero-brand-kw {
+    margin: 0 0 0.65rem;
+    color: #fb923c;
+    font-size: clamp(1.3rem, 2.8vw, 2.4rem);
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    line-height: 1.2;
+    opacity: 0;
+  }
+  .hero-sub {
+    font-size: clamp(1rem, 1.5vw, 1.2rem);
+    color: #cbd5e1;
+    line-height: 1.7;
+    max-width: none;
+    margin-bottom: 0.85rem;
+    opacity: 0;
+  }
+  .hero-data {
+    color: #dbeafe;
+    font-size: clamp(0.88rem, 1.2vw, 1rem);
+    font-variant-numeric: tabular-nums;
+    line-height: 1.7;
+    margin-bottom: 2.5rem;
+    opacity: 0;
+  }
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    opacity: 0;
+  }
+  .btn-solid {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.875rem 2rem;
+    background: #f97316;
+    color: #fff;
+    font-weight: 700;
+    border-radius: 0.75rem;
+    font-size: 1rem;
+    text-decoration: none;
+    transition:
+      background 0.2s,
+      transform 0.2s;
+  }
+  .btn-solid:hover {
+    background: #ea580c;
+    transform: translateY(-1px);
+  }
+  .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.875rem 2rem;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    color: #fff;
+    font-weight: 600;
+    border-radius: 0.75rem;
+    font-size: 1rem;
+    text-decoration: none;
+    transition:
+      border-color 0.2s,
+      background 0.2s;
+    backdrop-filter: blur(4px);
+  }
+  .btn-ghost:hover {
+    border-color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+  }
+  .scroll-cue {
+    position: absolute;
+    bottom: 2.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    z-index: 2;
+  }
+  .scroll-cue span {
+    display: block;
+    width: 2px;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 1px;
+    animation: scroll-bounce 1.4s ease-in-out infinite;
+  }
+  .scroll-cue span:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+  .scroll-cue span:nth-child(3) {
+    animation-delay: 0.4s;
+  }
+  @keyframes scroll-bounce {
+    0%,
+    100% {
+      opacity: 0.3;
+      transform: scaleY(0.6);
+    }
+    50% {
+      opacity: 1;
+      transform: scaleY(1);
+    }
+  }
 
-/* Body */
-.modal-body {
-  padding: 1.5rem 2rem 1.75rem;
-  flex: 1;
-  min-height: 0;
-  overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: #CBD5E1 transparent;
-}
-.modal-desc {
-  font-size: 0.9rem;
-  color: #475569;
-  line-height: 1.75;
-  margin-bottom: 1.25rem;
-  padding-bottom: 1.25rem;
-  border-bottom: 1px solid #F1F5F9;
-}
+  /* ── ② Stats ─────────────────────────────────────────────────── */
+  .s-stats {
+    min-height: 100svh;
+    background:
+      radial-gradient(circle at 10% 8%, rgba(37, 99, 235, 0.08), transparent 28rem),
+      radial-gradient(circle at 92% 82%, rgba(232, 93, 38, 0.06), transparent 24rem), #f7f9fd;
+    display: flex;
+    align-items: center;
+    padding: clamp(6.5rem, 8.5vw, 8.5rem) 2rem clamp(5rem, 7vw, 7rem);
+    position: relative;
+    overflow: hidden;
+  }
 
-/* Stats */
-.modal-stats {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  row-gap: 1.5rem;
-  padding: 1.25rem 0;
-  border-top: 1px solid #F1F5F9;
-  border-bottom: 1px solid #F1F5F9;
-  margin-bottom: 1.5rem;
-}
-@media (max-width: 520px) {
-  .modal-stats { grid-template-columns: repeat(2, 1fr); }
-  :global(.modal-stat-card:nth-child(2n)) { border-right: none; }
-}
-:global(.modal-stat-card) {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.15rem;
-  padding: 0 0.5rem;
-  border-right: 1px solid #F1F5F9;
-  text-align: center;
-}
-:global(.modal-stat-card:nth-child(4n)),
-:global(.modal-stat-card:last-child) { border-right: none; }
-:global(.modal-stat-val) {
-  font-size: clamp(1.2rem, 2.5vw, 1.6rem);
-  font-weight: 900;
-  color: var(--modal-accent, #2563EB);
-  line-height: 1;
-  letter-spacing: -0.03em;
-}
-:global(.modal-stat-unit) {
-  font-size: 0.58rem;
-  color: color-mix(in srgb, var(--modal-accent, #2563EB) 55%, #9CA3AF);
-  font-weight: 700;
-  letter-spacing: 0.03em;
-  display: block;
-}
-:global(.modal-stat-label) {
-  font-size: 0.62rem;
-  color: #94A3B8;
-  line-height: 1.3;
-}
+  .stats-deco {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .stats-deco::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(37, 99, 235, 0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(37, 99, 235, 0.035) 1px, transparent 1px);
+    background-size: 52px 52px;
+    mask-image: linear-gradient(to bottom, transparent, #000 20%, #000 80%, transparent);
+  }
 
+  .deco-watermark {
+    position: absolute;
+    right: -0.02em;
+    bottom: -0.28em;
+    font-size: clamp(10rem, 22vw, 20rem);
+    font-weight: 900;
+    color: transparent;
+    -webkit-text-stroke: 1.5px rgba(37, 99, 235, 0.055);
+    letter-spacing: -0.05em;
+    line-height: 1;
+    user-select: none;
+  }
 
-.btn-outline-light {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.875rem 2rem;
-  border: 2px solid rgba(255,255,255,0.3);
-  color: #fff;
-  font-weight: 600;
-  border-radius: 0.75rem;
-  font-size: 0.95rem;
-  text-decoration: none;
-  transition: border-color 0.2s, background 0.2s;
-}
-.btn-outline-light:hover { border-color: #fff; background: rgba(255,255,255,0.08); }
+  .stats-inner {
+    position: relative;
+    z-index: 1;
+    max-width: 1280px;
+    margin: 0 auto;
+    width: 100%;
+  }
+  .stats-heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 3rem;
+    margin-bottom: 2rem;
+  }
+  .stats-heading .section-tag {
+    margin-bottom: 0.7rem;
+  }
+  .stats-headline {
+    font-size: clamp(2rem, 3.2vw, 3rem);
+    font-weight: 900;
+    color: #0a1a33;
+    line-height: 1.15;
+    letter-spacing: -0.035em;
+    margin: 0;
+  }
+  .stats-intro {
+    width: min(100%, 29rem);
+    color: #334155;
+    font-size: 0.95rem;
+    line-height: 1.8;
+    margin: 0 0 0.15rem;
+  }
+  .stats-bento {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-template-rows: minmax(200px, auto) minmax(180px, auto);
+    gap: 1rem;
+  }
+  .stats-tenure,
+  .stat-card {
+    position: relative;
+    border-radius: 1.5rem;
+    overflow: hidden;
+  }
+  .stats-tenure {
+    grid-area: 1 / 1 / 3 / 4;
+    min-height: 396px;
+    padding: 1.5rem;
+    color: #fff;
+    background:
+      linear-gradient(145deg, rgba(37, 99, 235, 0.22), transparent 48%),
+      linear-gradient(160deg, #07162c 0%, #102d55 100%);
+    border: 1px solid rgba(147, 197, 253, 0.2);
+    box-shadow: 0 24px 60px rgba(10, 26, 51, 0.16);
+  }
+  .stats-tenure::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(147, 197, 253, 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(147, 197, 253, 0.06) 1px, transparent 1px);
+    background-size: 28px 28px;
+    mask-image: linear-gradient(to bottom, #000, transparent 84%);
+    pointer-events: none;
+  }
+  .tenure-topline {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    color: #bfdbfe;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.11em;
+  }
+  .tenure-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: #dbeafe;
+    letter-spacing: 0.03em;
+  }
+  .tenure-status i {
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 50%;
+    background: #fb923c;
+    box-shadow: 0 0 0 4px rgba(251, 146, 60, 0.12);
+  }
+  .tenure-value {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: flex-end;
+    gap: 0.55rem;
+    margin-top: 1.3rem;
+  }
+  .tenure-value strong {
+    font-size: clamp(4.6rem, 7vw, 6.5rem);
+    font-weight: 900;
+    line-height: 0.82;
+    letter-spacing: -0.08em;
+    color: #fff;
+  }
+  .tenure-value span {
+    color: #60a5fa;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    padding-bottom: 0.35rem;
+  }
+  .tenure-label {
+    position: relative;
+    z-index: 2;
+    margin: 0.85rem 0 0;
+    color: #fff;
+    font-size: clamp(1.05rem, 1.45vw, 1.25rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+  .tenure-coverage {
+    position: relative;
+    z-index: 2;
+    margin-top: 1.25rem;
+  }
+  .tenure-coverage ul {
+    display: grid;
+    grid-template-columns: repeat(2, max-content);
+    gap: 0.55rem 0.95rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .tenure-coverage li {
+    color: #dbeafe;
+    font-size: 0.74rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .tenure-coverage li::before {
+    content: '•';
+    margin-right: 0.35rem;
+    color: #fb923c;
+  }
+  .tenure-range {
+    position: absolute;
+    z-index: 3;
+    left: 1.5rem;
+    right: 1.5rem;
+    bottom: 1.3rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    color: #bfdbfe;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+  .tenure-range i {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, #3b82f6, #fb923c);
+  }
+  .tenure-route {
+    position: absolute;
+    z-index: 1;
+    left: 0;
+    right: 0;
+    bottom: 2.4rem;
+    width: 100%;
+    height: 12rem;
+    pointer-events: none;
+  }
+  .tenure-route-track,
+  .tenure-route-progress {
+    vector-effect: non-scaling-stroke;
+    fill: none;
+    stroke-linecap: round;
+  }
+  .tenure-route-track {
+    stroke: rgba(147, 197, 253, 0.16);
+    stroke-width: 2;
+  }
+  .tenure-route-progress {
+    stroke: #60a5fa;
+    stroke-width: 2.5;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0;
+  }
+  .tenure-route-node {
+    fill: #dbeafe;
+    stroke: rgba(96, 165, 250, 0.35);
+    stroke-width: 8;
+    vector-effect: non-scaling-stroke;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+  .tenure-route-node--accent {
+    fill: #fb923c;
+    stroke: rgba(251, 146, 60, 0.22);
+  }
+  .stat-card {
+    padding: 1.45rem 1.5rem;
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid rgba(203, 213, 225, 0.72);
+    box-shadow: 0 12px 34px rgba(30, 58, 95, 0.07);
+    transition:
+      transform 0.3s ease,
+      border-color 0.3s ease,
+      box-shadow 0.3s ease;
+  }
+  .stats-warehouse {
+    grid-area: 1 / 4 / 2 / 8;
+    background:
+      linear-gradient(135deg, rgba(219, 234, 254, 0.72), rgba(255, 255, 255, 0.96) 62%), #fff;
+  }
+  .stats-network {
+    grid-area: 1 / 8 / 2 / 13;
+    background:
+      radial-gradient(circle at 87% 24%, rgba(37, 99, 235, 0.12), transparent 9rem), #eef4ff;
+  }
+  .stats-inspection {
+    grid-area: 2 / 4 / 3 / 10;
+    background:
+      radial-gradient(circle at 0 100%, rgba(251, 146, 60, 0.12), transparent 13rem),
+      linear-gradient(135deg, #fffaf7, #fff);
+  }
+  .stats-accuracy {
+    grid-area: 2 / 10 / 3 / 13;
+    color: #fff;
+    background:
+      radial-gradient(circle at 100% 0, rgba(96, 165, 250, 0.38), transparent 12rem),
+      linear-gradient(145deg, #123d75, #0a1a33 72%);
+    border-color: rgba(147, 197, 253, 0.22);
+    box-shadow: 0 18px 42px rgba(10, 26, 51, 0.18);
+  }
+  .stat-card-heading {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+  }
+  .stat-card-kicker {
+    color: #2563eb;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.13em;
+  }
+  .stat-card-index {
+    color: #334155;
+    font-size: 0.65rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+  }
+  .stats-accuracy .stat-card-kicker {
+    color: #93c5fd;
+  }
+  .stats-accuracy .stat-card-index {
+    color: rgba(219, 234, 254, 0.55);
+  }
+  .stat-metrics {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    min-width: 0;
+  }
+  .stat-metrics--warehouse {
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr);
+    gap: 1rem;
+    align-items: end;
+  }
+  .stat-metrics--network {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .stat-metrics--network .stat-metric {
+    padding: 0 1rem;
+    border-left: 1px solid rgba(148, 163, 184, 0.25);
+  }
+  .stat-metrics--network .stat-metric:first-child {
+    padding-left: 0;
+    border-left: 0;
+  }
+  .stat-metrics--inspection {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
+  .stat-metrics--inspection .stat-metric + .stat-metric {
+    padding-left: 1.5rem;
+    border-left: 1px solid rgba(232, 93, 38, 0.15);
+  }
+  .stat-metric {
+    min-width: 0;
+  }
+  .stat-val {
+    display: flex;
+    align-items: baseline;
+    gap: 0.22rem;
+    margin-bottom: 0.65rem;
+    min-width: 0;
+  }
+  .stat-num {
+    font-size: clamp(2rem, 3.4vw, 3.35rem);
+    font-weight: 900;
+    color: #e85d26;
+    font-variant-numeric: tabular-nums;
+    line-height: 0.92;
+    letter-spacing: -0.055em;
+    white-space: nowrap;
+  }
+  .stat-unit {
+    font-size: 0.9rem;
+    font-weight: 800;
+    color: #2563eb;
+    white-space: nowrap;
+  }
+  .stat-label {
+    font-size: 0.82rem;
+    font-weight: 800;
+    color: #0a1a33;
+    line-height: 1.4;
+    margin: 0 0 0.32rem;
+  }
+  .stat-detail {
+    font-size: 0.68rem;
+    color: #334155;
+    line-height: 1.55;
+    margin: 0;
+  }
+  .stats-warehouse .stat-metric:first-child .stat-num {
+    font-size: clamp(2.7rem, 4.3vw, 4.15rem);
+  }
+  .stats-warehouse .stat-metric:last-child .stat-num {
+    font-size: clamp(2.25rem, 3.3vw, 3.2rem);
+    text-shadow: 0 8px 20px rgba(232, 93, 38, 0.14);
+  }
+  .stats-network .stat-num {
+    font-size: clamp(1.65rem, 2.4vw, 2.45rem);
+  }
+  .stats-network .stat-unit {
+    font-size: 0.72rem;
+  }
+  .inspection-direction {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-bottom: 0.7rem;
+    color: #c2410c;
+    font-size: 0.62rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+  }
+  .inspection-direction::before {
+    content: '';
+    width: 0.4rem;
+    height: 0.4rem;
+    border-radius: 50%;
+    background: #fb923c;
+  }
+  .stat-metric--accuracy {
+    position: relative;
+    z-index: 2;
+  }
+  .stats-accuracy .stat-num {
+    color: #fff;
+    font-size: clamp(2.65rem, 3.7vw, 3.8rem);
+  }
+  .stats-accuracy .stat-unit {
+    color: #fb923c;
+  }
+  .stats-accuracy .stat-label {
+    color: #fff;
+  }
+  .stats-accuracy .stat-detail {
+    color: #bfdbfe;
+  }
+  .accuracy-ring {
+    position: absolute;
+    right: -4.6rem;
+    bottom: -4.8rem;
+    width: 11rem;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: conic-gradient(#fb923c 0 76%, rgba(147, 197, 253, 0.12) 76% 100%);
+    opacity: 0.24;
+    pointer-events: none;
+  }
+  .accuracy-ring span {
+    position: absolute;
+    inset: 0.75rem;
+    border-radius: inherit;
+    background: #0d2546;
+  }
+  .warehouse-schematic {
+    position: absolute;
+    right: 0.9rem;
+    bottom: 0.8rem;
+    display: flex;
+    align-items: flex-end;
+    gap: 0.22rem;
+    height: 3.8rem;
+    opacity: 0.11;
+    transform: skewY(-8deg);
+  }
+  .warehouse-schematic span {
+    display: block;
+    width: 1rem;
+    border: 2px solid #2563eb;
+    border-bottom-width: 5px;
+  }
+  .warehouse-schematic span:nth-child(1) {
+    height: 46%;
+  }
+  .warehouse-schematic span:nth-child(2) {
+    height: 72%;
+  }
+  .warehouse-schematic span:nth-child(3) {
+    height: 100%;
+  }
+  .warehouse-schematic span:nth-child(4) {
+    height: 62%;
+  }
+  .network-orbit {
+    position: absolute;
+    right: 0.7rem;
+    top: 0.75rem;
+    width: 5.5rem;
+    height: 5.5rem;
+    border: 1px solid rgba(37, 99, 235, 0.09);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+  .network-orbit::before,
+  .network-orbit::after {
+    content: '';
+    position: absolute;
+    border: 1px solid rgba(37, 99, 235, 0.08);
+    border-radius: 50%;
+  }
+  .network-orbit::before {
+    inset: 0.8rem;
+  }
+  .network-orbit::after {
+    inset: 1.7rem;
+  }
+  .network-orbit i {
+    position: absolute;
+    width: 0.34rem;
+    height: 0.34rem;
+    border-radius: 50%;
+    background: #f97316;
+  }
+  .network-orbit i:nth-child(1) {
+    top: 0.4rem;
+    left: 2.7rem;
+  }
+  .network-orbit i:nth-child(2) {
+    top: 2.4rem;
+    right: 0.1rem;
+  }
+  .network-orbit i:nth-child(3) {
+    bottom: 0.5rem;
+    left: 1rem;
+  }
+  .network-orbit i:nth-child(4) {
+    top: 2.2rem;
+    left: 2.5rem;
+    background: #fb923c;
+  }
+  .stats-flow {
+    position: relative;
+    margin-top: 1rem;
+    padding: 1.2rem 1.75rem 1.3rem;
+    color: #fff;
+    background: linear-gradient(100deg, rgba(37, 99, 235, 0.13), transparent 45%), #0a1a33;
+    border: 1px solid rgba(147, 197, 253, 0.16);
+    border-radius: 1.4rem;
+    overflow: hidden;
+    box-shadow: 0 16px 42px rgba(10, 26, 51, 0.12);
+  }
+  .stats-flow::after {
+    content: 'CYCLE  /  07';
+    position: absolute;
+    right: 1.5rem;
+    top: 1.2rem;
+    color: rgba(191, 219, 254, 0.3);
+    font-size: 0.58rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+  }
+  .stats-flow-heading {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    margin-bottom: 0.75rem;
+  }
+  .stats-flow-heading span {
+    color: #60a5fa;
+    font-size: 0.64rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+  }
+  .stats-flow-heading strong {
+    font-size: 0.82rem;
+    letter-spacing: 0.02em;
+  }
+  .stats-flow-rail {
+    position: absolute;
+    z-index: 1;
+    left: 8.4%;
+    right: 8.4%;
+    top: 4.33rem;
+    height: 2px;
+    background: rgba(147, 197, 253, 0.2);
+  }
+  .stats-flow-progress {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, #3b82f6, #60a5fa 62%, #fb923c);
+    box-shadow: 0 0 18px rgba(96, 165, 250, 0.45);
+    transform-origin: left center;
+  }
+  .stats-flow-list {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .stats-flow-step {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    gap: 0.38rem;
+    min-width: 0;
+    text-align: center;
+  }
+  .flow-index {
+    color: #334155;
+    font-size: 0.56rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+  }
+  .stats-flow-step > i {
+    display: block;
+    width: 0.78rem;
+    height: 0.78rem;
+    border: 3px solid #0a1a33;
+    border-radius: 50%;
+    background: #60a5fa;
+    box-shadow: 0 0 0 1px rgba(147, 197, 253, 0.42);
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+  .stats-flow-step:last-child > i {
+    background: #fb923c;
+    box-shadow: 0 0 0 1px rgba(251, 146, 60, 0.5);
+  }
+  .stats-flow-step strong {
+    color: #dbeafe;
+    font-size: 0.68rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .stats-notes {
+    margin-top: 1.15rem;
+    padding: 0 0.2rem;
+  }
+  .stats-notes summary {
+    width: max-content;
+    cursor: pointer;
+    color: #64748b;
+    font-size: 0.68rem;
+    font-weight: 600;
+    list-style: none;
+  }
+  .stats-notes summary::-webkit-details-marker {
+    display: none;
+  }
+  .stats-notes summary::after {
+    content: '＋';
+    margin-left: 0.35rem;
+    color: #94a3b8;
+  }
+  .stats-notes[open] summary::after {
+    content: '−';
+  }
+  .stats-notes-body {
+    margin-top: 0.65rem;
+    max-width: 62rem;
+  }
+  .stats-footnote {
+    display: flex;
+    align-items: baseline;
+    gap: 0.65rem;
+    margin: 0;
+    font-size: 0.75rem;
+    color: #334155;
+    line-height: 1.6;
+  }
+  .stats-footnote span {
+    flex: 0 0 auto;
+    color: #2563eb;
+    font-size: 0.63rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+  }
+  .stats-disclaimer {
+    margin: 0.38rem 0 0;
+    font-size: 0.66rem;
+    color: #334155;
+    line-height: 1.7;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .stat-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(37, 99, 235, 0.35);
+      box-shadow: 0 20px 48px rgba(30, 58, 95, 0.13);
+    }
+    .stats-accuracy:hover {
+      border-color: rgba(147, 197, 253, 0.45);
+      box-shadow: 0 24px 52px rgba(10, 26, 51, 0.24);
+    }
+  }
 
-/* ── ⑥ Order Fulfillment ─────────────────────────────────────── */
-.s-fulfillment {
-  background: #f8fafc;
-  padding: 6rem 2rem;
-  overflow: hidden;
-  position: relative;
-}
-.fulfillment-header {
-  max-width: 820px;
-  margin: 0 auto 5rem;
-  text-align: center;
-}
-.fulfillment-title {
-  font-size: clamp(1.75rem, 3vw, 2.5rem);
-  font-weight: 900;
-  color: #0A1A33;
-  line-height: 1.2;
-  margin-bottom: 1.25rem;
-}
-.fulfillment-sub {
-  font-size: 1rem;
-  color: #475569;
-  line-height: 1.8;
-}
-.fulfillment-track {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 0;
-  max-width: 1400px;
-  margin: 0 auto;
-  row-gap: 3rem;
-}
-.fulfillment-step {
-  flex: 0 0 clamp(180px, 14.2%, 220px);
-  position: relative;
-  padding: 0 1rem 0 0;
-  opacity: 0;
-  transform: translateY(28px);
-  transition: opacity 0s;
-}
-/* horizontal connecting line */
-.fulfillment-connector {
-  position: absolute;
-  top: 2rem;
-  left: 4rem;
-  right: 0;
-  height: 1px;
-  background: #e2e8f0;
-  overflow: hidden;
-}
-.fulfillment-connector::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg, #E85D26 0%, #f97316 100%);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-  transition-delay: calc(var(--i) * 0.12s + 0.3s);
-}
-.s-fulfillment.is-visible .fulfillment-connector::after {
-  transform: scaleX(1);
-}
-.fulfillment-step:last-child .fulfillment-connector { display: none; }
+  @media (max-width: 1100px) {
+    .stats-bento {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      grid-template-rows: repeat(3, minmax(190px, auto));
+    }
+    .stats-tenure {
+      grid-area: 1 / 1 / 2 / 7;
+      min-height: 280px;
+    }
+    .stats-warehouse {
+      grid-area: 2 / 1 / 3 / 4;
+    }
+    .stats-network {
+      grid-area: 2 / 4 / 3 / 7;
+    }
+    .stats-inspection {
+      grid-area: 3 / 1 / 4 / 5;
+    }
+    .stats-accuracy {
+      grid-area: 3 / 5 / 4 / 7;
+    }
+    .tenure-route {
+      width: 52%;
+      left: auto;
+    }
+    .tenure-range {
+      max-width: 18rem;
+    }
+    .stat-metrics--network {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      row-gap: 1rem;
+    }
+    .stat-metrics--network .stat-metric:nth-child(3) {
+      grid-column: 1 / -1;
+      padding: 0.85rem 0 0;
+      border-top: 1px solid rgba(148, 163, 184, 0.25);
+      border-left: 0;
+    }
+  }
 
-/* number badge */
-.fulfillment-num-wrap {
-  position: relative;
-  display: inline-block;
-  margin-bottom: 1.5rem;
-}
-.fulfillment-num {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 4rem;
-  height: 4rem;
-  border: 2px solid #E85D26;
-  border-radius: 50%;
-  color: #E85D26;
-  font-size: 0.875rem;
-  font-weight: 900;
-  letter-spacing: 0.08em;
-  position: relative;
-  z-index: 1;
-  background: #fff;
-  transition: background 0.3s, color 0.3s, box-shadow 0.3s;
-}
-/* pulsing ring */
-.fulfillment-num-ring {
-  position: absolute;
-  inset: -6px;
-  border-radius: 50%;
-  border: 1.5px solid rgba(232,93,38,0.3);
-  opacity: 0;
-  transform: scale(0.8);
-  transition: opacity 0.3s, transform 0.3s;
-}
-.fulfillment-step:hover .fulfillment-num {
-  background: #E85D26;
-  color: #fff;
-  box-shadow: 0 0 0 6px rgba(232,93,38,0.15), 0 8px 24px rgba(232,93,38,0.3);
-}
-.fulfillment-step:hover .fulfillment-num-ring {
-  opacity: 1;
-  transform: scale(1);
-}
-.fulfillment-step-title {
-  font-size: 1rem;
-  font-weight: 800;
-  color: #0A1A33;
-  margin-bottom: 0.6rem;
-  line-height: 1.4;
-  transition: color 0.2s;
-}
-.fulfillment-step:hover .fulfillment-step-title { color: #E85D26; }
-.fulfillment-step-desc {
-  font-size: 0.825rem;
-  color: #475569;
-  line-height: 1.7;
-  max-width: 180px;
-}
-@media (max-width: 768px) {
-  .s-fulfillment { padding: 4rem 1.5rem; }
-  .fulfillment-step { flex: 0 0 45%; }
-  .fulfillment-connector { display: none; }
-}
+  @media (max-width: 700px) {
+    .s-stats {
+      padding: 4.5rem 1.25rem;
+    }
+    .stats-heading {
+      display: block;
+      margin-bottom: 1.5rem;
+    }
+    .stats-intro {
+      margin-top: 0.8rem;
+      font-size: 0.86rem;
+    }
+    .stats-bento {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-rows: none;
+      gap: 0.75rem;
+    }
+    .stats-tenure,
+    .stats-warehouse,
+    .stats-network,
+    .stats-inspection,
+    .stats-accuracy {
+      grid-area: auto;
+      grid-column: 1 / -1;
+    }
+    .stats-tenure {
+      min-height: 310px;
+    }
+    .stat-card {
+      padding: 1.35rem;
+    }
+    .stats-network .stat-num {
+      font-size: clamp(1.75rem, 8vw, 2.3rem);
+    }
+    .stats-flow {
+      padding: 1.25rem 1.1rem 1.35rem;
+    }
+    .stats-flow::after {
+      right: 1.1rem;
+    }
+    .stats-flow-heading {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 0.25rem;
+      margin-bottom: 1rem;
+    }
+    .stats-flow-rail {
+      left: 3.76rem;
+      right: auto;
+      top: 5.75rem;
+      bottom: 2.3rem;
+      width: 2px;
+      height: auto;
+    }
+    .stats-flow-progress {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(180deg, #3b82f6, #60a5fa 62%, #fb923c);
+      transform-origin: center top;
+    }
+    .stats-flow-list {
+      grid-template-columns: 1fr;
+      gap: 0.95rem;
+    }
+    .stats-flow-step {
+      grid-template-columns: 1.7rem 0.8rem 1fr auto;
+      justify-items: start;
+      align-items: center;
+      gap: 0.65rem;
+      text-align: left;
+    }
+    .stats-flow-step strong {
+      font-size: 0.72rem;
+    }
+    .stats-footnote {
+      align-items: flex-start;
+    }
+    .deco-watermark {
+      opacity: 0.5;
+    }
+  }
 
-/* ── ⑦ CTA ───────────────────────────────────────────────────── */
-/* ── FAQ ─────────────────────────────────────────────────── */
-.s-faq {
-  padding: 6rem 2rem;
-  background: #fff;
-}
-.faq-inner {
-  max-width: 800px;
-  margin: 0 auto;
-}
-.faq-inner .section-title { margin-bottom: 3rem; }
-.faq-list { list-style: none; margin: 0; padding: 0; }
-.faq-item {
-  border-top: 1px solid #e2e8f0;
-  padding: 1.75rem 0;
-}
-.faq-item:last-child { border-bottom: 1px solid #e2e8f0; }
-.faq-q {
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: #0A1A33;
-  margin: 0 0 0.75rem;
-  line-height: 1.4;
-}
-.faq-a {
-  font-size: 0.95rem;
-  color: #475569;
-  line-height: 1.8;
-  margin: 0;
-}
-.faq-authority {
-  margin-top: 2rem;
-  font-size: 0.75rem;
-  color: #94a3b8;
-}
-.faq-authority a {
-  color: inherit;
-  text-decoration: underline;
-  text-underline-offset: 2px;
-  transition: color 0.15s;
-}
-.faq-authority a:hover { color: #64748b; }
+  @media (max-width: 420px) {
+    .stat-metrics--warehouse,
+    .stat-metrics--inspection {
+      gap: 0.85rem;
+    }
+    .stat-metrics--inspection .stat-metric + .stat-metric {
+      padding-left: 0.85rem;
+    }
+    .stat-num {
+      font-size: 2rem;
+    }
+    .stats-warehouse .stat-metric:first-child .stat-num {
+      font-size: 2.65rem;
+    }
+    .stats-warehouse .stat-metric:last-child .stat-num {
+      font-size: 2rem;
+    }
+    .stats-network .stat-metrics {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .stats-network .stat-metric {
+      padding: 0 0 0 0.7rem;
+    }
+    .stats-network .stat-metric:nth-child(3) {
+      grid-column: 1 / -1;
+    }
+    .stats-accuracy .stat-num {
+      font-size: 3rem;
+    }
+    .stats-footnote {
+      display: block;
+    }
+    .stats-footnote span {
+      display: block;
+      margin-bottom: 0.2rem;
+    }
+  }
 
-.s-cta {
-  min-height: 80vh;
-  background: #EFF4FF;
-  display: flex;
-  align-items: center;
-  padding: 6rem 2rem;
-  text-align: center;
-}
-.cta-inner { max-width: 700px; margin: 0 auto; opacity: 0; transform: translateY(40px); }
-.cta-title {
-  font-size: clamp(1.75rem, 3vw, 2.5rem);
-  font-weight: 900;
-  color: #0A1A33;
-  line-height: 1.25;
-  margin-bottom: 1rem;
-}
-.cta-sub { font-size: 1rem; color: #475569; margin-bottom: 2.5rem; }
-.cta-phones {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  flex-wrap: wrap;
-  margin-bottom: 2rem;
-}
-.phone-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: clamp(1.2rem, 2vw, 1.6rem);
-  font-weight: 800;
-  color: #0A1A33;
-  text-decoration: none;
-  transition: color 0.2s;
-}
-.phone-link:hover { color: #2563EB; }
-.phone-sep { font-size: 1.5rem; color: #94a3b8; }
-.btn-cta {
-  display: inline-flex;
-  align-items: center;
-  padding: 1rem 2.5rem;
-  background: #2563EB;
-  color: #fff;
-  font-weight: 700;
-  border-radius: 0.75rem;
-  font-size: 1.1rem;
-  text-decoration: none;
-  box-shadow: 0 8px 30px rgba(37,99,235,0.35);
-  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
-}
-.btn-cta:hover {
-  background: #1d4ed8;
-  transform: translateY(-2px);
-  box-shadow: 0 12px 40px rgba(37,99,235,0.45);
-}
-.cta-actions {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.875rem;
-  margin-top: 0.25rem;
-}
-.btn-cta-ghost {
-  display: inline-flex;
-  align-items: center;
-  padding: 1rem 2rem;
-  border: 2px solid rgba(255,255,255,0.35);
-  color: #fff;
-  font-weight: 700;
-  border-radius: 0.75rem;
-  font-size: 1.0rem;
-  text-decoration: none;
-  transition: border-color 0.2s, background 0.2s;
-}
-.btn-cta-ghost:hover {
-  border-color: rgba(255,255,255,0.7);
-  background: rgba(255,255,255,0.08);
-}
+  @media (prefers-reduced-motion: reduce) {
+    .stats-tenure,
+    .stat-card,
+    .stats-flow-step {
+      opacity: 1 !important;
+      transform: none !important;
+    }
+    .tenure-route-progress {
+      stroke-dashoffset: 0 !important;
+    }
+    .stats-flow-progress {
+      transform: none !important;
+    }
+    .tenure-route-node,
+    .stats-flow-step > i {
+      opacity: 1 !important;
+      transform: none !important;
+    }
+  }
 
-/* ── Mobile adjustments ──────────────────────────────────────── */
-@media (max-width: 768px) {
-  .svc-body { padding: 2.5rem 1.5rem; }
-  .s-stats { padding: 4rem 1.5rem; }
+  /* ── ③ Services ──────────────────────────────────────────────── */
+  .s-service {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    overflow: hidden;
+  }
+  .s-service.reverse {
+    direction: rtl;
+  }
+  .s-service.reverse > * {
+    direction: ltr;
+  }
+  @media (max-width: 768px) {
+    .s-service {
+      grid-template-columns: 1fr;
+      direction: ltr !important;
+    }
+    .s-service > * {
+      direction: ltr !important;
+    }
+  }
+  .svc-media {
+    position: relative;
+    overflow: hidden;
+    min-height: 400px;
+  }
+  .svc-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transform: scale(1.05);
+  }
+  #svc-quality-inspection .svc-img {
+    object-position: center 65%;
+  }
+  #svc-logistics-cloud .svc-media {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background:
+      radial-gradient(circle at 85% 12%, rgba(37, 99, 235, 0.12), transparent 18rem),
+      linear-gradient(rgba(37, 99, 235, 0.055) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(37, 99, 235, 0.055) 1px, transparent 1px), #f4f7fc;
+    background-size: auto, 30px 30px, 30px 30px, auto;
+  }
+  .svc-dashboard-frame {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-rows: 2.35rem minmax(0, 1fr);
+    width: 92%;
+    aspect-ratio: 1.65 / 1;
+    overflow: hidden;
+    background: #0a1220;
+    border: 1px solid rgba(96, 165, 250, 0.45);
+    border-radius: 1.1rem;
+    box-shadow: 0 22px 48px rgba(0, 0, 0, 0.38);
+  }
+  .svc-dashboard-heading {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    padding: 0 0.9rem;
+    color: #dbeafe;
+    background: rgba(20, 36, 62, 0.94);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+  .svc-dashboard-heading {
+    border-bottom: 1px solid rgba(96, 165, 250, 0.2);
+  }
+  .svc-dashboard-viewport {
+    position: relative;
+    overflow: hidden;
+    background: #060b12;
+  }
+  #svc-logistics-cloud .svc-dashboard-viewport .svc-img {
+    position: absolute;
+    top: -9%;
+    left: 0;
+    width: 100%;
+    height: auto;
+    object-fit: initial;
+    transform: none;
+    padding: 0;
+  }
+  .svc-system-overlay {
+    position: absolute;
+    z-index: 1;
+    right: 1.5rem;
+    bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    max-width: calc(100% - 3rem);
+    padding: 0.55rem 0.8rem;
+    color: #fff;
+    background: rgba(10, 26, 51, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 999px;
+    backdrop-filter: blur(8px);
+  }
+  .svc-system-overlay span {
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+  }
+  .svc-system-overlay span + span::before {
+    content: '｜';
+    margin: 0 0.28rem;
+    color: #93c5fd;
+  }
+  .svc-system-overlay b,
+  .svc-system-overlay i {
+    font-style: normal;
+  }
+  .svc-system-overlay b {
+    color: #fff;
+    font-size: 0.74rem;
+  }
+  .svc-system-overlay i {
+    display: none;
+  }
+  /* 运到图（白底）contain 显示 */
+  #dp-yundao-platform .svc-media {
+    background: #fff;
+  }
+  .svc-img--contain {
+    object-fit: contain !important;
+    transform: none !important;
+    padding: 1.5rem;
+  }
+  #dp-yundao-platform .svc-media {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background:
+      radial-gradient(circle at 85% 12%, rgba(37, 99, 235, 0.12), transparent 18rem),
+      linear-gradient(rgba(37, 99, 235, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(37, 99, 235, 0.05) 1px, transparent 1px), #f4f7fc;
+    background-size: auto, 30px 30px, 30px 30px, auto;
+  }
+  .yundao-visual {
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+    padding: 0;
+  }
+  .yundao-flow {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-content: center;
+    gap: 0.8rem;
+    min-height: 9.5rem;
+    padding: 0.85rem;
+    background: #f8fbff;
+    border: 1px solid #dbeafe;
+    border-radius: 0.9rem;
+    align-items: center;
+    text-align: center;
+  }
+  .yundao-flow span,
+  .yundao-flow strong {
+    padding: 0.8rem 0.5rem;
+    color: #1e3a5f;
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 0.6rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    line-height: 1.35;
+  }
+  .yundao-flow strong {
+    color: #fff;
+    background: #2563eb;
+    border-color: #2563eb;
+    font-size: 0.8rem;
+  }
+  .yundao-flow i {
+    display: none;
+  }
+  .yundao-interface-grid {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1.55fr) minmax(0, 0.85fr);
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+    gap: 0.8rem;
+    min-height: 25rem;
+    padding-bottom: 3.4rem;
+  }
+  .yundao-interface-grid img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border: 0;
+    border-radius: 0.42rem;
+    box-shadow: 0 5px 14px rgba(30, 58, 95, 0.1);
+  }
+  .yundao-interface-main {
+    grid-row: 1 / 3;
+    grid-column: 1;
+  }
+  .yundao-interface-side-1 {
+    grid-row: 1;
+    grid-column: 2;
+  }
+  .yundao-interface-side-2 {
+    grid-row: 2;
+    grid-column: 2;
+  }
+  .yundao-interface-detail {
+    position: absolute;
+    z-index: 1;
+    bottom: 0;
+    left: 14%;
+    width: 45% !important;
+    height: 34% !important;
+    border: 4px solid #f4f7fc !important;
+    box-shadow: 0 14px 28px rgba(30, 58, 95, 0.18) !important;
+  }
+  .svc-num-badge {
+    position: absolute;
+    top: 2rem;
+    left: 2rem;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background: #fff;
+    color: #2563eb;
+    font-size: 1.1rem;
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  }
+  .svc-num-badge--solution {
+    top: 5rem;
+    width: auto;
+    min-width: 3.5rem;
+    min-height: 3.5rem;
+    gap: 0.55rem;
+    padding: 0.25rem 1.15rem;
+    border-radius: 999px;
+  }
+  .svc-num-badge--solution > span {
+    font-size: 1.25rem;
+  }
+  .svc-num-badge--solution small {
+    font-size: 0.76rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+  }
+  .svc-media-caption {
+    position: absolute;
+    z-index: 1;
+    right: 5.5rem;
+    bottom: 1.5rem;
+    margin: 0;
+    padding: 0.55rem 0.8rem;
+    color: #fff;
+    background: rgba(10, 26, 51, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 999px;
+    backdrop-filter: blur(8px);
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+  .svc-media-caption i {
+    margin: 0 0.2rem;
+    color: #93c5fd;
+    font-style: normal;
+  }
+  .svc-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 4rem 3.5rem;
+    background: #fff;
+  }
+  .s-service:nth-child(odd) .svc-body {
+    background: #fff;
+  }
+  .svc-title {
+    font-size: clamp(2.25rem, 3.5vw, 4rem);
+    font-weight: 900;
+    color: #0a1a33;
+    margin-bottom: 0.75rem;
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  .s-service.reverse .svc-title {
+    transform: translateX(-30px);
+  }
+  .svc-problem {
+    max-width: 34rem;
+    margin: 0 0 1.1rem;
+    color: #475569;
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.7;
+  }
+  .svc-sub {
+    font-size: 1.375rem;
+    color: #2563eb;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+  }
+  .svc-quality-assurance {
+    max-width: 37rem;
+    margin: -0.35rem 0 1.55rem;
+    padding: 0.15rem 0 0.15rem 1rem;
+    border-left: 3px solid #2563eb;
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  .svc-quality-assurance p {
+    margin: 0 0 0.35rem;
+    color: #0a1a33;
+    font-size: 0.92rem;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+  }
+  .svc-quality-assurance span {
+    display: block;
+    color: #64748b;
+    font-size: 0.82rem;
+    font-weight: 600;
+    line-height: 1.65;
+  }
+  .svc-desc {
+    font-size: 1.125rem;
+    color: #475569;
+    line-height: 1.85;
+    margin-bottom: 1.75rem;
+    opacity: 0;
+  }
+  .svc-features {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.875rem;
+    opacity: 0;
+  }
+  .svc-features li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    font-size: 1.075rem;
+    color: #334155;
+    line-height: 1.6;
+  }
+  .svc-feature-solution {
+    display: grid;
+    gap: 0.12rem;
+  }
+  .svc-feature-solution strong {
+    color: #0a1a33;
+    font-size: 1.02rem;
+    font-weight: 800;
+  }
+  .svc-feature-solution small {
+    color: #475569;
+    font-size: 0.88rem;
+    line-height: 1.55;
+  }
+  .svc-scenarios {
+    margin: -0.25rem 0 1.75rem;
+  }
+  .svc-scenarios > span {
+    display: block;
+    margin-bottom: 0.55rem;
+    color: #64748b;
+    font-size: 0.72rem;
+    font-weight: 700;
+  }
+  .svc-scenarios > div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .svc-scenarios b {
+    padding: 0.38rem 0.7rem;
+    color: #1e3a5f;
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 700;
+  }
+  .svc-fee-note {
+    margin: -0.25rem 0 1.5rem;
+    color: #64748b;
+    font-size: 0.78rem;
+    line-height: 1.6;
+  }
+  .svc-fee-note strong {
+    color: #334155;
+  }
+  @media (max-width: 420px) {
+    .svc-system-overlay {
+      right: 0.75rem;
+      bottom: 0.75rem;
+      padding: 0.48rem 0.6rem;
+    }
+    .svc-system-overlay b {
+      font-size: 0.66rem;
+    }
+    .svc-system-overlay span + span::before {
+      margin: 0 0.18rem;
+    }
+    .svc-quality-assurance {
+      margin-bottom: 1.35rem;
+    }
+  }
+  .svc-features svg {
+    flex-shrink: 0;
+    margin-top: 3px;
+  }
+  .svc-link {
+    align-self: flex-start;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #2563eb;
+    text-decoration: none;
+    border-bottom: 2px solid #bfdbfe;
+    padding-bottom: 2px;
+    transition:
+      border-color 0.2s,
+      color 0.2s;
+    opacity: 0;
+  }
+  .svc-link:hover {
+    color: #1d4ed8;
+    border-color: #1d4ed8;
+  }
 
-}
+  /* ── ④ Products ──────────────────────────────────────────────── */
+  .s-products {
+    background: #f8fafc;
+    padding: 6rem 2rem;
+  }
+  .products-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .products-head {
+    text-align: center;
+    margin-bottom: 3.5rem;
+  }
+  .products-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.75rem;
+  }
+  .prod-card {
+    background: #fff;
+    border-radius: 1.5rem;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 24px rgba(10, 26, 51, 0.07);
+    opacity: 0;
+    transform: translateY(40px);
+    transition:
+      box-shadow 0.25s,
+      transform 0.25s;
+  }
+  .prod-card:hover {
+    box-shadow: 0 8px 40px rgba(37, 99, 235, 0.14);
+    transform: translateY(-3px);
+  }
+  .prod-media {
+    position: relative;
+    height: 220px;
+    overflow: hidden;
+  }
+  .prod-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: transform 0.4s ease;
+  }
+  .prod-card:hover .prod-img {
+    transform: scale(1.04);
+  }
+  .prod-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(10, 26, 51, 0.1) 0%, rgba(10, 26, 51, 0.55) 100%);
+  }
+  .prod-tag {
+    position: absolute;
+    top: 1.25rem;
+    left: 1.25rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    padding: 0.3rem 0.8rem;
+    border-radius: 999px;
+    background: rgba(37, 99, 235, 0.88);
+    color: #fff;
+    backdrop-filter: blur(4px);
+  }
+  .prod-body {
+    padding: 2rem 1.75rem 2.25rem;
+  }
+  .prod-name {
+    font-size: 1.375rem;
+    font-weight: 900;
+    color: #0a1a33;
+    margin-bottom: 0.35rem;
+  }
+  .prod-sub {
+    font-size: 0.875rem;
+    color: #2563eb;
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+  .prod-desc {
+    font-size: 0.875rem;
+    color: #475569;
+    line-height: 1.8;
+    margin-bottom: 1.25rem;
+  }
+  .prod-features {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .prod-features li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    font-size: 0.82rem;
+    color: #334155;
+    line-height: 1.5;
+  }
+  .prod-features svg {
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .prod-link {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #2563eb;
+    text-decoration: none;
+    border-bottom: 2px solid #bfdbfe;
+    padding-bottom: 2px;
+    transition:
+      border-color 0.2s,
+      color 0.2s;
+  }
+  .prod-link:hover {
+    color: #1d4ed8;
+    border-color: #1d4ed8;
+  }
+  @media (max-width: 768px) {
+    .products-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* ── ⑤ Cases ─────────────────────────────────────────────────── */
+  .s-cases {
+    background: #f6f8fc;
+    padding: 4rem 2rem 3rem;
+  }
+  .cases-head {
+    max-width: 1360px;
+    margin: 0 auto 2rem;
+    text-align: center;
+  }
+
+  .cases-gallery {
+    display: flex;
+    width: min(1360px, 100%);
+    height: 34rem;
+    margin: 0 auto;
+    overflow: hidden;
+    border-radius: 1.2rem;
+    background: #10284b;
+  }
+
+  .cg-panel[data-case='UR（Urban Revivo）'] {
+    --case-color: #5b93ff;
+  }
+  .cg-panel[data-case='玛克茜妮（MAXRIENY）'] {
+    --case-color: #f78aa3;
+  }
+  .cg-panel[data-case='幸棉'] {
+    --case-color: #6fd08f;
+  }
+  .cg-panel[data-case='美一(MEIYI)'] {
+    --case-color: #f6ad63;
+  }
+
+  .cg-panel {
+    position: relative;
+    flex: 1 1 0;
+    min-width: 0;
+    overflow: hidden;
+    cursor: pointer;
+    text-decoration: none;
+    isolation: isolate;
+    transition: flex-grow 0.52s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .cg-panel + .cg-panel {
+    border-left: 1px solid rgba(255, 255, 255, 0.38);
+  }
+  .cases-gallery:has(.cg-panel:hover) .cg-panel:not(:hover) {
+    flex-grow: 0.72;
+  }
+  .cg-panel:hover,
+  .cg-panel:focus-visible {
+    flex-grow: 2.7;
+    outline: none;
+  }
+  .cg-panel > img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: saturate(0.8) brightness(0.78);
+    transform: scale(1.03);
+    transition: filter 0.45s ease, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .cg-panel:hover > img,
+  .cg-panel:focus-visible > img {
+    filter: saturate(1) brightness(0.95);
+    transform: scale(1.08);
+  }
+  .cg-shade {
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(8, 20, 42, 0.06) 25%, rgba(8, 20, 42, 0.78) 100%);
+    transition: background 0.4s ease;
+  }
+  .cg-panel:hover .cg-shade,
+  .cg-panel:focus-visible .cg-shade {
+    background: linear-gradient(90deg, rgba(8, 20, 42, 0.56), rgba(8, 20, 42, 0.12) 72%), linear-gradient(0deg, rgba(8, 20, 42, 0.72), transparent 62%);
+  }
+  .cg-label {
+    position: absolute;
+    z-index: 2;
+    bottom: 1.4rem;
+    left: 1.3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    color: #fff;
+    transition: opacity 0.25s ease, transform 0.35s ease;
+  }
+  .cg-label span {
+    color: var(--case-color, #fff);
+    font: 900 0.64rem ui-monospace, monospace;
+    letter-spacing: 0.12em;
+  }
+  .cg-label strong {
+    font-size: clamp(0.95rem, 1.35vw, 1.35rem);
+    font-weight: 900;
+    white-space: nowrap;
+  }
+  .cg-label small {
+    color: rgba(227, 238, 250, 0.78);
+    font-size: 0.66rem;
+    font-weight: 700;
+    line-height: 1.45;
+  }
+  .cg-panel:hover .cg-label,
+  .cg-panel:focus-visible .cg-label {
+    opacity: 0;
+    transform: translateY(0.65rem);
+  }
+  .cg-detail {
+    position: absolute;
+    z-index: 2;
+    bottom: 1.55rem;
+    left: 1.7rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    max-width: 21rem;
+    color: #fff;
+    opacity: 0;
+    transform: translateY(1rem);
+    transition: opacity 0.3s ease 0.08s, transform 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.08s;
+  }
+  .cg-detail > span {
+    color: var(--case-color, #fff);
+    font-size: 0.72rem;
+    font-weight: 850;
+    letter-spacing: 0.08em;
+  }
+  .cg-detail > strong {
+    margin-top: 0.45rem;
+    color: #fff;
+    font-size: clamp(2.25rem, 3.5vw, 3.75rem);
+    font-weight: 950;
+    letter-spacing: -0.05em;
+    line-height: 1;
+    white-space: nowrap;
+  }
+  .cg-detail > small {
+    margin-top: 0.4rem;
+    color: #d6e4f5;
+    font-size: 0.72rem;
+  }
+  .cg-detail > p {
+    max-width: 20rem;
+    margin: 0.85rem 0 0;
+    color: #e1ebf8;
+    font-size: 0.72rem;
+    line-height: 1.6;
+  }
+  .cg-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-top: 0.75rem;
+  }
+  .cg-tags span {
+    padding: 0.22rem 0.5rem;
+    border: 1px solid rgba(214, 231, 250, 0.32);
+    border-radius: 999px;
+    color: #edf5ff;
+    background: rgba(217, 233, 250, 0.12);
+    font-size: 0.6rem;
+    font-weight: 750;
+    white-space: nowrap;
+  }
+  .cg-detail > i {
+    margin-top: 1.25rem;
+    padding-bottom: 0.2rem;
+    border-bottom: 1px solid currentColor;
+    color: #fff;
+    font-size: 0.76rem;
+    font-style: normal;
+    font-weight: 850;
+  }
+  .cg-panel:hover .cg-detail,
+  .cg-panel:focus-visible .cg-detail {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .cases-more {
+    text-align: center;
+    margin-top: 1.25rem;
+  }
+  .btn-outline-dark {
+    display: inline-flex;
+    align-items: center;
+    border: 1.5px solid #0a1a33;
+    color: #0a1a33;
+    padding: 0.75rem 2rem;
+    border-radius: 999px;
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-decoration: none;
+    letter-spacing: 0.03em;
+    transition:
+      background 0.22s,
+      color 0.22s;
+  }
+  .btn-outline-dark:hover {
+    background: #0a1a33;
+    color: #fff;
+  }
+
+  @media (max-width: 900px) {
+    .s-cases { padding-right: 1.5rem; padding-left: 1.5rem; }
+    .cases-gallery { width: calc(100vw - 3rem); height: 28rem; }
+    .cg-panel { flex: 0 0 38%; }
+    .cases-gallery { overflow-x: auto; scroll-snap-type: x mandatory; }
+    .cg-panel { scroll-snap-align: start; }
+    .cases-gallery:has(.cg-panel:hover) .cg-panel:not(:hover),
+    .cg-panel:hover,
+    .cg-panel:focus-visible { flex-grow: 0; }
+    .cg-label { opacity: 0; }
+    .cg-detail { opacity: 1; transform: none; }
+  }
+  @media (max-width: 560px) {
+    .cases-head { margin-bottom: 2rem; }
+    .cases-gallery { width: calc(100vw - 2rem); height: 25rem; }
+    .cg-panel { flex-basis: 76%; }
+    .cg-detail { left: 1.2rem; bottom: 1.25rem; }
+    .cg-detail > p { font-size: 0.68rem; }
+  }
+
+  /* ── Case Modal ─────────────────────────────────────────────── */
+  .case-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+  .case-modal[hidden] {
+    display: none;
+  }
+  .modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(5, 15, 35, 0.75);
+    backdrop-filter: blur(8px);
+  }
+  .modal-panel {
+    position: relative;
+    z-index: 1;
+    background: #fff;
+    border-radius: 1.75rem;
+    max-width: 760px;
+    width: 100%;
+    max-height: 92vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 40px 100px rgba(0, 0, 0, 0.45);
+    opacity: 0;
+    transform: translateY(28px) scale(0.96);
+    transition:
+      opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .modal-panel.visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  /* Hero image */
+  .modal-hero {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+    border-radius: 1.75rem 1.75rem 0 0;
+    flex-shrink: 0;
+  }
+  .modal-hero-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 30%;
+  }
+  .modal-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      165deg,
+      rgba(5, 15, 35, 0.25) 0%,
+      rgba(5, 15, 35, 0.65) 60%,
+      rgba(5, 15, 35, 0.88) 100%
+    );
+  }
+  .modal-hero-content {
+    position: absolute;
+    bottom: 1.75rem;
+    left: 2rem;
+    right: 4rem;
+  }
+  .modal-category-tag {
+    display: inline-block;
+    font-size: 0.65rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #fff;
+    background: var(--modal-accent, #2563eb);
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    margin-bottom: 0.625rem;
+    opacity: 0.95;
+  }
+  .modal-title {
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    font-weight: 900;
+    color: #fff;
+    line-height: 1.2;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+  }
+  .modal-close {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.25rem;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    backdrop-filter: blur(4px);
+    transition: background 0.15s;
+    z-index: 2;
+  }
+  .modal-close:hover {
+    background: rgba(255, 255, 255, 0.35);
+  }
+
+  /* Body */
+  .modal-body {
+    padding: 1.5rem 2rem 1.75rem;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+  }
+  .modal-desc {
+    font-size: 0.9rem;
+    color: #475569;
+    line-height: 1.75;
+    margin-bottom: 1.25rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid #f1f5f9;
+  }
+
+  /* Stats */
+  .modal-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    row-gap: 1.5rem;
+    padding: 1.25rem 0;
+    border-top: 1px solid #f1f5f9;
+    border-bottom: 1px solid #f1f5f9;
+    margin-bottom: 1.5rem;
+  }
+  @media (max-width: 520px) {
+    .modal-stats {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    :global(.modal-stat-card:nth-child(2n)) {
+      border-right: none;
+    }
+  }
+  :global(.modal-stat-card) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.15rem;
+    padding: 0 0.5rem;
+    border-right: 1px solid #f1f5f9;
+    text-align: center;
+  }
+  :global(.modal-stat-card:nth-child(4n)),
+  :global(.modal-stat-card:last-child) {
+    border-right: none;
+  }
+  :global(.modal-stat-val) {
+    font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+    font-weight: 900;
+    color: var(--modal-accent, #2563eb);
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+  :global(.modal-stat-unit) {
+    font-size: 0.58rem;
+    color: color-mix(in srgb, var(--modal-accent, #2563eb) 55%, #9ca3af);
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    display: block;
+  }
+  :global(.modal-stat-label) {
+    font-size: 0.62rem;
+    color: #334155;
+    line-height: 1.3;
+  }
+  .modal-detail-link {
+    display: inline-flex;
+    color: var(--modal-accent, #2563eb);
+    font-size: 0.875rem;
+    font-weight: 800;
+    text-decoration: none;
+  }
+  .modal-detail-link:hover {
+    text-decoration: underline;
+    text-underline-offset: 0.25rem;
+  }
+
+  .btn-outline-light {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.875rem 2rem;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: #fff;
+    font-weight: 600;
+    border-radius: 0.75rem;
+    font-size: 0.95rem;
+    text-decoration: none;
+    transition:
+      border-color 0.2s,
+      background 0.2s;
+  }
+  .btn-outline-light:hover {
+    border-color: #fff;
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  /* ── ⑥ Order Fulfillment ─────────────────────────────────────── */
+  .s-fulfillment {
+    background: #f8fafc;
+    padding: 6rem 2rem;
+    overflow: hidden;
+    position: relative;
+  }
+  .fulfillment-header {
+    max-width: 820px;
+    margin: 0 auto 3.25rem;
+    text-align: center;
+  }
+  .fulfillment-title {
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    font-weight: 900;
+    color: #0a1a33;
+    line-height: 1.2;
+    margin-bottom: 1.25rem;
+  }
+  .fulfillment-sub {
+    font-size: 1rem;
+    color: #475569;
+    line-height: 1.8;
+  }
+  .fulfillment-track {
+    display: flex;
+    justify-content: center;
+    flex-wrap: nowrap;
+    gap: 0;
+    max-width: 1400px;
+    margin: 0 auto;
+    row-gap: 3rem;
+    position: relative;
+  }
+  .fulfillment-track::before,
+  .fulfillment-track::after {
+    content: '';
+    position: absolute;
+    top: 2rem;
+    left: 2rem;
+    height: 2px;
+    border-radius: 999px;
+    pointer-events: none;
+  }
+  .fulfillment-track::before {
+    right: calc(14.2857143% - 2rem);
+    background: #3b82f6;
+  }
+  .fulfillment-track::after {
+    width: 0;
+    background: #e85d26;
+    box-shadow: 0 0 12px rgba(232, 93, 38, 0.28);
+    transition: width 1.35s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .s-fulfillment.is-visible .fulfillment-track::after {
+    width: 85.7142857%;
+  }
+  .fulfillment-step {
+    flex: 1 1 0;
+    min-width: 0;
+    max-width: 220px;
+    position: relative;
+    padding: 0 0.75rem 0 0;
+    z-index: 1;
+    opacity: 0;
+    transform: translateY(28px);
+    transition:
+      opacity 0.7s ease,
+      transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: calc(var(--i) * 0.13s + 0.2s);
+  }
+  .s-fulfillment.is-visible .fulfillment-step {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  /* horizontal connecting line */
+  .fulfillment-connector {
+    display: none;
+  }
+  .fulfillment-connector::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, #93c5fd 0%, #60a5fa 72%, #e85d26 100%);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    transition-delay: calc(var(--i) * 0.12s + 0.3s);
+  }
+  .s-fulfillment.is-visible .fulfillment-connector::after {
+    transform: scaleX(1);
+  }
+  .fulfillment-step:last-child .fulfillment-connector {
+    display: none;
+  }
+
+  /* number badge */
+  .fulfillment-num-wrap {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 1.5rem;
+  }
+  .fulfillment-num {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 4rem;
+    height: 4rem;
+    border: 2px solid #e85d26;
+    border-radius: 50%;
+    color: #e85d26;
+    font-size: 0.875rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    position: relative;
+    z-index: 1;
+    background: #fff;
+    transition:
+      background 0.3s,
+      color 0.3s,
+      box-shadow 0.3s;
+  }
+  .fulfillment-step.is-terminal .fulfillment-num {
+    background: #fff1e9;
+    box-shadow: 0 0 0 5px rgba(232, 93, 38, 0.08);
+  }
+  /* pulsing ring */
+  .fulfillment-num-ring {
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(232, 93, 38, 0.3);
+    opacity: 0;
+    transform: scale(0.8);
+    transition:
+      opacity 0.3s,
+      transform 0.3s;
+  }
+  .fulfillment-step:hover .fulfillment-num {
+    background: #e85d26;
+    color: #fff;
+    box-shadow:
+      0 0 0 6px rgba(232, 93, 38, 0.15),
+      0 8px 24px rgba(232, 93, 38, 0.3);
+  }
+  .fulfillment-step:hover .fulfillment-num-ring {
+    opacity: 1;
+    transform: scale(1);
+  }
+  .fulfillment-step-title {
+    font-size: 1rem;
+    font-weight: 800;
+    color: #0a1a33;
+    margin-bottom: 0.6rem;
+    line-height: 1.4;
+    transition: color 0.2s;
+  }
+  .fulfillment-step:hover .fulfillment-step-title {
+    color: #e85d26;
+  }
+  .fulfillment-step-desc {
+    font-size: 0.9rem;
+    color: #475569;
+    line-height: 1.65;
+    max-width: none;
+  }
+  @media (max-width: 1024px) {
+    .fulfillment-track {
+      flex-wrap: wrap;
+      justify-content: flex-start;
+    }
+    .fulfillment-track::before,
+    .fulfillment-track::after {
+      display: none;
+    }
+    .fulfillment-step {
+      flex: 0 0 30%;
+      max-width: none;
+    }
+  }
+  @media (max-width: 768px) {
+    .s-fulfillment {
+      padding: 4rem 1.5rem;
+    }
+    .fulfillment-step {
+      flex: 0 0 45%;
+    }
+    .fulfillment-connector {
+      display: none;
+    }
+  }
+
+  /* ── ⑦ CTA ───────────────────────────────────────────────────── */
+  /* ── FAQ ─────────────────────────────────────────────────── */
+  .s-faq {
+    padding: 7rem 2rem;
+    background: #fff;
+  }
+  .faq-inner {
+    display: grid;
+    grid-template-columns: minmax(16rem, 0.7fr) minmax(0, 1.3fr);
+    gap: clamp(3rem, 8vw, 10rem);
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+  .faq-intro {
+    align-self: start;
+    position: sticky;
+    top: 7rem;
+  }
+  .faq-title {
+    max-width: 22rem;
+    margin: 0;
+    color: #0a1a33;
+    font-size: clamp(2rem, 3.2vw, 3.1rem);
+    font-weight: 900;
+    line-height: 1.2;
+    letter-spacing: -0.04em;
+  }
+  .faq-intro-copy {
+    max-width: 20rem;
+    margin: 1.35rem 0 2rem;
+    color: #475569;
+    font-size: 1rem;
+    line-height: 1.8;
+  }
+  .faq-contact-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .faq-side-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.8rem 1.2rem;
+    border-radius: 999px;
+    background: #e85d26;
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: 800;
+    text-decoration: none;
+    box-shadow: 0 8px 22px rgba(232, 93, 38, 0.2);
+    transition:
+      transform 0.2s,
+      background 0.2s;
+  }
+  .faq-side-cta:hover {
+    background: #d94e1b;
+    transform: translateY(-2px);
+  }
+  .faq-phone {
+    color: #475569;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .faq-phone:hover {
+    color: #2563eb;
+  }
+  .faq-list {
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid #dbe4ef;
+  }
+  .faq-item {
+    border-bottom: 1px solid #dbe4ef;
+  }
+  .faq-q {
+    display: grid;
+    grid-template-columns: 2.5rem 1fr 1.5rem;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+    padding: 1.45rem 0;
+    cursor: pointer;
+    color: #0a1a33;
+    font-size: 1.1rem;
+    font-weight: 800;
+    line-height: 1.45;
+    list-style: none;
+  }
+  .faq-q::-webkit-details-marker {
+    display: none;
+  }
+  .faq-index {
+    color: #2563eb;
+    font-size: 0.75rem;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+  }
+  .faq-toggle {
+    position: relative;
+    display: inline-block;
+    width: 1.2rem;
+    height: 1.2rem;
+  }
+  .faq-toggle::before,
+  .faq-toggle::after {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 1rem;
+    height: 2px;
+    border-radius: 999px;
+    background: #2563eb;
+    content: '';
+    transform: translate(-50%, -50%);
+    transition: transform 0.25s ease;
+  }
+  .faq-toggle::after {
+    transform: translate(-50%, -50%) rotate(90deg);
+  }
+  .faq-item[open] .faq-toggle::after {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  .faq-answer {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.28s ease;
+  }
+  .faq-item[open] .faq-answer {
+    grid-template-rows: 1fr;
+  }
+  .faq-a {
+    min-height: 0;
+    max-width: 45rem;
+    margin: 0;
+    overflow: hidden;
+    padding: 0 3.5rem 0;
+    color: #475569;
+    font-size: 0.95rem;
+    line-height: 1.85;
+    transition: padding-bottom 0.28s ease;
+  }
+  .faq-item[open] .faq-a {
+    padding-bottom: 1.55rem;
+  }
+  .faq-authority {
+    margin: 1.25rem 0 0;
+    font-size: 0.75rem;
+    color: #334155;
+    line-height: 1.7;
+  }
+  .faq-authority a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    transition: color 0.15s;
+  }
+  .faq-authority a:hover {
+    color: #334155;
+  }
+
+  /* ── Mobile adjustments ──────────────────────────────────────── */
+  @media (max-width: 768px) {
+    .hero-body {
+      padding: 0 1.25rem;
+    }
+    .hero-title {
+      font-size: clamp(1.65rem, 8.2vw, 2.6rem);
+    }
+    .hero-sub {
+      max-width: 100%;
+      white-space: normal;
+    }
+    .hero-data {
+      margin-bottom: 2rem;
+    }
+    .svc-body {
+      padding: 2.5rem 1.5rem;
+    }
+    .s-stats {
+      padding: 4rem 1.5rem;
+    }
+    .s-faq {
+      padding: 4.5rem 1.5rem;
+    }
+    .faq-inner {
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+    }
+    .faq-intro {
+      position: static;
+    }
+    .faq-title {
+      max-width: none;
+    }
+    .faq-intro-copy {
+      max-width: none;
+      margin-bottom: 1.5rem;
+    }
+    .faq-q {
+      grid-template-columns: 2rem 1fr 1.25rem;
+      gap: 0.6rem;
+      padding: 1.2rem 0;
+      font-size: 1rem;
+    }
+    .faq-a {
+      padding-left: 2.6rem;
+      padding-right: 0;
+      font-size: 0.9rem;
+    }
+  }
 </style>
 
 <script>
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import Lenis from 'lenis'
+  import gsap from 'gsap'
+  import { ScrollTrigger } from 'gsap/ScrollTrigger'
+  import Lenis from 'lenis'
 
-gsap.registerPlugin(ScrollTrigger)
+  gsap.registerPlugin(ScrollTrigger)
 
-// ── Lenis smooth scroll ──────────────────────────────────────
-const lenis = new Lenis({ lerp: 0.08, smoothWheel: true })
-lenis.on('scroll', ScrollTrigger.update)
-gsap.ticker.add((t) => lenis.raf(t * 1000))
-gsap.ticker.lagSmoothing(0)
+  // ── Lenis smooth scroll ──────────────────────────────────────
+  const lenis = new Lenis({ lerp: 0.08, smoothWheel: true })
+  lenis.on('scroll', ScrollTrigger.update)
+  gsap.ticker.add((t) => lenis.raf(t * 1000))
+  gsap.ticker.lagSmoothing(0)
 
-// ── Hero reveal on load ──────────────────────────────────────
-const heroTl = gsap.timeline({ delay: 0.3 })
-heroTl
-  .to('.hero-eyebrow', { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, 0)
-  .to('.hero-title .hl', {
-    opacity: 1, y: 0,
-    stagger: 0.15, duration: 0.75, ease: 'power3.out',
-  }, 0.25)
-  .to('.hero-sub', { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' }, 0.6)
-  .to('.hero-actions', { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' }, 0.8)
+  // ── Hero reveal on load ──────────────────────────────────────
+  const heroTl = gsap.timeline({ delay: 0.3 })
+  heroTl
+    .to('.hero-eyebrow', { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, 0)
+    .to(
+      '.hero-brand-kw, .hero-title .hl',
+      {
+        opacity: 1,
+        y: 0,
+        stagger: 0.15,
+        duration: 0.75,
+        ease: 'power3.out',
+      },
+      0.25
+    )
+    .to('.hero-sub, .hero-data', { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' }, 0.6)
+    .to('.hero-actions', { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' }, 0.8)
 
-// Set initial y for hero elements
-gsap.set('.hero-eyebrow, .hero-title .hl, .hero-sub, .hero-actions', { y: 30 })
+  // Set initial y for hero elements
+  gsap.set('.hero-eyebrow, .hero-brand-kw, .hero-title .hl, .hero-sub, .hero-data, .hero-actions', { y: 30 })
 
-// ── Stats counter ────────────────────────────────────────────
-const parseVal = (raw: string) => {
-  const m = raw.match(/^(\d+(?:\.\d+)?)(.*)$/)
-  if (!m) return { n: 0, suf: '', dec: 0 }
-  const dec = m[1].includes('.') ? m[1].split('.')[1].length : 0
-  return { n: parseFloat(m[1]), suf: m[2], dec }
-}
+  // ── Stats counter ────────────────────────────────────────────
+  const parseVal = (raw: string) => {
+    const m = raw.match(/^(\d+(?:\.\d+)?)(.*)$/)
+    if (!m) return { n: 0, suf: '', dec: 0 }
+    const dec = m[1].includes('.') ? m[1].split('.')[1].length : 0
+    return { n: parseFloat(m[1]), suf: m[2], dec }
+  }
 
-ScrollTrigger.batch('.stat-card', {
-  start: 'top 80%',
-  onEnter: (els) => {
-    gsap.to(els, {
-      opacity: 1, y: 0,
-      duration: 0.7, stagger: 0.12, ease: 'power3.out',
-      onStart() {
-        els.forEach((el) => {
-          const numEl = el.querySelector('.stat-num') as HTMLElement
-          if (!numEl) return
-          const raw = numEl.dataset.raw || ''
-          const { n, suf, dec } = parseVal(raw)
-          gsap.to({ val: 0 }, {
-            val: n,
-            duration: 1.8,
-            ease: 'power2.out',
-            onUpdate() {
-              const cur: number = this.targets()[0].val
-              numEl.textContent = (dec > 0 ? cur.toFixed(dec) : Math.floor(cur).toString()) + suf
-            },
-            onComplete() { numEl.textContent = raw },
+  const statsSection = document.querySelector<HTMLElement>('.s-stats')
+
+  if (statsSection) {
+    const tenureCard = statsSection.querySelector<HTMLElement>('.stats-tenure')
+    const statCards = Array.from(statsSection.querySelectorAll<HTMLElement>('.stat-card'))
+    const tenurePath = statsSection.querySelector<SVGPathElement>('.tenure-route-progress')
+    const tenureNodes = Array.from(
+      statsSection.querySelectorAll<SVGCircleElement>('.tenure-route-node')
+    )
+    const tenureNumber = statsSection.querySelector<HTMLElement>('.tenure-value')
+    const tenureNumberValue = statsSection.querySelector<HTMLElement>(
+      '.tenure-value strong[data-raw]'
+    )
+    const tenureStatus = statsSection.querySelector<HTMLElement>('.tenure-status i')
+    const tenureRange = statsSection.querySelector<HTMLElement>('.tenure-range i')
+    const statsFlow = statsSection.querySelector<HTMLElement>('.stats-flow')
+    const flowProgress = statsSection.querySelector<HTMLElement>('.stats-flow-progress')
+    const flowSteps = Array.from(statsSection.querySelectorAll<HTMLElement>('.stats-flow-step'))
+    const flowNodes = Array.from(statsSection.querySelectorAll<HTMLElement>('.stats-flow-step > i'))
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const numberCounters = new WeakMap<HTMLElement, { val: number }>()
+    const moduleTimelines = new WeakMap<Element, gsap.core.Timeline>()
+
+    const createModuleTimeline = (element: Element) => {
+      moduleTimelines.get(element)?.kill()
+      const timeline = gsap.timeline()
+      moduleTimelines.set(element, timeline)
+      return timeline
+    }
+
+    const animateStatNumber = (numEl: HTMLElement) => {
+      const raw = numEl.dataset.raw || ''
+      const { n, suf, dec } = parseVal(raw)
+      if (!n) {
+        numEl.textContent = raw
+        return
+      }
+
+      const previousCounter = numberCounters.get(numEl)
+      if (previousCounter) gsap.killTweensOf(previousCounter)
+
+      const counter = { val: 0 }
+      numberCounters.set(numEl, counter)
+      numEl.textContent = `0${suf}`
+
+      gsap.to(counter, {
+        val: n,
+        duration: 1.35,
+        ease: 'power2.out',
+        overwrite: true,
+        onUpdate: () => {
+          numEl.textContent =
+            (dec > 0 ? counter.val.toFixed(dec) : Math.floor(counter.val).toString()) + suf
+        },
+        onComplete: () => {
+          numEl.textContent = raw
+          numberCounters.delete(numEl)
+        },
+      })
+    }
+
+    if (!reduceMotion) {
+      const playTenure = (direction: 1 | -1) => {
+        if (!tenureCard) return
+        const targets = [
+          tenureCard,
+          tenurePath,
+          tenureNumber,
+          tenureNumberValue,
+          tenureStatus,
+          tenureRange,
+          ...tenureNodes,
+        ].filter(Boolean)
+        gsap.killTweensOf(targets)
+
+        gsap.set(tenureCard, { opacity: 0, y: 24 * direction })
+        gsap.set(tenurePath, { strokeDashoffset: direction > 0 ? 1 : -1 })
+        gsap.set(tenureNodes, { opacity: 0.2, scale: 0.55 })
+        gsap.set(tenureNumber, { opacity: 0, scale: 0.82, y: 10 * direction })
+        gsap.set(tenureStatus, { opacity: 0, scale: 0 })
+        gsap.set(tenureRange, { scaleX: 0, transformOrigin: direction > 0 ? 'left' : 'right' })
+
+        createModuleTimeline(tenureCard)
+          .to(tenureCard, {
+            opacity: 1,
+            y: 0,
+            duration: 0.62,
+            ease: 'power3.out',
           })
+          .to(
+            tenureNumber,
+            {
+              opacity: 1,
+              scale: 1,
+              y: 0,
+              duration: 0.52,
+              ease: 'back.out(1.45)',
+            },
+            0.08
+          )
+          .call(
+            () => {
+              if (tenureNumberValue) animateStatNumber(tenureNumberValue)
+            },
+            [],
+            0.08
+          )
+          .to(
+            tenureStatus,
+            {
+              opacity: 1,
+              scale: 1,
+              duration: 0.3,
+              ease: 'back.out(2)',
+            },
+            0.16
+          )
+          .to(
+            tenurePath,
+            {
+              strokeDashoffset: 0,
+              duration: 1.05,
+              ease: 'power2.inOut',
+            },
+            0.14
+          )
+          .to(
+            tenureNodes,
+            {
+              opacity: 1,
+              scale: 1,
+              duration: 0.3,
+              stagger: { each: 0.14, from: direction > 0 ? 'start' : 'end' },
+              ease: 'back.out(1.8)',
+            },
+            0.26
+          )
+          .to(
+            tenureRange,
+            {
+              scaleX: 1,
+              duration: 0.65,
+              ease: 'power2.inOut',
+            },
+            0.4
+          )
+          .set(tenureCard, { clearProps: 'opacity,transform' })
+          .set(tenureNumber, { clearProps: 'opacity,transform' })
+          .set(tenureStatus, { clearProps: 'opacity,transform' })
+          .set(tenureRange, { clearProps: 'transform,transformOrigin' })
+          .set(tenureNodes, { clearProps: 'opacity,transform' })
+      }
+
+      const playStatCard = (card: HTMLElement, direction: 1 | -1) => {
+        const numbers = Array.from(card.querySelectorAll<HTMLElement>('.stat-num'))
+        const warehouseBars = Array.from(
+          card.querySelectorAll<HTMLElement>('.warehouse-schematic span')
+        )
+        const networkOrbit = card.querySelector<HTMLElement>('.network-orbit')
+        const networkNodes = Array.from(card.querySelectorAll<HTMLElement>('.network-orbit i'))
+        const inspectionDirections = Array.from(
+          card.querySelectorAll<HTMLElement>('.inspection-direction')
+        )
+        const accuracyRing = card.querySelector<HTMLElement>('.accuracy-ring')
+        const decorTargets = [
+          ...warehouseBars,
+          networkOrbit,
+          ...networkNodes,
+          ...inspectionDirections,
+          accuracyRing,
+        ].filter(Boolean)
+
+        gsap.killTweensOf([card, ...decorTargets])
+        gsap.set(card, { opacity: 0, y: 26 * direction })
+
+        const timeline = createModuleTimeline(card)
+        timeline
+          .to(card, {
+            opacity: 1,
+            y: 0,
+            duration: 0.58,
+            ease: 'power3.out',
+          })
+          .call(
+            () => {
+              numbers.forEach(animateStatNumber)
+            },
+            [],
+            0.08
+          )
+
+        if (warehouseBars.length) {
+          timeline.fromTo(
+            warehouseBars,
+            { opacity: 0.15, scaleY: 0.18, transformOrigin: 'center bottom' },
+            {
+              opacity: 1,
+              scaleY: 1,
+              duration: 0.46,
+              stagger: { each: 0.08, from: direction > 0 ? 'start' : 'end' },
+              ease: 'back.out(1.65)',
+              clearProps: 'opacity,transform,transformOrigin',
+            },
+            0.16
+          )
+        }
+
+        if (networkOrbit) {
+          timeline
+            .fromTo(
+              networkOrbit,
+              { opacity: 0, rotation: -32 * direction, scale: 0.72 },
+              {
+                opacity: 1,
+                rotation: 0,
+                scale: 1,
+                duration: 0.7,
+                ease: 'power2.out',
+                clearProps: 'opacity,transform',
+              },
+              0.1
+            )
+            .fromTo(
+              networkNodes,
+              { opacity: 0, scale: 0 },
+              {
+                opacity: 1,
+                scale: 1,
+                duration: 0.28,
+                stagger: { each: 0.07, from: direction > 0 ? 'start' : 'end' },
+                ease: 'back.out(2)',
+                clearProps: 'opacity,transform',
+              },
+              0.26
+            )
+        }
+
+        if (inspectionDirections.length) {
+          timeline.fromTo(
+            inspectionDirections,
+            { opacity: 0, x: 10 * -direction },
+            {
+              opacity: 1,
+              x: 0,
+              duration: 0.38,
+              stagger: { each: 0.11, from: direction > 0 ? 'start' : 'end' },
+              ease: 'power2.out',
+              clearProps: 'opacity,transform',
+            },
+            0.16
+          )
+        }
+
+        if (accuracyRing) {
+          timeline.fromTo(
+            accuracyRing,
+            { opacity: 0, rotation: -105 * direction, scale: 0.76 },
+            {
+              opacity: 0.24,
+              rotation: 0,
+              scale: 1,
+              duration: 0.85,
+              ease: 'power3.out',
+              clearProps: 'opacity,transform',
+            },
+            0.1
+          )
+        }
+
+        timeline.set(card, { clearProps: 'opacity,transform' })
+      }
+
+      const playFlow = (direction: 1 | -1) => {
+        if (!statsFlow) return
+        const mobileFlow = window.matchMedia('(max-width: 700px)').matches
+        gsap.killTweensOf([flowProgress, ...flowSteps, ...flowNodes])
+        gsap.set(flowProgress, {
+          scaleX: mobileFlow ? 1 : 0,
+          scaleY: mobileFlow ? 0 : 1,
+          transformOrigin: mobileFlow
+            ? direction > 0
+              ? 'center top'
+              : 'center bottom'
+            : direction > 0
+              ? 'left center'
+              : 'right center',
         })
+        gsap.set(flowSteps, {
+          opacity: 0.35,
+          x: mobileFlow ? 7 * -direction : 0,
+          y: mobileFlow ? 0 : 7 * direction,
+        })
+        gsap.set(flowNodes, { scale: 0.5 })
+
+        createModuleTimeline(statsFlow)
+          .to(flowProgress, {
+            scaleX: 1,
+            scaleY: 1,
+            duration: 0.95,
+            ease: 'power2.inOut',
+            onComplete: () => {
+              gsap.set(flowProgress, { clearProps: 'transform,transformOrigin' })
+            },
+          })
+          .to(
+            flowSteps,
+            {
+              opacity: 1,
+              x: 0,
+              y: 0,
+              duration: 0.32,
+              stagger: { each: 0.1, from: direction > 0 ? 'start' : 'end' },
+              ease: 'power2.out',
+            },
+            0.08
+          )
+          .to(
+            flowNodes,
+            {
+              scale: 1,
+              duration: 0.25,
+              stagger: { each: 0.1, from: direction > 0 ? 'start' : 'end' },
+              ease: 'back.out(2)',
+            },
+            0.12
+          )
+          .set(flowSteps, { clearProps: 'opacity,transform' })
+          .set(flowNodes, { clearProps: 'transform' })
+      }
+
+      if (tenureCard) {
+        ScrollTrigger.create({
+          trigger: tenureCard,
+          start: 'top 86%',
+          end: 'bottom 14%',
+          onEnter: () => playTenure(1),
+          onEnterBack: () => playTenure(-1),
+        })
+      }
+
+      statCards.forEach((card) => {
+        ScrollTrigger.create({
+          trigger: card,
+          start: 'top 86%',
+          end: 'bottom 14%',
+          onEnter: () => playStatCard(card, 1),
+          onEnterBack: () => playStatCard(card, -1),
+        })
+      })
+
+      if (statsFlow) {
+        ScrollTrigger.create({
+          trigger: statsFlow,
+          start: 'top 90%',
+          end: 'bottom 10%',
+          onEnter: () => playFlow(1),
+          onEnterBack: () => playFlow(-1),
+        })
+      }
+    }
+  }
+
+  // ── Service panels ───────────────────────────────────────────
+  document.querySelectorAll<HTMLElement>('.s-service').forEach((panel) => {
+    const img = panel.querySelector('.svc-img')
+    const toAnimate = panel.querySelectorAll(
+      '.svc-problem, .svc-title, .svc-sub, .svc-quality-assurance, .svc-desc, .svc-features, .svc-scenarios, .svc-link'
+    )
+
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: panel,
+        start: 'top 60%',
+        once: true,
       },
     })
-  },
-})
 
-// ── Service panels ───────────────────────────────────────────
-document.querySelectorAll<HTMLElement>('.s-service').forEach((panel) => {
-  const img = panel.querySelector('.svc-img')
-  const toAnimate = panel.querySelectorAll('.svc-title, .svc-sub, .svc-desc, .svc-features, .svc-link')
-
-  const tl = gsap.timeline({
-    scrollTrigger: {
-      trigger: panel,
-      start: 'top 60%',
-      once: true,
-    },
+    if (img) {
+      tl.to(img, { scale: 1, duration: 1.2, ease: 'power2.out' }, 0)
+    }
+    tl.to(
+      toAnimate,
+      {
+        opacity: 1,
+        x: 0,
+        stagger: 0.1,
+        duration: 0.65,
+        ease: 'power3.out',
+      },
+      0.15
+    )
   })
 
-  if (img) {
-    tl.to(img, { scale: 1, duration: 1.2, ease: 'power2.out' }, 0)
+  // ── Case cards ───────────────────────────────────────────────
+  // Keep this independent from ScrollTrigger: the homepage does not always
+  // render product cards, and an empty batch would prevent later animations.
+  const caseCards = document.querySelectorAll<HTMLElement>('.case-card')
+  if (caseCards.length) {
+    const caseObserver = new IntersectionObserver(
+      (entries, observer) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return
+          const card = entry.target as HTMLElement
+          const index = Number(card.dataset.i ?? 0)
+          gsap.to(card, {
+            opacity: 1,
+            y: 0,
+            duration: 0.6,
+            delay: index * 0.08,
+            ease: 'power3.out',
+          })
+          observer.unobserve(card)
+        })
+      },
+      { threshold: 0.15 }
+    )
+    caseCards.forEach((card) => caseObserver.observe(card))
   }
-  tl.to(toAnimate, {
-    opacity: 1, x: 0,
-    stagger: 0.1, duration: 0.65, ease: 'power3.out',
-  }, 0.15)
-})
 
-// ── Product cards ────────────────────────────────────────────
-ScrollTrigger.batch('.prod-card', {
-  start: 'top 85%',
-  onEnter: (els) => {
-    gsap.to(els, {
-      opacity: 1, y: 0,
-      stagger: 0.12, duration: 0.65, ease: 'power3.out',
+  // ── Order Fulfillment steps ──────────────────────────────────
+  // Use the browser observer rather than ScrollTrigger so the core process
+  // remains visible even if another optional scroll animation fails.
+  const fulfillment = document.querySelector<HTMLElement>('.s-fulfillment')
+  if (fulfillment) {
+    const fulfillmentObserver = new IntersectionObserver(
+      (entries, observer) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return
+        fulfillment.classList.add('is-visible')
+        observer.unobserve(fulfillment)
+      },
+      { threshold: 0.16 }
+    )
+    fulfillmentObserver.observe(fulfillment)
+  }
+
+  // ── FAQ accordion ────────────────────────────────────────────
+  const faqItems = Array.from(document.querySelectorAll<HTMLDetailsElement>('.faq-item'))
+  faqItems.forEach((item) => {
+    item.addEventListener('toggle', () => {
+      if (!item.open) return
+      faqItems.forEach((other) => {
+        if (other !== item) other.open = false
+      })
     })
-  },
-})
+  })
 
-// ── Case cards ───────────────────────────────────────────────
-ScrollTrigger.batch('.case-card', {
-  start: 'top 85%',
-  onEnter: (els) => {
-    gsap.to(els, {
-      opacity: 1, y: 0,
-      stagger: 0.08, duration: 0.6, ease: 'power3.out',
-    })
-  },
-})
+  // ── Case modal ────────────────────────────────────────────────
+  const caseData = JSON.parse(document.getElementById('case-data')!.textContent!)
+  const modal = document.getElementById('case-modal')!
+  const panel = modal.querySelector('.modal-panel') as HTMLElement
 
-// ── Order Fulfillment steps ──────────────────────────────────
-ScrollTrigger.create({
-  trigger: '.s-fulfillment',
-  start: 'top 75%',
-  once: true,
-  onEnter: () => {
-    document.querySelector('.s-fulfillment')?.classList.add('is-visible')
-    gsap.to('.fulfillment-step', {
-      opacity: 1, y: 0,
-      duration: 0.7, stagger: 0.1, ease: 'power3.out',
-      delay: 0.1,
-    })
-  },
-})
+  function openModal(id: string, detailUrl: string) {
+    const d = caseData[id]
+    if (!d) return
 
-// ── CTA section ──────────────────────────────────────────────
-gsap.to('.cta-inner', {
-  opacity: 1, y: 0, duration: 0.9, ease: 'power3.out',
-  scrollTrigger: { trigger: '.s-cta', start: 'top 70%', once: true },
-})
+    // accent color + hero image
+    panel.style.setProperty('--modal-accent', d.accent || '#2563EB')
+    const heroImg = modal.querySelector('#modal-hero-img') as HTMLImageElement
+    heroImg.src = d.image || ''
+    heroImg.alt = d.fullName
 
-// ── Case modal ────────────────────────────────────────────────
-const caseData = JSON.parse(document.getElementById('case-data')!.textContent!)
-const modal = document.getElementById('case-modal')!
-const panel = modal.querySelector('.modal-panel') as HTMLElement
+    // header
+    ;(modal.querySelector('#modal-category') as HTMLElement).textContent = d.category
+    ;(modal.querySelector('#modal-title') as HTMLElement).textContent = d.fullName
+    ;(modal.querySelector('#modal-desc') as HTMLElement).textContent = d.description
 
-function openModal(id: string) {
-  const d = caseData[id]
-  if (!d) return
-
-  // accent color + hero image
-  panel.style.setProperty('--modal-accent', d.accent || '#2563EB')
-  const heroImg = modal.querySelector('#modal-hero-img') as HTMLImageElement
-  heroImg.src = d.image || ''
-  heroImg.alt = d.fullName
-
-  // header
-  ;(modal.querySelector('#modal-category') as HTMLElement).textContent = d.category
-  ;(modal.querySelector('#modal-title') as HTMLElement).textContent = d.fullName
-  ;(modal.querySelector('#modal-desc') as HTMLElement).textContent = d.description
-
-  // stats grid
-  const statsEl = modal.querySelector('#modal-stats') as HTMLElement
-  statsEl.innerHTML = d.stats.map((s: {label:string;value:string;unit:string}) => `
+    // stats grid
+    const statsEl = modal.querySelector('#modal-stats') as HTMLElement
+    statsEl.innerHTML = d.stats
+      .map(
+        (s: { label: string; value: string; unit: string }) => `
     <div class="modal-stat-card">
       <div class="modal-stat-val">${s.value}</div>
       ${s.unit ? `<div class="modal-stat-unit">${s.unit}</div>` : ''}
       <div class="modal-stat-label">${s.label}</div>
     </div>
-  `).join('')
+  `
+      )
+      .join('')
+    ;(modal.querySelector('#modal-detail-link') as HTMLAnchorElement).href = detailUrl
 
-  ;(modal.querySelector('.modal-body') as HTMLElement).scrollTop = 0
-  modal.hidden = false
-  document.body.style.overflow = 'hidden'
-  requestAnimationFrame(() => requestAnimationFrame(() => panel.classList.add('visible')))
-}
+    ;(modal.querySelector('.modal-body') as HTMLElement).scrollTop = 0
+    modal.hidden = false
+    document.body.style.overflow = 'hidden'
+    history.pushState({ caseModal: id }, '', detailUrl)
+    requestAnimationFrame(() => requestAnimationFrame(() => panel.classList.add('visible')))
+  }
 
-function closeModal() {
-  panel.classList.remove('visible')
-  setTimeout(() => {
-    modal.hidden = true
-    document.body.style.overflow = ''
-  }, 250)
-}
+  function hideModal() {
+    panel.classList.remove('visible')
+    setTimeout(() => {
+      modal.hidden = true
+      document.body.style.overflow = ''
+    }, 250)
+  }
 
-document.querySelectorAll('.case-card').forEach((card) => {
-  card.addEventListener('click', () => {
-    const id = (card as HTMLElement).dataset.case
-    if (id) openModal(id)
+  document.querySelectorAll('.case-card').forEach((card) => {
+    card.addEventListener('click', (event) => {
+      if (
+        !(event instanceof MouseEvent) ||
+        event.button !== 0 ||
+        event.metaKey ||
+        event.ctrlKey ||
+        event.shiftKey ||
+        event.altKey
+      ) return
+
+      const id = (card as HTMLElement).dataset.case
+      const detailUrl = (card as HTMLAnchorElement).getAttribute('href')
+      if (!id || !detailUrl) return
+
+      event.preventDefault()
+      openModal(id, detailUrl)
+    })
   })
-})
 
-modal.querySelector('.modal-close')!.addEventListener('click', closeModal)
-modal.querySelector('.modal-backdrop')!.addEventListener('click', closeModal)
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && !modal.hidden) closeModal()
-})
+  function closeModal() {
+    const shouldRestoreHistory = Boolean(history.state?.caseModal)
+    hideModal()
+    if (shouldRestoreHistory) history.back()
+  }
+
+  modal.querySelector('.modal-close')!.addEventListener('click', closeModal)
+  modal.querySelector('.modal-backdrop')!.addEventListener('click', closeModal)
+  window.addEventListener('popstate', () => {
+    if (!modal.hidden) hideModal()
+  })
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !modal.hidden) closeModal()
+  })
 </script>

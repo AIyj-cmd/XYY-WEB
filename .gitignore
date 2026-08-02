@@ -2,6 +2,7 @@
 node_modules/
 
 # Build output
+.astro/
 dist/
 dist.bak*/
 output/
@@ -49,3 +50,4 @@ speed-optimization.plan.md
 
 # Temp
 *.tar.gz
+codex-*-backup.patch

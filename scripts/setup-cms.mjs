@@ -1,10 +1,16 @@
 /**
  * One-time CMS setup script.
  * Creates Directus collections (homepage_stats, services, warehouses)
- * and seeds all data from brand.ts.
+ * and seeds the reviewed CMS content.
  *
  * Usage: node scripts/setup-cms.mjs
  */
+
+import {
+  APPROVED_HOMEPAGE_STATS,
+  APPROVED_SERVICES,
+  APPROVED_WAREHOUSES,
+} from './approved-cms-content.mjs'
 
 const URL = (process.env.DIRECTUS_URL || 'http://127.0.0.1:8055').replace(/\/+$/, '')
 const TOKEN = process.env.DIRECTUS_TOKEN
@@ -84,46 +90,12 @@ await addField('homepage_stats', 'label', 'string', { required: true })
 await addField('homepage_stats', 'unit', 'string', {})
 await addField('homepage_stats', 'detail', 'string', {})
 
-await seed('homepage_stats', [
-  {
-    sort: 1,
-    value: '140+',
-    label: '合作知名品牌',
-    unit: '家',
-    detail: '鞋服、潮玩、美妆、箱包等细分行业',
-  },
-  { sort: 2, value: '50万', label: '直营鞋服仓储', unit: '㎡', detail: '三级仓网架构，按需配仓' },
-  {
-    sort: 3,
-    value: '6000+',
-    label: '服务区域',
-    unit: '个',
-    detail: '覆盖全国主要城市及区县网络',
-  },
-  {
-    sort: 4,
-    value: '2000+',
-    label: '自有员工',
-    unit: '人',
-    detail: '固定员工占比约80%，行业内较高水平',
-  },
-  {
-    sort: 5,
-    value: '1.17亿',
-    label: '全年新货质检',
-    unit: '件',
-    detail: '专业质检团队，标准化流程',
-  },
-  { sort: 6, value: '1.53亿', label: '全年退货质检', unit: '件', detail: '退货二次上架，降低损耗' },
-  { sort: 7, value: '99.99%', label: '库存准确率', unit: '+', detail: 'RFID + 系统双重校验' },
-  {
-    sort: 8,
-    value: '3000万',
-    label: '包材二次利用',
-    unit: '个/年',
-    detail: '旧纸箱回收再利用，降本减碳',
-  },
-])
+await seed(
+  'homepage_stats',
+  APPROVED_HOMEPAGE_STATS.map((item) =>
+    Object.fromEntries(Object.entries(item).filter(([field]) => field !== 'id'))
+  )
+)
 
 // ──────────────────────────────────────────────────────────────
 // 2. services
@@ -152,56 +124,12 @@ await addField('services', 'features', 'json', {
   options: { template: '{{item}}' },
 })
 
-await seed('services', [
-  {
-    sort: 1,
-    slug: 'cloud-warehouse',
-    icon: 'warehouse',
-    name: '鞋服云仓',
-    subtitle: '一仓发全国，全渠道一盘货',
-    description:
-      '以鞋服品类深度优化的仓储管理系统为核心，提供B2C+B2B+O2O全渠道发货、库存同步与智能补货服务。单仓单日峰值50万单，弹性产能保障大促不爆仓。',
-    features: [
-      '全渠道一盘货，库存准确率99.99%+',
-      '当日18:00前订单，当日24:00前全出',
-      '单仓峰值50万单/日，弹性人力调配',
-      'RFID全域识别，拣货效率+40%',
-      '支持唯品会JIT/JITX等主流平台',
-    ],
-  },
-  {
-    sort: 2,
-    slug: 'quality-inspection',
-    icon: 'inspection',
-    name: '后整质检修复',
-    subtitle: '135+种缺陷识别，48小时二次上架',
-    description:
-      '与广检集团合作的QC认证质检团队，按AQL 1.0–6.5标准运行。新货全检/抽检、退货质检、瑕疵修复一站式服务，瑕疵修复成功率90%，退货48小时内完成质检并二次上架。',
-    features: [
-      '可识别缺陷135+种，覆盖四大类型',
-      '退货质检+二次上架48小时内（加急24小时）',
-      '瑕疵修复成功率90%，专属9区修复分区',
-      '1080P拆包监控，电商争议全程可举证',
-      '全年新货质检1.17亿件，退货质检1.53亿件',
-    ],
-  },
-  {
-    sort: 3,
-    slug: 'logistics-cloud',
-    icon: 'logistics',
-    name: '物流云',
-    subtitle: '多承运商聚合，智能路由降本',
-    description:
-      '自研物流服务中台OTD，聚合全平台承运商，一键切换路由、实时轨迹可视化、发货超时预警。通过智能寄件平台"运到"，实现商圈零售门店正向+逆向网络统一管理。',
-    features: [
-      '全平台承运商聚合，一键拦截转寄',
-      '发货超时预警+签收时效监控',
-      '奇门/EDI接口，与主流ERP无缝对接',
-      '不收系统使用费，按需付费',
-      '物流轨迹可视化，在线客户工单流',
-    ],
-  },
-])
+await seed(
+  'services',
+  APPROVED_SERVICES.map((item) =>
+    Object.fromEntries(Object.entries(item).filter(([field]) => field !== 'id'))
+  )
+)
 
 // ──────────────────────────────────────────────────────────────
 // 3. warehouses
@@ -210,12 +138,14 @@ await seed('services', [
 await createCollection('warehouses', 'warehouse')
 await addField('warehouses', 'status', 'string', {
   interface: 'select-dropdown',
+  display: 'labels',
   required: true,
   width: 'half',
   options: {
     choices: [
       { text: '已发布', value: 'published' },
       { text: '草稿', value: 'draft' },
+      { text: '归档', value: 'archived' },
     ],
   },
 })
@@ -232,74 +162,12 @@ await addField('warehouses', 'highlight', 'text', {
   note: '核心优势描述',
 })
 
-await seed('warehouses', [
-  {
-    sort: 1,
-    name: '黄埔仓',
-    city: '广州',
-    since: '2025',
-    address: '广州市黄埔区果园一路2号',
-    park: '15,000',
-    rent: '3,000',
-    height: '6m',
-    highlight: '紧邻广园快速、京港澳高速，10台3吨货梯，进出货效率高',
-  },
-  {
-    sort: 2,
-    name: '番禺仓',
-    city: '广州',
-    since: '2023',
-    address: '广州市番禺区石楼镇市莲路石楼段6号',
-    park: '6,000',
-    rent: '200',
-    height: '6m',
-    highlight: '番禺石楼核心区，3台电梯，丙二类消防，开仓即用',
-  },
-  {
-    sort: 3,
-    name: '肇庆仓',
-    city: '肇庆',
-    since: '2019',
-    address: '肇庆市四会市东城街道唯品会物流园20号库',
-    park: '100,000',
-    rent: '50,000',
-    height: '12m',
-    highlight: '20万平米物流园，12米超高层，多条自动打包线，快递资源发达',
-  },
-  {
-    sort: 4,
-    name: '智谷仓',
-    city: '东莞',
-    since: '2020',
-    address: '东莞市常平镇多宝路2号常平智谷',
-    park: '110,000',
-    rent: '5,000',
-    height: '12m / 4m',
-    highlight: '高速出口3公里，一层层高12米，10个升降平台，8部货梯',
-  },
-  {
-    sort: 5,
-    name: '朗州仓',
-    city: '东莞',
-    since: '2017',
-    address: '东莞市常平镇朗洲村鸿腾缘工业园',
-    park: '30,000',
-    rent: '5,000',
-    height: '4.5m',
-    highlight: '4台专配电商货梯，前后1500–2000㎡中转空间，进出货流转高效',
-  },
-  {
-    sort: 6,
-    name: '桥头仓',
-    city: '东莞',
-    since: '2023',
-    address: '东莞市桥头镇多宝路2号常平桥头',
-    park: '30,000',
-    rent: '5,000',
-    height: '6m',
-    highlight: '东部高速5公里，方正大开间，动线流畅，弹性扩容灵活',
-  },
-])
+await seed(
+  'warehouses',
+  APPROVED_WAREHOUSES.map((item) =>
+    Object.fromEntries(Object.entries(item).filter(([field]) => field !== 'aliases'))
+  )
+)
 
 // ──────────────────────────────────────────────────────────────
 // 4. cases — seed existing collection
@@ -339,13 +207,14 @@ await seed('cases', [
   },
   {
     sort: 4,
-    category: '跨境快时尚',
-    label: 'Urbanic',
-    metrics: '年发货 1800–2300万件 · 年质检 800–1400万件 · 年包装 1500–2000万件',
+    category: '跨境全品类女装',
+    label: '美一(MEIYI)',
+    metrics:
+      '年发货 100~150万件/年 · 年质检 120~200万件/年 · 年上架 130~180万件/年 · 年包装 80~160万件/年',
     details:
-      '面向印度、英国等海外市场的跨境快时尚品牌，主营全品类女装。新亦源提供B2B+B2C一体化仓储，覆盖质检、包装、上架全流程。',
+      '美一（MEIYI）是专注跨境全品类女装的服饰品牌。新亦源为其提供 B2B+B2C 一体化仓储服务，涵盖收货验货、新货质检、包装整理、库存上架及发货打包全流程，年综合处理量达百万件级别。',
     tags: ['跨境出海', '质检+包装+上架'],
-    img: 'https://images.unsplash.com/photo-1595341888016-a392ef81b7de?w=800&q=75&auto=format&fit=crop',
+    img: 'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=800&q=75&auto=format&fit=crop',
   },
   {
     sort: 5,

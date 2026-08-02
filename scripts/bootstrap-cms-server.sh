@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# setup-cms.sh — 在服务器上一键安装 PostgreSQL + Directus
-# 用法：sudo bash setup-cms.sh
+# bootstrap-cms-server.sh — 在服务器上一键安装 PostgreSQL + Directus
+# 用法：sudo bash scripts/bootstrap-cms-server.sh
 # 目标路径：/var/www/xyy-cms/
 
 set -euo pipefail
@@ -13,7 +13,7 @@ DB_PASS="${DB_PASS:-}"   # 可通过环境变量传入，否则脚本会提示�
 
 # ── 1. 检查是否 root ──────────────────────────────────────────────────────────
 if [[ $EUID -ne 0 ]]; then
-  echo "请用 sudo 运行此脚本：sudo bash setup-cms.sh"
+  echo "请用 sudo 运行此脚本：sudo bash scripts/bootstrap-cms-server.sh"
   exit 1
 fi
 
@@ -98,8 +98,8 @@ cat > "$CMS_DIR/package.json" <<'JSON'
 JSON
 
 cd "$CMS_DIR"
-if [[ -f "$SCRIPT_DIR/scripts/directus-overrides.json" ]]; then
-  CMS_PACKAGE="$CMS_DIR/package.json" OVERRIDES_FILE="$SCRIPT_DIR/scripts/directus-overrides.json" "$node_bin" <<'NODE'
+if [[ -f "$SCRIPT_DIR/directus-overrides.json" ]]; then
+  CMS_PACKAGE="$CMS_DIR/package.json" OVERRIDES_FILE="$SCRIPT_DIR/directus-overrides.json" "$node_bin" <<'NODE'
 const fs = require('node:fs')
 
 const packagePath = process.env.CMS_PACKAGE

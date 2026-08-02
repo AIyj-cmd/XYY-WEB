@@ -1,54 +1,206 @@
 ---
 import ServiceLanding from '@/layouts/ServiceLanding.astro'
+import { CLAIM_TEXT } from '@/lib/claims'
+
+const REPAIR_PHOTOS = [
+  {
+    src: '/images/services/repair-handwash.webp',
+    alt: '服装清污处理工位',
+    label: '清污工位',
+    code: 'ZONE 04',
+  },
+  {
+    src: '/images/services/repair-stitch.webp',
+    alt: '服装缝补修复工位',
+    label: '缝补工位',
+    code: 'ZONE 06',
+  },
+  {
+    src: '/images/services/repair-ironing.webp',
+    alt: '服装手工熨烫工位',
+    label: '熨烫工位',
+    code: 'ZONE 02',
+  },
+]
+
+const REPAIR_ZONES = [
+  '自动熨烫',
+  '手工熨烫',
+  '异味晾晒',
+  '手工清污',
+  '配饰修复',
+  '缝补',
+  '鞋类修复',
+  '干湿洗',
+  '补换标识',
+]
+
+const REPAIR_FLOW = [
+  { num: '01', title: '质检分流', desc: '识别异常并依据客户标准进入相应处理流程' },
+  { num: '02', title: '工艺评估', desc: '结合材质、瑕疵类型与验收规则确认处理方式' },
+  { num: '03', title: '专区修复', desc: '工单流转至对应专业工位，关键状态留痕' },
+  { num: '04', title: '二次质检', desc: '按品牌确认标准复检，再进入后续授权流程' },
+]
 ---
 
 <ServiceLanding
-  title="后整修复服务商 — 服装瑕疵修复成功率90%+，专属9区修复分区 | 新亦源"
-  description="新亦源后整修复，专属9区修复分区，135+种缺陷可修复，清污/缝补/换配件/熨烫整理/鞋类修复，修复后二次质检+快速上架，全流程48小时内闭环。"
+  title="服装瑕疵修复｜9大修复专区，修复成功率90%｜新亦源"
+  description={`新亦源服装瑕疵修复设9个专区，覆盖清污、缝补、配饰、熨烫、鞋类修复、干湿洗和补换标识；修复成功率${CLAIM_TEXT.repairSuccessRate}，完成后二次质检。`}
   slug="houzheng-xiufu"
+  variant="repair-workshop"
   breadcrumbLabel="后整修复"
-  eyebrow="后整修复 · 专业服装修复中心"
-  h1="后整修复"
-  h1sub="瑕疵修复成功率90%+，专属9区修复分区"
-  heroDesc="新亦源后整修复专区设9大功能分区，提供清污/缝补/换配件/熨烫整理/鞋类修复全链路服务，修复后快速二次上架，最大化退货商品价值。"
+  eyebrow="服装瑕疵修复 · 九大专业分区"
+  h1="服装瑕疵修复与二次上架"
+  h1sub="瑕疵修复成功率90%，专属9区修复分区"
+  heroDesc="根据新亦源运营统计，后整修复服务分为6类，实际设置9个专业修复专区；修复完成后进行二次质检，并按客户确认标准进入后续流程。"
   imgSrc="/w-repair.webp"
   imgAlt="后整修复 — 专业服装瑕疵修复"
   stats={[
-    { stat: '90%+', label: '瑕疵修复成功率', sub: '专属9区修复分区' },
-    { stat: '135+种', label: '可修复缺陷类型', sub: '7大类缺陷全覆盖' },
-    { stat: '48小时', label: '修复+二次上架时效', sub: '加急24小时' },
-    { stat: '1.53亿件', label: '年质检修复量', sub: '据公司公开资料' },
+    { stat: '90%', label: '瑕疵修复成功率', sub: '专属9区修复分区' },
+    { stat: '135+种', label: '可识别缺陷', sub: '7大类缺陷覆盖' },
+    { stat: '24小时', label: '质检+二次上架', sub: '整体流程' },
+    { stat: '1.53亿件', label: '年退货质检量', sub: '公司运营统计' },
   ]}
-  contentDesc="适合有大量退货商品需二次利用的鞋服品牌。退货不修复直接报废，是最大隐性损耗。新亦源后整修复专区设9大功能分区，提供135+种缺陷专业修复，修复后二次质检确认并重新上架，修复成功率90%+，全流程标准时效48小时（加急24小时），让良品快速回流可售库存、降低资金占用。"
+  contentDesc="适合需要对退货商品进行分级、修复和二次利用的鞋服品牌。后整修复服务分为6类，实际设置自动熨烫、手工熨烫、异味晾晒、手工清污、配饰修复、缝补、鞋类修复、干湿洗、补换标识9个专业修复专区。根据新亦源运营统计，修复成功率90%；具体标准按客户销售渠道定制。"
   featuresLabel="修复服务类型"
   features={[
-    { title: '清污处理', desc: '专业除污剂与设备，处理油污、颜色污染、霉点、汗渍等，覆盖面料/皮质/绒面/编织等多种材质，处理后无残留。' },
-    { title: '缝线修复', desc: '跳针、脱线、开线、开裂缝补，线色精准比对，修复后外观接近原品质，适合中高价位商品修复。' },
-    { title: '配件更换', desc: '缺纽扣/拉链故障/五金氧化/吊牌缺失等配件问题，采用同规格备件更换，更换后功能与外观均达到上架标准。' },
-    { title: '熨烫整理', desc: '全件熨烫，消除存储折痕、运输压痕，恢复服装挺括感。针对丝绒/真丝/羽绒等特殊面料使用专用熨烫设备。' },
-    { title: '鞋类专项修复', desc: '开胶重新粘合（使用专业鞋胶）、溢胶清理、色差修色、脏污清洗、除味处理；修复后经二次质检验收。' },
-    { title: '二次包装上架', desc: '修复完成后统一更换内袋/吊牌，套装封装，WMS更新状态，直接推送可售库存，全程无需人工干预。' },
+    {
+      title: '清污处理',
+      desc: '使用相应设备和处理方案应对粉底印、锈斑、油渍、领口发黄等已确认异常，并根据面料特点控制工艺，结果以二次质检为准。',
+    },
+    {
+      title: '面料修复',
+      desc: '针对起毛起球、抽纱、破洞等异常进入对应修复流程，结合商品材质和客户标准评估处理方式，完成后复检。',
+    },
+    {
+      title: '缝线修复',
+      desc: '处理断线、爆口、跳线等异常，按商品线色和工艺要求完成修复，并依据客户确认标准复检。',
+    },
+    {
+      title: '配饰修复',
+      desc: '针对掉钻等配饰异常进行处理，所需配件由品牌提供或确认，完成后按约定验收要求复检。',
+    },
+    {
+      title: '鞋类专项修复',
+      desc: '针对开胶等已确认异常进入鞋类修复专区，按确认工艺完成处理后进行二次质检。',
+    },
+    {
+      title: '标识与异味处理',
+      desc: '处理吊牌与码唛不一致、潮湿异味等异常，完成标识核对或异味处理后，按客户确认标准进入后续流程。',
+    },
   ]}
   faqs={[
     {
       q: '后整修复包含哪些具体服务？',
-      a: '新亦源后整修复分6大类：①清污（油污/污渍/霉点等）；②缝线修复（跳针/开线/开裂缝补）；③配件更换（纽扣/拉链/五金/吊牌）；④熨烫整理（折痕/压痕修复）；⑤鞋类修复（开胶/溢胶/色差/脏污）；⑥除味处理（霉味/化学气味）。修复后统一二次质检并更新WMS状态。',
+      a: '后整修复服务分为6类，实际设置9个专业修复专区。已确认异常示例包括粉底印、锈斑、油渍、领口发黄、起毛起球、抽纱、破洞、断线、爆口、跳线、掉钻、开胶、吊牌与码唛不一致、潮湿异味。修复后统一二次质检，具体标准按客户销售渠道定制。',
     },
     {
-      q: '修复成功率90%+是怎么计算的？',
-      a: '90%+修复成功率指送修商品中最终达到二次上架标准（A或B+级）的比例。未能修复（达C级报废标准）的约占10%，主要是严重破损、大面积褪色或面料受损不可逆的情况。品牌方可在合作协议中约定修复后质检标准，确保二次上架商品符合平台要求。',
+      q: '新亦源的瑕疵修复成功率是多少？',
+      a: `根据新亦源运营统计，瑕疵修复成功率为${CLAIM_TEXT.repairSuccessRate}，指进入修复流程的商品中，经处理和二次质检后达到品牌约定上架等级的比例。商品是否达到二次上架标准，具体按客户销售渠道定制。`,
     },
     {
       q: '后整修复和退货质检是什么关系？',
-      a: '两者通常联动运行。退货质检首先对退货商品进行缺陷识别和分级（A/B+/B-/C），B-级需修复的商品自动流转至后整修复车间；修复完成后再做二次质检确认。新亦源将质检+修复+二次上架在48小时内闭环，全流程在同一WMS系统中可追溯。',
+      a: '两者通常联动运行。退货质检先对商品进行缺陷识别和A/B+/B-/C分级，需要处理的商品会流转至后整修复专区；修复完成后再做二次质检。具体分级与处置标准按客户销售渠道定制，质检、修复与二次上架在24小时流程内完成。',
     },
     {
       q: '高档服装（真丝/羽绒/皮草）可以修复吗？',
-      a: '可以。新亦源为此配备了专用处理设备：真丝/绸缎用专用蒸汽熨烫设备处理折痕；羽绒服存储于恒温恒湿仓（真丝/羽绒/皮草专储），修复时使用专用填充和缝补材料；皮草采用专业清洗剂和整理工具。高价值商品修复前会先与品牌方确认方案，避免操作不当造成损失。',
+      a: '需要先评估材质、瑕疵类型和品牌标准。针对真丝、羽绒或皮草等高价值商品，新亦源会在处理前与品牌确认工艺、风险和验收规则；不适合仓内修复的商品将按品牌授权分流。',
     },
     {
       q: '修复后货品的质量由谁保证？',
-      a: '修复后必须通过二次质检才能上架，与原始质检标准一致（AQL 1.0–6.5）。二次质检不合格的商品进行三次修复或直接转C级处置。全程1080P高清监控录像，修复过程可追溯，品牌方有异议可调取视频核查。',
+      a: '修复后需按品牌确认的质检标准进行二次质检，通过后才可上架；项目可采用AQL抽检规则及A/B+/B-/C分级设置判定方式。未通过商品按约定继续修复或转入相应等级，关键操作记录可按项目约定用于追溯。',
     },
   ]}
-/>
+>
+  <section
+    slot="unique"
+    class="overflow-hidden border-b border-slate-200 bg-white"
+    aria-labelledby="repair-workshop-heading"
+  >
+    <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
+      <div class="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-end">
+        <div>
+          <p class="mb-4 font-mono text-xs font-bold tracking-[0.24em] text-brand-orange">
+            REPAIR WORKSHOP / 09 ZONES
+          </p>
+          <h2
+            id="repair-workshop-heading"
+            class="max-w-2xl text-3xl font-black leading-tight text-navy-800 sm:text-4xl"
+          >
+            修复不是一张服务清单，<br />而是一条有工位的作业线
+          </h2>
+        </div>
+        <p class="max-w-md text-sm leading-7 text-slate-600">
+          从质检结果到工艺评估，再进入对应修复专区；处理完成后统一二次质检，是否进入后续流程以客户确认标准为准。
+        </p>
+      </div>
+
+      <div class="mt-12 grid overflow-hidden border-y border-slate-200 sm:grid-cols-3">
+        {
+          REPAIR_PHOTOS.map(({ src, alt, label, code }, index) => (
+            <figure
+              class={`group relative min-h-72 overflow-hidden ${index > 0 ? 'border-t border-white/40 sm:border-l sm:border-t-0' : ''}`}
+            >
+              <img
+                src={src}
+                alt={alt}
+                loading="lazy"
+                decoding="async"
+                width="1200"
+                height="800"
+                class="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+              />
+              <div class="absolute inset-0 bg-gradient-to-t from-navy-900/85 via-navy-900/5 to-transparent" />
+              <figcaption class="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-5 text-white">
+                <span class="text-lg font-black">{label}</span>
+                <span class="font-mono text-[10px] font-bold tracking-[0.18em] text-white/70">
+                  {code}
+                </span>
+              </figcaption>
+            </figure>
+          ))
+        }
+      </div>
+
+      <div class="mt-10 overflow-x-auto border-y border-slate-200">
+        <div class="flex min-w-max">
+          {
+            REPAIR_ZONES.map((zone, index) => (
+              <div
+                class={`flex w-36 flex-none items-center gap-3 py-5 pr-5 ${index > 0 ? 'border-l border-slate-200 pl-5' : ''}`}
+              >
+                <span class="font-mono text-[10px] font-black text-brand-orange">
+                  {String(index + 1).padStart(2, '0')}
+                </span>
+                <span class="text-sm font-bold text-navy-800">{zone}</span>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+
+      <div class="mt-14 grid gap-8 lg:grid-cols-[14rem_1fr]">
+        <div>
+          <p class="font-mono text-[10px] font-bold tracking-[0.2em] text-blue-700">
+            WORK ORDER FLOW
+          </p>
+          <h3 class="mt-3 text-2xl font-black text-navy-800">一件商品的<br />修复工单</h3>
+          <p class="mt-4 text-xs leading-5 text-slate-500">
+            修复结果以二次质检为准，具体工艺、分级与处置方式按客户销售渠道定制。
+          </p>
+        </div>
+        <ol class="border-b border-slate-200">
+          {
+            REPAIR_FLOW.map(({ num, title, desc }) => (
+              <li class="grid grid-cols-[3rem_7rem_1fr] items-start border-t border-slate-200 py-5 sm:grid-cols-[4rem_10rem_1fr]">
+                <span class="font-mono text-xs font-black text-brand-orange">{num}</span>
+                <strong class="text-sm font-black text-navy-800">{title}</strong>
+                <span class="text-sm leading-6 text-slate-600">{desc}</span>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </div>
+  </section>
+</ServiceLanding>
