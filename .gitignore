@@ -47,6 +47,10 @@ public/yunliu.png
 public/*.html
 project-inspection-report.md
 
+# Local agent prompts and design working notes
+design.md
+loop循环提示词.md
+
 # Generated outputs / scratch
 graphify-out/
 speed-optimization.plan.md
