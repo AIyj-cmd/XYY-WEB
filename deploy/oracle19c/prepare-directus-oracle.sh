@@ -42,7 +42,7 @@ pm2 delete xyy-cms-oracle-stage >/dev/null 2>&1 || true
 pm2 start "${TARGET_CMS_DIR}/ecosystem.stage.cjs"
 
 for _ in {1..30}; do
-  if curl -fsS "http://127.0.0.1:${STAGING_PORT}/server/health" >/dev/null; then
+  if curl -fsS "http://127.0.0.1:${STAGING_PORT}/server/ping" >/dev/null; then
     echo "[ok] Oracle-backed Directus is ready on 127.0.0.1:${STAGING_PORT}"
     echo "[next] run migrate-and-cutover.sh ${CONFIG_FILE} during a maintenance window"
     exit 0

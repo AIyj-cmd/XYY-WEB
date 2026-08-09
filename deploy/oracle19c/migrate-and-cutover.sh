@@ -62,7 +62,7 @@ rollback_to_postgresql() {
   pm2 start "${SOURCE_CMS_DIR}/start-directus.sh" --name xyy-cms --cwd "${SOURCE_CMS_DIR}"
   resume_web
 
-  if ! wait_for_directus http://127.0.0.1:8055/server/health; then
+  if ! wait_for_directus http://127.0.0.1:8055/server/ping; then
     echo "[critical] PostgreSQL Directus rollback failed health check" >&2
     return 1
   fi
@@ -103,7 +103,7 @@ if ! pm2 start "${TARGET_CMS_DIR}/ecosystem.production.cjs"; then
   exit 1
 fi
 
-if ! wait_for_directus http://127.0.0.1:8055/server/health; then
+if ! wait_for_directus http://127.0.0.1:8055/server/ping; then
   echo "[error] Oracle Directus failed health check; rolling back to PostgreSQL" >&2
   rollback_to_postgresql
   exit 1
@@ -117,7 +117,7 @@ if ! wait_for_directus http://127.0.0.1:4321/healthz; then
 fi
 
 pm2 save
-curl -fsS http://127.0.0.1:8055/server/health
+curl -fsS http://127.0.0.1:8055/server/ping
 echo
 echo "[ok] Directus now uses Oracle 19c. PostgreSQL and ${SOURCE_CMS_DIR} were retained for rollback."
 echo "[backup] ${backup_dir}"

@@ -50,6 +50,11 @@ describe('production deployment contracts', () => {
   })
 
   it('rolls Oracle startup and health failures back to PostgreSQL', () => {
+    const oracleRuntime = [
+      read('deploy/oracle19c/prepare-directus-oracle.sh'),
+      read('deploy/oracle19c/migrate-and-cutover.sh'),
+      read('deploy/oracle19c/rollback-to-postgresql.sh'),
+    ].join('\n')
     const cutover = read('deploy/oracle19c/migrate-and-cutover.sh')
 
     expect(cutover).toContain('rollback_to_postgresql()')
@@ -59,6 +64,8 @@ describe('production deployment contracts', () => {
     expect(cutover).toContain('pm2 stop "${WEB_PROCESS_NAME}"')
     expect(cutover).toContain('resume_web')
     expect(cutover).toContain('website failed health check after Oracle cutover')
+    expect(oracleRuntime).not.toContain('/server/health')
+    expect(oracleRuntime.match(/\/server\/ping/g)?.length).toBeGreaterThanOrEqual(4)
   })
 
   it('fails Oracle preparation when the installed Directus has no Oracle driver', () => {

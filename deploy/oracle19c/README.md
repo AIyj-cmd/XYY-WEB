@@ -110,8 +110,8 @@ sudo DIRECTUS_DB_PASSWORD='数据库口令' bash backup-oracle.sh
 ## 验收
 
 ```bash
-curl -fsS http://127.0.0.1:8055/server/health
-curl -fsS https://56xyy.com/cms/server/health
+curl -fsS http://127.0.0.1:8055/server/ping
+curl -fsS https://56xyy.com/cms/server/ping
 pm2 status
 ```
 
