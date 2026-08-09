@@ -1,0 +1,128 @@
+.stat-card-heading {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.stat-card-kicker {
+  color: #2563eb;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+}
+
+.stat-card-index {
+  color: #334155;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.stat-metrics {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  min-width: 0;
+}
+
+.stat-metrics--warehouse {
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr);
+  align-items: end;
+  gap: 1rem;
+}
+
+.stat-metrics--network {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.stat-metrics--network .stat-metric {
+  padding: 0 1rem;
+  border-left: 1px solid rgba(148, 163, 184, 0.25);
+}
+
+.stat-metrics--network .stat-metric:first-child {
+  padding-left: 0;
+  border-left: 0;
+}
+
+.stat-metrics--inspection {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+
+.stat-metrics--inspection .stat-metric + .stat-metric {
+  padding-left: 1.5rem;
+  border-left: 1px solid rgba(232, 93, 38, 0.15);
+}
+
+.stat-metric {
+  min-width: 0;
+}
+
+.stat-val {
+  display: flex;
+  align-items: baseline;
+  gap: 0.22rem;
+  min-width: 0;
+  margin-bottom: 0.65rem;
+}
+
+.stat-num {
+  color: #e85d26;
+  font-size: clamp(2rem, 3.4vw, 3.35rem);
+  font-variant-numeric: tabular-nums;
+  font-weight: 900;
+  letter-spacing: -0.055em;
+  line-height: 0.92;
+  white-space: nowrap;
+}
+
+.stat-unit {
+  color: #2563eb;
+  font-size: 0.9rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.stat-label {
+  margin: 0 0 0.32rem;
+  color: #0a1a33;
+  font-size: 0.82rem;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.stat-detail {
+  margin: 0;
+  color: #334155;
+  font-size: 0.68rem;
+  line-height: 1.55;
+}
+
+.inspection-direction {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-bottom: 0.7rem;
+  color: #c2410c;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+}
+
+.inspection-direction::before {
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 50%;
+  background: #fb923c;
+  content: '';
+}
+
+.stat-metric--accuracy {
+  position: relative;
+  z-index: 2;
+}

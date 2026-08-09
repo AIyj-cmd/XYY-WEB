@@ -1,0 +1,40 @@
+---
+import { SERVICE_SERIES } from '@/data/product'
+import ProductSeriesItem from './ProductSeriesItem.astro'
+---
+
+<section id="service-series" class="service-series" aria-labelledby="series-heading">
+  <div class="warehouse-shell">
+    <header class="series-intro">
+      <div class="series-intro__copy" data-reveal="copy">
+        <p class="kicker">SERVICE SERIES</p>
+        <span class="series-intro__rule" aria-hidden="true"></span>
+        <h2 id="series-heading">
+          按照商品状态，<br />配置对应的仓配能力<span aria-hidden="true">。</span>
+        </h2>
+        <div class="series-intro__divider" aria-hidden="true"></div>
+        <p>从稳定履约到逆向处理，三组服务对应鞋服商品在仓内最常见的工作状态。</p>
+        <a class="series-intro__explore" href="#foundation">
+          <span aria-hidden="true">↓</span>探索完整服务
+        </a>
+      </div>
+      <div class="series-intro__collage" data-reveal="image">
+        <figure class="series-intro__main-image">
+          <img
+            src="/images/services/inspection-wide.webp"
+            alt="新亦源鞋服商品批量质检与分类作业现场"
+            width="1920"
+            height="1080"
+            loading="lazy"
+          />
+        </figure>
+        <span class="series-intro__vertical-label">WAREHOUSING &amp; FULFILLMENT</span>
+        <span class="series-intro__vertical-mark" aria-hidden="true"></span>
+      </div>
+    </header>
+
+    <div class="series-list">
+      {SERVICE_SERIES.map((item, index) => <ProductSeriesItem item={item} index={index} />)}
+    </div>
+  </div>
+</section>

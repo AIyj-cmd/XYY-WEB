@@ -8,12 +8,12 @@
 
 ## 技术栈
 
-| 层 | 技术 |
-|---|---|
-| 前端 | Astro 7 SSR、TypeScript、Tailwind CSS 4、页面级 CSS |
-| 交互 | GSAP 3、Lenis、原生 IntersectionObserver |
-| CMS | Directus 12、PostgreSQL 16 |
-| 服务 | Express 5、PM2、Nginx |
+| 层   | 技术                                                   |
+| ---- | ------------------------------------------------------ |
+| 前端 | Astro 7 SSR、TypeScript、Tailwind CSS 4、页面级 CSS    |
+| 交互 | GSAP 3、Lenis、原生 IntersectionObserver               |
+| CMS  | Directus 12、PostgreSQL 16                             |
+| 服务 | Express 5、PM2、Nginx                                  |
 | 测试 | Astro Check、ESLint、Vitest、Playwright、Lighthouse CI |
 
 ## 本地开发
@@ -32,10 +32,13 @@ npm run dev
 ```bash
 npm run typecheck            # Astro 类型与模板诊断
 npm run lint                 # ESLint
+npm run check:maintainability # 文件与内联代码预算
+npm run check:assets         # 源码引用的本地资源完整性
 npm run test                 # Vitest 单元测试
 npm run test:e2e             # Playwright 桌面/移动冒烟测试
 npm run build:local-preview  # 使用开发环境配置构建本地验收版本
-npm run verify               # typecheck + lint + test + production build
+npm run verify               # 类型、Lint、维护预算、资源、单测与生产构建
+npm run verify:release       # verify + 候选环境E2E + 正式域名契约，发布脚本使用的完整门禁
 npm run audit                # 生产依赖安全审计
 ```
 
@@ -43,23 +46,29 @@ npm run audit                # 生产依赖安全审计
 
 ```text
 src/
-  components/          全局组件与服务页视觉组件
+  components/          按业务职责拆分的首页、产品、服务、关于、案例、期刊和联系组件
+  data/                页面级静态内容配置，与模板和交互解耦
   layouts/             全局 Layout 与服务落地页布局
   lib/                 品牌事实、CMS、SEO、站点配置和安全工具
   pages/               Astro 页面与 API 路由
-  styles/              全局样式
+  scripts/             按交互职责拆分的浏览器控制器
+  styles/              全局与按业务模块/视觉族隔离的样式
 public/
   images/services/     服务页已优化图片
 scripts/
+  check-maintainability.mjs  源码与内联代码预算门禁
+  check-public-assets.mjs    本地资源引用完整性门禁
   deploy.sh            验证、构建、上传、PM2 重启和健康检查
   health-check.mjs     官网、Web 进程与 Directus 健康检查
-  bootstrap-cms-server.sh  服务器端 CMS 初始化脚本
-  setup-cms.mjs        Directus 集合与字段初始化
-  sync-approved-cms-content.mjs  审核内容同步
+  bootstrap-cms-server.sh  服务器端 CMS 初始化编排，具体步骤位于 scripts/lib/
+  setup-cms.mjs        Directus 集合初始化编排，模型与运行时分别维护
+  sync-approved-cms-content.mjs  按语义业务键执行审核内容同步
 deploy/
   nginx-56xyy.conf     正式域名迁移参考配置，当前未启用
+  oracle19c/           Oracle 安装、内容迁移、切换、回滚与备份脚本
 docs/
   PROJECT_STATUS.md    当前发布、环境与待办状态
+  MAINTAINABILITY.md   页面、组件、数据、脚本和后端维护状态矩阵
   archive/             历史检查报告和优化计划
 tests/                 单元与端到端测试
 ```
@@ -68,25 +77,47 @@ tests/                 单元与端到端测试
 
 ## 数据来源
 
-| 内容 | 来源 | 生效方式 |
-|---|---|---|
-| 首页统计、服务、案例、仓库、新闻 | Directus | 后台保存后，下次页面请求读取 |
-| 首页案例弹窗、案例详情页、品牌常量 | `src/lib/brand.ts`、`src/pages/cases/[slug].astro` | 修改代码并部署 |
-| 官网统一运营口径 | `src/lib/claims.ts` | 修改代码并部署 |
-| SEO、FAQ、结构化数据 | 页面代码与 `src/lib/seo.ts` | 修改代码并部署 |
+| 内容                               | 来源                                              | 生效方式                     |
+| ---------------------------------- | ------------------------------------------------- | ---------------------------- |
+| 首页统计、服务、案例、仓库、新闻   | Directus                                          | 后台保存后，下次页面请求读取 |
+| 首页案例弹窗、案例详情页、品牌常量 | `src/data/brand/`，由 `src/lib/brand.ts` 兼容导出 | 修改代码并部署               |
+| 官网统一运营口径                   | `src/lib/claims.ts`                               | 修改代码并部署               |
+| SEO、FAQ、结构化数据               | 页面代码与 `src/lib/seo.ts`                       | 修改代码并部署               |
 
-Directus 读取失败时使用安全降级，不在进程内缓存 CMS 内容。动态页面响应设置为 `no-store`。
+Directus 读取失败时返回空集合并报告依赖降级，不在进程内缓存 CMS 内容；首页案例另有已审核代码回退。统计和服务目前不使用陈旧快照，因此发布环境必须把 CMS 健康检查作为门槛。动态页面响应设置为 `no-store`。
+
+## 可维护性
+
+- 页面入口只负责取数、Schema、页面级配置与模块编排；
+- 静态业务内容进入 `src/data/`，组件、样式和浏览器控制器按职责隔离；
+- `npm run verify` 会执行可维护性预算和静态资源完整性检查；
+- 当前最大业务组件113行、最大CSS147行；关于页Hero、联系表单、华南仓网、服务独有内容、Express运行时、字体生成和Oracle准备流程均已按变化原因拆分；
+- 当前门禁覆盖391个项目文件；CSS上限200行、内容数据上限180行，Astro页面入口、API路由、自动化入口和部署脚本另有更严格的专项预算；
+- 公开规模、履约和质检数字统一从 `src/lib/claims/` 注册表读取，单元测试禁止在页面、组件和内容配置中重新手写同一口径；
+- 不为追求行数机械拆分事实注册表或原子请求；
+- 详细状态、保留理由与剩余债务见 [docs/MAINTAINABILITY.md](docs/MAINTAINABILITY.md)。
+
+性能侧使用响应式WebP、站点字符集字体子集和非首屏渲染隔离。字体由 `npm run prepare:fonts` 根据源码实际字符从锁定字体包生成，资源检查和生产构建会自动补齐，不依赖本机遗留文件；桌面异步加载品牌字体，移动端使用系统中文字体避免重复排版。最新本地Lighthouse单次采样为：桌面首页97、产品页97、关于页99；移动端首页86、产品页77、关于页76。正式域名上线后仍须在真实网络与缓存条件下复测。
+
+## AEO 与 Agent 发现
+
+- `/llms.txt` 由 `src/pages/llms.txt.ts` 生成，并使用 `PUBLIC_SITE_URL` 输出当前环境的绝对链接。
+- 新增、删除或重命名核心服务页、案例页后，必须同步更新 `llms.txt` 和 `src/pages/sitemap.xml.ts`。
+- 公开运营数据只从 `src/lib/claims.ts` 的已审核口径引用，不在发现文件中手写旧数据。
+- `llms.txt` 是面向模型读取的社区约定，不是 W3C 强制标准；每季度以及重大业务调整后复核一次。
+- 当前不公开 `agent-permissions.json` 或 `mcp-actions.json`。只有在咨询、报价或查询动作具备授权、确认、防重复提交和审计机制后再设计 Agent 执行层。
+- `robots.txt` 区分搜索增强型与训练型爬虫；涉及训练授权的规则必须由业务负责人确认，不得因技术优化擅自修改。
 
 ## 环境变量
 
-| 变量 | 说明 |
-|---|---|
-| `DIRECTUS_URL` | 服务端 Directus 地址；服务器建议 `http://127.0.0.1:8055` |
-| `DIRECTUS_TOKEN` | Directus 静态 Token，敏感信息 |
-| `PUBLIC_SITE_URL` | 当前构建与 canonical 使用的站点地址 |
-| `PUBLIC_DIRECTUS_URL` | 浏览器可访问的 CMS 地址 |
-| `ENABLE_DOMAIN_REDIRECTS` | 正式域名切换完成后才可设为 `true` |
-| `LEGACY_DOMAINS` | 正式切换后需要 301 的旧域名列表 |
+| 变量                      | 说明                                                     |
+| ------------------------- | -------------------------------------------------------- |
+| `DIRECTUS_URL`            | 服务端 Directus 地址；服务器建议 `http://127.0.0.1:8055` |
+| `DIRECTUS_TOKEN`          | Directus 静态 Token，敏感信息                            |
+| `PUBLIC_SITE_URL`         | 当前构建与 canonical 使用的站点地址                      |
+| `PUBLIC_DIRECTUS_URL`     | 浏览器可访问的 CMS 地址                                  |
+| `ENABLE_DOMAIN_REDIRECTS` | 正式域名切换完成后才可设为 `true`                        |
+| `LEGACY_DOMAINS`          | 正式切换后需要 301 的旧域名列表                          |
 
 `.env`、`.env.production` 仅保存在本地和服务器，不提交 GitHub，也不由部署脚本上传。
 
@@ -100,12 +131,20 @@ SITE_URL='https://wz.tomatopia.top' \
 bash scripts/deploy.sh
 ```
 
+### 独立 Oracle 19c 数据库
+
+Directus 从 PostgreSQL 迁移至独立 Oracle Database 19c 的数据库安装、并行验证、
+数据迁移、切换、回滚和备份脚本见
+[`deploy/oracle19c/README.md`](deploy/oracle19c/README.md)。生产凭据只保存在应用服务器
+`/etc/xyy/oracle19c.env`（权限 `600`），不得提交到 Git。
+
 部署脚本会：
 
-1. 以 `SITE_URL` 覆盖构建期公开地址并运行 `npm run verify`；
-2. 用 `rsync` 上传 `dist` 和运行所需文件；
-3. 保留服务器现有 `.env`，安装生产依赖并重启 `xyy-web`；
-4. 检查首页、`/healthz` 和 Directus ping。
+1. 以 `SITE_URL` 覆盖构建期公开地址并运行 `npm run verify:release`；
+2. 上传到独立版本目录并在服务器安装生产依赖；
+3. 保留服务器现有 `.env`，通过 `current` 软链原子切换后重启 `xyy-web`；
+4. 检查首页、`/healthz` 和 Directus ping；失败时恢复上一软链；
+5. 默认保留最近5个版本，便于人工回滚。
 
 在 `56xyy.com` DNS、证书与 Nginx 未切换到目标服务器前，不得启用旧域名跳转。迁移参考配置位于 `deploy/nginx-56xyy.conf`。
 

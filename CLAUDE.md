@@ -10,18 +10,19 @@ npm run typecheck
 npm run lint
 npm run test
 npm run verify
+npm run verify:release
 ```
 
-提交或部署前必须至少通过 `npm run verify`。涉及交互或响应式布局时，再运行 `npm run test:e2e` 或使用浏览器检查桌面与移动端。
+提交前必须至少通过 `npm run verify`；部署前必须通过 `npm run verify:release`。涉及交互或响应式布局时，还要用浏览器检查桌面与移动端。
 
 ## 数据职责
 
-| 数据 | 来源 | 修改方式 |
-|---|---|---|
-| 首页统计、服务、案例、仓库、新闻 | Directus，无内容缓存 | CMS 保存后刷新页面 |
-| `CASE_DETAILS`、品牌与导航常量 | `src/lib/brand.ts` | 改代码并部署 |
-| 统一数字与运营口径 | `src/lib/claims.ts` | 改代码并部署 |
-| JSON-LD、FAQ Schema、canonical | 页面与 `src/lib/seo.ts` | 改代码并部署 |
+| 数据                             | 来源                                          | 修改方式           |
+| -------------------------------- | --------------------------------------------- | ------------------ |
+| 首页统计、服务、案例、仓库、新闻 | Directus，无内容缓存                          | CMS 保存后刷新页面 |
+| `CASE_DETAILS`、品牌与导航常量   | `src/data/brand/`，由 `src/lib/brand.ts` 导出 | 改代码并部署       |
+| 统一数字与运营口径               | `src/lib/claims.ts`                           | 改代码并部署       |
+| JSON-LD、FAQ Schema、canonical   | 页面与 `src/lib/seo.ts`                       | 改代码并部署       |
 
 `CASE_DETAILS` 键名必须与 Directus `cases.label` 完全一致，`slug` 同时用于首页链接、案例详情页和 sitemap。Directus 资源 URL 必须使用 `getDirectusAssetUrl()`，CMS 富文本在 `set:html` 前必须经过 `sanitize.ts`。
 
@@ -80,13 +81,50 @@ ssh root@47.82.105.103 'pm2 status'
 
 正式域名迁移配置位于 `deploy/nginx-56xyy.conf`，只有在 DNS、证书、Nginx 和 CMS 公网地址全部就绪后才能启用。
 
+### Oracle 19c 数据库迁移
+
+Directus 的目标数据库架构为独立服务器上的 Oracle Database 19c；实施脚本和操作顺序位于
+`deploy/oracle19c/`。迁移采用 8056 并行实例验证后再切换 8055，原 PostgreSQL 和
+`/var/www/xyy-cms` 必须保留到 Oracle 完成备份与恢复演练。未取得数据库服务器地址、
+Oracle 官方安装介质和生产口令前，只允许准备脚本，不得把当前 CMS 标记为已完成迁移。
+
 ## 关键文件
 
 - `src/components/Header.astro`：全站悬浮导航与移动菜单
-- `src/pages/index.astro`：首页内容、交互与页面级样式
-- `src/layouts/ServiceLanding.astro`：服务专题页公共布局
-- `src/components/service/ServiceSignature.astro`：服务页差异化视觉模块
-- `src/lib/directus.ts`：Directus SDK、查询和安全降级
+- `src/pages/index.astro`：首页CMS取数、Schema和业务组件编排
+- `src/components/home/`：首页首屏、能力数据、解决方案、案例/弹窗、履约流程和FAQ组件
+- `src/data/home.ts`：首页静态能力说明、图片映射和FAQ配置
+- `src/data/product.ts`：产品页服务系列、目录、流程与保障配置
+- `src/components/product/ProductServiceDirectory.astro`：产品页问题目录与可访问 Tab 交互
+- `src/components/product/`：产品页目录、服务系列、商品整理、流程和保障业务组件
+- `src/components/about/AboutHonors.astro`：关于页荣誉画廊与弹窗
+- `src/scripts/`：首页、产品页和关于页的浏览器交互控制器
+- `src/styles/product.css`、`src/styles/product/`：产品页有序样式入口与组件级分片
+- `src/styles/service-signature.css`、`src/styles/service-signature/`：服务差异化视觉入口与变体族分片
+- `src/layouts/ServiceLanding.astro`：服务专题页Schema、组件编排与独有内容插槽
+- `src/components/service/ServiceLandingHero.astro`：服务专题页共享Hero
+- `src/components/service/ServiceExperience.astro`：服务专题页详情、FAQ与最终CTA
+- `src/components/service/ServiceSignature.astro`：服务页公共签名标题与视觉族分派
+- `src/components/service/ServiceSignatureWarehouse.astro`：仓储视觉族分派，具体变体位于 `service/signature/`
+- `src/components/service/ServiceSignatureDigital.astro`：数字视觉族分派，具体变体位于 `service/signature/`
+- `src/components/service/ServiceSignatureQuality.astro`：质检视觉族分派，具体变体位于 `service/signature/`
+- `src/data/service.ts`：服务页共享类型、体验文案和签名配置
+- `src/lib/directus.ts`：Directus稳定导出门面；类型、客户端和查询分别位于 `directus-*.ts`
+- `src/lib/contact/`：联系接口的请求读取、限流、校验与 Directus 落库职责
 - `src/lib/claims.ts`：统一运营事实与数字口径
-- `server.mjs`：Express 包装层、安全头、静态资源与重定向
+- `server.mjs`：Express 应用装配与启动入口；运行配置、请求策略和健康检查分别位于 `server/`
 - `scripts/deploy.sh`：构建、同步、PM2 重启和健康检查
+- `scripts/setup-cms.mjs`：CMS 初始化编排；集合模型和运行时位于 `scripts/data/`、`scripts/lib/`
+- `deploy/oracle19c/migrate-directus-content.mjs`：跨库内容迁移编排；传输与规范化逻辑位于 `deploy/oracle19c/lib/`
+
+## 可维护性边界
+
+- 按“独立业务职责＋独立交互＋可单独测试”拆组件，不按标签数量机械拆分。
+- `npm run check:maintainability` 是强制门禁；新增代码不得通过修改预算绕过拆分评审。
+- CSS按布局、视觉变体、交互状态或响应式职责拆分，单文件上限200行；`src/data/`按业务内容域拆分，单文件上限180行，稳定入口只做兼容导出。
+- 门禁通过只代表文件规模未回退；维护评审还必须检查页面编排、业务组件、事实数据、浏览器控制器、样式、CMS读取/管理、API和部署脚本是否各自只有一个变化原因。
+- 页面脚本通过稳定的 `data-*`、ARIA 和 id 契约连接 DOM；调整契约时同步更新 Playwright。
+- 新增首页案例、履约、FAQ、产品目录、关于仓网、案例、期刊或联系表单逻辑时，优先修改对应组件、数据或控制器，不再写回页面内联脚本。
+- `index.astro`、`product.astro`、`about.astro`、`cases.astro`、`contact.astro`、`senlinqikan.astro`、`ServiceLanding.astro` 和 `ServiceSignature.astro` 已完成入口瘦身；维护状态以 `docs/MAINTAINABILITY.md` 为准。
+- `HomeCaseModal`、`HomeCases`、`HomeCoreSolutions`、能力统计卡和履约/FAQ均已完成模板、数据、样式与控制器分层；能力动画由入口、运行时和三类播放器组成。
+- 不得把已经拆出的首页或产品页职责重新合并回页面入口；拆分时禁止同时改变视觉、文案、路由和业务口径。

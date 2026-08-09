@@ -1,0 +1,60 @@
+.s-cases {
+  padding: 4rem 2rem 3rem;
+  background: #f6f8fc;
+}
+
+.cases-head {
+  max-width: 1360px;
+  margin: 0 auto 2rem;
+  text-align: center;
+}
+
+.section-tag {
+  margin: 0 0 1rem;
+  color: #2563eb;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.section-title {
+  margin: 0;
+  color: #0a1a33;
+  font-size: clamp(2rem, 3.2vw, 3.1rem);
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+.section-sub {
+  max-width: 58rem;
+  margin: 1rem auto 0;
+  color: #475569;
+  font-size: 1rem;
+  line-height: 1.8;
+}
+
+.cases-more {
+  margin-top: 1.25rem;
+  text-align: center;
+}
+
+.btn-outline-dark {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.75rem 2rem;
+  border: 1.5px solid #0a1a33;
+  border-radius: 999px;
+  color: #0a1a33;
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-decoration: none;
+  transition:
+    background 0.22s,
+    color 0.22s;
+}
+
+.btn-outline-dark:hover {
+  color: #fff;
+  background: #0a1a33;
+}

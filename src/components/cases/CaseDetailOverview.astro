@@ -1,0 +1,57 @@
+---
+import type { CaseDetail } from '@/data/brand/case-details'
+import type { Case } from '@/lib/directus'
+
+interface Props {
+  detail: CaseDetail
+  summary?: Case
+}
+
+const { detail, summary } = Astro.props
+---
+
+<section class="bg-white py-16 lg:py-20" aria-labelledby="case-overview-heading">
+  <div class="mx-auto grid max-w-7xl gap-12 px-5 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:px-8">
+    <div>
+      <p class="mb-3 text-xs font-bold tracking-[0.14em] text-blue-600">案例概况</p>
+      <h2 id="case-overview-heading" class="text-3xl font-black text-[#0a1a33]">
+        品牌背景与服务场景
+      </h2>
+      <p class="mt-6 leading-8 text-slate-600">{detail.description}</p>
+      {
+        summary && (
+          <div class="mt-8">
+            <h3 class="text-sm font-black text-[#0a1a33]">主要服务范围</h3>
+            <div class="mt-3 flex flex-wrap gap-2">
+              {summary.tags.map((tag) => (
+                <span class="rounded-full bg-blue-50 px-3 py-1.5 text-xs font-bold text-blue-700">
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
+        )
+      }
+    </div>
+
+    <div>
+      <p class="mb-4 text-xs font-bold tracking-[0.14em] text-blue-600">项目运营数据</p>
+      <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        {
+          detail.stats.map((stat) => (
+            <div class="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+              <p class="text-2xl font-black text-[#0a1a33]">
+                {stat.value}
+                <span class="ml-1 text-xs font-bold text-slate-500">{stat.unit}</span>
+              </p>
+              <p class="mt-2 text-xs font-bold text-slate-600">{stat.label}</p>
+            </div>
+          ))
+        }
+      </div>
+      <p class="mt-5 text-xs leading-6 text-slate-500">
+        数据来源于新亦源内部项目运营统计，部分业务细节已脱敏；具体以对应统计周期、项目范围和经营记录为准。
+      </p>
+    </div>
+  </div>
+</section>

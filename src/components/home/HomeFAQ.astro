@@ -1,0 +1,55 @@
+---
+import '@/styles/home-faq.css'
+
+interface FaqItem {
+  q: string
+  a: string
+}
+
+interface Props {
+  items: FaqItem[]
+  phone: string
+}
+
+const { items, phone } = Astro.props
+const phoneHref = phone.replace(/-/g, '')
+---
+
+<section id="s-faq" class="s-faq" aria-labelledby="faq-heading">
+  <div class="faq-inner">
+    <aside class="faq-intro">
+      <p class="section-tag">常见问题</p>
+      <h2 id="faq-heading" class="faq-title">关于鞋服仓配<br />你可能还想了解这些</h2>
+      <p class="faq-intro-copy">合作前，品牌通常会从服务范围、履约能力和合作方式开始了解。</p>
+      <div class="faq-contact-actions">
+        <a href="/contact" class="faq-side-cta">获取仓配方案 <span aria-hidden="true">→</span></a>
+        <a href={`tel:${phoneHref}`} class="faq-phone">咨询热线：{phone}</a>
+      </div>
+    </aside>
+    <div class="faq-content">
+      <div class="faq-list">
+        {
+          items.map(({ q, a }, index) => (
+            <details class="faq-item" open={index === 0}>
+              <summary class="faq-q">
+                <span class="faq-index">{String(index + 1).padStart(2, '0')}</span>
+                <span>{q}</span>
+                <span class="faq-toggle" aria-hidden="true" />
+              </summary>
+              <div class="faq-answer">
+                <p class="faq-a">{a}</p>
+              </div>
+            </details>
+          ))
+        }
+      </div>
+      <p class="faq-authority">
+        数据说明：本页涉及的新亦源服务与运营数据来源于新亦源内部运营统计，具体以对应统计周期和经营记录为准。
+      </p>
+    </div>
+  </div>
+</section>
+
+<script>
+  import '@/scripts/home-faq'
+</script>

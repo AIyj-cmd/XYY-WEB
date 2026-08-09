@@ -1,0 +1,75 @@
+.cg-detail {
+  bottom: 1.55rem;
+  left: 1.7rem;
+  max-width: 21rem;
+  opacity: 0;
+  transform: translateY(1rem);
+  transition:
+    opacity 0.3s ease 0.08s,
+    transform 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.08s;
+}
+
+.cg-detail > span {
+  color: var(--case-color, #fff);
+  font-size: 0.72rem;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+}
+
+.cg-detail > strong {
+  margin-top: 0.45rem;
+  color: #fff;
+  font-size: clamp(2.25rem, 3.5vw, 3.75rem);
+  font-weight: 950;
+  letter-spacing: -0.05em;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.cg-detail > small {
+  margin-top: 0.4rem;
+  color: #d6e4f5;
+  font-size: 0.72rem;
+}
+
+.cg-detail > p {
+  max-width: 20rem;
+  margin: 0.85rem 0 0;
+  color: #e1ebf8;
+  font-size: 0.72rem;
+  line-height: 1.6;
+}
+
+.cg-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.75rem;
+}
+
+.cg-tags span {
+  padding: 0.22rem 0.5rem;
+  border: 1px solid rgba(214, 231, 250, 0.32);
+  border-radius: 999px;
+  color: #edf5ff;
+  background: rgba(217, 233, 250, 0.12);
+  font-size: 0.6rem;
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+.cg-detail > i {
+  margin-top: 1.25rem;
+  padding-bottom: 0.2rem;
+  border-bottom: 1px solid currentColor;
+  color: #fff;
+  font-size: 0.76rem;
+  font-style: normal;
+  font-weight: 850;
+}
+
+.cg-panel:hover .cg-detail,
+.cg-panel:focus-visible .cg-detail {
+  opacity: 1;
+  transform: translateY(0);
+}

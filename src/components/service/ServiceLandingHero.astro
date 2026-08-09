@@ -1,0 +1,47 @@
+---
+interface Props {
+  eyebrow: string
+  h1: string
+  h1sub: string
+  heroDesc: string
+  imgSrc: string
+  imgAlt: string
+}
+
+const { eyebrow, h1, h1sub, heroDesc, imgSrc, imgAlt } = Astro.props
+---
+
+<section class="relative py-16 lg:py-28 overflow-hidden" aria-labelledby="lp-h1">
+  <img
+    src={imgSrc}
+    alt={imgAlt}
+    class="absolute inset-0 w-full h-full object-cover"
+    fetchpriority="high"
+  />
+  <div
+    class="absolute inset-0"
+    style="background:linear-gradient(105deg,rgba(8,20,42,.95) 0%,rgba(8,20,42,.80) 40%,rgba(8,20,42,.50) 70%,rgba(8,20,42,.25) 100%);"
+    aria-hidden="true"
+  >
+  </div>
+  <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <p class="text-brand-orange font-semibold text-sm tracking-wider uppercase mb-3">{eyebrow}</p>
+    <h1 id="lp-h1" class="text-4xl lg:text-5xl font-black text-white leading-tight mb-2">{h1}</h1>
+    <p class="text-brand-orange font-bold text-lg mb-4">{h1sub}</p>
+    <p class="text-lg text-navy-100 max-w-2xl leading-relaxed mb-8">{heroDesc}</p>
+    <div class="flex flex-wrap gap-3">
+      <a
+        href="/contact"
+        class="inline-flex items-center px-6 py-3 bg-brand-orange hover:bg-brand-orange-dark text-white font-bold rounded-xl transition-colors text-sm"
+      >
+        免费获取方案
+      </a>
+      <a
+        href="/product"
+        class="inline-flex items-center px-6 py-3 border border-white/30 hover:border-white/60 text-white/80 hover:text-white font-medium rounded-xl transition-colors text-sm"
+      >
+        查看全部产品
+      </a>
+    </div>
+  </div>
+</section>

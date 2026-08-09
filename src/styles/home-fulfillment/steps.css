@@ -1,0 +1,101 @@
+.fulfillment-step {
+  position: relative;
+  z-index: 1;
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 220px;
+  padding: 0 0.75rem 0 0;
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.7s ease,
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: calc(var(--i) * 0.13s + 0.2s);
+}
+
+.s-fulfillment.is-visible .fulfillment-step {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.fulfillment-connector {
+  display: none;
+}
+
+.fulfillment-num-wrap {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 1.5rem;
+}
+
+.fulfillment-num {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 4rem;
+  height: 4rem;
+  border: 2px solid #e85d26;
+  border-radius: 50%;
+  background: #fff;
+  color: #e85d26;
+  font-size: 0.875rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  transition:
+    background 0.3s,
+    color 0.3s,
+    box-shadow 0.3s;
+}
+
+.fulfillment-step.is-terminal .fulfillment-num {
+  background: #fff1e9;
+  box-shadow: 0 0 0 5px rgba(232, 93, 38, 0.08);
+}
+
+.fulfillment-num-ring {
+  position: absolute;
+  inset: -6px;
+  border: 1.5px solid rgba(232, 93, 38, 0.3);
+  border-radius: 50%;
+  opacity: 0;
+  transform: scale(0.8);
+  transition:
+    opacity 0.3s,
+    transform 0.3s;
+}
+
+.fulfillment-step:hover .fulfillment-num {
+  background: #e85d26;
+  color: #fff;
+  box-shadow:
+    0 0 0 6px rgba(232, 93, 38, 0.15),
+    0 8px 24px rgba(232, 93, 38, 0.3);
+}
+
+.fulfillment-step:hover .fulfillment-num-ring {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.fulfillment-step-title {
+  margin: 0 0 0.6rem;
+  color: #0a1a33;
+  font-size: 1rem;
+  font-weight: 800;
+  line-height: 1.4;
+  transition: color 0.2s;
+}
+
+.fulfillment-step:hover .fulfillment-step-title {
+  color: #e85d26;
+}
+
+.fulfillment-step-desc {
+  max-width: none;
+  margin: 0;
+  color: #475569;
+  font-size: 0.9rem;
+  line-height: 1.65;
+}

@@ -1,0 +1,99 @@
+.svc-features {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+  margin: 0 0 2rem;
+  padding: 0;
+  list-style: none;
+  opacity: 0;
+}
+
+.svc-features li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  color: #334155;
+  font-size: 1.075rem;
+  line-height: 1.6;
+}
+
+.svc-feature-solution {
+  display: grid;
+  gap: 0.12rem;
+}
+
+.svc-feature-solution strong {
+  color: #0a1a33;
+  font-size: 1.02rem;
+  font-weight: 800;
+}
+
+.svc-feature-solution small {
+  color: #475569;
+  font-size: 0.88rem;
+  line-height: 1.55;
+}
+
+.svc-scenarios {
+  margin: -0.25rem 0 1.75rem;
+}
+
+.svc-scenarios > span {
+  display: block;
+  margin-bottom: 0.55rem;
+  color: #64748b;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.svc-scenarios > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.svc-scenarios b {
+  padding: 0.38rem 0.7rem;
+  border: 1px solid #bfdbfe;
+  border-radius: 999px;
+  color: #1e3a5f;
+  background: #eff6ff;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.svc-fee-note {
+  margin: -0.25rem 0 1.5rem;
+  color: #64748b;
+  font-size: 0.78rem;
+  line-height: 1.6;
+}
+
+.svc-fee-note strong {
+  color: #334155;
+}
+
+.svc-features svg {
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+
+@media (max-width: 420px) {
+  .svc-system-overlay {
+    right: 0.75rem;
+    bottom: 0.75rem;
+    padding: 0.48rem 0.6rem;
+  }
+
+  .svc-system-overlay b {
+    font-size: 0.66rem;
+  }
+
+  .svc-system-overlay span + span::before {
+    margin: 0 0.18rem;
+  }
+
+  .svc-quality-assurance {
+    margin-bottom: 1.35rem;
+  }
+}

@@ -1,0 +1,56 @@
+---
+import type { FeatureItem, StatItem } from '@/data/service'
+
+interface Props {
+  contentDesc: string
+  stats: [StatItem, StatItem, StatItem, StatItem]
+  features: FeatureItem[]
+}
+
+const { contentDesc, stats, features } = Astro.props
+---
+
+<div class="showroom">
+  <div class="showroom__gallery">
+    <figure class="showroom__hero">
+      <img src="/images/services/warehouse-hanging.webp" alt="挂装服饰仓储实景" loading="lazy" />
+      <figcaption>挂装空间 / 保持版型</figcaption>
+    </figure>
+    <figure>
+      <img src="/images/services/storage-environment.webp" alt="服装分类存储环境" loading="lazy" />
+      <figcaption>环境分区</figcaption>
+    </figure>
+    <figure>
+      <img src="/images/services/storage-shoes.webp" alt="鞋类分区存储" loading="lazy" />
+      <figcaption>鞋类货位</figcaption>
+    </figure>
+  </div>
+  <div class="showroom__catalogue">
+    <p class="showroom__lead">{contentDesc}</p>
+    <ol>
+      {
+        features.slice(0, 4).map(({ title, desc }, index) => (
+          <li>
+            <>
+              <span>{String(index + 1).padStart(2, '0')}</span>
+              <h3>{title}</h3>
+              <p>{desc}</p>
+            </>
+          </li>
+        ))
+      }
+    </ol>
+    <div class="showroom__labels">
+      {
+        stats.map(({ stat, label }) => (
+          <div>
+            <>
+              <strong>{stat}</strong>
+              <span>{label}</span>
+            </>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</div>

@@ -1,0 +1,132 @@
+.east {
+  display: grid;
+  grid-template-columns: minmax(18rem, 0.82fr) minmax(0, 1.18fr);
+  gap: 2rem;
+  align-items: stretch;
+}
+
+.east__coverage {
+  position: relative;
+  min-height: 34rem;
+  overflow: hidden;
+  background: #f1f6fd;
+}
+
+.east__orbit {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border: 1px solid rgb(20 66 151 / 16%);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.east__orbit--one {
+  width: 13rem;
+  height: 13rem;
+  border-color: rgb(232 93 38 / 35%);
+}
+
+.east__orbit--two {
+  width: 24rem;
+  height: 24rem;
+}
+
+.east__orbit--three {
+  width: 37rem;
+  height: 37rem;
+}
+
+.east__core {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 2;
+  display: grid;
+  width: 9rem;
+  height: 9rem;
+  place-content: center;
+  border-radius: 50%;
+  background: #fff;
+  text-align: center;
+  box-shadow: 0 1rem 3rem rgb(20 66 151 / 14%);
+  transform: translate(-50%, -50%);
+}
+
+.east__core small,
+.east__core span {
+  color: #7d8da2;
+  font-size: 0.56rem;
+}
+
+.east__core strong {
+  color: var(--signal);
+  font-size: 1.8rem;
+}
+
+.east__city {
+  position: absolute;
+  z-index: 3;
+  padding: 0.42rem 0.7rem;
+  border: 1px solid #c8d8ec;
+  background: #fff;
+  color: var(--blue);
+  font-size: 0.69rem;
+  font-weight: 900;
+  box-shadow: 0 0.6rem 1.5rem rgb(20 66 151 / 10%);
+}
+
+.east__city--ks {
+  top: 24%;
+  left: 20%;
+}
+
+.east__city--sh {
+  top: 26%;
+  right: 16%;
+}
+
+.east__city--hf {
+  bottom: 17%;
+  left: 21%;
+}
+
+.east__screen,
+.evidence__screen {
+  align-self: center;
+  padding: 0.65rem;
+  border: 1px solid #ced9e8;
+  border-radius: 0.8rem;
+  background: #14263f;
+  box-shadow: 0 1.5rem 4rem rgb(19 43 80 / 15%);
+}
+
+.east__screen-bar,
+.evidence__screen > div:first-child {
+  display: flex;
+  gap: 0.3rem;
+  align-items: center;
+  padding: 0.15rem 0.1rem 0.6rem;
+}
+
+.east__screen-bar span,
+.evidence__screen > div:first-child span {
+  width: 0.42rem;
+  height: 0.42rem;
+  border-radius: 50%;
+  background: #6d819a;
+}
+
+.east__screen-bar b,
+.evidence__screen > div:first-child b {
+  margin-left: auto;
+  color: #cbd7e6;
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+}
+
+.east__screen img,
+.evidence__screen img {
+  height: auto;
+  border-radius: 0.3rem;
+}

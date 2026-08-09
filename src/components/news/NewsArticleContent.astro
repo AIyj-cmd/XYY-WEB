@@ -1,0 +1,49 @@
+---
+import NewsArticleBody from './NewsArticleBody.astro'
+import NewsRelated from './NewsRelated.astro'
+import type { NewsArticle } from '@/lib/directus'
+
+interface Props {
+  article: NewsArticle
+  related: NewsArticle[]
+  sanitizedContent: string
+}
+
+const { article, related, sanitizedContent } = Astro.props
+---
+
+<nav class="bg-gray-50 border-b border-gray-100 py-3" aria-label="面包屑导航">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6">
+    <ol
+      class="flex items-center gap-2 text-sm text-gray-500"
+      vocab="https://schema.org/"
+      typeof="BreadcrumbList"
+    >
+      <li property="itemListElement" typeof="ListItem">
+        <a href="/" property="item" typeof="WebPage" class="hover:text-navy-800 transition-colors"
+          ><span property="name">首页</span></a
+        ><meta property="position" content="1" />
+      </li>
+      <li aria-hidden="true">/</li>
+      <li property="itemListElement" typeof="ListItem">
+        <a
+          href="/news"
+          property="item"
+          typeof="WebPage"
+          class="hover:text-navy-800 transition-colors"><span property="name">行业动态</span></a
+        ><meta property="position" content="2" />
+      </li>
+      <li aria-hidden="true">/</li>
+      <li
+        property="itemListElement"
+        typeof="ListItem"
+        class="text-gray-700 font-medium truncate max-w-xs"
+      >
+        <span property="name">{article.title}</span><meta property="position" content="3" />
+      </li>
+    </ol>
+  </div>
+</nav>
+
+<NewsArticleBody {article} {sanitizedContent} />
+<NewsRelated {related} />

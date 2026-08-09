@@ -1,0 +1,32 @@
+---
+import { SOUTH_COLLABORATION_BANDS } from '@/data/service/south-network'
+---
+
+<div class="mt-12 border-b border-slate-200">
+  <div
+    class="grid grid-cols-[4rem_1fr] border-t border-slate-300 py-3 sm:grid-cols-[5rem_11rem_1fr_7rem]"
+  >
+    <span class="font-mono text-[10px] font-bold tracking-[0.16em] text-slate-400">BAND</span>
+    <span class="hidden text-[10px] font-bold tracking-[0.16em] text-slate-400 sm:block"
+      >协同维度</span
+    >
+    <span class="text-[10px] font-bold tracking-[0.16em] text-slate-400">项目动作</span>
+    <span class="hidden text-right text-[10px] font-bold tracking-[0.16em] text-slate-400 sm:block"
+      >输出</span
+    >
+  </div>
+  {
+    SOUTH_COLLABORATION_BANDS.map(({ num, title, desc, signal }) => (
+      <article class="grid grid-cols-[4rem_1fr] items-start border-t border-slate-200 py-5 sm:grid-cols-[5rem_11rem_1fr_7rem] sm:items-center">
+        <span class="font-mono text-xs font-black text-brand-orange">{num}</span>
+        <h3 class="text-base font-black text-navy-800">{title}</h3>
+        <p class="col-start-2 mt-2 text-sm leading-6 text-slate-600 sm:col-start-auto sm:mt-0 sm:pr-8">
+          {desc}
+        </p>
+        <span class="col-start-2 mt-3 w-fit border-b border-blue-500 pb-1 text-xs font-bold text-blue-700 sm:col-start-auto sm:mt-0 sm:justify-self-end">
+          {signal}
+        </span>
+      </article>
+    ))
+  }
+</div>

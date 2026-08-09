@@ -1,0 +1,98 @@
+---
+import {
+  REPAIR_WORK_ORDER_FLOW,
+  REPAIR_WORKSHOP_PHOTOS,
+  REPAIR_ZONES,
+} from '@/data/service/repair-workshop'
+---
+
+<section
+  class="overflow-hidden border-b border-slate-200 bg-white"
+  aria-labelledby="repair-workshop-heading"
+>
+  <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
+    <div class="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-end">
+      <div>
+        <p class="mb-4 font-mono text-xs font-bold tracking-[0.24em] text-brand-orange">
+          REPAIR WORKSHOP / 09 ZONES
+        </p>
+        <h2
+          id="repair-workshop-heading"
+          class="max-w-2xl text-3xl font-black leading-tight text-navy-800 sm:text-4xl"
+        >
+          修复不是一张服务清单，<br />而是一条有工位的作业线
+        </h2>
+      </div>
+      <p class="max-w-md text-sm leading-7 text-slate-600">
+        从质检结果到工艺评估，再进入对应修复专区；处理完成后统一二次质检，是否进入后续流程以客户确认标准为准。
+      </p>
+    </div>
+
+    <div class="mt-12 grid overflow-hidden border-y border-slate-200 sm:grid-cols-3">
+      {
+        REPAIR_WORKSHOP_PHOTOS.map(({ src, alt, label, code }, index) => (
+          <figure
+            class={`group relative min-h-72 overflow-hidden ${index > 0 ? 'border-t border-white/40 sm:border-l sm:border-t-0' : ''}`}
+          >
+            <img
+              src={src}
+              alt={alt}
+              loading="lazy"
+              decoding="async"
+              width="1200"
+              height="800"
+              class="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-navy-900/85 via-navy-900/5 to-transparent" />
+            <figcaption class="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-5 text-white">
+              <span class="text-lg font-black">{label}</span>
+              <span class="font-mono text-[10px] font-bold tracking-[0.18em] text-white/70">
+                {code}
+              </span>
+            </figcaption>
+          </figure>
+        ))
+      }
+    </div>
+
+    <div class="mt-10 overflow-x-auto border-y border-slate-200">
+      <div class="flex min-w-max">
+        {
+          REPAIR_ZONES.map((zone, index) => (
+            <div
+              class={`flex w-36 flex-none items-center gap-3 py-5 pr-5 ${index > 0 ? 'border-l border-slate-200 pl-5' : ''}`}
+            >
+              <span class="font-mono text-[10px] font-black text-brand-orange">
+                {String(index + 1).padStart(2, '0')}
+              </span>
+              <span class="text-sm font-bold text-navy-800">{zone}</span>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+
+    <div class="mt-14 grid gap-8 lg:grid-cols-[14rem_1fr]">
+      <div>
+        <p class="font-mono text-[10px] font-bold tracking-[0.2em] text-blue-700">
+          WORK ORDER FLOW
+        </p>
+        <h3 class="mt-3 text-2xl font-black text-navy-800">一件商品的<br />修复工单</h3>
+        <p class="mt-4 text-xs leading-5 text-slate-500">
+          修复结果以二次质检为准，具体工艺、分级与处置方式按客户销售渠道定制。
+        </p>
+      </div>
+      <ol class="border-b border-slate-200">
+        {
+          REPAIR_WORK_ORDER_FLOW.map(({ num, title, desc }) => (
+            <li class="grid grid-cols-[3rem_7rem_1fr] items-start border-t border-slate-200 py-5 sm:grid-cols-[4rem_10rem_1fr]">
+              <span class="font-mono text-xs font-black text-brand-orange">{num}</span>
+              <strong class="text-sm font-black text-navy-800">{title}</strong>
+              <span class="text-sm leading-6 text-slate-600">{desc}</span>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </div>
+</section>

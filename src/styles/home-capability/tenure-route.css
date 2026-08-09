@@ -1,0 +1,64 @@
+.tenure-range {
+  position: absolute;
+  z-index: 3;
+  right: 1.5rem;
+  bottom: 1.3rem;
+  left: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  color: #bfdbfe;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.tenure-range i {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, #3b82f6, #fb923c);
+}
+
+.tenure-route {
+  position: absolute;
+  z-index: 1;
+  right: 0;
+  bottom: 2.4rem;
+  left: 0;
+  width: 100%;
+  height: 12rem;
+  pointer-events: none;
+}
+
+.tenure-route-track,
+.tenure-route-progress {
+  fill: none;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.tenure-route-track {
+  stroke: rgba(147, 197, 253, 0.16);
+  stroke-width: 2;
+}
+
+.tenure-route-progress {
+  stroke: #60a5fa;
+  stroke-width: 2.5;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+}
+
+.tenure-route-node {
+  fill: #dbeafe;
+  stroke: rgba(96, 165, 250, 0.35);
+  stroke-width: 8;
+  transform-box: fill-box;
+  transform-origin: center;
+  vector-effect: non-scaling-stroke;
+}
+
+.tenure-route-node--accent {
+  fill: #fb923c;
+  stroke: rgba(251, 146, 60, 0.22);
+}

@@ -1,0 +1,146 @@
+@media (max-width: 700px) {
+  .s-stats {
+    padding: 4.5rem 1.25rem;
+  }
+
+  .stats-heading {
+    display: block;
+    margin-bottom: 1.5rem;
+  }
+
+  .stats-intro {
+    margin-top: 0.8rem;
+    font-size: 0.86rem;
+  }
+
+  .stats-bento {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: none;
+    gap: 0.75rem;
+  }
+
+  .stats-tenure,
+  .stats-warehouse,
+  .stats-network,
+  .stats-inspection,
+  .stats-accuracy {
+    grid-area: auto;
+    grid-column: 1 / -1;
+  }
+
+  .stats-tenure {
+    min-height: 310px;
+  }
+
+  .stat-card {
+    padding: 1.35rem;
+  }
+
+  .stats-network .stat-num {
+    font-size: clamp(1.75rem, 8vw, 2.3rem);
+  }
+
+  .stats-flow {
+    padding: 1.25rem 1.1rem 1.35rem;
+  }
+
+  .stats-flow::after {
+    right: 1.1rem;
+  }
+
+  .stats-flow-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.25rem;
+    margin-bottom: 1rem;
+  }
+
+  .stats-flow-rail {
+    top: 5.75rem;
+    right: auto;
+    bottom: 2.3rem;
+    left: 3.76rem;
+    width: 2px;
+    height: auto;
+  }
+
+  .stats-flow-progress {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, #3b82f6, #60a5fa 62%, #fb923c);
+    transform-origin: center top;
+  }
+
+  .stats-flow-list {
+    grid-template-columns: 1fr;
+    gap: 0.95rem;
+  }
+
+  .stats-flow-step {
+    grid-template-columns: 1.7rem 0.8rem 1fr auto;
+    justify-items: start;
+    align-items: center;
+    gap: 0.65rem;
+    text-align: left;
+  }
+
+  .stats-flow-step strong {
+    font-size: 0.72rem;
+  }
+
+  .stats-footnote {
+    align-items: flex-start;
+  }
+
+  .deco-watermark {
+    opacity: 0.5;
+  }
+}
+
+@media (max-width: 420px) {
+  .stat-metrics--warehouse,
+  .stat-metrics--inspection {
+    gap: 0.85rem;
+  }
+
+  .stat-metrics--inspection .stat-metric + .stat-metric {
+    padding-left: 0.85rem;
+  }
+
+  .stat-num {
+    font-size: 2rem;
+  }
+
+  .stats-warehouse .stat-metric:first-child .stat-num {
+    font-size: 2.65rem;
+  }
+
+  .stats-warehouse .stat-metric:last-child .stat-num {
+    font-size: 2rem;
+  }
+
+  .stats-network .stat-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .stats-network .stat-metric {
+    padding: 0 0 0 0.7rem;
+  }
+
+  .stats-network .stat-metric:nth-child(3) {
+    grid-column: 1 / -1;
+  }
+
+  .stats-accuracy .stat-num {
+    font-size: 3rem;
+  }
+
+  .stats-footnote {
+    display: block;
+  }
+
+  .stats-footnote span {
+    display: block;
+    margin-bottom: 0.2rem;
+  }
+}

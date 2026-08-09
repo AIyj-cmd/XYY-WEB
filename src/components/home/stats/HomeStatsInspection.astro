@@ -1,0 +1,33 @@
+---
+import type { HomepageStat } from '@/lib/directus'
+
+interface Props {
+  stats: HomepageStat[]
+}
+
+const { stats } = Astro.props
+---
+
+<article class="stat-card stats-inspection" data-flow="inspection">
+  <header class="stat-card-heading">
+    <span class="stat-card-kicker">质检履约</span>
+    <span class="stat-card-index">03</span>
+  </header>
+  <div class="stat-metrics stat-metrics--inspection">
+    {
+      stats.map(({ value, label, unit, detail }, index) => (
+        <div class="stat-metric">
+          <span class="inspection-direction">{index === 0 ? '正向入仓' : '逆向回流'}</span>
+          <div class="stat-val">
+            <span class="stat-num" data-raw={value}>
+              {value}
+            </span>
+            <span class="stat-unit">{unit}</span>
+          </div>
+          <h3 class="stat-label">{label}</h3>
+          <p class="stat-detail">{detail}</p>
+        </div>
+      ))
+    }
+  </div>
+</article>

@@ -1,0 +1,51 @@
+/* 服务流程 */
+.process-section {
+  padding: 5rem 0 5.4rem;
+  background: var(--paper);
+}
+.process-heading {
+  max-width: 46rem;
+  margin-bottom: 2.8rem;
+}
+.process-heading h2 {
+  font-size: clamp(2.2rem, 3.2vw, 3.25rem);
+  line-height: 1.05;
+}
+.editorial-process {
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid #cfd3d1;
+  list-style: none;
+}
+.editorial-process li {
+  display: grid;
+  grid-template-columns: 8.5rem minmax(0, 1fr);
+  gap: 2rem;
+  align-items: center;
+  min-height: 5.8rem;
+  border-bottom: 1px solid #cfd3d1;
+}
+.editorial-process li > span {
+  color: var(--accent);
+  font-size: clamp(2rem, 2.6vw, 2.8rem);
+  font-weight: 950;
+  letter-spacing: -0.08em;
+  line-height: 1;
+}
+.editorial-process li > div {
+  display: grid;
+  grid-template-columns: minmax(11rem, 2fr) minmax(15rem, 5fr);
+  gap: 1.5rem;
+  align-items: baseline;
+}
+.editorial-process h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 900;
+}
+.editorial-process p {
+  margin: 0;
+  color: var(--body);
+  font-size: 0.86rem;
+  line-height: 1.6;
+}

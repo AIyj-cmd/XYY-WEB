@@ -1,0 +1,102 @@
+.signature--global-tower {
+  background: #f7faff;
+}
+
+.global {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(19rem, 0.8fr);
+  gap: clamp(2rem, 5vw, 4rem);
+}
+
+.global__map {
+  position: relative;
+  min-height: 34rem;
+  overflow: hidden;
+  border: 1px solid #d8e4f2;
+  background: #eef5fd;
+}
+
+.global__map img {
+  object-fit: contain;
+}
+
+.global__point,
+.global__flight {
+  position: absolute;
+  z-index: 2;
+  padding: 0.38rem 0.6rem;
+  background: #fff;
+  font-size: 0.62rem;
+  font-weight: 900;
+  box-shadow: 0 0.6rem 1.5rem rgb(20 66 151 / 12%);
+}
+
+.global__point::before {
+  display: inline-block;
+  width: 0.45rem;
+  height: 0.45rem;
+  margin-right: 0.35rem;
+  border-radius: 50%;
+  background: var(--signal);
+  content: '';
+}
+
+.global__point--one {
+  top: 46%;
+  left: 69%;
+}
+
+.global__point--two {
+  top: 25%;
+  left: 18%;
+}
+
+.global__point--three {
+  right: 8%;
+  bottom: 22%;
+}
+
+.global__flight {
+  border: 1px solid #bfd1e9;
+  color: var(--blue);
+}
+
+.global__flight--out {
+  top: 18%;
+  left: 48%;
+}
+
+.global__flight--back {
+  bottom: 16%;
+  left: 36%;
+  color: var(--signal);
+}
+
+.global__tower {
+  border-top: 1px solid var(--ink);
+}
+
+.global__tower > p {
+  padding: 1.2rem 0 1.6rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.global__tower ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.global__tower li {
+  display: grid;
+  grid-template-columns: 2rem 1fr;
+  gap: 0.8rem;
+  padding: 1.1rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.global__tower li > span {
+  color: var(--signal);
+  font-size: 0.66rem;
+  font-weight: 900;
+}

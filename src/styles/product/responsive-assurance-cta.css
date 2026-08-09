@@ -1,0 +1,68 @@
+@media (max-width: 760px) {
+  .assurance-heading {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    margin-bottom: 3.4rem;
+  }
+  .assurance-heading h2 {
+    font-size: 2.75rem;
+  }
+  .assurance-heading__intro > p:not(.kicker) {
+    margin-top: 1.25rem;
+    font-size: 0.9rem;
+  }
+  .assurance-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2rem 0;
+  }
+  .assurance-grid article {
+    min-height: 9rem;
+    padding: 0 0.9rem 0 0;
+  }
+  .assurance-grid article + article {
+    padding-left: 0.9rem;
+    border-left: 1px solid var(--line);
+  }
+  .assurance-grid article:nth-child(3) {
+    border-left: 0;
+  }
+  .assurance-grid article:nth-child(n + 3) {
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+  }
+  .assurance-mechanisms {
+    margin-top: 3.5rem;
+  }
+  .assurance-mechanisms__list {
+    grid-template-columns: 1fr;
+    gap: 1.3rem;
+  }
+  .assurance-mechanism__icon {
+    flex-basis: 2.5rem;
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+  .assurance-mechanism__icon svg {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+  .assurance-mechanisms p {
+    white-space: normal;
+  }
+  .warehouse-cta {
+    padding: 5rem 0;
+  }
+  .warehouse-cta__inner {
+    gap: 3.25rem;
+    margin-bottom: 0;
+  }
+  .warehouse-cta aside {
+    padding: 1.8rem 0 0;
+    border-top: 1px solid #bfc5c2;
+    border-left: 0;
+  }
+  .warehouse-cta li {
+    grid-template-columns: 7rem minmax(0, 1fr);
+    padding: 0.85rem 0;
+  }
+}

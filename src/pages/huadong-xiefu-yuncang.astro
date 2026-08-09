@@ -1,13 +1,7 @@
 ---
 import ServiceLanding from '@/layouts/ServiceLanding.astro'
-
-const COVERAGE_ROWS = [
-  { city: '上海', type: '上海', time: '参考次日达', note: '具体以线路和合同SLA为准' },
-  { city: '苏州 / 无锡 / 南京', type: '江苏', time: '参考次日达', note: '具体以线路和合同SLA为准' },
-  { city: '杭州 / 宁波 / 义乌', type: '浙江', time: '参考次日达', note: '具体以线路和合同SLA为准' },
-  { city: '合肥 / 芜湖', type: '安徽', time: '参考次日达', note: '具体以线路和合同SLA为准' },
-  { city: '福州 / 厦门', type: '福建', time: '参考次日达', note: '具体以线路和合同SLA为准' },
-]
+import EastCoverageSection from '@/components/service/unique/EastCoverageSection.astro'
+import { CLAIM_TEXT } from '@/lib/claims'
 ---
 
 <ServiceLanding
@@ -45,7 +39,7 @@ const COVERAGE_ROWS = [
     },
     {
       title: '华东退货就近处理',
-      desc: '华东区域退货可按项目回收至启用仓点，退货质检与二次上架24小时完成，减少跨区回流。',
+      desc: `华东区域退货可按项目回收至启用仓点，退货质检与二次上架${CLAIM_TEXT.returnTurnaround}完成，减少跨区回流。`,
     },
     {
       title: '华东华南仓网协同',
@@ -79,48 +73,5 @@ const COVERAGE_ROWS = [
     },
   ]}
 >
-  <section
-    slot="unique"
-    class="py-14 bg-gray-50 border-b border-gray-100"
-    aria-labelledby="coverage-heading"
-  >
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <h2 id="coverage-heading" class="text-xl font-black text-navy-800 mb-1 text-center">
-        华东仓配送时效覆盖
-      </h2>
-      <p class="text-xs text-gray-400 text-center mb-8">上海青浦发出，覆盖长三角及华东主要城市</p>
-      <div class="overflow-x-auto rounded-xl border border-gray-200">
-        <table class="w-full text-sm text-left">
-          <thead>
-            <tr class="bg-navy-800 text-white">
-              <th class="px-5 py-3.5 font-bold text-xs tracking-wider">城市 / 区域</th>
-              <th class="px-5 py-3.5 font-bold text-xs tracking-wider">所属省份</th>
-              <th class="px-5 py-3.5 font-bold text-xs tracking-wider">参考时效</th>
-              <th class="px-5 py-3.5 font-bold text-xs tracking-wider hidden sm:table-cell">说明</th
-              >
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-gray-100 bg-white">
-            {
-              COVERAGE_ROWS.map(({ city, type, time, note }) => (
-                <tr class="hover:bg-orange-50/20 transition-colors">
-                  <td class="px-5 py-4 font-bold text-navy-700 text-xs">{city}</td>
-                  <td class="px-5 py-4 text-gray-500 text-xs">{type}</td>
-                  <td class="px-5 py-4 text-xs">
-                    <span class="inline-block px-2 py-0.5 rounded-full font-bold text-[10px] bg-gray-100 text-gray-500">
-                      {time}
-                    </span>
-                  </td>
-                  <td class="px-5 py-4 text-gray-400 text-xs hidden sm:table-cell">{note}</td>
-                </tr>
-              ))
-            }
-          </tbody>
-        </table>
-      </div>
-      <p class="text-xs text-gray-400 mt-3">
-        * 以上时效为参考值，以实际合同SLA条款为准。具体快递覆盖及时效请联系商务团队确认。
-      </p>
-    </div>
-  </section>
+  <EastCoverageSection slot="unique" />
 </ServiceLanding>

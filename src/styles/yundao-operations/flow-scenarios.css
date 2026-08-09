@@ -1,0 +1,69 @@
+.yd-flow,
+.yd-scenarios {
+  display: grid;
+  grid-template-columns: minmax(16rem, 0.5fr) minmax(0, 1.5fr);
+  gap: clamp(3rem, 7vw, 7rem);
+  margin-top: clamp(4rem, 8vw, 7rem);
+}
+
+.yd-flow header > span {
+  display: block;
+  margin-top: 1.2rem;
+}
+
+.yd-flow ol {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--ink);
+  list-style: none;
+}
+
+.yd-flow li {
+  display: grid;
+  grid-template-columns: 2.5rem 7rem 1fr;
+  gap: 0.8rem;
+  align-items: baseline;
+  padding: 1.2rem 1.2rem 1.2rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.yd-flow li:nth-child(even) {
+  padding-right: 0;
+  padding-left: 1.2rem;
+  border-left: 1px solid var(--line);
+}
+
+.yd-flow h3,
+.yd-scenarios h3 {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.yd-flow li p,
+.yd-scenarios article p {
+  margin: 0;
+  color: #65758b;
+  font-size: 0.83rem;
+  line-height: 1.7;
+}
+
+.yd-scenarios {
+  margin-top: clamp(4rem, 7vw, 6rem);
+  padding-top: clamp(3rem, 6vw, 5rem);
+  border-top: 1px solid var(--line);
+}
+
+.yd-scenarios > div {
+  border-top: 1px solid var(--ink);
+}
+
+.yd-scenarios article {
+  display: grid;
+  grid-template-columns: 2.5rem 8rem 1fr;
+  gap: 0.8rem;
+  align-items: baseline;
+  padding: 1.25rem 0;
+  border-bottom: 1px solid var(--line);
+}

@@ -1,0 +1,78 @@
+---
+import HomeCaseModal from './HomeCaseModal.astro'
+import '../../styles/home-cases.css'
+
+interface CaseItem {
+  label: string
+  category: string
+  img: string
+  details: string
+  tags: string[]
+}
+
+interface CaseCardMeta {
+  shortName: string
+  slug?: string
+  metric: { value: string; label: string }
+  metricContext: string
+}
+
+interface Props {
+  cases: CaseItem[]
+  cardMeta: CaseCardMeta[]
+  caseDetails: Record<string, unknown>
+  partnerBrands: string
+}
+
+const { cases, cardMeta, caseDetails, partnerBrands } = Astro.props
+---
+
+<section id="s-cases" class="s-cases" aria-labelledby="cases-heading">
+  <div class="cases-head">
+    <p class="section-tag">合作案例</p>
+    <h2 id="cases-heading" class="section-title">{partnerBrands} 品牌的共同选择</h2>
+    <p class="section-sub">
+      服务鞋服、潮玩、美妆、箱包等多个细分行业，并覆盖库存协同、全渠道履约、退货质检与跨境出海等场景
+    </p>
+  </div>
+  <div class="cases-gallery" aria-label="部分合作案例，悬停查看品牌合作数据">
+    {
+      cases.map((item, index) => (
+        <a
+          class="case-card cg-panel"
+          data-case={item.label}
+          href={cardMeta[index].slug ? `/cases/${cardMeta[index].slug}` : '/cases'}
+        >
+          <img
+            src={item.img}
+            alt={`${cardMeta[index].shortName} 合作案例业务场景`}
+            loading="lazy"
+          />
+          <div class="cg-shade" aria-hidden="true" />
+          <div class="cg-label">
+            <span>0{index + 1}</span>
+            <strong>{cardMeta[index].shortName}</strong>
+            <small>{item.category}</small>
+          </div>
+          <div class="cg-detail">
+            <span>{item.category}</span>
+            <strong>{cardMeta[index].metric.value}</strong>
+            <small>{cardMeta[index].metricContext}</small>
+            <p>{item.details}</p>
+            <div class="cg-tags">
+              {item.tags.slice(0, 3).map((tag) => (
+                <span>{tag}</span>
+              ))}
+            </div>
+            <i aria-hidden="true">查看案例 →</i>
+          </div>
+        </a>
+      ))
+    }
+  </div>
+  <div class="cases-more">
+    <a href="/cases" class="btn-outline-dark">查看全部案例 →</a>
+  </div>
+</section>
+
+<HomeCaseModal caseDetails={caseDetails} />

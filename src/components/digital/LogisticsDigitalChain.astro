@@ -1,0 +1,40 @@
+---
+interface Props {
+  steps: ReadonlyArray<readonly [string, string]>
+}
+
+const { steps } = Astro.props
+---
+
+<section class="digital-chain" aria-labelledby="chain-heading">
+  <div class="digital-shell digital-chain__grid">
+    <figure>
+      <img
+        src="/images/services/operations-system-architecture.png"
+        alt="物流服务中台的系统协同结构示意"
+        width="746"
+        height="584"
+        loading="lazy"
+      />
+    </figure>
+    <div>
+      <p class="digital-kicker">FROM ORDER TO FEEDBACK</p>
+      <h2 id="chain-heading">让业务状态<br />能够连续地往下走。</h2>
+      <ol>
+        {
+          steps.map(([title, note], index) => (
+            <li>
+              <span>0{index + 1}</span>
+              <div>
+                <>
+                  <h3>{title}</h3>
+                  <p>{note}</p>
+                </>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </div>
+</section>

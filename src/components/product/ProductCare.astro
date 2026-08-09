@@ -1,0 +1,66 @@
+---
+import { CARE_CATEGORIES } from '@/data/product'
+---
+
+<section id="product-care" class="care-section" aria-labelledby="care-heading">
+  <div class="warehouse-shell">
+    <header class="care-heading" data-reveal="copy">
+      <div>
+        <p class="kicker">PRODUCT CARE / 重点能力</p><h2 id="care-heading">
+          商品整理与轻微瑕疵处理
+        </h2>
+      </div><p>
+        根据商品状态和品牌标准，完成标签、外观、包装及轻微瑕疵处理。并不是所有退回或存在轻微问题的商品都需要报废，经过判断、整理和修复，部分商品可以重新进入销售流程。
+      </p>
+    </header>
+    <div class="care-stage">
+      <figure class="care-stage__main" data-reveal="image">
+        <img
+          src="/images/services/garment-cleaning.jpg"
+          alt="新亦源工作人员进行服饰表面清洁"
+          width="1707"
+          height="1280"
+          loading="lazy"
+        /><figcaption>表面清洁与商品整理</figcaption>
+      </figure>
+      <figure class="care-stage__top" data-reveal="image">
+        <img
+          src="/images/services/garment-ironing.jpg"
+          alt="新亦源服饰整烫作业"
+          width="1920"
+          height="1080"
+          loading="lazy"
+        /><figcaption>整烫除皱</figcaption>
+      </figure>
+      <figure class="care-stage__bottom" data-reveal="image">
+        <img
+          src="/images/services/garment-repair-finishing.jpg"
+          alt="新亦源工作人员进行服饰瑕疵处理"
+          width="960"
+          height="1200"
+          loading="lazy"
+        /><figcaption>轻微瑕疵处理</figcaption>
+      </figure>
+    </div>
+    <div class="care-stage__caption" data-reveal="copy">
+      <p>
+        <span>处理边界</span>轻微瑕疵需先完成状态判断，再根据商品材质和品牌标准确认处理方式。
+      </p><a href="/houzheng-xiufu" class="secondary-link"
+        >查看后整修复服务 <span aria-hidden="true">→</span></a
+      >
+    </div>
+    <div class="care-categories">
+      {
+        CARE_CATEGORIES.map(({ number, title, description }) => (
+          <article data-reveal="copy">
+            <>
+              <span>{number}</span>
+              <h3>{title}</h3>
+              <p>{description}</p>
+            </>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>

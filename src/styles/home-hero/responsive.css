@@ -1,0 +1,24 @@
+@media (max-width: 768px) {
+  .hero-body {
+    padding: 0 1.25rem;
+  }
+
+  .hero-title {
+    font-size: clamp(1.65rem, 8.2vw, 2.6rem);
+  }
+
+  .hero-sub {
+    max-width: 100%;
+    white-space: normal;
+  }
+
+  .hero-data {
+    margin-bottom: 2rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-cue span {
+    animation: none;
+  }
+}

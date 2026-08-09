@@ -1,0 +1,127 @@
+.signature--delivery-desk {
+  background: #f7f9fc;
+}
+
+.delivery {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(18rem, 0.65fr);
+  gap: clamp(2rem, 5vw, 4.5rem);
+  align-items: start;
+}
+
+.delivery__console {
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: #fff;
+  box-shadow: 1rem 1rem 0 #eaf0f7;
+}
+
+.delivery__console-bar {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.8rem 1rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.delivery__console-bar span {
+  color: var(--signal);
+  font-size: 0.62rem;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+}
+
+.delivery__console-bar b,
+.delivery__console figcaption {
+  color: #6b7c91;
+  font-size: 0.68rem;
+}
+
+.delivery__console img {
+  height: auto;
+}
+
+.delivery__console figcaption {
+  padding: 0.85rem 1rem;
+  border-top: 1px solid var(--line);
+}
+
+.delivery__summary {
+  padding-left: 2rem;
+  border-left: 1px solid var(--line);
+}
+
+.delivery__summary > p {
+  margin: 0;
+  color: #65758b;
+  font-size: 0.92rem;
+  line-height: 1.9;
+}
+
+.delivery__summary > div {
+  margin-top: 1.75rem;
+  border-top: 1px solid var(--ink);
+}
+
+.delivery__summary article {
+  display: grid;
+  grid-template-columns: minmax(5.5rem, 0.65fr) 1fr;
+  padding: 0.9rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.delivery__summary article strong {
+  grid-row: 1 / 3;
+  color: var(--signal);
+  font-size: 1.3rem;
+}
+
+.delivery__summary article span {
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+.delivery__summary article small {
+  color: #8492a5;
+  font-size: 0.65rem;
+}
+
+.delivery__capabilities {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: repeat(3, 1fr);
+  margin: 1rem 0 0;
+  padding: 0;
+  border-top: 1px solid var(--ink);
+  list-style: none;
+}
+
+.delivery__capabilities li {
+  min-height: 10.5rem;
+  padding: 1.25rem 1.4rem 1.2rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.delivery__capabilities li:not(:nth-child(3n + 1)) {
+  padding-left: 1.4rem;
+  border-left: 1px solid var(--line);
+}
+
+.delivery__capabilities li > span {
+  color: var(--signal);
+  font-size: 0.64rem;
+  font-weight: 900;
+}
+
+.delivery__capabilities h3 {
+  margin: 1rem 0 0.45rem;
+  font-size: 1rem;
+}
+
+.delivery__capabilities p {
+  margin: 0;
+  color: #65758b;
+  font-size: 0.86rem;
+  line-height: 1.75;
+}

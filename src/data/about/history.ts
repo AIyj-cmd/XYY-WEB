@@ -1,0 +1,93 @@
+import type { AboutCaption, AboutHistoryItem } from './types'
+import { CLAIM_TEXT } from '@/lib/claims'
+
+export const ABOUT_HISTORY: AboutHistoryItem[] = [
+  {
+    year: '2011',
+    subtitle: '起点·团队成立',
+    text: '团队在广州成立，开始深耕鞋服物流与仓配服务',
+    img: '',
+  },
+  {
+    year: '2017',
+    subtitle: '夯实·天使投资',
+    text: '获千万级天使投资，定位服饰客户专业化物流',
+    img: '/about/history/2017.png',
+  },
+  {
+    year: '2019',
+    subtitle: '聚焦·战略定位',
+    text: '完成战略定位，布局服装仓储中心并建立仓配服务SOP',
+    img: '/about/history/2019.png',
+  },
+  {
+    year: '2020',
+    subtitle: '发展·A轮融资',
+    text: '完成A轮融资，布局全国物流中心，打造线上线下融合新物流模式',
+    img: '/about/history/2020.png',
+  },
+  {
+    year: '2021',
+    subtitle: '协同·三架马车',
+    text: '布局行业垂直整合“三架马车”，建设全国区域后整检品服务',
+    img: '/about/history/2021.png',
+  },
+  {
+    year: '2022',
+    subtitle: '成长·PRE-A轮',
+    text: '完成PRE-A轮融资并获上市公司参股，启动“启明星计划”',
+    img: '/about/history/2022.png',
+  },
+  {
+    year: '2023',
+    subtitle: '升级·OTD上线',
+    text: '物流服务中台OTD上线，人效通和店配O2O平台升级，推进内部阿米巴管理',
+    img: '/about/history/2023.jpg',
+  },
+  {
+    year: '2024',
+    subtitle: '深耕·数字化升级',
+    text: '业绩逆势持续增长，深耕鞋服战略，推进仓内作业数字化升级',
+    img: '/about/history/2024.jpg',
+  },
+  {
+    year: '2025',
+    subtitle: '出海·数智化升级',
+    text: '布局跨境出海业务，从数字化过渡到数智化，建设中高层管理人才培养体系',
+    img: '/about/history/2025.jpg',
+  },
+]
+
+export const ABOUT_HERO_CAPTIONS: AboutCaption[] = [
+  { start: 1.833, end: 3.2, text: '新亦源鞋服云仓' },
+  { start: 3.2, end: 5.9, text: '在全国拥有54万平专业服装仓' },
+  { start: 8.4, end: 8.933, text: '专业' },
+  { start: 8.933, end: 11.233, text: '始于对每一寸空间的细致规划' },
+  { start: 12.266, end: 14.2, text: '精准调控温湿度的恒温仓' },
+  { start: 14.2, end: 16.233, text: '为高端面料筑牢品质防线' },
+  { start: 17.5, end: 18.4, text: '立体悬挂' },
+  { start: 18.4, end: 19.666, text: '杜绝褶皱损耗' },
+  { start: 20.933, end: 22.466, text: '从入库到存储' },
+  { start: 22.466, end: 24.3, text: '全链路6S标准化管控' },
+  { start: 24.4, end: 25.3, text: '每一处细节' },
+  { start: 25.3, end: 27.633, text: '都藏着我们对鞋服仓储的深刻理解' },
+  { start: 29.666, end: 30.166, text: '服务' },
+  { start: 30.166, end: 32.4, text: '鉴于对每一个需求的极致响应' },
+  { start: 34.133, end: 35.533, text: '我们提供新货质检' },
+  { start: 36.2, end: 38.833, text: '服装质检、箱包质检、鞋子质检' },
+  { start: 40.233, end: 42.133, text: `提供${CLAIM_TEXT.returnTurnaround}退货质检` },
+  { start: 42.133, end: 42.933, text: '二次上架' },
+  { start: 42.933, end: 45.2, text: '污渍清理特殊污渍清理' },
+  { start: 45.2, end: 45.7, text: '清洗' },
+  { start: 45.7, end: 46.4, text: '烘干' },
+  { start: 46.433, end: 48.233, text: '提供最全面的增值服务' },
+  { start: 48.3, end: 48.766, text: '整烫' },
+  { start: 48.766, end: 49.4, text: '挂烫' },
+  { start: 49.4, end: 51.533, text: '合规改标瑕疵修复等' },
+  { start: 54.733, end: 57.466, text: '从一件新品的入库到一单包裹的发出' },
+  { start: 58, end: 59.266, text: '从一件退货的翻新' },
+  { start: 59.266, end: 61.033, text: '到一份库存的精准预警' },
+  { start: 61.233, end: 62.2, text: '新亦源云仓' },
+  { start: 62.2, end: 64.3, text: '让每一份托付都安心可靠' },
+  { start: 64.3, end: 66.266, text: '做服装就用新亦源云仓' },
+]

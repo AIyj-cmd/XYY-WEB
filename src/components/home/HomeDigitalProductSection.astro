@@ -1,0 +1,96 @@
+---
+import { YUNDAO_FEATURES } from '@/data/home'
+import HomeServiceFeatures from './HomeServiceFeatures.astro'
+
+interface DigitalProduct {
+  id: string
+  tag: string
+  name: string
+  subtitle: string
+  description: string
+  features: readonly string[]
+  href: string
+}
+
+interface Props {
+  product: DigitalProduct
+  index: number
+  sequence: number
+}
+
+const { product, index, sequence } = Astro.props
+const isYundao = product.id === 'yundao-platform'
+---
+
+<section
+  class:list={['s-service', { reverse: sequence % 2 === 1 }]}
+  id={`dp-${product.id}`}
+  aria-labelledby={`dp-title-${index}`}
+>
+  <div class="svc-media">
+    {
+      isYundao ? (
+        <div class="yundao-visual" aria-label="智能寄件业务流程">
+          <div class="yundao-interface-grid" aria-label="真实系统界面示例">
+            <img
+              class="yundao-interface-main"
+              src="/yundao-logistics-list.png"
+              alt="物流运单管理系统主界面"
+              loading="lazy"
+            />
+            <img
+              class="yundao-interface-side-1"
+              src="/yundao-order-list.png"
+              alt="订单信息对接系统界面"
+              loading="lazy"
+            />
+            <img
+              class="yundao-interface-side-2"
+              src="/yundao-alerts.png"
+              alt="发货预警系统界面"
+              loading="lazy"
+            />
+            <img
+              class="yundao-interface-detail"
+              src="/yundao-report.png"
+              alt="发货统计报表界面"
+              loading="lazy"
+            />
+          </div>
+        </div>
+      ) : null
+    }
+    {
+      isYundao && (
+        <p class="svc-media-caption">
+          智能比价 <i>｜</i> 全国覆盖 <i>｜</i> 专属客服 <i>｜</i> 数据报表
+        </p>
+      )
+    }
+    <div class:list={['svc-num-badge', { 'svc-num-badge--solution': isYundao }]}>
+      <span>0{sequence + 1}</span>{isYundao && <small>智能寄件平台</small>}
+    </div>
+  </div>
+  <div class="svc-body">
+    <p class="section-tag">{isYundao ? '核心解决方案' : product.tag}</p>
+    {isYundao && <p class="svc-problem">门店寄件渠道分散、价格不透明，品牌需要统一管理运输资源</p>}
+    <h2 id={`dp-title-${index}`} class="svc-title">{product.name}</h2>
+    <p class="svc-sub">{product.subtitle}</p>
+    <p class="svc-desc">
+      {
+        isYundao
+          ? '以信息和数据协同运输资源，为连锁门店、电商平台及企业机构提供正向与逆向寄件协同服务。'
+          : product.description
+      }
+    </p>
+    <HomeServiceFeatures features={isYundao ? YUNDAO_FEATURES : product.features.slice(0, 4)} />
+    {
+      isYundao && (
+        <p class="svc-fee-note">
+          <strong>费用优势：</strong>部分线路费用最高可节省50%，具体以实际线路和报价为准。
+        </p>
+      )
+    }
+    <a href={product.href} class="svc-link">{isYundao ? '查看智能寄件方案 →' : '查看详情 →'}</a>
+  </div>
+</section>

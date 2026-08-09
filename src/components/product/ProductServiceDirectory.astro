@@ -1,0 +1,93 @@
+---
+interface Need {
+  id: string
+  number: string
+  title: string
+  service: string
+  href: string
+  description: string
+  checks: readonly string[]
+  image: string
+  alt: string
+}
+
+interface Props {
+  needs: readonly Need[]
+}
+
+const { needs } = Astro.props
+import '@/styles/product/service-directory.css'
+---
+
+<section id="service-directory" class="needs-section" aria-labelledby="needs-heading">
+  <div class="warehouse-shell needs-layout">
+    <header class="needs-intro" data-reveal="copy">
+      <p class="kicker">SERVICE DIRECTORY</p>
+      <span class="needs-intro__rule" aria-hidden="true"></span>
+      <h2 id="needs-heading">你现在需要<br />解决什么问题？</h2>
+      <p>从业务痛点出发，找到对应的仓配服务方案，精准匹配您的需求，让仓储与履约更高效、更安心。</p>
+      <div class="needs-intro__watermark" aria-hidden="true"></div>
+    </header>
+    <div class="needs-directory" data-need-directory>
+      <div class="needs-directory__list" role="tablist" aria-label="按业务问题选择服务">
+        {
+          needs.map(({ id, number, title, service }, index) => (
+            <button
+              type="button"
+              id={`need-tab-${id}`}
+              role="tab"
+              aria-selected={index === 0 ? 'true' : 'false'}
+              aria-controls={`need-panel-${id}`}
+              tabindex={index === 0 ? 0 : -1}
+              data-need-tab={id}
+              data-selected={index === 0 ? 'true' : 'false'}
+            >
+              <>
+                <span>{number}</span>
+                <strong>{title}</strong>
+                <em>{service}</em>
+              </>
+              <span class="needs-directory__action">
+                查看详情 <i aria-hidden="true">→</i>
+              </span>
+            </button>
+          ))
+        }
+      </div>
+      <div class="needs-directory__visuals" data-reveal="image">
+        {
+          needs.map(({ id, service, href, description, checks, image, alt }, index) => (
+            <div
+              id={`need-panel-${id}`}
+              role="tabpanel"
+              aria-labelledby={`need-tab-${id}`}
+              data-need-panel={id}
+              hidden={index !== 0}
+            >
+              <figure>
+                <img src={image} alt={alt} width="1600" height="1000" loading="lazy" />
+              </figure>
+              <div>
+                <p class="needs-panel__current">当前服务</p>
+                <h3>{service}</h3>
+                <p class="needs-panel__description">{description}</p>
+                <ul>
+                  {checks.map((check) => (
+                    <li>{check}</li>
+                  ))}
+                </ul>
+                <a class="needs-panel__link" href={href}>
+                  查看服务详情 <span aria-hidden="true">→</span>
+                </a>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import '@/scripts/product-service-directory'
+</script>

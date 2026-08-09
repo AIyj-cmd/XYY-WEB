@@ -1,0 +1,46 @@
+---
+import { ASSURANCE_MECHANISMS, ASSURANCE_POINTS } from '@/data/product'
+import ProductAssuranceIcon from './ProductAssuranceIcon.astro'
+---
+
+<section id="assurance" class="assurance-section" aria-labelledby="assurance-heading">
+  <div class="warehouse-shell">
+    <header class="assurance-heading" data-reveal="copy">
+      <div class="assurance-heading__intro">
+        <p class="kicker">CAPABILITY & ASSURANCE</p>
+        <p>
+          从货品入仓到出库交付，每个环节都有标准、有记录、有反馈。<br
+          />让服务过程透明可视，结果可复核，持续优化，始终如一。
+        </p>
+      </div>
+      <h2 id="assurance-heading">让服务可以被看见、<br />被复核，也被持续改进。</h2>
+    </header>
+    <div class="assurance-grid">
+      {
+        ASSURANCE_POINTS.map(({ value, label, note }) => (
+          <article data-reveal="copy">
+            <strong>{value}</strong>
+            <h3>{label}</h3>
+            <p>{note}</p>
+          </article>
+        ))
+      }
+    </div>
+    <div class="assurance-mechanisms">
+      <h3 data-reveal="copy">服务保障机制</h3>
+      <div class="assurance-mechanisms__list">
+        {
+          ASSURANCE_MECHANISMS.map(({ title, note, icon }) => (
+            <article data-reveal="copy">
+              <ProductAssuranceIcon icon={icon} />
+              <div>
+                <h4>{title}</h4>
+                <p>{note}</p>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>

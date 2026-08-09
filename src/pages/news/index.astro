@@ -1,46 +1,20 @@
 ---
 import Layout from '@/layouts/Layout.astro'
 import PageFAQ from '@/components/PageFAQ.astro'
+import NewsEmptyState from '@/components/news/NewsEmptyState.astro'
+import NewsGrid from '@/components/news/NewsGrid.astro'
+import NewsLandingIntro from '@/components/news/NewsLandingIntro.astro'
 import { BRAND } from '@/lib/brand'
-import { NEWS_CATEGORIES } from '@/lib/directus'
+import { getNewsByCategory, getPublishedNews, NEWS_CATEGORIES } from '@/lib/directus'
 import { createFaqSchema } from '@/lib/seo'
+import { NEWS_FAQS } from '@/data/news'
+import '@/styles/news.css'
 
-const category = Astro.url.searchParams.get('cat') ?? ''
-
-const NEWS_FAQS = [
-  {
-    q: '新亦源为什么建立行业动态栏目？',
-    a: '新亦源长期服务鞋服云仓、退货质检、后整修复和全渠道履约场景。行业动态用于把仓内真实问题、作业方法和供应链变化整理成可理解、可核验的内容，而不是简单转载行业新闻。',
-  },
-  {
-    q: '新亦源的行业内容主要来自哪些一线资料？',
-    a: '内容主要参考仓内流程复盘、WMS与物流系统记录、质检问题分类、客户工单以及平台公开规则。涉及项目的信息会先明确适用范围，再决定是否适合公开。',
-  },
-  {
-    q: '新亦源如何区分公司数据、项目数据和行业公开数据？',
-    a: '公司整体数据、单个合作项目数据、第三方公开数据和场景测算会分别标注，不把单个项目结果扩大为所有客户都能达到的效果，也不把第三方成果表述为新亦源的运营成果。',
-  },
-  {
-    q: '涉及平台规则和物流政策的内容，新亦源如何核验？',
-    a: '发布前优先核对平台、主管部门或承运商当前公开的正式资料，并标明信息时间。规则发生变化时，将更新、补充说明或下线相关内容，不继续沿用已经失效的版本。',
-  },
-  {
-    q: '旧文章与新亦源当前官网口径不一致时，以哪个为准？',
-    a: '以新亦源当前已经确认的官网事实口径和双方项目方案为准。旧文章发现口径冲突后，应修改正文并标注更新时间；无法确认的内容直接下线。',
-  },
-  {
-    q: '新亦源如何保证不同时期文章中的术语口径一致？',
-    a: '对截单、发出、揽收、质检、二次上架、库存准确率等容易混淆的术语统一定义，并在文章中说明统计对象和适用环节，避免把不同业务指标混为一谈。',
-  },
-  {
-    q: '新亦源会优先解读哪些行业问题？',
-    a: '优先选择与鞋服品牌实际运营直接相关、能够结合流程和证据说明的问题，例如高SKU管理、退货返架、后整修复、门店补货、直播波峰、跨境订单和数字化履约。',
-  },
-  {
-    q: '如何向新亦源提出希望核验或解读的问题？',
-    a: '可以通过官网联系页面提交具体业务场景、现有困惑和参考资料。内容团队会先判断事实是否能够核验，再决定用于问题答复、内容纠错或后续选题。',
-  },
-]
+const requestedCategory = Astro.url.searchParams.get('cat') ?? ''
+const category = NEWS_CATEGORIES.includes(requestedCategory as (typeof NEWS_CATEGORIES)[number])
+  ? requestedCategory
+  : ''
+const articles = category ? await getNewsByCategory(category, 24) : await getPublishedNews(24, 1)
 
 const breadcrumbSchema = {
   '@context': 'https://schema.org',
@@ -56,7 +30,7 @@ const pageSchema = {
   '@type': 'WebPage',
   '@id': `${BRAND.url}/news`,
   name: '新亦源行业动态',
-  description: '新亦源行业内容中心，当前历史文章已下线整理。',
+  description: '新亦源行业内容中心，发布鞋服仓配、退货质检与供应链运营实践。',
   url: `${BRAND.url}/news`,
 }
 
@@ -65,130 +39,14 @@ const faqSchema = createFaqSchema(NEWS_FAQS)
 
 <Layout
   title="行业动态 | 新亦源供应链"
-  description="新亦源行业内容中心正在重新整理，后续内容将补充事实来源、更新时间与适用范围说明。"
+  description="新亦源行业内容中心，持续发布鞋服仓配、退货质检、物流数字化与供应链运营实践。"
   jsonLd={[breadcrumbSchema, pageSchema, faqSchema]}
 >
-  <!-- Hero -->
-  <section class="relative py-16 overflow-hidden" aria-labelledby="news-hero-heading">
-    <img
-      src="/w-hq.webp"
-      alt=""
-      aria-hidden="true"
-      class="absolute inset-0 w-full h-full object-cover object-center"
-      fetchpriority="high"
-    />
-    <div
-      class="absolute inset-0"
-      style="background: linear-gradient(105deg, rgba(8,20,42,0.96) 0%, rgba(8,20,42,0.82) 45%, rgba(8,20,42,0.50) 100%);"
-      aria-hidden="true"
-    ></div>
-    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <p class="text-brand-orange font-semibold text-sm tracking-wider uppercase mb-3">行业动态</p>
-      <h1 id="news-hero-heading" class="text-4xl lg:text-5xl font-black text-white leading-tight mb-4">
-        鞋服物流知识库
-      </h1>
-      <p class="text-lg text-navy-100 max-w-2xl">
-        历史新闻内容已下线，新的行业内容将在完成事实与时效核验后发布
-      </p>
-    </div>
-  </section>
-
-  <!-- Category Filter -->
-  <div class="bg-white border-b border-gray-100 sticky top-16 z-40" role="navigation" aria-label="文章分类筛选">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center gap-2 overflow-x-auto py-3 no-scrollbar">
-        <a
-          href="/news"
-          class:list={[
-            'flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-medium transition-colors',
-            !category
-              ? 'bg-navy-800 text-white'
-              : 'text-gray-600 hover:text-navy-800 hover:bg-gray-100',
-          ]}
-        >
-          全部
-        </a>
-        {NEWS_CATEGORIES.map((cat) => (
-          <a
-            href={`/news?cat=${encodeURIComponent(cat)}`}
-            class:list={[
-              'flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-medium transition-colors',
-              category === cat
-                ? 'bg-navy-800 text-white'
-                : 'text-gray-600 hover:text-navy-800 hover:bg-gray-100',
-            ]}
-          >
-            {cat}
-          </a>
-        ))}
-      </div>
-    </div>
-  </div>
-
-  <!-- 森林期刊入口 Banner -->
-  <div class="bg-white border-b border-gray-100">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
-      <a
-        href="/senlinqikan"
-        class="group flex items-center gap-5 bg-navy-50 hover:bg-navy-100 rounded-2xl px-6 py-4 transition-colors"
-      >
-        <div class="flex-shrink-0 w-16 h-16 rounded-xl overflow-hidden">
-          <img src="/senlinqikan/covers/14.jpg" alt="森林期刊" class="w-full h-full object-cover" loading="lazy" />
-        </div>
-        <div class="flex-1 min-w-0">
-          <div class="flex items-center gap-2 mb-1">
-            <span class="text-[11px] font-bold text-brand-orange bg-orange-50 px-2 py-0.5 rounded-full">新亦源出品</span>
-            <span class="text-xs text-gray-400">第1–14期</span>
-          </div>
-          <p class="text-sm font-black text-navy-800 truncate">🌲 森林期刊 — 鞋服供应链行业内刊，14期内容免费下载</p>
-          <p class="text-xs text-gray-400 mt-0.5 truncate hidden sm:block">聚焦云仓运营、退货质检、直播仓配、行业趋势与品牌动态</p>
-        </div>
-        <svg class="w-5 h-5 text-gray-400 flex-shrink-0 group-hover:text-navy-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-        </svg>
-      </a>
-    </div>
-  </div>
-
-  <!-- Empty state -->
-  <section class="py-16 bg-gray-50" aria-labelledby="news-empty-heading">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="bg-white border border-gray-100 rounded-3xl px-6 py-12 sm:px-12 text-center shadow-sm">
-        <div class="mx-auto mb-6 w-16 h-16 rounded-2xl bg-navy-50 flex items-center justify-center" aria-hidden="true">
-          <svg class="w-8 h-8 text-navy-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M19 14V6a2 2 0 00-2-2H7a2 2 0 00-2 2v12a2 2 0 002 2h6m6-6l-5 5m0 0h4.5a.5.5 0 00.5-.5V14m-5 5v-4.5a.5.5 0 01.5-.5H19" />
-          </svg>
-        </div>
-        <p class="text-brand-orange font-bold text-xs tracking-wider uppercase mb-3">内容整理中</p>
-        <h2 id="news-empty-heading" class="text-2xl sm:text-3xl font-black text-navy-800 mb-4">
-          当前暂无公开的行业新闻文章
-        </h2>
-        <p class="text-gray-500 leading-relaxed max-w-2xl mx-auto mb-8">
-          历史内容已从本地站点下线。后续内容将在补充事实来源、更新时间、数据口径和适用范围后重新发布。
-        </p>
-        <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
-          <a
-            href="/product"
-            class="inline-flex items-center justify-center px-6 py-3 bg-navy-800 hover:bg-navy-700 text-white font-bold rounded-xl text-sm transition-colors"
-          >
-            查看产品服务
-          </a>
-          <a
-            href="/contact"
-            class="inline-flex items-center justify-center px-6 py-3 border border-gray-300 hover:border-navy-400 text-gray-700 hover:text-navy-800 font-bold rounded-xl text-sm transition-colors"
-          >
-            提交希望了解的选题
-          </a>
-        </div>
-      </div>
-    </div>
-  </section>
+  <NewsLandingIntro {category} />
+  {articles.length ? <NewsGrid {articles} /> : <NewsEmptyState {category} />}
 
   <!-- FAQ -->
-  <PageFAQ
-    heading="行业内容使用与更新说明"
-    items={NEWS_FAQS}
-  />
+  <PageFAQ heading="行业内容使用与更新说明" items={NEWS_FAQS} />
 
   <!-- CTA -->
   <section class="py-12 bg-white border-t border-gray-100" aria-label="订阅与联系">
@@ -204,8 +62,3 @@ const faqSchema = createFaqSchema(NEWS_FAQS)
     </div>
   </section>
 </Layout>
-
-<style>
-  .no-scrollbar::-webkit-scrollbar { display: none; }
-  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-</style>

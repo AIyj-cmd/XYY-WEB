@@ -1,0 +1,49 @@
+---
+import type { FeatureItem, StatItem } from '@/data/service'
+
+interface Props {
+  h1: string
+  stats: [StatItem, StatItem, StatItem, StatItem]
+  features: FeatureItem[]
+}
+
+const { h1, stats, features } = Astro.props
+---
+
+<div class="journey">
+  <figure class="journey__scene">
+    <img src="/images/services/warehouse-panorama.webp" alt={`${h1}仓内作业实景`} loading="lazy" />
+    <figcaption>
+      <span>WAREHOUSE JOURNEY</span>
+      <strong>从到仓开始建立可追踪货品档案</strong>
+    </figcaption>
+  </figure>
+  <ol class="journey__rail">
+    {
+      features.slice(0, 5).map(({ title, desc }, index) => (
+        <li>
+          <span class="journey__index">{String(index + 1).padStart(2, '0')}</span>
+          <div>
+            <>
+              <h3>{title}</h3>
+              <p>{desc}</p>
+            </>
+          </div>
+        </li>
+      ))
+    }
+  </ol>
+  <div class="journey__instruments">
+    {
+      stats.map(({ stat, label, sub }) => (
+        <div>
+          <>
+            <strong>{stat}</strong>
+            <span>{label}</span>
+            <small>{sub}</small>
+          </>
+        </div>
+      ))
+    }
+  </div>
+</div>

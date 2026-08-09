@@ -1,0 +1,97 @@
+---
+import type { WarehouseGroup } from '@/data/about'
+import AboutWarehouseRow from './AboutWarehouseRow.astro'
+
+interface Props {
+  southGroups: WarehouseGroup[]
+  eastGroups: WarehouseGroup[]
+}
+
+const { southGroups, eastGroups } = Astro.props
+---
+
+<section class="py-14 bg-gray-50" aria-labelledby="southwh-heading">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-end justify-between mb-10">
+      <div>
+        <p class="text-[#B94718] font-bold text-[11px] tracking-[0.35em] uppercase mb-2">
+          华南仓点
+        </p>
+        <h3 id="southwh-heading" class="text-2xl font-black text-navy-800">
+          广州 · 东莞 · 佛山 · 肇庆
+        </h3>
+      </div>
+      <p class="text-xs text-gray-400 max-w-xs text-right leading-relaxed hidden sm:block">
+        仓点状态与资质按项目核验<br />新货质检 · 退货质检 · 整烫修复
+      </p>
+    </div>
+
+    <div class="space-y-8 mb-14">
+      {
+        southGroups.map(({ city, cfg, items }) => (
+          <div>
+            <div class="flex items-center gap-3 mb-1">
+              <div class="w-1 h-4 rounded-full flex-shrink-0" style={`background:${cfg.color}`} />
+              <span
+                class="text-xs font-bold tracking-[0.25em] uppercase"
+                style={`color:${cfg.color}`}
+              >
+                {city}
+              </span>
+              <span class="text-xs text-gray-400">{items.length} 个仓点</span>
+              <div class="flex-1 h-px bg-gray-200" />
+            </div>
+            <div
+              class="divide-y divide-gray-100 pl-4"
+              style={`border-left: 2px solid ${cfg.color}22`}
+            >
+              {items.map((warehouse) => (
+                <AboutWarehouseRow warehouse={warehouse} />
+              ))}
+            </div>
+          </div>
+        ))
+      }
+    </div>
+
+    <div class="flex items-end justify-between mb-10 pt-8 border-t border-gray-200">
+      <div>
+        <p class="text-[#0E7490] font-bold text-[11px] tracking-[0.35em] uppercase mb-2">
+          华东仓点
+        </p>
+        <h3 id="eastwh-heading" class="text-2xl font-black text-navy-800">昆山 · 上海 · 合肥</h3>
+      </div>
+      <p class="text-xs text-gray-400 max-w-xs text-right leading-relaxed hidden sm:block">
+        长三角区域节点<br />实际启用范围按项目确认
+      </p>
+    </div>
+
+    <div class="space-y-8">
+      {
+        eastGroups.map(({ city, cfg, items }) => (
+          <div>
+            <div class="flex items-center gap-3 mb-1">
+              <div class="w-1 h-4 rounded-full flex-shrink-0" style={`background:${cfg.color}`} />
+              <span
+                class="text-xs font-bold tracking-[0.25em] uppercase"
+                style={`color:${cfg.color}`}
+              >
+                {city}
+              </span>
+              <span class="text-xs text-gray-400">{items.length} 个仓点</span>
+              <div class="flex-1 h-px bg-gray-200" />
+            </div>
+            <div
+              class="divide-y divide-gray-100 pl-4"
+              style={`border-left: 2px solid ${cfg.color}22`}
+            >
+              {items.map((warehouse) => (
+                <AboutWarehouseRow warehouse={warehouse} />
+              ))}
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

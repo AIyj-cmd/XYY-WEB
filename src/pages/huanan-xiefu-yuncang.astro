@@ -1,59 +1,7 @@
 ---
 import ServiceLanding from '@/layouts/ServiceLanding.astro'
-
-const SOUTH_NETWORK_NODES = [
-  {
-    city: '广州',
-    code: 'GZ / 主节点',
-    role: '电商仓配 · 门店补货 · 退货质检',
-    note: '项目库存与订单在此汇总编排',
-  },
-  {
-    city: '东莞',
-    code: 'DG / 制造协同',
-    role: '货源入仓 · 仓储 · 发货',
-    note: '衔接制造业与品牌货源',
-  },
-  {
-    city: '佛山',
-    code: 'FS / 区域协同',
-    role: '区域仓配 · 周边履约',
-    note: '按项目确认仓点与启用条件',
-  },
-  {
-    city: '肇庆',
-    code: 'ZQ / 平台协同',
-    role: '唯品会 JIT / JITX 等相关项目',
-    note: '平台规则与作业范围按项目核验',
-  },
-]
-
-const SOUTH_COLLAB_BANDS = [
-  {
-    num: '01',
-    title: '仓容协同',
-    desc: '依据SKU、库存深度与业务类型，确认实际启用仓点和库存分布。',
-    signal: '库存布局',
-  },
-  {
-    num: '02',
-    title: '人力协同',
-    desc: '结合日常订单与活动预测，组织各节点作业班次和弹性资源。',
-    signal: '峰值准备',
-  },
-  {
-    num: '03',
-    title: '物流协同',
-    desc: '按目的地、渠道和线路SLA配置承运资源，仓内按统一截单口径履约。',
-    signal: '线路编排',
-  },
-  {
-    num: '04',
-    title: '系统协同',
-    desc: '以项目系统方案连接订单、库存、仓内作业与退货处理状态。',
-    signal: '状态贯通',
-  },
-]
+import SouthNetworkSection from '@/components/service/unique/SouthNetworkSection.astro'
+import { CLAIM_TEXT } from '@/lib/claims'
 ---
 
 <ServiceLanding
@@ -74,7 +22,7 @@ const SOUTH_COLLAB_BANDS = [
     { stat: '18:00前', label: '截单时间', sub: '当日24:00前发出' },
     { stat: '30万㎡+', label: '华南直营仓储', sub: '多仓协同布局' },
   ]}
-  contentDesc="适合需要在华南布局库存的鞋服品牌，尤其涉及电商订单、门店补货、唯品会JIT/JITX和退货处理的项目。华南多仓布局覆盖广州、东莞、佛山、肇庆，18:00前截单，当日24:00前发出。广州同城最快4小时；广东主要区域参考次日达；华南主要城市次日至两日；具体启用仓点、仓容、承运商和到达时效以项目方案及线路SLA为准。"
+  contentDesc={`适合需要在华南布局库存的鞋服品牌，尤其涉及电商订单、门店补货、唯品会JIT/JITX和退货处理的项目。华南多仓布局覆盖广州、东莞、佛山、肇庆，${CLAIM_TEXT.shippingSla}。广州同城最快4小时；广东主要区域参考次日达；华南主要城市次日至两日；具体启用仓点、仓容、承运商和到达时效以项目方案及线路SLA为准。`}
   featuresLabel="华南仓网节点"
   features={[
     {
@@ -95,7 +43,7 @@ const SOUTH_COLLAB_BANDS = [
     },
     {
       title: '华南退货质检中心',
-      desc: '广州主仓设置专属退货质检与后整修复中心，华南区域退货可就近处理，减少跨城运输成本，退货24小时内完成质检二次上架。',
+      desc: `广州主仓设置专属退货质检与后整修复中心，华南区域退货可就近处理，减少跨城运输成本，退货${CLAIM_TEXT.returnTurnaround}内完成质检二次上架。`,
     },
     {
       title: '华南产业链协同',
@@ -109,7 +57,7 @@ const SOUTH_COLLAB_BANDS = [
     },
     {
       q: '华南鞋服云仓发货到全国时效怎么样？',
-      a: '仓内正向履约口径为18:00前截单，当日24:00前发出。广州同城最快4小时；广东主要区域参考次日达；华南主要城市次日至两日；具体以线路SLA为准。',
+      a: `仓内正向履约口径为${CLAIM_TEXT.shippingSla}。广州同城最快4小时；广东主要区域参考次日达；华南主要城市次日至两日；具体以线路SLA为准。`,
     },
     {
       q: '华南仓储费用有没有地区优势？',
@@ -121,98 +69,9 @@ const SOUTH_COLLAB_BANDS = [
     },
     {
       q: '华南仓能支持多大规模的品牌？',
-      a: '华南仓网可按品牌的SKU、库存、订单峰值和增值服务需求评估共享仓位、专属分区或多仓协同方案。公司公开的地区单日运营峰值为100万单，具体项目产能需结合当期仓容与资源确认。',
+      a: `华南仓网可按品牌的SKU、库存、订单峰值和增值服务需求评估共享仓位、专属分区或多仓协同方案。公司公开的地区运营峰值为${CLAIM_TEXT.regionalPeak}，具体项目产能需结合当期仓容与资源确认。`,
     },
   ]}
 >
-  <section
-    slot="unique"
-    class="overflow-hidden border-b border-slate-200 bg-[#f5f8fe]"
-    aria-labelledby="south-network-heading"
-  >
-    <div
-      class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20"
-      style="background-image:linear-gradient(rgba(30,73,141,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(30,73,141,.05) 1px,transparent 1px);background-size:32px 32px"
-    >
-      <div class="grid gap-10 lg:grid-cols-[0.75fr_1.25fr] lg:items-end">
-        <div>
-          <p class="mb-4 font-mono text-xs font-bold tracking-[0.24em] text-blue-700">
-            SOUTH CHINA NETWORK / 04 NODES
-          </p>
-          <h2
-            id="south-network-heading"
-            class="max-w-xl text-3xl font-black leading-tight text-navy-800 sm:text-4xl"
-          >
-            一张华南协同图，<br />连接四个区域节点
-          </h2>
-        </div>
-        <p class="max-w-2xl text-sm leading-7 text-slate-600 lg:justify-self-end">
-          不是把四个仓点简单并列，而是围绕品牌的货源位置、渠道订单、退货去向与线路SLA，确定每个项目实际启用的节点和协同方式。
-        </p>
-      </div>
-
-      <div
-        class="relative mt-12 overflow-hidden border-y border-blue-200/80 bg-white/85 px-5 py-8 shadow-[0_28px_70px_rgba(30,64,120,.08)] sm:px-8 lg:px-10"
-      >
-        <div
-          class="pointer-events-none absolute inset-x-0 top-1/2 hidden h-px bg-gradient-to-r from-transparent via-blue-300 to-transparent lg:block"
-        >
-        </div>
-        <div class="relative grid gap-8 sm:grid-cols-2 lg:grid-cols-4 lg:gap-0">
-          {
-            SOUTH_NETWORK_NODES.map(({ city, code, role, note }, index) => (
-              <article
-                class={`relative min-w-0 lg:px-7 ${index > 0 ? 'lg:border-l lg:border-slate-200' : ''}`}
-              >
-                <div class="mb-6 flex items-center gap-3">
-                  <span
-                    class={`relative z-10 block rounded-full border-[5px] border-white shadow-[0_0_0_1px_rgba(37,99,235,.25)] ${index === 0 ? 'h-5 w-5 bg-brand-orange' : 'h-4 w-4 bg-blue-600'}`}
-                  />
-                  <span class="font-mono text-[10px] font-bold tracking-[0.18em] text-blue-600">
-                    {code}
-                  </span>
-                </div>
-                <h3 class="text-2xl font-black text-navy-800">{city}</h3>
-                <p class="mt-3 text-sm font-bold leading-6 text-slate-700">{role}</p>
-                <p class="mt-2 text-xs leading-5 text-slate-500">{note}</p>
-              </article>
-            ))
-          }
-        </div>
-      </div>
-
-      <div class="mt-12 border-b border-slate-200">
-        <div
-          class="grid grid-cols-[4rem_1fr] border-t border-slate-300 py-3 sm:grid-cols-[5rem_11rem_1fr_7rem]"
-        >
-          <span class="font-mono text-[10px] font-bold tracking-[0.16em] text-slate-400">BAND</span>
-          <span class="hidden text-[10px] font-bold tracking-[0.16em] text-slate-400 sm:block"
-            >协同维度</span
-          >
-          <span class="text-[10px] font-bold tracking-[0.16em] text-slate-400">项目动作</span>
-          <span
-            class="hidden text-right text-[10px] font-bold tracking-[0.16em] text-slate-400 sm:block"
-            >输出</span
-          >
-        </div>
-        {
-          SOUTH_COLLAB_BANDS.map(({ num, title, desc, signal }) => (
-            <article class="grid grid-cols-[4rem_1fr] items-start border-t border-slate-200 py-5 sm:grid-cols-[5rem_11rem_1fr_7rem] sm:items-center">
-              <span class="font-mono text-xs font-black text-brand-orange">{num}</span>
-              <h3 class="text-base font-black text-navy-800">{title}</h3>
-              <p class="col-start-2 mt-2 text-sm leading-6 text-slate-600 sm:col-start-auto sm:mt-0 sm:pr-8">
-                {desc}
-              </p>
-              <span class="col-start-2 mt-3 w-fit border-b border-blue-500 pb-1 text-xs font-bold text-blue-700 sm:col-start-auto sm:mt-0 sm:justify-self-end">
-                {signal}
-              </span>
-            </article>
-          ))
-        }
-      </div>
-      <p class="mt-5 text-xs leading-5 text-slate-500">
-        说明：图中节点用于展示华南多仓协同思路，具体启用仓点、地址、仓容、承运商与到达时效以项目方案及线路SLA为准。
-      </p>
-    </div>
-  </section>
+  <SouthNetworkSection slot="unique" />
 </ServiceLanding>

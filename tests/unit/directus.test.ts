@@ -7,6 +7,7 @@ import {
   getDirectusAssetUrl,
   getDirectusPublicUrl,
   getHomepageStats,
+  getNewsByCategory,
   getPublishedNews,
   getServices,
   getWarehouses,
@@ -50,6 +51,24 @@ describe('Directus helpers', () => {
         filter: { status: { _eq: 'published' } },
         limit: 1,
         offset: 0,
+      })
+    )
+  })
+
+  it('filters published news by category and requests cover images', async () => {
+    const requester = vi.fn(async () => [])
+    __setDirectusRequesterForTests(requester)
+
+    await expect(getNewsByCategory('行业资讯', 6)).resolves.toEqual([])
+    expect(requester).toHaveBeenCalledWith(
+      'news',
+      expect.objectContaining({
+        filter: {
+          category: { _eq: '行业资讯' },
+          status: { _eq: 'published' },
+        },
+        fields: expect.arrayContaining(['cover_image']),
+        limit: 6,
       })
     )
   })

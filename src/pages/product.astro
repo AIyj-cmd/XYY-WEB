@@ -1,14 +1,36 @@
 ---
 import Layout from '@/layouts/Layout.astro'
-import { BRAND, SERVICE_FACTS } from '@/lib/brand'
+import ProductServiceDirectory from '@/components/product/ProductServiceDirectory.astro'
+import ProductServiceSeries from '@/components/product/ProductServiceSeries.astro'
+import ProductCare from '@/components/product/ProductCare.astro'
+import ProductServiceProcess from '@/components/product/ProductServiceProcess.astro'
+import ProductAssurance from '@/components/product/ProductAssurance.astro'
+import '@/styles/product.css'
+import { DIRECTORY_NEEDS } from '@/data/product'
+import { BRAND } from '@/lib/brand'
 import { getServices } from '@/lib/directus'
 
 const SERVICES = await getServices()
 
 const serviceSchemas = [
-  { id: 'foundation', name: '基础仓配', description: '鞋服商品的入库质检、仓储管理、订单履约与系统平台对接服务。', url: '/xiefu-yuncang' },
-  { id: 'returns', name: '退货与逆向处理', description: '鞋服退货拆包、质检分类、二次上架、退供应商与整批退仓服务。', url: '/tuihuo-zhijian' },
-  { id: 'product-care', name: '商品整理与增值处理', description: '换标、包装、整烫、清洁与轻微瑕疵处理等鞋服商品整理服务。', url: '/houzheng-xiufu' },
+  {
+    id: 'foundation',
+    name: '基础仓配',
+    description: '鞋服商品的入库质检、仓储管理、订单履约与系统平台对接服务。',
+    url: '/xiefu-yuncang',
+  },
+  {
+    id: 'returns',
+    name: '退货与逆向处理',
+    description: '鞋服退货拆包、质检分类、二次上架、退供应商与整批退仓服务。',
+    url: '/tuihuo-zhijian',
+  },
+  {
+    id: 'product-care',
+    name: '商品整理与增值处理',
+    description: '换标、包装、整烫、清洁与轻微瑕疵处理等鞋服商品整理服务。',
+    url: '/houzheng-xiufu',
+  },
 ].map((service) => ({
   '@context': 'https://schema.org',
   '@type': 'Service',
@@ -19,93 +41,6 @@ const serviceSchemas = [
   areaServed: { '@type': 'Country', name: '中国' },
   url: `${BRAND.url}${service.url}`,
 }))
-
-const SERVICE_SERIES = [
-  {
-    id: 'foundation', number: '01', eyebrow: 'FOUNDATION FULFILLMENT', title: '基础仓配',
-    description: '适合需要稳定完成入库、仓储、拣货、复核、打包和发货的鞋服品牌。',
-    steps: null,
-    services: [
-      ['入库质检', '/xiefu-yuncang'],
-      ['仓储管理', '/xiefu-yuncang'],
-      ['订单履约', '/xiefu-yuncang'],
-      ['系统与平台对接', '/wuliu-shuzihua'],
-    ],
-    image: '/images/services/inspection-workbench.webp', alt: '新亦源鞋服入库质检与作业工作台', href: '/xiefu-yuncang', link: '查看基础仓配服务',
-  },
-  {
-    id: 'returns', number: '02', eyebrow: 'RETURNS & REVERSE LOGISTICS', title: '退货与逆向处理',
-    description: '退回来的商品，我们进行拆包、验收、分类与评估，并根据商品状态提供二次上架、退供应商或其他处理方案，实现高效、合规的逆向物流闭环。',
-    steps: [
-      ['退货接收', '与登记', '/tuihuo-zhijian'],
-      ['商品状态', '判断', '/tuihuo-zhijian'],
-      ['分类处理', '与决策', '/tuihuo-zhijian'],
-      ['二次上架或', '退件处理', '/tuihuo-zhijian'],
-    ],
-    services: [
-      ['退货接收与质检', '/tuihuo-zhijian'],
-      ['二次上架', '/tuihuo-zhijian'],
-      ['退回供应商', '/tuihuo-zhijian'],
-      ['整批退仓', '/tuihuo-zhijian'],
-    ],
-    image: '/images/services/return-inspection-operator.jpg', alt: '新亦源工作人员处理鞋服退货商品', href: '/tuihuo-zhijian', link: '查看退货处理服务',
-  },
-  {
-    id: 'care', number: '03', eyebrow: 'PRODUCT CARE', title: '商品整理与增值处理',
-    description: '根据商品状态，提供标签更换、包装升级、蒸汽熨烫、外观整理、轻微瑕疵处理及组合加工等精细化服务，提升商品呈现，助力销售转化。',
-    steps: null,
-    services: [
-      ['换标与包装', '/houzheng-xiufu'],
-      ['熨烫与外观整理', '/houzheng-xiufu'],
-      ['轻微瑕疵处理', '/houzheng-xiufu'],
-      ['组合加工', '/houzheng-xiufu'],
-    ],
-    image: '/images/services/quality-inspection-operator.jpg', alt: '新亦源工作人员进行鞋服商品整理与检查', href: '/houzheng-xiufu', link: '查看商品整理与增值处理',
-  },
-] as const
-
-const BUSINESS_NEEDS = [
-  { id: 'inbound', number: '01', title: '新品到仓，需要清点和质检', service: '入库质检', href: '/xiefu-yuncang', description: '对到货商品进行清点与质检，确保数量准确、质量合格并完成信息登记。', checks: ['到货清点与数量核对', '外观与质量检测', '商品信息登记与系统录入', '异常商品记录与处理'], image: '/images/services/warehouse-panorama.webp', alt: '新亦源鞋服商品入库质检作业区' },
-  { id: 'inventory', number: '02', title: 'SKU多，库存容易混乱', service: '仓储管理', href: '/xiefu-yuncang', description: '按款色码、货位和渠道管理库存，并保持商品状态可查。', checks: ['商品分类与货位管理', '库存状态实时可查', '多SKU精准盘点', '库存异常及时预警'], image: '/images/services/warehouse-shelves.webp', alt: '新亦源多SKU商品分类货位' },
-  { id: 'fulfillment', number: '03', title: '订单量波动大，需要稳定履约', service: '订单履约', href: '/xiefu-yuncang', description: '通过拣货、复核、打包与发运协同，承接日常及大促订单。', checks: ['订单拣货与复核', '打包与发运协同', '多平台订单同步', '出库状态及时回传'], image: '/images/services/warehouse-fulfillment-actual.jpg', alt: '新亦源仓内订单履约作业现场' },
-  { id: 'returns', number: '04', title: '退货到仓，需要快速拆包、质检和分类', service: '退货接收、质检分流', href: '/tuihuo-zhijian', description: '退货到仓后，先完成拆包登记、状态判断与分类分流，确定商品下一步的处理路径。', checks: ['退货拆包与登记', '商品状态判断与质检', '可售、修复、退供分流', '异常商品记录与处理'], image: '/images/services/inspection-unpack.webp', alt: '新亦源退货拆包处理现场' },
-  { id: 'restock', number: '05', title: '已确认可售，需要整理后重新上架', service: '外观整理、信息更新、二次上架', href: '/tuihuo-zhijian', description: '对已确认可售的商品完成外观整理、信息更新与复核，再恢复至可销售库存。', checks: ['外观整理与复原', '商品信息更新', '二次质检与重新上架', '处理结果可追溯'], image: '/images/services/inspection-sort.webp', alt: '新亦源服饰质检分类作业现场' },
-  { id: 'care', number: '06', title: '商品需要换标、换包装或简单修复', service: '商品整理与增值处理', href: '/houzheng-xiufu', description: '围绕品牌标准执行标签、包装、外观整理和轻微修复。', checks: ['标签与条码处理', '包装更换与组合', '轻微瑕疵处理', '品牌标准可配置'], image: '/images/services/garment-repair-stitching.jpg', alt: '新亦源服饰轻微瑕疵处理现场' },
-  { id: 'transfer', number: '07', title: '过季库存需要退回或转仓', service: '整批退仓', href: '/tuihuo-zhijian', description: '按清点、核验、交接与数据回传要求处理整批商品流转。', checks: ['数量清点与核验', '批次整理与交接', '转仓运输协同', '数据结果回传'], image: '/images/services/warehouse-aisle-202.jpg', alt: '新亦源仓内鞋服库存通道' },
-] as const
-
-const DIRECTORY_NEEDS = BUSINESS_NEEDS.slice(0, 6)
-
-const CARE_CATEGORIES = [
-  { number: '01', title: '标签处理', description: '换吊牌、洗水标、领标、条码及防伪标签' },
-  { number: '02', title: '外观整理', description: '熨烫、除皱、折叠、除尘和简单清洁' },
-  { number: '03', title: '包装处理', description: '换袋、换盒、重新包装、赠品及物料放入' },
-  { number: '04', title: '轻微修复', description: '剪线头、补扣、简单开线和包装破损处理' },
-] as const
-
-const SERVICE_FLOW = [
-  ['01', '需求确认', '确认商品类型、处理范围和质量标准。'],
-  ['02', '商品到仓', '完成签收、清点和基础信息登记。'],
-  ['03', '质检分类', '判断商品进入上架、整理、修复、退回或报废流程。'],
-  ['04', '执行处理', '按照品牌标准完成对应操作。'],
-  ['05', '结果复核', '复核数量、质量和处理结果。'],
-  ['06', '数据反馈', '将处理结果回传并完成后续入库、发货或退回。'],
-] as const
-
-const ASSURANCE_POINTS = [
-  { value: `${SERVICE_FACTS.inventoryAccuracy}+`, label: '库存准确率', note: '数据准，货位与状态持续管理' },
-  { value: SERVICE_FACTS.orderPickupCutoff, label: '日常订单截单时间', note: '以项目约定的订单规则执行' },
-  { value: `${SERVICE_FACTS.orderDispatchDeadline}前`, label: '符合条件订单当日发出', note: '具体以合作方案与订单条件为准' },
-  { value: '全流程', label: '商品状态可追踪', note: '从入仓到交付，关键节点可追踪' },
-] as const
-
-const ASSURANCE_MECHANISMS = [
-  { title: '标准流程作业', note: 'SOP规范执行，保持服务一致性', icon: 'standard' },
-  { title: '多重质检机制', note: '关键环节质检，降低错误风险', icon: 'check' },
-  { title: '系统记录留存', note: '全流程记录可查，追溯可回看', icon: 'record' },
-  { title: '异常快速响应', note: '异常识别与处置，及时闭环', icon: 'alert' },
-  { title: '持续改进优化', note: '基于数据与反馈，持续迭代', icon: 'improve' },
-] as const
 
 const breadcrumbSchema = {
   '@context': 'https://schema.org',
@@ -125,155 +60,66 @@ const breadcrumbSchema = {
 >
   <div class="warehouse-services-page">
     <section class="warehouse-hero" aria-labelledby="warehouse-hero-heading">
-      <figure class="warehouse-hero__visual" data-reveal="image">
-        <img src="/images/services/warehouse-hanging.webp" alt="新亦源鞋服挂装商品仓储现场" width="1800" height="1350" loading="eager" />
+      <figure class="warehouse-hero__visual">
+        <picture>
+          <source
+            media="(min-width: 768px)"
+            srcset="/images/services/warehouse-hanging-hero-960.webp 960w, /images/services/warehouse-hanging-hero-1440.webp 1440w"
+            sizes="100vw"
+          />
+          <img
+            src="/images/services/warehouse-hanging-960.webp"
+            srcset="/images/services/warehouse-hanging-960.webp 960w, /images/services/warehouse-hanging-1440.webp 1440w, /images/services/warehouse-hanging.webp 1800w"
+            sizes="100vw"
+            alt="新亦源鞋服挂装商品仓储现场"
+            width="960"
+            height="720"
+            loading="eager"
+            fetchpriority="high"
+          />
+        </picture>
         <figcaption>鞋服商品仓内管理现场</figcaption>
       </figure>
       <div class="warehouse-shell">
-        <header class="warehouse-hero__copy" data-reveal="copy">
+        <header class="warehouse-hero__copy">
           <p class="kicker">WAREHOUSING SERVICES</p>
           <h1 id="warehouse-hero-heading">仓配服务</h1>
           <h2>不只是<span>存储和发货</span>。</h2>
-          <p>新亦源围绕鞋服商品的入库、仓储、履约、退货和整理，提供从基础仓配到精细化商品处理的一体化服务。</p>
+          <p>
+            新亦源围绕鞋服商品的入库、仓储、履约、退货和整理，提供从基础仓配到精细化商品处理的一体化服务。
+          </p>
           <div class="warehouse-hero__actions">
-            <a class="primary-link" href="#service-series">浏览全部服务 <span aria-hidden="true">→</span></a>
-            <a class="secondary-link" href="/contact">咨询仓配方案 <span aria-hidden="true">↗</span></a>
+            <a class="primary-link" href="#service-series"
+              >浏览全部服务 <span aria-hidden="true">→</span></a
+            >
+            <a class="secondary-link" href="/contact"
+              >咨询仓配方案 <span aria-hidden="true">↗</span></a
+            >
           </div>
         </header>
       </div>
     </section>
 
-    <section id="service-series" class="service-series" aria-labelledby="series-heading">
-      <div class="warehouse-shell">
-        <header class="series-intro">
-          <div class="series-intro__copy" data-reveal="copy">
-            <p class="kicker">SERVICE SERIES</p>
-            <span class="series-intro__rule" aria-hidden="true"></span>
-            <h2 id="series-heading">按照商品状态，<br />配置对应的仓配能力<span aria-hidden="true">。</span></h2>
-            <div class="series-intro__divider" aria-hidden="true"></div>
-            <p>从稳定履约到逆向处理，三组服务对应鞋服商品在仓内最常见的工作状态。</p>
-            <a class="series-intro__explore" href="#foundation"><span aria-hidden="true">↓</span>探索完整服务</a>
-          </div>
-          <div class="series-intro__collage" data-reveal="image">
-            <figure class="series-intro__main-image"><img src="/images/services/inspection-wide.webp" alt="新亦源鞋服商品批量质检与分类作业现场" width="1920" height="1080" loading="lazy" /></figure>
-            <span class="series-intro__vertical-label">WAREHOUSING &amp; FULFILLMENT</span>
-            <span class="series-intro__vertical-mark" aria-hidden="true"></span>
-          </div>
-        </header>
+    <ProductServiceSeries />
 
-        <div class="series-list">
-          {SERVICE_SERIES.map(({ id, number, eyebrow, title, description, services, steps, image, alt, href, link }, index) => (
-            <article id={id} class:list={['series-spread', { 'series-spread--reverse': index === 1, 'series-spread--foundation': index === 0, 'series-spread--returns': id === 'returns', 'series-spread--care': id === 'care' }]}>
-              {id === 'care' ? (
-                <div class="series-spread__care-gallery">
-                  <figure class="series-spread__care-gallery-main" data-reveal="image"><img src="/images/services/repair-ironing.webp" alt="新亦源工作人员进行鞋服整烫与整理" width="1512" height="747" loading="lazy" /><figcaption>商品整理与增值处理</figcaption></figure>
-                  <div class="series-spread__care-gallery-thumbs">
-                    <figure data-reveal="image"><img src="/images/services/rfid-tag.webp" alt="鞋服标签更换" width="800" height="600" /><figcaption>标签更换</figcaption></figure>
-                    <figure data-reveal="image"><img src="/images/services/garment-ironing.jpg" alt="鞋服蒸汽熨烫" width="800" height="600" /><figcaption>蒸汽熨烫</figcaption></figure>
-                    <figure data-reveal="image"><img src="/images/services/garment-repair-stitching.jpg" alt="鞋服轻微修补" width="800" height="600" /><figcaption>轻微修补</figcaption></figure>
-                    <figure data-reveal="image"><img src="/images/services/garment-repair-finishing.jpg" alt="鞋服精致包装" width="800" height="600" /><figcaption>精致包装</figcaption></figure>
-                  </div>
-                </div>
-              ) : (
-                <figure class="series-spread__image" data-reveal="image"><img src={image} alt={alt} width="1920" height="1080" loading="lazy" /><figcaption>{number} / {eyebrow}</figcaption></figure>
-              )}
-              <div class="series-spread__copy" data-reveal="copy">
-                <div class="series-spread__meta"><p class="series-spread__number">{number}</p><p class="series-spread__eyebrow">{eyebrow}</p></div>
-                <h3>{title}</h3>
-                <p>{description}</p>
-                {id === 'returns' && steps && <div class="series-spread__steps">
-                  {steps.map(([stepTitle, stepSubtitle, stepHref], stepIndex) => <a href={stepHref} class="series-spread__step"><span>{String(stepIndex + 1).padStart(2, '0')}</span><i aria-hidden="true"></i><strong>{stepTitle}<br />{stepSubtitle}</strong></a>)}
-                </div>}
-                {id !== 'returns' && <ul>{services.map(([item, itemHref], serviceIndex) => <li><a href={itemHref}>
-                  {(index === 0 || id === 'care') && <span class="series-spread__service-icon" aria-hidden="true">
-                    {serviceIndex === 0 && <svg viewBox="0 0 24 24" fill="none"><path d="m5 8 7-4 7 4v10l-7 4-7-4V8Z" stroke="currentColor" stroke-width="1.5"/><path d="m5 8 7 4 7-4M12 12v10" stroke="currentColor" stroke-width="1.5"/></svg>}
-                    {serviceIndex === 1 && <svg viewBox="0 0 24 24" fill="none"><path d="M4 7.5h16M4 12h16M4 16.5h16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M6 4.5h12v15H6z" stroke="currentColor" stroke-width="1.5"/></svg>}
-                    {serviceIndex === 2 && <svg viewBox="0 0 24 24" fill="none"><rect x="5" y="3.5" width="14" height="17" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M8 8h8M8 12h8M8 16h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>}
-                    {serviceIndex === 3 && <svg viewBox="0 0 24 24" fill="none"><rect x="3.5" y="5" width="17" height="12" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>}
-                  </span>}
-                  <span>{item}</span><span aria-hidden="true">→</span>
-                </a></li>)}</ul>}
-                <a href={href} class="secondary-link">{link} <span aria-hidden="true">→</span></a>
-              </div>
-            </article>
-          ))}
-        </div>
-      </div>
-    </section>
+    <ProductServiceDirectory needs={DIRECTORY_NEEDS} />
 
-    <section id="service-directory" class="needs-section" aria-labelledby="needs-heading">
-      <div class="warehouse-shell needs-layout">
-        <header class="needs-intro" data-reveal="copy"><p class="kicker">SERVICE DIRECTORY</p><span class="needs-intro__rule" aria-hidden="true"></span><h2 id="needs-heading">你现在需要<br />解决什么问题？</h2><p>从业务痛点出发，找到对应的仓配服务方案，精准匹配您的需求，让仓储与履约更高效、更安心。</p><div class="needs-intro__watermark" aria-hidden="true"><strong>56</strong><span>FASHION<br />WAREHOUSE<br />EXPERT</span></div></header>
-          <div class="needs-directory" data-need-directory>
-            <div class="needs-directory__list" role="tablist" aria-label="按业务问题选择服务">
-            {DIRECTORY_NEEDS.map(({ id, number, title, service, href }, index) => <div id={`need-tab-${id}`} data-need-tab={id} data-selected={index === 0 ? 'true' : 'false'} data-reveal="copy"><span>{number}</span><strong>{title}</strong><em>{service}</em><a href={href} aria-label={`查看${service}详情`}>查看详情 <i aria-hidden="true">→</i></a></div>)}
-          </div>
-          <div class="needs-directory__visuals" data-reveal="image">
-            {DIRECTORY_NEEDS.map(({ id, service, href, description, checks, image, alt }, index) => <article id={`need-panel-${id}`} role="tabpanel" aria-labelledby={`need-tab-${id}`} data-need-panel={id} hidden={index !== 0}><figure><img src={image} alt={alt} width="1600" height="1000" loading="lazy" /></figure><div><p class="needs-panel__current">当前服务</p><h3>{service}</h3><p class="needs-panel__description">{description}</p><ul>{checks.map((check) => <li>{check}</li>)}</ul><a class="needs-panel__link" href={href}>查看服务详情 <span aria-hidden="true">→</span></a></div></article>)}
-          </div>
-        </div>
-      </div>
-    </section>
+    <ProductCare />
 
-    <section id="product-care" class="care-section" aria-labelledby="care-heading">
-      <div class="warehouse-shell">
-        <header class="care-heading" data-reveal="copy"><div><p class="kicker">PRODUCT CARE / 重点能力</p><h2 id="care-heading">商品整理与轻微瑕疵处理</h2></div><p>根据商品状态和品牌标准，完成标签、外观、包装及轻微瑕疵处理。并不是所有退回或存在轻微问题的商品都需要报废，经过判断、整理和修复，部分商品可以重新进入销售流程。</p></header>
-        <div class="care-stage">
-          <figure class="care-stage__main" data-reveal="image"><img src="/images/services/garment-cleaning.jpg" alt="新亦源工作人员进行服饰表面清洁" width="1707" height="1280" loading="lazy" /><figcaption>表面清洁与商品整理</figcaption></figure>
-          <figure class="care-stage__top" data-reveal="image"><img src="/images/services/garment-ironing.jpg" alt="新亦源服饰整烫作业" width="1920" height="1080" loading="lazy" /><figcaption>整烫除皱</figcaption></figure>
-          <figure class="care-stage__bottom" data-reveal="image"><img src="/images/services/garment-repair-finishing.jpg" alt="新亦源工作人员进行服饰瑕疵处理" width="960" height="1200" loading="lazy" /><figcaption>轻微瑕疵处理</figcaption></figure>
-        </div>
-        <div class="care-stage__caption" data-reveal="copy"><p><span>处理边界</span>轻微瑕疵需先完成状态判断，再根据商品材质和品牌标准确认处理方式。</p><a href="/houzheng-xiufu" class="secondary-link">查看后整修复服务 <span aria-hidden="true">→</span></a></div>
-        <div class="care-categories">
-          {CARE_CATEGORIES.map(({ number, title, description }) => <article data-reveal="copy"><span>{number}</span><h3>{title}</h3><p>{description}</p></article>)}
-        </div>
-      </div>
-    </section>
+    <ProductServiceProcess />
 
-    <section id="service-process" class="process-section" aria-labelledby="process-heading">
-      <div class="warehouse-shell">
-        <header class="process-heading" data-reveal="copy"><p class="kicker">HOW WE WORK</p><h2 id="process-heading">服务不是一条固定流水线，<br />而是一套清晰的处理规则。</h2></header>
-        <ol class="editorial-process">
-          {SERVICE_FLOW.map(([number, title, description]) => <li data-reveal="copy"><span>{number}</span><div><h3>{title}</h3><p>{description}</p></div></li>)}
-        </ol>
-      </div>
-    </section>
-
-    <section id="assurance" class="assurance-section" aria-labelledby="assurance-heading">
-      <div class="warehouse-shell">
-        <header class="assurance-heading" data-reveal="copy">
-          <div class="assurance-heading__intro">
-            <p class="kicker">CAPABILITY & ASSURANCE</p>
-            <p>从货品入仓到出库交付，每个环节都有标准、有记录、有反馈。<br />让服务过程透明可视，结果可复核，持续优化，始终如一。</p>
-          </div>
-          <h2 id="assurance-heading">让服务可以被看见、<br />被复核，也被持续改进。</h2>
-        </header>
-        <div class="assurance-grid">
-          {ASSURANCE_POINTS.map(({ value, label, note }) => <article data-reveal="copy"><strong>{value}</strong><h3>{label}</h3><p>{note}</p></article>)}
-        </div>
-        <div class="assurance-mechanisms">
-          <h3 data-reveal="copy">服务保障机制</h3>
-          <div class="assurance-mechanisms__list">
-            {ASSURANCE_MECHANISMS.map(({ title, note, icon }) => (
-              <article data-reveal="copy">
-                <span class="assurance-mechanism__icon" aria-hidden="true">
-                  {icon === 'standard' && <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="5" width="24" height="34" rx="3" stroke="currentColor" stroke-width="2" /><path d="M16 15h12M16 22h12M16 29h7" stroke="currentColor" stroke-width="2" stroke-linecap="round" /><circle cx="35" cy="34" r="8" fill="var(--paper)" stroke="currentColor" stroke-width="2" /><path d="m31.5 34 2.2 2.2 4.3-4.8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>}
-                  {icon === 'check' && <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="6" width="28" height="36" rx="3" stroke="currentColor" stroke-width="2" /><rect x="17" y="3" width="14" height="7" rx="3" fill="var(--paper)" stroke="currentColor" stroke-width="2" /><path d="m17 25 6 6 11-12" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" /></svg>}
-                  {icon === 'record' && <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="7" y="7" width="34" height="25" rx="2" stroke="currentColor" stroke-width="2" /><path d="M17 41h14M24 32v9M13 26l7-7 5 4 9-10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>}
-                  {icon === 'alert' && <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M24 7c-9.4 0-17 6.8-17 15.2 0 4.8 2.5 9.1 6.4 11.9L11 41l8.1-4.4c1.6.5 3.2.8 4.9.8 9.4 0 17-6.8 17-15.2S33.4 7 24 7Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" /><circle cx="17" cy="22" r="1.5" fill="currentColor" /><circle cx="24" cy="22" r="1.5" fill="currentColor" /><circle cx="31" cy="22" r="1.5" fill="currentColor" /></svg>}
-                  {icon === 'improve' && <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M39 17V7l-4.5 4.5A16 16 0 1 0 40 29" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /><path d="M39 7h-10" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg>}
-                </span>
-                <div><h4>{title}</h4><p>{note}</p></div>
-              </article>
-            ))}
-          </div>
-        </div>
-      </div>
-    </section>
+    <ProductAssurance />
 
     <section class="warehouse-cta" aria-labelledby="warehouse-cta-heading">
       <div class="warehouse-shell warehouse-cta__inner">
-        <div class="warehouse-cta__message" data-reveal="copy"><p class="kicker">START A CONVERSATION</p><h2 id="warehouse-cta-heading">需要的不只是<br />一个仓库？</h2><p>告诉我们你的商品类型、订单规模和当前问题，新亦源将根据实际业务提供仓配建议。</p><a class="primary-link" href="/contact">提交仓配需求 <span aria-hidden="true">→</span></a></div>
+        <div class="warehouse-cta__message" data-reveal="copy">
+          <p class="kicker">START A CONVERSATION</p><h2 id="warehouse-cta-heading">
+            需要的不只是<br />一个仓库？
+          </h2><p>告诉我们你的商品类型、订单规模和当前问题，新亦源将根据实际业务提供仓配建议。</p><a
+            class="primary-link"
+            href="/contact">提交仓配需求 <span aria-hidden="true">→</span></a
+          >
+        </div>
         <aside aria-label="沟通前可准备的信息" data-reveal="copy">
           <p>沟通前可准备这 3 类信息</p>
           <ol>
@@ -287,440 +133,6 @@ const breadcrumbSchema = {
   </div>
 </Layout>
 
-<style>
-  :global(html) { scroll-behavior:smooth; }
-  .warehouse-services-page { --ink:#222527; --body:#454c50; --line:#d9dddc; --paper:#f7f7f5; --mist:#f0f1ef; --accent:#e85f2a; color:var(--ink); background:#fff; }
-  .warehouse-shell { width:min(1360px,calc(100% - 5rem)); margin:0 auto; }
-  .series-spread,.needs-section,.care-section,.process-section,.assurance-section { scroll-margin-top:7rem; }
-  .kicker { margin:0 0 .9rem; color:var(--accent); font:900 .7rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace; letter-spacing:.15em; }
-  .primary-link,.secondary-link { display:inline-flex; align-items:center; gap:.65rem; font-size:.88rem; font-weight:900; text-decoration:none; transition:transform .25s ease,color .25s ease,background .25s ease; }
-  .primary-link { min-height:3.2rem; padding:0 1.35rem; color:#fff; background:var(--accent); }
-  .secondary-link { color:var(--ink); }
-  .primary-link:hover,.secondary-link:hover { transform:translateX(3px); }
-  .secondary-link:hover { color:var(--accent); }
-
-  .warehouse-hero { position:relative; display:flex; min-height:clamp(44rem,57vw,52rem); overflow:hidden; align-items:center; color:#fff; background:#18242b; }
-  .warehouse-hero::after { position:absolute; z-index:1; inset:0; content:''; background:linear-gradient(90deg,rgba(8,18,25,.88) 0%,rgba(10,21,28,.72) 35%,rgba(10,21,28,.28) 61%,rgba(10,21,28,.1) 100%); pointer-events:none; }
-  .warehouse-hero > .warehouse-shell { position:relative; z-index:2; }
-  .warehouse-hero__copy { max-width:37rem; padding:5rem 0 2rem; }
-  .warehouse-hero__copy .kicker { margin-bottom:2.2rem; }
-  .warehouse-hero h1 { margin:0; font-size:clamp(4.4rem,8.7vw,8.1rem); font-weight:950; letter-spacing:-.085em; line-height:.88; }
-  .warehouse-hero h2 { margin:1.8rem 0 0; font-size:clamp(1.8rem,3.5vw,3.25rem); font-weight:900; letter-spacing:-.055em; line-height:1.08; }
-  .warehouse-hero h2 span { background:linear-gradient(transparent 58%,rgba(232,95,42,.82) 58%); }
-  .warehouse-hero__copy > p:not(.kicker) { max-width:34rem; margin:2.3rem 0 0; color:rgba(255,255,255,.86); font-size:1rem; line-height:1.85; }
-  .warehouse-hero__actions { display:flex; flex-wrap:wrap; gap:1.8rem; align-items:center; margin-top:3.25rem; }
-  .warehouse-hero .secondary-link { color:#fff; }
-  .warehouse-hero .secondary-link:hover { color:#ffd0bb; }
-  .warehouse-hero__visual { position:absolute; z-index:0; inset:0; margin:0; overflow:hidden; background:#18242b; }
-  .warehouse-hero__visual img { width:100%; height:100%; object-fit:cover; filter:saturate(.74) contrast(1.02) brightness(.9); }
-  .warehouse-hero__visual figcaption { display:none; }
-
-  .service-series { padding:6.5rem 0 8.5rem; background:#fff; }
-  .series-intro { display:grid; grid-template-columns:minmax(0,.88fr) minmax(0,1.12fr); gap:clamp(3rem,5vw,6rem); align-items:center; margin-bottom:5.5rem; }
-  .series-intro__copy { padding-bottom:1rem; }
-  .series-intro__rule { display:block; width:2.2rem; height:3px; margin:-.15rem 0 2.25rem; background:var(--accent); }
-  .series-intro h2 { margin:0; font-size:clamp(3rem,5vw,5rem); font-weight:900; letter-spacing:-.075em; line-height:.98; }
-  .series-intro h2 span { color:var(--accent); }
-  .series-intro__divider { width:20rem; max-width:100%; height:1px; margin:2.35rem 0 1.6rem; background:var(--line); }
-  .series-intro__copy > p:not(.kicker) { max-width:24rem; margin:0; color:var(--body); font-size:1rem; line-height:1.85; }
-  .series-intro__explore { display:inline-flex; align-items:center; gap:.7rem; margin-top:3.6rem; color:var(--ink); font-size:.92rem; font-weight:900; text-decoration:none; transition:color .2s ease,transform .2s ease; }
-  .series-intro__explore span { color:var(--accent); font-size:1.4rem; line-height:1; }
-  .series-intro__explore:hover { color:var(--accent); transform:translateX(3px); }
-  .series-intro__collage { position:relative; min-height:29rem; }
-  .series-intro__collage figure { margin:0; overflow:hidden; background:#e4e5e2; }
-  .series-intro__main-image { position:relative; height:28rem; margin-left:4.8rem !important; }
-  .series-intro__main-image img,.series-intro__detail-image img { width:100%; height:100%; object-fit:cover; filter:grayscale(.22) saturate(.7); transition:transform .7s cubic-bezier(.22,.6,.2,1),filter .4s ease; }
-  .series-intro__collage:hover img { filter:grayscale(0) saturate(.85); }
-  .series-intro__collage:hover .series-intro__main-image img { transform:scale(1.025); }
-  .series-intro__detail-image { position:absolute; z-index:2; bottom:1.8rem; left:-1.5rem; width:19rem; height:15rem; box-shadow:0 1rem 2.5rem rgba(33,38,39,.12); }
-  .series-intro__detail-image img { filter:grayscale(.1) saturate(.8); }
-  .series-intro__vertical-label { position:absolute; top:1.3rem; right:-2.1rem; color:#6f7677; font:800 .68rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace; letter-spacing:.16em; writing-mode:vertical-rl; }
-  .series-intro__vertical-mark { position:absolute; right:-2rem; bottom:0; width:2px; height:2.2rem; background:var(--accent); }
-  .section-heading { display:grid; grid-template-columns:minmax(0,7fr) minmax(17rem,5fr); gap:4rem; align-items:end; margin-bottom:5.5rem; }
-  .section-heading h2,.needs-intro h2,.care-heading h2,.process-heading h2,.assurance-heading h2,.warehouse-cta h2 { margin:0; font-size:clamp(2.9rem,5.1vw,5rem); font-weight:900; letter-spacing:-.075em; line-height:.98; }
-  .section-heading > p { max-width:28rem; margin:0 0 .25rem; color:var(--body); font-size:1.03rem; line-height:1.8; }
-  .series-list { display:grid; gap:8.5rem; }
-  .series-spread { display:grid; grid-template-columns:minmax(0,7fr) minmax(22rem,5fr); min-height:34rem; }
-  .series-spread--reverse { grid-template-columns:minmax(22rem,5fr) minmax(0,7fr); background:var(--paper); }
-  .series-spread__image { position:relative; min-height:34rem; margin:0; overflow:hidden; background:#ddd; }
-  .series-spread__image img { width:100%; height:100%; object-fit:cover; filter:saturate(.72); transition:transform .7s cubic-bezier(.22,.6,.2,1),filter .45s ease; }
-  .series-spread:hover .series-spread__image img { transform:scale(1.025); filter:saturate(.9); }
-  .series-spread__image figcaption { position:absolute; bottom:1rem; left:1rem; color:#fff; font:850 .66rem ui-monospace,SFMono-Regular,Menlo,monospace; letter-spacing:.09em; text-shadow:0 2px 9px rgba(0,0,0,.55); }
-  .series-spread__copy { display:flex; flex-direction:column; align-items:flex-start; padding:4rem clamp(2.25rem,5vw,6rem); }
-  .series-spread__meta { display:contents; }
-  .series-spread--reverse .series-spread__copy { grid-column:1; grid-row:1; }
-  .series-spread--reverse .series-spread__image { grid-column:2; }
-  .series-spread__number { margin:0; color:var(--accent); font:900 .72rem ui-monospace,SFMono-Regular,Menlo,monospace; }
-  .series-spread__eyebrow { margin:.65rem 0 1.2rem; color:#737a7c; font-size:.68rem; font-weight:900; letter-spacing:.12em; }
-  .series-spread h3 { margin:0; font-size:clamp(2.35rem,3.5vw,3.55rem); font-weight:900; letter-spacing:-.065em; line-height:1.04; }
-  .series-spread__copy > p:not(.series-spread__number):not(.series-spread__eyebrow) { margin:1.25rem 0 0; color:var(--body); font-size:1.08rem; line-height:1.85; }
-  .series-spread ul { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.8rem 1.4rem; width:100%; margin:2.1rem 0 auto; padding:1.15rem 0 0; border-top:1px solid var(--line); list-style:none; }
-  .series-spread li { position:relative; padding-left:.9rem; font-size:.98rem; font-weight:850; }
-  .series-spread li::before { position:absolute; top:.53rem; left:0; width:.28rem; height:.28rem; border-radius:50%; content:''; background:var(--accent); }
-  .series-spread li a { display:flex; align-items:center; justify-content:space-between; gap:.5rem; color:inherit; text-decoration:none; transition:color .2s ease,transform .2s ease; }
-  .series-spread li a span { color:var(--accent); font-size:.85rem; opacity:.7; transform:none; transition:opacity .2s ease,transform .2s ease; }
-  .series-spread li a:hover { color:var(--accent); transform:translateX(2px); }
-  .series-spread li a:hover span { opacity:1; transform:none; }
-
-  /* 参考图样式仅用于基础仓配模块，顶部区域与其余服务模块保持不变。 */
-  .series-spread--foundation { overflow:hidden; border-radius:0 .9rem .9rem 0; background:#fbfbfa; }
-  .series-spread--foundation .series-spread__copy { padding:2.6rem clamp(2.5rem,4.7vw,5.2rem) 2.45rem; }
-  .series-spread--foundation .series-spread__meta { display:flex; align-items:baseline; gap:1rem; }
-  .series-spread--foundation .series-spread__number { display:inline-block; margin:0; font-size:clamp(2.65rem,4vw,3.6rem); line-height:.9; }
-  .series-spread--foundation .series-spread__eyebrow { display:inline-block; margin:0 0 0 1rem; color:#7a8082; font-size:.78rem; transform:translateY(-.34rem); }
-  .series-spread--foundation h3 { margin-top:.65rem; font-size:clamp(2.65rem,4vw,4rem); }
-  .series-spread--foundation .series-spread__copy > p:not(.series-spread__number):not(.series-spread__eyebrow) { max-width:34rem; margin-top:1.35rem; }
-  .series-spread--foundation ul { grid-template-columns:repeat(4,minmax(0,1fr)); gap:.7rem; margin:2.2rem 0 1.8rem; padding:0; border-top:0; }
-  .series-spread--foundation li { padding:0; }
-  .series-spread--foundation li::before { display:none; }
-  .series-spread--foundation li a { display:flex; flex-direction:column; justify-content:flex-start; gap:.62rem; min-height:5.6rem; color:var(--ink); text-align:center; }
-  .series-spread--foundation li a:hover { color:var(--accent); transform:none; }
-  .series-spread--foundation li a > span:first-child { display:grid; width:2.7rem; height:2.7rem; margin:0 auto; place-items:center; border:1px solid #e2e4e2; border-radius:50%; color:var(--ink); background:#f2f3f1; }
-  .series-spread--foundation li a > span:first-child svg { width:1.35rem; height:1.35rem; }
-  .series-spread--foundation li a > span:nth-child(2) { color:var(--ink); font-size:.92rem; font-weight:900; white-space:nowrap; }
-  .series-spread--foundation li a > span:last-child { display:none; }
-  .series-spread--foundation .secondary-link { margin-top:auto; }
-
-  .series-spread--returns { background:#fbfbfa; }
-  .series-spread--returns .series-spread__copy { padding-top:2.6rem; padding-bottom:2.3rem; }
-  .series-spread--returns h3 { font-size:clamp(2.55rem,3.8vw,3.8rem); }
-  .series-spread--returns .series-spread__copy > p:not(.series-spread__number):not(.series-spread__eyebrow) { max-width:32rem; margin-top:1.25rem; font-size:1rem; }
-  .series-spread__steps { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:.55rem; width:100%; margin:2.15rem 0 1.9rem; }
-  .series-spread__step { display:grid; grid-template-columns:2.2rem minmax(0,1fr); grid-template-rows:2.2rem auto; gap:.45rem .45rem; min-width:0; color:inherit; text-decoration:none; transition:color .2s ease,transform .2s ease; }
-  .series-spread__step > span { display:grid; width:2.2rem; height:2.2rem; place-items:center; border:1.5px solid var(--accent); border-radius:50%; color:var(--accent); font:900 .76rem ui-monospace,SFMono-Regular,Menlo,monospace; }
-  .series-spread__step > i { align-self:center; height:1px; background:#e9a88d; }
-  .series-spread__step > strong { grid-column:1 / -1; color:var(--body); font-size:.92rem; font-weight:850; line-height:1.48; }
-  .series-spread__step:hover { color:var(--accent); transform:translateY(-.15rem); }
-  .series-spread__step:hover > strong { color:var(--accent); }
-
-  .series-spread--care { grid-template-columns:minmax(0,1.16fr) minmax(0,.84fr); background:#fff; }
-  .series-spread__care-gallery { display:grid; grid-template-rows:minmax(0,1fr) 5.6rem; gap:.45rem; min-height:34rem; }
-  .series-spread__care-gallery figure { position:relative; min-width:0; margin:0; overflow:hidden; background:#e4e4e0; }
-  .series-spread__care-gallery img { width:100%; height:100%; object-fit:cover; filter:saturate(.72); transition:transform .6s ease,filter .35s ease; }
-  .series-spread--care:hover .series-spread__care-gallery img { filter:saturate(.9); }
-  .series-spread--care:hover .series-spread__care-gallery-main img { transform:scale(1.02); }
-  .series-spread__care-gallery figcaption { position:absolute; right:.75rem; bottom:.6rem; left:.75rem; color:#fff; font-size:.66rem; font-weight:850; text-shadow:0 2px 8px rgba(0,0,0,.7); }
-  .series-spread__care-gallery-thumbs { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:.45rem; min-width:0; }
-  .series-spread--care .series-spread__copy { padding:2.6rem clamp(2rem,4vw,4.2rem) 2.3rem; }
-  .series-spread--care h3 { font-size:clamp(2.3rem,3.35vw,3.45rem); }
-  .series-spread--care .series-spread__copy > p:not(.series-spread__number):not(.series-spread__eyebrow) { max-width:32rem; margin-top:1.25rem; font-size:.98rem; }
-  .series-spread--care ul { grid-template-columns:repeat(4,minmax(0,1fr)); gap:.45rem; margin:2.2rem 0 1.7rem; padding:0; border-top:0; }
-  .series-spread--care li { padding:0; }
-  .series-spread--care li::before { display:none; }
-  .series-spread--care li a { display:flex; flex-direction:column; justify-content:flex-start; gap:.55rem; min-height:5.3rem; color:var(--ink); text-align:center; }
-  .series-spread--care li a:hover { color:var(--accent); transform:none; }
-  .series-spread--care li a > span:first-child { display:grid; width:2.35rem; height:2.35rem; margin:0 auto; place-items:center; color:var(--accent); }
-  .series-spread--care li a > span:first-child svg { width:2rem; height:2rem; }
-  .series-spread--care li a > span:nth-child(2) { color:var(--body); font-size:.9rem; font-weight:850; white-space:nowrap; }
-  .series-spread--care li a > span:last-child { display:none; }
-  .needs-section { padding:7rem 0 8rem; background:#f3f4f1; }
-  .needs-layout { display:grid; grid-template-columns:minmax(17rem,2.25fr) minmax(0,7.75fr); gap:4.5rem; align-items:start; }
-  .needs-intro { position:relative; min-height:35rem; }
-  .needs-intro__rule { display:block; width:2.2rem; height:2px; margin:-.1rem 0 2.25rem; background:var(--accent); }
-  .needs-intro h2 { font-size:clamp(2.8rem,3.6vw,3.8rem); }
-  .needs-intro > p:not(.kicker) { max-width:18rem; margin:1.6rem 0 0; color:var(--body); font-size:.98rem; line-height:1.85; }
-  .needs-intro__watermark { position:absolute; bottom:-.15rem; left:-.3rem; display:flex; flex-direction:column; color:#cfd3ce; opacity:.3; pointer-events:none; }
-  .needs-intro__watermark strong { font:900 9rem/.7 Georgia,serif; letter-spacing:-.15em; }
-  .needs-intro__watermark span { margin-top:.75rem; color:#969c98; font:800 .48rem/1.5 ui-monospace,SFMono-Regular,Menlo,monospace; letter-spacing:.3em; }
-  .needs-directory { display:grid; grid-template-columns:minmax(0,1fr) minmax(17rem,.48fr); gap:1.2rem; align-items:stretch; border:0; }
-  .needs-directory__list { overflow:hidden; border:1px solid #dfe2de; border-radius:.25rem; background:rgba(255,255,255,.36); }
-  .needs-directory__list [data-need-tab] { position:relative; display:grid; grid-template-columns:3.1rem minmax(0,1fr) auto auto; gap:.8rem; align-items:center; width:100%; min-height:5.35rem; padding:1rem 1.3rem; border:0; border-bottom:1px solid #dfe2de; color:#616b6b; background:transparent; text-align:left; transition:color .25s ease,background .25s ease,box-shadow .25s ease; }
-  .needs-directory__list [data-need-tab]:last-child { border-bottom:0; }
-  .needs-directory__list [data-need-tab]:hover,.needs-directory__list [data-need-tab][data-selected='true'] { z-index:1; color:var(--ink); background:#fff5ed; box-shadow:inset 0 0 0 1px var(--accent); }
-  .needs-directory__list span { color:var(--accent); font:900 1.25rem ui-monospace,SFMono-Regular,Menlo,monospace; }
-  .needs-directory__list strong { font-size:1.03rem; font-weight:900; line-height:1.45; }
-  .needs-directory__list em { color:#4f5959; font-size:.9rem; font-style:normal; font-weight:800; white-space:nowrap; }
-  .needs-directory__list a { display:inline-flex; align-items:center; gap:.35rem; color:var(--accent); font-size:.82rem; font-weight:900; text-decoration:none; white-space:nowrap; }
-  .needs-directory__list a:hover { text-decoration:underline; text-underline-offset:.25rem; }
-  .needs-directory__list i { color:var(--accent); font-size:1.2rem; font-style:normal; }
-  .needs-directory__visuals { position:relative; min-height:35rem; margin:0; }
-  .needs-directory__visuals article { position:absolute; inset:0; display:flex; flex-direction:column; overflow:hidden; border:1px solid #dfe2de; border-radius:.45rem; background:#fff; box-shadow:0 .9rem 2rem rgba(39,45,42,.05); animation:need-switch .3s ease both; }
-  .needs-directory__visuals figure { flex:0 0 12.2rem; min-height:0; margin:0; overflow:hidden; background:#d9dddb; }
-  .needs-directory__visuals img { width:100%; height:100%; object-fit:cover; filter:saturate(.72); }
-  .needs-directory__visuals article > div { display:block; padding:1.15rem 1.35rem 1.25rem; }
-  .needs-panel__current { margin:0; color:var(--accent); font-size:.74rem; font-weight:900; }
-  .needs-directory__visuals h3 { margin:.45rem 0 .7rem; color:var(--ink); font-size:1.45rem; font-weight:950; letter-spacing:-.04em; }
-  .needs-directory__visuals .needs-panel__description { margin:0; color:var(--body); font-size:.96rem; line-height:1.72; }
-  .needs-directory__visuals ul { display:grid; gap:.55rem; margin:1rem 0 0; padding:0; list-style:none; }
-  .needs-directory__visuals li { position:relative; padding-left:1.4rem; color:#596160; font-size:.9rem; font-weight:750; line-height:1.5; }
-  .needs-directory__visuals li::before { position:absolute; top:.05rem; left:0; display:grid; width:.95rem; height:.95rem; place-items:center; border:1px solid var(--accent); border-radius:50%; color:var(--accent); content:'✓'; font-size:.58rem; font-weight:900; }
-  .needs-panel__link { display:inline-flex; gap:.45rem; margin-top:1.15rem; color:var(--ink); font-size:.9rem; font-weight:900; text-decoration:none; }
-  .needs-panel__link span { color:var(--accent); transition:transform .2s ease; }
-  .needs-panel__link:hover span { transform:translateX(.25rem); }
-  @keyframes need-switch { from { opacity:.35; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
-
-  .care-section { padding:8.5rem 0; background:#fff; }
-  .care-heading { display:grid; grid-template-columns:minmax(0,7fr) minmax(18rem,5fr); gap:4rem; align-items:end; margin-bottom:4.2rem; }
-  .care-heading > p:not(.kicker) { max-width:31rem; margin:0 0 .25rem; color:var(--body); font-size:1.06rem; line-height:1.85; }
-  .care-stage { position:relative; display:grid; grid-template-columns:1.35fr .65fr; grid-template-rows:17rem 17rem; gap:1rem; min-height:34rem; }
-  .care-stage figure { position:relative; margin:0; overflow:hidden; background:#dfe1df; }
-  .care-stage img { width:100%; height:100%; object-fit:cover; filter:saturate(.74); transition:transform .6s ease,filter .35s ease; }
-  .care-stage figure:hover img { transform:scale(1.025); filter:saturate(.95); }
-  .care-stage figcaption { position:absolute; right:.9rem; bottom:.75rem; left:.9rem; color:#fff; font-size:.69rem; font-weight:850; text-shadow:0 2px 8px rgba(0,0,0,.65); }
-  .care-stage__main { grid-row:1 / span 2; }
-  .care-stage__top { grid-column:2; }
-  .care-stage__bottom { grid-column:2; }
-  .care-stage__caption { display:flex; justify-content:space-between; gap:2rem; align-items:baseline; padding:1.15rem 0 0; border-top:1px solid var(--line); }
-  .care-stage__caption p { max-width:44rem; margin:0; color:var(--body); font-size:.94rem; line-height:1.7; }
-  .care-stage__caption p span { margin-right:.8rem; color:var(--ink); font-size:.7rem; font-weight:900; letter-spacing:.08em; }
-  .care-categories { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); margin-top:3.2rem; }
-  .care-categories article { min-height:11.5rem; padding:1.4rem 1.6rem 1.2rem 0; }
-  .care-categories article + article { padding-left:1.6rem; }
-  .care-categories span { color:var(--accent); font:900 .65rem ui-monospace,SFMono-Regular,Menlo,monospace; }
-  .care-categories h3 { margin:1.2rem 0 .55rem; font-size:1.15rem; font-weight:950; }
-  .care-categories p { margin:0; color:var(--body); font-size:.94rem; line-height:1.75; }
-
-  .process-section { padding:5rem 0 5.4rem; background:var(--paper); }
-  .process-heading { max-width:46rem; margin-bottom:2.8rem; }
-  .process-heading h2 { font-size:clamp(2.2rem,3.2vw,3.25rem); line-height:1.05; }
-  .editorial-process { margin:0; padding:0; border-top:1px solid #cfd3d1; list-style:none; }
-  .editorial-process li { display:grid; grid-template-columns:8.5rem minmax(0,1fr); gap:2rem; align-items:center; min-height:5.8rem; border-bottom:1px solid #cfd3d1; }
-  .editorial-process li > span { color:var(--accent); font-size:clamp(2rem,2.6vw,2.8rem); font-weight:950; letter-spacing:-.08em; line-height:1; }
-  .editorial-process li > div { display:grid; grid-template-columns:minmax(11rem,2fr) minmax(15rem,5fr); gap:1.5rem; align-items:baseline; }
-  .editorial-process h3 { margin:0; font-size:1.1rem; font-weight:900; }
-  .editorial-process p { margin:0; color:var(--body); font-size:.86rem; line-height:1.6; }
-
-  .assurance-section { padding:7.5rem 0 8rem; background:#fbfbfa; }
-  .assurance-heading { display:grid; grid-template-columns:minmax(18rem,4fr) minmax(0,8fr); gap:clamp(3rem,6vw,7rem); align-items:start; margin-bottom:5.3rem; }
-  .assurance-heading__intro { padding-top:.25rem; }
-  .assurance-heading__intro > p:not(.kicker) { max-width:22rem; margin:2rem 0 0; color:var(--ink); font-size:1.05rem; line-height:1.9; }
-  .assurance-heading h2 { max-width:52rem; margin:0; font-size:clamp(3.3rem,4.8vw,5rem); font-weight:900; letter-spacing:-.08em; line-height:1.04; }
-  .assurance-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); border:0; }
-  .assurance-grid article { min-height:11.5rem; padding:0 2rem 0 0; }
-  .assurance-grid article + article { padding-left:2rem; border-left:1px solid #dfe2de; }
-  .assurance-grid strong { display:block; color:var(--ink); font-size:clamp(2.4rem,4vw,4.1rem); font-weight:950; letter-spacing:-.08em; line-height:1; white-space:nowrap; }
-  .assurance-grid h3 { margin:1.3rem 0 .5rem; font-size:.95rem; font-weight:950; }
-  .assurance-grid p { margin:0; color:var(--body); font-size:.86rem; line-height:1.7; }
-  .assurance-mechanisms { margin-top:4.6rem; }
-  .assurance-mechanisms > h3 { margin:0 0 2.2rem; font-size:1.25rem; font-weight:950; }
-  .assurance-mechanisms__list { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:1.5rem; }
-  .assurance-mechanisms__list article { display:flex; align-items:center; gap:1rem; min-width:0; }
-  .assurance-mechanism__icon { display:grid; flex:0 0 3rem; width:3rem; height:3rem; place-items:center; color:var(--ink); }
-  .assurance-mechanism__icon svg { width:3rem; height:3rem; }
-  .assurance-mechanisms h4 { margin:0; font-size:.95rem; font-weight:950; }
-  .assurance-mechanisms p { margin:.25rem 0 0; color:var(--body); font-size:.85rem; line-height:1.5; white-space:nowrap; }
-
-  .warehouse-cta { padding:6.5rem 0 6.8rem; background:var(--mist); }
-  .warehouse-cta__inner { display:grid; grid-template-columns:minmax(0,6fr) minmax(22rem,4fr); gap:clamp(4rem,8vw,9rem); align-items:end; }
-  .warehouse-cta__message { max-width:43rem; }
-  .warehouse-cta h2 { font-size:clamp(3.4rem,5vw,5rem); }
-  .warehouse-cta__inner > div > p:not(.kicker) { max-width:34rem; margin:1.5rem 0 2.2rem; color:var(--body); font-size:1rem; line-height:1.8; }
-  .warehouse-cta aside { align-self:stretch; display:flex; flex-direction:column; justify-content:center; padding:1.2rem 0 0 2.5rem; border-left:1px solid #bfc5c2; }
-  .warehouse-cta aside > p { margin:0 0 1.5rem; color:var(--ink); font-size:.8rem; font-weight:900; letter-spacing:.06em; }
-  .warehouse-cta ol { display:grid; grid-template-columns:1fr; gap:0; margin:0; padding:0; list-style:none; }
-  .warehouse-cta li { display:grid; grid-template-columns:6rem minmax(0,1fr); gap:1rem; align-items:baseline; padding:1rem 0; border-top:1px solid #d5d9d7; color:#3f474a; line-height:1.5; }
-  .warehouse-cta li:last-child { border-bottom:1px solid #d5d9d7; }
-  .warehouse-cta li strong { color:var(--ink); font-size:.92rem; font-weight:900; }
-  .warehouse-cta li span { color:var(--body); font-size:.86rem; }
-
-
-  @media (max-width:1024px) {
-    .warehouse-shell { width:min(100% - 3rem,1360px); }
-    .section-heading,.care-heading,.assurance-heading { gap:2.75rem; }
-    .series-spread__copy { padding-right:2.5rem; padding-left:2.5rem; }
-    .needs-layout { gap:3rem; }
-    .needs-directory { grid-template-columns:1fr; }
-    .needs-directory__visuals { min-height:28rem; margin:2rem 0 0; }
-  }
-
-  @media (max-width:760px) {
-    .warehouse-shell { width:calc(100% - 1.5rem); }
-    .warehouse-hero { min-height:42rem; }
-    .warehouse-hero::after { background:linear-gradient(180deg,rgba(8,18,25,.72) 0%,rgba(8,18,25,.8) 100%); }
-    .warehouse-hero__copy { max-width:none; }
-    .warehouse-hero__copy .kicker { margin-bottom:.9rem; }
-    .warehouse-hero h1 { font-size:4.6rem; }
-    .warehouse-hero h2 { margin-top:1.2rem; font-size:1.8rem; }
-    .warehouse-hero__copy > p:not(.kicker) { margin-top:1.4rem; }
-    .warehouse-hero__actions { margin-top:2rem; }
-    .service-series,.needs-section,.care-section,.process-section,.assurance-section { padding:5rem 0; }
-    .section-heading,.care-heading,.assurance-heading,.warehouse-cta__inner { grid-template-columns:1fr; gap:1.25rem; margin-bottom:3rem; }
-    .section-heading h2,.needs-intro h2,.care-heading h2,.process-heading h2,.assurance-heading h2,.warehouse-cta h2 { font-size:2.65rem; }
-    .series-intro { display:block; margin-bottom:3.8rem; }
-    .series-intro__copy { padding-bottom:0; }
-    .series-intro h2 { font-size:2.75rem; }
-    .series-intro__divider { margin-top:1.7rem; }
-    .series-intro__explore { margin-top:2.4rem; }
-    .series-intro__collage { min-height:24rem; margin-top:3rem; }
-    .series-intro__main-image { height:23rem; margin-left:2rem !important; }
-    .series-intro__detail-image { bottom:1rem; left:-.5rem; width:12rem; height:9.5rem; }
-    .series-intro__vertical-label,.series-intro__vertical-mark { display:none; }
-    .series-list { gap:4.5rem; }
-    .series-spread,.series-spread--reverse { display:flex; flex-direction:column; min-height:0; background:transparent; }
-    .series-spread--reverse .series-spread__copy,.series-spread--reverse .series-spread__image { grid-column:auto; grid-row:auto; }
-    .series-spread__image { min-height:23rem; }
-    .series-spread__copy { min-height:0; padding:2rem 0 0; }
-    .series-spread ul { margin-bottom:1.9rem; }
-    .series-spread--foundation { border-radius:0 0 .8rem .8rem; }
-    .series-spread--foundation .series-spread__copy { padding:2rem 1.25rem 2.2rem; }
-    .series-spread--foundation .series-spread__number { font-size:2.5rem; }
-    .series-spread--foundation .series-spread__eyebrow { font-size:.66rem; }
-    .series-spread--foundation h3 { font-size:2.6rem; }
-    .series-spread--foundation ul { grid-template-columns:repeat(2,minmax(0,1fr)); gap:1rem .6rem; margin-top:2rem; }
-    .series-spread--returns .series-spread__copy,.series-spread--care .series-spread__copy { padding:2rem 1.25rem 2.2rem; }
-    .series-spread__steps { gap:.4rem; margin-top:1.8rem; }
-    .series-spread__step { display:block; }
-    .series-spread__step > span { width:1.9rem; height:1.9rem; margin-bottom:.55rem; font-size:.66rem; }
-    .series-spread__step > i { display:none; }
-    .series-spread__step > strong { font-size:.84rem; }
-    .series-spread--care { display:flex; flex-direction:column; }
-    .series-spread__care-gallery { min-height:25rem; grid-template-rows:19rem 5rem; }
-    .series-spread__care-gallery-thumbs { gap:.25rem; }
-    .series-spread--care h3 { font-size:2.45rem; }
-    .series-spread--care ul { gap:.5rem; margin-top:1.8rem; }
-    .series-spread--care li a > span:nth-child(2) { font-size:.82rem; }
-    .needs-layout { display:block; }
-    .needs-intro { position:static; min-height:0; margin-bottom:2.5rem; }
-    .needs-intro__watermark { display:none; }
-    .needs-directory__list { display:flex; gap:1.1rem; overflow:auto; padding-bottom:1rem; scrollbar-width:none; }
-    .needs-directory__list [data-need-tab] { flex:0 0 16rem; grid-template-columns:1.7rem 1fr; min-height:7.2rem; padding:1rem 0; border-top:1px solid #cfd3d1; }
-    .needs-directory__list em { display:none; }
-    .needs-directory__list a { grid-column:2; }
-    .needs-directory__visuals { min-height:23rem; margin-top:1rem; }
-    .care-stage { grid-template-columns:1fr 1fr; grid-template-rows:16rem 16rem; min-height:32rem; }
-    .care-stage__main { grid-column:1 / -1; grid-row:1; }
-    .care-stage__top { grid-column:1; grid-row:2; }
-    .care-stage__bottom { grid-column:2; grid-row:2; }
-    .care-stage__caption { display:block; }
-    .care-stage__caption p { font-size:.86rem; }
-    .care-stage__caption p span { display:block; margin:0 0 .35rem; }
-    .care-stage__caption .secondary-link { margin-top:.8rem; }
-    .care-categories { grid-template-columns:repeat(2,minmax(0,1fr)); margin-top:2rem; }
-    .care-categories article { min-height:10rem; padding:1.1rem .9rem 1.1rem 0; }
-    .care-categories article + article { padding-left:.9rem; }
-    .process-heading { margin-bottom:2.2rem; }
-    .process-heading h2 { font-size:2.35rem; }
-    .editorial-process li { grid-template-columns:4.2rem 1fr; gap:1rem; min-height:6.2rem; }
-    .editorial-process li > div { display:block; }
-    .editorial-process h3 { font-size:1rem; }
-    .editorial-process p { margin-top:.3rem; font-size:.78rem; }
-    .assurance-heading { grid-template-columns:1fr; gap:2rem; margin-bottom:3.4rem; }
-    .assurance-heading h2 { font-size:2.75rem; }
-    .assurance-heading__intro > p:not(.kicker) { margin-top:1.25rem; font-size:.9rem; }
-    .assurance-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:2rem 0; }
-    .assurance-grid article { min-height:9rem; padding:0 .9rem 0 0; }
-    .assurance-grid article + article { padding-left:.9rem; border-left:1px solid var(--line); }
-    .assurance-grid article:nth-child(3) { border-left:0; }
-    .assurance-grid article:nth-child(n+3) { padding-top:1.5rem; border-top:1px solid var(--line); }
-    .assurance-mechanisms { margin-top:3.5rem; }
-    .assurance-mechanisms__list { grid-template-columns:1fr; gap:1.3rem; }
-    .assurance-mechanism__icon { flex-basis:2.5rem; width:2.5rem; height:2.5rem; }
-    .assurance-mechanism__icon svg { width:2.5rem; height:2.5rem; }
-    .assurance-mechanisms p { white-space:normal; }
-    .warehouse-cta { padding:5rem 0; }
-    .warehouse-cta__inner { gap:3.25rem; margin-bottom:0; }
-    .warehouse-cta aside { padding:1.8rem 0 0; border-top:1px solid #bfc5c2; border-left:0; }
-    .warehouse-cta li { grid-template-columns:7rem minmax(0,1fr); padding:.85rem 0; }
-  }
-
-  @media (prefers-reduced-motion:reduce) {
-    :global(html) { scroll-behavior:auto; }
-    .series-spread__image img,.care-stage img { transition:none; }
-  }
-</style>
-
 <script>
-  import gsap from 'gsap'
-  import { ScrollTrigger } from 'gsap/ScrollTrigger'
-
-  gsap.registerPlugin(ScrollTrigger)
-
-  const directory = document.querySelector<HTMLElement>('[data-need-directory]')
-  if (directory) {
-    const tabs = Array.from(directory.querySelectorAll<HTMLElement>('[data-need-tab]'))
-    const panels = Array.from(directory.querySelectorAll<HTMLElement>('[data-need-panel]'))
-    const selectNeed = (id: string) => {
-      tabs.forEach((tab) => {
-        const active = tab.dataset.needTab === id
-        tab.dataset.selected = String(active)
-      })
-      panels.forEach((panel) => {
-        const active = panel.dataset.needPanel === id
-        panel.hidden = !active
-      })
-    }
-    tabs.forEach((tab) => {
-      const choose = () => selectNeed(tab.dataset.needTab ?? '')
-      tab.addEventListener('mouseenter', choose)
-      tab.addEventListener('focusin', choose)
-    })
-  }
-
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-
-  const textTargetsFor = (element: HTMLElement) => {
-    if (element.matches('.series-spread__copy')) {
-      const meta = Array.from(element.querySelectorAll<HTMLElement>(':scope > .series-spread__meta > *'))
-      const rest = Array.from(element.children).filter((child) => !child.matches('.series-spread__meta')) as HTMLElement[]
-      return [...meta, ...rest]
-    }
-
-    if (element.matches('.care-heading,.assurance-heading')) {
-      const headingChildren = Array.from(element.querySelectorAll<HTMLElement>(':scope > div > *'))
-      const rest = Array.from(element.children).filter((child) => !child.matches('div')) as HTMLElement[]
-      return [...headingChildren, ...rest]
-    }
-
-    if (element.matches('.editorial-process li,.warehouse-hero__stat,.assurance-mechanisms__list article')) {
-      const leading = Array.from(element.children).filter((child) => !child.matches('div')) as HTMLElement[]
-      const nested = Array.from(element.querySelectorAll<HTMLElement>(':scope > div > *'))
-      return [...leading, ...nested]
-    }
-
-    return Array.from(element.children) as HTMLElement[]
-  }
-
-  if (!prefersReducedMotion) {
-    document.querySelectorAll<HTMLElement>('[data-reveal="copy"]').forEach((element) => {
-      const targets = textTargetsFor(element).filter((target) => !target.hasAttribute('hidden'))
-      if (!targets.length) return
-
-      gsap.set(targets, { autoAlpha: 0, y: 28, filter: 'blur(4px)' })
-      gsap.to(targets, {
-        autoAlpha: 1,
-        y: 0,
-        filter: 'blur(0px)',
-        duration: 0.82,
-        stagger: 0.12,
-        ease: 'power3.out',
-        clearProps: 'transform,opacity,visibility,filter',
-        scrollTrigger: {
-          trigger: element,
-          start: 'top 84%',
-          once: true,
-        },
-      })
-    })
-
-    document.querySelectorAll<HTMLElement>('[data-reveal="image"]').forEach((element) => {
-      const image = element.querySelector<HTMLElement>('img')
-      const fromLeft = element.matches('.series-spread__image,.series-spread__care-gallery-main') && !element.closest('.series-spread--reverse')
-      const fromRight = element.matches('.warehouse-hero__visual,.needs-directory__visuals,.series-spread--reverse .series-spread__image')
-      const x = fromLeft ? -42 : fromRight ? 42 : 0
-      const y = x === 0 ? 34 : 0
-
-      gsap.set(element, { autoAlpha: 0, x, y, scale: 0.975, clipPath: 'inset(0 0 8% 0)' })
-      if (image) gsap.set(image, { scale: 1.06 })
-
-      const timeline = gsap.timeline({
-        scrollTrigger: {
-          trigger: element,
-          start: 'top 84%',
-          once: true,
-        },
-      })
-
-      timeline.to(element, {
-        autoAlpha: 1,
-        x: 0,
-        y: 0,
-        scale: 1,
-        clipPath: 'inset(0 0 0% 0)',
-        duration: 1.05,
-        ease: 'power3.out',
-        clearProps: 'transform,opacity,visibility,clipPath',
-      })
-      if (image) timeline.to(image, { scale: 1, duration: 1.1, ease: 'power2.out', clearProps: 'transform' }, 0)
-    })
-  }
+  import '@/scripts/product-loader'
 </script>

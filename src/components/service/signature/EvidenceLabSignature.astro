@@ -1,0 +1,55 @@
+---
+import type { StatItem } from '@/data/service'
+
+interface Props {
+  stats: [StatItem, StatItem, StatItem, StatItem]
+}
+
+const { stats } = Astro.props
+
+const evidenceSteps = [
+  { src: '/images/services/inspection-unpack.webp', title: '01 拆包', alt: '退货拆包操作' },
+  { src: '/images/services/inspection-scan.webp', title: '02 核验', alt: '退货订单扫码核验' },
+  { src: '/images/services/inspection-workbench.webp', title: '03 质检', alt: '服装质检工作台' },
+  { src: '/images/services/inspection-sort.webp', title: '04 分流', alt: '质检完成后的商品分流' },
+]
+---
+
+<div class="evidence">
+  <div class="evidence__strip">
+    {
+      evidenceSteps.map(({ src, title, alt }) => (
+        <figure>
+          <img src={src} alt={alt} loading="lazy" />
+          <figcaption>{title}</figcaption>
+        </figure>
+      ))
+    }
+  </div>
+  <div class="evidence__bench">
+    <div class="evidence__screen">
+      <div><span></span><span></span><span></span><b>QC EVIDENCE SYSTEM</b></div>
+      <img
+        src="/images/services/inspection-system.webp"
+        alt="质检图片与报表系统界面"
+        loading="lazy"
+      />
+    </div>
+    <div class="evidence__findings">
+      {
+        stats.map(({ stat, label, sub }, index) => (
+          <article>
+            <span>0{index + 1}</span>
+            <strong>{stat}</strong>
+            <div>
+              <>
+                <b>{label}</b>
+                <small>{sub}</small>
+              </>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</div>

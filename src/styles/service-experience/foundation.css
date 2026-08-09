@@ -1,0 +1,35 @@
+.service-detail,
+.service-faq,
+.service-cta {
+  --ink: #132b50;
+  --blue: #144297;
+  --signal: #e85d26;
+  --line: #dce5f1;
+  color: var(--ink);
+}
+
+.service-detail__inner,
+.service-faq__inner,
+.service-cta__inner {
+  width: min(80rem, calc(100% - 2rem));
+  margin: 0 auto;
+}
+
+.service-detail__header > div p,
+.service-faq__header > p,
+.service-cta__copy > p {
+  margin: 0 0 0.4rem;
+  color: var(--signal);
+  font-size: 0.65rem;
+  font-weight: 900;
+  letter-spacing: 0.2em;
+}
+
+.service-detail__header h2,
+.service-faq__header h2,
+.service-cta__copy h2 {
+  margin: 0;
+  font-size: clamp(1.8rem, 3.3vw, 3.2rem);
+  letter-spacing: -0.035em;
+  line-height: 1.18;
+}

@@ -1,0 +1,57 @@
+.stats-notes {
+  margin-top: 1.15rem;
+  padding: 0 0.2rem;
+}
+
+.stats-notes summary {
+  width: max-content;
+  color: #64748b;
+  font-size: 0.68rem;
+  font-weight: 600;
+  list-style: none;
+  cursor: pointer;
+}
+
+.stats-notes summary::-webkit-details-marker {
+  display: none;
+}
+
+.stats-notes summary::after {
+  margin-left: 0.35rem;
+  color: #94a3b8;
+  content: '＋';
+}
+
+.stats-notes[open] summary::after {
+  content: '−';
+}
+
+.stats-notes-body {
+  max-width: 62rem;
+  margin-top: 0.65rem;
+}
+
+.stats-footnote {
+  display: flex;
+  align-items: baseline;
+  gap: 0.65rem;
+  margin: 0;
+  color: #334155;
+  font-size: 0.75rem;
+  line-height: 1.6;
+}
+
+.stats-footnote span {
+  flex: 0 0 auto;
+  color: #2563eb;
+  font-size: 0.63rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.stats-disclaimer {
+  margin: 0.38rem 0 0;
+  color: #334155;
+  font-size: 0.66rem;
+  line-height: 1.7;
+}

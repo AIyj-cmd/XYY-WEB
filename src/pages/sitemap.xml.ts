@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro'
 import { BRAND } from '@/lib/brand'
+import { getPublishedNews } from '@/lib/directus'
 
 const STATIC_PAGES = [
   { url: '/', priority: '1.0', changefreq: 'weekly' },
@@ -23,6 +24,8 @@ const STATIC_PAGES = [
   { url: '/cases/maxrieny', priority: '0.75', changefreq: 'monthly' },
   { url: '/cases/xingmian', priority: '0.75', changefreq: 'monthly' },
   { url: '/cases/meiyi', priority: '0.75', changefreq: 'monthly' },
+  { url: '/cases/romi-studio', priority: '0.75', changefreq: 'monthly' },
+  { url: '/cases/toyouth', priority: '0.75', changefreq: 'monthly' },
   { url: '/news', priority: '0.6', changefreq: 'monthly' },
   { url: '/senlinqikan', priority: '0.75', changefreq: 'monthly' },
   { url: '/contact', priority: '0.7', changefreq: 'monthly' },
@@ -30,7 +33,7 @@ const STATIC_PAGES = [
 ]
 
 // Update this only when the static-page content is materially revised.
-const STATIC_CONTENT_LASTMOD = '2026-07-31'
+const STATIC_CONTENT_LASTMOD = '2026-08-08'
 
 export const GET: APIRoute = async () => {
   const staticEntries = STATIC_PAGES.map(
@@ -43,9 +46,21 @@ export const GET: APIRoute = async () => {
   </url>`
   ).join('\n')
 
+  const newsEntries = (await getPublishedNews(500, 1))
+    .map(
+      (article) => `  <url>
+    <loc>${BRAND.url}/news/${encodeURIComponent(article.slug)}</loc>
+    <lastmod>${article.published_at.slice(0, 10)}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>`
+    )
+    .join('\n')
+
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${staticEntries}
+${newsEntries}
 </urlset>`
 
   return new Response(xml, {

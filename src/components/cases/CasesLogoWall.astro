@@ -1,0 +1,38 @@
+---
+import { CASE_LOGO_BRANDS, CASE_LOGO_ROWS } from '@/data/cases'
+---
+
+<section
+  class="py-10 bg-[#f8fafc] overflow-hidden border-b border-gray-100"
+  aria-label="部分合作品牌"
+>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center mb-8">
+    <p class="text-xs font-bold tracking-widest uppercase text-brand-orange mb-2">部分合作品牌</p>
+    <h2 class="text-2xl font-black text-navy-800">这些品牌都选择了新亦源</h2>
+  </div>
+  <div class="logos-track-wrap">
+    {
+      CASE_LOGO_ROWS.map((row, rowIndex) => (
+        <div class={`logos-row logos-row--${rowIndex === 0 ? 'fwd' : 'rev'}`}>
+          <div class="logos-track">
+            {[...row, ...row].map((number, index) => (
+              <div class="logo-img-card" aria-hidden={index >= row.length ? 'true' : undefined}>
+                <img
+                  src={`/logos/imgi_${number}_default.png`}
+                  alt={
+                    index < row.length
+                      ? `${CASE_LOGO_BRANDS[number] ?? '新亦源合作品牌'} 合作品牌 logo`
+                      : ''
+                  }
+                  aria-hidden={index >= row.length ? 'true' : undefined}
+                  loading="lazy"
+                  onerror="this.closest('.logo-img-card').style.display='none'"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      ))
+    }
+  </div>
+</section>

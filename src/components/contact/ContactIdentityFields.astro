@@ -1,0 +1,61 @@
+<div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+  <div>
+    <label for="name" class="mb-1.5 block text-sm font-semibold text-gray-700">
+      您的姓名 <span class="text-brand-orange" aria-hidden="true">*</span>
+    </label>
+    <input
+      type="text"
+      id="name"
+      name="name"
+      required
+      maxlength="80"
+      autocomplete="name"
+      placeholder="请输入您的姓名"
+      class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none transition-colors focus:border-navy-400 focus:ring-2 focus:ring-navy-100"
+    />
+  </div>
+  <div>
+    <label for="company" class="mb-1.5 block text-sm font-semibold text-gray-700"
+      >公司/品牌名称</label
+    >
+    <input
+      type="text"
+      id="company"
+      name="company"
+      maxlength="120"
+      autocomplete="organization"
+      placeholder="请输入公司或品牌名称"
+      class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none transition-colors focus:border-navy-400 focus:ring-2 focus:ring-navy-100"
+    />
+  </div>
+</div>
+
+<div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+  <div>
+    <label for="phone" class="mb-1.5 block text-sm font-semibold text-gray-700">
+      联系电话 <span class="text-brand-orange" aria-hidden="true">*</span>
+    </label>
+    <input
+      type="tel"
+      id="phone"
+      name="phone"
+      required
+      maxlength="40"
+      autocomplete="tel"
+      placeholder="请输入您的手机号"
+      class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none transition-colors focus:border-navy-400 focus:ring-2 focus:ring-navy-100"
+    />
+  </div>
+  <div>
+    <label for="email" class="mb-1.5 block text-sm font-semibold text-gray-700">邮箱</label>
+    <input
+      type="email"
+      id="email"
+      name="email"
+      maxlength="120"
+      autocomplete="email"
+      placeholder="选填，用于接收方案"
+      class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none transition-colors focus:border-navy-400 focus:ring-2 focus:ring-navy-100"
+    />
+  </div>
+</div>

@@ -1,0 +1,87 @@
+---
+import { LIVE_CHALLENGE_ITEMS, LIVE_PLATFORM_ROWS } from '@/data/service/live-commerce'
+---
+
+<section
+  class="py-14 bg-gray-50 border-b border-gray-100"
+  aria-labelledby="zhibo-challenges-heading"
+>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h2 id="zhibo-challenges-heading" class="text-xl font-black text-navy-800 mb-1 text-center">
+      直播仓配三大核心挑战与解决方案
+    </h2>
+    <p class="text-xs text-gray-400 text-center mb-8">
+      普通仓库无法应对直播电商的爆单节奏，需要专属的弹性仓配体系
+    </p>
+
+    <!-- 挑战 & 解决方案 -->
+    <div class="grid lg:grid-cols-3 gap-5 mb-10">
+      {
+        LIVE_CHALLENGE_ITEMS.map(({ icon, title, problem, solution }) => (
+          <div class="bg-white rounded-xl border border-gray-200 p-5 flex flex-col gap-4">
+            <div class="flex items-center gap-2">
+              <span class="text-2xl" aria-hidden="true">
+                {icon}
+              </span>
+              <h3 class="font-black text-navy-800 text-base">{title}</h3>
+            </div>
+            <div class="flex flex-col gap-3">
+              <div class="bg-red-50 rounded-lg p-3 border-l-2 border-red-300">
+                <p class="text-[10px] font-bold text-red-400 uppercase tracking-wider mb-1">痛点</p>
+                <p class="text-xs text-gray-600 leading-snug">{problem}</p>
+              </div>
+              <div class="bg-green-50 rounded-lg p-3 border-l-2 border-green-400">
+                <p class="text-[10px] font-bold text-green-500 uppercase tracking-wider mb-1">
+                  新亦源方案
+                </p>
+                <p class="text-xs text-gray-600 leading-snug">{solution}</p>
+              </div>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+
+    <!-- 平台适配表 -->
+    <h3 class="text-sm font-bold text-navy-800 mb-3">主流直播平台仓配适配说明</h3>
+    <div class="overflow-x-auto rounded-xl border border-gray-200">
+      <table class="w-full text-sm text-left">
+        <thead>
+          <tr class="bg-navy-800 text-white">
+            <th class="px-4 py-3 font-bold text-xs tracking-wider">平台</th>
+            <th class="px-4 py-3 font-bold text-xs tracking-wider">主要模式</th>
+            <th class="px-4 py-3 font-bold text-xs tracking-wider">发货时效要求</th>
+            <th class="px-4 py-3 font-bold text-xs tracking-wider hidden sm:table-cell">违规风险</th
+            >
+            <th class="px-4 py-3 font-bold text-xs tracking-wider hidden md:table-cell"
+              >新亦源对接方式</th
+            >
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100 bg-white">
+          {
+            LIVE_PLATFORM_ROWS.map(({ platform, model, sla, risk, note }) => (
+              <tr class="hover:bg-orange-50/20 transition-colors">
+                <td class="px-4 py-3.5 font-bold text-navy-700 text-xs whitespace-nowrap">
+                  {platform}
+                </td>
+                <td class="px-4 py-3.5 text-gray-500 text-xs">{model}</td>
+                <td class="px-4 py-3.5 text-xs">
+                  <span class="inline-block px-2 py-0.5 rounded-full bg-brand-orange/10 text-brand-orange font-bold text-[10px]">
+                    {sla}
+                  </span>
+                </td>
+                <td class="px-4 py-3.5 text-gray-500 text-xs leading-snug hidden sm:table-cell">
+                  {risk}
+                </td>
+                <td class="px-4 py-3.5 text-gray-500 text-xs leading-snug hidden md:table-cell">
+                  {note}
+                </td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>

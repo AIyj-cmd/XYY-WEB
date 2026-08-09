@@ -19,11 +19,7 @@ export function createBreadcrumbSchema(items: Array<{ name: string; path: string
   }
 }
 
-export function createServiceSchema(input: {
-  name: string
-  description: string
-  path: string
-}) {
+export function createServiceSchema(input: { name: string; description: string; path: string }) {
   const url = absoluteUrl(input.path)
   return {
     '@context': 'https://schema.org',

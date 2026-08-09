@@ -1,0 +1,113 @@
+.section-tag {
+  margin-bottom: 0.75rem;
+  color: #2563eb;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.s-stats {
+  position: relative;
+  display: flex;
+  min-height: 100svh;
+  align-items: center;
+  padding: clamp(6.5rem, 8.5vw, 8.5rem) 2rem clamp(5rem, 7vw, 7rem);
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 10% 8%, rgba(37, 99, 235, 0.08), transparent 28rem),
+    radial-gradient(circle at 92% 82%, rgba(232, 93, 38, 0.06), transparent 24rem), #f7f9fd;
+}
+
+.stats-deco {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.stats-deco::before {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(37, 99, 235, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(37, 99, 235, 0.035) 1px, transparent 1px);
+  background-size: 52px 52px;
+  content: '';
+  mask-image: linear-gradient(to bottom, transparent, #000 20%, #000 80%, transparent);
+}
+
+.deco-watermark {
+  position: absolute;
+  right: -0.02em;
+  bottom: -0.28em;
+  color: transparent;
+  font-size: clamp(10rem, 22vw, 20rem);
+  font-weight: 900;
+  letter-spacing: -0.05em;
+  line-height: 1;
+  user-select: none;
+  -webkit-text-stroke: 1.5px rgba(37, 99, 235, 0.055);
+}
+
+.stats-inner {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.stats-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 3rem;
+  margin-bottom: 2rem;
+}
+
+.stats-heading .section-tag {
+  margin-bottom: 0.7rem;
+}
+
+.stats-headline {
+  margin: 0;
+  color: #0a1a33;
+  font-size: clamp(2rem, 3.2vw, 3rem);
+  font-weight: 900;
+  letter-spacing: -0.035em;
+  line-height: 1.15;
+}
+
+.stats-intro {
+  width: min(100%, 29rem);
+  margin: 0 0 0.15rem;
+  color: #334155;
+  font-size: 0.95rem;
+  line-height: 1.8;
+}
+
+.stats-bento {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-template-rows: minmax(200px, auto) minmax(180px, auto);
+  gap: 1rem;
+}
+
+.stats-tenure,
+.stat-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.5rem;
+}
+
+.stat-card {
+  padding: 1.45rem 1.5rem;
+  border: 1px solid rgba(203, 213, 225, 0.72);
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 12px 34px rgba(30, 58, 95, 0.07);
+  transition:
+    transform 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}

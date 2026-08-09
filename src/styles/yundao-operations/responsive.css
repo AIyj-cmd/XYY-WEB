@@ -1,0 +1,56 @@
+@media (max-width: 860px) {
+  .yd-operations__header,
+  .yd-interface,
+  .yd-flow,
+  .yd-scenarios {
+    grid-template-columns: 1fr;
+  }
+
+  .yd-operations__header {
+    gap: 1.25rem;
+  }
+
+  .yd-interface__main {
+    min-height: 19rem;
+  }
+
+  .yd-interface__side {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr;
+  }
+
+  .yd-interface__side figure {
+    min-height: 12rem;
+  }
+
+  .yd-flow,
+  .yd-scenarios {
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .yd-operations {
+    padding: 3.75rem 0;
+  }
+
+  .yd-operations__inner {
+    width: min(100% - 1.5rem, 80rem);
+  }
+
+  .yd-interface__side,
+  .yd-flow ol {
+    grid-template-columns: 1fr;
+  }
+
+  .yd-flow li,
+  .yd-flow li:nth-child(even) {
+    grid-template-columns: 2rem 6rem 1fr;
+    padding: 1rem 0;
+    border-left: 0;
+  }
+
+  .yd-scenarios article {
+    grid-template-columns: 2rem 6rem 1fr;
+  }
+}

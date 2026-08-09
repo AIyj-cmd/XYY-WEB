@@ -1,0 +1,20 @@
+---
+import { DIGITAL_PRODUCTS } from '@/lib/brand'
+import type { Service } from '@/lib/directus'
+import '@/styles/home-core-solutions.css'
+import HomeDigitalProductSection from './HomeDigitalProductSection.astro'
+import HomeSolutionSection from './HomeSolutionSection.astro'
+
+interface Props {
+  services: Service[]
+}
+
+const { services } = Astro.props
+---
+
+{services.map((service, index) => <HomeSolutionSection service={service} index={index} />)}
+{
+  DIGITAL_PRODUCTS.map((product, index) => (
+    <HomeDigitalProductSection product={product} index={index} sequence={services.length + index} />
+  ))
+}

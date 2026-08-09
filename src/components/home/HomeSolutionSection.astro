@@ -1,0 +1,99 @@
+---
+import {
+  CLOUD_WAREHOUSE_FEATURES,
+  DIGITAL_LOGISTICS_FEATURES,
+  HOME_IMAGES,
+  HOME_SOLUTION_COPY,
+  RETURN_QUALITY_FEATURES,
+  resolveHomeServiceHref,
+} from '@/data/home'
+import type { Service } from '@/lib/directus'
+import HomeServiceFeatures from './HomeServiceFeatures.astro'
+
+interface Props {
+  service: Service
+  index: number
+}
+
+const { service, index } = Astro.props
+const current = HOME_SOLUTION_COPY[index] ?? HOME_SOLUTION_COPY[0]
+const features =
+  [CLOUD_WAREHOUSE_FEATURES, RETURN_QUALITY_FEATURES, DIGITAL_LOGISTICS_FEATURES][index] ??
+  service.features.slice(0, 4)
+---
+
+<section
+  class:list={['s-service', { reverse: index % 2 === 1 }]}
+  id={`svc-${service.slug}`}
+  aria-labelledby={`svc-title-${index}`}
+>
+  <div class="svc-media">
+    {
+      index === 2 ? (
+        <div class="svc-dashboard-frame">
+          <p class="svc-dashboard-heading">OTD物流服务中台 · 实际系统界面</p>
+          <div class="svc-dashboard-viewport">
+            <img
+              src={HOME_IMAGES.svc2}
+              alt="OTD物流服务中台订单与履约数据看板"
+              class="svc-img"
+              loading="lazy"
+            />
+          </div>
+        </div>
+      ) : (
+        <img
+          src={HOME_IMAGES[`svc${index}` as 'svc0' | 'svc1']}
+          alt={service.name}
+          class="svc-img"
+          loading="lazy"
+        />
+      )
+    }
+    <div class="svc-num-badge svc-num-badge--solution">
+      <span>0{index + 1}</span><small>{current.badge}</small>
+    </div>
+    <p class="svc-media-caption">
+      {
+        current.caption.map((item, itemIndex) => (
+          <>
+            {item}
+            {itemIndex < current.caption.length - 1 && <i>｜</i>}
+          </>
+        ))
+      }
+    </p>
+  </div>
+  <div class="svc-body">
+    <p class="section-tag">核心解决方案</p>
+    <p class="svc-problem">{current.problem}</p>
+    <h2 id={`svc-title-${index}`} class="svc-title">{service.name}</h2>
+    <p class="svc-sub">{current.subtitle}</p>
+    {
+      index === 1 && (
+        <div class="svc-quality-assurance" aria-label="广检集团合作质检能力">
+          <>
+            <p>与广检集团合作 QC 团队</p>
+            <span>按 AQL 1.0–6.5 执行，质检技师经广检集团资深讲师培训认证</span>
+          </>
+        </div>
+      )
+    }
+    <p class="svc-desc">{current.description}</p>
+    <HomeServiceFeatures features={features} />
+    <div class="svc-scenarios" aria-label="适用业务场景">
+      <span>{index === 0 ? '支持业务场景' : '适用业务场景'}</span><div>
+        {current.scenarios.map((scenario) => <b>{scenario}</b>)}
+      </div>
+    </div>
+    {
+      index === 2 && (
+        <p class="svc-fee-note">
+          <strong>费用说明：</strong>
+          不收取系统使用费；实施、接口联调及定制开发费用根据具体方案确认。
+        </p>
+      )
+    }
+    <a href={resolveHomeServiceHref(service, index)} class="svc-link">{current.cta}</a>
+  </div>
+</section>

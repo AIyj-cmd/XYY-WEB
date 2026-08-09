@@ -9,13 +9,29 @@ export default [
       'node_modules/**',
       '.astro/**',
       '.playwright-cli/**',
+      '.lighthouseci/**',
       'coverage/**',
+      'output/**',
+      'test-results/**',
       'public/fonts/**',
     ],
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   ...astro.configs['flat/recommended'],
+  {
+    files: ['**/*.cjs'],
+    languageOptions: {
+      sourceType: 'commonjs',
+      globals: {
+        __dirname: 'readonly',
+        require: 'readonly',
+      },
+    },
+    rules: {
+      '@typescript-eslint/no-require-imports': 'off',
+    },
+  },
   {
     languageOptions: {
       globals: {

@@ -1,0 +1,34 @@
+---
+import type { FeatureItem, ServiceVariant, StatItem } from '@/data/service'
+import EastRadiusSignature from './signature/EastRadiusSignature.astro'
+import GuangzhouHubSignature from './signature/GuangzhouHubSignature.astro'
+import SouthNetworkSignature from './signature/SouthNetworkSignature.astro'
+import StoreRhythmSignature from './signature/StoreRhythmSignature.astro'
+import WarehouseJourneySignature from './signature/WarehouseJourneySignature.astro'
+import WarehouseShowroomSignature from './signature/WarehouseShowroomSignature.astro'
+
+interface Props {
+  variant: ServiceVariant
+  h1: string
+  contentDesc: string
+  stats: [StatItem, StatItem, StatItem, StatItem]
+  features: FeatureItem[]
+}
+
+const { variant, h1, contentDesc, stats, features } = Astro.props
+---
+
+{variant === 'journey' && <WarehouseJourneySignature h1={h1} stats={stats} features={features} />}
+{
+  variant === 'showroom' && (
+    <WarehouseShowroomSignature contentDesc={contentDesc} stats={stats} features={features} />
+  )
+}
+{variant === 'guangzhou-hub' && <GuangzhouHubSignature stats={stats} features={features} />}
+{variant === 'south-network' && <SouthNetworkSignature stats={stats} features={features} />}
+{variant === 'east-radius' && <EastRadiusSignature stats={stats} />}
+{
+  variant === 'store-rhythm' && (
+    <StoreRhythmSignature contentDesc={contentDesc} stats={stats} features={features} />
+  )
+}

@@ -1,0 +1,84 @@
+---
+import type { PublicationIssue } from '@/data/publications'
+
+interface Props {
+  issues: PublicationIssue[]
+}
+const { issues } = Astro.props
+const [latest, ...archive] = issues
+---
+
+<section id="issues" class="py-16 bg-gray-50" aria-labelledby="issues-heading">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="mb-10">
+      <p class="text-brand-orange font-bold text-[11px] tracking-[0.35em] uppercase mb-2">
+        往期回顾
+      </p>
+      <h2 id="issues-heading" class="text-3xl font-black text-navy-800">全部期次</h2>
+    </div>
+
+    <a
+      href={latest.pdf}
+      target="_blank"
+      rel="noopener"
+      class="group block bg-white rounded-2xl border border-gray-100 overflow-hidden hover:border-navy-200 hover:shadow-xl transition-all duration-300 mb-8"
+      aria-label={`阅读 ${latest.title}`}
+    >
+      <div class="flex flex-col lg:flex-row">
+        <div class="lg:w-96 flex-shrink-0 overflow-hidden" style="max-height:320px;">
+          <img
+            src={latest.cover}
+            alt={latest.title}
+            loading="eager"
+            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          />
+        </div>
+        <div class="flex-1 p-8 lg:p-12 flex flex-col justify-center">
+          <div class="flex items-center gap-3 mb-4">
+            <span class="text-xs font-bold text-white bg-brand-orange px-3 py-1 rounded-full"
+              >最新一期</span
+            >
+            <span class="text-xs text-gray-400">{latest.date}</span>
+          </div>
+          <h3 class="text-2xl font-black text-navy-800 mb-3">{latest.title}</h3>
+          <p class="text-gray-500 leading-relaxed mb-6">{latest.summary}</p>
+          <div class="text-brand-orange font-semibold text-sm">下载 PDF 阅读</div>
+        </div>
+      </div>
+    </a>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {
+        archive.map((issue) => (
+          <a
+            href={issue.pdf}
+            target="_blank"
+            rel="noopener"
+            class="group bg-white rounded-2xl border border-gray-100 overflow-hidden hover:border-navy-200 hover:shadow-lg transition-all duration-300 flex flex-col"
+            aria-label={`阅读 ${issue.title}`}
+          >
+            <div class="aspect-[3/2] overflow-hidden">
+              <img
+                src={issue.cover}
+                alt={issue.title}
+                loading="lazy"
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+            </div>
+            <div class="p-5 flex flex-col flex-1">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="text-[11px] font-bold text-brand-orange bg-orange-50 px-2 py-0.5 rounded-full">
+                  第{issue.issue}期{issue.season ? `·${issue.season}` : ''}
+                </span>
+                <span class="text-xs text-gray-400">{issue.date}</span>
+              </div>
+              <h3 class="text-base font-black text-navy-800 mb-2">{issue.title}</h3>
+              <p class="text-xs text-gray-500 leading-relaxed flex-1">{issue.summary}</p>
+              <div class="text-brand-orange text-xs font-semibold mt-4">下载阅读</div>
+            </div>
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</section>

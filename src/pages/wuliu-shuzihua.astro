@@ -1,5 +1,11 @@
 ---
 import Layout from '@/layouts/Layout.astro'
+import LogisticsDigitalChain from '@/components/digital/LogisticsDigitalChain.astro'
+import LogisticsDigitalHero from '@/components/digital/LogisticsDigitalHero.astro'
+import LogisticsDigitalModules from '@/components/digital/LogisticsDigitalModules.astro'
+import LogisticsDigitalProof from '@/components/digital/LogisticsDigitalProof.astro'
+import { createBreadcrumbSchema, createServiceSchema } from '@/lib/seo'
+import '@/styles/logistics-digital.css'
 
 const MODULES = [
   ['01', '订单协同', '统一接入平台、门店与企业订单，减少多系统切换。'],
@@ -15,101 +21,28 @@ const CHAIN = [
   ['仓内执行', '库存、作业和复核状态随处理过程更新。'],
   ['物流回传', '运单、轨迹、签收和异常结果回到业务链路。'],
 ] as const
+
+const breadcrumbSchema = createBreadcrumbSchema([
+  { name: '首页', path: '/' },
+  { name: '产品服务', path: '/product' },
+  { name: '物流数字化能力', path: '/wuliu-shuzihua' },
+])
+
+const serviceSchema = createServiceSchema({
+  name: '物流数字化能力',
+  description:
+    '新亦源以物流服务中台连接订单、库存、仓内作业、物流轨迹与签收数据，为品牌提供可查询、可追溯的履约协同能力。',
+  path: '/wuliu-shuzihua',
+})
 ---
 
 <Layout
   title="物流数字化能力｜订单、库存与履约协同"
   description="新亦源以物流服务中台连接订单、库存、仓内作业、物流轨迹与签收数据，为品牌提供可查询、可追溯的履约协同能力。"
+  jsonLd={[breadcrumbSchema, serviceSchema]}
 >
-  <section class="digital-hero" aria-labelledby="digital-heading">
-    <div class="digital-shell digital-hero__grid">
-      <header>
-        <p class="digital-kicker">LOGISTICS CONTROL LAYER</p>
-        <h1 id="digital-heading">让订单、库存与<br />履约状态在同一处协同。</h1>
-        <p class="digital-hero__lead">不是再增加一个后台，而是让品牌已有的订单、仓内与物流信息能够被看见、被关联、被回查。</p>
-        <a class="digital-action" href="/contact">咨询系统对接方案 <span aria-hidden="true">→</span></a>
-      </header>
-      <figure class="digital-hero__screen">
-        <img src="/w-fulfill-system-dashboard.png" alt="新亦源物流服务中台订单履约数据看板" width="979" height="511" fetchpriority="high" />
-        <figcaption><span>LIVE OPERATIONS</span> 订单、仓内与物流状态看板</figcaption>
-      </figure>
-    </div>
-  </section>
-
-  <section class="digital-modules" aria-labelledby="modules-heading">
-    <div class="digital-shell">
-      <header class="digital-section-heading">
-        <p class="digital-kicker">SYSTEM MODULES</p>
-        <h2 id="modules-heading">一条履约链路，<br />不是一组分散的系统。</h2>
-        <p>围绕订单从进入仓库到完成交付的过程配置能力，重点是减少状态断点，而不是堆砌工具。</p>
-      </header>
-      <div class="digital-module-grid">
-        {MODULES.map(([number, title, note], index) => <article class:list={['digital-module', { 'digital-module--featured': index === 0 }]}><span>{number}</span><h3>{title}</h3><p>{note}</p></article>)}
-      </div>
-    </div>
-  </section>
-
-  <section class="digital-chain" aria-labelledby="chain-heading">
-    <div class="digital-shell digital-chain__grid">
-      <figure><img src="/images/services/operations-system-architecture.png" alt="物流服务中台的系统协同结构示意" width="746" height="584" loading="lazy" /></figure>
-      <div>
-        <p class="digital-kicker">FROM ORDER TO FEEDBACK</p>
-        <h2 id="chain-heading">让业务状态<br />能够连续地往下走。</h2>
-        <ol>
-          {CHAIN.map(([title, note], index) => <li><span>0{index + 1}</span><div><h3>{title}</h3><p>{note}</p></div></li>)}
-        </ol>
-      </div>
-    </div>
-  </section>
-
-  <section class="digital-proof" aria-label="物流数字化能力说明">
-    <div class="digital-shell">
-      <p>系统对接方式、数据字段、权限范围及实施节奏，均以实际业务流程与项目方案为准。</p>
-      <a href="/contact">提交系统对接需求 <span aria-hidden="true">→</span></a>
-    </div>
-  </section>
+  <LogisticsDigitalHero />
+  <LogisticsDigitalModules modules={MODULES} />
+  <LogisticsDigitalChain steps={CHAIN} />
+  <LogisticsDigitalProof />
 </Layout>
-
-<style>
-  :global(:root) { --digital-ink:#10284a; --digital-blue:#2463cc; --digital-soft:#edf4ff; }
-  .digital-shell { width:min(1200px,calc(100% - 3rem)); margin:0 auto; }
-  .digital-hero { overflow:hidden; padding:10rem 0 7rem; background:#f4f7fb; }
-  .digital-hero__grid { display:grid; grid-template-columns:minmax(0,.86fr) minmax(32rem,1.14fr); gap:clamp(3rem,7vw,8rem); align-items:center; }
-  .digital-kicker { margin:0; color:var(--digital-blue); font:800 .7rem ui-monospace,SFMono-Regular,Menlo,monospace; letter-spacing:.14em; }
-  .digital-hero h1,.digital-section-heading h2,.digital-chain h2 { margin:1.35rem 0 0; color:var(--digital-ink); font-size:clamp(3rem,5.15vw,5.6rem); font-weight:900; letter-spacing:-.085em; line-height:.98; }
-  .digital-hero__lead { max-width:31rem; margin:2rem 0 0; color:#3e536f; font-size:1.08rem; line-height:1.9; }
-  .digital-action { display:inline-flex; gap:.75rem; margin-top:2.4rem; padding:.92rem 1.1rem; color:#fff; background:var(--digital-ink); font-size:.9rem; font-weight:900; text-decoration:none; }
-  .digital-action span { color:#9fc4ff; }
-  .digital-hero__screen { position:relative; margin:0; padding:1rem; background:#dce7f4; box-shadow:1.4rem 1.4rem 0 #d0def0; }
-  .digital-hero__screen::before { position:absolute; top:-.5rem; right:2rem; width:5.5rem; height:.22rem; content:''; background:#fb6330; }
-  .digital-hero__screen img { display:block; width:100%; height:auto; background:#0b1726; }
-  .digital-hero__screen figcaption { display:flex; gap:.65rem; margin-top:.85rem; color:#52647d; font-size:.8rem; }
-  .digital-hero__screen figcaption span { color:#fb6330; font-weight:900; letter-spacing:.08em; }
-  .digital-modules { padding:8.5rem 0; }
-  .digital-section-heading { display:grid; grid-template-columns:minmax(0,1fr) minmax(20rem,.8fr); gap:2rem 7rem; align-items:end; margin-bottom:4.8rem; }
-  .digital-section-heading h2 { grid-row:2; font-size:clamp(2.7rem,4.2vw,4.65rem); }
-  .digital-section-heading > p:last-child { grid-column:2; grid-row:2; max-width:27rem; margin:0; color:#44526a; font-size:1rem; line-height:1.85; }
-  .digital-module-grid { display:grid; grid-template-columns:repeat(3,1fr); border-top:1px solid #cfd9e6; border-left:1px solid #cfd9e6; }
-  .digital-module { min-height:15rem; padding:1.7rem 1.8rem; border-right:1px solid #cfd9e6; border-bottom:1px solid #cfd9e6; }
-  .digital-module--featured { color:#fff; background:var(--digital-ink); }
-  .digital-module span { color:#fb6330; font:900 .74rem ui-monospace,SFMono-Regular,Menlo,monospace; }
-  .digital-module h3 { margin:3.4rem 0 .65rem; font-size:1.38rem; font-weight:900; }
-  .digital-module p { max-width:15rem; margin:0; color:#506079; font-size:.94rem; line-height:1.75; }
-  .digital-module--featured p { color:#dbe8fa; }
-  .digital-chain { padding:8rem 0; background:var(--digital-soft); }
-  .digital-chain__grid { display:grid; grid-template-columns:minmax(22rem,.9fr) minmax(0,1fr); gap:clamp(3rem,10vw,11rem); align-items:center; }
-  .digital-chain figure { margin:0; padding:2.4rem; background:#fff; box-shadow:1rem 1rem 0 rgba(36,99,204,.12); }
-  .digital-chain figure img { display:block; width:100%; height:auto; }
-  .digital-chain h2 { font-size:clamp(2.8rem,4.3vw,4.6rem); }
-  .digital-chain ol { margin:2.7rem 0 0; padding:0; list-style:none; }
-  .digital-chain li { display:grid; grid-template-columns:3rem 1fr; gap:1.3rem; padding:1rem 0; border-top:1px solid #c9d8ed; }
-  .digital-chain li span { color:#fb6330; font-weight:900; }
-  .digital-chain h3 { margin:0; color:var(--digital-ink); font-size:1rem; font-weight:900; }
-  .digital-chain li p { margin:.35rem 0 0; color:#52647a; font-size:.95rem; line-height:1.65; }
-  .digital-proof { padding:2.2rem 0; background:var(--digital-ink); }
-  .digital-proof .digital-shell { display:flex; justify-content:space-between; gap:2rem; align-items:center; }
-  .digital-proof p { margin:0; color:#d9e6fa; font-size:.92rem; }
-  .digital-proof a { color:#fff; font-size:.9rem; font-weight:900; text-decoration:none; white-space:nowrap; }
-  .digital-proof a span { margin-left:.35rem; color:#fb6330; }
-  @media (max-width:800px) { .digital-shell { width:min(100% - 2.25rem,1200px); } .digital-hero { padding:8rem 0 5rem; } .digital-hero__grid,.digital-chain__grid { grid-template-columns:1fr; gap:3rem; } .digital-hero h1 { font-size:3.35rem; } .digital-section-heading { display:block; margin-bottom:3rem; } .digital-section-heading > p:last-child { margin-top:1.5rem; } .digital-module-grid { grid-template-columns:1fr; } .digital-module { min-height:11rem; } .digital-module h3 { margin-top:1.8rem; } .digital-chain { padding:5.5rem 0; } .digital-chain figure { padding:1.25rem; } .digital-proof .digital-shell { display:block; } .digital-proof a { display:inline-block; margin-top:1rem; } }
-</style>

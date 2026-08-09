@@ -1,0 +1,53 @@
+---
+import type { FeatureItem, StatItem } from '@/data/service'
+
+interface Props {
+  contentDesc: string
+  stats: [StatItem, StatItem, StatItem, StatItem]
+  features: FeatureItem[]
+}
+
+const { contentDesc, stats, features } = Astro.props
+---
+
+<div class="global">
+  <div class="global__map">
+    <img src="/images/services/global-map.webp" alt="跨境仓配世界航线示意" loading="lazy" />
+    <span class="global__point global__point--one">中国仓</span>
+    <span class="global__point global__point--two">海外仓</span>
+    <span class="global__point global__point--three">消费市场</span>
+    <span class="global__flight global__flight--out">正向履约</span>
+    <span class="global__flight global__flight--back">逆向回流</span>
+  </div>
+  <div class="global__tower">
+    <p>{contentDesc}</p>
+    <ol>
+      {
+        features.slice(0, 4).map(({ title, desc }, index) => (
+          <li>
+            <span>{String(index + 1).padStart(2, '0')}</span>
+            <div>
+              <>
+                <h3>{title}</h3>
+                <p>{desc}</p>
+              </>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+  <div class="global__metrics">
+    {
+      stats.map(({ stat, label, sub }) => (
+        <div>
+          <>
+            <strong>{stat}</strong>
+            <span>{label}</span>
+            <small>{sub}</small>
+          </>
+        </div>
+      ))
+    }
+  </div>
+</div>

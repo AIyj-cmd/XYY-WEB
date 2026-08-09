@@ -1,0 +1,57 @@
+---
+import { formatDate, type NewsArticle } from '@/lib/directus'
+
+interface Props {
+  related: NewsArticle[]
+}
+
+const { related } = Astro.props
+---
+
+{
+  related.length > 0 && (
+    <section class="py-12 bg-gray-50 border-t border-gray-100" aria-labelledby="related-heading">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 id="related-heading" class="text-xl font-bold text-navy-800 mb-7">
+          相关文章
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+          {related.map((item) => (
+            <article class="bg-white rounded-xl border border-gray-100 p-5 hover:border-navy-200 hover:shadow-md transition-all">
+              <span class="text-xs font-bold text-brand-orange">{item.category}</span>
+              <h3 class="text-sm font-bold text-navy-800 mt-2 mb-2 leading-snug line-clamp-2">
+                <a href={`/news/${item.slug}`} class="hover:text-brand-orange transition-colors">
+                  {item.title}
+                </a>
+              </h3>
+              <time class="text-xs text-gray-400" datetime={item.published_at}>
+                {formatDate(item.published_at)}
+              </time>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<div class="py-8 bg-white border-t border-gray-100">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6">
+    <a
+      href="/news"
+      class="inline-flex items-center text-sm font-semibold text-navy-700 hover:text-brand-orange transition-colors"
+    >
+      <svg
+        class="mr-2 w-4 h-4"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        aria-hidden="true"
+      >
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"
+        ></path>
+      </svg>
+      返回行业动态
+    </a>
+  </div>
+</div>

@@ -1,0 +1,29 @@
+---
+import type { FeatureItem, ServiceVariant, StatItem } from '@/data/service'
+import DeliveryDeskSignature from './signature/DeliveryDeskSignature.astro'
+import GlobalTowerSignature from './signature/GlobalTowerSignature.astro'
+import JitRadarSignature from './signature/JitRadarSignature.astro'
+import LiveCommandSignature from './signature/LiveCommandSignature.astro'
+
+interface Props {
+  variant: ServiceVariant
+  contentDesc: string
+  stats: [StatItem, StatItem, StatItem, StatItem]
+  features: FeatureItem[]
+}
+
+const { variant, contentDesc, stats, features } = Astro.props
+---
+
+{
+  variant === 'delivery-desk' && (
+    <DeliveryDeskSignature contentDesc={contentDesc} stats={stats} features={features} />
+  )
+}
+{
+  variant === 'global-tower' && (
+    <GlobalTowerSignature contentDesc={contentDesc} stats={stats} features={features} />
+  )
+}
+{variant === 'live-command' && <LiveCommandSignature stats={stats} features={features} />}
+{variant === 'jit-radar' && <JitRadarSignature stats={stats} features={features} />}

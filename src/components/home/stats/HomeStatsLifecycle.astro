@@ -1,0 +1,24 @@
+---
+const steps = ['品牌接入', '商品入仓', '质检分流', '库存管理', '订单履约', '退货处理', '再次销售']
+---
+
+<div class="stats-flow" aria-label="商品全生命周期闭环">
+  <div class="stats-flow-heading">
+    <span>全生命周期闭环</span>
+    <strong>一套仓配体系，覆盖商品全生命周期</strong>
+  </div>
+  <div class="stats-flow-rail" aria-hidden="true">
+    <span class="stats-flow-progress"></span>
+  </div>
+  <ol class="stats-flow-list">
+    {
+      steps.map((step, index) => (
+        <li class="stats-flow-step">
+          <span class="flow-index">{String(index + 1).padStart(2, '0')}</span>
+          <i aria-hidden="true" />
+          <strong>{step}</strong>
+        </li>
+      ))
+    }
+  </ol>
+</div>

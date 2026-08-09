@@ -1,0 +1,48 @@
+.yd-operations {
+  --ink: #132b50;
+  --signal: #e85d26;
+  --line: #dce5f1;
+  padding: clamp(4rem, 8vw, 7rem) 0;
+  background: #fff;
+  color: var(--ink);
+}
+
+.yd-operations__inner {
+  width: min(80rem, calc(100% - 2rem));
+  margin: 0 auto;
+}
+
+.yd-operations__header {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(18rem, 0.75fr);
+  gap: clamp(2rem, 7vw, 7rem);
+  align-items: end;
+  margin-bottom: clamp(2.5rem, 5vw, 4rem);
+}
+
+.yd-operations__header div > p,
+.yd-flow header > p,
+.yd-scenarios header > p {
+  margin: 0 0 0.65rem;
+  color: var(--signal);
+  font-size: 0.65rem;
+  font-weight: 900;
+  letter-spacing: 0.2em;
+}
+
+.yd-operations__header h2,
+.yd-flow h2,
+.yd-scenarios h2 {
+  margin: 0;
+  font-size: clamp(2rem, 3.7vw, 3.5rem);
+  line-height: 1.14;
+  letter-spacing: -0.04em;
+}
+
+.yd-operations__header > p,
+.yd-flow header > span {
+  margin: 0;
+  color: #607087;
+  font-size: 0.95rem;
+  line-height: 1.85;
+}

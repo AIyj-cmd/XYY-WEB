@@ -1,0 +1,52 @@
+---
+import type { FeatureItem, StatItem } from '@/data/service'
+
+interface Props {
+  contentDesc: string
+  stats: [StatItem, StatItem, StatItem, StatItem]
+  features: FeatureItem[]
+}
+
+const { contentDesc, stats, features } = Astro.props
+const phases = ['MON', 'WED', 'FRI', 'WAVE', 'RETURN']
+---
+
+<div class="stores">
+  <div class="stores__manifest">
+    <div class="stores__manifest-head">
+      <span>STORE REPLENISHMENT MANIFEST</span><b>门店补货作业单</b>
+    </div>
+    <ol>
+      {
+        features.slice(0, 5).map(({ title, desc }, index) => (
+          <li>
+            <time>{phases[index]}</time>
+            <span class="stores__dot" aria-hidden="true" />
+            <div>
+              <>
+                <h3>{title}</h3>
+                <p>{desc}</p>
+              </>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+  <aside class="stores__summary">
+    <p>{contentDesc}</p>
+    <div>
+      {
+        stats.map(({ stat, label, sub }) => (
+          <article>
+            <>
+              <strong>{stat}</strong>
+              <span>{label}</span>
+              <small>{sub}</small>
+            </>
+          </article>
+        ))
+      }
+    </div>
+  </aside>
+</div>

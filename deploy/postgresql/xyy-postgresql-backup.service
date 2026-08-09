@@ -1,0 +1,14 @@
+[Unit]
+Description=Backup the XYY Directus PostgreSQL database
+After=postgresql.service
+
+[Service]
+Type=oneshot
+User=root
+ExecStart=/usr/local/sbin/xyy-backup-directus-postgresql /var/www/xyy-cms/.env
+Nice=10
+IOSchedulingClass=best-effort
+IOSchedulingPriority=7
+
+[Install]
+WantedBy=multi-user.target

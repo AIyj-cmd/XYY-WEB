@@ -1,0 +1,61 @@
+.digital-chain {
+  padding: 8rem 0;
+  background: var(--digital-soft);
+}
+
+.digital-chain__grid {
+  display: grid;
+  grid-template-columns: minmax(22rem, 0.9fr) minmax(0, 1fr);
+  gap: clamp(3rem, 10vw, 11rem);
+  align-items: center;
+}
+
+.digital-chain figure {
+  margin: 0;
+  padding: 2.4rem;
+  background: #fff;
+  box-shadow: 1rem 1rem 0 rgba(36, 99, 204, 0.12);
+}
+
+.digital-chain figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.digital-chain h2 {
+  font-size: clamp(2.8rem, 4.3vw, 4.6rem);
+}
+
+.digital-chain ol {
+  margin: 2.7rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.digital-chain li {
+  display: grid;
+  grid-template-columns: 3rem 1fr;
+  gap: 1.3rem;
+  padding: 1rem 0;
+  border-top: 1px solid #c9d8ed;
+}
+
+.digital-chain li span {
+  color: #fb6330;
+  font-weight: 900;
+}
+
+.digital-chain h3 {
+  margin: 0;
+  color: var(--digital-ink);
+  font-size: 1rem;
+  font-weight: 900;
+}
+
+.digital-chain li p {
+  margin: 0.35rem 0 0;
+  color: #52647a;
+  font-size: 0.95rem;
+  line-height: 1.65;
+}

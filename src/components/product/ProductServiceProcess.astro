@@ -1,0 +1,30 @@
+---
+import { SERVICE_FLOW } from '@/data/product'
+---
+
+<section id="service-process" class="process-section" aria-labelledby="process-heading">
+  <div class="warehouse-shell">
+    <header class="process-heading" data-reveal="copy">
+      <p class="kicker">HOW WE WORK</p><h2 id="process-heading">
+        服务不是一条固定流水线，<br />而是一套清晰的处理规则。
+      </h2>
+    </header>
+    <ol class="editorial-process">
+      {
+        SERVICE_FLOW.map(([number, title, description]) => (
+          <li data-reveal="copy">
+            <>
+              <span>{number}</span>
+              <div>
+                <>
+                  <h3>{title}</h3>
+                  <p>{description}</p>
+                </>
+              </div>
+            </>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>

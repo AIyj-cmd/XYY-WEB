@@ -1,0 +1,117 @@
+.service-detail {
+  padding: clamp(4rem, 8vw, 7rem) 0;
+  background: #fff;
+}
+
+.service-detail__header {
+  display: grid;
+  grid-template-columns: minmax(11rem, 0.65fr) minmax(0, 1.35fr);
+  gap: clamp(2rem, 7vw, 7rem);
+  align-items: end;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.service-detail__header > div span {
+  color: #78889d;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.service-detail__layout {
+  display: grid;
+  grid-template-columns: minmax(17rem, 0.65fr) minmax(0, 1.35fr);
+  gap: clamp(3rem, 8vw, 8rem);
+  margin-top: clamp(2.5rem, 5vw, 4.5rem);
+}
+
+.service-detail__brief {
+  align-self: start;
+}
+
+.service-detail__brief > p {
+  margin: 0;
+  color: #5f7087;
+  font-size: 0.94rem;
+  line-height: 1.95;
+}
+
+.service-detail__brief nav {
+  display: grid;
+  margin-top: 2.5rem;
+  border-top: 1px solid var(--ink);
+}
+
+.service-detail__brief nav span,
+.service-detail__brief nav a {
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 0.75rem;
+}
+
+.service-detail__brief nav span {
+  color: #8b98aa;
+  font-size: 0.62rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+}
+
+.service-detail__brief nav a {
+  display: flex;
+  justify-content: space-between;
+  color: var(--ink);
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.service-detail__brief nav a::after {
+  color: var(--signal);
+  content: '↗';
+}
+
+.service-detail__features {
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--ink);
+  list-style: none;
+}
+
+.service-detail__features li {
+  display: grid;
+  grid-template-columns: 2.5rem minmax(0, 1fr) 1.5rem;
+  gap: 1rem;
+  padding: 1.4rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.service-detail__index {
+  padding-top: 0.2rem;
+  color: var(--signal);
+  font-size: 0.66rem;
+  font-weight: 900;
+}
+
+.service-detail__features h3 {
+  margin: 0 0 0.45rem;
+  font-size: 1rem;
+}
+
+.service-detail__features p {
+  margin: 0;
+  color: #65758b;
+  font-size: 0.85rem;
+  line-height: 1.75;
+}
+
+.service-detail__marker {
+  color: #b2bfce;
+  font-size: 0.8rem;
+  transition:
+    color 180ms ease,
+    transform 180ms ease;
+}
+
+.service-detail__features li:hover .service-detail__marker {
+  color: var(--signal);
+  transform: translate(0.2rem, -0.2rem);
+}

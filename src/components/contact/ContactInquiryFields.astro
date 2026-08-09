@@ -1,0 +1,30 @@
+<div>
+  <label for="service" class="mb-1.5 block text-sm font-semibold text-gray-700">咨询服务</label>
+  <select
+    id="service"
+    name="service"
+    class="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-700 outline-none transition-colors focus:border-navy-400 focus:ring-2 focus:ring-navy-100"
+  >
+    <option value="">请选择您感兴趣的服务</option>
+    <option value="cloud-warehouse">鞋服云仓</option>
+    <option value="quality-inspection">后整质检修复</option>
+    <option value="logistics-cloud">物流云</option>
+    <option value="all">全链路解决方案</option>
+    <option value="other">其他</option>
+  </select>
+</div>
+
+<div>
+  <label for="message" class="mb-1.5 block text-sm font-semibold text-gray-700">
+    需求描述 <span class="text-brand-orange" aria-hidden="true">*</span>
+  </label>
+  <textarea
+    id="message"
+    name="message"
+    required
+    maxlength="1200"
+    rows={5}
+    placeholder="请简要描述您的品类、当前规模（日均出库量/SKU数）和主要痛点，便于我们为您准备针对性方案"
+    class="w-full resize-none rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none transition-colors focus:border-navy-400 focus:ring-2 focus:ring-navy-100"
+  ></textarea>
+</div>

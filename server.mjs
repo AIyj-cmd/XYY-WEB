@@ -6,91 +6,22 @@ import compression from 'compression'
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
 import { handler as ssrHandler } from './dist/server/entry.mjs'
+import { healthHandler } from './server/health.mjs'
+import { createCanonicalRedirect, createSecurityHeaders } from './server/request-policy.mjs'
+import { getRuntimeConfig } from './server/runtime-config.mjs'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const clientDir = join(__dirname, 'dist/client')
-const PORT = process.env.PORT || 4321
-const HOST = process.env.HOST || '0.0.0.0'
-const FORMAL_ORIGIN = 'https://56xyy.com'
-const FORMAL_HOST = '56xyy.com'
-const LEGACY_HOSTS = new Set(
-  (process.env.LEGACY_DOMAINS || 'wz.tomatopia.top')
-    .split(',')
-    .map((host) => host.trim().toLowerCase())
-    .filter(Boolean)
-)
-const ENABLE_DOMAIN_REDIRECTS = process.env.ENABLE_DOMAIN_REDIRECTS === 'true'
-const LEGACY_PATH_REDIRECTS = new Map([
-  ['/index.html', '/'],
-  ['/about.html', '/about'],
-])
+const runtime = getRuntimeConfig()
 
 const app = express()
 
 app.disable('x-powered-by')
 app.set('trust proxy', 1)
 
-const IS_PRODUCTION_DOMAIN = (process.env.PUBLIC_SITE_URL ?? '') === FORMAL_ORIGIN
-
-// Collapse protocol, host, legacy-path and trailing-slash normalization into one 301.
-app.use((req, res, next) => {
-  const requestHost = req.hostname.toLowerCase()
-  const forwardedProto = (req.get('x-forwarded-proto') || req.protocol)
-    .split(',')[0]
-    .trim()
-    .toLowerCase()
-  const query = req.originalUrl.includes('?')
-    ? req.originalUrl.slice(req.originalUrl.indexOf('?'))
-    : ''
-  const mappedPath = LEGACY_PATH_REDIRECTS.get(req.path) || req.path
-  const normalizedPath =
-    mappedPath !== '/' && mappedPath.endsWith('/') ? mappedPath.slice(0, -1) : mappedPath
-
-  const isFormalHost = requestHost === FORMAL_HOST || requestHost === `www.${FORMAL_HOST}`
-  const isLegacyHost = LEGACY_HOSTS.has(requestHost)
-  const needsFormalOrigin =
-    (isFormalHost && (requestHost !== FORMAL_HOST || forwardedProto !== 'https')) ||
-    (ENABLE_DOMAIN_REDIRECTS && isLegacyHost)
-  const needsPathRedirect = normalizedPath !== req.path
-
-  if (needsFormalOrigin) {
-    return res.redirect(301, `${FORMAL_ORIGIN}${normalizedPath}${query}`)
-  }
-  if (needsPathRedirect) {
-    return res.redirect(301, `${normalizedPath}${query}`)
-  }
-  next()
-})
-
-app.use((_req, res, next) => {
-  res.setHeader('X-Content-Type-Options', 'nosniff')
-  res.setHeader('X-Frame-Options', 'SAMEORIGIN')
-  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin')
-  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()')
-  if (!IS_PRODUCTION_DOMAIN) {
-    res.setHeader('X-Robots-Tag', 'noindex, nofollow')
-  }
-  res.setHeader(
-    'Content-Security-Policy',
-    [
-      "default-src 'self'",
-      "base-uri 'self'",
-      "form-action 'self'",
-      "frame-ancestors 'self'",
-      "script-src 'self' 'unsafe-inline'",
-      "style-src 'self' 'unsafe-inline'",
-      "img-src 'self' data: https:",
-      "font-src 'self' data:",
-      "media-src 'self'",
-      `connect-src 'self' ${process.env.PUBLIC_SITE_URL ?? FORMAL_ORIGIN}`,
-    ].join('; ')
-  )
-  next()
-})
-
-app.get('/healthz', (_req, res) => {
-  res.status(200).json({ status: 'ok' })
-})
+app.use(createCanonicalRedirect(runtime))
+app.use(createSecurityHeaders(runtime))
+app.get('/healthz', healthHandler)
 
 // Serve prerendered contact page at the canonical no-slash URL
 app.get('/contact', (_req, res) => res.sendFile(join(clientDir, 'contact/index.html')))
@@ -130,6 +61,6 @@ app.use((_req, res) => {
   res.status(404).sendFile(join(clientDir, '404.html'))
 })
 
-app.listen(PORT, HOST, () => {
-  console.log(`Server started on http://${HOST}:${PORT}`)
+app.listen(runtime.port, runtime.host, () => {
+  console.log(`Server started on http://${runtime.host}:${runtime.port}`)
 })

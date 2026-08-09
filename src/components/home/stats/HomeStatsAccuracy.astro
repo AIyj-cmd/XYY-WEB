@@ -1,0 +1,33 @@
+---
+import type { HomepageStat } from '@/lib/directus'
+
+interface Props {
+  stats: HomepageStat[]
+}
+
+const { stats } = Astro.props
+---
+
+<article class="stat-card stats-accuracy" data-flow="accuracy">
+  <header class="stat-card-heading">
+    <span class="stat-card-kicker">库存协同</span>
+    <span class="stat-card-index">04</span>
+  </header>
+  {
+    stats.map(({ value, label, unit, detail }) => (
+      <div class="stat-metric stat-metric--accuracy">
+        <div class="accuracy-ring" aria-hidden="true">
+          <span />
+        </div>
+        <div class="stat-val">
+          <span class="stat-num" data-raw={value}>
+            {value}
+          </span>
+          <span class="stat-unit">{unit}</span>
+        </div>
+        <h3 class="stat-label">{label}</h3>
+        <p class="stat-detail">{label === '库存准确率' ? '条码化管理 + 系统流程协同' : detail}</p>
+      </div>
+    ))
+  }
+</article>

@@ -1,0 +1,125 @@
+.honors-section {
+  padding: 4rem 0;
+  background: #f8fafc;
+}
+
+.honors-inner {
+  width: min(72rem, calc(100% - 2rem));
+  margin: 0 auto;
+}
+
+.honors-heading {
+  margin-bottom: 2.5rem;
+  text-align: center;
+}
+
+.honors-heading p {
+  margin: 0 0 0.75rem;
+  color: #b94718;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+}
+
+.honors-heading h2 {
+  margin: 0;
+  color: #0a1a33;
+  font-size: 1.875rem;
+  font-weight: 900;
+}
+
+.honors-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.875rem;
+}
+
+.honor-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3.5rem;
+  padding: 0.875rem 1rem;
+  border: 1px solid #e8edf5;
+  border-radius: 0.75rem;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(10, 26, 51, 0.06);
+  color: #1e2d4a;
+  cursor: zoom-in;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1.5;
+  text-align: center;
+  transition:
+    box-shadow 0.2s,
+    border-color 0.2s;
+}
+
+.honor-card:hover {
+  border-color: #c5d3e8;
+  box-shadow: 0 4px 14px rgba(10, 26, 51, 0.12);
+}
+
+.honor-card:focus-visible {
+  outline: 3px solid #93c5fd;
+  outline-offset: 3px;
+}
+
+.honors-lightbox {
+  position: fixed;
+  z-index: 9999;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: rgba(0, 0, 0, 0.78);
+}
+
+.honors-lightbox[hidden] {
+  display: none;
+}
+
+.honors-lightbox img {
+  max-width: min(88vw, 860px);
+  max-height: 88vh;
+  border-radius: 6px;
+  object-fit: contain;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
+}
+
+.honors-lightbox__close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  display: grid;
+  width: 2.75rem;
+  height: 2.75rem;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.28);
+  color: #fff;
+  cursor: pointer;
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.honors-lightbox__close:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
+
+@media (max-width: 767px) {
+  .honors-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 479px) {
+  .honors-grid {
+    grid-template-columns: 1fr;
+  }
+}

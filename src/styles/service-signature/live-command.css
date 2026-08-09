@@ -1,0 +1,99 @@
+/* 直播履约指挥台 */
+.signature--live-command {
+  background: radial-gradient(circle at 7% 18%, rgb(3 157 221 / 9%), transparent 24rem), #f4f8fd;
+}
+
+.live {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(18rem, 0.65fr);
+  gap: clamp(2rem, 5vw, 4.5rem);
+  align-items: center;
+}
+
+.live__console {
+  padding: 0.8rem;
+  border: 1px solid #cbd8e8;
+  border-radius: 0.9rem;
+  background: #14263f;
+  box-shadow: 0 1.8rem 5rem rgb(19 43 80 / 18%);
+}
+
+.live__console-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.2rem 0.2rem 0.75rem;
+  color: #d9e5f3;
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.live__console-top b {
+  color: #ffb69b;
+}
+
+.live__console-top i {
+  display: inline-block;
+  width: 0.45rem;
+  height: 0.45rem;
+  margin-right: 0.3rem;
+  border-radius: 50%;
+  background: #ff6a3d;
+  box-shadow: 0 0 0 0.25rem rgb(255 106 61 / 18%);
+}
+
+.live__console > img {
+  height: auto;
+  border-radius: 0.35rem;
+}
+
+.live__signals {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+  margin-top: 0.6rem;
+}
+
+.live__signals div {
+  padding: 0.7rem;
+  border: 1px solid rgb(219 232 255 / 12%);
+  background: rgb(255 255 255 / 4%);
+}
+
+.live__signals strong,
+.live__signals span {
+  display: block;
+}
+
+.live__signals strong {
+  color: #ff8f66;
+  font-size: 1rem;
+}
+
+.live__signals span {
+  margin-top: 0.2rem;
+  color: #aebed2;
+  font-size: 0.58rem;
+}
+
+.live__timeline {
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--ink);
+  list-style: none;
+}
+
+.live__timeline li {
+  display: grid;
+  grid-template-columns: 4rem 1fr;
+  gap: 1rem;
+  padding: 1.1rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.live__timeline time {
+  color: var(--signal);
+  font-size: 0.67rem;
+  font-weight: 900;
+}

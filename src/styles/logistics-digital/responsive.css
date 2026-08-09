@@ -1,0 +1,57 @@
+@media (max-width: 800px) {
+  .digital-shell {
+    width: min(100% - 2.25rem, 1200px);
+  }
+
+  .digital-hero {
+    padding: 8rem 0 5rem;
+  }
+
+  .digital-hero__grid,
+  .digital-chain__grid {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+
+  .digital-hero h1 {
+    font-size: 3.35rem;
+  }
+
+  .digital-section-heading {
+    display: block;
+    margin-bottom: 3rem;
+  }
+
+  .digital-section-heading > p:last-child {
+    margin-top: 1.5rem;
+  }
+
+  .digital-module-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .digital-module {
+    min-height: 11rem;
+  }
+
+  .digital-module h3 {
+    margin-top: 1.8rem;
+  }
+
+  .digital-chain {
+    padding: 5.5rem 0;
+  }
+
+  .digital-chain figure {
+    padding: 1.25rem;
+  }
+
+  .digital-proof .digital-shell {
+    display: block;
+  }
+
+  .digital-proof a {
+    display: inline-block;
+    margin-top: 1rem;
+  }
+}

@@ -1,0 +1,15 @@
+/* 产品页响应式与减少动态效果 */
+@media (max-width: 1024px) {
+  .warehouse-shell {
+    width: min(100% - 3rem, 1360px);
+  }
+  .section-heading,
+  .care-heading,
+  .assurance-heading {
+    gap: 2.75rem;
+  }
+  .series-spread__copy {
+    padding-right: 2.5rem;
+    padding-left: 2.5rem;
+  }
+}

@@ -1,0 +1,37 @@
+---
+import SouthNetworkBands from './SouthNetworkBands.astro'
+import SouthNetworkNodes from './SouthNetworkNodes.astro'
+---
+
+<section
+  class="overflow-hidden border-b border-slate-200 bg-[#f5f8fe]"
+  aria-labelledby="south-network-heading"
+>
+  <div
+    class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20"
+    style="background-image:linear-gradient(rgba(30,73,141,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(30,73,141,.05) 1px,transparent 1px);background-size:32px 32px"
+  >
+    <div class="grid gap-10 lg:grid-cols-[0.75fr_1.25fr] lg:items-end">
+      <div>
+        <p class="mb-4 font-mono text-xs font-bold tracking-[0.24em] text-blue-700">
+          SOUTH CHINA NETWORK / 04 NODES
+        </p>
+        <h2
+          id="south-network-heading"
+          class="max-w-xl text-3xl font-black leading-tight text-navy-800 sm:text-4xl"
+        >
+          一张华南协同图，<br />连接四个区域节点
+        </h2>
+      </div>
+      <p class="max-w-2xl text-sm leading-7 text-slate-600 lg:justify-self-end">
+        不是把四个仓点简单并列，而是围绕品牌的货源位置、渠道订单、退货去向与线路SLA，确定每个项目实际启用的节点和协同方式。
+      </p>
+    </div>
+
+    <SouthNetworkNodes />
+    <SouthNetworkBands />
+    <p class="mt-5 text-xs leading-5 text-slate-500">
+      说明：图中节点用于展示华南多仓协同思路，具体启用仓点、地址、仓容、承运商与到达时效以项目方案及线路SLA为准。
+    </p>
+  </div>
+</section>

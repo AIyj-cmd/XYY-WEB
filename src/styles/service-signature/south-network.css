@@ -1,0 +1,76 @@
+.signature--south-network {
+  background: #f7faff;
+}
+
+.south {
+  display: grid;
+  grid-template-columns: minmax(18rem, 0.78fr) minmax(0, 1.22fr);
+  gap: 2.5rem;
+}
+
+.south__scene {
+  position: relative;
+  min-height: 36rem;
+  margin: 0;
+  overflow: hidden;
+}
+
+.south__scene figcaption {
+  position: absolute;
+  inset: auto 0 0;
+  padding: 4rem 1.5rem 1.4rem;
+  background: linear-gradient(transparent, rgb(8 20 42 / 78%));
+  color: #fff;
+}
+
+.south__scene figcaption span,
+.south__scene figcaption strong {
+  display: block;
+}
+
+.south__scene figcaption span {
+  color: #ff9369;
+  font-size: 0.65rem;
+  font-weight: 900;
+  letter-spacing: 0.15em;
+}
+
+.south__scene figcaption strong {
+  margin-top: 0.45rem;
+  font-size: 1.25rem;
+}
+
+.south__orchestra {
+  border-top: 1px solid var(--ink);
+}
+
+.south__orchestra article {
+  display: grid;
+  grid-template-columns: 4.5rem 8rem 1fr;
+  gap: 1rem;
+  align-items: start;
+  padding: 1.35rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.south__orchestra article > span {
+  display: grid;
+  height: 2rem;
+  place-items: center;
+  border: 1px solid #c9d8ec;
+  color: var(--blue);
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+
+.south__pulse,
+.east__metrics,
+.global__metrics,
+.workshop__results {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-top: 1px solid var(--ink);
+  border-bottom: 1px solid var(--line);
+}

@@ -1,0 +1,61 @@
+---
+import type { HomepageStat } from '@/lib/directus'
+import HomeStatsAccuracy from './stats/HomeStatsAccuracy.astro'
+import HomeStatsInspection from './stats/HomeStatsInspection.astro'
+import HomeStatsLifecycle from './stats/HomeStatsLifecycle.astro'
+import HomeStatsNetwork from './stats/HomeStatsNetwork.astro'
+import HomeStatsTenure from './stats/HomeStatsTenure.astro'
+import HomeStatsWarehouse from './stats/HomeStatsWarehouse.astro'
+import '@/styles/home-capability-stats.css'
+
+interface Props {
+  stats: HomepageStat[]
+}
+
+const { stats } = Astro.props
+
+const pickStats = (...positions: number[]) =>
+  positions
+    .map((position) => stats.find((stat) => stat.sort === position))
+    .filter((stat): stat is HomepageStat => Boolean(stat))
+---
+
+<section id="s-stats" class="s-stats" aria-labelledby="stats-heading">
+  <div class="stats-deco" aria-hidden="true"><div class="deco-watermark">15Y</div></div>
+  <div class="stats-inner">
+    <header class="stats-heading">
+      <div>
+        <p class="section-tag">数字说话</p>
+        <h2 id="stats-heading" class="stats-headline">
+          不只是仓库<br />更是一套鞋服供应链能力体系
+        </h2>
+      </div>
+      <p class="stats-intro">
+        覆盖仓储管理、商品质检、订单履约与逆向处理，为鞋服品牌提供稳定、高效的供应链支持。
+      </p>
+    </header>
+
+    <div class="stats-bento">
+      <HomeStatsTenure />
+      <HomeStatsWarehouse stats={pickStats(2, 4)} />
+      <HomeStatsNetwork stats={pickStats(1, 8, 3)} />
+      <HomeStatsInspection stats={pickStats(5, 6)} />
+      <HomeStatsAccuracy stats={pickStats(7)} />
+    </div>
+
+    <HomeStatsLifecycle />
+
+    <details class="stats-notes">
+      <summary>数据说明</summary>
+      <div class="stats-notes-body">
+        <p class="stats-footnote">
+          <span>数据口径</span>
+          以上为截至公司运营统计的公开核心数据，具体统计周期与项目范围以对应经营记录为准。
+        </p>
+        <p class="stats-disclaimer">
+          注：页面所涉仓储面积、质检量、库存准确率、修复成功率等数据来源于新亦源内部运营统计及企业公开资料，具体服务效果会因品类、订单规模、系统接入程度和合作模式不同而有所差异。
+        </p>
+      </div>
+    </details>
+  </div>
+</section>

@@ -1,0 +1,113 @@
+---
+import { NEWS_CATEGORIES } from '@/lib/directus'
+
+interface Props {
+  category: string
+}
+
+const { category } = Astro.props
+---
+
+<section class="relative py-16 overflow-hidden" aria-labelledby="news-hero-heading">
+  <img
+    src="/w-hq.webp"
+    alt=""
+    aria-hidden="true"
+    class="absolute inset-0 w-full h-full object-cover object-center"
+    fetchpriority="high"
+  />
+  <div
+    class="absolute inset-0"
+    style="background: linear-gradient(105deg, rgba(8,20,42,0.96) 0%, rgba(8,20,42,0.82) 45%, rgba(8,20,42,0.50) 100%);"
+    aria-hidden="true"
+  >
+  </div>
+  <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <p class="text-brand-orange font-semibold text-sm tracking-wider uppercase mb-3">行业动态</p>
+    <h1
+      id="news-hero-heading"
+      class="text-4xl lg:text-5xl font-black text-white leading-tight mb-4"
+    >
+      鞋服物流知识库
+    </h1>
+    <p class="text-lg text-navy-100 max-w-2xl">
+      聚焦鞋服仓配、退货质检与供应链运营，持续发布经核验的行业洞察与实践内容
+    </p>
+  </div>
+</section>
+
+<div class="bg-white" role="group" aria-label="文章分类筛选">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center gap-2 overflow-x-auto py-5 no-scrollbar">
+      <a
+        href="/news"
+        class:list={[
+          'flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-medium transition-colors',
+          !category
+            ? 'bg-navy-800 text-white'
+            : 'text-gray-600 hover:text-navy-800 hover:bg-gray-100',
+        ]}
+      >
+        全部
+      </a>
+      {
+        NEWS_CATEGORIES.map((item) => (
+          <a
+            href={`/news?cat=${encodeURIComponent(item)}`}
+            class:list={[
+              'flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-medium transition-colors',
+              category === item
+                ? 'bg-navy-800 text-white'
+                : 'text-gray-600 hover:text-navy-800 hover:bg-gray-100',
+            ]}
+          >
+            {item}
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</div>
+
+<div class="bg-white border-b border-gray-100">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
+    <a
+      href="/senlinqikan"
+      class="group flex items-center gap-5 bg-navy-50 hover:bg-navy-100 rounded-2xl px-6 py-4 transition-colors"
+    >
+      <div class="flex-shrink-0 w-16 h-16 rounded-xl overflow-hidden">
+        <img
+          src="/senlinqikan/covers/14.jpg"
+          alt="森林期刊"
+          class="w-full h-full object-cover"
+          loading="lazy"
+        />
+      </div>
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center gap-2 mb-1">
+          <span
+            class="text-[11px] font-bold text-brand-orange bg-orange-50 px-2 py-0.5 rounded-full"
+            >新亦源出品</span
+          >
+          <span class="text-xs text-gray-400">第1–14期</span>
+        </div>
+        <p class="text-sm font-black text-navy-800 truncate">
+          🌲 森林期刊 — 鞋服供应链行业内刊，14期内容免费下载
+        </p>
+        <p class="text-xs text-gray-400 mt-0.5 truncate hidden sm:block">
+          聚焦云仓运营、退货质检、直播仓配、行业趋势与品牌动态
+        </p>
+      </div>
+      <svg
+        class="w-5 h-5 text-gray-400 flex-shrink-0 group-hover:text-navy-600 transition-colors"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        aria-hidden="true"
+      >
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"
+        ></path>
+      </svg>
+    </a>
+  </div>
+</div>

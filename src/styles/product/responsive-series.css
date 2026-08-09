@@ -1,0 +1,91 @@
+@media (max-width: 760px) {
+  .series-list {
+    gap: 4.5rem;
+  }
+  .series-spread,
+  .series-spread--reverse {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    background: transparent;
+  }
+  .series-spread--reverse .series-spread__copy,
+  .series-spread--reverse .series-spread__image {
+    grid-column: auto;
+    grid-row: auto;
+  }
+  .series-spread__image {
+    min-height: 23rem;
+  }
+  .series-spread__copy {
+    min-height: 0;
+    padding: 2rem 0 0;
+  }
+  .series-spread ul {
+    margin-bottom: 1.9rem;
+  }
+  .series-spread--foundation {
+    border-radius: 0 0 0.8rem 0.8rem;
+  }
+  .series-spread--foundation .series-spread__copy {
+    padding: 2rem 1.25rem 2.2rem;
+  }
+  .series-spread--foundation .series-spread__number {
+    font-size: 2.5rem;
+  }
+  .series-spread--foundation .series-spread__eyebrow {
+    font-size: 0.66rem;
+  }
+  .series-spread--foundation h3 {
+    font-size: 2.6rem;
+  }
+  .series-spread--foundation ul {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem 0.6rem;
+    margin-top: 2rem;
+  }
+  .series-spread--returns .series-spread__copy,
+  .series-spread--care .series-spread__copy {
+    padding: 2rem 1.25rem 2.2rem;
+  }
+  .series-spread__steps {
+    gap: 0.4rem;
+    margin-top: 1.8rem;
+  }
+  .series-spread__step {
+    display: block;
+  }
+  .series-spread__step > span {
+    width: 1.9rem;
+    height: 1.9rem;
+    margin-bottom: 0.55rem;
+    font-size: 0.66rem;
+  }
+  .series-spread__step > i {
+    display: none;
+  }
+  .series-spread__step > strong {
+    font-size: 0.84rem;
+  }
+  .series-spread--care {
+    display: flex;
+    flex-direction: column;
+  }
+  .series-spread__care-gallery {
+    min-height: 25rem;
+    grid-template-rows: 19rem 5rem;
+  }
+  .series-spread__care-gallery-thumbs {
+    gap: 0.25rem;
+  }
+  .series-spread--care h3 {
+    font-size: 2.45rem;
+  }
+  .series-spread--care ul {
+    gap: 0.5rem;
+    margin-top: 1.8rem;
+  }
+  .series-spread--care li a > span:nth-child(2) {
+    font-size: 0.82rem;
+  }
+}

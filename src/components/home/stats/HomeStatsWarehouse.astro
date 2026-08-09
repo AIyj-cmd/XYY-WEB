@@ -1,0 +1,37 @@
+---
+import type { HomepageStat } from '@/lib/directus'
+
+interface Props {
+  stats: HomepageStat[]
+}
+
+const { stats } = Astro.props
+---
+
+<article class="stat-card stats-warehouse" data-flow="warehouse">
+  <header class="stat-card-heading">
+    <span class="stat-card-kicker">仓储规模</span>
+    <span class="stat-card-index">01</span>
+  </header>
+  <div class="stat-metrics stat-metrics--warehouse">
+    {
+      stats.map(({ value, label, unit, detail }) => (
+        <div class="stat-metric">
+          <div class="stat-val">
+            <span class="stat-num" data-raw={value}>
+              {value}
+            </span>
+            <span class="stat-unit">{unit}</span>
+          </div>
+          <h3 class="stat-label">{label}</h3>
+          <p class="stat-detail">
+            {label === '管理SKU' ? '覆盖多品类、多款式、多尺码商品管理' : detail}
+          </p>
+        </div>
+      ))
+    }
+  </div>
+  <div class="warehouse-schematic" aria-hidden="true">
+    <span></span><span></span><span></span><span></span>
+  </div>
+</article>

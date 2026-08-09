@@ -1,0 +1,30 @@
+.digital-proof {
+  padding: 2.2rem 0;
+  background: var(--digital-ink);
+}
+
+.digital-proof .digital-shell {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+  align-items: center;
+}
+
+.digital-proof p {
+  margin: 0;
+  color: #d9e6fa;
+  font-size: 0.92rem;
+}
+
+.digital-proof a {
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 900;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.digital-proof a span {
+  margin-left: 0.35rem;
+  color: #fb6330;
+}

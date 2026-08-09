@@ -1,48 +1,7 @@
 ---
 import ServiceLanding from '@/layouts/ServiceLanding.astro'
-
-const WAREHOUSE_LIST = [
-  {
-    name: '黄埔仓',
-    tag: '华南节点',
-    tagColor: 'bg-brand-orange text-white',
-    address: '广东省广州市黄埔区果园一路2号',
-    area: '与兴泰仓合计1.8万㎡',
-    traffic: '根据入仓来源和订单区域配置',
-    coverage: '线路与时效按项目确认',
-    bestFor: 'B2C 全渠道高频出库 / 退货质检中心 / 唯品会联动运营',
-  },
-  {
-    name: '兴泰仓',
-    tag: '广州节点',
-    tagColor: 'bg-navy-700 text-white',
-    address: '具体地址以双方确认信息为准',
-    area: '与黄埔仓合计1.8万㎡',
-    traffic: '服务广州及珠三角项目',
-    coverage: '广州同城最快4小时',
-    bestFor: '鞋服库存管理 / 区域发货 / 退货处理',
-  },
-  {
-    name: '新塘仓',
-    tag: '广州节点',
-    tagColor: 'bg-navy-600 text-white',
-    address: '具体地址以双方确认信息为准',
-    area: '按项目确认',
-    traffic: '服务广州及珠三角项目',
-    coverage: '全国主要城市参考次日至三日达',
-    bestFor: '区域仓配 / 门店补货 / 全渠道发货',
-  },
-  {
-    name: '华南协同仓网',
-    tag: '区域协同',
-    tagColor: 'bg-green-600 text-white',
-    address: '覆盖东莞、佛山、肇庆',
-    area: '按项目确认',
-    traffic: '结合品牌供应商与订单分布协同',
-    coverage: '具体以线路SLA为准',
-    bestFor: '跨区域库存协同 / 大促弹性产能 / 规模化仓储',
-  },
-]
+import GuangzhouWarehouseSection from '@/components/service/unique/GuangzhouWarehouseSection.astro'
+import { CLAIM_TEXT } from '@/lib/claims'
 ---
 
 <ServiceLanding
@@ -54,7 +13,7 @@ const WAREHOUSE_LIST = [
   eyebrow="广州鞋服云仓 · 珠三角区域仓配"
   h1="广州鞋服云仓：服务广州及珠三角鞋服品牌"
   h1sub="广州同城最快4小时，全国主要城市参考次日至三日达"
-  heroDesc="广州现有黄埔、兴泰、新塘3个仓点，其中黄埔仓与兴泰仓合计1.8万㎡。支持B2C、B2B、O2O全渠道仓配和退货质检；18:00前截单，当日24:00前发出。"
+  heroDesc={`广州现有黄埔、兴泰、新塘3个仓点，其中黄埔仓与兴泰仓合计1.8万㎡。支持B2C、B2B、O2O全渠道仓配和退货质检；${CLAIM_TEXT.shippingSla}。`}
   imgSrc="/index.webp"
   imgAlt="广州鞋服云仓 — 广州本地仓储配送"
   stats={[
@@ -80,7 +39,7 @@ const WAREHOUSE_LIST = [
     },
     {
       title: '广州退货质检',
-      desc: '广州及广东区域退货可按项目进入质检与后整修复流程，退货质检和二次上架24小时完成。',
+      desc: `广州及广东区域退货可按项目进入质检与后整修复流程，退货质检和二次上架${CLAIM_TEXT.returnTurnaround}完成。`,
     },
     { title: '系统接口协同', desc: '不收系统使用费；实施、联调周期和费用按项目确认。' },
     {
@@ -95,7 +54,7 @@ const WAREHOUSE_LIST = [
     },
     {
       q: '广州仓的发货和运输时效如何确认？',
-      a: '18:00前截单，当日24:00前发出。广州同城最快4小时，全国主要城市参考次日至三日达；具体以线路SLA为准。',
+      a: `${CLAIM_TEXT.shippingSla}。广州同城最快4小时，全国主要城市参考次日至三日达；具体以线路SLA为准。`,
     },
     {
       q: '广州仓适合什么类型的鞋服品牌？',
@@ -103,7 +62,7 @@ const WAREHOUSE_LIST = [
     },
     {
       q: '广州仓的规模是多少？能支持大促爆单吗？',
-      a: '广州现有黄埔、兴泰、新塘3个仓点，其中黄埔仓与兴泰仓合计1.8万㎡。公司华南地区单日运营峰值为100万单，具体项目保障方案在大促前根据预测货量确认。',
+      a: `广州现有黄埔、兴泰、新塘3个仓点，其中黄埔仓与兴泰仓合计1.8万㎡。公司华南地区运营峰值为${CLAIM_TEXT.regionalPeak}，具体项目保障方案在大促前根据预测货量确认。`,
     },
     {
       q: '新亦源广州仓收费模式是什么？',
@@ -111,57 +70,5 @@ const WAREHOUSE_LIST = [
     },
   ]}
 >
-  <section
-    slot="unique"
-    class="py-14 bg-gray-50 border-b border-gray-100"
-    aria-labelledby="warehouse-map-heading"
-  >
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <h2 id="warehouse-map-heading" class="text-xl font-black text-navy-800 mb-1 text-center">
-        广州及华南仓网协同
-      </h2>
-      <p class="text-xs text-gray-400 text-center mb-8">
-        广州现有黄埔、兴泰、新塘3个仓点，并与东莞、佛山、肇庆仓网协同
-      </p>
-      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {
-          WAREHOUSE_LIST.map(
-            ({ name, tag, tagColor, address, area, traffic, coverage, bestFor }) => (
-              <div class="bg-white rounded-xl border border-gray-200 p-5 flex flex-col gap-3">
-                <div>
-                  <span
-                    class={`inline-block text-[10px] font-black px-2 py-0.5 rounded-full mb-2 ${tagColor}`}
-                  >
-                    {tag}
-                  </span>
-                  <h3 class="font-black text-navy-800 text-base">{name}</h3>
-                  <p class="text-xs text-gray-400 mt-0.5">{address}</p>
-                </div>
-                <div class="space-y-2 text-xs">
-                  <div class="flex gap-2">
-                    <span class="text-gray-400 shrink-0 w-12">面积</span>
-                    <span class="font-bold text-navy-800">{area}</span>
-                  </div>
-                  <div class="flex gap-2">
-                    <span class="text-gray-400 shrink-0 w-12">交通</span>
-                    <span class="text-gray-600 leading-snug">{traffic}</span>
-                  </div>
-                  <div class="flex gap-2">
-                    <span class="text-gray-400 shrink-0 w-12">时效</span>
-                    <span class="text-gray-600 leading-snug">{coverage}</span>
-                  </div>
-                </div>
-                <div class="pt-2 border-t border-gray-100">
-                  <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">
-                    最适合
-                  </p>
-                  <p class="text-xs text-navy-700 font-medium leading-snug">{bestFor}</p>
-                </div>
-              </div>
-            )
-          )
-        }
-      </div>
-    </div>
-  </section>
+  <GuangzhouWarehouseSection slot="unique" />
 </ServiceLanding>

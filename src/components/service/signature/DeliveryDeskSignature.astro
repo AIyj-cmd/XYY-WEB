@@ -1,0 +1,55 @@
+---
+import type { FeatureItem, StatItem } from '@/data/service'
+
+interface Props {
+  contentDesc: string
+  stats: [StatItem, StatItem, StatItem, StatItem]
+  features: FeatureItem[]
+}
+
+const { contentDesc, stats, features } = Astro.props
+---
+
+<div class="delivery">
+  <figure class="delivery__console">
+    <div class="delivery__console-bar">
+      <span>YUNDAO DELIVERY DESK</span>
+      <b>运单管理 / 实际系统界面</b>
+    </div>
+    <img
+      src="/yundao-logistics-list.png"
+      alt="运到智能寄件平台运单管理界面"
+      loading="lazy"
+      width="926"
+      height="490"
+    />
+    <figcaption>承运商、来源平台、运输状态和最后跟踪时间集中查询</figcaption>
+  </figure>
+  <aside class="delivery__summary">
+    <p>{contentDesc}</p>
+    <div>
+      {
+        stats.map(({ stat, label, sub }) => (
+          <article>
+            <>
+              <strong>{stat}</strong>
+              <span>{label}</span>
+              <small>{sub}</small>
+            </>
+          </article>
+        ))
+      }
+    </div>
+  </aside>
+  <ol class="delivery__capabilities">
+    {
+      features.slice(0, 6).map(({ title, desc }, index) => (
+        <li>
+          <span>{String(index + 1).padStart(2, '0')}</span>
+          <h3>{title}</h3>
+          <p>{desc}</p>
+        </li>
+      ))
+    }
+  </ol>
+</div>

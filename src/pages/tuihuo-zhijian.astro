@@ -1,67 +1,25 @@
 ---
 import ServiceLanding from '@/layouts/ServiceLanding.astro'
 import { CLAIM_TEXT } from '@/lib/claims'
-
-const GRADE_TABLE = [
-  {
-    grade: 'A 级',
-    label: '良品',
-    color: 'bg-green-50 text-green-700 border-green-200',
-    dotColor: 'bg-green-500',
-    def: '符合品牌确认的良品判定规则',
-    cases: '包装完好 · 无折痕 · 吊牌齐全 · 无污损',
-    action: '按品牌授权进入可售库存',
-    sla: '纳入24小时整体流程',
-  },
-  {
-    grade: 'B+ 级',
-    label: '轻微可售',
-    color: 'bg-yellow-50 text-yellow-700 border-yellow-200',
-    dotColor: 'bg-yellow-400',
-    def: '存在品牌规则允许的轻微异常，需整理或确认',
-    cases: '轻微折痕 · 包装轻损 · 轻微皱褶',
-    action: '整理后按品牌授权上架或等待确认',
-    sla: '纳入24小时整体流程',
-  },
-  {
-    grade: 'B- 级',
-    label: '修复可售',
-    color: 'bg-orange-50 text-orange-700 border-orange-200',
-    dotColor: 'bg-brand-orange',
-    def: '存在需处理的异常，可按品牌规则进入修复流程',
-    cases: '开线 / 缝补 · 油污清洗 · 配件缺失 · 印绣脱落',
-    action: '流转修复车间，修复后二次质检通过再上架',
-    sla: '纳入24小时整体流程',
-  },
-  {
-    grade: 'C 级',
-    label: '待处置',
-    color: 'bg-red-50 text-red-700 border-red-200',
-    dotColor: 'bg-red-500',
-    def: '不符合当前可售或修复规则，等待品牌授权处置',
-    cases: '破损严重 · 结构性损坏 · 严重污损 · 异味不可去除',
-    action: '按品牌方确认方案进行隔离、退回或其他处置',
-    sla: '按约定通知',
-  },
-]
+import ReturnGradeSection from '@/components/service/unique/ReturnGradeSection.astro'
 ---
 
 <ServiceLanding
-  title="服装退货质检｜135+种异常识别，24小时二次上架｜新亦源"
+  title={`服装退货质检｜${CLAIM_TEXT.recognizableAnomalies}异常识别，${CLAIM_TEXT.returnTurnaround}二次上架｜新亦源`}
   description={`新亦源服装退货质检可识别7大类${CLAIM_TEXT.recognizableAnomalies}异常，按品牌确认规则进行A/B+/B-/C分级，退货质检与二次上架${CLAIM_TEXT.returnTurnaround}完成。`}
   slug="tuihuo-zhijian"
   variant="evidence-lab"
   breadcrumbLabel="退货质检"
   eyebrow="服装退货质检 · 与广检集团合作QC团队 · 按AQL 1.0–6.5执行"
   h1="服装退货质检与二次上架服务"
-  h1sub="135+种异常识别，A/B+/B-/C四级管理"
+  h1sub={`${CLAIM_TEXT.recognizableAnomalies}异常识别，A/B+/B-/C四级管理`}
   heroDesc={`新亦源配置与广检集团合作QC团队，按AQL 1.0–6.5执行；质检技师经广检集团资深讲师培训认证。服务覆盖拆包核对、质检分级、修复分流和二次上架，全年退货质检量${CLAIM_TEXT.returnInspectionAnnual}，退货质检与二次上架${CLAIM_TEXT.returnTurnaround}，平均拆包4小时、质检12小时。`}
   imgSrc="/w-inspect.webp"
   imgAlt="退货质检 — 专业质检团队"
   stats={[
-    { stat: '1.53亿件', label: '年退货质检量', sub: '据公司运营统计' },
-    { stat: '135+种', label: '可识别缺陷', sub: '7大类全场景覆盖' },
-    { stat: '24小时', label: '质检+二次上架', sub: '整体流程' },
+    { stat: CLAIM_TEXT.returnInspectionAnnual, label: '年退货质检量', sub: '据公司运营统计' },
+    { stat: CLAIM_TEXT.recognizableAnomalies, label: '可识别缺陷', sub: '7大类全场景覆盖' },
+    { stat: CLAIM_TEXT.returnTurnaround, label: '质检+二次上架', sub: '整体流程' },
     { stat: 'AQL 1.0–6.5', label: '质检执行范围', sub: '与广检集团合作QC团队' },
   ]}
   contentDesc={`适合需要标准化退货分级和二次上架的鞋服电商品牌及运营商。新亦源与广检集团合作QC团队，按AQL 1.0–6.5执行，可识别7大类${CLAIM_TEXT.recognizableAnomalies}异常，并按品牌确认规则进行A/B+/B-/C四级管理。退货质检与二次上架${CLAIM_TEXT.returnTurnaround}。`}
@@ -77,7 +35,7 @@ const GRADE_TABLE = [
     },
     {
       title: '鞋类专项检查',
-      desc: '检查大小脚/色差/溢胶/开胶/脏污等，鞋类修复含清洗/粘合/除味，修复成功率90%。',
+      desc: `检查大小脚/色差/溢胶/开胶/脏污等，鞋类修复含清洗/粘合/除味，修复成功率${CLAIM_TEXT.repairSuccessRate}。`,
     },
     {
       title: 'AQL质检规则',
@@ -89,7 +47,7 @@ const GRADE_TABLE = [
     },
     {
       title: '修复联动上架',
-      desc: '质检后B-级商品流转至9区修复车间，修复完成后在WMS中更新状态并重新上架，全流程24小时内闭环。',
+      desc: `质检后B-级商品流转至9区修复车间，修复完成后在WMS中更新状态并重新上架，全流程${CLAIM_TEXT.returnTurnaround}内闭环。`,
     },
   ]}
   faqs={[
@@ -107,7 +65,7 @@ const GRADE_TABLE = [
     },
     {
       q: '退货质检能识别哪些具体缺陷？',
-      a: '7大类135+种缺陷：①污渍（油污/颜色污染/霉点等）；②面料外观（起球/勾丝/破洞/褪色等）；③缝线（跳针/脱线/开线等）；④纽扣配件（缺纽扣/拉链故障/五金氧化等）；⑤后工艺印绣（印花脱落/绣花脱线/烫标翘边等）；⑥吊牌标识（吊牌缺失/水洗标脱落/条码错误等）；⑦异味（霉味/化学气味等）。',
+      a: `7大类${CLAIM_TEXT.recognizableAnomalies}缺陷：①污渍（油污/颜色污染/霉点等）；②面料外观（起球/勾丝/破洞/褪色等）；③缝线（跳针/脱线/开线等）；④纽扣配件（缺纽扣/拉链故障/五金氧化等）；⑤后工艺印绣（印花脱落/绣花脱线/烫标翘边等）；⑥吊牌标识（吊牌缺失/水洗标脱落/条码错误等）；⑦异味（霉味/化学气味等）。`,
     },
     {
       q: '新货质检（非退货）新亦源也能做吗？',
@@ -115,53 +73,5 @@ const GRADE_TABLE = [
     },
   ]}
 >
-  <section
-    slot="unique"
-    class="py-14 bg-white border-b border-gray-100"
-    aria-labelledby="grade-table-heading"
-  >
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <h2 id="grade-table-heading" class="text-xl font-black text-navy-800 mb-1 text-center">
-        A / B+ / B- / C 四级质检处置示例
-      </h2>
-      <p class="text-xs text-gray-400 text-center mb-8">
-        以下为分流示例，具体判定条件和处置方式按客户确认标准执行
-      </p>
-      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {
-          GRADE_TABLE.map(({ grade, label, color, dotColor, def, cases, action, sla }) => (
-            <div class={`rounded-xl border p-5 ${color}`}>
-              <div class="flex items-center gap-2 mb-3">
-                <div class={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${dotColor}`} />
-                <span class="font-black text-base">{grade}</span>
-                <span class="text-xs font-semibold opacity-70">{label}</span>
-              </div>
-              <p class="text-xs leading-relaxed mb-3 opacity-80">{def}</p>
-              <div class="space-y-2 text-xs">
-                <div>
-                  <span class="font-bold opacity-60 tracking-wider text-[10px] uppercase block mb-0.5">
-                    典型情况
-                  </span>
-                  <p class="opacity-75 leading-snug">{cases}</p>
-                </div>
-                <div>
-                  <span class="font-bold opacity-60 tracking-wider text-[10px] uppercase block mb-0.5">
-                    处置方案
-                  </span>
-                  <p class="font-semibold leading-snug">{action}</p>
-                </div>
-                <div class="flex items-center gap-1.5 pt-1 border-t border-current/10">
-                  <span class="font-bold opacity-50 text-[10px] uppercase">时效目标</span>
-                  <span class="font-bold">{sla}</span>
-                </div>
-              </div>
-            </div>
-          ))
-        }
-      </div>
-      <p class="text-xs text-gray-400 text-center mt-5">
-        品牌方可按需自定义各级处置规则，新亦源按约定执行并输出质检报告
-      </p>
-    </div>
-  </section>
+  <ReturnGradeSection slot="unique" />
 </ServiceLanding>

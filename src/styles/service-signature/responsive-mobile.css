@@ -1,0 +1,126 @@
+/* 签名视觉手机规则 */
+@media (max-width: 640px) {
+  .signature {
+    padding: 3.75rem 0;
+  }
+
+  .signature__inner {
+    width: min(100% - 1.5rem, 80rem);
+  }
+
+  .signature__header {
+    gap: 1.3rem;
+    margin-bottom: 2rem;
+  }
+
+  .signature__heading-wrap h2 {
+    font-size: 2rem;
+  }
+
+  .journey__instruments,
+  .south__pulse,
+  .east__metrics,
+  .global__metrics,
+  .workshop__results {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .journey__instruments div:nth-child(2),
+  .south__pulse div:nth-child(2),
+  .east__metrics div:nth-child(2),
+  .global__metrics div:nth-child(2),
+  .workshop__results div:nth-child(2) {
+    border-right: 0;
+  }
+
+  .delivery__capabilities {
+    grid-template-columns: 1fr;
+  }
+
+  .delivery__capabilities li,
+  .delivery__capabilities li:not(:nth-child(3n + 1)) {
+    min-height: 0;
+    padding: 1.2rem 0;
+    border-left: 0;
+  }
+
+  .showroom__gallery {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .showroom__gallery .showroom__hero {
+    grid-row: auto;
+    grid-column: 1 / -1;
+    min-height: 24rem;
+  }
+
+  .showroom__catalogue li,
+  .south__orchestra article {
+    grid-template-columns: 2rem 1fr;
+  }
+
+  .showroom__catalogue li p,
+  .south__orchestra article p {
+    grid-column: 2;
+  }
+
+  .hub__map,
+  .east__coverage,
+  .global__map,
+  .jit__radar {
+    min-height: 26rem;
+  }
+
+  .hub__capabilities {
+    grid-template-columns: 1fr;
+  }
+
+  .hub__capabilities article,
+  .hub__capabilities article:not(:first-child) {
+    padding: 1.1rem 0;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .east__screen,
+  .evidence__screen {
+    padding: 0.4rem;
+  }
+
+  .live__signals {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .jit__rails article {
+    grid-template-columns: 2rem 3.5rem 1fr;
+  }
+
+  .jit__rail-head {
+    grid-template-columns: 3rem 3.5rem 1fr;
+  }
+
+  .jit__line {
+    gap: 1.2rem;
+  }
+
+  .evidence__strip {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .evidence__strip figure {
+    height: 13rem;
+  }
+
+  .evidence__findings article {
+    grid-template-columns: 1.5rem 5.3rem 1fr;
+  }
+
+  .workshop__gallery {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
+
+  .workshop__gallery .workshop__wide {
+    grid-column: auto;
+  }
+}

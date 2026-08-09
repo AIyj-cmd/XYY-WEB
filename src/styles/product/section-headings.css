@@ -1,0 +1,26 @@
+/* 产品页通用章节标题 */
+.section-heading {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(17rem, 5fr);
+  gap: 4rem;
+  align-items: end;
+  margin-bottom: 5.5rem;
+}
+.section-heading h2,
+.care-heading h2,
+.process-heading h2,
+.assurance-heading h2,
+.warehouse-cta h2 {
+  margin: 0;
+  font-size: clamp(2.9rem, 5.1vw, 5rem);
+  font-weight: 900;
+  letter-spacing: -0.075em;
+  line-height: 0.98;
+}
+.section-heading > p {
+  max-width: 28rem;
+  margin: 0 0 0.25rem;
+  color: var(--body);
+  font-size: 1.03rem;
+  line-height: 1.8;
+}

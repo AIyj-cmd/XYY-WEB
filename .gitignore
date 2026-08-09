@@ -28,6 +28,9 @@ Thumbs.db
 .playwright-cli/
 test-results/
 
+# Generated Lighthouse CI reports
+.lighthouseci/
+
 # Large binary assets — serve from CDN/server directly
 resources/
 public/introduce-720p.mp4

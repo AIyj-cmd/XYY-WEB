@@ -3,8 +3,9 @@ import { defineConfig, devices } from '@playwright/test'
 const testPort = process.env.PLAYWRIGHT_PORT ?? '4399'
 const testOrigin = `http://127.0.0.1:${testPort}`
 const testEnvironment =
-  `DIRECTUS_URL=https://wz.tomatopia.top/cms ` +
-  `PUBLIC_DIRECTUS_URL=https://wz.tomatopia.top/cms ` +
+  `DIRECTUS_URL=http://127.0.0.1:1 ` +
+  `DIRECTUS_TOKEN=playwright-storage-check-only ` +
+  `PUBLIC_DIRECTUS_URL=http://127.0.0.1:1 ` +
   `PUBLIC_SITE_URL=${testOrigin} ENABLE_DOMAIN_REDIRECTS=false PORT=${testPort}`
 
 export default defineConfig({
@@ -24,7 +25,7 @@ export default defineConfig({
   ],
   webServer: {
     command: `${testEnvironment} npm run build && ${testEnvironment} npm run start`,
-    url: `${testOrigin}/healthz`,
+    url: testOrigin,
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
   },

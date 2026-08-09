@@ -1,0 +1,22 @@
+@media (prefers-reduced-motion: reduce) {
+  .stats-tenure,
+  .stat-card,
+  .stats-flow-step {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .tenure-route-progress {
+    stroke-dashoffset: 0 !important;
+  }
+
+  .stats-flow-progress {
+    transform: none !important;
+  }
+
+  .tenure-route-node,
+  .stats-flow-step > i {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

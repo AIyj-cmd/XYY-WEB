@@ -1,0 +1,85 @@
+@media (max-width: 760px) {
+  .warehouse-shell {
+    width: calc(100% - 1.5rem);
+  }
+  .warehouse-hero {
+    min-height: 42rem;
+  }
+  .warehouse-hero::after {
+    background: linear-gradient(180deg, rgba(8, 18, 25, 0.72) 0%, rgba(8, 18, 25, 0.8) 100%);
+  }
+  .warehouse-hero__copy {
+    max-width: none;
+  }
+  .warehouse-hero__copy .kicker {
+    margin-bottom: 0.9rem;
+  }
+  .warehouse-hero h1 {
+    font-size: 4.6rem;
+  }
+  .warehouse-hero h2 {
+    margin-top: 1.2rem;
+    font-size: 1.8rem;
+  }
+  .warehouse-hero__copy > p:not(.kicker) {
+    margin-top: 1.4rem;
+  }
+  .warehouse-hero__actions {
+    margin-top: 2rem;
+  }
+  .service-series,
+  .care-section,
+  .process-section,
+  .assurance-section {
+    padding: 5rem 0;
+  }
+  .section-heading,
+  .care-heading,
+  .assurance-heading,
+  .warehouse-cta__inner {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+    margin-bottom: 3rem;
+  }
+  .section-heading h2,
+  .care-heading h2,
+  .process-heading h2,
+  .assurance-heading h2,
+  .warehouse-cta h2 {
+    font-size: 2.65rem;
+  }
+  .series-intro {
+    display: block;
+    margin-bottom: 3.8rem;
+  }
+  .series-intro__copy {
+    padding-bottom: 0;
+  }
+  .series-intro h2 {
+    font-size: 2.75rem;
+  }
+  .series-intro__divider {
+    margin-top: 1.7rem;
+  }
+  .series-intro__explore {
+    margin-top: 2.4rem;
+  }
+  .series-intro__collage {
+    min-height: 24rem;
+    margin-top: 3rem;
+  }
+  .series-intro__main-image {
+    height: 23rem;
+    margin-left: 2rem !important;
+  }
+  .series-intro__detail-image {
+    bottom: 1rem;
+    left: -0.5rem;
+    width: 12rem;
+    height: 9.5rem;
+  }
+  .series-intro__vertical-label,
+  .series-intro__vertical-mark {
+    display: none;
+  }
+}

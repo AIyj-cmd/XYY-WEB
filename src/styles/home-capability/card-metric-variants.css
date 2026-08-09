@@ -1,0 +1,70 @@
+.stats-warehouse {
+  grid-area: 1 / 4 / 2 / 8;
+  background:
+    linear-gradient(135deg, rgba(219, 234, 254, 0.72), rgba(255, 255, 255, 0.96) 62%), #fff;
+}
+
+.stats-network {
+  grid-area: 1 / 8 / 2 / 13;
+  background:
+    radial-gradient(circle at 87% 24%, rgba(37, 99, 235, 0.12), transparent 9rem), #eef4ff;
+}
+
+.stats-inspection {
+  grid-area: 2 / 4 / 3 / 10;
+  background:
+    radial-gradient(circle at 0 100%, rgba(251, 146, 60, 0.12), transparent 13rem),
+    linear-gradient(135deg, #fffaf7, #fff);
+}
+
+.stats-accuracy {
+  grid-area: 2 / 10 / 3 / 13;
+  border-color: rgba(147, 197, 253, 0.22);
+  color: #fff;
+  background:
+    radial-gradient(circle at 100% 0, rgba(96, 165, 250, 0.38), transparent 12rem),
+    linear-gradient(145deg, #123d75, #0a1a33 72%);
+  box-shadow: 0 18px 42px rgba(10, 26, 51, 0.18);
+}
+
+.stats-accuracy .stat-card-kicker {
+  color: #93c5fd;
+}
+
+.stats-accuracy .stat-card-index {
+  color: rgba(219, 234, 254, 0.55);
+}
+
+.stats-warehouse .stat-metric:first-child .stat-num {
+  font-size: clamp(2.7rem, 4.3vw, 4.15rem);
+}
+
+.stats-warehouse .stat-metric:last-child .stat-num {
+  font-size: clamp(2.25rem, 3.3vw, 3.2rem);
+  text-shadow: 0 8px 20px rgba(232, 93, 38, 0.14);
+}
+
+.stats-network .stat-num {
+  font-size: clamp(1.65rem, 2.4vw, 2.45rem);
+}
+
+.stats-network .stat-unit {
+  font-size: 0.72rem;
+}
+
+.stats-accuracy .stat-num {
+  color: #fff;
+  font-size: clamp(2.65rem, 3.7vw, 3.8rem);
+}
+
+.stats-accuracy .stat-unit {
+  color: #fb923c;
+}
+
+.stats-accuracy .stat-label {
+  color: #fff;
+}
+
+.stats-accuracy .stat-detail {
+  color: #bfdbfe;
+}

@@ -1,0 +1,115 @@
+.stats-tenure {
+  grid-area: 1 / 1 / 3 / 4;
+  min-height: 396px;
+  padding: 1.5rem;
+  border: 1px solid rgba(147, 197, 253, 0.2);
+  color: #fff;
+  background:
+    linear-gradient(145deg, rgba(37, 99, 235, 0.22), transparent 48%),
+    linear-gradient(160deg, #07162c 0%, #102d55 100%);
+  box-shadow: 0 24px 60px rgba(10, 26, 51, 0.16);
+}
+
+.stats-tenure::before {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(147, 197, 253, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(147, 197, 253, 0.06) 1px, transparent 1px);
+  background-size: 28px 28px;
+  content: '';
+  mask-image: linear-gradient(to bottom, #000, transparent 84%);
+  pointer-events: none;
+}
+
+.tenure-topline {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  color: #bfdbfe;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.11em;
+}
+
+.tenure-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #dbeafe;
+  letter-spacing: 0.03em;
+}
+
+.tenure-status i {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  background: #fb923c;
+  box-shadow: 0 0 0 4px rgba(251, 146, 60, 0.12);
+}
+
+.tenure-value {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: flex-end;
+  gap: 0.55rem;
+  margin-top: 1.3rem;
+}
+
+.tenure-value strong {
+  color: #fff;
+  font-size: clamp(4.6rem, 7vw, 6.5rem);
+  font-weight: 900;
+  letter-spacing: -0.08em;
+  line-height: 0.82;
+}
+
+.tenure-value span {
+  padding-bottom: 0.35rem;
+  color: #60a5fa;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+}
+
+.tenure-label {
+  position: relative;
+  z-index: 2;
+  margin: 0.85rem 0 0;
+  color: #fff;
+  font-size: clamp(1.05rem, 1.45vw, 1.25rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.tenure-coverage {
+  position: relative;
+  z-index: 2;
+  margin-top: 1.25rem;
+}
+
+.tenure-coverage ul {
+  display: grid;
+  grid-template-columns: repeat(2, max-content);
+  gap: 0.55rem 0.95rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tenure-coverage li {
+  color: #dbeafe;
+  font-size: 0.74rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.tenure-coverage li::before {
+  margin-right: 0.35rem;
+  color: #fb923c;
+  content: '•';
+}

@@ -1,21 +1,7 @@
 ---
 import ServiceLanding from '@/layouts/ServiceLanding.astro'
-
-const FORWARD_STEPS = [
-  { num: '01', title: '国内工厂 / 品牌方', desc: '备货生产完成' },
-  { num: '02', title: '广州华南仓', desc: '按客户及目标市场确认标准质检\nAQL 1.0–6.5抽检' },
-  { num: '03', title: '换标 / 换包装', desc: '多语言洗水唛\n合规包装处理' },
-  { num: '04', title: '跨境物流协同', desc: '协同EMS及跨境专线资源\n责任按合同约定' },
-  { num: '05', title: '海外市场', desc: '目标国消费者\n或海外仓收货' },
-]
-
-const REVERSE_STEPS = [
-  { num: '01', title: '海外退货', desc: '消费者退回\n或平台统一退回' },
-  { num: '02', title: '国际物流回流', desc: '跨境专线揽收\n运抵广州' },
-  { num: '03', title: '广州仓拆包入库', desc: '按订单核对\nWMS 录入' },
-  { num: '04', title: '项目质检', desc: '按约定规则抽检\n输出项目报告' },
-  { num: '05', title: '处置上架', desc: '按跨境项目与客户要求\n确认分级和处置' },
-]
+import CrossBorderFlowSection from '@/components/service/unique/CrossBorderFlowSection.astro'
+import { CLAIM_TEXT } from '@/lib/claims'
 ---
 
 <ServiceLanding
@@ -32,7 +18,7 @@ const REVERSE_STEPS = [
   imgAlt="跨境云仓 — 跨境电商仓储发货"
   stats={[
     { stat: '千万件级', label: '处理规模', sub: 'Urbanic合作案例' },
-    { stat: '24小时', label: '国内仓退货处理', sub: '质检与二次处理' },
+    { stat: CLAIM_TEXT.returnTurnaround, label: '国内仓退货处理', sub: '质检与二次处理' },
     { stat: 'AQL 1.0–6.5', label: '合作QC团队', sub: '按客户及目标市场标准执行' },
     { stat: 'EMS等', label: '物流资源协同', sub: '含跨境专线资源' },
   ]}
@@ -53,7 +39,7 @@ const REVERSE_STEPS = [
     },
     {
       title: '跨境退货处理',
-      desc: '包裹到达新亦源国内仓后，质检与二次处理24小时完成；具体分级与处置标准按跨境项目和客户要求确认。',
+      desc: `包裹到达新亦源国内仓后，质检与二次处理${CLAIM_TEXT.returnTurnaround}完成；具体分级与处置标准按跨境项目和客户要求确认。`,
     },
     {
       title: '物流资源协同',
@@ -71,7 +57,7 @@ const REVERSE_STEPS = [
     },
     {
       q: '跨境退货从海外回来后怎么处理？',
-      a: '包裹到达新亦源国内仓后，可按项目完成拆包入库、订单与SKU核对、质检分级、修复分流和二次上架，质检与二次处理24小时完成。跨境运输、报关和清关不计入该仓内时效，责任以合同约定为准；具体分级与处置标准按跨境项目和客户要求确认。',
+      a: `包裹到达新亦源国内仓后，可按项目完成拆包入库、订单与SKU核对、质检分级、修复分流和二次上架，质检与二次处理${CLAIM_TEXT.returnTurnaround}完成。跨境运输、报关和清关不计入该仓内时效，责任以合同约定为准；具体分级与处置标准按跨境项目和客户要求确认。`,
     },
     {
       q: '跨境换标换包装需要注意什么？',
@@ -87,74 +73,5 @@ const REVERSE_STEPS = [
     },
   ]}
 >
-  <section
-    slot="unique"
-    class="py-14 bg-gray-50 border-b border-gray-100"
-    aria-labelledby="chain-heading"
-  >
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <h2 id="chain-heading" class="text-xl font-black text-navy-800 mb-1 text-center">
-        跨境全链路服务路径
-      </h2>
-      <p class="text-xs text-gray-400 text-center mb-10">
-        正向发货 + 退货逆向，广州华南仓为核心枢纽
-      </p>
-      <div class="grid lg:grid-cols-2 gap-6">
-        <!-- 正向发货 -->
-        <div class="bg-white rounded-xl border border-gray-200 p-6">
-          <div class="flex items-center gap-2 mb-5">
-            <div class="w-1.5 h-5 rounded-full bg-brand-orange"></div>
-            <h3 class="font-black text-navy-800">正向发货链路</h3>
-            <span class="ml-auto text-xs text-gray-400">国内 → 海外</span>
-          </div>
-          <div class="space-y-3">
-            {
-              FORWARD_STEPS.map(({ num, title, desc }, i) => (
-                <div class="flex items-start gap-3">
-                  <div class="flex flex-col items-center flex-shrink-0">
-                    <div class="w-7 h-7 rounded-full bg-brand-orange/10 border border-brand-orange/20 flex items-center justify-center flex-shrink-0">
-                      <span class="text-[10px] font-black text-brand-orange">{num}</span>
-                    </div>
-                    {i < FORWARD_STEPS.length - 1 && (
-                      <div class="w-px h-4 bg-brand-orange/20 mt-1" />
-                    )}
-                  </div>
-                  <div class="pb-1">
-                    <p class="text-sm font-bold text-navy-800">{title}</p>
-                    <p class="text-xs text-gray-400 leading-snug whitespace-pre-line">{desc}</p>
-                  </div>
-                </div>
-              ))
-            }
-          </div>
-        </div>
-        <!-- 逆向退货 -->
-        <div class="bg-white rounded-xl border border-gray-200 p-6">
-          <div class="flex items-center gap-2 mb-5">
-            <div class="w-1.5 h-5 rounded-full bg-navy-600"></div>
-            <h3 class="font-black text-navy-800">退货逆向链路</h3>
-            <span class="ml-auto text-xs text-gray-400">海外 → 国内</span>
-          </div>
-          <div class="space-y-3">
-            {
-              REVERSE_STEPS.map(({ num, title, desc }, i) => (
-                <div class="flex items-start gap-3">
-                  <div class="flex flex-col items-center flex-shrink-0">
-                    <div class="w-7 h-7 rounded-full bg-navy-100 border border-navy-200 flex items-center justify-center flex-shrink-0">
-                      <span class="text-[10px] font-black text-navy-600">{num}</span>
-                    </div>
-                    {i < REVERSE_STEPS.length - 1 && <div class="w-px h-4 bg-navy-200 mt-1" />}
-                  </div>
-                  <div class="pb-1">
-                    <p class="text-sm font-bold text-navy-800">{title}</p>
-                    <p class="text-xs text-gray-400 leading-snug whitespace-pre-line">{desc}</p>
-                  </div>
-                </div>
-              ))
-            }
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+  <CrossBorderFlowSection slot="unique" />
 </ServiceLanding>

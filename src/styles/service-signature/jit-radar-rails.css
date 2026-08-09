@@ -1,0 +1,53 @@
+.jit__rails {
+  border-top: 1px solid var(--ink);
+}
+
+.jit__rail-head {
+  display: grid;
+  grid-template-columns: 4rem 5rem 1fr;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.jit__rail-head span {
+  grid-column: 2;
+  color: var(--signal);
+  font-size: 0.64rem;
+  font-weight: 900;
+}
+
+.jit__rail-head span:last-child {
+  grid-column: 3;
+  color: var(--blue);
+}
+
+.jit__rails article {
+  display: grid;
+  grid-template-columns: 3rem 5rem 1fr;
+  gap: 0.8rem;
+  padding: 1.1rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.jit__time {
+  color: #8492a4;
+  font-size: 0.64rem;
+  font-weight: 900;
+}
+
+.jit__line {
+  display: flex;
+  gap: 2rem;
+  padding-top: 0.35rem;
+}
+
+.jit__line i {
+  width: 0.65rem;
+  height: 0.65rem;
+  border: 2px solid var(--signal);
+  border-radius: 50%;
+}
+
+.jit__line i:last-child {
+  border-color: var(--blue);
+}

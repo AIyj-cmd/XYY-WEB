@@ -1,67 +1,28 @@
 ---
 import ServiceLanding from '@/layouts/ServiceLanding.astro'
 import { CLAIM_TEXT } from '@/lib/claims'
-
-const REPAIR_PHOTOS = [
-  {
-    src: '/images/services/repair-handwash.webp',
-    alt: '服装清污处理工位',
-    label: '清污工位',
-    code: 'ZONE 04',
-  },
-  {
-    src: '/images/services/repair-stitch.webp',
-    alt: '服装缝补修复工位',
-    label: '缝补工位',
-    code: 'ZONE 06',
-  },
-  {
-    src: '/images/services/repair-ironing.webp',
-    alt: '服装手工熨烫工位',
-    label: '熨烫工位',
-    code: 'ZONE 02',
-  },
-]
-
-const REPAIR_ZONES = [
-  '自动熨烫',
-  '手工熨烫',
-  '异味晾晒',
-  '手工清污',
-  '配饰修复',
-  '缝补',
-  '鞋类修复',
-  '干湿洗',
-  '补换标识',
-]
-
-const REPAIR_FLOW = [
-  { num: '01', title: '质检分流', desc: '识别异常并依据客户标准进入相应处理流程' },
-  { num: '02', title: '工艺评估', desc: '结合材质、瑕疵类型与验收规则确认处理方式' },
-  { num: '03', title: '专区修复', desc: '工单流转至对应专业工位，关键状态留痕' },
-  { num: '04', title: '二次质检', desc: '按品牌确认标准复检，再进入后续授权流程' },
-]
+import RepairWorkshopSection from '@/components/service/unique/RepairWorkshopSection.astro'
 ---
 
 <ServiceLanding
-  title="服装瑕疵修复｜9大修复专区，修复成功率90%｜新亦源"
+  title={`服装瑕疵修复｜9大修复专区，修复成功率${CLAIM_TEXT.repairSuccessRate}｜新亦源`}
   description={`新亦源服装瑕疵修复设9个专区，覆盖清污、缝补、配饰、熨烫、鞋类修复、干湿洗和补换标识；修复成功率${CLAIM_TEXT.repairSuccessRate}，完成后二次质检。`}
   slug="houzheng-xiufu"
   variant="repair-workshop"
   breadcrumbLabel="后整修复"
   eyebrow="服装瑕疵修复 · 九大专业分区"
   h1="服装瑕疵修复与二次上架"
-  h1sub="瑕疵修复成功率90%，专属9区修复分区"
+  h1sub={`瑕疵修复成功率${CLAIM_TEXT.repairSuccessRate}，专属9区修复分区`}
   heroDesc="根据新亦源运营统计，后整修复服务分为6类，实际设置9个专业修复专区；修复完成后进行二次质检，并按客户确认标准进入后续流程。"
   imgSrc="/w-repair.webp"
   imgAlt="后整修复 — 专业服装瑕疵修复"
   stats={[
-    { stat: '90%', label: '瑕疵修复成功率', sub: '专属9区修复分区' },
-    { stat: '135+种', label: '可识别缺陷', sub: '7大类缺陷覆盖' },
-    { stat: '24小时', label: '质检+二次上架', sub: '整体流程' },
-    { stat: '1.53亿件', label: '年退货质检量', sub: '公司运营统计' },
+    { stat: CLAIM_TEXT.repairSuccessRate, label: '瑕疵修复成功率', sub: '专属9区修复分区' },
+    { stat: CLAIM_TEXT.recognizableAnomalies, label: '可识别缺陷', sub: '7大类缺陷覆盖' },
+    { stat: CLAIM_TEXT.returnTurnaround, label: '质检+二次上架', sub: '整体流程' },
+    { stat: CLAIM_TEXT.returnInspectionAnnual, label: '年退货质检量', sub: '公司运营统计' },
   ]}
-  contentDesc="适合需要对退货商品进行分级、修复和二次利用的鞋服品牌。后整修复服务分为6类，实际设置自动熨烫、手工熨烫、异味晾晒、手工清污、配饰修复、缝补、鞋类修复、干湿洗、补换标识9个专业修复专区。根据新亦源运营统计，修复成功率90%；具体标准按客户销售渠道定制。"
+  contentDesc={`适合需要对退货商品进行分级、修复和二次利用的鞋服品牌。后整修复服务分为6类，实际设置自动熨烫、手工熨烫、异味晾晒、手工清污、配饰修复、缝补、鞋类修复、干湿洗、补换标识9个专业修复专区。根据新亦源运营统计，修复成功率${CLAIM_TEXT.repairSuccessRate}；具体标准按客户销售渠道定制。`}
   featuresLabel="修复服务类型"
   features={[
     {
@@ -100,7 +61,7 @@ const REPAIR_FLOW = [
     },
     {
       q: '后整修复和退货质检是什么关系？',
-      a: '两者通常联动运行。退货质检先对商品进行缺陷识别和A/B+/B-/C分级，需要处理的商品会流转至后整修复专区；修复完成后再做二次质检。具体分级与处置标准按客户销售渠道定制，质检、修复与二次上架在24小时流程内完成。',
+      a: `两者通常联动运行。退货质检先对商品进行缺陷识别和A/B+/B-/C分级，需要处理的商品会流转至后整修复专区；修复完成后再做二次质检。具体分级与处置标准按客户销售渠道定制，质检、修复与二次上架在${CLAIM_TEXT.returnTurnaround}流程内完成。`,
     },
     {
       q: '高档服装（真丝/羽绒/皮草）可以修复吗？',
@@ -112,95 +73,5 @@ const REPAIR_FLOW = [
     },
   ]}
 >
-  <section
-    slot="unique"
-    class="overflow-hidden border-b border-slate-200 bg-white"
-    aria-labelledby="repair-workshop-heading"
-  >
-    <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
-      <div class="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-end">
-        <div>
-          <p class="mb-4 font-mono text-xs font-bold tracking-[0.24em] text-brand-orange">
-            REPAIR WORKSHOP / 09 ZONES
-          </p>
-          <h2
-            id="repair-workshop-heading"
-            class="max-w-2xl text-3xl font-black leading-tight text-navy-800 sm:text-4xl"
-          >
-            修复不是一张服务清单，<br />而是一条有工位的作业线
-          </h2>
-        </div>
-        <p class="max-w-md text-sm leading-7 text-slate-600">
-          从质检结果到工艺评估，再进入对应修复专区；处理完成后统一二次质检，是否进入后续流程以客户确认标准为准。
-        </p>
-      </div>
-
-      <div class="mt-12 grid overflow-hidden border-y border-slate-200 sm:grid-cols-3">
-        {
-          REPAIR_PHOTOS.map(({ src, alt, label, code }, index) => (
-            <figure
-              class={`group relative min-h-72 overflow-hidden ${index > 0 ? 'border-t border-white/40 sm:border-l sm:border-t-0' : ''}`}
-            >
-              <img
-                src={src}
-                alt={alt}
-                loading="lazy"
-                decoding="async"
-                width="1200"
-                height="800"
-                class="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
-              />
-              <div class="absolute inset-0 bg-gradient-to-t from-navy-900/85 via-navy-900/5 to-transparent" />
-              <figcaption class="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-5 text-white">
-                <span class="text-lg font-black">{label}</span>
-                <span class="font-mono text-[10px] font-bold tracking-[0.18em] text-white/70">
-                  {code}
-                </span>
-              </figcaption>
-            </figure>
-          ))
-        }
-      </div>
-
-      <div class="mt-10 overflow-x-auto border-y border-slate-200">
-        <div class="flex min-w-max">
-          {
-            REPAIR_ZONES.map((zone, index) => (
-              <div
-                class={`flex w-36 flex-none items-center gap-3 py-5 pr-5 ${index > 0 ? 'border-l border-slate-200 pl-5' : ''}`}
-              >
-                <span class="font-mono text-[10px] font-black text-brand-orange">
-                  {String(index + 1).padStart(2, '0')}
-                </span>
-                <span class="text-sm font-bold text-navy-800">{zone}</span>
-              </div>
-            ))
-          }
-        </div>
-      </div>
-
-      <div class="mt-14 grid gap-8 lg:grid-cols-[14rem_1fr]">
-        <div>
-          <p class="font-mono text-[10px] font-bold tracking-[0.2em] text-blue-700">
-            WORK ORDER FLOW
-          </p>
-          <h3 class="mt-3 text-2xl font-black text-navy-800">一件商品的<br />修复工单</h3>
-          <p class="mt-4 text-xs leading-5 text-slate-500">
-            修复结果以二次质检为准，具体工艺、分级与处置方式按客户销售渠道定制。
-          </p>
-        </div>
-        <ol class="border-b border-slate-200">
-          {
-            REPAIR_FLOW.map(({ num, title, desc }) => (
-              <li class="grid grid-cols-[3rem_7rem_1fr] items-start border-t border-slate-200 py-5 sm:grid-cols-[4rem_10rem_1fr]">
-                <span class="font-mono text-xs font-black text-brand-orange">{num}</span>
-                <strong class="text-sm font-black text-navy-800">{title}</strong>
-                <span class="text-sm leading-6 text-slate-600">{desc}</span>
-              </li>
-            ))
-          }
-        </ol>
-      </div>
-    </div>
-  </section>
+  <RepairWorkshopSection slot="unique" />
 </ServiceLanding>

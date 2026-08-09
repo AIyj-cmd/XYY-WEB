@@ -1,0 +1,73 @@
+@media (max-width: 860px) {
+  .service-detail__header,
+  .service-detail__layout,
+  .service-cta__inner {
+    grid-template-columns: 1fr;
+  }
+
+  .service-detail__layout {
+    gap: 2.5rem;
+  }
+
+  .service-detail--showroom .service-detail__brief,
+  .service-detail--evidence-lab .service-detail__brief,
+  .service-detail--repair-workshop .service-detail__brief {
+    grid-template-columns: 1fr;
+  }
+
+  .service-detail--showroom .service-detail__features,
+  .service-detail--repair-workshop .service-detail__features {
+    grid-template-columns: 1fr;
+  }
+
+  .service-detail--showroom .service-detail__features li:nth-child(odd),
+  .service-detail--repair-workshop .service-detail__features li:nth-child(odd),
+  .service-detail--showroom .service-detail__features li:nth-child(even),
+  .service-detail--repair-workshop .service-detail__features li:nth-child(even) {
+    padding-right: 0;
+    padding-left: 0;
+    border-right: 0;
+  }
+
+  .service-cta__number {
+    display: none;
+  }
+
+  .service-cta__actions {
+    max-width: 18rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .service-detail,
+  .service-faq {
+    padding: 3.75rem 0;
+  }
+
+  .service-detail__inner,
+  .service-faq__inner,
+  .service-cta__inner {
+    width: min(100% - 1.5rem, 80rem);
+  }
+
+  .service-detail__features li,
+  .service-detail--guangzhou-hub .service-detail__features li,
+  .service-detail--south-network .service-detail__features li,
+  .service-detail--evidence-lab .service-detail__features li {
+    grid-template-columns: 2rem minmax(0, 1fr);
+  }
+
+  .service-detail__marker {
+    display: none;
+  }
+
+  .service-detail--store-rhythm .service-detail__features li,
+  .service-detail--live-command .service-detail__features li,
+  .service-detail--jit-radar .service-detail__features li {
+    grid-template-columns: 0.6rem 2rem minmax(0, 1fr);
+  }
+
+  .service-faq__list > div {
+    padding: 1.25rem 0;
+  }
+}

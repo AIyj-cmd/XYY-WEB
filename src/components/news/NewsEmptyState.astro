@@ -1,0 +1,50 @@
+---
+interface Props {
+  category?: string
+}
+
+const { category = '' } = Astro.props
+---
+
+<section class="py-16 bg-gray-50" aria-labelledby="news-empty-heading">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div
+      class="bg-white border border-gray-100 rounded-3xl px-6 py-12 sm:px-12 text-center shadow-sm"
+    >
+      <div
+        class="mx-auto mb-6 w-16 h-16 rounded-2xl bg-navy-50 flex items-center justify-center"
+        aria-hidden="true"
+      >
+        <svg class="w-8 h-8 text-navy-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="1.7"
+            d="M19 14V6a2 2 0 00-2-2H7a2 2 0 00-2 2v12a2 2 0 002 2h6m6-6l-5 5m0 0h4.5a.5.5 0 00.5-.5V14m-5 5v-4.5a.5.5 0 01.5-.5H19"
+          ></path>
+        </svg>
+      </div>
+      <p class="text-brand-orange font-bold text-xs tracking-wider uppercase mb-3">内容发布中心</p>
+      <h2 id="news-empty-heading" class="text-2xl sm:text-3xl font-black text-navy-800 mb-4">
+        {category ? `“${category}”暂无已发布文章` : '当前暂无已发布文章'}
+      </h2>
+      <p class="text-gray-500 leading-relaxed max-w-2xl mx-auto mb-8">
+        内容团队正在整理鞋服仓配、质检与履约实践，审核通过的文章会在这里自动发布。
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+        <a
+          href="/product"
+          class="inline-flex items-center justify-center px-6 py-3 bg-navy-800 hover:bg-navy-700 text-white font-bold rounded-xl text-sm transition-colors"
+        >
+          查看产品服务
+        </a>
+        <a
+          href="/contact"
+          class="inline-flex items-center justify-center px-6 py-3 border border-gray-300 hover:border-navy-400 text-gray-700 hover:text-navy-800 font-bold rounded-xl text-sm transition-colors"
+        >
+          提交希望了解的选题
+        </a>
+      </div>
+    </div>
+  </div>
+</section>

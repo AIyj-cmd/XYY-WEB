@@ -1,0 +1,49 @@
+.faq-stacked {
+  margin: 0;
+  border-top: 1px solid #dce5f1;
+}
+
+.faq-stacked__item {
+  padding: 1.5rem 0;
+  border-bottom: 1px solid #dce5f1;
+}
+
+.faq-stacked__item dt {
+  display: grid;
+  grid-template-columns: 2rem minmax(0, 1fr);
+  gap: 0.75rem;
+  align-items: start;
+}
+
+.faq-stacked__item dt span {
+  padding-top: 0.15rem;
+  color: #e85d26;
+  font-size: 0.6875rem;
+  line-height: 1.5;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+
+.faq-stacked__item dt strong {
+  color: #132b50;
+  font-size: 1rem;
+  line-height: 1.65;
+  font-weight: 800;
+}
+
+.faq-stacked__item dd {
+  margin: 0.75rem 0 0 2.75rem;
+  color: #334155;
+  font-size: 0.875rem;
+  line-height: 1.85;
+}
+
+@media (max-width: 640px) {
+  .faq-stacked__item {
+    padding: 1.25rem 0;
+  }
+
+  .faq-stacked__item dd {
+    margin-top: 0.65rem;
+  }
+}

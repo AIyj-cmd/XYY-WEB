@@ -1,13 +1,13 @@
-import { mkdir, writeFile } from 'node:fs/promises'
-import { join } from 'node:path'
-import { URL } from 'node:url'
-
 import {
   APPROVED_HOMEPAGE_STATS,
   APPROVED_SERVICES,
   APPROVED_WAREHOUSES,
   LEGACY_WAREHOUSE_NAMES,
 } from './approved-cms-content.mjs'
+import { createDirectusAdminClient } from './lib/directus-admin.mjs'
+import { assertSync, createCmsSyncRuntime } from './lib/cms-sync-runtime.mjs'
+import { fixedCollectionMatches, syncFixedCollection } from './lib/fixed-collection-sync.mjs'
+import { syncWarehouses, warehousesMatchApproved } from './lib/warehouse-sync.mjs'
 
 const baseUrl = (process.env.DIRECTUS_URL || '').replace(/\/+$/, '')
 const token = process.env.DIRECTUS_TOKEN || ''
@@ -18,224 +18,74 @@ if (!baseUrl || !token) {
   process.exit(1)
 }
 
-const endpointLabel = new URL(baseUrl).host
-const headers = {
-  Authorization: `Bearer ${token}`,
-  'Content-Type': 'application/json',
-}
-let changeCount = 0
-
-async function api(method, path, body) {
-  const response = await fetch(`${baseUrl}${path}`, {
-    method,
-    headers,
-    body: body === undefined ? undefined : JSON.stringify(body),
-  })
-  const text = await response.text()
-  const payload = text ? JSON.parse(text) : null
-
-  if (!response.ok) {
-    const message = payload?.errors?.[0]?.message || `${response.status} ${response.statusText}`
-    throw new Error(`${method} ${path}: ${message}`)
-  }
-
-  return payload?.data ?? payload
-}
-
-async function readCollection(collection) {
-  return api('GET', `/items/${collection}?limit=-1&sort=sort`)
-}
-
-function isEqual(left, right) {
-  return JSON.stringify(left) === JSON.stringify(right)
-}
-
-function buildPatch(current, target, fields) {
-  return Object.fromEntries(
-    fields
-      .filter((field) => !isEqual(current[field], target[field]))
-      .map((field) => [field, target[field]])
-  )
-}
-
-async function patchRecord(collection, current, target, fields) {
-  const patch = buildPatch(current, target, fields)
-  if (Object.keys(patch).length === 0) return current
-
-  changeCount += 1
-  console.log(
-    `${apply ? 'apply' : 'plan '} PATCH ${collection}/${current.id}: ${Object.keys(patch).join(', ')}`
-  )
-  if (!apply) return { ...current, ...patch }
-
-  return api('PATCH', `/items/${collection}/${current.id}`, patch)
-}
-
-async function createWarehouse(target) {
-  changeCount += 1
-  console.log(`${apply ? 'apply' : 'plan '} CREATE warehouses: ${target.name}`)
-  if (!apply) return { id: `new:${target.name}`, ...target }
-
-  const draft = await api('POST', '/items/warehouses', { ...target, status: 'draft' })
-  return api('PATCH', `/items/warehouses/${draft.id}`, { status: 'published' })
-}
-
-function assert(condition, message) {
-  if (!condition) throw new Error(message)
-}
-
-async function writeBackup(snapshot) {
-  if (!apply) return
-
-  const backupDir = join(process.cwd(), 'output', 'cms-sync')
-  const safeHost = endpointLabel.replace(/[^a-zA-Z0-9.-]+/g, '_')
-  const timestamp = new Date().toISOString().replace(/[:.]/g, '-')
-  const backupPath = join(backupDir, `${safeHost}-${timestamp}.json`)
-  await mkdir(backupDir, { recursive: true })
-  await writeFile(backupPath, `${JSON.stringify(snapshot, null, 2)}\n`, { mode: 0o600 })
-  console.log(`backup ${backupPath}`)
-}
-
-async function syncFixedCollection(collection, records, targets, keyFields, fields) {
-  assert(records.length === targets.length, `${collection}: expected ${targets.length} records`)
-
-  for (const target of targets) {
-    const matches = records.filter((record) =>
-      keyFields.every((field) => record[field] === target[field])
-    )
-    assert(matches.length === 1, `${collection}: target ${target.id} did not match exactly once`)
-    await patchRecord(collection, matches[0], { ...target, status: 'published' }, [
-      'status',
-      ...fields,
-    ])
-  }
-}
-
-function warehousePayload(target, status = 'published') {
-  const fields = Object.fromEntries(Object.entries(target).filter(([field]) => field !== 'aliases'))
-  return { ...fields, status }
-}
-
-async function syncWarehouses(records) {
-  const matchedIds = new Set()
-
-  for (const target of APPROVED_WAREHOUSES) {
-    const matches = records.filter((record) => target.aliases.includes(record.name))
-    assert(matches.length <= 1, `warehouses: duplicate alias match for ${target.name}`)
-
-    if (matches.length === 0) {
-      const created = await createWarehouse(warehousePayload(target))
-      matchedIds.add(created.id)
-      continue
-    }
-
-    const current = matches[0]
-    assert(!matchedIds.has(current.id), `warehouses: record ${current.id} matched twice`)
-    matchedIds.add(current.id)
-    await patchRecord('warehouses', current, warehousePayload(target), [
-      'status',
-      'sort',
-      'name',
-      'city',
-      'since',
-      'address',
-      'park',
-      'rent',
-      'height',
-      'highlight',
-    ])
-  }
-
-  const unmatchedPublished = records.filter(
-    (record) => record.status === 'published' && !matchedIds.has(record.id)
-  )
-  for (const record of unmatchedPublished) {
-    assert(
-      LEGACY_WAREHOUSE_NAMES.includes(record.name),
-      `warehouses: refusing to archive unexpected published record "${record.name}"`
-    )
-    await patchRecord('warehouses', record, { status: 'archived' }, ['status'])
-  }
-}
-
-function warehouseMatchesTarget(record, target) {
-  const desired = warehousePayload(target)
-  return Object.entries(desired).every(([field, value]) => isEqual(record[field], value))
-}
+const directus = createDirectusAdminClient({ baseUrl, token })
+const runtime = createCmsSyncRuntime({ directus, apply })
 
 async function verify() {
-  const stats = await readCollection('homepage_stats')
-  const services = await readCollection('services')
-  const warehouses = await readCollection('warehouses')
-  const publishedWarehouses = warehouses.filter((record) => record.status === 'published')
+  const stats = await directus.readCollection('homepage_stats')
+  const services = await directus.readCollection('services')
+  const warehouses = await directus.readCollection('warehouses')
 
-  assert(
-    APPROVED_HOMEPAGE_STATS.every((target) => {
-      const record = stats.find((item) => item.id === target.id)
-      return (
-        record &&
-        Object.entries({ ...target, status: 'published' }).every(([field, value]) =>
-          isEqual(record[field], value)
-        )
-      )
-    }),
+  assertSync(
+    fixedCollectionMatches(
+      stats,
+      APPROVED_HOMEPAGE_STATS,
+      ['sort'],
+      ['sort', 'value', 'label', 'unit', 'detail']
+    ),
     'homepage_stats verification failed'
   )
-  assert(
-    APPROVED_SERVICES.every((target) => {
-      const record = services.find((item) => item.id === target.id && item.slug === target.slug)
-      return (
-        record &&
-        Object.entries({ ...target, status: 'published' }).every(([field, value]) =>
-          isEqual(record[field], value)
-        )
-      )
-    }),
+  assertSync(
+    fixedCollectionMatches(
+      services,
+      APPROVED_SERVICES,
+      ['slug'],
+      ['sort', 'slug', 'icon', 'name', 'subtitle', 'description', 'features']
+    ),
     'services verification failed'
   )
-  assert(
-    publishedWarehouses.length === APPROVED_WAREHOUSES.length &&
-      APPROVED_WAREHOUSES.every((target) => {
-        const record = publishedWarehouses.find((item) => item.name === target.name)
-        return record && warehouseMatchesTarget(record, target)
-      }),
+  assertSync(
+    warehousesMatchApproved(warehouses, APPROVED_WAREHOUSES, LEGACY_WAREHOUSE_NAMES),
     'warehouses verification failed'
   )
-  assert(
-    warehouses
-      .filter((record) => LEGACY_WAREHOUSE_NAMES.includes(record.name))
-      .every((record) => record.status === 'archived'),
-    'legacy warehouse verification failed'
-  )
 }
 
-console.log(`${apply ? 'Applying' : 'Dry run for'} reviewed CMS content on ${endpointLabel}`)
+console.log(
+  `${apply ? 'Applying' : 'Dry run for'} reviewed CMS content on ${directus.endpointLabel}`
+)
 
 const snapshot = {
-  homepage_stats: await readCollection('homepage_stats'),
-  services: await readCollection('services'),
-  warehouses: await readCollection('warehouses'),
+  homepage_stats: await directus.readCollection('homepage_stats'),
+  services: await directus.readCollection('services'),
+  warehouses: await directus.readCollection('warehouses'),
 }
-await writeBackup(snapshot)
+await runtime.writeBackup(snapshot)
 
-await syncFixedCollection(
-  'homepage_stats',
-  snapshot.homepage_stats,
-  APPROVED_HOMEPAGE_STATS,
-  ['id'],
-  ['sort', 'value', 'label', 'unit', 'detail']
-)
-await syncFixedCollection(
-  'services',
-  snapshot.services,
-  APPROVED_SERVICES,
-  ['id', 'slug'],
-  ['sort', 'slug', 'icon', 'name', 'subtitle', 'description', 'features']
-)
-await syncWarehouses(snapshot.warehouses)
+await syncFixedCollection({
+  collection: 'homepage_stats',
+  records: snapshot.homepage_stats,
+  targets: APPROVED_HOMEPAGE_STATS,
+  keyFields: ['sort'],
+  fields: ['sort', 'value', 'label', 'unit', 'detail'],
+  runtime,
+})
+await syncFixedCollection({
+  collection: 'services',
+  records: snapshot.services,
+  targets: APPROVED_SERVICES,
+  keyFields: ['slug'],
+  fields: ['sort', 'slug', 'icon', 'name', 'subtitle', 'description', 'features'],
+  runtime,
+})
+await syncWarehouses({
+  records: snapshot.warehouses,
+  targets: APPROVED_WAREHOUSES,
+  legacyNames: LEGACY_WAREHOUSE_NAMES,
+  runtime,
+})
 
 if (apply) {
   await verify()
-  console.log(`Verified reviewed CMS content on ${endpointLabel}`)
+  console.log(`Verified reviewed CMS content on ${directus.endpointLabel}`)
 }
-console.log(`${changeCount} change(s) ${apply ? 'applied' : 'planned'}`)
+console.log(`${runtime.getChangeCount()} change(s) ${apply ? 'applied' : 'planned'}`)

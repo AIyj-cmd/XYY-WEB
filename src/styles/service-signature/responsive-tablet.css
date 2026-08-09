@@ -1,0 +1,53 @@
+/* 签名视觉平板规则 */
+@media (max-width: 960px) {
+  .signature__header,
+  .journey,
+  .showroom,
+  .hub,
+  .south,
+  .east,
+  .stores,
+  .delivery,
+  .global,
+  .live,
+  .jit,
+  .evidence__bench,
+  .workshop {
+    grid-template-columns: 1fr;
+  }
+
+  .journey__scene {
+    position: relative;
+    top: auto;
+  }
+
+  .journey__scene img {
+    aspect-ratio: 16 / 9;
+  }
+
+  .hub__capabilities {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .south__scene {
+    min-height: 28rem;
+  }
+
+  .stores__summary {
+    padding: 0;
+    border-left: 0;
+  }
+
+  .delivery__summary {
+    padding: 0;
+    border-left: 0;
+  }
+
+  .evidence__strip {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .evidence__strip figure:nth-child(even) {
+    margin-top: 0;
+  }
+}

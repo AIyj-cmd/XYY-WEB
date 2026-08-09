@@ -1,0 +1,30 @@
+---
+interface Props {
+  modules: ReadonlyArray<readonly [string, string, string]>
+}
+
+const { modules } = Astro.props
+---
+
+<section class="digital-modules" aria-labelledby="modules-heading">
+  <div class="digital-shell">
+    <header class="digital-section-heading">
+      <p class="digital-kicker">SYSTEM MODULES</p>
+      <h2 id="modules-heading">一条履约链路，<br />不是一组分散的系统。</h2>
+      <p>围绕订单从进入仓库到完成交付的过程配置能力，重点是减少状态断点，而不是堆砌工具。</p>
+    </header>
+    <div class="digital-module-grid">
+      {
+        modules.map(([number, title, note], index) => (
+          <article class:list={['digital-module', { 'digital-module--featured': index === 0 }]}>
+            <>
+              <span>{number}</span>
+              <h3>{title}</h3>
+              <p>{note}</p>
+            </>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>

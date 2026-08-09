@@ -1,0 +1,70 @@
+---
+import { ABOUT_WAREHOUSE_TIERS } from '@/data/about'
+import { BRAND } from '@/lib/brand'
+
+const tiers = ABOUT_WAREHOUSE_TIERS.map((tier) => ({
+  ...tier,
+  location: tier.locationKey === 'south' ? BRAND.locations.south.address : tier.location,
+}))
+---
+
+<section
+  class="flex flex-col lg:flex-row overflow-hidden"
+  style="min-height: 580px;"
+  aria-labelledby="warehouse-heading"
+>
+  <div
+    class="relative flex-shrink-0 w-full lg:w-[52%] bg-navy-50 flex items-center justify-center overflow-hidden"
+    style="min-height: 360px;"
+  >
+    <img
+      src="/china-map-warehouse-light.svg"
+      alt=""
+      class="absolute inset-0 w-full h-full object-contain opacity-90 p-10 lg:p-16"
+      aria-hidden="true"
+    />
+    <div class="absolute bottom-8 left-8 lg:left-10">
+      <p class="text-navy-800/40 text-[10px] tracking-[0.3em] uppercase font-bold mb-1">仓网布局</p>
+      <p class="text-navy-800/70 text-xs">华南 · 华东 · 华中，区域仓网协同</p>
+    </div>
+  </div>
+
+  <div class="flex-1 bg-white flex flex-col justify-center px-12 lg:px-20 py-14">
+    <p class="text-[#B94718] font-bold text-[11px] tracking-[0.35em] uppercase mb-3">仓网布局</p>
+    <h2 id="warehouse-heading" class="text-3xl font-black text-navy-800 mb-2">
+      CDC/RDC/FDC三级仓网，覆盖华南、华东与华中节点
+    </h2>
+    <p class="text-gray-400 text-sm leading-relaxed mb-10 max-w-sm">
+      CDC + RDC + FDC 三级仓网，按项目配置仓点、库存与订单路由
+    </p>
+
+    <div class="space-y-0 divide-y divide-gray-100">
+      {
+        tiers.map(({ abbr, name, accent, desc, location, tags }) => (
+          <div class="py-6 flex items-start gap-5">
+            <div class="flex-shrink-0 w-12 text-center pt-0.5">
+              <span class="text-xl font-black" style={`color: ${accent}`}>
+                {abbr}
+              </span>
+              <div class="text-[10px] text-gray-400 font-medium mt-0.5">{name}</div>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-gray-600 text-sm leading-relaxed mb-2">{desc}</p>
+              <p class="text-xs text-gray-400 mb-2.5">{location}</p>
+              <div class="flex flex-wrap gap-1.5">
+                {tags.map((tag) => (
+                  <span
+                    class="text-[11px] font-medium px-2 py-0.5 rounded-full border"
+                    style={`color: ${accent}; border-color: ${accent}33; background: ${accent}0d`}
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

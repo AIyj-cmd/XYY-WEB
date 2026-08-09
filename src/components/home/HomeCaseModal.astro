@@ -1,0 +1,58 @@
+---
+import { serializeJsonForScript } from '@/lib/safe-json'
+import '../../styles/home-case-modal.css'
+
+interface Props {
+  caseDetails: Record<string, unknown>
+}
+
+const { caseDetails } = Astro.props
+---
+
+<div
+  id="case-modal"
+  class="case-modal"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="modal-title"
+  hidden
+>
+  <div class="modal-backdrop" aria-hidden="true"></div>
+  <div class="modal-panel">
+    <div class="modal-hero">
+      <img id="modal-hero-img" alt="" class="modal-hero-img" loading="eager" hidden />
+      <div class="modal-hero-overlay" aria-hidden="true"></div>
+      <div class="modal-hero-content">
+        <span id="modal-category" class="modal-category-tag"></span>
+        <h2 id="modal-title" class="modal-title"></h2>
+      </div>
+      <button class="modal-close" aria-label="关闭" type="button">
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          aria-hidden="true"
+        >
+          <path d="M18 6 6 18M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p id="modal-desc" class="modal-desc"></p>
+      <div id="modal-stats" class="modal-stats"></div>
+      <a id="modal-detail-link" class="modal-detail-link" href="/cases">查看完整案例 →</a>
+    </div>
+  </div>
+</div>
+
+<script
+  is:inline
+  id="case-data"
+  type="application/json"
+  set:html={serializeJsonForScript(caseDetails)}
+/>
+<script src="../../scripts/home-case-modal.ts"></script>

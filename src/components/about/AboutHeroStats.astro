@@ -1,0 +1,27 @@
+---
+import { ABOUT_STATS } from '@/lib/brand'
+---
+
+<div
+  id="about-stats-bar"
+  class="absolute bottom-0 left-0 right-0 border-t border-white/10"
+  style="background: rgba(8,20,42,0.60); backdrop-filter: blur(12px);"
+>
+  <div
+    class="mx-auto grid max-w-7xl grid-cols-2 gap-x-6 gap-y-4 px-8 py-4 sm:grid-cols-4 lg:grid-cols-8 lg:gap-x-4 lg:px-12"
+  >
+    {
+      ABOUT_STATS.map(({ value, unit, label }) => (
+        <div class="flex flex-col items-center gap-1 text-center">
+          <div class="flex items-baseline gap-1">
+            <span class="about-stat-num text-lg font-black text-white" data-raw={value}>
+              {value}
+            </span>
+            <span class="text-[11px] font-medium leading-none text-white/45">{unit}</span>
+          </div>
+          <span class="text-[11px] text-white/30">{label}</span>
+        </div>
+      ))
+    }
+  </div>
+</div>

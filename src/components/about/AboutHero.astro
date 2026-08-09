@@ -1,0 +1,55 @@
+---
+import { CLAIM_TEXT } from '@/lib/claims'
+import AboutHeroControls from './AboutHeroControls.astro'
+import AboutHeroMedia from './AboutHeroMedia.astro'
+import AboutHeroStats from './AboutHeroStats.astro'
+---
+
+<section
+  class="relative overflow-hidden"
+  style="height: 72vh; min-height: 560px; max-height: 760px;"
+  aria-labelledby="about-hero-heading"
+>
+  <AboutHeroMedia />
+
+  <div
+    class="relative z-10 h-full max-w-7xl mx-auto px-8 lg:px-12 pb-24 lg:pb-20 flex flex-col justify-center"
+  >
+    <div class="max-w-xl">
+      <p class="text-brand-orange font-bold text-[11px] tracking-[0.4em] uppercase mb-5">
+        关于我们
+      </p>
+      <h1
+        id="about-hero-heading"
+        class="text-5xl lg:text-[3.75rem] font-black text-white leading-[1.08] mb-6"
+      >
+        <span class="block text-[0.45em] font-bold tracking-[0.05em] text-brand-orange mb-2"
+          >新亦源供应链</span
+        >
+        让每个品牌<br />
+        都有专业的<br />
+        <span class="text-brand-orange">出货能力</span>
+      </h1>
+      <p class="text-white/55 text-sm leading-relaxed max-w-sm mb-10">
+        从仓储质检到履约交付，我们为鞋服品牌提前解决出货链路中的复杂问题。<br />
+        15年、{CLAIM_TEXT.employeeCount}名员工、{
+          CLAIM_TEXT.warehouseArea
+        }直营仓储，只为一件事：让发货更准确、高效、快捷。
+      </p>
+
+      <AboutHeroControls />
+    </div>
+  </div>
+
+  <div
+    class="hidden lg:flex absolute right-12 xl:right-20 bottom-28 max-w-md justify-end pointer-events-none z-10"
+  >
+    <p
+      id="hero-caption"
+      class="inline-block bg-[#08142A]/50 backdrop-blur-sm text-white text-lg font-semibold leading-snug px-5 py-2.5 rounded-lg text-right opacity-0 transition-opacity duration-300"
+    >
+    </p>
+  </div>
+
+  <AboutHeroStats />
+</section>

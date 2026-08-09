@@ -1,47 +1,12 @@
 ---
 import ServiceLanding from '@/layouts/ServiceLanding.astro'
 import { CLAIM_TEXT } from '@/lib/claims'
-
-const COMPARE_ROWS = [
-  { item: '订单规模', b2c: '单笔1–5件，SKU少', b2b: '单笔几十到数千件，多SKU混发' },
-  { item: '发货频率', b2c: '高频少量，全天持续波次', b2b: '低频大批，按补货周期或季节集中发' },
-  { item: '包装要求', b2c: '快递箱+面单', b2b: '整件/吊装+分货明细单+货架标签' },
-  { item: '分货逻辑', b2c: '按订单号一对一拣货', b2b: '按门店/客户分区拣货，分色分码分规格' },
-  { item: '物流方式', b2c: '快递（顺丰/圆通等）', b2b: '零担/整车/同城货运 + 快递混合' },
-  { item: '系统对接', b2c: '平台奇门接口', b2b: 'ERP/进销存系统 + 自定义分货规则' },
-]
-
-const SCENARIO_ITEMS = [
-  {
-    title: '连锁门店补货',
-    desc: '品牌在全国有100+门店，每周/每月按门店发补货，每店分色分码分规格，附分货明细单和货架条码标签。',
-    tag: '连锁零售',
-    tagColor: 'bg-brand-orange/10 text-brand-orange',
-  },
-  {
-    title: '批发商/加盟商铺货',
-    desc: '季节换新时向全国加盟商或批发客户集中铺货，单客户数百到数千件，需按客户分仓分拣，整件打包出库。',
-    tag: '批发铺货',
-    tagColor: 'bg-navy-100 text-navy-700',
-  },
-  {
-    title: '线下展会/快闪发货',
-    desc: '品牌参展或开快闪店，需在指定时间前将样品/展品/销售备货发至指定展馆或临时仓，时间节点严格。',
-    tag: '展会备货',
-    tagColor: 'bg-green-100 text-green-600',
-  },
-  {
-    title: '电商+门店一盘货',
-    desc: '同一库存同时服务线上B2C订单和线下门店补货，库存统一在新亦源仓管理，按需切换B2C/B2B出库模式。',
-    tag: 'O2O融合',
-    tagColor: 'bg-purple-100 text-purple-600',
-  },
-]
+import B2BComparisonSection from '@/components/service/unique/B2BComparisonSection.astro'
 ---
 
 <ServiceLanding
   title="B2B门店仓配｜连锁补货、分货与全渠道一盘货｜新亦源"
-  description="新亦源B2B门店仓配覆盖6000+城市，为连锁品牌、批发商、加盟商提供门店补货配送、分色分码分货、货架标签、分货明细单及ERP系统对接等全流程服务。"
+  description={`新亦源B2B门店仓配覆盖${CLAIM_TEXT.coveredCities}城市，为连锁品牌、批发商、加盟商提供门店补货配送、分色分码分货、货架标签、分货明细单及ERP系统对接等全流程服务。`}
   slug="b2b-mendian-cangpei"
   variant="store-rhythm"
   breadcrumbLabel="B2B门店仓配"
@@ -52,8 +17,8 @@ const SCENARIO_ITEMS = [
   imgSrc="/w-hanging3.webp"
   imgAlt="B2B门店仓配 — 连锁门店批量补货配送"
   stats={[
-    { stat: '140+', label: '合作品牌', sub: '含多家连锁零售品牌' },
-    { stat: '6000+', label: '覆盖城市', sub: '公司运营统计' },
+    { stat: CLAIM_TEXT.partnerBrands, label: '合作品牌', sub: '含多家连锁零售品牌' },
+    { stat: CLAIM_TEXT.coveredCities, label: '覆盖城市', sub: '公司运营统计' },
     { stat: '分色分码', label: '精准分货', sub: '按门店SKU规格独立分拣' },
     { stat: '不收', label: '系统使用费', sub: '接口实施和定制费用按方案确认' },
   ]}
@@ -108,71 +73,5 @@ const SCENARIO_ITEMS = [
     },
   ]}
 >
-  <section
-    slot="unique"
-    class="py-14 bg-white border-b border-gray-100"
-    aria-labelledby="b2b-compare-heading"
-  >
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <h2 id="b2b-compare-heading" class="text-xl font-black text-navy-800 mb-1 text-center">
-        B2B门店仓配 vs B2C电商仓配 — 核心差异
-      </h2>
-      <p class="text-xs text-gray-400 text-center mb-8">
-        两种模式作业逻辑不同，新亦源同时支持，一盘货统一管理
-      </p>
-
-      <div class="overflow-x-auto rounded-xl border border-gray-200 mb-10">
-        <table class="w-full text-sm text-left">
-          <thead>
-            <tr class="bg-navy-800 text-white">
-              <th class="px-5 py-3.5 font-bold text-xs tracking-wider w-28">对比项</th>
-              <th class="px-5 py-3.5 font-bold text-xs tracking-wider">
-                <span class="inline-block px-2 py-0.5 rounded bg-white/20 mr-1 text-[10px]"
-                  >B2C</span
-                >电商发货
-              </th>
-              <th class="px-5 py-3.5 font-bold text-xs tracking-wider">
-                <span
-                  class="inline-block px-2 py-0.5 rounded bg-brand-orange/20 text-brand-orange mr-1 text-[10px]"
-                  >B2B</span
-                >门店补货
-              </th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-gray-100 bg-white">
-            {
-              COMPARE_ROWS.map(({ item, b2c, b2b }) => (
-                <tr class="hover:bg-orange-50/20 transition-colors">
-                  <td class="px-5 py-4 font-bold text-navy-700 text-xs align-top whitespace-nowrap">
-                    {item}
-                  </td>
-                  <td class="px-5 py-4 text-gray-500 text-xs leading-relaxed align-top">{b2c}</td>
-                  <td class="px-5 py-4 text-gray-600 text-xs leading-relaxed align-top font-medium">
-                    {b2b}
-                  </td>
-                </tr>
-              ))
-            }
-          </tbody>
-        </table>
-      </div>
-
-      <h3 class="text-sm font-bold text-navy-800 mb-4">典型B2B仓配使用场景</h3>
-      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {
-          SCENARIO_ITEMS.map(({ title, desc, tag, tagColor }) => (
-            <div class="bg-gray-50 rounded-xl border border-gray-200 p-4 flex flex-col gap-3">
-              <span
-                class={`inline-block text-[10px] font-black px-2 py-0.5 rounded-full w-fit ${tagColor}`}
-              >
-                {tag}
-              </span>
-              <h4 class="font-black text-navy-800 text-sm">{title}</h4>
-              <p class="text-xs text-gray-500 leading-snug">{desc}</p>
-            </div>
-          ))
-        }
-      </div>
-    </div>
-  </section>
+  <B2BComparisonSection slot="unique" />
 </ServiceLanding>

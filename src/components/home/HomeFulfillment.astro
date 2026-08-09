@@ -1,0 +1,42 @@
+---
+import { FULFILLMENT_STEPS } from '@/data/home'
+import '@/styles/home-fulfillment.css'
+---
+
+<section id="s-fulfillment" class="s-fulfillment" aria-labelledby="fulfillment-heading">
+  <div class="fulfillment-header">
+    <p class="section-tag">履约流程</p>
+    <h2 id="fulfillment-heading" class="fulfillment-title">
+      从订单接入到签收回传，全链路可视化调度
+    </h2>
+    <p class="fulfillment-sub">
+      订单进入系统后，仓网与物流协同完成拣货、复核、出库和交付，履约状态全程可查。
+    </p>
+  </div>
+  <div class="fulfillment-track" role="list">
+    {
+      FULFILLMENT_STEPS.map(({ num, title, desc }, index) => (
+        <div
+          class:list={[
+            'fulfillment-step',
+            { 'is-terminal': index === 0 || index === FULFILLMENT_STEPS.length - 1 },
+          ]}
+          role="listitem"
+          style={`--i:${index}`}
+        >
+          <div class="fulfillment-connector" aria-hidden="true" />
+          <div class="fulfillment-num-wrap">
+            <div class="fulfillment-num">{num}</div>
+            <div class="fulfillment-num-ring" aria-hidden="true" />
+          </div>
+          <p class="fulfillment-step-title">{title}</p>
+          <p class="fulfillment-step-desc">{desc}</p>
+        </div>
+      ))
+    }
+  </div>
+</section>
+
+<script>
+  import '@/scripts/home-fulfillment'
+</script>

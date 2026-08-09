@@ -1,0 +1,100 @@
+---
+import { SPECIALTY_LINKS } from '@/data/navigation'
+import { NAV_LINKS } from '@/lib/brand'
+
+interface Props {
+  pathname: string
+  isProductActive: boolean
+}
+
+const { pathname, isProductActive } = Astro.props
+---
+
+<nav class="hidden lg:flex items-center gap-0.5" aria-label="主导航">
+  {
+    NAV_LINKS.map(({ href, label }) => {
+      if (href === '/product') {
+        return (
+          <div class="relative group">
+            <a
+              href="/product"
+              class:list={[
+                'flex items-center gap-1 rounded-full px-3 py-2 text-[15px] font-medium leading-none tracking-[-0.15px] transition-colors',
+                isProductActive
+                  ? 'bg-white/15 text-white'
+                  : 'text-slate-200 hover:bg-white/10 hover:text-white',
+              ]}
+              aria-current={isProductActive ? 'page' : undefined}
+              aria-haspopup="true"
+            >
+              {label}
+              <svg
+                class="w-3.5 h-3.5 opacity-60 group-hover:rotate-180 transition-transform duration-200"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2.5"
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </a>
+            <div class="absolute top-full left-1/2 -translate-x-1/2 pt-2 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity duration-150 z-50">
+              <div class="absolute -top-2 left-0 right-0 h-2" />
+              <div
+                class="w-72 rounded-xl border border-white/10 shadow-2xl overflow-hidden"
+                style="background: rgba(8,20,42,0.97); backdrop-filter: blur(12px);"
+              >
+                <div class="p-3 grid grid-cols-2 gap-1">
+                  {SPECIALTY_LINKS.map(({ href: specialtyHref, label: specialtyLabel, sub }) => (
+                    <a
+                      href={specialtyHref}
+                      class:list={[
+                        'flex flex-col gap-0.5 px-3 py-2.5 rounded-lg transition-colors',
+                        pathname.startsWith(specialtyHref)
+                          ? 'bg-white/15 text-white'
+                          : 'text-navy-100 hover:bg-white/10 hover:text-white',
+                      ]}
+                    >
+                      <span class="text-xs font-bold leading-tight">{specialtyLabel}</span>
+                      <span class="text-[10px] opacity-55 leading-tight">{sub}</span>
+                    </a>
+                  ))}
+                </div>
+                <div class="border-t border-white/10 px-3 py-2">
+                  <a
+                    href="/product"
+                    class="flex items-center justify-center gap-1 text-[11px] text-navy-300 hover:text-white transition-colors py-1"
+                  >
+                    查看全部仓配服务
+                    <span aria-hidden="true">→</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        )
+      }
+
+      const isActive = href === '/' ? pathname === '/' : pathname.startsWith(href)
+      return (
+        <a
+          href={href}
+          class:list={[
+            'rounded-full px-3 py-2 text-[15px] font-medium leading-none tracking-[-0.15px] transition-colors',
+            isActive
+              ? 'bg-white/15 text-white'
+              : 'text-slate-200 hover:bg-white/10 hover:text-white',
+          ]}
+          aria-current={isActive ? 'page' : undefined}
+        >
+          {label}
+        </a>
+      )
+    })
+  }
+</nav>

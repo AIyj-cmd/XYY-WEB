@@ -1,0 +1,66 @@
+---
+import { BRAND } from '@/lib/brand'
+import { serializeJsonForScript } from '@/lib/safe-json'
+
+interface Props {
+  title: string
+  description: string
+  canonical: string
+  ogImage: string
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[]
+  noIndex?: boolean
+}
+
+const { title, description, canonical, ogImage, jsonLd, noIndex = false } = Astro.props
+const fullTitle = title.includes('新亦源') ? title : `${title} - ${BRAND.name}`
+const schemas = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : []
+---
+
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+{noIndex && <meta name="robots" content="noindex,nofollow" />}
+<link rel="canonical" href={canonical} />
+
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content={BRAND.name} />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={ogImage} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:locale" content="zh_CN" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImage} />
+
+<link
+  rel="stylesheet"
+  href="/fonts/puhuiti-400/result.css"
+  media="print"
+  onload="if(matchMedia('(min-width:768px)').matches)this.setAttribute('media','all')"
+/>
+<link
+  rel="stylesheet"
+  href="/fonts/puhuiti-900/result.css"
+  media="print"
+  onload="if(matchMedia('(min-width:768px)').matches)this.setAttribute('media','all')"
+/>
+<noscript>
+  <link rel="stylesheet" href="/fonts/puhuiti-400/result.css" media="(min-width:768px)" />
+  <link rel="stylesheet" href="/fonts/puhuiti-900/result.css" media="(min-width:768px)" />
+</noscript>
+
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+{
+  schemas.map((schema) => (
+    <script is:inline type="application/ld+json" set:html={serializeJsonForScript(schema)} />
+  ))
+}

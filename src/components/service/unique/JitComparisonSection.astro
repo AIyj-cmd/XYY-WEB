@@ -1,0 +1,71 @@
+---
+import { JIT_COMPARE_ROWS, JIT_RISK_ITEMS } from '@/data/service/jit-comparison'
+---
+
+<section class="py-14 bg-white border-b border-gray-100" aria-labelledby="jit-compare-heading">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h2 id="jit-compare-heading" class="text-xl font-black text-navy-800 mb-1 text-center">
+      JIT vs JITX — 要求对比与扣分风险
+    </h2>
+    <p class="text-xs text-gray-400 text-center mb-8">
+      了解两种模式的核心差异，规避仓配侧常见扣分风险
+    </p>
+
+    <!-- 对比表 -->
+    <div class="overflow-x-auto rounded-xl border border-gray-200 mb-8">
+      <table class="w-full text-sm text-left">
+        <thead>
+          <tr class="bg-navy-800 text-white">
+            <th class="px-5 py-3.5 font-bold text-xs tracking-wider w-36">对比项</th>
+            <th class="px-5 py-3.5 font-bold text-xs tracking-wider">
+              <span
+                class="inline-block px-2 py-0.5 rounded bg-brand-orange/20 text-brand-orange mr-1"
+                >JIT</span
+              >
+              按需供货
+            </th>
+            <th class="px-5 py-3.5 font-bold text-xs tracking-wider">
+              <span class="inline-block px-2 py-0.5 rounded bg-white/20 mr-1">JITX</span>
+              极速供应链
+            </th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100 bg-white">
+          {
+            JIT_COMPARE_ROWS.map(({ item, jit, jitx }) => (
+              <tr class="hover:bg-orange-50/20 transition-colors">
+                <td class="px-5 py-4 font-bold text-navy-700 text-xs align-top whitespace-nowrap">
+                  {item}
+                </td>
+                <td class="px-5 py-4 text-gray-600 text-xs leading-relaxed align-top">{jit}</td>
+                <td class="px-5 py-4 text-gray-600 text-xs leading-relaxed align-top">{jitx}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 扣分风险提示 -->
+    <h3 class="text-sm font-bold text-navy-800 mb-3">仓配侧常见扣分风险提示</h3>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+      {
+        JIT_RISK_ITEMS.map(({ risk, level, tip }) => (
+          <div
+            class={`rounded-lg border p-4 ${level === '高' ? 'border-red-200 bg-red-50' : 'border-yellow-200 bg-yellow-50'}`}
+          >
+            <div class="flex items-center gap-2 mb-2">
+              <span
+                class={`text-[10px] font-black px-1.5 py-0.5 rounded ${level === '高' ? 'bg-red-500 text-white' : 'bg-yellow-400 text-white'}`}
+              >
+                {level}风险
+              </span>
+              <span class="text-sm font-bold text-navy-800">{risk}</span>
+            </div>
+            <p class="text-xs text-gray-500 leading-snug">{tip}</p>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

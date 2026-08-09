@@ -1,148 +1,43 @@
 import type { APIRoute } from 'astro'
 
-const MAX_BODY_BYTES = 8 * 1024
-const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000
-const RATE_LIMIT_MAX = 5
+import { contactJson, MAX_CONTACT_BODY_BYTES, readContactJson } from '@/lib/contact/http'
+import {
+  getContactRequesterId,
+  isContactRateLimited,
+  resetContactRateLimitForTests,
+} from '@/lib/contact/rate-limit'
+import { storeContactLead } from '@/lib/contact/storage'
+import { validateContactBody } from '@/lib/contact/validation'
 
-type RateLimitBucket = { count: number; resetAt: number }
-
-const rateLimitBuckets = new Map<string, RateLimitBucket>()
-
-function json(data: Record<string, unknown>, status = 200) {
-  return new Response(JSON.stringify(data), {
-    status,
-    headers: {
-      'Content-Type': 'application/json; charset=utf-8',
-      'Cache-Control': 'no-store',
-    },
-  })
-}
-
-function clean(value: unknown, maxLength = 500) {
-  return typeof value === 'string' ? value.trim().slice(0, maxLength) : ''
-}
-
-function maskPhone(phone: string): string {
-  return phone.length > 7 ? `${phone.slice(0, 3)}****${phone.slice(-4)}` : '***'
-}
-
-function getRequesterId(request: Request, clientAddress?: string) {
-  const forwardedFor = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
-  return forwardedFor || clientAddress || 'unknown'
-}
-
-function isRateLimited(key: string) {
-  const now = Date.now()
-  if (rateLimitBuckets.size > 1000) {
-    for (const [bucketKey, value] of rateLimitBuckets) {
-      if (value.resetAt <= now) rateLimitBuckets.delete(bucketKey)
-    }
-  }
-  const bucket = rateLimitBuckets.get(key)
-
-  if (!bucket || bucket.resetAt <= now) {
-    rateLimitBuckets.set(key, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS })
-    return false
-  }
-
-  bucket.count += 1
-  return bucket.count > RATE_LIMIT_MAX
-}
-
-export function __resetContactRateLimitForTests() {
-  rateLimitBuckets.clear()
-}
+export { resetContactRateLimitForTests as __resetContactRateLimitForTests }
 
 export const POST: APIRoute = async ({ request, clientAddress }) => {
   try {
     const contentLength = Number(request.headers.get('content-length') || 0)
-    if (contentLength > MAX_BODY_BYTES) {
-      return json({ error: '提交内容过大，请精简后再试' }, 413)
+    if (contentLength > MAX_CONTACT_BODY_BYTES) {
+      return contactJson({ error: '提交内容过大，请精简后再试' }, 413)
     }
 
     const contentType = request.headers.get('content-type') || ''
     if (contentType && !contentType.includes('application/json')) {
-      return json({ error: '请求格式不正确' }, 415)
+      return contactJson({ error: '请求格式不正确' }, 415)
     }
 
-    if (isRateLimited(getRequesterId(request, clientAddress))) {
-      return json({ error: '提交过于频繁，请稍后再试' }, 429)
+    if (isContactRateLimited(getContactRequesterId(request, clientAddress))) {
+      return contactJson({ error: '提交过于频繁，请稍后再试' }, 429)
     }
 
-    let body: Record<string, unknown>
-    try {
-      body = (await request.json()) as Record<string, unknown>
-    } catch {
-      return json({ error: '请求内容不正确' }, 400)
-    }
+    const parsed = await readContactJson(request)
+    if (parsed.error) return parsed.error
 
-    const honeypot = clean(body.website, 200)
-    if (honeypot) {
-      return json({ success: true })
-    }
+    const validated = validateContactBody(parsed.body)
+    if ('honeypot' in validated) return contactJson({ success: true })
+    if ('error' in validated) return contactJson({ error: validated.error }, 400)
 
-    const name = clean(body.name, 80)
-    const phone = clean(body.phone, 40)
-    const company = clean(body.company, 120)
-    const email = clean(body.email, 120)
-    const service = clean(body.service, 80)
-    const message = clean(body.message, 1200)
-    const privacyConsent = clean(body.privacyConsent, 10)
-
-    if (!name || !phone || !message) {
-      return json({ error: '请填写姓名、电话和需求描述' }, 400)
-    }
-    if (privacyConsent !== 'on' && privacyConsent !== 'true') {
-      return json({ error: '请先同意个人信息使用说明' }, 400)
-    }
-
-    // Phone format validation
-    const phoneClean = phone.replace(/\s|-/g, '')
-    if (!/^1[3-9]\d{9}$|^\d{3,4}-?\d{7,8}$/.test(phoneClean)) {
-      return json({ error: '请输入有效的手机号或座机号' }, 400)
-    }
-
-    // Log to Directus if available
-    const directusUrl = import.meta.env.DIRECTUS_URL
-    const directusToken = import.meta.env.DIRECTUS_TOKEN
-
-    if (directusUrl && directusToken) {
-      try {
-        const response = await fetch(`${directusUrl.replace(/\/+$/, '')}/items/contact_leads`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${directusToken}`,
-          },
-          body: JSON.stringify({
-            name,
-            phone,
-            company: company || null,
-            email: email || null,
-            service: service || null,
-            message,
-            source: 'website',
-            status: 'new',
-          }),
-        })
-
-        if (!response.ok) {
-          console.error('[contact] Directus rejected lead:', {
-            status: response.status,
-            name,
-            phone: maskPhone(phone),
-            company,
-          })
-          return json({ error: '提交失败，请稍后重试或直接拨打客服热线' }, 503)
-        }
-      } catch {
-        console.error('[contact] Directus unavailable, lead not saved:', { name, phone: maskPhone(phone), company })
-        return json({ error: '提交失败，请稍后重试或直接拨打客服热线' }, 503)
-      }
-    }
-
-    return json({ success: true })
+    const stored = await storeContactLead(validated.lead)
+    if ('error' in stored) return contactJson({ error: stored.error }, 503)
+    return contactJson({ success: true })
   } catch {
-    return json({ error: '服务器错误，请稍后重试' }, 500)
+    return contactJson({ error: '服务器错误，请稍后重试' }, 500)
   }
 }

@@ -1,0 +1,135 @@
+/* 质检证据与瑕疵修复 */
+.signature--evidence-lab {
+  background: #f5f8fc;
+}
+
+.evidence__strip {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr 1.2fr 0.8fr;
+  gap: 0.65rem;
+}
+
+.evidence__strip figure {
+  position: relative;
+  height: 20rem;
+  margin: 0;
+  overflow: hidden;
+}
+
+.evidence__strip figure:nth-child(even) {
+  margin-top: 3rem;
+}
+
+.evidence__strip figcaption {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 3rem 0.8rem 0.8rem;
+  background: linear-gradient(transparent, rgb(8 20 42 / 72%));
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+
+.evidence__bench {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(17rem, 0.8fr);
+  gap: clamp(2rem, 5vw, 4rem);
+  align-items: center;
+  margin-top: 3.5rem;
+}
+
+.evidence__findings {
+  border-top: 1px solid var(--ink);
+}
+
+.evidence__findings article {
+  display: grid;
+  grid-template-columns: 2rem 6.5rem 1fr;
+  gap: 0.7rem;
+  align-items: center;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.evidence__findings article > span {
+  color: var(--signal);
+  font-size: 0.62rem;
+  font-weight: 900;
+}
+
+.evidence__findings article > strong {
+  color: var(--blue);
+  font-size: 1.2rem;
+}
+
+.evidence__findings b,
+.evidence__findings small {
+  display: block;
+}
+
+.evidence__findings b {
+  font-size: 0.75rem;
+}
+
+.evidence__findings small {
+  margin-top: 0.15rem;
+  color: #8190a4;
+  font-size: 0.62rem;
+}
+
+.workshop {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(20rem, 0.85fr);
+  gap: clamp(2rem, 5vw, 4rem);
+}
+
+.workshop__gallery {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: 1fr 0.68fr;
+  gap: 0.65rem;
+}
+
+.workshop__gallery figure {
+  position: relative;
+  min-height: 15rem;
+  margin: 0;
+  overflow: hidden;
+}
+
+.workshop__gallery .workshop__wide {
+  grid-column: 1 / -1;
+}
+
+.workshop__board {
+  align-self: start;
+  border-top: 1px solid var(--ink);
+}
+
+.workshop__board > p {
+  padding: 1.15rem 0 1.5rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.workshop__board ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.workshop__board li {
+  display: grid;
+  grid-template-columns: 2rem 1fr;
+  gap: 0.7rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.workshop__board li > span {
+  color: var(--signal);
+  font-size: 0.62rem;
+  font-weight: 900;
+}

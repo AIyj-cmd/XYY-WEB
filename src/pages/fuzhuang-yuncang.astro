@@ -1,36 +1,7 @@
 ---
 import ServiceLanding from '@/layouts/ServiceLanding.astro'
-
-const CATEGORY_TABLE = [
-  {
-    cat: '女装 / 快时尚',
-    storage: '挂装区 + 叠装分区，连衣裙/风衣走挂装，T恤/卫衣走叠装',
-    inspect: '跳针、污损、色差、吊牌完整、尺码一致性',
-    packing: '防尘袋 / OPP袋，挂装出库配挂钩',
-    note: '高SKU 精细管理，换季清点，滞销品定期盘库',
-  },
-  {
-    cat: '男装 / 商务装',
-    storage: '折叠标准化存储，西装/衬衫配独立包装盒区',
-    inspect: '版型平整、缝线做工、纽扣/拉链完好',
-    packing: '包装纸 + 平铺折叠，高价位商品配硬盒',
-    note: '尺码颜色分区，批次管理，商务服装防压痕',
-  },
-  {
-    cat: '内衣 / 袜类',
-    storage: '小件密集型货架，单件独立格位',
-    inspect: '尺码精确（S/M/L不混淆）、包装完整、无异味',
-    packing: '独立封装/透明袋，混装组合需逐件核对',
-    note: '单件条码绑定，防混淆，私密品类专区存储',
-  },
-  {
-    cat: '运动服 / 鞋类',
-    storage: '运动服走挂装；鞋类独立鞋盒区，配防变形填充',
-    inspect: '功能标签合规、配件齐全，鞋类查大小脚/色差/开胶',
-    packing: '运动服挂装发货 + 填充纸，鞋盒原装保护',
-    note: '鞋类专项：大小脚检查 + 溢胶/开胶/脏污三检',
-  },
-]
+import ApparelCategorySection from '@/components/service/unique/ApparelCategorySection.astro'
+import { CLAIM_TEXT } from '@/lib/claims'
 ---
 
 <ServiceLanding
@@ -42,16 +13,16 @@ const CATEGORY_TABLE = [
   eyebrow="服装云仓 · 全渠道仓配一体化"
   h1="服装云仓"
   h1sub="T恤/卫衣/内衣/运动服 全品类仓储"
-  heroDesc="新亦源服装云仓深度适配女装、男装、内衣、袜类、运动服等品类，RFID全域识别解决高SKU管理难题，弹性产能保障大促不延迟，服务品牌140+。"
+  heroDesc={`新亦源服装云仓深度适配女装、男装、内衣、袜类、运动服等品类，RFID全域识别解决高SKU管理难题，弹性产能保障大促不延迟，服务品牌${CLAIM_TEXT.partnerBrands}。`}
   imgSrc="/w-apparel.webp"
   imgAlt="服装云仓 — 专业服装仓储管理"
   stats={[
-    { stat: '99.99%', label: '库存准确率', sub: 'RFID+系统双重校验' },
-    { stat: '50万单/日', label: '单仓峰值', sub: '大促弹性扩产' },
-    { stat: '50万㎡', label: '直营仓储面积', sub: '华南/华东/华中布局' },
-    { stat: '7大类', label: '质检缺陷覆盖', sub: '135+种可识别缺陷' },
+    { stat: CLAIM_TEXT.inventoryAccuracy, label: '库存准确率', sub: 'RFID+系统双重校验' },
+    { stat: CLAIM_TEXT.singleWarehousePeak, label: '单仓峰值', sub: '大促弹性扩产' },
+    { stat: CLAIM_TEXT.warehouseArea, label: '直营仓储面积', sub: '华南/华东/华中布局' },
+    { stat: '7大类', label: '质检缺陷覆盖', sub: `${CLAIM_TEXT.recognizableAnomalies}可识别缺陷` },
   ]}
-  contentDesc="适合以服装为主品类的电商品牌，尤其T恤、卫衣、内衣、女装等高SKU服装卖家。服装多色多码SKU组合导致普通仓管理成本高、出错率大。新亦源服装云仓内置RFID全域识别+电子标签拣货+自动化分拣，深度定制WMS，年服务快时尚、设计师品牌、内衣、运动服等多个细分类目，库存准确率99.99%。"
+  contentDesc={`适合以服装为主品类的电商品牌，尤其T恤、卫衣、内衣、女装等高SKU服装卖家。服装多色多码SKU组合导致普通仓管理成本高、出错率大。新亦源服装云仓内置RFID全域识别+电子标签拣货+自动化分拣，深度定制WMS，年服务快时尚、设计师品牌、内衣、运动服等多个细分类目，库存准确率${CLAIM_TEXT.inventoryAccuracy}。`}
   featuresLabel="核心能力"
   features={[
     {
@@ -60,11 +31,11 @@ const CATEGORY_TABLE = [
     },
     {
       title: '全渠道库存同步',
-      desc: 'B2C+B2B+O2O实时库存同步，支持天猫、京东、拼多多、抖音、唯品会等平台，库存准确率99.99%。',
+      desc: `B2C+B2B+O2O实时库存同步，支持天猫、京东、拼多多、抖音、唯品会等平台，库存准确率${CLAIM_TEXT.inventoryAccuracy}。`,
     },
     {
       title: '退货质检一体化',
-      desc: '正向仓配+逆向退货质检在同一系统闭环，退货在24小时内完成质检、修复分流和二次上架。',
+      desc: `正向仓配+逆向退货质检在同一系统闭环，退货在${CLAIM_TEXT.returnTurnaround}内完成质检、修复分流和二次上架。`,
     },
     {
       title: '挂装+叠装存储',
@@ -72,7 +43,7 @@ const CATEGORY_TABLE = [
     },
     {
       title: '大促弹性保障',
-      desc: '动态人力池配合多仓与物流通道协同应对旺季货量，实际单仓单日峰值为50万单。',
+      desc: `动态人力池配合多仓与物流通道协同应对旺季货量，实际单仓峰值为${CLAIM_TEXT.singleWarehousePeak}。`,
     },
     {
       title: '深加工服务',
@@ -86,11 +57,11 @@ const CATEGORY_TABLE = [
     },
     {
       q: '新亦源服装云仓合作过哪些品类？',
-      a: '已服务品类覆盖：快时尚女装（UR）、高端设计师女装（MAXRIENY）、内衣基础品类（幸棉）、运动鞋服（头部国际运动品牌）、跨境快时尚（Urbanic）等140+个品牌。B2C/B2B/O2O全渠道均有规模化运营案例。',
+      a: `已服务品类覆盖：快时尚女装（UR）、高端设计师女装（MAXRIENY）、内衣基础品类（幸棉）、运动鞋服（头部国际运动品牌）、跨境快时尚（Urbanic）等${CLAIM_TEXT.partnerBrands}个品牌。B2C/B2B/O2O全渠道均有规模化运营案例。`,
     },
     {
       q: '服装云仓如何解决尺码颜色混淆问题？',
-      a: '采用RFID、电子标签和出库复核组成的多重防错流程：①入库时为商品绑定RFID或条码，记录颜色、尺码和批次；②拣货时由电子标签亮灯引导，并通过RFID核验款色码；③出库前逐包扫码复核，异常件停止流转。当前公开的发货准确率为99.99%。',
+      a: `采用RFID、电子标签和出库复核组成的多重防错流程：①入库时为商品绑定RFID或条码，记录颜色、尺码和批次；②拣货时由电子标签亮灯引导，并通过RFID核验款色码；③出库前逐包扫码复核，异常件停止流转。当前公开的发货准确率为${CLAIM_TEXT.shippingAccuracy}。`,
     },
     {
       q: '服装退货的质检和修复服务怎么算费用？',
@@ -102,60 +73,5 @@ const CATEGORY_TABLE = [
     },
   ]}
 >
-  <section
-    slot="unique"
-    class="py-14 bg-gray-50 border-b border-gray-100"
-    aria-labelledby="category-table-heading"
-  >
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <h2 id="category-table-heading" class="text-xl font-black text-navy-800 mb-1 text-center">
-        各品类仓储服务要点
-      </h2>
-      <p class="text-xs text-gray-400 text-center mb-8">
-        女装/男装/内衣/运动服 — 不同品类的存储、质检与包装规范
-      </p>
-      <div class="overflow-x-auto rounded-xl border border-gray-200">
-        <table class="w-full text-sm text-left">
-          <thead>
-            <tr class="bg-navy-800 text-white">
-              <th class="px-5 py-3.5 font-bold text-xs tracking-wider whitespace-nowrap">品类</th>
-              <th class="px-5 py-3.5 font-bold text-xs tracking-wider whitespace-nowrap"
-                >存储方式</th
-              >
-              <th class="px-5 py-3.5 font-bold text-xs tracking-wider whitespace-nowrap"
-                >核心质检点</th
-              >
-              <th class="px-5 py-3.5 font-bold text-xs tracking-wider whitespace-nowrap"
-                >包装规范</th
-              >
-              <th class="px-5 py-3.5 font-bold text-xs tracking-wider whitespace-nowrap"
-                >特殊注意</th
-              >
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-gray-100 bg-white">
-            {
-              CATEGORY_TABLE.map(({ cat, storage, inspect, packing, note }) => (
-                <tr class="hover:bg-orange-50/30 transition-colors">
-                  <td class="px-5 py-4 font-bold text-navy-800 whitespace-nowrap align-top">
-                    {cat}
-                  </td>
-                  <td class="px-5 py-4 text-gray-600 align-top text-xs leading-relaxed">
-                    {storage}
-                  </td>
-                  <td class="px-5 py-4 text-gray-600 align-top text-xs leading-relaxed">
-                    {inspect}
-                  </td>
-                  <td class="px-5 py-4 text-gray-600 align-top text-xs leading-relaxed">
-                    {packing}
-                  </td>
-                  <td class="px-5 py-4 text-gray-500 align-top text-xs leading-relaxed">{note}</td>
-                </tr>
-              ))
-            }
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </section>
+  <ApparelCategorySection slot="unique" />
 </ServiceLanding>

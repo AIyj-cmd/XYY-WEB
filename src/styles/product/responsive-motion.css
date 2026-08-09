@@ -1,0 +1,9 @@
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .series-spread__image img,
+  .care-stage img {
+    transition: none;
+  }
+}

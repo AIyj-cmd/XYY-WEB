@@ -1,0 +1,105 @@
+---
+import {
+  SERVICE_EXPERIENCE_COPY,
+  type FaqItem,
+  type FeatureItem,
+  type ServiceVariant,
+} from '@/data/service'
+import '@/styles/service-experience.css'
+
+interface Props {
+  variant: ServiceVariant
+  h1: string
+  breadcrumbLabel: string
+  contentDesc: string
+  featuresLabel: string
+  features: FeatureItem[]
+  faqs: FaqItem[]
+}
+
+const { variant, h1, breadcrumbLabel, contentDesc, featuresLabel, features, faqs } = Astro.props
+const copy = SERVICE_EXPERIENCE_COPY[variant]
+---
+
+<section
+  class:list={['service-detail', `service-detail--${variant}`]}
+  aria-labelledby="lp-detail-heading"
+>
+  <div class="service-detail__inner">
+    <header class="service-detail__header">
+      <div>
+        <p>{copy.detailCode}</p>
+        <span>{featuresLabel}</span>
+      </div>
+      <h2 id="lp-detail-heading">{copy.detailTitle}</h2>
+    </header>
+
+    <div class="service-detail__layout">
+      <aside class="service-detail__brief">
+        <p>{contentDesc}</p>
+        <nav aria-label="产品服务相关页面">
+          <span>继续了解</span>
+          <a href="/product">产品服务总览</a>
+          <a href="/cases">合作案例</a>
+          <a href="/contact">联系商务</a>
+        </nav>
+      </aside>
+
+      <ol class="service-detail__features">
+        {
+          features.map(({ title, desc }, index) => (
+            <li>
+              <span class="service-detail__index">{String(index + 1).padStart(2, '0')}</span>
+              <div>
+                <h3>{title}</h3>
+                <p>{desc}</p>
+              </div>
+              <span class="service-detail__marker" aria-hidden="true">
+                ↗
+              </span>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section class:list={['service-faq', `service-faq--${variant}`]} aria-labelledby="lp-faq-heading">
+  <div class="service-faq__inner">
+    <header class="service-faq__header">
+      <p>{copy.faqCode}</p>
+      <h2 id="lp-faq-heading">{breadcrumbLabel}常见问题</h2>
+    </header>
+    <dl class="service-faq__list">
+      {
+        faqs.map(({ q, a }, index) => (
+          <div>
+            <dt>
+              <span>{String(index + 1).padStart(2, '0')}</span>
+              <strong>{q}</strong>
+            </dt>
+            <dd>{a}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </div>
+</section>
+
+<section class:list={['service-cta', `service-cta--${variant}`]} aria-labelledby="lp-cta-heading">
+  <div class="service-cta__inner">
+    <div class="service-cta__number" aria-hidden="true">
+      {String(Object.keys(SERVICE_EXPERIENCE_COPY).indexOf(variant) + 1).padStart(2, '0')}
+    </div>
+    <div class="service-cta__copy">
+      <p>NEXT STEP · {copy.detailCode}</p>
+      <h2 id="lp-cta-heading">把{h1}变成可执行方案</h2>
+      <span>{copy.ctaPrompt}</span>
+    </div>
+    <div class="service-cta__actions">
+      <a href="/contact">免费获取方案 <span aria-hidden="true">↗</span></a>
+      <a href="/cases">查看合作案例 <span aria-hidden="true">→</span></a>
+    </div>
+  </div>
+</section>

@@ -1,16 +1,7 @@
 ---
 import ServiceLanding from '@/layouts/ServiceLanding.astro'
 import { CLAIM_TEXT } from '@/lib/claims'
-
-const FLOW_STEPS = [
-  { num: '01', title: '收货入库', desc: '验收商品\n核对数量·SKU·规格' },
-  { num: '02', title: '入库质检', desc: '按项目约定进行新货抽检或全检\n问题及时反馈品牌方' },
-  { num: '03', title: 'RFID上架', desc: '绑码建档\n智能定位存储' },
-  { num: '04', title: '订单下发', desc: '多平台实时同步\n波次智能拆分' },
-  { num: '05', title: '拣货复核', desc: '电子标签引导\nRFID防错复核' },
-  { num: '06', title: '质检打包', desc: '称重验货\n按标准包材打包' },
-  { num: '07', title: '发货出库', desc: '18:00前截单\n当日24:00前发出' },
-]
+import WarehouseJourneySection from '@/components/service/unique/WarehouseJourneySection.astro'
 ---
 
 <ServiceLanding
@@ -22,16 +13,16 @@ const FLOW_STEPS = [
   eyebrow="鞋服云仓 · 专注鞋服行业的仓配服务商"
   h1="鞋服云仓：全渠道一盘货与鞋服专用仓配"
   h1sub="B2C+B2B+O2O全渠道库存协同"
-  heroDesc="新亦源专注鞋服物流15年，RFID智能仓三代演进，支持B2C+B2B+O2O全渠道发货，采用CDC/RDC/FDC三级仓网架构，合作品牌140+，单仓单日峰值50万单。"
+  heroDesc={`新亦源专注鞋服物流15年，RFID智能仓三代演进，支持B2C+B2B+O2O全渠道发货，采用CDC/RDC/FDC三级仓网架构，合作品牌${CLAIM_TEXT.partnerBrands}，单仓单日峰值${CLAIM_TEXT.singleWarehousePeak}。`}
   imgSrc="/w-apparel.webp"
   imgAlt="鞋服云仓 — 专业鞋服仓储配送"
   stats={[
-    { stat: '99.99%', label: '发货准确率', sub: '出库扫码复核' },
-    { stat: '50万单/日', label: '单仓峰值', sub: '弹性产能保大促' },
+    { stat: CLAIM_TEXT.shippingAccuracy, label: '发货准确率', sub: '出库扫码复核' },
+    { stat: CLAIM_TEXT.singleWarehousePeak, label: '单仓峰值', sub: '弹性产能保大促' },
     { stat: '18:00前', label: '截单时间', sub: '当日24:00前发出' },
-    { stat: '140+', label: '合作品牌', sub: '多数涉及全渠道运营' },
+    { stat: CLAIM_TEXT.partnerBrands, label: '合作品牌', sub: '多数涉及全渠道运营' },
   ]}
-  contentDesc="适合需要全渠道一盘货管理的鞋服品牌，重点解决高SKU管理、旺季产能波动和多仓库存协同问题。三代智能仓采用RFID、电子标签和自动化分拣，配合动态人力池与CDC/RDC/FDC三级仓网。库存准确率99.99%，综合损耗下降20%。"
+  contentDesc={`适合需要全渠道一盘货管理的鞋服品牌，重点解决高SKU管理、旺季产能波动和多仓库存协同问题。三代智能仓采用RFID、电子标签和自动化分拣，配合动态人力池与CDC/RDC/FDC三级仓网。库存准确率${CLAIM_TEXT.inventoryAccuracy}，综合损耗下降20%。`}
   featuresLabel="核心能力"
   features={[
     {
@@ -52,7 +43,7 @@ const FLOW_STEPS = [
     },
     {
       title: '精细库存管控',
-      desc: '日动盘+周抽盘+月实盘+季忙盘+年度全盘体系，库存准确率99.99%，综合损耗下降20%。',
+      desc: `日动盘+周抽盘+月实盘+季忙盘+年度全盘体系，库存准确率${CLAIM_TEXT.inventoryAccuracy}，综合损耗下降20%。`,
     },
     {
       title: '全程监控追溯',
@@ -82,49 +73,5 @@ const FLOW_STEPS = [
     },
   ]}
 >
-  <section
-    slot="unique"
-    class="py-14 bg-white border-b border-gray-100"
-    aria-labelledby="flow-heading"
-  >
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <h2 id="flow-heading" class="text-xl font-black text-navy-800 mb-1 text-center">
-        鞋服云仓标准服务流程
-      </h2>
-      <p class="text-xs text-gray-400 text-center mb-10">
-        从货物到仓到发货出库，每步标准化操作，全程1080P监控可追溯
-      </p>
-      <div class="overflow-x-auto -mx-4 px-4 pb-2">
-        <div class="flex items-start min-w-max">
-          {
-            FLOW_STEPS.map(({ num, title, desc }, i) => (
-              <div class="flex items-start">
-                <div class="flex flex-col items-center text-center w-32 px-1">
-                  <div class="w-11 h-11 rounded-2xl bg-brand-orange/10 border border-brand-orange/20 flex items-center justify-center mb-3 flex-shrink-0">
-                    <span class="text-[11px] font-black text-brand-orange tracking-widest">
-                      {num}
-                    </span>
-                  </div>
-                  <p class="text-sm font-bold text-navy-800 mb-1">{title}</p>
-                  <p class="text-xs text-gray-400 leading-snug whitespace-pre-line">{desc}</p>
-                </div>
-                {i < FLOW_STEPS.length - 1 && (
-                  <div class="flex-shrink-0 flex items-start pt-4 text-brand-orange/30 text-xl font-light px-1">
-                    ›
-                  </div>
-                )}
-              </div>
-            ))
-          }
-        </div>
-      </div>
-      <div class="mt-8 flex items-center justify-center gap-2">
-        <div class="h-px w-8 bg-brand-orange/20"></div>
-        <p class="text-xs text-gray-400">
-          退货逆向：退件进入质检中心后完成四级评定、修复分流与二次上架，全流程时效为24小时；具体分级条件和处置方式按客户确认标准执行
-        </p>
-        <div class="h-px w-8 bg-brand-orange/20"></div>
-      </div>
-    </div>
-  </section>
+  <WarehouseJourneySection slot="unique" />
 </ServiceLanding>

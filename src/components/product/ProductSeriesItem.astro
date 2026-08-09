@@ -1,0 +1,83 @@
+---
+import type { ServiceSeriesItem } from '@/data/product'
+import ProductSeriesCareGallery from './ProductSeriesCareGallery.astro'
+import ProductSeriesServiceIcon from './ProductSeriesServiceIcon.astro'
+
+interface Props {
+  item: ServiceSeriesItem
+  index: number
+}
+
+const { item, index } = Astro.props
+const { id, number, eyebrow, title, description, services, steps, image, alt, href, link } = item
+---
+
+<article
+  id={id}
+  class:list={[
+    'series-spread',
+    {
+      'series-spread--reverse': index === 1,
+      'series-spread--foundation': index === 0,
+      'series-spread--returns': id === 'returns',
+      'series-spread--care': id === 'care',
+    },
+  ]}
+>
+  {
+    id === 'care' ? (
+      <ProductSeriesCareGallery />
+    ) : (
+      <figure class="series-spread__image" data-reveal="image">
+        <img src={image} alt={alt} width="1920" height="1080" loading="lazy" />
+        <figcaption>
+          {number} / {eyebrow}
+        </figcaption>
+      </figure>
+    )
+  }
+
+  <div class="series-spread__copy" data-reveal="copy">
+    <div class="series-spread__meta">
+      <p class="series-spread__number">{number}</p>
+      <p class="series-spread__eyebrow">{eyebrow}</p>
+    </div>
+    <h3>{title}</h3>
+    <p>{description}</p>
+    {
+      id === 'returns' && steps && (
+        <div class="series-spread__steps">
+          {steps.map(([stepTitle, stepSubtitle, stepHref], stepIndex) => (
+            <a href={stepHref} class="series-spread__step">
+              <span>{String(stepIndex + 1).padStart(2, '0')}</span>
+              <i aria-hidden="true" />
+              <strong>
+                {stepTitle}
+                <br />
+                {stepSubtitle}
+              </strong>
+            </a>
+          ))}
+        </div>
+      )
+    }
+    {
+      id !== 'returns' && (
+        <ul>
+          {services.map(([service, serviceHref], serviceIndex) => (
+            <li>
+              <a href={serviceHref}>
+                {(index === 0 || id === 'care') && (
+                  <ProductSeriesServiceIcon index={serviceIndex} />
+                )}
+                <span>{service}</span>
+                <span aria-hidden="true">→</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+    <a href={href} class="secondary-link">{link} <span aria-hidden="true">→</span></a>
+  </div>
+</article>

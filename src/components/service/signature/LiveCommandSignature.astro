@@ -1,0 +1,48 @@
+---
+import type { FeatureItem, StatItem } from '@/data/service'
+
+interface Props {
+  stats: [StatItem, StatItem, StatItem, StatItem]
+  features: FeatureItem[]
+}
+
+const { stats, features } = Astro.props
+const phases = ['开播前', '开播', '订单波峰', '持续履约', '复盘']
+---
+
+<div class="live">
+  <div class="live__console">
+    <div class="live__console-top">
+      <span>LIVE FULFILMENT</span>
+      <b><i></i> 直播履约监控中</b>
+    </div>
+    <img src="/images/services/operations-dashboard.webp" alt="直播仓配运营驾驶舱" loading="lazy" />
+    <div class="live__signals">
+      {
+        stats.map(({ stat, label }) => (
+          <div>
+            <>
+              <strong>{stat}</strong>
+              <span>{label}</span>
+            </>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+  <ol class="live__timeline">
+    {
+      features.slice(0, 5).map(({ title, desc }, index) => (
+        <li>
+          <time>{phases[index]}</time>
+          <div>
+            <>
+              <h3>{title}</h3>
+              <p>{desc}</p>
+            </>
+          </div>
+        </li>
+      ))
+    }
+  </ol>
+</div>

@@ -1,0 +1,79 @@
+---
+import { CASE_DETAILS } from '@/lib/brand'
+import type { Case } from '@/lib/directus'
+
+interface Props {
+  cases: Case[]
+}
+
+const { cases } = Astro.props
+const getCasePath = (label: string) => {
+  const slug = (CASE_DETAILS as Record<string, { slug: string }>)[label]?.slug
+  return slug ? `/cases/${slug}` : null
+}
+---
+
+<section class="py-16 bg-white" aria-label="合作案例列表">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div id="cases-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {
+        cases.map((item) => {
+          const casePath = getCasePath(item.label)
+          return (
+            <article
+              class="case-card group bg-white rounded-2xl border border-gray-100 hover:border-navy-200 hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col"
+              data-category={item.category}
+            >
+              <div class="relative h-44 overflow-hidden">
+                <img
+                  src={item.img}
+                  alt={item.category}
+                  loading="lazy"
+                  class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+                <div
+                  class="absolute inset-0"
+                  style="background: linear-gradient(to top, rgba(8,20,42,0.88) 0%, rgba(8,20,42,0.40) 55%, rgba(8,20,42,0.05) 100%);"
+                />
+                <div class="absolute bottom-0 left-0 right-0 px-5 pb-4">
+                  <span class="text-xs font-bold text-brand-orange tracking-wider uppercase mb-1 block">
+                    {item.category}
+                  </span>
+                  <h2 class="text-white font-bold text-base leading-snug">{item.label}</h2>
+                </div>
+              </div>
+              <div class="p-6 flex flex-col flex-1">
+                <p class="text-xs font-bold text-navy-700 uppercase tracking-wide mb-1">
+                  新亦源合作数据
+                </p>
+                <p class="text-sm text-gray-700 font-medium mb-3 leading-relaxed">{item.metrics}</p>
+                <p class="text-sm text-gray-500 leading-relaxed mb-4 flex-1">
+                  品牌公开背景：{item.details}
+                </p>
+                <div class="flex flex-wrap gap-2 pt-3 border-t border-gray-100">
+                  {item.tags.map((tag) => (
+                    <span class="text-xs px-2.5 py-1 rounded-full bg-navy-50 text-navy-700 font-medium">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+                {casePath && (
+                  <a
+                    href={casePath}
+                    class="mt-5 inline-flex items-center text-sm font-bold text-blue-600 hover:text-blue-700"
+                  >
+                    查看案例详情 →
+                  </a>
+                )}
+              </div>
+            </article>
+          )
+        })
+      }
+    </div>
+    <p class="text-center text-xs text-gray-400 mt-10">
+      *
+      合作品牌名称与Logo按合作关系展示；品牌背景数据来自公开资料；项目运营数据来自合作统计，部分业务细节已脱敏。
+    </p>
+  </div>
+</section>

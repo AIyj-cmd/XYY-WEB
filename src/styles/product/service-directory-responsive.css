@@ -1,0 +1,63 @@
+@media (max-width: 1024px) {
+  .needs-layout {
+    gap: 3rem;
+  }
+  .needs-directory {
+    grid-template-columns: 1fr;
+  }
+  .needs-directory__visuals {
+    min-height: 28rem;
+    margin: 2rem 0 0;
+  }
+}
+@media (max-width: 760px) {
+  .needs-section {
+    padding: 5rem 0;
+  }
+  .warehouse-shell {
+    width: min(100% - 2.2rem, 1360px);
+  }
+  .needs-layout {
+    display: block;
+  }
+  .needs-intro {
+    position: static;
+    min-height: 0;
+    margin-bottom: 2.5rem;
+  }
+  .needs-intro h2 {
+    font-size: 2.65rem;
+  }
+  .needs-intro__watermark {
+    display: none;
+  }
+  .needs-directory__list {
+    display: flex;
+    gap: 1.1rem;
+    overflow: auto;
+    padding-bottom: 1rem;
+    scrollbar-width: none;
+  }
+  .needs-directory__list [data-need-tab] {
+    flex: 0 0 16rem;
+    grid-template-columns: 1.7rem 1fr;
+    min-height: 7.2rem;
+    padding: 1rem 0;
+    border-top: 1px solid #cfd3d1;
+  }
+  .needs-directory__list em {
+    display: none;
+  }
+  .needs-directory__action {
+    grid-column: 2;
+  }
+  .needs-directory__visuals {
+    min-height: 23rem;
+    margin-top: 1rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .needs-directory__visuals [data-need-panel] {
+    animation: none;
+  }
+}

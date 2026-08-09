@@ -1,0 +1,21 @@
+---
+import type { FeatureItem, ServiceVariant, StatItem } from '@/data/service'
+import EvidenceLabSignature from './signature/EvidenceLabSignature.astro'
+import RepairWorkshopSignature from './signature/RepairWorkshopSignature.astro'
+
+interface Props {
+  variant: ServiceVariant
+  contentDesc: string
+  stats: [StatItem, StatItem, StatItem, StatItem]
+  features: FeatureItem[]
+}
+
+const { variant, contentDesc, stats, features } = Astro.props
+---
+
+{variant === 'evidence-lab' && <EvidenceLabSignature stats={stats} />}
+{
+  variant === 'repair-workshop' && (
+    <RepairWorkshopSignature contentDesc={contentDesc} stats={stats} features={features} />
+  )
+}

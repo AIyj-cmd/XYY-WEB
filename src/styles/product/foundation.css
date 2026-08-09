@@ -1,0 +1,88 @@
+/* 产品页共享变量、容器与链接 */
+html {
+  scroll-behavior: smooth;
+}
+.warehouse-services-page {
+  --ink: #222527;
+  --body: #454c50;
+  --line: #d9dddc;
+  --paper: #f7f7f5;
+  --mist: #f0f1ef;
+  --accent: #e85f2a;
+  --accent-text: #b94116;
+  --accent-action: #b94116;
+  color: var(--ink);
+  background: #fff;
+  overflow-x: clip;
+}
+.warehouse-shell {
+  width: min(1360px, calc(100% - 5rem));
+  margin: 0 auto;
+}
+.series-spread,
+.care-section,
+.process-section,
+.assurance-section {
+  scroll-margin-top: 7rem;
+}
+.service-series,
+.needs-section,
+.care-section,
+.process-section,
+.assurance-section,
+.warehouse-cta {
+  content-visibility: auto;
+}
+.service-series {
+  contain-intrinsic-size: auto 2600px;
+}
+.needs-section,
+.care-section,
+.assurance-section {
+  contain-intrinsic-size: auto 1200px;
+}
+.process-section {
+  contain-intrinsic-size: auto 900px;
+}
+.warehouse-cta {
+  contain-intrinsic-size: auto 560px;
+}
+.kicker {
+  margin: 0 0 0.9rem;
+  color: var(--accent-text);
+  font:
+    900 0.7rem/1.2 ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    monospace;
+  letter-spacing: 0.15em;
+}
+.primary-link,
+.secondary-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-size: 0.88rem;
+  font-weight: 900;
+  text-decoration: none;
+  transition:
+    transform 0.25s ease,
+    color 0.25s ease,
+    background 0.25s ease;
+}
+.primary-link {
+  min-height: 3.2rem;
+  padding: 0 1.35rem;
+  color: #fff;
+  background: var(--accent-action);
+}
+.secondary-link {
+  color: var(--ink);
+}
+.primary-link:hover,
+.secondary-link:hover {
+  transform: translateX(3px);
+}
+.secondary-link:hover {
+  color: var(--accent);
+}

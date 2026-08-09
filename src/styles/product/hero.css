@@ -1,0 +1,93 @@
+/* 产品页首屏 */
+.warehouse-hero {
+  position: relative;
+  display: flex;
+  min-height: clamp(44rem, 57vw, 52rem);
+  overflow: hidden;
+  align-items: center;
+  color: #fff;
+  background: #18242b;
+}
+.warehouse-hero::after {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  content: '';
+  background: linear-gradient(
+    90deg,
+    rgba(8, 18, 25, 0.88) 0%,
+    rgba(10, 21, 28, 0.72) 35%,
+    rgba(10, 21, 28, 0.28) 61%,
+    rgba(10, 21, 28, 0.1) 100%
+  );
+  pointer-events: none;
+}
+.warehouse-hero > .warehouse-shell {
+  position: relative;
+  z-index: 2;
+}
+.warehouse-hero__copy {
+  max-width: 37rem;
+  padding: 5rem 0 2rem;
+}
+.warehouse-hero__copy .kicker {
+  margin-bottom: 2.2rem;
+}
+.warehouse-hero h1 {
+  margin: 0;
+  font-size: clamp(4.4rem, 8.7vw, 8.1rem);
+  font-weight: 950;
+  letter-spacing: -0.085em;
+  line-height: 0.88;
+}
+.warehouse-hero h2 {
+  margin: 1.8rem 0 0;
+  font-size: clamp(1.8rem, 3.5vw, 3.25rem);
+  font-weight: 900;
+  letter-spacing: -0.055em;
+  line-height: 1.08;
+}
+.warehouse-hero h2 span {
+  background: linear-gradient(transparent 58%, rgba(232, 95, 42, 0.82) 58%);
+}
+.warehouse-hero__copy > p:not(.kicker) {
+  max-width: 34rem;
+  margin: 2.3rem 0 0;
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 1rem;
+  line-height: 1.85;
+}
+.warehouse-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.8rem;
+  align-items: center;
+  margin-top: 3.25rem;
+}
+.warehouse-hero .secondary-link {
+  color: #fff;
+}
+.warehouse-hero .secondary-link:hover {
+  color: #ffd0bb;
+}
+.warehouse-hero__visual {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  margin: 0;
+  overflow: hidden;
+  background: #18242b;
+}
+.warehouse-hero__visual img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.warehouse-hero__visual picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.warehouse-hero__visual figcaption {
+  display: none;
+}

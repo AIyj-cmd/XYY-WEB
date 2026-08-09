@@ -1,0 +1,131 @@
+.service-faq {
+  padding: clamp(4rem, 8vw, 7rem) 0;
+  background: #f6f8fb;
+}
+
+.service-faq__header {
+  max-width: 64rem;
+  padding-bottom: 2.25rem;
+  text-align: left;
+}
+
+.service-faq__header h2 {
+  font-size: clamp(2rem, 3.2vw, 2.5rem);
+  line-height: 1.2;
+}
+
+.service-faq__list {
+  width: min(64rem, 100%);
+  margin: 0;
+  border-top: 1px solid var(--line);
+}
+
+.service-faq__list > div {
+  display: block;
+  padding: 1.5rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.service-faq__list dt {
+  display: grid;
+  grid-template-columns: 2rem minmax(0, 1fr);
+  gap: 0.75rem;
+  align-items: start;
+}
+
+.service-faq__list dt span {
+  padding-top: 0.15rem;
+  color: var(--signal);
+  font-size: 0.6875rem;
+  line-height: 1.5;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+
+.service-faq__list dt strong {
+  font-size: 1rem;
+  line-height: 1.65;
+  font-weight: 800;
+}
+
+.service-faq__list dd {
+  margin: 0.75rem 0 0 2.75rem;
+  color: #617188;
+  font-size: 0.875rem;
+  line-height: 1.85;
+}
+
+.service-cta {
+  position: relative;
+  padding: clamp(3.5rem, 7vw, 6rem) 0;
+  overflow: hidden;
+  background: #eaf2fd;
+}
+
+.service-cta::before {
+  position: absolute;
+  top: -8rem;
+  right: -6rem;
+  width: 25rem;
+  height: 25rem;
+  border: 1px solid rgb(20 66 151 / 10%);
+  border-radius: 50%;
+  content: '';
+  box-shadow:
+    0 0 0 5rem rgb(20 66 151 / 3%),
+    0 0 0 10rem rgb(20 66 151 / 2%);
+}
+
+.service-cta__inner {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 6rem minmax(0, 1fr) auto;
+  gap: clamp(1.5rem, 4vw, 4rem);
+  align-items: center;
+}
+
+.service-cta__number {
+  color: rgb(20 66 151 / 16%);
+  font-size: clamp(4rem, 8vw, 7rem);
+  font-weight: 900;
+  line-height: 1;
+}
+
+.service-cta__copy > span {
+  display: block;
+  margin-top: 0.7rem;
+  color: #617289;
+  font-size: 0.84rem;
+}
+
+.service-cta__actions {
+  display: grid;
+  min-width: 12rem;
+}
+
+.service-cta__actions a {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem 0;
+  border-bottom: 1px solid #c4d3e7;
+  color: var(--ink);
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.service-cta__actions a:first-child {
+  color: var(--signal);
+}
+
+.service-cta--showroom,
+.service-cta--repair-workshop {
+  background: #f4f1ec;
+}
+
+.service-cta--guangzhou-hub,
+.service-cta--south-network {
+  background: #edf6f4;
+}

@@ -1,0 +1,53 @@
+---
+import type { FeatureItem, StatItem } from '@/data/service'
+
+interface Props {
+  stats: [StatItem, StatItem, StatItem, StatItem]
+  features: FeatureItem[]
+}
+
+const { stats, features } = Astro.props
+---
+
+<div class="jit">
+  <div class="jit__radar">
+    <div class="jit__sweep" aria-hidden="true"></div>
+    <div class="jit__center">
+      <small>RISK CONTROL</small>
+      <strong>JIT / JITX</strong>
+      <span>库存 · 时效 · 异常</span>
+    </div>
+    {
+      stats.map(({ stat, label }, index) => (
+        <span class={`jit__blip jit__blip--${index + 1}`}>
+          <>
+            <b>{stat}</b>
+            <small>{label}</small>
+          </>
+        </span>
+      ))
+    }
+  </div>
+  <div class="jit__rails">
+    <div class="jit__rail-head"><span>JIT</span><span>JITX</span></div>
+    {
+      features.slice(0, 5).map(({ title, desc }, index) => (
+        <article>
+          <span class="jit__time">{String(index + 1).padStart(2, '0')}</span>
+          <div class="jit__line" aria-hidden="true">
+            <>
+              <i />
+              <i />
+            </>
+          </div>
+          <div>
+            <>
+              <h3>{title}</h3>
+              <p>{desc}</p>
+            </>
+          </div>
+        </article>
+      ))
+    }
+  </div>
+</div>

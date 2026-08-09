@@ -1,37 +1,7 @@
 ---
 import ServiceLanding from '@/layouts/ServiceLanding.astro'
 import { CLAIM_TEXT } from '@/lib/claims'
-
-const PLATFORM_ROWS = [
-  {
-    platform: '主流直播电商平台',
-    model: '品牌自播 / 达播等',
-    sla: '以平台当前规则为准',
-    risk: '延迟履约可能影响店铺指标',
-    note: '接口与字段范围按项目确认',
-  },
-]
-
-const CHALLENGE_ITEMS = [
-  {
-    icon: '⚡',
-    title: '爆单不可预测',
-    problem: '一场直播几分钟内涌入数万订单，普通仓无弹性产能应对，导致超时发货',
-    solution: `大促或直播前根据预测货量预排班，并以动态人力池和多仓协同扩充产能；实际单仓单日峰值${CLAIM_TEXT.singleWarehousePeak}`,
-  },
-  {
-    icon: '📦',
-    title: '库存超卖风险',
-    problem: '直播间库存与仓库实际库存不同步，导致超卖后取消订单，买家差评爆发',
-    solution: 'RFID+WMS与主流直播电商平台实时同步库存，降低超卖风险，库存准确率99.99%',
-  },
-  {
-    icon: '↩️',
-    title: '退货率高、处理慢',
-    problem: '直播电商退货率普遍高于传统电商，退货积压导致库存沉淀、资金占用',
-    solution: `退货质检与二次上架${CLAIM_TEXT.returnTurnaround}完成，具体质检规则和资源按项目确认`,
-  },
-]
+import LiveCommerceChallengesSection from '@/components/service/unique/LiveCommerceChallengesSection.astro'
 ---
 
 <ServiceLanding
@@ -43,21 +13,21 @@ const CHALLENGE_ITEMS = [
   eyebrow="直播电商仓配 · 爆单弹性 + 多平台实时同步"
   h1="直播电商仓配：应对爆单、库存与退货"
   h1sub="多平台订单协同与弹性履约"
-  heroDesc="新亦源直播电商仓配以弹性产能和多平台库存同步为核心，支持主流直播电商平台；动态人力池支持小时级调配，单仓单日峰值50万单，帮助直播品牌和代播机构稳定履约。"
+  heroDesc={`新亦源直播电商仓配以弹性产能和多平台库存同步为核心，支持主流直播电商平台；动态人力池支持小时级调配，单仓峰值${CLAIM_TEXT.singleWarehousePeak}，帮助直播品牌和代播机构稳定履约。`}
   imgSrc="/w-fulfill.webp"
   imgAlt="直播电商仓配 — 直播爆单弹性发货"
   stats={[
-    { stat: '50万单', label: '单仓单日峰值', sub: '动态人力池小时级调配' },
+    { stat: CLAIM_TEXT.singleWarehousePeak, label: '单仓峰值', sub: '动态人力池小时级调配' },
     { stat: '18:00前', label: '截单时间', sub: '当日24:00前发出' },
-    { stat: '99.99%', label: '库存准确率', sub: 'RFID+多平台实时同步' },
+    { stat: CLAIM_TEXT.inventoryAccuracy, label: '库存准确率', sub: 'RFID+多平台实时同步' },
     { stat: '主流平台', label: '直播电商协同', sub: '接口范围按项目确认' },
   ]}
-  contentDesc="适合主流直播电商平台的服饰主播和品牌自播团队。直播订单集中、多平台库存同步和退货处理是主要难点。新亦源以动态人力池支持小时级调配，可按项目实时同步库存、降低超卖风险，退货质检与二次上架24小时完成。"
+  contentDesc={`适合主流直播电商平台的服饰主播和品牌自播团队。直播订单集中、多平台库存同步和退货处理是主要难点。新亦源以动态人力池支持小时级调配，可按项目实时同步库存、降低超卖风险，退货质检与二次上架${CLAIM_TEXT.returnTurnaround}完成。`}
   featuresLabel="直播仓配核心能力"
   features={[
     {
       title: '爆单弹性产能',
-      desc: '直播大场前提前预排班，动态人力池支持小时级调配，单仓单日峰值50万单。',
+      desc: `直播大场前提前预排班，动态人力池支持小时级调配，单仓峰值${CLAIM_TEXT.singleWarehousePeak}。`,
     },
     {
       title: '多平台库存同步',
@@ -67,10 +37,10 @@ const CHALLENGE_ITEMS = [
       title: '波次分配',
       desc: '直播出单后由系统生成作业波次，结合RFID定位和复核流程组织批量拣货，具体产能按场次计划确认。',
     },
-    { title: '18:00前截单，当日24:00前发出', desc: CLAIM_TEXT.shippingSla },
+    { title: CLAIM_TEXT.shippingSla, desc: CLAIM_TEXT.shippingSla },
     {
       title: '高退货率快速处理',
-      desc: '直播电商退货就近回收至广州/华南仓，24小时内完成拆包核对、质检分级、修复整理、二次上架，快速补充可售库存。',
+      desc: `直播电商退货就近回收至广州/华南仓，${CLAIM_TEXT.returnTurnaround}内完成拆包核对、质检分级、修复整理、二次上架，快速补充可售库存。`,
     },
     {
       title: '代播机构专属方案',
@@ -100,91 +70,5 @@ const CHALLENGE_ITEMS = [
     },
   ]}
 >
-  <section
-    slot="unique"
-    class="py-14 bg-gray-50 border-b border-gray-100"
-    aria-labelledby="zhibo-challenges-heading"
-  >
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <h2 id="zhibo-challenges-heading" class="text-xl font-black text-navy-800 mb-1 text-center">
-        直播仓配三大核心挑战与解决方案
-      </h2>
-      <p class="text-xs text-gray-400 text-center mb-8">
-        普通仓库无法应对直播电商的爆单节奏，需要专属的弹性仓配体系
-      </p>
-
-      <!-- 挑战 & 解决方案 -->
-      <div class="grid lg:grid-cols-3 gap-5 mb-10">
-        {
-          CHALLENGE_ITEMS.map(({ icon, title, problem, solution }) => (
-            <div class="bg-white rounded-xl border border-gray-200 p-5 flex flex-col gap-4">
-              <div class="flex items-center gap-2">
-                <span class="text-2xl" aria-hidden="true">
-                  {icon}
-                </span>
-                <h3 class="font-black text-navy-800 text-base">{title}</h3>
-              </div>
-              <div class="flex flex-col gap-3">
-                <div class="bg-red-50 rounded-lg p-3 border-l-2 border-red-300">
-                  <p class="text-[10px] font-bold text-red-400 uppercase tracking-wider mb-1">
-                    痛点
-                  </p>
-                  <p class="text-xs text-gray-600 leading-snug">{problem}</p>
-                </div>
-                <div class="bg-green-50 rounded-lg p-3 border-l-2 border-green-400">
-                  <p class="text-[10px] font-bold text-green-500 uppercase tracking-wider mb-1">
-                    新亦源方案
-                  </p>
-                  <p class="text-xs text-gray-600 leading-snug">{solution}</p>
-                </div>
-              </div>
-            </div>
-          ))
-        }
-      </div>
-
-      <!-- 平台适配表 -->
-      <h3 class="text-sm font-bold text-navy-800 mb-3">主流直播平台仓配适配说明</h3>
-      <div class="overflow-x-auto rounded-xl border border-gray-200">
-        <table class="w-full text-sm text-left">
-          <thead>
-            <tr class="bg-navy-800 text-white">
-              <th class="px-4 py-3 font-bold text-xs tracking-wider">平台</th>
-              <th class="px-4 py-3 font-bold text-xs tracking-wider">主要模式</th>
-              <th class="px-4 py-3 font-bold text-xs tracking-wider">发货时效要求</th>
-              <th class="px-4 py-3 font-bold text-xs tracking-wider hidden sm:table-cell"
-                >违规风险</th
-              >
-              <th class="px-4 py-3 font-bold text-xs tracking-wider hidden md:table-cell"
-                >新亦源对接方式</th
-              >
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-gray-100 bg-white">
-            {
-              PLATFORM_ROWS.map(({ platform, model, sla, risk, note }) => (
-                <tr class="hover:bg-orange-50/20 transition-colors">
-                  <td class="px-4 py-3.5 font-bold text-navy-700 text-xs whitespace-nowrap">
-                    {platform}
-                  </td>
-                  <td class="px-4 py-3.5 text-gray-500 text-xs">{model}</td>
-                  <td class="px-4 py-3.5 text-xs">
-                    <span class="inline-block px-2 py-0.5 rounded-full bg-brand-orange/10 text-brand-orange font-bold text-[10px]">
-                      {sla}
-                    </span>
-                  </td>
-                  <td class="px-4 py-3.5 text-gray-500 text-xs leading-snug hidden sm:table-cell">
-                    {risk}
-                  </td>
-                  <td class="px-4 py-3.5 text-gray-500 text-xs leading-snug hidden md:table-cell">
-                    {note}
-                  </td>
-                </tr>
-              ))
-            }
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </section>
+  <LiveCommerceChallengesSection slot="unique" />
 </ServiceLanding>
