@@ -32,6 +32,10 @@ describe('production deployment contracts', () => {
     expect(deploy).toContain('server.mjs ecosystem.config.cjs server')
     expect(deploy).toMatch(/mv -Tf \\"\\\$current_link\.next\\" \\"\\\$current_link\\"/)
     expect(deploy).toContain('.previous_target')
+    expect(deploy).toContain('if [[ -L \\"\\$current_link\\" ]]')
+    expect(deploy).not.toContain('readlink -f \\"\\$current_link\\" 2>/dev/null || true')
+    expect(deploy.match(/pm2 delete xyy-web/g)).toHaveLength(3)
+    expect(deploy).toContain('grep -q \'\\"contactStorage\\":\\"ok\\"\'')
   })
 
   it('rebuilds the caller target after formal tests and rolls back external failures', () => {

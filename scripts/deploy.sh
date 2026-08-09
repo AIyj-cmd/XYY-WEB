@@ -52,8 +52,10 @@ rsync -az -e "$RSYNC_RSH" \
 "${ssh_cmd[@]}" "$DEPLOY_HOST" "set -euo pipefail
 release_dir='$RELEASE_DIR'
 current_link='$CURRENT_LINK'
-previous_target=\$(readlink -f \"\$current_link\" 2>/dev/null || true)
-if [[ -z \"\$previous_target\" && -f '$REMOTE_DIR/ecosystem.config.cjs' && -d '$REMOTE_DIR/dist' ]]; then
+previous_target=''
+if [[ -L \"\$current_link\" ]]; then
+  previous_target=\$(readlink -f \"\$current_link\")
+elif [[ -f '$REMOTE_DIR/ecosystem.config.cjs' && -d '$REMOTE_DIR/dist' ]]; then
   previous_target='$REMOTE_DIR'
 fi
 
@@ -62,12 +64,13 @@ if [[ -n \"\$previous_target\" ]]; then
 fi
 
 restore_previous() {
+  PATH='$NODE_BIN':\$PATH pm2 delete xyy-web >/dev/null 2>&1 || true
   if [[ -n \"\$previous_target\" ]]; then
     ln -sfn \"\$previous_target\" \"\$current_link.rollback\"
     mv -Tf \"\$current_link.rollback\" \"\$current_link\"
-    PATH='$NODE_BIN':\$PATH pm2 startOrReload \"\$current_link/ecosystem.config.cjs\" --update-env
+    PATH='$NODE_BIN':\$PATH pm2 start \"\$current_link/ecosystem.config.cjs\" --update-env
   else
-    PATH='$NODE_BIN':\$PATH pm2 startOrReload '$REMOTE_DIR/ecosystem.config.cjs' --update-env
+    PATH='$NODE_BIN':\$PATH pm2 start '$REMOTE_DIR/ecosystem.config.cjs' --update-env
   fi
   PATH='$NODE_BIN':\$PATH pm2 save
 
@@ -91,14 +94,15 @@ test -f \"\$release_dir/dist/server/entry.mjs\"
 ln -sfn \"\$release_dir\" \"\$current_link.next\"
 mv -Tf \"\$current_link.next\" \"\$current_link\"
 
-if ! PATH='$NODE_BIN':\$PATH pm2 startOrReload \"\$current_link/ecosystem.config.cjs\" --update-env; then
+PATH='$NODE_BIN':\$PATH pm2 delete xyy-web >/dev/null 2>&1 || true
+if ! PATH='$NODE_BIN':\$PATH pm2 start \"\$current_link/ecosystem.config.cjs\" --update-env; then
   restore_previous
   exit 1
 fi
 
 healthy=0
 for _ in {1..30}; do
-  if curl -fsS http://127.0.0.1:4321/healthz >/dev/null; then
+  if curl -fsS http://127.0.0.1:4321/healthz | grep -q '\"contactStorage\":\"ok\"'; then
     healthy=1
     break
   fi
@@ -134,7 +138,8 @@ esac
 test -d \"\$previous_target\"
 ln -sfn \"\$previous_target\" \"\$current_link.rollback\"
 mv -Tf \"\$current_link.rollback\" \"\$current_link\"
-PATH='$NODE_BIN':\$PATH pm2 startOrReload \"\$current_link/ecosystem.config.cjs\" --update-env
+PATH='$NODE_BIN':\$PATH pm2 delete xyy-web >/dev/null 2>&1 || true
+PATH='$NODE_BIN':\$PATH pm2 start \"\$current_link/ecosystem.config.cjs\" --update-env
 PATH='$NODE_BIN':\$PATH pm2 save
 
 for _ in {1..30}; do

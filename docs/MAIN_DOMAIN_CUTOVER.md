@@ -11,7 +11,7 @@
 - 新服务器尚无 `/etc/letsencrypt/live/56xyy.com` 证书。
 - `_acme-challenge.56xyy.com` 当前 CNAME 到 `httpsok.com`，优先通过现有证书平台或 DNS-01 在切换前签发证书。
 - 2026-08-09只读复核确认：正式域名的 `/healthz`、`/cms/server/ping`、`/robots.txt`、`/sitemap.xml` 和 `/llms.txt` 当前均由旧站返回HTML，不满足新版契约；不能把这些路径的HTTP 200当作服务可用。
-- 同日验收站严格健康检查失败：线上旧版 `/healthz` 只有 `{"status":"ok"}`，缺少新版依赖状态字段，无法证明联系存储健康；服务器 `.env` 必需键均存在。`/llms.txt` 仍为404。正式切换前必须先部署当前候选版并使验收站健康检查完整通过。
+- 同日新版已部署到验收站：`/healthz` 明确返回联系存储依赖健康，Directus ping、robots、sitemap与`llms.txt`全部通过。正式域名切换仍需完成证书、DNS与正式源站检查。
 
 ## 目标拓扑
 

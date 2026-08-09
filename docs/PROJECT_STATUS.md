@@ -4,26 +4,27 @@
 
 ## 当前结论
 
-本地候选版本已完成前后端发布门禁、失败关闭、原子部署脚本、媒体归档和第四轮职责拆分。当前没有部署到验收服务器或 GitHub，也没有切换正式域名。PostgreSQL备份与Oracle 19C迁移仍是“脚本已准备、真实环境待执行和恢复验证”，不能描述为已上线。
+新版官网已部署到验收服务器 `47.82.105.103`，验收域名 `https://wz.tomatopia.top` 的站点、依赖健康、Directus、robots、sitemap 与 llms.txt 全部通过严格检查；GitHub `main` 已同步发布提交 `042b5e3`。正式域名仍未切换，PostgreSQL备份与Oracle 19C迁移仍是“脚本已准备、真实环境待执行和恢复验证”，不能描述为已上线。
 
 ## 本地候选版本证据
 
-- Astro检查：257个项目输入，0错误、0警告、0提示；
+- Astro检查：261个项目输入，0错误、0警告、0提示；
 - ESLint：通过；
 - Prettier：全部目标文件通过，历史40个格式告警已清零；
-- 可维护性预算：391个项目文件通过，覆盖源码、测试、自动化、部署脚本、服务端运行模块和根运行配置；
-- 静态资源完整性：55个本地资源引用跨329个源码文件全部存在；
-- Vitest：11个测试文件、48项通过；
+- 可维护性预算：395个项目文件通过，覆盖源码、测试、自动化、部署脚本、服务端运行模块和根运行配置；
+- 静态资源完整性：55个本地资源引用跨331个源码文件全部存在；
+- Vitest：13个测试文件、57项通过；
 - Astro SSR生产构建：通过；
 - Playwright：27项通过、3项按项目配置有意跳过，覆盖桌面、移动、中间断点、12条服务专题、关键交互、SEO/AEO和后端失败路径；
 - 正式域名独立Playwright契约3项通过：核心页无`noindex`，canonical与OG URL指向`https://56xyy.com`，robots/sitemap/llms.txt使用正式源站，www/旧域名/旧路径跳转正确；
 - 360px产品页测试额外断言移动端不会请求 `.woff2` 品牌字体；
 - `npm audit --omit=dev`：0个生产依赖漏洞；
+- Codex Security修复范围最终复扫：0项发现；
 - 部署、Nginx、PostgreSQL、Oracle 19C和健康检查脚本：本地静态语法通过。
 
 `npm run verify:release` 已于 2026-08-09 从当前工作树重新完整执行通过，以上结果不是由分散的历史命令拼接得出。
 
-2026-08-09 15:32（Asia/Shanghai）再次只读核对线上状态：验收站 `/healthz` 仍返回旧格式 `{"status":"ok"}`，`/llms.txt` 仍为404；正式域名的 `/healthz`、`/robots.txt`、`/sitemap.xml` 和 `/llms.txt` 均返回旧站 `text/html` 回退页。该结果证明外部P0仍存在，不影响本地候选门禁结论，也不能被HTTP 200误判为正式上线完成。
+2026-08-09 18:14（Asia/Shanghai）发布后复核：验收站 `/healthz` 返回 `dependencies.contactStorage: "ok"`，`/llms.txt` 返回 `text/plain`，站点、CMS ping、robots和sitemap全部通过。正式域名仍由旧服务器提供内容，其切换状态与验收站发布状态继续分开记录。
 
 ## 可维护性状态
 
@@ -98,23 +99,26 @@
 
 ## 环境状态
 
-| 环境         | 地址 / 位置                | 状态                             |
-| ------------ | -------------------------- | -------------------------------- |
-| 本地候选版本 | `/home/yj/XYY-GEO/website` | 全部门禁通过                     |
-| 验收域名     | `https://wz.tomatopia.top` | 旧候选版可访问，但健康检查不通过 |
-| 正式域名     | `https://56xyy.com`        | 仍解析到旧服务器，尚未切换新版   |
-| CMS数据库    | PostgreSQL                 | 当前实际运行数据库               |
-| Oracle 19C   | 独立数据库服务器方案       | 脚本已准备，未实迁               |
+| 环境         | 地址 / 位置                | 状态                           |
+| ------------ | -------------------------- | ------------------------------ |
+| 本地候选版本 | `/home/yj/XYY-GEO/website` | 全部门禁通过                   |
+| 验收域名     | `https://wz.tomatopia.top` | 新版已部署，严格健康检查通过   |
+| 正式域名     | `https://56xyy.com`        | 仍解析到旧服务器，尚未切换新版 |
+| CMS数据库    | PostgreSQL                 | 当前实际运行数据库             |
+| Oracle 19C   | 独立数据库服务器方案       | 脚本已准备，未实迁             |
 
-### 2026-08-09 线上只读复核
+### 2026-08-09 发布后复核
 
 - `wz.tomatopia.top` 解析到 `47.82.105.103`，首页、CMS ping、robots 与 sitemap 可访问；
-- 验收站 `/healthz` 返回旧格式 `{"status":"ok"}`，没有新版要求的依赖状态字段，因此无法证明联系存储健康，严格健康检查失败；`.env` 中所需键只读检查均存在，不能误报为“未配置”；`/llms.txt` 返回404；页面仍展示旧口径 `140+品牌 / 50万㎡`，不是当前本地候选版；
+- 验收站当前运行 `/var/www/xyy-web/releases/20260809T100600Z`，`current` 软链、PM2工作目录与Nginx静态资源目录均指向同一版本；
+- `/healthz`、Directus ping、robots、sitemap和llms.txt全部通过严格检查，`/healthz`明确返回联系存储依赖健康；
 - `56xyy.com` 与 `www.56xyy.com` 仍解析到 `139.224.11.72`；首页是旧版静态站，缺少新版 canonical；
 - 正式域名的 `/healthz`、`/cms/server/ping`、`/robots.txt`、`/sitemap.xml` 和 `/llms.txt` 均被旧站统一回退为HTML，虽然部分HTTP状态为200，但内容契约全部失败；
-- 因此“本地发布门禁通过”与“线上可切换”必须继续分开记录。
+- 因此“验收站已发布”与“正式域名已切换”必须继续分开记录。
 
-验收服务器只读检查同时确认：PM2 的 `xyy-web`、`xyy-cms` 在线，Directus版本12.1.1，当前数据库为PostgreSQL（约9.8MB）；Nginx语法通过，4321/8055/5432等预期端口监听；磁盘使用52%，可用内存约697MiB。当前Web仍使用 `/var/www/xyy-web/dist` 旧布局，没有 `current` 原子发布软链；PostgreSQL备份timer未安装，PostgreSQL和Oracle备份目录均不存在。外网直接访问4321/8055均超时，当前未发现绕过Nginx的公网入口。无效表单请求能够返回400且没有写入数据。PM2错误日志中的缺失chunk记录时间为2026-07-07，属于历史故障证据，不应描述为当前持续报错。
+验收服务器确认：PM2 的 `xyy-web`、`xyy-cms` 在线，Web仅监听 `127.0.0.1:4321`，Directus版本12.1.1，当前数据库仍为PostgreSQL。Nginx静态资源已切换到 `current/dist/client`，进程工作目录指向当前发布目录。PostgreSQL备份timer仍未安装，PostgreSQL和Oracle备份目录仍不存在。
+
+首次原子发布实跑暴露了两个编排问题：PM2 reload不会更新旧进程工作目录，以及不存在的`current`路径会被`readlink -f`误记为回滚目标。服务器状态已人工收口，部署脚本已改为只读取真实软链、删除并重建Web进程，并用联系存储依赖状态作为内部启动门槛；对应契约测试已补充。
 
 使用现有只读CMS凭据复核的内容数量仍为：`homepage_stats=8`、`services=3`、`warehouses=12`、`cases=6`、`news=0`、`contact_leads=0`；检查只读取ID数量，没有输出或修改业务记录。
 
@@ -122,17 +126,15 @@
 
 - `deploy/postgresql/`：备份、systemd timer、恢复测试；
 - `deploy/oracle19c/`：安装、迁移、并行验证、切换、回滚和备份；
-- `scripts/deploy.sh`：版本目录、`current`软链、健康检查、失败回滚和最近5版保留；
 - `deploy/nginx-56xyy.conf`、`deploy/nginx-wz-redirect.conf`：正式域名与旧域名跳转草案。
 
 ## 发布前外部待办
 
 1. 在服务器安装数据库备份任务，并完成一次异机备份和真实恢复演练；
-2. 在验收服务器执行原子部署与失败回滚演练，把当前本地候选版替换验收站旧版本；
-3. 部署当前健康检查实现，使 `/healthz` 返回并验证联系存储依赖状态，同时补齐 `/llms.txt`；随后验证Directus ping、全站路由、表单落库、PM2和Nginx日志；
-4. 完成 `56xyy.com` DNS、证书、Nginx、canonical、robots、sitemap和正式Lighthouse检查；
-5. Oracle 19C独立服务器就绪后，完成并行实例迁移、数据核对、备份、恢复和回滚验证。
+2. 在下一次发布时再次验证自动回滚分支，确认修正后的PM2工作目录切换与回滚目标选择；
+3. 完成 `56xyy.com` DNS、证书、Nginx、canonical、robots、sitemap和正式Lighthouse检查；
+4. Oracle 19C独立服务器就绪后，完成并行实例迁移、数据核对、备份、恢复和回滚验证。
 
 ## 发布边界
 
-本轮没有执行部署、Git提交、GitHub推送、DNS切换或生产数据库写入。真实环境变量、Token、数据库凭据和密钥不得进入仓库。
+本轮已完成验收服务器部署与GitHub `main`同步；没有切换正式域名、修改DNS或执行生产数据库迁移。真实环境变量、Token、数据库凭据和密钥没有进入仓库。
