@@ -16,13 +16,30 @@ Directus 12.1.1 原生支持 `DB_CLIENT=oracledb`。应用服务器使用
 
 ## 前提
 
-- 数据库服务器：Oracle Linux 8 x86_64，建议至少 4 vCPU、8 GiB 内存、100 GiB SSD。
+- 数据库服务器：已存在 Oracle Database 19c 时，优先使用本目录的初始化脚本，不重复安装数据库软件。
+- 新建数据库服务器时：Oracle Linux 8 x86_64，建议至少 4 vCPU、8 GiB 内存、100 GiB SSD。
 - Oracle Database 19c 的许可由使用方自行确认。
 - 从 Oracle 官方下载 `oracle-database-ee-19c-1.0-1.x86_64.rpm`；仓库不分发安装介质。
 - 生产前应通过 My Oracle Support 安装当前可用的 19c Release Update。
 - 数据库和应用服务器使用私网；安全组和主机防火墙均只允许应用服务器访问 1521。
 
-## 1. 数据库服务器
+## 1A. 已存在 Oracle Database 19c（本次交付方式）
+
+数据库管理员先复制并填写参数：
+
+```bash
+sudo install -d -m 700 /etc/xyy
+sudo cp database.env.example /etc/xyy/oracle-database.env
+sudo chmod 600 /etc/xyy/oracle-database.env
+sudo editor /etc/xyy/oracle-database.env
+
+sudo bash init-existing-oracle19c.sh /etc/xyy/oracle-database.env
+```
+
+该脚本不会安装Oracle、创建CDB或升级数据库，只会验证Oracle 19c和字符集、打开指定PDB、
+初始化Directus独立表空间和最小权限Schema用户。
+
+## 1B. 全新 Oracle Linux 8 数据库服务器（备用方式）
 
 ```bash
 sudo install -d -m 700 /opt/install
