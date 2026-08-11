@@ -4,20 +4,35 @@
 set -euo pipefail
 umask 077
 
+CONFIG_FILE="${1:-}"
+if [[ -n ${CONFIG_FILE} ]]; then
+  [[ -f ${CONFIG_FILE} ]] || { echo "[error] missing ${CONFIG_FILE}" >&2; exit 1; }
+  # shellcheck disable=SC1090
+  source "${CONFIG_FILE}"
+fi
+
 BACKUP_ROOT="${BACKUP_ROOT:-/var/backups/oracle/xyy-directus}"
 DIRECTUS_DB_USER="${DIRECTUS_DB_USER:-DIRECTUS_APP}"
 DIRECTUS_DB_PASSWORD="${DIRECTUS_DB_PASSWORD:-}"
-PDB_SERVICE="${PDB_SERVICE:-ORCLPDB1}"
+PDB_SERVICE="${PDB_SERVICE:-${PDB_NAME:-ORCLPDB1}}"
 ORACLE_HOME="${ORACLE_HOME:-/opt/oracle/product/19c/dbhome_1}"
+ORACLE_SID="${ORACLE_SID:-ORCLCDB}"
+ORACLE_OS_USER="${ORACLE_OS_USER:-oracle}"
 
 [[ ${EUID} -eq 0 ]] || { echo "[error] run as root" >&2; exit 1; }
+id "${ORACLE_OS_USER}" >/dev/null 2>&1 || { echo "[error] Oracle OS user not found" >&2; exit 1; }
 [[ -n ${DIRECTUS_DB_PASSWORD} ]] || { echo "[error] DIRECTUS_DB_PASSWORD is required" >&2; exit 1; }
-[[ ${DIRECTUS_DB_USER} =~ ^[A-Z][A-Z0-9_]{0,29}$ ]] || { echo "[error] invalid DIRECTUS_DB_USER" >&2; exit 1; }
+[[ ${DIRECTUS_DB_USER} =~ ^[A-Z][A-Z0-9_$#]{0,29}$ ]] || { echo "[error] invalid DIRECTUS_DB_USER" >&2; exit 1; }
+[[ ${PDB_SERVICE} =~ ^[A-Z][A-Z0-9_$#]{0,29}$ ]] || { echo "[error] invalid PDB_SERVICE" >&2; exit 1; }
 [[ ${DIRECTUS_DB_PASSWORD} =~ ^[A-Za-z0-9_@#.+-]+$ ]] || { echo "[error] unsupported password characters" >&2; exit 1; }
+[[ -x ${ORACLE_HOME}/bin/sqlplus && -x ${ORACLE_HOME}/bin/expdp ]] || { echo "[error] Oracle tools not found" >&2; exit 1; }
+[[ ${BACKUP_ROOT} =~ ^/[A-Za-z0-9._/-]+$ ]] || { echo "[error] unsafe BACKUP_ROOT" >&2; exit 1; }
+
+oracle_group=$(id -gn "${ORACLE_OS_USER}")
 
 stamp=$(date -u +%Y%m%dT%H%M%SZ)
 install -d -m 700 "${BACKUP_ROOT}"
-chown oracle:oinstall "${BACKUP_ROOT}"
+chown "${ORACLE_OS_USER}:${oracle_group}" "${BACKUP_ROOT}"
 
 sql_file=$(mktemp /tmp/xyy-backup-dir.XXXXXX.sql)
 par_file=$(mktemp /tmp/xyy-expdp.XXXXXX.par)
@@ -29,9 +44,11 @@ create or replace directory XYY_BACKUP_DIR as '${BACKUP_ROOT}';
 grant read, write on directory XYY_BACKUP_DIR to ${DIRECTUS_DB_USER};
 exit
 SQL
-chown oracle:oinstall "${sql_file}"
+chown "${ORACLE_OS_USER}:${oracle_group}" "${sql_file}"
 chmod 600 "${sql_file}"
-su - oracle -c "${ORACLE_HOME}/bin/sqlplus -s / as sysdba @${sql_file}"
+sudo -u "${ORACLE_OS_USER}" env ORACLE_HOME="${ORACLE_HOME}" ORACLE_SID="${ORACLE_SID}" \
+  PATH="${ORACLE_HOME}/bin:/usr/bin:/bin" \
+  "${ORACLE_HOME}/bin/sqlplus" -s / as sysdba @"${sql_file}"
 
 cat > "${par_file}" <<PAR
 userid=${DIRECTUS_DB_USER}/"${DIRECTUS_DB_PASSWORD}"@127.0.0.1:1521/${PDB_SERVICE}
@@ -41,9 +58,11 @@ dumpfile=directus-${stamp}.dmp
 logfile=directus-${stamp}.log
 metrics=yes
 PAR
-chown oracle:oinstall "${par_file}"
+chown "${ORACLE_OS_USER}:${oracle_group}" "${par_file}"
 chmod 600 "${par_file}"
-su - oracle -c "${ORACLE_HOME}/bin/expdp parfile=${par_file}"
+sudo -u "${ORACLE_OS_USER}" env ORACLE_HOME="${ORACLE_HOME}" ORACLE_SID="${ORACLE_SID}" \
+  PATH="${ORACLE_HOME}/bin:/usr/bin:/bin" \
+  "${ORACLE_HOME}/bin/expdp" parfile="${par_file}"
 
 chmod 600 "${BACKUP_ROOT}/directus-${stamp}.dmp" "${BACKUP_ROOT}/directus-${stamp}.log"
 echo "[ok] ${BACKUP_ROOT}/directus-${stamp}.dmp"

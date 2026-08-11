@@ -76,6 +76,30 @@ describe('production deployment contracts', () => {
     expect(prepare).toContain('if(!o.thin) process.exit(1)')
   })
 
+  it('initializes an existing Oracle 19c without installing database software', () => {
+    const init = read('deploy/oracle19c/init-existing-oracle19c.sh')
+
+    expect(init).toContain("regexp_like(v_version, '^19\\\\.')")
+    expect(init).toContain("v_charset <> 'AL32UTF8'")
+    expect(init).toContain('create tablespace ${TABLESPACE_NAME}')
+    expect(init).toContain('create user ${DIRECTUS_DB_USER}')
+    expect(init).toContain('grant create session, alter session, create table')
+    expect(init).not.toContain('dnf install')
+    expect(init).not.toContain('localinstall')
+    expect(init).not.toContain('oracledb_ORCLCDB-19c configure')
+  })
+
+  it('keeps Web and Directus backend deployment entry points separate', () => {
+    const web = read('deploy/production/web/deploy-web.sh')
+    const backend = read('deploy/production/backend/deploy-backend.sh')
+
+    expect(web).toContain('exec bash scripts/deploy.sh')
+    expect(web).toContain('SITE_URL="${SITE_URL:-https://56xyy.com}"')
+    expect(backend).toContain('prepare-directus-oracle.sh')
+    expect(backend).toContain('migrate-and-cutover.sh')
+    expect(backend).toContain('rollback-to-postgresql.sh')
+  })
+
   it('bootstraps PostgreSQL Directus for the formal origin without SQL interpolation', () => {
     const bootstrap = `${read('scripts/bootstrap-cms-server.sh')}\n${read('scripts/lib/bootstrap-cms-functions.sh')}`
 
