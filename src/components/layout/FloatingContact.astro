@@ -1,5 +1,11 @@
 ---
 import '@/styles/floating-contact.css'
+
+interface Props {
+  phone: string
+}
+
+const { phone } = Astro.props
 ---
 
 <div id="float-contact" class="fixed bottom-6 right-5 z-50 flex flex-col items-end gap-2.5">
@@ -52,10 +58,10 @@ import '@/styles/floating-contact.css'
     >
       <p class="text-[10px] text-gray-400 font-medium tracking-wider mb-2.5">电话咨询</p>
       <a
-        href="tel:4006865156"
+        href={`tel:${phone.replace(/[^\d+]/g, '')}`}
         class="flex items-center gap-2 text-sm font-bold text-navy-800 hover:text-brand-orange transition-colors"
       >
-        <span class="text-brand-orange text-xs">全国</span>400-6865-156
+        <span class="text-brand-orange text-xs">全国</span>{phone}
       </a>
     </div>
   </div>

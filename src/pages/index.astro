@@ -9,17 +9,19 @@ import HomeCoreSolutions from '@/components/home/HomeCoreSolutions.astro'
 import { HOME_FAQS, HOME_IMAGES } from '@/data/home'
 import { BRAND, CASE_DETAILS } from '@/lib/brand'
 import { CLAIM_TEXT } from '@/lib/claims'
-import { getHomepageStats, getServices, getCases } from '@/lib/directus'
+import { getHomepageStats, getServices, getCases, getFaqs } from '@/lib/directus'
 import { ORGANIZATION_ID, createBreadcrumbSchema, createFaqSchema } from '@/lib/seo'
 
-const [STATS, SERVICES, allCases] = await Promise.all([
+const [STATS, SERVICES, allCases, FAQS] = await Promise.all([
   getHomepageStats(),
   getServices(),
   getCases(),
+  getFaqs('home', HOME_FAQS),
 ])
 const approvedCaseFallbacks = Object.entries(CASE_DETAILS).map(([label, detail], index) => ({
   id: index + 1,
   sort: index + 1,
+  slug: detail.slug,
   category: detail.category,
   label,
   metrics: `${detail.stats[0].label} ${detail.stats[0].value}${detail.stats[0].unit}`,
@@ -40,7 +42,7 @@ function parseFirstMetric(metrics: string) {
 }
 const caseCardMeta = CASES.map((c) => ({
   shortName: (CASE_DETAILS as Record<string, { name: string }>)[c.label]?.name ?? c.label,
-  slug: (CASE_DETAILS as Record<string, { slug: string }>)[c.label]?.slug,
+  slug: c.slug ?? (CASE_DETAILS as Record<string, { slug: string }>)[c.label]?.slug,
   metric: parseFirstMetric(c.metrics),
   metricContext: c.metrics.split('·')[0].includes('年发货') ? '年度发货规模' : '库存管理规模',
 }))
@@ -84,14 +86,13 @@ const webSiteSchema = {
 
 const breadcrumbSchema = createBreadcrumbSchema([{ name: '首页', path: '/' }])
 
-const faqSchema = createFaqSchema(HOME_FAQS)
+const faqSchema = createFaqSchema(FAQS)
 ---
 
 <Layout
   title="新亦源鞋服云仓｜鞋服仓储、质检、发货一体化服务"
   description={`新亦源2011年成立，提供鞋服仓配、退货质检、瑕疵修复及全渠道库存管理。直营仓储${CLAIM_TEXT.warehouseArea}，服务${CLAIM_TEXT.partnerBrands}品牌，发货准确率与库存准确率${CLAIM_TEXT.shippingAccuracy}。`}
   jsonLd={[orgSchema, webSiteSchema, breadcrumbSchema, faqSchema]}
-  services={SERVICES}
 >
   <HomeHero
     image={HOME_IMAGES.hero}
@@ -111,7 +112,7 @@ const faqSchema = createFaqSchema(HOME_FAQS)
 
   <HomeFulfillment />
 
-  <HomeFAQ items={HOME_FAQS} phone={BRAND.phone.toll} />
+  <HomeFAQ items={FAQS} phone={BRAND.phone.toll} />
 </Layout>
 
 <style>

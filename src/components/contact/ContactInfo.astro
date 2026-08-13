@@ -1,5 +1,11 @@
 ---
-import { BRAND } from '@/lib/brand'
+import type { SiteSettingsRecord } from '@/lib/directus'
+
+interface Props {
+  settings: Omit<SiteSettingsRecord, 'id' | 'status' | 'key'>
+}
+
+const { settings } = Astro.props
 ---
 
 <div class="lg:col-span-2 mb-12 lg:mb-0">
@@ -7,7 +13,7 @@ import { BRAND } from '@/lib/brand'
   <div class="mb-8">
     <h3 class="text-xs font-bold text-navy-500 uppercase tracking-wider mb-4">电话咨询</h3>
     <a
-      href={`tel:${BRAND.phone.toll}`}
+      href={`tel:${settings.phone}`}
       class="flex items-center gap-3 p-4 rounded-xl border border-gray-200 hover:border-navy-300 hover:bg-navy-50 transition-all group"
     >
       <div
@@ -29,7 +35,7 @@ import { BRAND } from '@/lib/brand'
         </svg>
       </div>
       <div>
-        <div class="font-bold text-navy-800">{BRAND.phone.toll}</div>
+        <div class="font-bold text-navy-800">{settings.phone}</div>
         <div class="text-xs text-gray-500">全国服务热线，具体接听时间以实际服务安排为准</div>
       </div>
     </a>
@@ -39,7 +45,12 @@ import { BRAND } from '@/lib/brand'
     <h3 class="text-xs font-bold text-navy-500 uppercase tracking-wider mb-4">仓库地址</h3>
     <div class="space-y-4">
       {
-        Object.values(BRAND.locations).map(({ label, address }) => (
+        [
+          {
+            label: settings.headquarters_label,
+            address: settings.headquarters_address,
+          },
+        ].map(({ label, address }) => (
           <div class="flex items-start gap-3 p-4 rounded-xl bg-gray-50 border border-gray-100">
             <svg
               class="w-5 h-5 text-brand-orange flex-shrink-0 mt-0.5"

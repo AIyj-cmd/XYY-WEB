@@ -1,8 +1,13 @@
 ---
-import { CLAIM_TEXT } from '@/lib/claims'
 import AboutHeroControls from './AboutHeroControls.astro'
 import AboutHeroMedia from './AboutHeroMedia.astro'
 import AboutHeroStats from './AboutHeroStats.astro'
+
+interface Props {
+  description: string
+}
+
+const { description } = Astro.props
 ---
 
 <section
@@ -30,11 +35,8 @@ import AboutHeroStats from './AboutHeroStats.astro'
         都有专业的<br />
         <span class="text-brand-orange">出货能力</span>
       </h1>
-      <p class="text-white/55 text-sm leading-relaxed max-w-sm mb-10">
-        从仓储质检到履约交付，我们为鞋服品牌提前解决出货链路中的复杂问题。<br />
-        15年、{CLAIM_TEXT.employeeCount}名员工、{
-          CLAIM_TEXT.warehouseArea
-        }直营仓储，只为一件事：让发货更准确、高效、快捷。
+      <p class="text-white/55 text-sm leading-relaxed max-w-sm mb-10 whitespace-pre-line">
+        {description}
       </p>
 
       <AboutHeroControls />

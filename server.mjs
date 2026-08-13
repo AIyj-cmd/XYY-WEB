@@ -23,8 +23,6 @@ app.use(createCanonicalRedirect(runtime))
 app.use(createSecurityHeaders(runtime))
 app.get('/healthz', healthHandler)
 
-// Serve prerendered contact page at the canonical no-slash URL
-app.get('/contact', (_req, res) => res.sendFile(join(clientDir, 'contact/index.html')))
 app.get('/privacy', (_req, res) => res.sendFile(join(clientDir, 'privacy/index.html')))
 
 // Gzip/deflate/br compress all responses

@@ -1,10 +1,11 @@
 ---
 import { BRAND } from '@/lib/brand'
-import type { Service } from '@/lib/directus'
+import { getSiteSettings } from '@/lib/directus'
 import Header from '@/components/Header.astro'
 import Footer from '@/components/Footer.astro'
 import DocumentHead from '@/components/layout/DocumentHead.astro'
 import FloatingContact from '@/components/layout/FloatingContact.astro'
+import { DEFAULT_SITE_SETTINGS } from '@/data/site-settings'
 import '@/styles/global.css'
 
 interface Props {
@@ -14,7 +15,7 @@ interface Props {
   ogImage?: string
   jsonLd?: Record<string, unknown> | Record<string, unknown>[]
   noIndex?: boolean
-  services?: Service[]
+  siteSettings?: typeof DEFAULT_SITE_SETTINGS
 }
 
 const {
@@ -24,8 +25,9 @@ const {
   ogImage = `${BRAND.url}/logo.png`,
   jsonLd,
   noIndex = false,
-  services,
+  siteSettings: providedSiteSettings,
 } = Astro.props
+const siteSettings = providedSiteSettings ?? (await getSiteSettings(DEFAULT_SITE_SETTINGS))
 ---
 
 <!doctype html>
@@ -38,8 +40,8 @@ const {
     <main>
       <slot />
     </main>
-    <Footer services={services} />
+    <Footer settings={siteSettings} />
 
-    <FloatingContact />
+    <FloatingContact phone={siteSettings.phone} />
   </body>
 </html>

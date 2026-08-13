@@ -4,20 +4,34 @@ import CaseDetailContact from '@/components/cases/CaseDetailContact.astro'
 import CaseDetailHero from '@/components/cases/CaseDetailHero.astro'
 import CaseDetailOverview from '@/components/cases/CaseDetailOverview.astro'
 import { BRAND, CASE_DETAILS } from '@/lib/brand'
-import { getCases, getServices } from '@/lib/directus'
+import { getCaseDetail, getCases } from '@/lib/directus'
 import { ORGANIZATION_ID, createBreadcrumbSchema } from '@/lib/seo'
 
 const slug = Astro.params.slug
 const caseEntry = Object.entries(CASE_DETAILS).find(([, detail]) => detail.slug === slug)
+const cases = await getCases()
+const caseSummary = cases.find((item) => item.slug === slug || item.label === caseEntry?.[0])
+const fallbackDetail =
+  caseEntry?.[1] ??
+  (caseSummary && {
+    slug: slug!,
+    name: caseSummary.label,
+    fullName: caseSummary.label,
+    category: caseSummary.category,
+    image: caseSummary.img,
+    accent: '#2563EB',
+    description: caseSummary.details,
+    stats: [],
+  })
 
-if (!caseEntry) {
-  return Astro.redirect('/cases', 302)
+if (!fallbackDetail) return Astro.redirect('/cases', 302)
+
+const detail = await getCaseDetail(slug!, fallbackDetail, caseSummary)
+const displayDetail = {
+  ...detail,
+  category: caseSummary?.category ?? detail.category,
+  image: caseSummary?.img ?? detail.image,
 }
-
-const [caseLabel, detail] = caseEntry
-const [cases, services] = await Promise.all([getCases(), getServices()])
-const caseSummary = cases.find((item) => item.label === caseLabel)
-const displayDetail = { ...detail, image: caseSummary?.img ?? detail.image }
 const casePath = `/cases/${detail.slug}`
 const imageUrl = displayDetail.image.startsWith('http')
   ? displayDetail.image
@@ -51,7 +65,6 @@ const articleSchema = {
   description={pageDescription}
   ogImage={imageUrl}
   jsonLd={[breadcrumbSchema, articleSchema]}
-  services={services}
 >
   <article>
     <CaseDetailHero detail={displayDetail} />

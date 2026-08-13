@@ -1,9 +1,9 @@
 # 新亦源供应链官网
 
-广州新亦源供应链管理有限公司官方网站。项目采用 Astro SSR、Directus CMS、PostgreSQL、PM2 与 Nginx，覆盖鞋服云仓、退货质检、瑕疵修复、数字化履约和智能寄件等业务。
+广州新亦源供应链管理有限公司官方网站。项目采用 Astro SSR、Directus CMS、PostgreSQL 16、PM2 与 Nginx，覆盖鞋服云仓、退货质检、瑕疵修复、数字化履约和智能寄件等业务。Oracle Database 19c 是后续独立数据库迁移目标，本轮验收站同步不切换数据库。
 
-- 当前服务器环境：<https://wz.tomatopia.top>
-- 正式域名规划：<https://56xyy.com>（尚未切换到本项目服务器）
+- 当前验收入口：<https://wz.tomatopia.top>
+- 正式域名：<https://56xyy.com>（切换完成前仍需核对证书、DNS 与搜索引擎策略）
 - 项目状态：[docs/PROJECT_STATUS.md](docs/PROJECT_STATUS.md)
 
 ## 技术栈
@@ -12,7 +12,7 @@
 | ---- | ------------------------------------------------------ |
 | 前端 | Astro 7 SSR、TypeScript、Tailwind CSS 4、页面级 CSS    |
 | 交互 | GSAP 3、Lenis、原生 IntersectionObserver               |
-| CMS  | Directus 12、PostgreSQL 16                             |
+| CMS  | Directus 12、PostgreSQL 16（Oracle 19c 迁移目标）       |
 | 服务 | Express 5、PM2、Nginx                                  |
 | 测试 | Astro Check、ESLint、Vitest、Playwright、Lighthouse CI |
 
@@ -77,12 +77,14 @@ tests/                 单元与端到端测试
 
 ## 数据来源
 
-| 内容                               | 来源                                              | 生效方式                     |
-| ---------------------------------- | ------------------------------------------------- | ---------------------------- |
-| 首页统计、服务、案例、仓库、新闻   | Directus                                          | 后台保存后，下次页面请求读取 |
-| 首页案例弹窗、案例详情页、品牌常量 | `src/data/brand/`，由 `src/lib/brand.ts` 兼容导出 | 修改代码并部署               |
-| 官网统一运营口径                   | `src/lib/claims.ts`                               | 修改代码并部署               |
-| SEO、FAQ、结构化数据               | 页面代码与 `src/lib/seo.ts`                       | 修改代码并部署               |
+| 内容                             | 来源                                              | 生效方式                     |
+| -------------------------------- | ------------------------------------------------- | ---------------------------- |
+| 首页统计、服务、案例、仓库、新闻 | Directus                                          | 后台保存后，下次页面请求读取 |
+| FAQ、案例详情、期刊目录          | Directus，审核源码作为故障回退                    | 后台发布后，下次请求读取     |
+| 服务专题、关于我们、全站设置     | Directus，审核源码作为故障回退                    | 后台发布后，下次请求读取     |
+| 品牌常量                         | `src/data/brand/`，由 `src/lib/brand.ts` 兼容导出 | 修改代码并部署               |
+| 官网统一运营口径                 | `src/lib/claims.ts`                               | 修改代码并部署               |
+| SEO 与结构化数据                 | 页面代码与 `src/lib/seo.ts`                       | 修改代码并部署               |
 
 Directus 读取失败时返回空集合并报告依赖降级，不在进程内缓存 CMS 内容；首页案例另有已审核代码回退。统计和服务目前不使用陈旧快照，因此发布环境必须把 CMS 健康检查作为门槛。动态页面响应设置为 `no-store`。
 
@@ -150,17 +152,34 @@ Directus 从 PostgreSQL 迁移至独立 Oracle Database 19c 的数据库安装�
 
 ## CMS
 
-- 当前后台：<https://wz.tomatopia.top/cms/admin/>
+- 当前验收后台：<https://wz.tomatopia.top/cms/admin/>
 - Ping：<https://wz.tomatopia.top/cms/server/ping>
-- 服务器目录：`/var/www/xyy-cms`
+- 账号、Token、数据库口令和服务器路径由部署团队管理，不进入仓库。
 
 ```bash
+# 首次建模或补齐缺失集合（仅使用短期管理级 Token）
+node scripts/setup-cms.mjs
+
+# FAQ 源文案变化后，重新生成初始化种子并提交审核
+npm run cms:generate-faq-seeds
+
+# 案例、期刊、服务页、关于页与站点设置源文案变化后生成初始化种子
+npm run cms:generate-content-seeds
+
+# 部署后核对 19 个业务集合与文件库
+npm run cms:verify
+
 # 预检审核内容同步
 npm run cms:sync-approved
 
 # 执行同步
 npm run cms:sync-approved -- --apply
 ```
+
+当前生产修复责任和操作顺序见
+[`docs/PRODUCTION_REMEDIATION_HANDOFF.md`](docs/PRODUCTION_REMEDIATION_HANDOFF.md)。
+Directus 字段职责、FAQ 页面标识和下一阶段后台化建议见
+[`docs/CMS_CONTENT_MODEL.md`](docs/CMS_CONTENT_MODEL.md)。
 
 ## 提交边界
 

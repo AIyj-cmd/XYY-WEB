@@ -6,6 +6,7 @@ import {
   getCases,
   getDirectusAssetUrl,
   getDirectusPublicUrl,
+  getFaqs,
   getHomepageStats,
   getNewsByCategory,
   getPublishedNews,
@@ -74,7 +75,6 @@ describe('Directus helpers', () => {
   })
 
   it.each([
-    ['homepage_stats', getHomepageStats],
     ['services', getServices],
     ['warehouses', getWarehouses],
   ] as const)('reads %s from Directus instead of local constants', async (collection, fetcher) => {
@@ -90,6 +90,37 @@ describe('Directus helpers', () => {
         filter: { status: { _eq: 'published' } },
         sort: ['sort'],
       })
+    )
+  })
+
+  it('reads the unified homepage configuration instead of scattered metric rows', async () => {
+    const requester = vi.fn(async (collection) =>
+      collection === 'homepage_content'
+        ? [
+            {
+              id: 1,
+              stats: [
+                { value: '150+', label: '合作品牌', unit: '家', detail: '鞋服品牌' },
+              ],
+            },
+          ]
+        : []
+    )
+    __setDirectusRequesterForTests(requester)
+
+    await expect(getHomepageStats()).resolves.toEqual([
+      {
+        id: 1,
+        sort: 1,
+        value: '150+',
+        label: '合作品牌',
+        unit: '家',
+        detail: '鞋服品牌',
+      },
+    ])
+    expect(requester).toHaveBeenCalledWith(
+      'homepage_content',
+      expect.objectContaining({ fields: ['id', 'stats'] })
     )
   })
 
@@ -115,6 +146,35 @@ describe('Directus helpers', () => {
     })
 
     await expect(getHomepageStats()).resolves.toEqual([])
+    expect(errorSpy).toHaveBeenCalled()
+  })
+
+  it('reads page FAQs and resolves approved claim placeholders', async () => {
+    const requester = vi.fn(async () => [
+      { id: 1, sort: 1, question: '服务多少品牌？', answer: '目前服务{{partnerBrands}}品牌。' },
+    ])
+    __setDirectusRequesterForTests(requester)
+
+    const result = await getFaqs('home', [])
+    expect(result[0]?.q).toBe('服务多少品牌？')
+    expect(result[0]?.a).not.toContain('{{partnerBrands}}')
+    expect(requester).toHaveBeenCalledWith(
+      'faqs',
+      expect.objectContaining({
+        filter: { page_key: { _eq: 'home' }, status: { _eq: 'published' } },
+        sort: ['sort'],
+      })
+    )
+  })
+
+  it('uses the reviewed FAQ fallback when Directus is unavailable', async () => {
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+    const fallback = [{ q: '本地问题', a: '本地答案' }]
+    __setDirectusRequesterForTests(async () => {
+      throw new Error('CMS unavailable')
+    })
+
+    await expect(getFaqs('home', fallback)).resolves.toEqual(fallback)
     expect(errorSpy).toHaveBeenCalled()
   })
 })

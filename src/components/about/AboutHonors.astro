@@ -2,7 +2,7 @@
 import '@/styles/about-honors.css'
 
 interface Props {
-  honors: readonly string[]
+  honors: { title: string; image: string }[]
 }
 
 const { honors } = Astro.props
@@ -16,14 +16,9 @@ const { honors } = Astro.props
     </div>
     <div class="honors-grid">
       {
-        honors.map((honor, index) => (
-          <button
-            class="honor-card"
-            type="button"
-            data-img={`/about/honor/${index + 1}.jpg`}
-            data-alt={honor}
-          >
-            {honor}
+        honors.map((honor) => (
+          <button class="honor-card" type="button" data-img={honor.image} data-alt={honor.title}>
+            {honor.title}
           </button>
         ))
       }

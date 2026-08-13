@@ -84,7 +84,11 @@ sudo bash prepare-directus-oracle.sh /etc/xyy/oracle19c.env
 当前迁移集合：
 
 ```text
-homepage_stats, services, warehouses, cases, news, contact_leads
+homepage_stats, services, warehouses, cases, news, faqs,
+case_details, case_stats, publications,
+service_pages, service_stats, service_features,
+about_content, about_history, about_honors, site_settings,
+contact_leads
 ```
 
 脚本会保留 PostgreSQL `pg_dump`、逐集合 JSON 和 SHA-256 校验报告。

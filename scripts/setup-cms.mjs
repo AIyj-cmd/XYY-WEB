@@ -1,12 +1,8 @@
 #!/usr/bin/env node
 
-import {
-  APPROVED_HOMEPAGE_STATS,
-  APPROVED_SERVICES,
-  APPROVED_WAREHOUSES,
-} from './approved-cms-content.mjs'
-import { APPROVED_CASE_SEEDS } from './data/approved-case-seeds.mjs'
 import { CMS_COLLECTION_DEFINITIONS } from './data/cms-collection-definitions.mjs'
+import { CMS_NAVIGATION_GROUP_DEFINITIONS } from './data/content-management-collection-definitions.mjs'
+import { CMS_SEEDS, CMS_SEED_COUNTS, CMS_SEED_IDENTITIES } from './data/cms-seed-config.mjs'
 import { createDirectusAdminClient } from './lib/directus-admin.mjs'
 import { createCmsSetupRuntime } from './lib/cms-setup-runtime.mjs'
 
@@ -19,24 +15,28 @@ if (!token) {
 }
 
 const directus = createDirectusAdminClient({ baseUrl, token })
-const { createCollection, seed } = createCmsSetupRuntime(directus)
-const withoutFields = (item, excluded) =>
-  Object.fromEntries(Object.entries(item).filter(([field]) => !excluded.includes(field)))
-const seeds = {
-  homepage_stats: APPROVED_HOMEPAGE_STATS.map((item) => withoutFields(item, ['id'])),
-  services: APPROVED_SERVICES.map((item) => withoutFields(item, ['id'])),
-  warehouses: APPROVED_WAREHOUSES.map((item) => withoutFields(item, ['aliases'])),
+const { createNavigationGroup, createCollection, seedMissing } = createCmsSetupRuntime(directus)
+
+for (const group of CMS_NAVIGATION_GROUP_DEFINITIONS) {
+  await createNavigationGroup(group)
 }
 
 for (const definition of CMS_COLLECTION_DEFINITIONS) {
   await createCollection(definition)
-  await seed(definition.name, seeds[definition.name])
 }
 
-console.log('\n[collection] cases (existing — seeding only)')
-await seed('cases', APPROVED_CASE_SEEDS)
+for (const definition of CMS_COLLECTION_DEFINITIONS) {
+  await seedMissing(
+    definition.name,
+    CMS_SEEDS[definition.name] ?? [],
+    CMS_SEED_IDENTITIES[definition.name],
+    { singleton: Boolean(definition.meta?.singleton) }
+  )
+}
 
 console.log('\n✅ CMS setup complete!')
-console.log('   collections: homepage_stats, services, warehouses')
-console.log(`   cases: seeded with ${APPROVED_CASE_SEEDS.length} items`)
+console.log(`   collections: ${CMS_COLLECTION_DEFINITIONS.map(({ name }) => name).join(', ')}`)
+console.log(`   cases: seeded with ${CMS_SEED_COUNTS.cases} items`)
+console.log(`   faqs: seeded with ${CMS_SEED_COUNTS.faqs} items`)
+console.log(`   service pages: seeded with ${CMS_SEED_COUNTS.servicePages} items`)
 console.log(`\nAccess Directus admin at ${baseUrl}/admin`)

@@ -1,10 +1,13 @@
 ---
-export const prerender = true
 import Layout from '@/layouts/Layout.astro'
 import ContactHero from '@/components/contact/ContactHero.astro'
 import ContactInfo from '@/components/contact/ContactInfo.astro'
 import ContactForm from '@/components/contact/ContactForm.astro'
 import { BRAND } from '@/lib/brand'
+import { DEFAULT_SITE_SETTINGS } from '@/data/site-settings'
+import { getSiteSettings } from '@/lib/directus'
+
+const settings = await getSiteSettings(DEFAULT_SITE_SETTINGS)
 
 const localBusinessSchema = {
   '@context': 'https://schema.org',
@@ -12,14 +15,14 @@ const localBusinessSchema = {
   '@id': `${BRAND.url}/#localbusiness`,
   name: BRAND.fullName,
   url: BRAND.url,
-  telephone: [BRAND.phone.toll],
+  telephone: [settings.phone],
   location: [
     {
       '@type': 'Place',
       name: '华南总部（广州）',
       address: {
         '@type': 'PostalAddress',
-        streetAddress: '果园一路2号',
+        streetAddress: settings.headquarters_address,
         addressLocality: '广州市黄埔区',
         addressRegion: '广东省',
         postalCode: '510700',
@@ -36,12 +39,13 @@ const localBusinessSchema = {
   description="联系广州新亦源供应链，咨询鞋服云仓、后整质检、物流云合作方案。电话：400-6865-156，总部：广东省广州市黄埔区果园一路2号。"
   canonical={`${BRAND.url}/contact`}
   jsonLd={localBusinessSchema}
+  siteSettings={settings}
 >
   <ContactHero />
   <section class="py-16 bg-white" aria-label="联系方式与表单">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="lg:grid lg:grid-cols-5 lg:gap-14">
-        <ContactInfo />
+        <ContactInfo {settings} />
         <ContactForm />
       </div>
     </div>

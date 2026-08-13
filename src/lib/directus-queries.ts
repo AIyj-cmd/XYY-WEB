@@ -1,7 +1,54 @@
-import { freshItems, requestItems } from './directus-client'
-import type { Case, HomepageStat, NewsArticle, Service, Warehouse } from './directus-types'
+import {
+  freshItems,
+  getDirectusAssetUrl,
+  requestItems,
+  requestSingleton,
+} from './directus-client'
+import { interpolateClaims } from './directus-interpolation'
+import type {
+  Case,
+  FaqItem,
+  FaqRecord,
+  HomepageStat,
+  HomepageContentRecord,
+  NewsArticle,
+  Service,
+  Warehouse,
+} from './directus-types'
+
+export async function getFaqs(pageKey: string, fallback: FaqItem[]): Promise<FaqItem[]> {
+  try {
+    const rows = await requestItems<FaqRecord[]>('faqs', {
+      filter: { page_key: { _eq: pageKey }, status: { _eq: 'published' } },
+      sort: ['sort'],
+      fields: ['id', 'sort', 'question', 'answer'],
+    })
+    return rows.map(({ question, answer }) => ({ q: question, a: interpolateClaims(answer) }))
+  } catch (error) {
+    console.error(
+      '[directus] FAQ fetch failed for',
+      pageKey,
+      error instanceof Error ? error.message : String(error)
+    )
+    return fallback
+  }
+}
 
 export async function getHomepageStats(): Promise<HomepageStat[]> {
+  try {
+    const row = await requestSingleton<HomepageContentRecord>('homepage_content', {
+      fields: ['id', 'stats'],
+    })
+    if (row?.status !== 'draft' && row?.stats?.length) {
+      return row.stats.map((item, index) => ({
+        id: index + 1,
+        sort: index + 1,
+        ...item,
+      }))
+    }
+  } catch {
+    // During rolling migrations, keep the old per-row collection available as a fallback.
+  }
   return freshItems<HomepageStat>('homepage_stats', {
     filter: { status: { _eq: 'published' } },
     sort: ['sort'],
@@ -40,8 +87,28 @@ export async function getCases(): Promise<Case[]> {
   return freshItems<Case>('cases', {
     filter: { status: { _eq: 'published' } },
     sort: ['sort'],
-    fields: ['id', 'category', 'label', 'metrics', 'details', 'tags', 'img'],
-  })
+    fields: [
+      'id',
+      'slug',
+      'category',
+      'label',
+      'name',
+      'full_name',
+      'accent',
+      'case_description',
+      'stats',
+      'metrics',
+      'details',
+      'tags',
+      'img',
+      'image_file',
+    ],
+  }).then((items) =>
+    items.map((item) => ({
+      ...item,
+      img: getDirectusAssetUrl(item.image_file) || item.img,
+    }))
+  )
 }
 
 export async function getPublishedNews(limit = 10, page = 1): Promise<NewsArticle[]> {

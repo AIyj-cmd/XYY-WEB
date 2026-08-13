@@ -42,6 +42,27 @@ export async function requestItems<T>(
   return getClient().request(readItems(collection as any, query as any)) as Promise<T>
 }
 
+export async function requestSingleton<T>(
+  collection: DirectusCollection,
+  query: Record<string, unknown> = {}
+): Promise<T> {
+  if (requestOverride) {
+    const result = await requestOverride(collection, query)
+    return (Array.isArray(result) ? result[0] : result) as T
+  }
+  const url = new URL(`${getDirectusApiUrl()}/items/${String(collection)}`)
+  for (const [key, value] of Object.entries(query)) {
+    if (Array.isArray(value)) url.searchParams.set(key, value.join(','))
+    else if (value !== undefined) url.searchParams.set(key, String(value))
+  }
+  const response = await fetch(url, {
+    headers: { Authorization: `Bearer ${import.meta.env.DIRECTUS_TOKEN || ''}` },
+  })
+  if (!response.ok) throw new Error(`Directus singleton request failed: ${response.status}`)
+  const payload = (await response.json()) as { data: T }
+  return payload.data
+}
+
 export async function freshItems<T>(
   collection: DirectusCollection,
   query: Record<string, unknown>

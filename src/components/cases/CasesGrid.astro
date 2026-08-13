@@ -7,8 +7,8 @@ interface Props {
 }
 
 const { cases } = Astro.props
-const getCasePath = (label: string) => {
-  const slug = (CASE_DETAILS as Record<string, { slug: string }>)[label]?.slug
+const getCasePath = (item: Case) => {
+  const slug = item.slug ?? (CASE_DETAILS as Record<string, { slug: string }>)[item.label]?.slug
   return slug ? `/cases/${slug}` : null
 }
 ---
@@ -18,7 +18,7 @@ const getCasePath = (label: string) => {
     <div id="cases-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {
         cases.map((item) => {
-          const casePath = getCasePath(item.label)
+          const casePath = getCasePath(item)
           return (
             <article
               class="case-card group bg-white rounded-2xl border border-gray-100 hover:border-navy-200 hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col"

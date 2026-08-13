@@ -45,6 +45,18 @@ select 'homepage_stats', count(*) from homepage_stats;
 select 'services', count(*) from services;
 select 'warehouses', count(*) from warehouses;
 select 'cases', count(*) from cases;
+select 'news', count(*) from news;
+select 'faqs', count(*) from faqs;
+select 'case_details', count(*) from case_details;
+select 'case_stats', count(*) from case_stats;
+select 'publications', count(*) from publications;
+select 'service_pages', count(*) from service_pages;
+select 'service_stats', count(*) from service_stats;
+select 'service_features', count(*) from service_features;
+select 'about_content', count(*) from about_content;
+select 'about_history', count(*) from about_history;
+select 'about_honors', count(*) from about_honors;
+select 'site_settings', count(*) from site_settings;
 select 'contact_leads', count(*) from contact_leads;
 SQL
 

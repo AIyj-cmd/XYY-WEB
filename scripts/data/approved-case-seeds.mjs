@@ -1,6 +1,7 @@
 export const APPROVED_CASE_SEEDS = [
   {
     sort: 1,
+    slug: 'ur',
     category: '快时尚女装',
     label: 'UR（Urban Revivo）',
     metrics: '库存 260万件+ · SKU 13万+ · 仓面积 10万㎡+ · 峰值B2C 10万件/日',
@@ -11,6 +12,7 @@ export const APPROVED_CASE_SEEDS = [
   },
   {
     sort: 2,
+    slug: 'maxrieny',
     category: '高端设计师女装',
     label: '玛克茜妮（MAXRIENY）',
     metrics: '库存 90万件+ · SKU 1.7万+ · 峰值B2C 7.5万件/日 · 峰值B2B 6万件/日',
@@ -21,6 +23,7 @@ export const APPROVED_CASE_SEEDS = [
   },
   {
     sort: 3,
+    slug: 'xingmian',
     category: '内衣基础品类',
     label: '幸棉',
     metrics: '库存 370万件+ · SKU 5000+ · 仓 2.5万㎡ · 峰值B2C 10万件/日',
@@ -31,6 +34,7 @@ export const APPROVED_CASE_SEEDS = [
   },
   {
     sort: 4,
+    slug: 'meiyi',
     category: '跨境全品类女装',
     label: '美一(MEIYI)',
     metrics:
@@ -42,6 +46,7 @@ export const APPROVED_CASE_SEEDS = [
   },
   {
     sort: 5,
+    slug: 'romi-studio',
     category: '直播女装',
     label: 'ROMI STUDIO',
     metrics: '日均出库 3万+ 件 · 快速补货 · 直播寄样',
@@ -52,6 +57,7 @@ export const APPROVED_CASE_SEEDS = [
   },
   {
     sort: 6,
+    slug: 'toyouth',
     category: '人气女装品牌',
     label: '初语（TOYOUTH）',
     metrics: '全渠道库存统一管理 · 多平台同步发货',

@@ -8,9 +8,6 @@ import ProductAssurance from '@/components/product/ProductAssurance.astro'
 import '@/styles/product.css'
 import { DIRECTORY_NEEDS } from '@/data/product'
 import { BRAND } from '@/lib/brand'
-import { getServices } from '@/lib/directus'
-
-const SERVICES = await getServices()
 
 const serviceSchemas = [
   {
@@ -56,7 +53,6 @@ const breadcrumbSchema = {
   title="仓配服务｜鞋服仓储、退货处理、商品整理与增值处理｜新亦源"
   description="新亦源为鞋服品牌提供基础仓配、退货与逆向处理、商品整理与增值处理、轻微瑕疵处理等覆盖商品全生命周期的仓配服务。"
   jsonLd={[breadcrumbSchema, ...serviceSchemas]}
-  services={SERVICES}
 >
   <div class="warehouse-services-page">
     <section class="warehouse-hero" aria-labelledby="warehouse-hero-heading">

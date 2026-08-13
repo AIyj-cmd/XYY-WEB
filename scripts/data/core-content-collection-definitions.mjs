@@ -1,0 +1,76 @@
+import {
+  dateCreatedField,
+  dateUpdatedField,
+  leadStatusField,
+  statusChoices,
+  statusField,
+} from './cms-field-builders.mjs'
+
+export const CORE_CONTENT_COLLECTION_DEFINITIONS = [
+  {
+    name: 'homepage_stats',
+    icon: 'bar_chart',
+    meta: {
+      hidden: true,
+      group: 'website_content',
+      note: '旧版首页数据备份；请在“首页配置”中统一维护。',
+    },
+    fields: [
+      statusField(),
+      { field: 'sort', type: 'integer', meta: { width: 'half' } },
+      { field: 'value', type: 'string', meta: { required: true } },
+      { field: 'label', type: 'string', meta: { required: true } },
+      { field: 'unit', type: 'string' },
+      { field: 'detail', type: 'string' },
+    ],
+  },
+  {
+    name: 'services',
+    icon: 'room_service',
+    meta: { group: 'website_content' },
+    fields: [
+      statusField(),
+      { field: 'sort', type: 'integer', meta: { width: 'half' } },
+      { field: 'slug', type: 'string', meta: { required: true } },
+      { field: 'icon', type: 'string' },
+      { field: 'name', type: 'string', meta: { required: true } },
+      { field: 'subtitle', type: 'string' },
+      { field: 'description', type: 'text', meta: { interface: 'input-multiline' } },
+      { field: 'features', type: 'json', meta: { interface: 'list', options: { template: '{{item}}' } } },
+    ],
+  },
+  {
+    name: 'warehouses',
+    icon: 'warehouse',
+    meta: { group: 'brand_content' },
+    fields: [
+      statusField(statusChoices({ text: '归档', value: 'archived' })),
+      { field: 'sort', type: 'integer', meta: { width: 'half' } },
+      { field: 'name', type: 'string', meta: { required: true } },
+      { field: 'city', type: 'string' },
+      { field: 'since', type: 'string' },
+      { field: 'address', type: 'string' },
+      { field: 'park', type: 'string', meta: { note: '园区总面积（㎡）' } },
+      { field: 'rent', type: 'string', meta: { note: '可租面积（㎡）' } },
+      { field: 'height', type: 'string', meta: { note: '层高' } },
+      { field: 'highlight', type: 'text', meta: { interface: 'input-multiline', note: '核心优势描述' } },
+    ],
+  },
+  {
+    name: 'contact_leads',
+    icon: 'contact_mail',
+    meta: { group: 'operations_content' },
+    fields: [
+      leadStatusField(),
+      { field: 'name', type: 'string', meta: { required: true, width: 'half' } },
+      { field: 'phone', type: 'string', meta: { required: true, width: 'half' } },
+      { field: 'company', type: 'string', meta: { width: 'half' } },
+      { field: 'email', type: 'string', meta: { width: 'half' } },
+      { field: 'service', type: 'string', meta: { width: 'half' } },
+      { field: 'source', type: 'string', meta: { width: 'half', readonly: true }, schema: { default_value: 'website' } },
+      { field: 'message', type: 'text', meta: { interface: 'input-multiline', required: true } },
+      dateCreatedField(),
+      dateUpdatedField(),
+    ],
+  },
+]

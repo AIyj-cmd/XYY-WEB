@@ -6,6 +6,7 @@ export {
 } from './directus-client'
 export {
   formatDate,
+  getFaqs,
   getCases,
   getHomepageStats,
   getNewsArticle,
@@ -15,12 +16,33 @@ export {
   getWarehouses,
   NEWS_CATEGORIES,
 } from './directus-queries'
+export {
+  getAboutContent,
+  getAboutHistory,
+  getAboutHonors,
+  getCaseDetail,
+  getPublications,
+  getServicePageContent,
+  getSiteSettings,
+} from './directus-content-queries'
 export type {
   Case,
+  CaseDetailRecord,
+  CaseStatRecord,
   DirectusCollection,
   DirectusSchema,
+  FaqItem,
+  FaqRecord,
+  AboutContentRecord,
+  AboutHistoryRecord,
+  AboutHonorRecord,
   HomepageStat,
   NewsArticle,
+  PublicationRecord,
   Service,
+  ServiceFeatureRecord,
+  ServicePageRecord,
+  ServiceStatRecord,
+  SiteSettingsRecord,
   Warehouse,
 } from './directus-types'

@@ -6,12 +6,33 @@ import AboutHistory from '@/components/about/AboutHistory.astro'
 import AboutWarehouseNetwork from '@/components/about/AboutWarehouseNetwork.astro'
 import AboutWarehouseRegions from '@/components/about/AboutWarehouseRegions.astro'
 import AboutHonors from '@/components/about/AboutHonors.astro'
-import { ABOUT_FAQS, groupWarehouses } from '@/data/about'
+import { ABOUT_FAQS, ABOUT_HISTORY, groupWarehouses } from '@/data/about'
 import { BRAND, HONORS } from '@/lib/brand'
 import { CLAIM_TEXT } from '@/lib/claims'
-import { getServices, getWarehouses } from '@/lib/directus'
+import {
+  getAboutContent,
+  getAboutHistory,
+  getAboutHonors,
+  getFaqs,
+  getWarehouses,
+} from '@/lib/directus'
+import { createFaqSchema } from '@/lib/seo'
 
-const [warehouses, services] = await Promise.all([getWarehouses(), getServices()])
+const honorFallbacks = HONORS.map((title, index) => ({
+  title,
+  image: `/about/honor/${index + 1}.jpg`,
+}))
+const aboutFallback = {
+  overview: `新亦源供应链总部位于广州，是专注鞋服垂直领域的云仓服务商。公司以鞋服为核心，延伸服务潮玩、美妆、箱包、IT电子、快消、医药、安防、智能家居等行业，围绕鞋服质检中心、鞋服仓配中心和商圈寄件平台“运到”构建一体化服务能力。目前合作品牌${CLAIM_TEXT.partnerBrands}、服务门店${CLAIM_TEXT.servedStores}、覆盖${CLAIM_TEXT.coveredCities}城市、管理SKU ${CLAIM_TEXT.managedSkus}。`,
+  heroDescription: `从仓储质检到履约交付，我们为鞋服品牌提前解决出货链路中的复杂问题。\n15年、${CLAIM_TEXT.employeeCount}名员工、${CLAIM_TEXT.warehouseArea}直营仓储，只为一件事：让发货更准确、高效、快捷。`,
+}
+const [warehouses, faqs, about, history, honors] = await Promise.all([
+  getWarehouses(),
+  getFaqs('about', ABOUT_FAQS),
+  getAboutContent(aboutFallback),
+  getAboutHistory(ABOUT_HISTORY),
+  getAboutHonors(honorFallbacks),
+])
 const warehouseGroups = groupWarehouses(warehouses)
 
 const breadcrumbSchema = {
@@ -42,15 +63,15 @@ const orgSchema = {
     addressCountry: 'CN',
   },
 }
+const faqSchema = createFaqSchema(faqs)
 ---
 
 <Layout
   title="关于新亦源｜广州新亦源供应链管理有限公司"
   description={`广州新亦源供应链管理有限公司2011年成立，专注鞋服仓配、退货质检和瑕疵修复，服务${CLAIM_TEXT.partnerBrands}品牌。了解新亦源的发展历程、仓网与服务能力。`}
-  jsonLd={[breadcrumbSchema, orgSchema]}
-  services={services}
+  jsonLd={[breadcrumbSchema, orgSchema, faqSchema]}
 >
-  <AboutHero />
+  <AboutHero description={about.heroDescription} />
 
   <section
     class="py-14 bg-white border-b border-gray-100"
@@ -61,21 +82,15 @@ const orgSchema = {
         关于新亦源
       </p>
       <h2 id="company-overview-heading" class="sr-only">公司概述</h2>
-      <p class="text-gray-700 leading-[1.9] text-base lg:text-[1.05rem]">
-        新亦源供应链总部位于广州，是专注鞋服垂直领域的云仓服务商。公司以鞋服为核心，延伸服务潮玩、美妆、箱包、IT电子、快消、医药、安防、智能家居等行业，围绕鞋服质检中心、鞋服仓配中心和商圈寄件平台“运到”构建一体化服务能力。目前合作品牌{
-          CLAIM_TEXT.partnerBrands
-        }、服务门店{CLAIM_TEXT.servedStores}、覆盖{CLAIM_TEXT.coveredCities}城市、管理SKU {
-          CLAIM_TEXT.managedSkus
-        }。
-      </p>
+      <p class="text-gray-700 leading-[1.9] text-base lg:text-[1.05rem]">{about.overview}</p>
     </div>
   </section>
 
-  <AboutHistory />
+  <AboutHistory items={history} />
   <AboutWarehouseNetwork />
   <AboutWarehouseRegions southGroups={warehouseGroups.south} eastGroups={warehouseGroups.east} />
-  <AboutHonors honors={HONORS} />
-  <PageFAQ heading="关于新亦源的常见问题" items={ABOUT_FAQS} />
+  <AboutHonors honors={honors} />
+  <PageFAQ heading="关于新亦源的常见问题" items={faqs} />
 
   <section class="py-14 bg-[#EFF4FF]" aria-labelledby="about-cta-heading">
     <div class="max-w-4xl mx-auto px-4 text-center">

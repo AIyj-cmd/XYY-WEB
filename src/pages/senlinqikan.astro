@@ -5,6 +5,11 @@ import PublicationsHero from '@/components/publications/PublicationsHero.astro'
 import PublicationsDirectory from '@/components/publications/PublicationsDirectory.astro'
 import { PUBLICATION_FAQS, PUBLICATION_ISSUES, PUBLICATION_STATS } from '@/data/publications'
 import { BRAND } from '@/lib/brand'
+import { getFaqs, getPublications } from '@/lib/directus'
+import { createFaqSchema } from '@/lib/seo'
+
+const faqs = await getFaqs('senlinqikan', PUBLICATION_FAQS)
+const issues = await getPublications(PUBLICATION_ISSUES)
 
 const breadcrumbSchema = {
   '@context': 'https://schema.org',
@@ -20,22 +25,23 @@ const collectionSchema = {
   '@type': 'ItemList',
   name: '新亦源森林期刊',
   description: '新亦源供应链出品的鞋服物流行业内刊，聚焦云仓运营、质检修复、行业趋势与品牌动态。',
-  numberOfItems: PUBLICATION_ISSUES.length,
-  itemListElement: PUBLICATION_ISSUES.map((issue, index) => ({
+  numberOfItems: issues.length,
+  itemListElement: issues.map((issue, index) => ({
     '@type': 'ListItem',
     position: index + 1,
     name: issue.title,
     url: `${BRAND.url}${issue.pdf}`,
   })),
 }
+const faqSchema = createFaqSchema(faqs)
 ---
 
 <Layout
   title="森林期刊 — 新亦源鞋服供应链行业内刊"
   description="《森林期刊》是广州新亦源供应链出品的品牌内刊，聚焦鞋服云仓运营实战、退货质检、直播仓配及行业趋势，持续输出鞋服供应链专业知识。"
-  jsonLd={[breadcrumbSchema, collectionSchema]}
+  jsonLd={[breadcrumbSchema, collectionSchema, faqSchema]}
 >
-  <PublicationsHero latest={PUBLICATION_ISSUES[0]} />
+  <PublicationsHero latest={issues[0]} />
 
   <section class="py-12 bg-white border-b border-gray-100" aria-label="森林期刊出版概况">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -54,8 +60,8 @@ const collectionSchema = {
     </div>
   </section>
 
-  <PublicationsDirectory issues={PUBLICATION_ISSUES} />
-  <PageFAQ heading="森林期刊常见问题" items={PUBLICATION_FAQS} />
+  <PublicationsDirectory issues={issues} />
+  <PageFAQ heading="森林期刊常见问题" items={faqs} />
 
   <section class="py-14 bg-white border-t border-gray-100" aria-labelledby="slj-cta-heading">
     <div class="max-w-4xl mx-auto px-4 text-center">

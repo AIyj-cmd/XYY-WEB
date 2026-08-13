@@ -31,7 +31,8 @@ const target = {
 }
 const backupDir = process.env.MIGRATION_BACKUP_DIR || `/var/backups/xyy-directus/${timestamp()}`
 const collections = (
-  process.env.MIGRATION_COLLECTIONS || 'homepage_stats,services,warehouses,cases,news,contact_leads'
+  process.env.MIGRATION_COLLECTIONS ||
+  'homepage_stats,services,warehouses,cases,news,faqs,case_details,case_stats,publications,service_pages,service_stats,service_features,about_content,about_history,about_honors,site_settings,contact_leads'
 )
   .split(',')
   .map((value) => value.trim())

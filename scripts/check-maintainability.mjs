@@ -32,6 +32,10 @@ const inlineBudgets = {
 }
 
 const sourceFiles = []
+const generatedFiles = new Set([
+  'scripts/data/approved-faq-seeds.mjs',
+  'scripts/data/approved-cms-page-seeds.mjs',
+])
 
 async function walk(directory) {
   const entries = await readdir(directory, { withFileTypes: true })
@@ -66,6 +70,7 @@ for (const path of sourceFiles) {
   const extension = extname(path)
   const lines = countLines(content)
   const name = relative(projectRoot, path)
+  if (generatedFiles.has(name)) continue
   const budget = budgetFor(name, extension)
 
   measurements.push({ name, lines, budget })

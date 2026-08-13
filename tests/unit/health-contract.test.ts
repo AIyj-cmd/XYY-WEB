@@ -18,6 +18,15 @@ describe('web health contract', () => {
     ).toThrow(/unexpected status/)
   })
 
+  it('rejects an incomplete CMS schema', () => {
+    expect(() =>
+      assertWebHealthPayload({
+        status: 'degraded',
+        dependencies: { contactStorage: 'incomplete' },
+      })
+    ).toThrow(/unexpected status/)
+  })
+
   it('rejects the legacy payload that omitted dependency health', () => {
     expect(() => assertWebHealthPayload({ status: 'ok' })).toThrow(/contact storage/)
   })

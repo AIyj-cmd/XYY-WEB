@@ -64,7 +64,9 @@ npm run verify:release
 
 ## 部署安全
 
-当前应用服务器为 `47.82.105.103`，线上验收域名为 `wz.tomatopia.top`。`56xyy.com` 目前仍指向另一台服务器，目标服务器也尚无对应证书；切换 DNS 和证书前，不得启用域名重定向。
+当前阿里云验收服务器为 `47.82.105.103`，验收域名为 `wz.tomatopia.top`，后台位于
+同源 `/cms/admin/`。正式域名 `56xyy.com` 完成证书、DNS、Nginx、canonical 与索引策略
+复核前，不得启用旧域名重定向。
 
 ```bash
 DEPLOY_HOST='root@47.82.105.103' \
@@ -83,10 +85,14 @@ ssh root@47.82.105.103 'pm2 status'
 
 ### Oracle 19c 数据库迁移
 
-Directus 的目标数据库架构为独立服务器上的 Oracle Database 19c；实施脚本和操作顺序位于
-`deploy/oracle19c/`。迁移采用 8056 并行实例验证后再切换 8055，原 PostgreSQL 和
-`/var/www/xyy-cms` 必须保留到 Oracle 完成备份与恢复演练。未取得数据库服务器地址、
-Oracle 官方安装介质和生产口令前，只允许准备脚本，不得把当前 CMS 标记为已完成迁移。
+验收站 Directus 当前仍连接 PostgreSQL 16。本轮只同步网站和 CMS 内容模型，不执行迁库。
+独立 Oracle Database 19c 的实施脚本和操作顺序位于 `deploy/oracle19c/`；只有数据库服务器、
+私网连接、备份、恢复演练与回滚门槛全部就绪后，才允许并行迁移和切换。
+
+FAQ 统一由 Directus `faq_pages` 按页面聚合管理，子项保存在 `faqs`，页面必须通过
+`getFaqs(pageKey, fallback)` 读取，不能绕开静态回退。涉及审核数据时使用
+`{{claimKey}}` 占位符，由 `src/lib/claims.ts` 在渲染时解析；维护规则见
+`docs/CMS_CONTENT_MODEL.md`。
 
 ## 关键文件
 

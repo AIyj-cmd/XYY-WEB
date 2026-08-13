@@ -8,12 +8,15 @@ import CasesValueProps from '@/components/cases/CasesValueProps.astro'
 import { CASE_FAQS } from '@/data/cases'
 import { BRAND, CASE_DETAILS } from '@/lib/brand'
 import { CLAIM_TEXT } from '@/lib/claims'
-import { getCases, getServices } from '@/lib/directus'
+import { getCases, getFaqs } from '@/lib/directus'
+import { createFaqSchema } from '@/lib/seo'
 import '@/styles/cases.css'
 
-const [displayCases, services] = await Promise.all([getCases(), getServices()])
+const [displayCases, faqs] = await Promise.all([getCases(), getFaqs('cases', CASE_FAQS)])
 const getCasePath = (label: string) => {
-  const slug = (CASE_DETAILS as Record<string, { slug: string }>)[label]?.slug
+  const slug =
+    displayCases.find((item) => item.label === label)?.slug ??
+    (CASE_DETAILS as Record<string, { slug: string }>)[label]?.slug
   return slug ? `/cases/${slug}` : null
 }
 
@@ -40,19 +43,19 @@ const caseListSchema = {
     url: getCasePath(item.label) ? `${BRAND.url}${getCasePath(item.label)}` : undefined,
   })),
 }
+const faqSchema = createFaqSchema(faqs)
 ---
 
 <Layout
   title="鞋服云仓合作案例｜仓配、质检与退货处理实践｜新亦源"
   description={`新亦源供应链合作案例展示，服务鞋服、潮玩等品类${CLAIM_TEXT.partnerBrands}知名品牌。包含头部快时尚女装、国际运动品牌、商务男装、内衣家居、跨境出海等多种类型案例。`}
-  jsonLd={[breadcrumbSchema, caseListSchema]}
-  services={services}
+  jsonLd={[breadcrumbSchema, caseListSchema, faqSchema]}
 >
   <CasesHero />
   <CasesLogoWall />
   <CasesGrid cases={displayCases} />
   <CasesValueProps />
-  <PageFAQ heading="合作案例常见问题" items={CASE_FAQS} />
+  <PageFAQ heading="合作案例常见问题" items={faqs} />
 
   <section class="py-14 bg-[#EFF4FF]" aria-labelledby="cases-cta-heading">
     <div class="max-w-4xl mx-auto px-4 text-center">

@@ -10,6 +10,7 @@ import {
   createServiceSchema,
 } from '@/lib/seo'
 import { type FaqItem, type FeatureItem, type ServiceVariant, type StatItem } from '@/data/service'
+import { getFaqs, getServicePageContent } from '@/lib/directus'
 
 interface Props {
   variant: ServiceVariant
@@ -50,37 +51,57 @@ const {
 } = Astro.props
 
 const pageUrl = absoluteUrl(`/${slug}`)
+const content = await getServicePageContent(slug, {
+  title,
+  description,
+  breadcrumbLabel,
+  eyebrow,
+  h1,
+  h1sub,
+  heroDesc,
+  imgSrc,
+  imgAlt,
+  stats,
+  contentDesc,
+  featuresLabel,
+  features,
+})
 const breadcrumbSchema = createBreadcrumbSchema([
   { name: '首页', path: '/' },
   { name: '产品服务', path: '/product' },
-  { name: breadcrumbLabel, path: `/${slug}` },
+  { name: content.breadcrumbLabel, path: `/${slug}` },
 ])
-const serviceSchema = createServiceSchema({ name: h1, description, path: `/${slug}` })
-const faqSchema = createFaqSchema(faqs)
+const serviceSchema = createServiceSchema({
+  name: content.h1,
+  description: content.description,
+  path: `/${slug}`,
+})
+const displayFaqs = await getFaqs(slug, faqs)
+const faqSchema = createFaqSchema(displayFaqs)
 ---
 
 <Layout
-  title={title}
-  description={description}
+  title={content.title}
+  description={content.description}
   canonical={pageUrl}
   jsonLd={[breadcrumbSchema, serviceSchema, faqSchema]}
 >
   <!-- Hero：所有服务页统一保留 -->
   <ServiceLandingHero
-    eyebrow={eyebrow}
-    h1={h1}
-    h1sub={h1sub}
-    heroDesc={heroDesc}
-    imgSrc={imgSrc}
-    imgAlt={imgAlt}
+    eyebrow={content.eyebrow}
+    h1={content.h1}
+    h1sub={content.h1sub}
+    heroDesc={content.heroDesc}
+    imgSrc={content.imgSrc}
+    imgAlt={content.imgAlt}
   />
 
   <ServiceSignature
     variant={variant}
-    h1={h1}
-    contentDesc={contentDesc}
-    stats={stats}
-    features={features}
+    h1={content.h1}
+    contentDesc={content.contentDesc}
+    stats={content.stats}
+    features={content.features}
   />
 
   <div class:list={['service-unique', `service-unique--${variant}`]}>
@@ -89,12 +110,12 @@ const faqSchema = createFaqSchema(faqs)
 
   <ServiceExperience
     variant={variant}
-    h1={h1}
-    breadcrumbLabel={breadcrumbLabel}
-    contentDesc={contentDesc}
-    featuresLabel={featuresLabel}
-    features={features}
-    faqs={faqs}
+    h1={content.h1}
+    breadcrumbLabel={content.breadcrumbLabel}
+    contentDesc={content.contentDesc}
+    featuresLabel={content.featuresLabel}
+    features={content.features}
+    faqs={displayFaqs}
   />
 </Layout>
 

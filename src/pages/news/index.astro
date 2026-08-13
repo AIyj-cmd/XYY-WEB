@@ -5,7 +5,7 @@ import NewsEmptyState from '@/components/news/NewsEmptyState.astro'
 import NewsGrid from '@/components/news/NewsGrid.astro'
 import NewsLandingIntro from '@/components/news/NewsLandingIntro.astro'
 import { BRAND } from '@/lib/brand'
-import { getNewsByCategory, getPublishedNews, NEWS_CATEGORIES } from '@/lib/directus'
+import { getFaqs, getNewsByCategory, getPublishedNews, NEWS_CATEGORIES } from '@/lib/directus'
 import { createFaqSchema } from '@/lib/seo'
 import { NEWS_FAQS } from '@/data/news'
 import '@/styles/news.css'
@@ -15,6 +15,7 @@ const category = NEWS_CATEGORIES.includes(requestedCategory as (typeof NEWS_CATE
   ? requestedCategory
   : ''
 const articles = category ? await getNewsByCategory(category, 24) : await getPublishedNews(24, 1)
+const faqs = await getFaqs('news', NEWS_FAQS)
 
 const breadcrumbSchema = {
   '@context': 'https://schema.org',
@@ -34,7 +35,7 @@ const pageSchema = {
   url: `${BRAND.url}/news`,
 }
 
-const faqSchema = createFaqSchema(NEWS_FAQS)
+const faqSchema = createFaqSchema(faqs)
 ---
 
 <Layout
@@ -46,7 +47,7 @@ const faqSchema = createFaqSchema(NEWS_FAQS)
   {articles.length ? <NewsGrid {articles} /> : <NewsEmptyState {category} />}
 
   <!-- FAQ -->
-  <PageFAQ heading="行业内容使用与更新说明" items={NEWS_FAQS} />
+  <PageFAQ heading="行业内容使用与更新说明" items={faqs} />
 
   <!-- CTA -->
   <section class="py-12 bg-white border-t border-gray-100" aria-label="订阅与联系">
