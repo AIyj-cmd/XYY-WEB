@@ -14,7 +14,8 @@ const requiredAssetFamilies = [
   {
     label: '关于页媒体',
     paths: [
-      ...Array.from({ length: 6 }, (_, index) => `about/history/${index + 2017}.png`),
+      'about/history/2017.png',
+      ...Array.from({ length: 4 }, (_, index) => `about/history/${index + 2019}.png`),
       ...Array.from({ length: 3 }, (_, index) => `about/history/${index + 2023}.jpg`),
       ...Array.from({ length: 15 }, (_, index) => `about/honor/${index + 1}.jpg`),
     ],

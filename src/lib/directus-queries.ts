@@ -1,9 +1,4 @@
-import {
-  freshItems,
-  getDirectusAssetUrl,
-  requestItems,
-  requestSingleton,
-} from './directus-client'
+import { freshItems, getDirectusAssetUrl, requestItems, requestSingleton } from './directus-client'
 import { interpolateClaims } from './directus-interpolation'
 import type {
   Case,

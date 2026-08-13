@@ -1,0 +1,11 @@
+[Unit]
+Description=Daily XYY Directus Oracle Data Pump backup
+
+[Timer]
+OnCalendar=*-*-* 02:50:00
+Persistent=true
+RandomizedDelaySec=15m
+Unit=xyy-oracle-backup.service
+
+[Install]
+WantedBy=timers.target

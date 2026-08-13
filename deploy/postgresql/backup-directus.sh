@@ -4,17 +4,14 @@
 set -euo pipefail
 umask 077
 
-CONFIG_FILE="${1:-/var/www/xyy-cms/.env}"
 BACKUP_ROOT="${BACKUP_ROOT:-/var/backups/xyy-postgresql}"
 RETENTION_DAYS="${RETENTION_DAYS:-14}"
 
-[[ -f ${CONFIG_FILE} ]] || { echo "[error] missing ${CONFIG_FILE}" >&2; exit 1; }
 [[ ${RETENTION_DAYS} =~ ^[1-9][0-9]*$ ]] || { echo "[error] invalid RETENTION_DAYS" >&2; exit 1; }
-
-# shellcheck disable=SC1090
-set -a
-source "${CONFIG_FILE}"
-set +a
+[[ ${BACKUP_ROOT} == /* && ${BACKUP_ROOT} != / ]] || {
+  echo "[error] BACKUP_ROOT must be a specific absolute path" >&2
+  exit 1
+}
 
 for variable in DB_HOST DB_PORT DB_USER DB_PASSWORD DB_DATABASE; do
   [[ -n ${!variable:-} ]] || { echo "[error] ${variable} is required" >&2; exit 1; }
@@ -42,7 +39,10 @@ PGPASSWORD="${DB_PASSWORD}" pg_dump \
 
 pg_restore --list "${temp_dump}" >/dev/null
 mv "${temp_dump}" "${final_dump}"
-sha256sum "${final_dump}" >"${manifest}"
+(
+  cd "${BACKUP_ROOT}"
+  sha256sum "$(basename "${final_dump}")" >"$(basename "${manifest}")"
+)
 chmod 600 "${final_dump}" "${manifest}"
 
 find "${BACKUP_ROOT}" -maxdepth 1 -type f \

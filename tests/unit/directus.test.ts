@@ -5,6 +5,7 @@ import {
   formatDate,
   getCases,
   getDirectusAssetUrl,
+  getDirectusContentToken,
   getDirectusPublicUrl,
   getFaqs,
   getHomepageStats,
@@ -26,6 +27,13 @@ describe('Directus helpers', () => {
 
     expect(getDirectusPublicUrl()).toBe('https://example.com/cms')
     expect(getDirectusAssetUrl('abc')).toBe('https://example.com/cms/assets/abc')
+  })
+
+  it('uses the dedicated content token before the legacy shared token', () => {
+    vi.stubEnv('DIRECTUS_CONTENT_TOKEN', 'content-token')
+    vi.stubEnv('DIRECTUS_TOKEN', 'legacy-token')
+
+    expect(getDirectusContentToken()).toBe('content-token')
   })
 
   it('formats Chinese dates', () => {
@@ -99,9 +107,7 @@ describe('Directus helpers', () => {
         ? [
             {
               id: 1,
-              stats: [
-                { value: '150+', label: '合作品牌', unit: '家', detail: '鞋服品牌' },
-              ],
+              stats: [{ value: '150+', label: '合作品牌', unit: '家', detail: '鞋服品牌' }],
             },
           ]
         : []

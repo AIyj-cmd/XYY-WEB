@@ -34,10 +34,11 @@ test-results/
 # Large binary assets — serve from CDN/server directly
 resources/
 public/introduce-720p.mp4
-public/introduce-poster.jpg
 public/fonts/
-public/logos/
-public/about/
+# 2018 is not part of the reviewed history timeline.
+public/about/history/2018.png
+# Legacy honor thumbnails are not referenced by the site or CMS seeds.
+public/about/honor/*.png
 
 # Sensitive / non-repo assets
 public/Omission/

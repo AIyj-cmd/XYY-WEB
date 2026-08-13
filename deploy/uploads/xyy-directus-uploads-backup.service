@@ -1,0 +1,14 @@
+[Unit]
+Description=Backup XYY Directus uploaded files
+
+[Service]
+Type=oneshot
+User=root
+EnvironmentFile=/etc/xyy/uploads-backup.env
+ExecStart=/usr/local/sbin/xyy-backup-directus-uploads
+Nice=10
+IOSchedulingClass=best-effort
+IOSchedulingPriority=7
+
+[Install]
+WantedBy=multi-user.target

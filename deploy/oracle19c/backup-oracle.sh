@@ -4,14 +4,8 @@
 set -euo pipefail
 umask 077
 
-CONFIG_FILE="${1:-}"
-if [[ -n ${CONFIG_FILE} ]]; then
-  [[ -f ${CONFIG_FILE} ]] || { echo "[error] missing ${CONFIG_FILE}" >&2; exit 1; }
-  # shellcheck disable=SC1090
-  source "${CONFIG_FILE}"
-fi
-
 BACKUP_ROOT="${BACKUP_ROOT:-/var/backups/oracle/xyy-directus}"
+RETENTION_DAYS="${RETENTION_DAYS:-14}"
 DIRECTUS_DB_USER="${DIRECTUS_DB_USER:-DIRECTUS_APP}"
 DIRECTUS_DB_PASSWORD="${DIRECTUS_DB_PASSWORD:-}"
 PDB_SERVICE="${PDB_SERVICE:-${PDB_NAME:-ORCLPDB1}}"
@@ -27,12 +21,15 @@ id "${ORACLE_OS_USER}" >/dev/null 2>&1 || { echo "[error] Oracle OS user not fou
 [[ ${DIRECTUS_DB_PASSWORD} =~ ^[A-Za-z0-9_@#.+-]+$ ]] || { echo "[error] unsupported password characters" >&2; exit 1; }
 [[ -x ${ORACLE_HOME}/bin/sqlplus && -x ${ORACLE_HOME}/bin/expdp ]] || { echo "[error] Oracle tools not found" >&2; exit 1; }
 [[ ${BACKUP_ROOT} =~ ^/[A-Za-z0-9._/-]+$ ]] || { echo "[error] unsafe BACKUP_ROOT" >&2; exit 1; }
+[[ ${RETENTION_DAYS} =~ ^[1-9][0-9]*$ ]] || { echo "[error] invalid RETENTION_DAYS" >&2; exit 1; }
 
 oracle_group=$(id -gn "${ORACLE_OS_USER}")
 
 stamp=$(date -u +%Y%m%dT%H%M%SZ)
 install -d -m 700 "${BACKUP_ROOT}"
 chown "${ORACLE_OS_USER}:${oracle_group}" "${BACKUP_ROOT}"
+exec 9>"${BACKUP_ROOT}/.backup.lock"
+flock -n 9 || { echo "[error] another Oracle backup is running" >&2; exit 1; }
 
 sql_file=$(mktemp /tmp/xyy-backup-dir.XXXXXX.sql)
 par_file=$(mktemp /tmp/xyy-expdp.XXXXXX.par)
@@ -65,4 +62,12 @@ sudo -u "${ORACLE_OS_USER}" env ORACLE_HOME="${ORACLE_HOME}" ORACLE_SID="${ORACL
   "${ORACLE_HOME}/bin/expdp" parfile="${par_file}"
 
 chmod 600 "${BACKUP_ROOT}/directus-${stamp}.dmp" "${BACKUP_ROOT}/directus-${stamp}.log"
+(
+  cd "${BACKUP_ROOT}"
+  sha256sum "directus-${stamp}.dmp" "directus-${stamp}.log" >"directus-${stamp}.sha256"
+)
+chmod 600 "${BACKUP_ROOT}/directus-${stamp}.sha256"
+find "${BACKUP_ROOT}" -maxdepth 1 -type f \
+  \( -name 'directus-*.dmp' -o -name 'directus-*.log' -o -name 'directus-*.sha256' \) \
+  -mtime "+${RETENTION_DAYS}" -delete
 echo "[ok] ${BACKUP_ROOT}/directus-${stamp}.dmp"

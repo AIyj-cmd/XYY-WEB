@@ -6,7 +6,7 @@
 
 本地候选版本已经从“页面单文件应用”收敛为页面编排、业务组件、内容数据、浏览器控制器和样式域五层结构。可维护性不再只靠人工约定：`npm run check:maintainability` 会扫描源码并阻止文件或内联代码重新失控，该门禁已纳入 `npm run verify`。
 
-本轮检查覆盖 `src/`、`server/`、`scripts/`、`deploy/`、`tests/` 和根级运行配置，共 391 个项目文件。当前预算：
+本轮检查覆盖 `src/`、`server/`、`scripts/`、`deploy/`、`tests/` 和根级运行配置，共 432 个项目文件。当前预算：
 
 - Astro 组件预算：180 行，页面入口另收紧至 150 行；
 - CSS 文件预算：200 行；
@@ -113,6 +113,11 @@
 
 `server.mjs` 现在是66行应用装配入口；环境读取与端口解析位于 `server/runtime-config.mjs`，安全头、缓存与重定向位于 `server/request-policy.mjs`，Directus依赖探测和健康响应位于 `server/health.mjs`。部署脚本会同步发布整个 `server/` 目录，避免运行入口重新吸收策略与探测实现。
 
+运行时认证进一步拆为内容只读与联系仅创建两枚 Token；解析和权限判断位于
+`server/runtime-permissions.mjs`，健康检查只验证内容读取和联系创建，不读取咨询记录。
+`scripts/verify-runtime-permissions.mjs` 负责部署前严格越权探测，避免把管理级 Token 当成
+网站运行凭据。代码仍为滚动升级兼容旧共享变量，但这不是长期权限模型。
+
 字体构建同样拆成35行入口、字符语料提取和字体生成三个职责。Oracle准备流程拆成55行编排入口与可复用运行函数库，保持“先验证端口、安装Directus Oracle依赖、再建立真实连接”的顺序；这些边界通过部署契约与Shell语法检查锁定，但真实Oracle仍属于外部验证。
 
 原 `src/lib/directus.ts` 同时承担类型、SDK、查询和工具函数，现保留为兼容门面，内部拆为：
@@ -140,12 +145,12 @@ CMS管理脚本共享 `scripts/lib/directus-admin.mjs`，避免初始化和审�
 
 ## 自动门禁与当前证据
 
-- Astro检查：257 个项目输入，0 错误、0 警告、0提示；
+- Astro检查：287 个项目输入，0 错误、0 警告、0提示；
 - ESLint：通过；
 - Prettier：全部目标文件通过，历史40个格式告警已清零；
-- 可维护性预算：391 个项目文件通过；
-- 静态资源引用：55 个引用跨 329 个源码文件全部存在；
-- Vitest：11 个文件、48 项通过；
+- 可维护性预算：432 个项目文件通过；
+- 静态资源引用：55 个引用、103 个部署资源跨 334 个源码文件全部存在；
+- Vitest：16 个文件、87 项通过；
 - Astro SSR生产构建：通过；
 - Playwright：27 项通过，3 项按移动项目配置有意跳过；
 - 正式域名运行态契约：3 项通过，覆盖无 `noindex`、canonical/OG URL、robots、sitemap、llms.txt及域名/旧路径归一化；
@@ -153,6 +158,8 @@ CMS管理脚本共享 `scripts/lib/directus-admin.mjs`，避免初始化和审�
 - 生产依赖安全审计：0 个已知漏洞；
 - Nginx、PostgreSQL、Oracle 19C、部署与健康检查脚本：静态语法通过。
 - 被Git忽略的普惠体不再依赖当前工作机：`scripts/prepare-fonts.mjs` 从站点源码提取1338个实际码点，由锁定依赖为400/900字重各生成一个约200KB的站点子集；全字库冗余不进入发布产物，`precheck:assets`、`prebuild` 会自动重建。
+- 合作品牌与关于页发布素材已纳入 Git；GitHub Actions 会从干净检出运行格式、生产依赖审计和完整发布门禁。
+- PostgreSQL、Oracle 与 Directus 附件备份使用 root 专用 `EnvironmentFile`，不执行应用目录配置；归档具备 SHA-256、并发锁、保留策略和隔离恢复测试，但必须由部署人员在服务器安装并实跑。
 
 ## 仍然存在的维护债务
 

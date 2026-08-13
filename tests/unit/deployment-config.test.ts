@@ -9,6 +9,75 @@ const root = resolve(import.meta.dirname, '../..')
 const read = (path: string) => readFileSync(resolve(root, path), 'utf8')
 
 describe('production deployment contracts', () => {
+  it('runs release verification in GitHub CI from a clean checkout', () => {
+    const workflow = read('.github/workflows/ci.yml')
+
+    expect(workflow).toMatch(/actions\/checkout@[0-9a-f]{40}/)
+    expect(workflow).toMatch(/actions\/setup-node@[0-9a-f]{40}/)
+    expect(workflow).toContain('npm ci')
+    expect(workflow).toContain('npm run format:check')
+    expect(workflow).toContain('npm audit --omit=dev')
+    expect(workflow).toContain('npm run verify:release')
+    expect(workflow).toContain('playwright install --with-deps chromium')
+  })
+
+  it('ships upload backup and restore verification jobs independently of the database', () => {
+    const backup = read('deploy/uploads/backup-directus-uploads.sh')
+    const restore = read('deploy/uploads/restore-test-directus-uploads.sh')
+    const service = read('deploy/uploads/xyy-directus-uploads-backup.service')
+    const timer = read('deploy/uploads/xyy-directus-uploads-backup.timer')
+
+    expect(backup).toContain('sha256sum')
+    expect(backup).toContain('flock -n')
+    expect(backup).toContain('UPLOADS_DIR')
+    expect(restore).toContain('sha256sum --check')
+    expect(restore).toContain('cd "$(dirname "${BACKUP_FILE}")"')
+    expect(restore).toContain('tar --list --verbose')
+    expect(restore).toContain('unsafe archive member type')
+    expect(restore).toContain('mktemp -d')
+    expect(service).toContain('EnvironmentFile=/etc/xyy/uploads-backup.env')
+    expect(timer).toContain('OnCalendar=')
+  })
+
+  it('installs PostgreSQL backup jobs only after an explicit manual backup and restore test', () => {
+    const install = read('deploy/postgresql/install-backup-job.sh')
+    const backup = read('deploy/postgresql/backup-directus.sh')
+    const restore = read('deploy/postgresql/restore-test-directus.sh')
+    const service = read('deploy/postgresql/xyy-postgresql-backup.service')
+    const configExample = read('deploy/postgresql/postgresql-backup.env.example')
+
+    expect(install).toContain('xyy-backup-directus-postgresql')
+    expect(install).toContain('xyy-restore-test-directus-postgresql')
+    expect(install).toContain('CONFIRM_BACKUP_JOB_ACTIVATION')
+    expect(install).toContain('systemctl enable --now xyy-postgresql-backup.timer')
+    expect(install).toContain('install -m 600')
+    expect(service).toContain('EnvironmentFile=/etc/xyy/postgresql-backup.env')
+    expect(service).not.toContain('/var/www/xyy-cms/.env')
+    expect(backup).not.toContain('source "${CONFIG_FILE}"')
+    expect(backup).not.toContain('/var/www/xyy-cms/.env')
+    expect(configExample).toContain('DB_PASSWORD=replace-with-a-strong-password')
+    expect(restore).toContain('sha256sum --check')
+    expect(restore).not.toContain('head -n 1')
+    expect(restore).toContain('[[ ${temp_dir} == /tmp/xyy-pg-restore.*')
+  })
+
+  it('protects Oracle Data Pump backups with locking, checksums and a gated timer', () => {
+    const backup = read('deploy/oracle19c/backup-oracle.sh')
+    const install = read('deploy/oracle19c/install-backup-job.sh')
+    const service = read('deploy/oracle19c/xyy-oracle-backup.service')
+    const timer = read('deploy/oracle19c/xyy-oracle-backup.timer')
+
+    expect(backup).toContain('flock -n')
+    expect(backup).toContain('sha256sum')
+    expect(backup).toContain('RETENTION_DAYS')
+    expect(backup).not.toContain('source "${CONFIG_FILE}"')
+    expect(install).toContain('CONFIRM_BACKUP_JOB_ACTIVATION')
+    expect(install).toContain('systemctl enable --now xyy-oracle-backup.timer')
+    expect(service).toContain('EnvironmentFile=/etc/xyy/oracle-database.env')
+    expect(service).toContain('ExecStart=/usr/local/sbin/xyy-backup-directus-oracle')
+    expect(timer).toContain('OnCalendar=')
+  })
+
   it('serves every static path from the atomic current release', () => {
     const nginx = read('deploy/nginx-56xyy.conf')
 

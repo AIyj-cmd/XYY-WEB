@@ -5,8 +5,6 @@ export interface ContactLead {
   email: string | null
   service: string | null
   message: string
-  source: 'website'
-  status: 'new'
 }
 
 const clean = (value: unknown, maxLength = 500) =>
@@ -47,8 +45,6 @@ export function validateContactBody(body: Record<string, unknown>) {
     email: email || null,
     service: service || null,
     message,
-    source: 'website',
-    status: 'new',
   }
   return { lead }
 }

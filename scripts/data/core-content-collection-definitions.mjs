@@ -36,7 +36,11 @@ export const CORE_CONTENT_COLLECTION_DEFINITIONS = [
       { field: 'name', type: 'string', meta: { required: true } },
       { field: 'subtitle', type: 'string' },
       { field: 'description', type: 'text', meta: { interface: 'input-multiline' } },
-      { field: 'features', type: 'json', meta: { interface: 'list', options: { template: '{{item}}' } } },
+      {
+        field: 'features',
+        type: 'json',
+        meta: { interface: 'list', options: { template: '{{item}}' } },
+      },
     ],
   },
   {
@@ -53,7 +57,11 @@ export const CORE_CONTENT_COLLECTION_DEFINITIONS = [
       { field: 'park', type: 'string', meta: { note: '园区总面积（㎡）' } },
       { field: 'rent', type: 'string', meta: { note: '可租面积（㎡）' } },
       { field: 'height', type: 'string', meta: { note: '层高' } },
-      { field: 'highlight', type: 'text', meta: { interface: 'input-multiline', note: '核心优势描述' } },
+      {
+        field: 'highlight',
+        type: 'text',
+        meta: { interface: 'input-multiline', note: '核心优势描述' },
+      },
     ],
   },
   {
@@ -67,7 +75,12 @@ export const CORE_CONTENT_COLLECTION_DEFINITIONS = [
       { field: 'company', type: 'string', meta: { width: 'half' } },
       { field: 'email', type: 'string', meta: { width: 'half' } },
       { field: 'service', type: 'string', meta: { width: 'half' } },
-      { field: 'source', type: 'string', meta: { width: 'half', readonly: true }, schema: { default_value: 'website' } },
+      {
+        field: 'source',
+        type: 'string',
+        meta: { width: 'half', readonly: true },
+        schema: { default_value: 'website' },
+      },
       { field: 'message', type: 'text', meta: { interface: 'input-multiline', required: true } },
       dateCreatedField(),
       dateUpdatedField(),

@@ -35,7 +35,12 @@ DIRECTUS_URL="$BUILD_DIRECTUS_URL" \
 "${ssh_cmd[@]}" "$DEPLOY_HOST" "set -euo pipefail
 test -f '$REMOTE_DIR/.env'
 grep -Eq '^DIRECTUS_URL=.+' '$REMOTE_DIR/.env'
-grep -Eq '^DIRECTUS_TOKEN=.+' '$REMOTE_DIR/.env'
+if ! { grep -Eq '^DIRECTUS_CONTENT_TOKEN=.+' '$REMOTE_DIR/.env' && \
+  grep -Eq '^DIRECTUS_CONTACT_TOKEN=.+' '$REMOTE_DIR/.env'; } && \
+  ! grep -Eq '^DIRECTUS_TOKEN=.+' '$REMOTE_DIR/.env'; then
+  echo '[error] Directus runtime tokens are missing' >&2
+  exit 1
+fi
 mkdir -p '$RELEASES_DIR'
 test ! -e '$RELEASE_DIR'
 mkdir -p '$RELEASE_DIR/dist'"

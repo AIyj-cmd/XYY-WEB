@@ -32,7 +32,11 @@ export const ORGANIZATION_COLLECTION_DEFINITIONS = [
       { field: 'year', type: 'string', meta: { required: true, width: 'half' } },
       { field: 'subtitle', type: 'string', meta: { required: true } },
       { field: 'text', type: 'text', meta: { required: true, interface: 'input-multiline' } },
-      { field: 'img', type: 'string', meta: { hidden: true, note: '旧版静态图片路径，仅兼容回退。' } },
+      {
+        field: 'img',
+        type: 'string',
+        meta: { hidden: true, note: '旧版静态图片路径，仅兼容回退。' },
+      },
       {
         field: 'image_file',
         type: 'uuid',
@@ -68,7 +72,11 @@ export const ORGANIZATION_COLLECTION_DEFINITIONS = [
       statusField(),
       { field: 'sort', type: 'integer', meta: { required: true, width: 'half' } },
       { field: 'title', type: 'string', meta: { required: true } },
-      { field: 'image', type: 'string', meta: { hidden: true, note: '旧版静态图片路径，仅兼容回退。' } },
+      {
+        field: 'image',
+        type: 'string',
+        meta: { hidden: true, note: '旧版静态图片路径，仅兼容回退。' },
+      },
       {
         field: 'image_file',
         type: 'uuid',

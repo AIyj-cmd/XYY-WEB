@@ -24,6 +24,21 @@
 | `site_settings`    | 全站联系方式与页脚  | Directus 单例                   |
 | `contact_leads`    | 官网咨询线索        | 仅供提交和后台跟进              |
 
+## 运行权限边界
+
+CMS 初始化、日常后台编辑和网站运行使用三类不同权限：
+
+- 建模与迁移：短期管理令牌，只在人工操作期间导出为 `DIRECTUS_TOKEN`，完成后立即撤销；
+- 官网内容：`DIRECTUS_CONTENT_TOKEN`，只读18个公开内容集合，不得读取咨询、用户、角色、
+  权限或策略，也不得创建、更新和删除内容；
+- 联系表单：`DIRECTUS_CONTACT_TOKEN`，只允许创建 `contact_leads`，不得读取既有咨询，
+  也不得访问任何内容或 Directus 系统集合；可提交字段严格限定为姓名、电话、公司、邮箱、
+  服务和留言，`source=website` 与 `status=new` 由 Directus 字段默认值生成。
+
+两枚运行令牌必须不同。部署后运行 `npm run cms:verify-runtime-permissions`，它会实际请求
+敏感端点并要求返回401/403，而不是只检查变量是否存在。`/healthz` 保持原有对外契约，
+内部会验证内容集合可读以及联系令牌具备创建权限，不再为健康检查开放咨询记录读取。
+
 ## FAQ 维护规则
 
 运营人员从 `faq_pages` 进入对应页面，在“问题列表”内新增、删除、编辑和拖动排序。

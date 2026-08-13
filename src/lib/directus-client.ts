@@ -6,8 +6,14 @@ const DEFAULT_DIRECTUS_API_URL = 'http://127.0.0.1:8055'
 
 const trimTrailingSlash = (value: string) => value.replace(/\/+$/, '')
 
+function serverEnv(name: string) {
+  return typeof process !== 'undefined' ? process.env[name] : undefined
+}
+
 export function getDirectusApiUrl() {
-  return trimTrailingSlash(import.meta.env.DIRECTUS_URL || DEFAULT_DIRECTUS_API_URL)
+  return trimTrailingSlash(
+    serverEnv('DIRECTUS_URL') || import.meta.env.DIRECTUS_URL || DEFAULT_DIRECTUS_API_URL
+  )
 }
 
 export function getDirectusPublicUrl() {
@@ -18,8 +24,12 @@ export function getDirectusAssetUrl(fileId?: string | null) {
   return fileId ? `${getDirectusPublicUrl()}/assets/${fileId}` : ''
 }
 
+export function getDirectusContentToken() {
+  return serverEnv('DIRECTUS_CONTENT_TOKEN') || serverEnv('DIRECTUS_TOKEN') || ''
+}
+
 const getClient = () => {
-  const token = import.meta.env.DIRECTUS_TOKEN || ''
+  const token = getDirectusContentToken()
   return createDirectus<DirectusSchema>(getDirectusApiUrl()).with(staticToken(token)).with(rest())
 }
 
@@ -56,7 +66,7 @@ export async function requestSingleton<T>(
     else if (value !== undefined) url.searchParams.set(key, String(value))
   }
   const response = await fetch(url, {
-    headers: { Authorization: `Bearer ${import.meta.env.DIRECTUS_TOKEN || ''}` },
+    headers: { Authorization: `Bearer ${getDirectusContentToken()}` },
   })
   if (!response.ok) throw new Error(`Directus singleton request failed: ${response.status}`)
   const payload = (await response.json()) as { data: T }

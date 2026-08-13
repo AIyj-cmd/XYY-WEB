@@ -2,6 +2,7 @@ export {
   __setDirectusRequesterForTests,
   getDirectusApiUrl,
   getDirectusAssetUrl,
+  getDirectusContentToken,
   getDirectusPublicUrl,
 } from './directus-client'
 export {

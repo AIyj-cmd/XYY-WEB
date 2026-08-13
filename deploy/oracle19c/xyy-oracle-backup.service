@@ -1,0 +1,15 @@
+[Unit]
+Description=Backup the XYY Directus Oracle schema
+After=network-online.target
+
+[Service]
+Type=oneshot
+User=root
+EnvironmentFile=/etc/xyy/oracle-database.env
+ExecStart=/usr/local/sbin/xyy-backup-directus-oracle
+Nice=10
+IOSchedulingClass=best-effort
+IOSchedulingPriority=7
+
+[Install]
+WantedBy=multi-user.target

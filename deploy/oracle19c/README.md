@@ -122,11 +122,21 @@ sudo CONFIRM_POSTGRES_ROLLBACK=YES \
 ## 5. Oracle 备份
 
 ```bash
-sudo DIRECTUS_DB_PASSWORD='数据库口令' bash backup-oracle.sh
+sudo bash install-backup-job.sh
+sudo systemctl start xyy-oracle-backup.service
+sudo systemctl status xyy-oracle-backup.service
 ```
 
-生产环境应将 Data Pump 文件同步到异机/对象存储，并另外配置 RMAN 全库备份、
-归档日志和恢复演练。仓库脚本不会自动删除历史备份。
+脚本生成 Data Pump、日志和 SHA-256，默认保留14天。安装入口默认只安装文件，不激活
+timer；必须先手工生成一次备份，并在隔离Schema或恢复环境完成真实 `impdp` 演练，记录
+行数和结果后再启动 `xyy-oracle-backup.timer`。生产环境还应把归档同步到异机/对象存储，
+并配置 RMAN 全库备份和归档日志。校验和通过不能代替真实导入演练。
+
+完成导入演练后显式激活：
+
+```bash
+sudo CONFIRM_BACKUP_JOB_ACTIVATION=YES bash install-backup-job.sh
+```
 
 ## 验收
 

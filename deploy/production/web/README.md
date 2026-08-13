@@ -21,6 +21,10 @@ sudo editor /etc/xyy/web.env
 sudo bash deploy/production/web/prepare-web-server.sh /etc/xyy/web.env
 ```
 
+Web环境使用不同的 `DIRECTUS_CONTENT_TOKEN` 和 `DIRECTUS_CONTACT_TOKEN`。部署前从密码
+管理器临时导出两枚 Token，运行 `npm run cms:verify-runtime-permissions`；通过后再写入
+`/var/www/xyy-web/.env`。不得把 Directus 管理员 Token 用作任一运行 Token。
+
 ## 2. 从构建机部署Web
 
 在项目Git仓库根目录执行：

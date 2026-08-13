@@ -72,7 +72,8 @@ describe('contact API', () => {
 
   it('stores valid leads in Directus when configured', async () => {
     vi.stubEnv('DIRECTUS_URL', 'https://directus.test')
-    vi.stubEnv('DIRECTUS_TOKEN', 'token')
+    vi.stubEnv('DIRECTUS_CONTACT_TOKEN', 'contact-token')
+    vi.stubEnv('DIRECTUS_TOKEN', 'legacy-token')
 
     const fetchMock = vi.fn(
       async () => new Response(JSON.stringify({ data: { id: 1 } }), { status: 200 })
@@ -94,12 +95,24 @@ describe('contact API', () => {
     expect(response.status).toBe(200)
     expect(fetchMock).toHaveBeenCalledWith(
       'https://directus.test/items/contact_leads',
-      expect.objectContaining({ method: 'POST' })
+      expect.objectContaining({
+        method: 'POST',
+        headers: expect.objectContaining({ Authorization: 'Bearer contact-token' }),
+        body: JSON.stringify({
+          name: '张三',
+          phone: '13800138000',
+          company: '测试公司',
+          email: 'test@example.com',
+          service: 'cloud-warehouse',
+          message: '想了解仓配一体方案',
+        }),
+      })
     )
   })
 
   it('rejects valid leads when Directus storage is not configured', async () => {
     vi.stubEnv('DIRECTUS_URL', '')
+    vi.stubEnv('DIRECTUS_CONTACT_TOKEN', '')
     vi.stubEnv('DIRECTUS_TOKEN', '')
     const fetchMock = vi.fn()
     vi.stubGlobal('fetch', fetchMock)

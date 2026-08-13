@@ -1,0 +1,11 @@
+[Unit]
+Description=Daily XYY Directus uploads backup
+
+[Timer]
+OnCalendar=*-*-* 03:50:00
+Persistent=true
+RandomizedDelaySec=15m
+Unit=xyy-directus-uploads-backup.service
+
+[Install]
+WantedBy=timers.target

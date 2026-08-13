@@ -13,10 +13,18 @@ BACKUP_ROOT="${BACKUP_ROOT:-/var/backups/xyy-postgresql}"
 BACKUP_FILE="${1:-}"
 
 if [[ -z ${BACKUP_FILE} ]]; then
-  BACKUP_FILE=$(find "${BACKUP_ROOT}" -maxdepth 1 -type f -name 'directus-*.dump' -printf '%T@ %p\n' | sort -nr | head -n 1 | cut -d' ' -f2-)
+  BACKUP_FILE=$(find "${BACKUP_ROOT}" -maxdepth 1 -type f \
+    -name 'directus-*.dump' -printf '%T@ %p\n' | sort -nr | \
+    sed -n '1{s/^[^ ]* //;p;}')
 fi
 
 [[ -n ${BACKUP_FILE} && -f ${BACKUP_FILE} ]] || { echo "[error] no backup file found" >&2; exit 1; }
+manifest="${BACKUP_FILE%.dump}.sha256"
+[[ -f ${manifest} ]] || { echo "[error] missing ${manifest}" >&2; exit 1; }
+(
+  cd "$(dirname "${BACKUP_FILE}")"
+  sha256sum --check "$(basename "${manifest}")"
+)
 pg_restore --list "${BACKUP_FILE}" >/dev/null
 
 stamp=$(date -u +%Y%m%d%H%M%S)
@@ -27,7 +35,8 @@ temp_dir=$(mktemp -d /tmp/xyy-pg-restore.XXXXXX)
 temp_dump="${temp_dir}/directus.dump"
 cleanup() {
   sudo -u postgres dropdb --if-exists "${test_database}" >/dev/null 2>&1 || true
-  rm -rf "${temp_dir}"
+  [[ ${temp_dir} == /tmp/xyy-pg-restore.* && -d ${temp_dir} ]] || return 0
+  rm -rf -- "${temp_dir}"
 }
 trap cleanup EXIT
 

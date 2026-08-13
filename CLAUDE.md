@@ -64,6 +64,11 @@ npm run verify:release
 
 ## 部署安全
 
+Web 运行时必须优先使用不同的 `DIRECTUS_CONTENT_TOKEN`（18个内容集合只读）和
+`DIRECTUS_CONTACT_TOKEN`（仅创建咨询线索）。`DIRECTUS_TOKEN` 只允许用于滚动升级兼容；
+初始化所需的管理令牌不得配置到 Web。部署人员配置完成后运行
+`npm run cms:verify-runtime-permissions`，失败时不得发布。
+
 当前阿里云验收服务器为 `47.82.105.103`，验收域名为 `wz.tomatopia.top`，后台位于
 同源 `/cms/admin/`。正式域名 `56xyy.com` 完成证书、DNS、Nginx、canonical 与索引策略
 复核前，不得启用旧域名重定向。
@@ -88,6 +93,8 @@ ssh root@47.82.105.103 'pm2 status'
 验收站 Directus 当前仍连接 PostgreSQL 16。本轮只同步网站和 CMS 内容模型，不执行迁库。
 独立 Oracle Database 19c 的实施脚本和操作顺序位于 `deploy/oracle19c/`；只有数据库服务器、
 私网连接、备份、恢复演练与回滚门槛全部就绪后，才允许并行迁移和切换。
+数据库引擎切换不包含附件文件；`deploy/uploads/` 的独立备份任务必须在应用服务器安装并
+与数据库备份成对做异机保存和恢复验证。
 
 FAQ 统一由 Directus `faq_pages` 按页面聚合管理，子项保存在 `faqs`，页面必须通过
 `getFaqs(pageKey, fallback)` 读取，不能绕开静态回退。涉及审核数据时使用

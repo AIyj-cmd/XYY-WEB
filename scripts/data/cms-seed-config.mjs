@@ -23,11 +23,18 @@ const omit = (item, excluded) =>
   Object.fromEntries(Object.entries(item).filter(([field]) => !excluded.includes(field)))
 
 export const CMS_SEEDS = {
-  homepage_content: [{
-    status: 'published',
-    key: 'main',
-    stats: APPROVED_HOMEPAGE_STATS.map(({ value, label, unit, detail }) => ({ value, label, unit, detail })),
-  }],
+  homepage_content: [
+    {
+      status: 'published',
+      key: 'main',
+      stats: APPROVED_HOMEPAGE_STATS.map(({ value, label, unit, detail }) => ({
+        value,
+        label,
+        unit,
+        detail,
+      })),
+    },
+  ],
   homepage_stats: APPROVED_HOMEPAGE_STATS.map((item) => omit(item, ['id'])),
   services: APPROVED_SERVICES.map((item) => omit(item, ['id'])),
   warehouses: APPROVED_WAREHOUSES.map((item) => omit(item, ['aliases'])),
@@ -49,12 +56,25 @@ export const CMS_SEEDS = {
 }
 
 export const CMS_SEED_IDENTITIES = {
-  homepage_content: ['key'], homepage_stats: ['sort'], services: ['slug'], warehouses: ['name'],
-  cases: ['label'], news: ['slug'], faqs: ['page_key', 'sort'], faq_pages: ['key'],
-  case_details: ['slug'], case_stats: ['case_slug', 'sort'], publications: ['issue'],
-  service_pages: ['slug'], service_stats: ['service_slug', 'sort'],
-  service_features: ['service_slug', 'sort'], about_content: ['key'], about_history: ['year'],
-  about_honors: ['sort'], site_settings: ['key'], contact_leads: ['id'],
+  homepage_content: ['key'],
+  homepage_stats: ['sort'],
+  services: ['slug'],
+  warehouses: ['name'],
+  cases: ['label'],
+  news: ['slug'],
+  faqs: ['page_key', 'sort'],
+  faq_pages: ['key'],
+  case_details: ['slug'],
+  case_stats: ['case_slug', 'sort'],
+  publications: ['issue'],
+  service_pages: ['slug'],
+  service_stats: ['service_slug', 'sort'],
+  service_features: ['service_slug', 'sort'],
+  about_content: ['key'],
+  about_history: ['year'],
+  about_honors: ['sort'],
+  site_settings: ['key'],
+  contact_leads: ['id'],
 }
 
 export const CMS_SEED_COUNTS = {

@@ -26,10 +26,12 @@
 3. CMS 初始化改为幂等补齐：已有记录不会重复写入，6 个审核案例及 17 个页面的
    100 条审核 FAQ 会在缺失时补种。
 4. 初始化过程除“已存在”冲突外全部失败关闭；字段或关系创建失败时脚本会退出，不再打印虚假成功。
-5. `/healthz` 除 Directus ping 外会检查 19 个业务集合是否可读；集合缺失或无权限时返回 503。
+5. `/healthz` 除 Directus ping 外会检查18个公开内容集合是否可读，并确认独立联系令牌具备
+   `contact_leads` 创建权限；它不再读取咨询记录。集合缺失或权限不足时返回503。
 6. 新增 `npm run cms:verify`，供部署后使用管理级 Token 验证 19 个集合和文件库。
-7. 静态资源门禁现在强制检查合作品牌 Logo、发展历程、15 张荣誉证书、公司介绍封面和视频，避免再次发布“本机有、Git 构建机没有”的残缺版本。
-8. 已新增单元测试和健康契约测试。
+7. 合作品牌 Logo 与关于页发布素材已纳入 Git，静态资源门禁继续强制检查，干净检出不再
+   依赖构建机手工恢复目录。
+8. 已新增 GitHub CI、最小权限审计、附件备份/恢复脚本、单元测试和健康契约测试。
 
 ## 部署团队必须执行
 
@@ -38,22 +40,28 @@
 在应用服务器执行 PostgreSQL 自定义格式备份并验证目录：
 
 ```bash
-sudo bash deploy/postgresql/backup-directus.sh /var/www/xyy-cms/.env
+sudo bash deploy/postgresql/install-backup-job.sh
+sudo editor /etc/xyy/postgresql-backup.env
+sudo systemctl start xyy-postgresql-backup.service
 ```
 
-还应对 Directus 配置、上传目录和应用服务器 `.env` 做独立备份。不得在无恢复点的情况下运行初始化。
+安装并执行附件备份；它独立于 PostgreSQL/Oracle：
+
+```bash
+sudo bash deploy/uploads/install-backup-job.sh
+sudo editor /etc/xyy/uploads-backup.env
+sudo systemctl start xyy-directus-uploads-backup.service
+sudo /usr/local/sbin/xyy-restore-test-directus-uploads
+sudo CONFIRM_BACKUP_JOB_ACTIVATION=YES bash deploy/uploads/install-backup-job.sh
+```
+
+还应备份 Directus 配置和应用服务器 `.env`。数据库与附件归档必须成对保存到加密异机，
+不得在无可验证恢复点的情况下运行初始化。
 
 ### 2. 发布新代码，但先不要切正式流量
 
-在构建机恢复下列不进入 Git 的资源目录/文件：
-
-```text
-public/logos/
-public/about/
-public/introduce-poster.jpg
-```
-
-`public/introduce-540p.mp4` 已由 Git 跟踪。资源恢复后必须先执行：
+合作品牌 Logo、关于页素材和 `public/introduce-540p.mp4` 已作为发布输入由 Git 跟踪。
+干净检出后必须先执行：
 
 ```bash
 npm ci
@@ -81,15 +89,26 @@ unset DIRECTUS_TOKEN
 
 ### 4. 配置最小权限运行 Token
 
-网站运行 Token 不应使用管理员权限。建议建立专用 Directus Policy：
+网站运行时必须建立两套不同的 Directus Policy 和静态 Token：
 
-- 除 `contact_leads` 外的 18 个内容集合：只读已发布内容；
-- `contact_leads`：允许创建，禁止更新和删除；
-- 为健康检查额外允许读取 `contact_leads.id`，并添加永不命中的过滤规则，避免读取咨询隐私数据；
-- `directus_files`：仅开放新闻公开封面所需的读取范围；
-- 禁止读取 Directus 用户、角色、Token 和系统配置。
+- `DIRECTUS_CONTENT_TOKEN`：18个内容集合只读已发布内容，禁止写入，禁止读取
+  `contact_leads` 和 Directus 用户、角色、权限、策略；
+- `DIRECTUS_CONTACT_TOKEN`：仅允许创建 `contact_leads`，字段限定为官网表单实际提交字段，
+  即姓名、电话、公司、邮箱、服务和留言；`source` 与 `status` 使用模型默认值。禁止读取、
+  更新、删除、分享，禁止访问内容集合和系统集合。
 
-把专用 Token 写入服务器 Web `.env` 的 `DIRECTUS_TOKEN`，文件权限设为 600，然后重启 Web。
+把两枚不同 Token 写入服务器 Web `.env`，文件权限设为600。部署前先执行：
+
+```bash
+export DIRECTUS_URL='http://127.0.0.1:8055'
+export DIRECTUS_CONTENT_TOKEN='从密码管理器读取'
+export DIRECTUS_CONTACT_TOKEN='从密码管理器读取'
+npm run cms:verify-runtime-permissions
+unset DIRECTUS_CONTENT_TOKEN DIRECTUS_CONTACT_TOKEN
+```
+
+审计失败不得用管理令牌绕过。代码暂时兼容旧 `DIRECTUS_TOKEN` 以支持滚动升级，但完成拆分后
+必须从 Web `.env` 删除共享令牌。
 
 ### 5. 配置后台角色
 
@@ -106,7 +125,7 @@ unset DIRECTUS_TOKEN
 
 ### 6. 验证媒体持久化
 
-Directus 文件库当前为空。确认 `UPLOADS_PATH` 使用持久磁盘或对象存储，并且发布新版本不会覆盖。
+确认 `UPLOADS_PATH` 使用持久磁盘或对象存储，并且发布新版本不会覆盖。
 后台上传一张测试新闻封面，确认浏览器可以通过 `/cms/assets/{id}` 读取，再删除测试内容。
 
 ### 7. 正式域名和代理修复

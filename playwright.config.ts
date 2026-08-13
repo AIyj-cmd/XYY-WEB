@@ -4,7 +4,8 @@ const testPort = process.env.PLAYWRIGHT_PORT ?? '4399'
 const testOrigin = `http://127.0.0.1:${testPort}`
 const testEnvironment =
   `DIRECTUS_URL=http://127.0.0.1:1 ` +
-  `DIRECTUS_TOKEN=playwright-storage-check-only ` +
+  `DIRECTUS_CONTENT_TOKEN=playwright-content-check-only ` +
+  `DIRECTUS_CONTACT_TOKEN=playwright-contact-check-only ` +
   `PUBLIC_DIRECTUS_URL=http://127.0.0.1:1 ` +
   `PUBLIC_SITE_URL=${testOrigin} ENABLE_DOMAIN_REDIRECTS=false PORT=${testPort}`
 

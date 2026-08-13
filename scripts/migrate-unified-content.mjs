@@ -26,7 +26,9 @@ async function migrateServicePages() {
       stats: page.stats?.length ? page.stats : unifiedStats,
       features: page.features?.length ? page.features : unifiedFeatures,
     })
-    console.log(`service ${page.slug}: ${unifiedStats.length} stats, ${unifiedFeatures.length} features`)
+    console.log(
+      `service ${page.slug}: ${unifiedStats.length} stats, ${unifiedFeatures.length} features`
+    )
   }
 }
 

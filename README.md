@@ -94,7 +94,7 @@ Directus 读取失败时返回空集合并报告依赖降级，不在进程内�
 - 静态业务内容进入 `src/data/`，组件、样式和浏览器控制器按职责隔离；
 - `npm run verify` 会执行可维护性预算和静态资源完整性检查；
 - 当前最大业务组件113行、最大CSS147行；关于页Hero、联系表单、华南仓网、服务独有内容、Express运行时、字体生成和Oracle准备流程均已按变化原因拆分；
-- 当前门禁覆盖391个项目文件；CSS上限200行、内容数据上限180行，Astro页面入口、API路由、自动化入口和部署脚本另有更严格的专项预算；
+- 当前门禁覆盖432个项目文件；CSS上限200行、内容数据上限180行，Astro页面入口、API路由、自动化入口和部署脚本另有更严格的专项预算；
 - 公开规模、履约和质检数字统一从 `src/lib/claims/` 注册表读取，单元测试禁止在页面、组件和内容配置中重新手写同一口径；
 - 不为追求行数机械拆分事实注册表或原子请求；
 - 详细状态、保留理由与剩余债务见 [docs/MAINTAINABILITY.md](docs/MAINTAINABILITY.md)。
@@ -115,13 +115,16 @@ Directus 读取失败时返回空集合并报告依赖降级，不在进程内�
 | 变量                      | 说明                                                     |
 | ------------------------- | -------------------------------------------------------- |
 | `DIRECTUS_URL`            | 服务端 Directus 地址；服务器建议 `http://127.0.0.1:8055` |
-| `DIRECTUS_TOKEN`          | Directus 静态 Token，敏感信息                            |
+| `DIRECTUS_CONTENT_TOKEN`  | 仅可读取官网内容集合的运行令牌                           |
+| `DIRECTUS_CONTACT_TOKEN`  | 仅可创建 `contact_leads` 的表单写入令牌                  |
+| `DIRECTUS_TOKEN`          | 仅用于滚动升级兼容；完成令牌拆分后删除                   |
 | `PUBLIC_SITE_URL`         | 当前构建与 canonical 使用的站点地址                      |
 | `PUBLIC_DIRECTUS_URL`     | 浏览器可访问的 CMS 地址                                  |
 | `ENABLE_DOMAIN_REDIRECTS` | 正式域名切换完成后才可设为 `true`                        |
 | `LEGACY_DOMAINS`          | 正式切换后需要 301 的旧域名列表                          |
 
 `.env`、`.env.production` 仅保存在本地和服务器，不提交 GitHub，也不由部署脚本上传。
+内容令牌与联系令牌必须不同；建模脚本使用的短期管理令牌不能写入 Web 运行环境。
 
 ## 部署
 
@@ -139,6 +142,10 @@ Directus 从 PostgreSQL 迁移至独立 Oracle Database 19c 的数据库安装�
 数据迁移、切换、回滚和备份脚本见
 [`deploy/oracle19c/README.md`](deploy/oracle19c/README.md)。生产凭据只保存在应用服务器
 `/etc/xyy/oracle19c.env`（权限 `600`），不得提交到 Git。
+
+数据库备份不会包含 Directus 实际附件。无论当前使用 PostgreSQL 还是迁移到 Oracle，
+都必须同时安装 [`deploy/uploads/`](deploy/uploads/README.md) 中的附件备份任务，并完成
+数据库与附件的联合恢复演练。
 
 部署脚本会：
 
@@ -169,6 +176,9 @@ npm run cms:generate-content-seeds
 # 部署后核对 19 个业务集合与文件库
 npm run cms:verify
 
+# 部署人员配置两枚运行令牌后检查最小权限边界
+npm run cms:verify-runtime-permissions
+
 # 预检审核内容同步
 npm run cms:sync-approved
 
@@ -183,4 +193,9 @@ Directus 字段职责、FAQ 页面标识和下一阶段后台化建议见
 
 ## 提交边界
 
-禁止提交：真实环境变量、Token、服务器密钥、构建产物、测试截图、原始大媒体和临时补丁。`public/` 中被页面引用且已优化的图片可以提交。
+禁止提交：真实环境变量、Token、服务器密钥、构建产物、测试截图、原始大媒体和临时补丁。
+`public/logos/`、`public/about/` 及其他被页面引用且已优化的发布素材属于可复现构建输入，
+必须提交；`resources/` 中的原始素材继续留在仓库外。
+
+GitHub Actions 会从干净检出执行格式检查、生产依赖审计和 `verify:release`。CI 通过只表示
+候选版本具备发布条件，不代表服务器令牌、备份 timer、DNS 或数据库迁移已经完成。

@@ -5,7 +5,8 @@ After=postgresql.service
 [Service]
 Type=oneshot
 User=root
-ExecStart=/usr/local/sbin/xyy-backup-directus-postgresql /var/www/xyy-cms/.env
+EnvironmentFile=/etc/xyy/postgresql-backup.env
+ExecStart=/usr/local/sbin/xyy-backup-directus-postgresql
 Nice=10
 IOSchedulingClass=best-effort
 IOSchedulingPriority=7

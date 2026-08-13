@@ -45,7 +45,7 @@ sudo bash deploy/oracle19c/init-existing-oracle19c.sh \
 初始化完成并投入使用后，可复用同一份配置执行Data Pump备份：
 
 ```bash
-sudo bash deploy/oracle19c/backup-oracle.sh /etc/xyy/oracle-database.env
+sudo systemctl start xyy-oracle-backup.service
 ```
 
 备份默认写入 `/var/backups/oracle/xyy-directus`，生产环境还应配置RMAN、归档日志以及异机/对象存储副本。

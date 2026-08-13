@@ -4,7 +4,8 @@ const port = process.env.PLAYWRIGHT_FORMAL_PORT ?? '4401'
 const origin = `http://127.0.0.1:${port}`
 const environment =
   `DIRECTUS_URL=http://127.0.0.1:1 ` +
-  `DIRECTUS_TOKEN=formal-contract-storage-check-only ` +
+  `DIRECTUS_CONTENT_TOKEN=formal-content-check-only ` +
+  `DIRECTUS_CONTACT_TOKEN=formal-contact-check-only ` +
   `PUBLIC_DIRECTUS_URL=http://127.0.0.1:1 ` +
   `PUBLIC_SITE_URL=https://56xyy.com ENABLE_DOMAIN_REDIRECTS=true PORT=${port}`
 
