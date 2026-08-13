@@ -1,11 +1,13 @@
 # 验收站 CMS 升级与 Oracle 19c 后续交接清单
 
-更新时间：2026-08-13
+更新时间：2026-08-14
 
 ## 结论
 
-本地代码已补齐 CMS 聚合维护、中文后台、内容回退和健康检查。本轮目标环境是
-`wz.tomatopia.top`，数据库保持 PostgreSQL 16；Oracle 19c 迁移不在本轮执行。
+CMS 聚合维护、中文后台、内容回退、运行时最小权限兼容层、公开素材和健康检查已发布到
+`wz.tomatopia.top` 的 `20260814T222944Z` release，GitHub 应用提交为 `6a55eeb`。数据库保持
+PostgreSQL 16；Oracle 19c 迁移不在本轮执行。验收服务器仍使用旧共享 Directus Token，拆分
+Policy/Token 与备份 timer 仍由部署团队按本清单执行。
 
 此前浏览器审计确认的问题包括：
 

@@ -1,8 +1,8 @@
 # 项目状态
 
-更新时间：2026-08-13
+更新时间：2026-08-14
 
-## 2026-08-13 本轮发布
+## 2026-08-14 本轮发布
 
 - 本轮目标是把网站、Directus 中文管理模型、FAQ/案例/服务页聚合编辑和统一运营口径同步到阿里云验收站 `https://wz.tomatopia.top`；
 - 验收站应用服务器为 `47.82.105.103`，Directus 当前明确使用 PostgreSQL 16，本轮不执行 Oracle 迁移；
@@ -11,13 +11,14 @@
 - 本地验证通过：Astro 287 个输入 0 错误、ESLint、432 文件可维护性预算、55 个引用资源与 103 个部署资源、16 个测试文件 87 项单测、27 项浏览器测试、3 项正式域名契约测试和生产构建全部通过；
 - 浏览器回归确认 Directus 中文分组、首页单例、17 个 FAQ 页面、100 条 FAQ、案例聚合指标和服务页聚合字段可用，390px 移动端无结构溢出；
 - 变更前已生成并校验 PostgreSQL 自定义格式备份；随后完成 19 个 Directus 集合的幂等建模与迁移，6 个案例、100 条 FAQ、12 个服务页及其聚合字段验证通过；
-- 验收站已原子发布到 `/var/www/xyy-web/releases/20260813T182300Z`，首页、`/healthz`、Directus ping、robots、sitemap 和 llms.txt 外部检查通过；
-- GitHub `main` 的应用提交为 `9d4b43c`；提交前已检查提示词、环境变量、Token 与私钥，均未进入仓库；
+- 验收站已原子发布到 `/var/www/xyy-web/releases/20260814T222944Z`，首页、产品、关于、案例、新闻、`/healthz`、Directus ping、robots、sitemap 和 llms.txt 外部检查通过；
+- GitHub `main` 的应用提交为 `6a55eeb`，对应 GitHub Actions CI 已通过；提交前已检查提示词、环境变量、Token 与私钥，均未进入仓库；
+- 本轮新增的 102 项 Logo、发展历程、企业荣誉和首屏海报逐项请求均返回 200；GitHub 干净检出和服务器 release 均包含这些可复现发布素材；
 - 本轮不修改正式域名、DNS、Nginx，也不迁移数据库。
 
 ## 当前结论
 
-新版官网运行在验收服务器 `47.82.105.103`，验收域名为 `https://wz.tomatopia.top`，当前发布目录为 `/var/www/xyy-web/releases/20260813T182300Z`。Directus 内容模型已升级，数据库仍是 PostgreSQL 16；Oracle 19c 迁移保持“脚本已准备、独立数据库环境待执行和恢复验证”，不能描述为已上线。
+新版官网运行在验收服务器 `47.82.105.103`，验收域名为 `https://wz.tomatopia.top`，当前发布目录为 `/var/www/xyy-web/releases/20260814T222944Z`。Web 与 CMS 的 PM2 进程在线，Web 健康接口返回 `contactStorage: ok`。Directus 内容模型已升级，数据库仍是 PostgreSQL 16；Oracle 19c 迁移保持“脚本已准备、独立数据库环境待执行和恢复验证”，不能描述为已上线。
 
 正式域名 `https://56xyy.com` 已由另一台服务器提供新版页面和健康接口，但尚未同步本轮完整资源包与 Directus 聚合内容模型。因此“正式站可访问”不能等同于“与验收站版本一致”。
 
@@ -50,7 +51,7 @@
 - Codex Security修复范围最终复扫：0项发现；
 - 部署、Nginx、PostgreSQL、Oracle 19C和健康检查脚本：本地静态语法通过。
 
-`npm run verify:release` 已于 2026-08-13 从当前工作树重新完整执行通过，以上结果不是由分散的历史命令拼接得出。
+`npm run verify:release` 已于 2026-08-14 在原子发布脚本中从当前工作树重新完整执行通过，以上结果不是由分散的历史命令拼接得出。
 
 2026-08-09 18:14（Asia/Shanghai）发布后复核：验收站 `/healthz` 返回 `dependencies.contactStorage: "ok"`，`/llms.txt` 返回 `text/plain`，站点、CMS ping、robots和sitemap全部通过。正式域名仍由旧服务器提供内容，其切换状态与验收站发布状态继续分开记录。
 
@@ -130,7 +131,7 @@
 | 环境         | 地址 / 位置                | 状态                           |
 | ------------ | -------------------------- | ------------------------------ |
 | 本地候选版本 | `/home/yj/XYY-GEO/website` | 全部门禁通过                   |
-| 验收域名     | `https://wz.tomatopia.top` | 20260813T182300Z 已部署，严格健康检查通过 |
+| 验收域名     | `https://wz.tomatopia.top` | 20260814T222944Z 已部署，严格健康检查通过 |
 | 正式域名     | `https://56xyy.com`        | 新版页面可用，但资源包与 CMS 内容模型未完全同步 |
 | CMS数据库    | PostgreSQL                 | 当前实际运行数据库             |
 | Oracle 19C   | 独立数据库服务器方案       | 脚本已准备，未实迁             |
@@ -157,13 +158,14 @@
 - `deploy/oracle19c/`：安装、迁移、并行验证、切换、回滚和备份；
 - `deploy/nginx-56xyy.conf`、`deploy/nginx-wz-redirect.conf`：正式域名与旧域名跳转草案。
 
-当前本地候选版本还完成了四类尚未部署的加固：审核后的 Logo、关于页与首屏海报已改为
-Git 跟踪的发布输入；GitHub CI 会从干净检出执行完整发布门禁；Web 支持拆分为内容只读和
-联系仅创建两枚 Directus Token，并提供 `cms:verify-runtime-permissions` 严格审计；数据库与
-Directus 附件备份增加 root 专用配置、校验和、并发锁、保留策略、隔离恢复和显式 timer
-激活门槛。上述代码与脚本已准备不等于服务器上的 Policy、Token、异机副本和 timer 已配置。
+本轮已部署四类代码加固：审核后的 Logo、关于页与首屏海报已改为 Git 跟踪的发布输入；
+GitHub CI 会从干净检出执行完整发布门禁；Web 支持拆分为内容只读和联系仅创建两枚
+Directus Token，并提供 `cms:verify-runtime-permissions` 严格审计；数据库与 Directus 附件
+备份增加 root 专用配置、校验和、并发锁、保留策略、隔离恢复和显式 timer 激活门槛。
+验收服务器本次仍使用兼容的旧共享 Token，所以上述代码与脚本已上线不等于服务器上的
+Policy、拆分 Token、异机副本和 timer 已配置。
 
-## 发布前外部待办
+## 发布后外部待办
 
 1. 在服务器安装数据库和附件两套备份任务，完成异机副本和联合恢复演练；
 2. 在 Directus 创建两套最小权限 Policy/Token，严格审计通过后替换 Web 共享令牌；
@@ -173,6 +175,7 @@ Directus 附件备份增加 root 专用配置、校验和、并发锁、保留�
 
 ## 发布边界
 
-2026-08-13早前版本已完成验收服务器部署与GitHub `main`同步。本节之后新增的资源可复现、
-CI、令牌拆分和附件备份改动当前仅存在于本地工作树，尚未部署或推送。没有切换正式域名、
-修改DNS或执行生产数据库迁移；真实环境变量、Token、数据库凭据和密钥没有进入仓库。
+2026-08-14 已完成验收服务器原子发布与 GitHub `main` 同步；资源可复现、CI、运行时令牌
+拆分兼容层和附件备份脚本均已进入代码版本。没有切换正式域名、修改 DNS、执行生产数据库
+迁移、创建线上最小权限 Policy/Token 或激活备份 timer；真实环境变量、Token、数据库凭据和
+密钥没有进入仓库。
