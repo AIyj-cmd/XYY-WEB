@@ -44,7 +44,7 @@ case "${ACTION}" in
     source "${CONFIG_FILE}"
     curl -fsS http://127.0.0.1:8055/server/ping
     echo
-    curl -fsS http://127.0.0.1:4321/healthz
+    curl -fsS http://127.0.0.1:50031/healthz
     echo
     pm2 describe xyy-cms >/dev/null
     pm2 describe "${WEB_PROCESS_NAME:-xyy-web}" >/dev/null

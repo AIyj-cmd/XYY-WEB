@@ -66,7 +66,7 @@ rollback_to_postgresql() {
     echo "[critical] PostgreSQL Directus rollback failed health check" >&2
     return 1
   fi
-  if ! wait_for_directus http://127.0.0.1:4321/healthz; then
+  if ! wait_for_directus http://127.0.0.1:50031/healthz; then
     echo "[critical] website did not recover after PostgreSQL rollback" >&2
     return 1
   fi
@@ -110,7 +110,7 @@ if ! wait_for_directus http://127.0.0.1:8055/server/ping; then
 fi
 
 resume_web
-if ! wait_for_directus http://127.0.0.1:4321/healthz; then
+if ! wait_for_directus http://127.0.0.1:50031/healthz; then
   echo "[error] website failed health check after Oracle cutover; rolling back" >&2
   rollback_to_postgresql
   exit 1

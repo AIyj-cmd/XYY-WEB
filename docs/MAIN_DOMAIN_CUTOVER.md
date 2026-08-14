@@ -23,7 +23,7 @@
 127.0.0.1:8443 (Nginx TLS vhost)
           ├─ /cms/ → Directus 127.0.0.1:8055
           ├─ 静态资源 → /var/www/xyy-web/dist/client
-          └─ 页面/API → Astro 127.0.0.1:4321
+          └─ 页面/API → Astro 0.0.0.0:50031
 ```
 
 ## 切换前

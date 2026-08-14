@@ -85,6 +85,17 @@ describe('production deployment contracts', () => {
     expect(nginx.match(/root \/var\/www\/xyy-web\/current\/dist\/client;/g)).toHaveLength(4)
   })
 
+  it('binds the web process to the operations port and reuses unchanged release assets', () => {
+    const ecosystem = read('ecosystem.config.cjs')
+    const nginx = read('deploy/nginx-56xyy.conf')
+    const deploy = read('scripts/deploy.sh')
+
+    expect(ecosystem).toContain("HOST: '0.0.0.0'")
+    expect(ecosystem).toContain("PORT: '50031'")
+    expect(nginx).toContain('server 127.0.0.1:50031;')
+    expect(deploy).toContain("cp -al '$CURRENT_LINK/dist/.' '$RELEASE_DIR/dist/'")
+  })
+
   it('applies a narrow request-size limit to the public contact endpoint', () => {
     const nginx = read('deploy/nginx-56xyy.conf')
     const contactLocation = nginx.match(/location = \/api\/contact \{[\s\S]*?\n {4}\}/)?.[0]

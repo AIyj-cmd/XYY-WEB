@@ -14,9 +14,11 @@ BUILD_DIRECTUS_URL="${BUILD_DIRECTUS_URL:-$PUBLIC_DIRECTUS_URL}"
 HEALTHCHECK_SITE_URL="${HEALTHCHECK_SITE_URL:-$SITE_URL}"
 RELEASE_KEEP="${RELEASE_KEEP:-5}"
 RELEASE_ID="${RELEASE_ID:-$(date -u +%Y%m%dT%H%M%SZ)}"
+WEB_PORT="${WEB_PORT:-50031}"
 
 [[ ${RELEASE_ID} =~ ^[A-Za-z0-9._-]+$ ]] || { echo "Error: invalid RELEASE_ID" >&2; exit 1; }
 [[ ${RELEASE_KEEP} =~ ^[1-9][0-9]*$ ]] || { echo "Error: RELEASE_KEEP must be a positive integer" >&2; exit 1; }
+[[ ${WEB_PORT} =~ ^[1-9][0-9]{0,4}$ ]] || { echo "Error: WEB_PORT must be a valid TCP port" >&2; exit 1; }
 [[ ${REMOTE_DIR} =~ ^/[A-Za-z0-9._/-]+$ ]] || { echo "Error: REMOTE_DIR must be a safe absolute path" >&2; exit 1; }
 [[ ${NODE_BIN} =~ ^/[A-Za-z0-9._/-]+$ ]] || { echo "Error: NODE_BIN must be a safe absolute path" >&2; exit 1; }
 
@@ -43,10 +45,15 @@ if ! { grep -Eq '^DIRECTUS_CONTENT_TOKEN=.+' '$REMOTE_DIR/.env' && \
 fi
 mkdir -p '$RELEASES_DIR'
 test ! -e '$RELEASE_DIR'
-mkdir -p '$RELEASE_DIR/dist'"
+mkdir -p '$RELEASE_DIR/dist'
+if [[ -d '$CURRENT_LINK/dist' ]]; then
+  cp -al '$CURRENT_LINK/dist/.' '$RELEASE_DIR/dist/'
+fi"
 
 # Upload into an isolated release. The currently running dist directory is never
-# modified, so requests cannot observe a half-uploaded Astro build.
+# modified, so requests cannot observe a half-uploaded Astro build. The remote
+# hard-link clone above means unchanged PDFs and other large assets do not cross
+# the network again; rsync replaces only files that actually changed.
 rsync -az --delete -e "$RSYNC_RSH" \
   dist/ "$DEPLOY_HOST:$RELEASE_DIR/dist/"
 
@@ -80,7 +87,7 @@ restore_previous() {
   PATH='$NODE_BIN':\$PATH pm2 save
 
   for _ in {1..30}; do
-    if curl -fsS http://127.0.0.1:4321/healthz >/dev/null; then
+    if curl -fsS http://127.0.0.1:$WEB_PORT/healthz >/dev/null; then
       return 0
     fi
     sleep 1
@@ -107,7 +114,7 @@ fi
 
 healthy=0
 for _ in {1..30}; do
-  if curl -fsS http://127.0.0.1:4321/healthz | grep -q '\"contactStorage\":\"ok\"'; then
+  if curl -fsS http://127.0.0.1:$WEB_PORT/healthz | grep -q '\"contactStorage\":\"ok\"'; then
     healthy=1
     break
   fi
@@ -148,7 +155,7 @@ PATH='$NODE_BIN':\$PATH pm2 start \"\$current_link/ecosystem.config.cjs\" --upda
 PATH='$NODE_BIN':\$PATH pm2 save
 
 for _ in {1..30}; do
-  if curl -fsS http://127.0.0.1:4321/healthz >/dev/null; then
+  if curl -fsS http://127.0.0.1:$WEB_PORT/healthz >/dev/null; then
     exit 0
   fi
   sleep 1

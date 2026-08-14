@@ -15,7 +15,7 @@ web/       Astro Web 前端构建、原子发布和 Nginx 配置
    ↓
 应用服务器
 ├─ Nginx
-├─ xyy-web      127.0.0.1:4321
+├─ xyy-web      0.0.0.0:50031
 └─ xyy-cms      127.0.0.1:8055
         ↓ 私网 TCP 1521
 现有 Oracle Database 19c 服务器

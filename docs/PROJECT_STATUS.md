@@ -141,7 +141,7 @@
 - 正式域名的 `/healthz`、`/cms/server/ping`、`/robots.txt`、`/sitemap.xml` 和 `/llms.txt` 均被旧站统一回退为HTML，虽然部分HTTP状态为200，但内容契约全部失败；
 - 因此“验收站已发布”与“正式域名已切换”必须继续分开记录。
 
-验收服务器确认：PM2 的 `xyy-web`、`xyy-cms` 在线，Web仅监听 `127.0.0.1:4321`，Directus版本12.1.1，当前数据库仍为PostgreSQL。Nginx静态资源已切换到 `current/dist/client`，进程工作目录指向当前发布目录。PostgreSQL备份timer仍未安装，PostgreSQL和Oracle备份目录仍不存在。
+验收服务器确认：PM2 的 `xyy-web`、`xyy-cms` 在线，Web 监听 `0.0.0.0:50031`，Directus 版本 12.1.1，当前数据库仍为 PostgreSQL。Nginx 静态资源已切换到 `current/dist/client`，进程工作目录指向当前发布目录。PostgreSQL 备份 timer 仍未安装，PostgreSQL 和 Oracle 备份目录仍不存在。
 
 首次原子发布实跑暴露了两个编排问题：PM2 reload不会更新旧进程工作目录，以及不存在的`current`路径会被`readlink -f`误记为回滚目标。服务器状态已人工收口，部署脚本已改为只读取真实软链、删除并重建Web进程，并用联系存储依赖状态作为内部启动门槛；对应契约测试已补充。
 
