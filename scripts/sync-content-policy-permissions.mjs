@@ -18,6 +18,7 @@ const directus = createDirectusAdminClient({ baseUrl, token })
 const result = await syncContentReadPermissions(directus, {
   policyId: process.env.DIRECTUS_CONTENT_POLICY_ID,
   policyName: process.env.DIRECTUS_CONTENT_POLICY_NAME || DEFAULT_CONTENT_POLICY_NAME,
+  publishedOnly: process.env.DIRECTUS_CUSTOM_PERMISSION_RULES === 'true',
 })
 
 console.log(

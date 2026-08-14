@@ -128,6 +128,10 @@ Directus 读取失败时返回空集合并报告依赖降级，不在进程内�
 
 `.env`、`.env.production` 仅保存在本地和服务器，不提交 GitHub，也不由部署脚本上传。
 内容令牌与联系令牌必须不同；建模脚本使用的短期管理令牌不能写入 Web 运行环境。
+Directus 12 Community 不提供自定义项目过滤和字段级权限时，内容令牌使用集合级只读、
+联系令牌使用 `contact_leads` 集合级仅创建；官网查询仍统一附加 `status=published`，联系
+接口仍在服务端只接收表单白名单字段。具备相应 Directus 授权时，可设置
+`DIRECTUS_CUSTOM_PERMISSION_RULES=true`，由权限同步脚本进一步下沉已发布内容过滤。
 
 ## 部署
 

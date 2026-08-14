@@ -11,8 +11,9 @@ import {
 } from '../../config/cms-collections.mjs'
 import {
   CONTENT_COLLECTIONS,
-  hasRestrictedContactCreateFields,
+  hasAllowedContactCreateFields,
   hasContactCreatePermission,
+  hasContentReadPermission,
   resolveRuntimeTokens,
 } from '../../server/runtime-permissions.mjs'
 
@@ -82,9 +83,21 @@ describe('Directus runtime permission contracts', () => {
     ).toBe(false)
   })
 
-  it('requires the contact token to expose only website form fields', () => {
+  it('accepts collection-scoped read access with or without licensed item filters', () => {
     expect(
-      hasRestrictedContactCreateFields({
+      hasContentReadPermission({ data: { cases: { read: { access: 'partial' } } } }, 'cases')
+    ).toBe(true)
+    expect(
+      hasContentReadPermission({ data: { cases: { read: { access: 'full' } } } }, 'cases')
+    ).toBe(true)
+    expect(
+      hasContentReadPermission({ data: { cases: { read: { access: 'none' } } } }, 'cases')
+    ).toBe(false)
+  })
+
+  it('accepts exact form fields or Directus Community full-field create access', () => {
+    expect(
+      hasAllowedContactCreateFields({
         data: {
           contact_leads: {
             create: {
@@ -96,10 +109,10 @@ describe('Directus runtime permission contracts', () => {
       })
     ).toBe(true)
     expect(
-      hasRestrictedContactCreateFields({
+      hasAllowedContactCreateFields({
         data: { contact_leads: { create: { access: 'full', fields: ['*'] } } },
       })
-    ).toBe(false)
+    ).toBe(true)
   })
 
   it('keeps lead provenance and workflow status server-controlled', () => {

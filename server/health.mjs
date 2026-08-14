@@ -1,7 +1,7 @@
 import {
   CONTENT_COLLECTIONS,
   hasContactCreatePermission,
-  permissionAccess,
+  hasContentReadPermission,
   resolveRuntimeTokens,
 } from './runtime-permissions.mjs'
 
@@ -36,8 +36,8 @@ export async function contactStorageStatus(env = process.env) {
 
     const contentPermissions = await contentPermissionsResponse.json()
     const contactPermissions = await contactPermissionsResponse.json()
-    const canReadAllContent = CONTENT_COLLECTIONS.every(
-      (collection) => permissionAccess(contentPermissions, collection, 'read') === 'partial'
+    const canReadAllContent = CONTENT_COLLECTIONS.every((collection) =>
+      hasContentReadPermission(contentPermissions, collection)
     )
     return canReadAllContent && hasContactCreatePermission(contactPermissions) ? 'ok' : 'incomplete'
   } catch {

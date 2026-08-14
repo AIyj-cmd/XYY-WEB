@@ -68,6 +68,9 @@ Web 运行时必须优先使用不同的 `DIRECTUS_CONTENT_TOKEN`（18个内容�
 `DIRECTUS_CONTACT_TOKEN`（仅创建咨询线索）。`DIRECTUS_TOKEN` 只允许用于滚动升级兼容；
 初始化所需的管理令牌不得配置到 Web。部署人员配置完成后运行
 `npm run cms:verify-runtime-permissions`，失败时不得发布。
+Directus 12 Community 环境没有自定义权限授权时，运行权限按集合和动作隔离，已发布状态
+过滤与联系字段白名单由服务端查询和接口继续强制执行；不得绕过许可门禁或把管理令牌作为
+替代方案。
 
 当前阿里云验收服务器为 `47.82.105.103`，验收域名为 `wz.tomatopia.top`，后台位于
 同源 `/cms/admin/`。正式域名 `56xyy.com` 完成证书、DNS、Nginx、canonical 与索引策略

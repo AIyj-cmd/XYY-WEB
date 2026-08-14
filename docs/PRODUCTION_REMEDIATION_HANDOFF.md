@@ -95,11 +95,15 @@ unset DIRECTUS_TOKEN
 
 网站运行时必须建立两套不同的 Directus Policy 和静态 Token：
 
-- `DIRECTUS_CONTENT_TOKEN`：18个内容集合只读已发布内容，禁止写入，禁止读取
+- `DIRECTUS_CONTENT_TOKEN`：18个内容集合只读，禁止写入，禁止读取
   `contact_leads` 和 Directus 用户、角色、权限、策略；
-- `DIRECTUS_CONTACT_TOKEN`：仅允许创建 `contact_leads`，字段限定为官网表单实际提交字段，
-  即姓名、电话、公司、邮箱、服务和留言；`source` 与 `status` 使用模型默认值。禁止读取、
+- `DIRECTUS_CONTACT_TOKEN`：仅允许创建 `contact_leads`；`source` 与 `status` 使用模型默认值。禁止读取、
   更新、删除、分享，禁止访问内容集合和系统集合。
+
+Directus 12 Community 未授权自定义权限规则时，集合策略不能添加 `status=published` 项目
+过滤或字段级限制；官网查询和联系接口已经分别强制执行已发布过滤与字段白名单。只有实例
+具备相应授权时，才设置 `DIRECTUS_CUSTOM_PERMISSION_RULES=true` 下沉已发布过滤，禁止通过
+修改许可代码或改用管理令牌绕过。
 
 把两枚不同 Token 写入服务器 Web `.env`，文件权限设为600。部署前先执行：
 

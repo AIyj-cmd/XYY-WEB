@@ -33,6 +33,7 @@ export async function resolveContentPolicy(directus, options = {}) {
 
 export async function syncContentReadPermissions(directus, options = {}) {
   const collections = options.collections || CMS_CONTENT_COLLECTIONS
+  const publishedOnly = options.publishedOnly === true
   const policy = await resolveContentPolicy(directus, options)
   const query = new URLSearchParams({
     'filter[policy][_eq]': policy.id,
@@ -54,7 +55,7 @@ export async function syncContentReadPermissions(directus, options = {}) {
       policy: policy.id,
       collection,
       action: 'read',
-      permissions: { status: { _eq: 'published' } },
+      permissions: publishedOnly ? { status: { _eq: 'published' } } : null,
       validation: null,
       presets: null,
       fields: ['*'],

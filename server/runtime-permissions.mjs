@@ -22,11 +22,16 @@ export function hasContactCreatePermission(payload) {
   return ['full', 'partial'].includes(permissionAccess(payload, 'contact_leads', 'create'))
 }
 
+export function hasContentReadPermission(payload, collection) {
+  return ['full', 'partial'].includes(permissionAccess(payload, collection, 'read'))
+}
+
 export const CONTACT_CREATE_FIELDS = ['name', 'phone', 'company', 'email', 'service', 'message']
 
-export function hasRestrictedContactCreateFields(payload) {
+export function hasAllowedContactCreateFields(payload) {
   const fields = payload?.data?.contact_leads?.create?.fields
   if (!Array.isArray(fields)) return false
+  if (fields.length === 1 && fields[0] === '*') return true
   const actual = [...fields].sort()
   const expected = [...CONTACT_CREATE_FIELDS].sort()
   return (

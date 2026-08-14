@@ -44,8 +44,13 @@ CMS 初始化、日常后台编辑和网站运行使用三类不同权限：
 - 官网内容：`DIRECTUS_CONTENT_TOKEN`，只读18个公开内容集合，不得读取咨询、用户、角色、
   权限或策略，也不得创建、更新和删除内容；
 - 联系表单：`DIRECTUS_CONTACT_TOKEN`，只允许创建 `contact_leads`，不得读取既有咨询，
-  也不得访问任何内容或 Directus 系统集合；可提交字段严格限定为姓名、电话、公司、邮箱、
-  服务和留言，`source=website` 与 `status=new` 由 Directus 字段默认值生成。
+  也不得访问任何内容或 Directus 系统集合；服务端接口只接收姓名、电话、公司、邮箱、服务
+  和留言，`source=website` 与 `status=new` 由 Directus 字段默认值生成。
+
+Directus 12 Community 未授权自定义权限规则时，只能配置集合级完整字段权限：内容令牌仍
+限制为18个集合的只读动作，联系令牌仍限制为 `contact_leads` 的创建动作；所有官网内容查询
+继续显式过滤 `status=published`，联系接口继续执行服务端字段白名单。若实例具备自定义权限
+授权，可设置 `DIRECTUS_CUSTOM_PERMISSION_RULES=true`，把已发布过滤同步下沉到策略层。
 
 两枚运行令牌必须不同。部署后运行 `npm run cms:verify-runtime-permissions`，它会实际请求
 敏感端点并要求返回401/403，而不是只检查变量是否存在。`/healthz` 保持原有对外契约，

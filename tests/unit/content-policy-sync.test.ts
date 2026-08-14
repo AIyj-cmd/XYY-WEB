@@ -29,13 +29,31 @@ describe('Directus content policy synchronization', () => {
       expect.objectContaining({
         collection: 'homepage_stats',
         action: 'read',
-        permissions: { status: { _eq: 'published' } },
+        permissions: null,
       })
     )
     expect(request).toHaveBeenCalledWith(
       'POST',
       '/permissions',
       expect.objectContaining({ collection: 'cases', fields: ['*'] })
+    )
+  })
+
+  it('uses published-only item rules only when the Directus license supports them', async () => {
+    const request = vi.fn(async (method: string, path: string) => {
+      if (method === 'GET' && path.startsWith('/policies?')) {
+        return [{ id: 'policy-1', name: DEFAULT_CONTENT_POLICY_NAME }]
+      }
+      if (method === 'GET' && path.startsWith('/permissions?')) return []
+      return {}
+    })
+
+    await syncContentReadPermissions({ request }, { collections: ['cases'], publishedOnly: true })
+
+    expect(request).toHaveBeenCalledWith(
+      'POST',
+      '/permissions',
+      expect.objectContaining({ permissions: { status: { _eq: 'published' } } })
     )
   })
 

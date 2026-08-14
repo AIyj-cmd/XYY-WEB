@@ -1,7 +1,8 @@
 import {
   CONTENT_COLLECTIONS,
+  hasAllowedContactCreateFields,
   hasContactCreatePermission,
-  hasRestrictedContactCreateFields,
+  hasContentReadPermission,
   permissionAccess,
 } from '../server/runtime-permissions.mjs'
 
@@ -55,7 +56,7 @@ const sensitiveEndpoints = [
 ]
 
 for (const collection of CONTENT_COLLECTIONS) {
-  if (permissionAccess(contentPermissions, collection, 'read') !== 'partial') {
+  if (!hasContentReadPermission(contentPermissions, collection)) {
     failures.push(`content token cannot read ${collection}`)
   }
   for (const action of ['create', 'update', 'delete', 'share']) {
@@ -76,8 +77,8 @@ for (const collection of ['contact_leads']) {
 if (!hasContactCreatePermission(contactPermissions)) {
   failures.push('contact token cannot create contact_leads')
 }
-if (!hasRestrictedContactCreateFields(contactPermissions)) {
-  failures.push('contact token create fields must match the website form fields exactly')
+if (!hasAllowedContactCreateFields(contactPermissions)) {
+  failures.push('contact token has an unsupported create field permission shape')
 }
 
 for (const collection of [...privilegedCollections, ...CONTENT_COLLECTIONS]) {
