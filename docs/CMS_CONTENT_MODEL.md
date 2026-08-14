@@ -76,7 +76,14 @@ npm run cms:generate-faq-seeds
 DIRECTUS_URL=https://example.com/cms DIRECTUS_TOKEN='<admin-token>' node scripts/setup-cms.mjs
 ```
 
-初始化只补齐缺失页面和问题，不会覆盖后台已经编辑的记录。
+初始化只补齐缺失页面和问题，不会覆盖后台已经编辑的记录。初始化完成后会查找
+`Website Content Read-Only` 策略，并自动为18个公开内容集合补齐“仅查看已发布记录”权限。
+若策略使用了其他名称，可设置 `DIRECTUS_CONTENT_POLICY_NAME`；也可以直接设置
+`DIRECTUS_CONTENT_POLICY_ID`。已有数据库只需补权限时运行：
+
+```bash
+DIRECTUS_URL=https://example.com/cms DIRECTUS_TOKEN='<admin-token>' npm run cms:sync-content-permissions
+```
 
 ## 已纳入的扩展内容
 

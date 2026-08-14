@@ -17,6 +17,7 @@
     "cms:migrate-unified-cases": "node scripts/migrate-unified-cases.mjs",
     "cms:migrate-unified-content": "node scripts/migrate-unified-content.mjs",
     "cms:verify": "node scripts/verify-production-cms.mjs",
+    "cms:sync-content-permissions": "node scripts/sync-content-policy-permissions.mjs",
     "cms:verify-runtime-permissions": "node scripts/verify-runtime-permissions.mjs",
     "typecheck": "astro check",
     "precheck:assets": "npm run prepare:fonts",
