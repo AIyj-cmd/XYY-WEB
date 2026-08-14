@@ -6,7 +6,7 @@ import RepairWorkshopSignature from './signature/RepairWorkshopSignature.astro'
 interface Props {
   variant: ServiceVariant
   contentDesc: string
-  stats: [StatItem, StatItem, StatItem, StatItem]
+  stats: readonly StatItem[]
   features: FeatureItem[]
 }
 

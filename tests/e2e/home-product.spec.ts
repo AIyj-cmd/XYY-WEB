@@ -16,7 +16,8 @@ test('homepage loads the shoe-apparel fulfillment message and primary CTA', asyn
   await expect(page.locator('#s-cases a.case-card')).toHaveCount(6)
   await expect(page.locator('a.case-card[href="/cases/ur"]')).toHaveCount(1)
   await expect(page.locator('a.case-card[href="/cases/romi-studio"]')).toHaveCount(1)
-  await expect(page.locator('a.case-card[href="/cases/toyouth"]')).toHaveCount(1)
+  await expect(page.locator('a.case-card[href="/cases/inman"]')).toHaveCount(1)
+  await expect(page.locator('a.case-card[href="/cases/toyouth"]')).toHaveCount(0)
   await expect(page.getByRole('link', { name: /在线估算费用|仓储成本估算器/ })).toHaveCount(0)
 })
 
@@ -25,7 +26,7 @@ test('homepage case dialogs reuse all six card covers and close with Escape', as
 
   const dialogImage = page.locator('#modal-hero-img')
   await expect(dialogImage).not.toHaveAttribute('src', /.+/)
-  for (const path of ['ur', 'maxrieny', 'xingmian', 'meiyi', 'romi-studio', 'toyouth']) {
+  for (const path of ['ur', 'maxrieny', 'xingmian', 'meiyi', 'romi-studio', 'inman']) {
     const card = page.locator(`a.case-card[href="/cases/${path}"]`)
     const cardImageSrc = await card.locator('img').getAttribute('src')
     await card.click()
@@ -35,6 +36,15 @@ test('homepage case dialogs reuse all six card covers and close with Escape', as
     await page.keyboard.press('Escape')
     await expect(page.locator('#case-modal')).toBeHidden()
   }
+})
+
+test('cases page exposes only the six current brands', async ({ page }) => {
+  await page.goto('/cases')
+
+  await expect(page.locator('#cases-grid .case-card')).toHaveCount(6)
+  await expect(page.getByRole('heading', { name: '茵曼（Inman）' })).toBeVisible()
+  await expect(page.getByText('初语（TOYOUTH）', { exact: true })).toHaveCount(0)
+  await expect(page.getByRole('link', { name: '查看案例详情 →' })).toHaveCount(6)
 })
 
 test('product page presents three service series and an accessible six-need directory', async ({

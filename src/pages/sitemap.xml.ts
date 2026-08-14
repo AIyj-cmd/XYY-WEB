@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro'
 import { BRAND } from '@/lib/brand'
-import { getPublishedNews } from '@/lib/directus'
+import { CASE_FALLBACKS } from '@/data/cases'
+import { getCases, getPublishedNews } from '@/lib/directus'
 
 const STATIC_PAGES = [
   { url: '/', priority: '1.0', changefreq: 'weekly' },
@@ -20,12 +21,6 @@ const STATIC_PAGES = [
   { url: '/weipinhui-jit-jitx', priority: '0.8', changefreq: 'monthly' },
   { url: '/about', priority: '0.8', changefreq: 'monthly' },
   { url: '/cases', priority: '0.8', changefreq: 'monthly' },
-  { url: '/cases/ur', priority: '0.75', changefreq: 'monthly' },
-  { url: '/cases/maxrieny', priority: '0.75', changefreq: 'monthly' },
-  { url: '/cases/xingmian', priority: '0.75', changefreq: 'monthly' },
-  { url: '/cases/meiyi', priority: '0.75', changefreq: 'monthly' },
-  { url: '/cases/romi-studio', priority: '0.75', changefreq: 'monthly' },
-  { url: '/cases/toyouth', priority: '0.75', changefreq: 'monthly' },
   { url: '/news', priority: '0.6', changefreq: 'monthly' },
   { url: '/senlinqikan', priority: '0.75', changefreq: 'monthly' },
   { url: '/contact', priority: '0.7', changefreq: 'monthly' },
@@ -46,7 +41,19 @@ export const GET: APIRoute = async () => {
   </url>`
   ).join('\n')
 
-  const newsEntries = (await getPublishedNews(500, 1))
+  const [cases, news] = await Promise.all([getCases(CASE_FALLBACKS), getPublishedNews(500, 1)])
+  const caseEntries = cases
+    .filter((item) => item.slug)
+    .map(
+      (item) => `  <url>
+    <loc>${BRAND.url}/cases/${encodeURIComponent(item.slug!)}</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>`
+    )
+    .join('\n')
+
+  const newsEntries = news
     .map(
       (article) => `  <url>
     <loc>${BRAND.url}/news/${encodeURIComponent(article.slug)}</loc>
@@ -60,13 +67,14 @@ export const GET: APIRoute = async () => {
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${staticEntries}
+${caseEntries}
 ${newsEntries}
 </urlset>`
 
   return new Response(xml, {
     headers: {
       'Content-Type': 'application/xml; charset=utf-8',
-      'Cache-Control': 'public, max-age=3600',
+      'Cache-Control': 'no-store',
     },
   })
 }

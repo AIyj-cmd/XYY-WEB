@@ -109,19 +109,19 @@ export const CASE_DETAILS = {
       { label: '直播服务', value: '达播寄样', unit: '' },
     ],
   },
-  '初语（TOYOUTH）': {
-    slug: 'toyouth',
-    name: '初语（TOYOUTH）',
-    fullName: '初语（TOYOUTH）',
-    category: '人气女装品牌',
+  '茵曼（Inman）': {
+    slug: 'inman',
+    name: '茵曼',
+    fullName: '茵曼（Inman）',
+    category: '棉麻生活服装',
     image:
       'https://images.unsplash.com/photo-1448070299168-7dede6dc70b4?w=800&q=75&auto=format&fit=crop',
-    accent: '#65A30D',
+    accent: '#B7791F',
     description:
-      '初语是中国的人气原创设计师女装品牌，成立于 2006 年，隶属于汇美集团。初语主打“率性设计风格”，核心产品为创新分阶的牛仔系列单品。',
+      '知名棉麻生活服装品牌，多年线上线下融合运营。新亦源提供全渠道一盘货仓储，实现多平台库存统一。',
     stats: [
-      { label: '库存管理', value: '全渠道', unit: '一盘货' },
-      { label: '品牌运营', value: '线上线下', unit: '融合' },
+      { label: '库存管理', value: '全渠道统一管理', unit: '' },
+      { label: '履约能力', value: '多平台同步发货', unit: '' },
     ],
   },
 } as const satisfies Record<string, CaseDetail>

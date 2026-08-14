@@ -25,28 +25,6 @@ html {
 .assurance-section {
   scroll-margin-top: 7rem;
 }
-.service-series,
-.needs-section,
-.care-section,
-.process-section,
-.assurance-section,
-.warehouse-cta {
-  content-visibility: auto;
-}
-.service-series {
-  contain-intrinsic-size: auto 2600px;
-}
-.needs-section,
-.care-section,
-.assurance-section {
-  contain-intrinsic-size: auto 1200px;
-}
-.process-section {
-  contain-intrinsic-size: auto 900px;
-}
-.warehouse-cta {
-  contain-intrinsic-size: auto 560px;
-}
 .kicker {
   margin: 0 0 0.9rem;
   color: var(--accent-text);

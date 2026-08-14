@@ -145,14 +145,33 @@ describe('Directus helpers', () => {
     expect(requester).toHaveBeenCalledTimes(2)
   })
 
-  it('returns an empty list when a collection request fails', async () => {
-    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
-    __setDirectusRequesterForTests(async () => {
-      throw new Error('CMS unavailable')
-    })
+  it('projects unified case fields so legacy card fields cannot stay stale', async () => {
+    __setDirectusRequesterForTests(async () => [
+      {
+        id: 7,
+        sort: 6,
+        slug: 'inman',
+        category: '棉麻生活服装',
+        label: '茵曼（Inman）',
+        name: '茵曼',
+        full_name: '茵曼（Inman）',
+        accent: '#B7791F',
+        case_description: '后台新案例说明',
+        stats: [{ label: '库存管理', value: '后台新指标', unit: '' }],
+        metrics: '旧指标摘要',
+        details: '旧案例说明',
+        tags: ['全渠道一盘货'],
+        img: '/inman.jpg',
+      },
+    ])
 
-    await expect(getHomepageStats()).resolves.toEqual([])
-    expect(errorSpy).toHaveBeenCalled()
+    await expect(getCases()).resolves.toEqual([
+      expect.objectContaining({
+        case_description: '后台新案例说明',
+        details: '后台新案例说明',
+        metrics: '库存管理 后台新指标',
+      }),
+    ])
   })
 
   it('reads page FAQs and resolves approved claim placeholders', async () => {
@@ -171,16 +190,5 @@ describe('Directus helpers', () => {
         sort: ['sort'],
       })
     )
-  })
-
-  it('uses the reviewed FAQ fallback when Directus is unavailable', async () => {
-    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
-    const fallback = [{ q: '本地问题', a: '本地答案' }]
-    __setDirectusRequesterForTests(async () => {
-      throw new Error('CMS unavailable')
-    })
-
-    await expect(getFaqs('home', fallback)).resolves.toEqual(fallback)
-    expect(errorSpy).toHaveBeenCalled()
   })
 })

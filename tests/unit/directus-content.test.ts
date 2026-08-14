@@ -67,7 +67,7 @@ describe('Directus structured page content', () => {
     })
   })
 
-  it('reads publications, case details, about content and settings', async () => {
+  it('reads publications, about content and settings from their canonical collections', async () => {
     __setDirectusRequesterForTests(async (collection) => {
       if (collection === 'publications')
         return [
@@ -84,17 +84,6 @@ describe('Directus structured page content', () => {
             is_latest: true,
           },
         ]
-      if (collection === 'case_details')
-        return [
-          {
-            slug: 'sample',
-            name: '案例',
-            full_name: '案例全称',
-            accent: '#123456',
-            description: '详情',
-          },
-        ]
-      if (collection === 'case_stats') return [{ label: '库存', value: '1万+', unit: '件' }]
       if (collection === 'about_content')
         return { overview: '公司介绍', hero_description: '首屏介绍' }
       if (collection === 'site_settings')
@@ -111,21 +100,6 @@ describe('Directus structured page content', () => {
     expect(publications).toHaveLength(1)
     expect(publications[0]?.cover).toContain('/assets/cover-id')
     expect(publications[0]?.pdf).toContain('/assets/pdf-id')
-    await expect(
-      getCaseDetail('sample', {
-        slug: 'sample',
-        name: '回退',
-        fullName: '回退',
-        category: '分类',
-        image: '/case.jpg',
-        accent: '#000',
-        description: '回退',
-        stats: [],
-      })
-    ).resolves.toMatchObject({
-      name: '案例',
-      stats: [{ label: '库存', value: '1万+', unit: '件' }],
-    })
     await expect(getAboutContent({ overview: '', heroDescription: '' })).resolves.toEqual({
       overview: '公司介绍',
       heroDescription: '首屏介绍',

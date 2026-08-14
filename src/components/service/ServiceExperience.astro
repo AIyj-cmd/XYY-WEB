@@ -26,7 +26,7 @@ const copy = SERVICE_EXPERIENCE_COPY[variant]
   aria-labelledby="lp-detail-heading"
 >
   <div class="service-detail__inner">
-    <header class="service-detail__header">
+    <header class="service-detail__header" data-service-reveal="copy">
       <div>
         <p>{copy.detailCode}</p>
         <span>{featuresLabel}</span>
@@ -35,7 +35,7 @@ const copy = SERVICE_EXPERIENCE_COPY[variant]
     </header>
 
     <div class="service-detail__layout">
-      <aside class="service-detail__brief">
+      <aside class="service-detail__brief" data-service-reveal="copy">
         <p>{contentDesc}</p>
         <nav aria-label="产品服务相关页面">
           <span>继续了解</span>
@@ -48,7 +48,7 @@ const copy = SERVICE_EXPERIENCE_COPY[variant]
       <ol class="service-detail__features">
         {
           features.map(({ title, desc }, index) => (
-            <li>
+            <li data-service-reveal="copy">
               <span class="service-detail__index">{String(index + 1).padStart(2, '0')}</span>
               <div>
                 <h3>{title}</h3>
@@ -67,14 +67,14 @@ const copy = SERVICE_EXPERIENCE_COPY[variant]
 
 <section class:list={['service-faq', `service-faq--${variant}`]} aria-labelledby="lp-faq-heading">
   <div class="service-faq__inner">
-    <header class="service-faq__header">
+    <header class="service-faq__header" data-service-reveal="copy">
       <p>{copy.faqCode}</p>
       <h2 id="lp-faq-heading">{breadcrumbLabel}常见问题</h2>
     </header>
     <dl class="service-faq__list">
       {
         faqs.map(({ q, a }, index) => (
-          <div>
+          <div data-service-reveal="copy">
             <dt>
               <span>{String(index + 1).padStart(2, '0')}</span>
               <strong>{q}</strong>
@@ -92,12 +92,12 @@ const copy = SERVICE_EXPERIENCE_COPY[variant]
     <div class="service-cta__number" aria-hidden="true">
       {String(Object.keys(SERVICE_EXPERIENCE_COPY).indexOf(variant) + 1).padStart(2, '0')}
     </div>
-    <div class="service-cta__copy">
+    <div class="service-cta__copy" data-service-reveal="copy">
       <p>NEXT STEP · {copy.detailCode}</p>
       <h2 id="lp-cta-heading">把{h1}变成可执行方案</h2>
       <span>{copy.ctaPrompt}</span>
     </div>
-    <div class="service-cta__actions">
+    <div class="service-cta__actions" data-service-reveal="copy">
       <a href="/contact">免费获取方案 <span aria-hidden="true">↗</span></a>
       <a href="/cases">查看合作案例 <span aria-hidden="true">→</span></a>
     </div>

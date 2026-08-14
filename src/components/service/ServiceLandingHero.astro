@@ -11,12 +11,17 @@ interface Props {
 const { eyebrow, h1, h1sub, heroDesc, imgSrc, imgAlt } = Astro.props
 ---
 
-<section class="relative py-16 lg:py-28 overflow-hidden" aria-labelledby="lp-h1">
+<section
+  class="relative py-16 lg:py-28 overflow-hidden"
+  aria-labelledby="lp-h1"
+  data-service-motion-root
+>
   <img
     src={imgSrc}
     alt={imgAlt}
     class="absolute inset-0 w-full h-full object-cover"
     fetchpriority="high"
+    data-service-hero-media
   />
   <div
     class="absolute inset-0"
@@ -24,7 +29,7 @@ const { eyebrow, h1, h1sub, heroDesc, imgSrc, imgAlt } = Astro.props
     aria-hidden="true"
   >
   </div>
-  <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" data-service-hero-copy>
     <p class="text-brand-orange font-semibold text-sm tracking-wider uppercase mb-3">{eyebrow}</p>
     <h1 id="lp-h1" class="text-4xl lg:text-5xl font-black text-white leading-tight mb-2">{h1}</h1>
     <p class="text-brand-orange font-bold text-lg mb-4">{h1sub}</p>

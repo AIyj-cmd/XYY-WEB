@@ -57,12 +57,12 @@ export const APPROVED_CASE_SEEDS = [
   },
   {
     sort: 6,
-    slug: 'toyouth',
-    category: '人气女装品牌',
-    label: '初语（TOYOUTH）',
+    slug: 'inman',
+    category: '棉麻生活服装',
+    label: '茵曼（Inman）',
     metrics: '全渠道库存统一管理 · 多平台同步发货',
     details:
-      '是中国的人气原创设计师女装品牌。它成立于2006年，隶属于汇美集团。初语主打“率性设计风格”，核心产品为创新分阶的牛仔系列单品。',
+      '知名棉麻生活服装品牌，多年线上线下融合运营。新亦源提供全渠道一盘货仓储，实现多平台库存统一。',
     tags: ['全渠道一盘货', '线上线下融合'],
     img: 'https://images.unsplash.com/photo-1448070299168-7dede6dc70b4?w=800&q=75&auto=format&fit=crop',
   },

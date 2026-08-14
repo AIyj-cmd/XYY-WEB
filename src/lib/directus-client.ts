@@ -6,7 +6,20 @@ const DEFAULT_DIRECTUS_API_URL = 'http://127.0.0.1:8055'
 
 const trimTrailingSlash = (value: string) => value.replace(/\/+$/, '')
 
+let runtimeEnvLoaded = false
+
+function loadRuntimeEnv() {
+  if (runtimeEnvLoaded || typeof process === 'undefined') return
+  runtimeEnvLoaded = true
+  try {
+    process.loadEnvFile()
+  } catch {
+    // Production commonly injects variables without shipping a .env file.
+  }
+}
+
 function serverEnv(name: string) {
+  loadRuntimeEnv()
   return typeof process !== 'undefined' ? process.env[name] : undefined
 }
 

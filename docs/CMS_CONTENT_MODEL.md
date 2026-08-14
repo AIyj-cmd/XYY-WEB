@@ -5,24 +5,36 @@
 | 集合               | 用途                | 前端行为                        |
 | ------------------ | ------------------- | ------------------------------- |
 | `homepage_content` | 首页集中配置        | 单例内维护全部运营数据          |
-| `homepage_stats`   | 旧首页数据兼容备份  | 仅在单例缺失时回退读取          |
+| `homepage_stats`   | 旧首页数据兼容备份  | 后台隐藏，运行时不再读取        |
 | `services`         | 导航与首页服务入口  | 发布记录按 `sort` 展示          |
 | `warehouses`       | 仓网信息            | 发布记录按 `sort` 展示          |
 | `cases`            | 案例正文与全部指标  | 每个品牌一条记录，按 `sort` 展示 |
 | `news`             | 行业动态文章        | 发布记录按发布时间展示          |
 | `faq_pages`        | 17 个页面的 FAQ     | 每个页面内聚合维护问题列表      |
 | `faqs`             | FAQ 子项兼容集合    | 由 `faq_pages` 关系字段维护     |
-| `case_details`     | 旧案例正文兼容备份  | 仅在聚合字段缺失时回退读取      |
-| `case_stats`       | 旧案例指标兼容备份  | 仅在聚合字段缺失时回退读取      |
+| `case_details`     | 旧案例正文兼容备份  | 后台隐藏，运行时不再读取        |
+| `case_stats`       | 旧案例指标兼容备份  | 后台隐藏，运行时不再读取        |
 | `publications`     | 森林期刊目录        | 按 `sort` 展示封面和 PDF        |
 | `service_pages`    | 服务文案、指标、能力 | 每个专题一条记录集中维护        |
-| `service_stats`    | 旧服务指标兼容备份  | 仅在聚合字段缺失时回退读取      |
-| `service_features` | 旧服务能力兼容备份  | 仅在聚合字段缺失时回退读取      |
+| `service_stats`    | 旧服务指标兼容备份  | 后台隐藏，运行时不再读取        |
+| `service_features` | 旧服务能力兼容备份  | 后台隐藏，运行时不再读取        |
 | `about_content`    | 关于我们主文案      | Directus 单例                   |
 | `about_history`    | 公司发展历程        | 按 `sort` 展示                  |
 | `about_honors`     | 公司荣誉            | 按 `sort` 展示                  |
 | `site_settings`    | 全站联系方式与页脚  | Directus 单例                   |
 | `contact_leads`    | 官网咨询线索        | 仅供提交和后台跟进              |
+
+## 内容源优先级
+
+- Directus 中已发布的统一记录是前端唯一权威内容源；后台保存后，SSR 页面会在下一次请求时
+  重新读取，不需要重新构建前端；
+- 代码内审核版内容只在 Directus 请求失败、统一单例不存在或集合完全没有已发布记录时启用，
+  不再逐字段覆盖、拼接或纠正后台已经返回的内容；
+- 合作案例统一维护 `cases`，首页卡片、案例列表、案例详情、站点地图和 `llms.txt` 均从该集合
+  生成；`case_description` 与 `stats` 会同步投影到所有展示位置，旧 `details/metrics` 不再成为
+  独立内容源；
+- `homepage_stats`、`case_details`、`case_stats`、`service_stats`、`service_features` 仅保留为
+  迁移备份并从后台导航隐藏，运营人员不应再编辑这些集合。
 
 ## 运行权限边界
 
@@ -71,10 +83,10 @@ DIRECTUS_URL=https://example.com/cms DIRECTUS_TOKEN='<admin-token>' node scripts
 以下五类内容已经采用结构化集合接入，并保留审核版回退：
 
 1. **合作案例**：运营人员只在 `cases` 中维护，每个品牌一条记录，正文、标签和多项指标在
-   同一编辑页完成；`case_details`、`case_stats` 仅作为旧数据兼容备份并从后台菜单隐藏；
+   同一编辑页完成；`case_details`、`case_stats` 仅作为迁移备份并从后台菜单隐藏，前端不再读取；
 2. **期刊目录**：`publications` 管期次、封面、PDF、发布日期和摘要；封面与 PDF
    通过 Directus 文件库上传，旧静态路径仅作为兼容回退；
-3. **服务专题页**：`service_pages` 在同一条目维护主文案、4 项指标、能力列表和上传图片；`service_stats`、`service_features` 仅作兼容备份；
+3. **服务专题页**：`service_pages` 在同一条目维护主文案、4 项指标、能力列表和上传图片；`service_stats`、`service_features` 仅作迁移备份，前端不再读取；
 4. **关于我们**：`about_content`、`about_history`、`about_honors` 分别管理公司正文、发展历程和荣誉；
 5. **站点设置**：`site_settings` 管电话、总部地址、备案号和页脚说明。
 

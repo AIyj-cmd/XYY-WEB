@@ -18,6 +18,7 @@ export async function getFaqs(pageKey: string, fallback: FaqItem[]): Promise<Faq
       sort: ['sort'],
       fields: ['id', 'sort', 'question', 'answer'],
     })
+    if (!rows.length) return fallback
     return rows.map(({ question, answer }) => ({ q: question, a: interpolateClaims(answer) }))
   } catch (error) {
     console.error(
@@ -29,7 +30,9 @@ export async function getFaqs(pageKey: string, fallback: FaqItem[]): Promise<Faq
   }
 }
 
-export async function getHomepageStats(): Promise<HomepageStat[]> {
+export async function getHomepageStats(
+  fallback: readonly HomepageStat[] = []
+): Promise<HomepageStat[]> {
   try {
     const row = await requestSingleton<HomepageContentRecord>('homepage_content', {
       fields: ['id', 'stats'],
@@ -42,25 +45,22 @@ export async function getHomepageStats(): Promise<HomepageStat[]> {
       }))
     }
   } catch {
-    // During rolling migrations, keep the old per-row collection available as a fallback.
+    return [...fallback]
   }
-  return freshItems<HomepageStat>('homepage_stats', {
-    filter: { status: { _eq: 'published' } },
-    sort: ['sort'],
-    fields: ['id', 'sort', 'value', 'label', 'unit', 'detail'],
-  })
+  return [...fallback]
 }
 
-export async function getServices(): Promise<Service[]> {
-  return freshItems<Service>('services', {
+export async function getServices(fallback: readonly Service[] = []): Promise<Service[]> {
+  const services = await freshItems<Service>('services', {
     filter: { status: { _eq: 'published' } },
     sort: ['sort'],
     fields: ['id', 'sort', 'slug', 'icon', 'name', 'subtitle', 'description', 'features'],
   })
+  return services.length ? services : [...fallback]
 }
 
-export async function getWarehouses(): Promise<Warehouse[]> {
-  return freshItems<Warehouse>('warehouses', {
+export async function getWarehouses(fallback: readonly Warehouse[] = []): Promise<Warehouse[]> {
+  const warehouses = await freshItems<Warehouse>('warehouses', {
     filter: { status: { _eq: 'published' } },
     sort: ['sort'],
     fields: [
@@ -76,10 +76,11 @@ export async function getWarehouses(): Promise<Warehouse[]> {
       'highlight',
     ],
   })
+  return warehouses.length ? warehouses : [...fallback]
 }
 
-export async function getCases(): Promise<Case[]> {
-  return freshItems<Case>('cases', {
+export async function getCases(fallback: readonly Case[] = []): Promise<Case[]> {
+  const cases = await freshItems<Case>('cases', {
     filter: { status: { _eq: 'published' } },
     sort: ['sort'],
     fields: [
@@ -98,12 +99,25 @@ export async function getCases(): Promise<Case[]> {
       'img',
       'image_file',
     ],
-  }).then((items) =>
-    items.map((item) => ({
+  })
+  const resolvedCases = cases.map((item) => {
+    const description = item.case_description ?? item.details
+    const metrics = Array.isArray(item.stats)
+      ? item.stats
+          .slice(0, 3)
+          .map(({ label, value, unit }) => `${label} ${value}${unit}`)
+          .join(' · ')
+      : item.metrics
+
+    return {
       ...item,
+      case_description: description,
+      details: description,
+      metrics,
       img: getDirectusAssetUrl(item.image_file) || item.img,
-    }))
-  )
+    }
+  })
+  return resolvedCases.length ? resolvedCases : [...fallback]
 }
 
 export async function getPublishedNews(limit = 10, page = 1): Promise<NewsArticle[]> {

@@ -8,7 +8,7 @@ import LiveCommandSignature from './signature/LiveCommandSignature.astro'
 interface Props {
   variant: ServiceVariant
   contentDesc: string
-  stats: [StatItem, StatItem, StatItem, StatItem]
+  stats: readonly StatItem[]
   features: FeatureItem[]
 }
 

@@ -104,7 +104,7 @@ const faqSchema = createFaqSchema(displayFaqs)
     features={content.features}
   />
 
-  <div class:list={['service-unique', `service-unique--${variant}`]}>
+  <div class:list={['service-unique', `service-unique--${variant}`]} data-service-reveal="visual">
     <slot name="unique" />
   </div>
 
@@ -118,6 +118,10 @@ const faqSchema = createFaqSchema(displayFaqs)
     faqs={displayFaqs}
   />
 </Layout>
+
+<script>
+  import '@/scripts/service-page'
+</script>
 
 <style>
   .service-unique:empty {

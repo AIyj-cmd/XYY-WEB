@@ -7,7 +7,7 @@ import AboutWarehouseNetwork from '@/components/about/AboutWarehouseNetwork.astr
 import AboutWarehouseRegions from '@/components/about/AboutWarehouseRegions.astro'
 import AboutHonors from '@/components/about/AboutHonors.astro'
 import { ABOUT_FAQS, ABOUT_HISTORY, groupWarehouses } from '@/data/about'
-import { BRAND, HONORS } from '@/lib/brand'
+import { BRAND, HONORS, WAREHOUSES } from '@/lib/brand'
 import { CLAIM_TEXT } from '@/lib/claims'
 import {
   getAboutContent,
@@ -27,7 +27,7 @@ const aboutFallback = {
   heroDescription: `从仓储质检到履约交付，我们为鞋服品牌提前解决出货链路中的复杂问题。\n15年、${CLAIM_TEXT.employeeCount}名员工、${CLAIM_TEXT.warehouseArea}直营仓储，只为一件事：让发货更准确、高效、快捷。`,
 }
 const [warehouses, faqs, about, history, honors] = await Promise.all([
-  getWarehouses(),
+  getWarehouses(WAREHOUSES),
   getFaqs('about', ABOUT_FAQS),
   getAboutContent(aboutFallback),
   getAboutHistory(ABOUT_HISTORY),

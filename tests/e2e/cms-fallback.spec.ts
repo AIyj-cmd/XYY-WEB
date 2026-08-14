@@ -1,0 +1,15 @@
+import { expect, test } from '@playwright/test'
+
+test('critical public content remains complete when CMS is unavailable', async ({ page }) => {
+  await page.goto('/')
+  await expect(page.locator('.stat-num')).toHaveCount(8)
+  await expect(page.locator('.s-service')).toHaveCount(4)
+
+  await page.goto('/about')
+  const warehouseRegion = page.locator('#southwh-heading').locator('..').locator('..').locator('..')
+  await expect(warehouseRegion.getByText('黄埔仓', { exact: true })).toBeVisible()
+  await expect(warehouseRegion.getByText('上海青浦汇金仓', { exact: true })).toBeVisible()
+
+  await page.goto('/cases')
+  await expect(page.locator('#cases-grid .case-card')).toHaveCount(6)
+})

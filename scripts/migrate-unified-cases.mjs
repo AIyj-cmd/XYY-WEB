@@ -7,6 +7,7 @@ const token = process.env.DIRECTUS_TOKEN || ''
 if (!token) throw new Error('DIRECTUS_TOKEN is required')
 
 const directus = createDirectusAdminClient({ baseUrl, token })
+const retiredCaseSlugs = new Set(['toyouth'])
 const localFallbacks = {
   '茵曼（Inman）': {
     slug: 'inman',
@@ -25,7 +26,26 @@ const [cases, details, stats] = await Promise.all([
   directus.request('GET', '/items/case_stats?limit=-1&sort=sort'),
 ])
 
-for (const item of cases) {
+for (const item of cases.filter(
+  (candidate) => retiredCaseSlugs.has(candidate.slug) && candidate.status !== 'archived'
+)) {
+  await directus.request('PATCH', `/items/cases/${item.id}`, { status: 'archived' })
+  console.log(`archived retired case: ${item.slug}`)
+}
+for (const detail of details.filter(
+  (candidate) => retiredCaseSlugs.has(candidate.slug) && candidate.status !== 'archived'
+)) {
+  await directus.request('PATCH', `/items/case_details/${detail.id}`, { status: 'archived' })
+  console.log(`archived retired case detail: ${detail.slug}`)
+}
+for (const stat of stats.filter(
+  (candidate) => retiredCaseSlugs.has(candidate.case_slug) && candidate.status !== 'archived'
+)) {
+  await directus.request('PATCH', `/items/case_stats/${stat.id}`, { status: 'archived' })
+  console.log(`archived retired case stat: ${stat.case_slug}/${stat.id}`)
+}
+
+for (const item of cases.filter((candidate) => !retiredCaseSlugs.has(candidate.slug))) {
   const detail = details.find(
     (candidate) => candidate.slug === item.slug || candidate.label === item.label
   )

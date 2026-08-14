@@ -1,13 +1,22 @@
 import type { APIRoute } from 'astro'
 
+import { CASE_FALLBACKS } from '@/data/cases'
 import { CLAIM_TEXT } from '@/lib/claims'
+import { getCases } from '@/lib/directus'
 import { absoluteUrl } from '@/lib/seo'
 
-export const prerender = true
-
 const page = (pathname: string) => absoluteUrl(pathname)
+const singleLine = (value: string) => value.replace(/\s+/g, ' ').trim()
 
-export const GET: APIRoute = () => {
+export const GET: APIRoute = async () => {
+  const cases = await getCases(CASE_FALLBACKS)
+  const caseLinks = cases
+    .filter((item) => item.slug)
+    .map(
+      (item) =>
+        `- [${singleLine(item.name || item.label)}合作案例](${page(`/cases/${item.slug}`)}): ${singleLine(item.category)}；${singleLine(item.metrics)}。`
+    )
+    .join('\n')
   const content = `# 新亦源供应链
 
 > 广州新亦源供应链管理有限公司，2011年成立，专注鞋服供应链服务，为品牌提供鞋服云仓、订单履约、退货质检、瑕疵修复、物流数字化和智能寄件服务。
@@ -43,12 +52,7 @@ export const GET: APIRoute = () => {
 
 ## 案例与内容
 
-- [UR合作案例](${page('/cases/ur')}): 多渠道库存、SKU和订单协同项目数据。
-- [MAXRIENY合作案例](${page('/cases/maxrieny')}): 高端设计师女装仓配项目数据。
-- [幸棉合作案例](${page('/cases/xingmian')}): 内衣品类订单、质检和逆向物流项目数据。
-- [美一合作案例](${page('/cases/meiyi')}): 跨境女装仓储、质检和包装项目数据。
-- [ROMI STUDIO合作案例](${page('/cases/romi-studio')}): 直播女装快速周转、补货和达播寄样服务。
-- [初语合作案例](${page('/cases/toyouth')}): 原创女装品牌全渠道库存与多平台订单协同。
+${caseLinks}
 
 ## Optional
 
@@ -60,7 +64,7 @@ export const GET: APIRoute = () => {
   return new Response(content, {
     headers: {
       'Content-Type': 'text/plain; charset=utf-8',
-      'Cache-Control': 'public, max-age=3600',
+      'Cache-Control': 'no-store',
     },
   })
 }

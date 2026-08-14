@@ -8,7 +8,7 @@ interface Props {
 const { items } = Astro.props
 ---
 
-<section class="py-16 bg-[#f8fafc]" aria-labelledby="history-heading">
+<section class="scroll-mt-24 bg-[#f8fafc] py-16" aria-labelledby="history-heading">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
     <h2 id="history-heading" class="text-3xl font-black text-navy-800 text-center">发展历程</h2>
     <p class="mt-4 text-sm text-gray-500 text-center max-w-2xl mx-auto leading-relaxed">
@@ -17,10 +17,10 @@ const { items } = Astro.props
     </p>
   </div>
 
-  <div class="flex items-center gap-4 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+  <div class="relative mx-auto flex max-w-5xl items-center gap-4 px-4 sm:px-6 lg:px-8">
     <button
       id="history-prev"
-      class="flex-shrink-0 w-10 h-10 rounded-full bg-white shadow-md border border-gray-200 flex items-center justify-center text-gray-400 hover:text-navy-700 hover:border-navy-300 transition-colors"
+      class="absolute left-2 top-[72%] z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-400 shadow-md transition-colors hover:border-navy-300 hover:text-navy-700 md:static md:flex-shrink-0 md:translate-y-0"
       aria-label="上一年"
     >
       <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
@@ -29,7 +29,7 @@ const { items } = Astro.props
       >
     </button>
 
-    <div class="flex-1 overflow-hidden">
+    <div class="min-w-0 flex-1 overflow-hidden">
       <div
         id="history-track"
         class="flex transition-transform duration-500 ease-out"
@@ -50,11 +50,8 @@ const { items } = Astro.props
                   </div>
                   <p class="text-gray-500 text-sm leading-relaxed">{text}</p>
                 </div>
-                <div class="flex-shrink-0">
-                  <div
-                    class="rounded-xl overflow-hidden shadow-md"
-                    style="width: 371px; height: 209px;"
-                  >
+                <div class="w-full max-w-[371px] flex-shrink-0">
+                  <div class="aspect-[371/209] w-full overflow-hidden rounded-xl shadow-md">
                     {img ? (
                       <img
                         src={img}
@@ -83,7 +80,7 @@ const { items } = Astro.props
 
     <button
       id="history-next"
-      class="flex-shrink-0 w-10 h-10 rounded-full bg-white shadow-md border border-gray-200 flex items-center justify-center text-gray-400 hover:text-navy-700 hover:border-navy-300 transition-colors"
+      class="absolute right-2 top-[72%] z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-400 shadow-md transition-colors hover:border-navy-300 hover:text-navy-700 md:static md:flex-shrink-0 md:translate-y-0"
       aria-label="下一年"
     >
       <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"

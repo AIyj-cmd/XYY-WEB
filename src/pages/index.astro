@@ -6,30 +6,20 @@ import HomeCases from '@/components/home/HomeCases.astro'
 import HomeHero from '@/components/home/HomeHero.astro'
 import HomeCapabilityStats from '@/components/home/HomeCapabilityStats.astro'
 import HomeCoreSolutions from '@/components/home/HomeCoreSolutions.astro'
-import { HOME_FAQS, HOME_IMAGES } from '@/data/home'
+import { HOME_FAQS, HOME_IMAGES, HOME_SERVICE_FALLBACKS, HOME_STATS_FALLBACKS } from '@/data/home'
+import { CASE_FALLBACKS, createHomeCaseDetails } from '@/data/cases'
 import { BRAND, CASE_DETAILS } from '@/lib/brand'
 import { CLAIM_TEXT } from '@/lib/claims'
 import { getHomepageStats, getServices, getCases, getFaqs } from '@/lib/directus'
 import { ORGANIZATION_ID, createBreadcrumbSchema, createFaqSchema } from '@/lib/seo'
 
 const [STATS, SERVICES, allCases, FAQS] = await Promise.all([
-  getHomepageStats(),
-  getServices(),
-  getCases(),
+  getHomepageStats(HOME_STATS_FALLBACKS),
+  getServices(HOME_SERVICE_FALLBACKS),
+  getCases(CASE_FALLBACKS),
   getFaqs('home', HOME_FAQS),
 ])
-const approvedCaseFallbacks = Object.entries(CASE_DETAILS).map(([label, detail], index) => ({
-  id: index + 1,
-  sort: index + 1,
-  slug: detail.slug,
-  category: detail.category,
-  label,
-  metrics: `${detail.stats[0].label} ${detail.stats[0].value}${detail.stats[0].unit}`,
-  details: detail.description,
-  tags: [detail.category],
-  img: detail.image,
-}))
-const CASES = (allCases.length ? allCases : approvedCaseFallbacks).slice(0, 6)
+const CASES = allCases.slice(0, 6)
 
 // Parse "库存 260万件+ · ..." → { value: '260万件+', label: '库存' } for card display
 function parseFirstMetric(metrics: string) {
@@ -46,12 +36,7 @@ const caseCardMeta = CASES.map((c) => ({
   metric: parseFirstMetric(c.metrics),
   metricContext: c.metrics.split('·')[0].includes('年发货') ? '年度发货规模' : '库存管理规模',
 }))
-const caseDetailsWithDisplayImages = Object.fromEntries(
-  Object.entries(CASE_DETAILS).map(([label, detail]) => [
-    label,
-    { ...detail, image: CASES.find((item) => item.label === label)?.img ?? detail.image },
-  ])
-)
+const caseDetailsWithDisplayImages = createHomeCaseDetails(CASES)
 
 const orgSchema = {
   '@context': 'https://schema.org',

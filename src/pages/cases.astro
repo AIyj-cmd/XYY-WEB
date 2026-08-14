@@ -5,14 +5,17 @@ import CasesHero from '@/components/cases/CasesHero.astro'
 import CasesLogoWall from '@/components/cases/CasesLogoWall.astro'
 import CasesGrid from '@/components/cases/CasesGrid.astro'
 import CasesValueProps from '@/components/cases/CasesValueProps.astro'
-import { CASE_FAQS } from '@/data/cases'
+import { CASE_FAQS, CASE_FALLBACKS } from '@/data/cases'
 import { BRAND, CASE_DETAILS } from '@/lib/brand'
 import { CLAIM_TEXT } from '@/lib/claims'
 import { getCases, getFaqs } from '@/lib/directus'
 import { createFaqSchema } from '@/lib/seo'
 import '@/styles/cases.css'
 
-const [displayCases, faqs] = await Promise.all([getCases(), getFaqs('cases', CASE_FAQS)])
+const [displayCases, faqs] = await Promise.all([
+  getCases(CASE_FALLBACKS),
+  getFaqs('cases', CASE_FAQS),
+])
 const getCasePath = (label: string) => {
   const slug =
     displayCases.find((item) => item.label === label)?.slug ??

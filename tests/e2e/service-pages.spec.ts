@@ -73,7 +73,7 @@ test('refactored about, cases, publications and Yundao modules preserve their co
   await page.goto('/cases')
   await expect(page.locator('.logos-row')).toHaveCount(2)
   await expect(page.locator('#cases-grid')).toHaveCount(1)
-  await expect(page.locator('#cases-grid .case-card')).toHaveCount(0)
+  await expect(page.locator('#cases-grid .case-card')).toHaveCount(6)
   await expect(page.getByRole('heading', { name: '为什么品牌选择新亦源' })).toBeVisible()
 
   await page.goto('/senlinqikan')

@@ -14,7 +14,7 @@ interface Props {
   variant: ServiceVariant
   h1: string
   contentDesc: string
-  stats: [StatItem, StatItem, StatItem, StatItem]
+  stats: readonly StatItem[]
   features: FeatureItem[]
 }
 
@@ -28,7 +28,7 @@ const config = SERVICE_SIGNATURE_CONFIG[variant]
   aria-labelledby={`signature-heading-${variant}`}
 >
   <div class="signature__inner">
-    <header class="signature__header">
+    <header class="signature__header" data-service-reveal="copy">
       <div>
         <p class="signature__code">{config.code}</p>
         <p class="signature__kicker">{config.kicker}</p>
@@ -39,24 +39,26 @@ const config = SERVICE_SIGNATURE_CONFIG[variant]
       </div>
     </header>
 
-    <ServiceSignatureWarehouse
-      variant={variant}
-      h1={h1}
-      contentDesc={contentDesc}
-      stats={stats}
-      features={features}
-    />
-    <ServiceSignatureDigital
-      variant={variant}
-      contentDesc={contentDesc}
-      stats={stats}
-      features={features}
-    />
-    <ServiceSignatureQuality
-      variant={variant}
-      contentDesc={contentDesc}
-      stats={stats}
-      features={features}
-    />
+    <div class="signature__body" data-service-reveal="visual">
+      <ServiceSignatureWarehouse
+        variant={variant}
+        h1={h1}
+        contentDesc={contentDesc}
+        stats={stats}
+        features={features}
+      />
+      <ServiceSignatureDigital
+        variant={variant}
+        contentDesc={contentDesc}
+        stats={stats}
+        features={features}
+      />
+      <ServiceSignatureQuality
+        variant={variant}
+        contentDesc={contentDesc}
+        stats={stats}
+        features={features}
+      />
+    </div>
   </div>
 </section>

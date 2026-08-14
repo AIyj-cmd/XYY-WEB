@@ -2,7 +2,7 @@
 import type { StatItem } from '@/data/service'
 
 interface Props {
-  stats: [StatItem, StatItem, StatItem, StatItem]
+  stats: readonly StatItem[]
 }
 
 const { stats } = Astro.props

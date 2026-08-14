@@ -1,3 +1,5 @@
 export * from './cases/faqs'
 export * from './cases/logos'
 export * from './cases/value-props'
+export * from './cases/fallbacks'
+export * from './cases/home-details'

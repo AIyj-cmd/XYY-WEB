@@ -3,13 +3,14 @@ import Layout from '@/layouts/Layout.astro'
 import CaseDetailContact from '@/components/cases/CaseDetailContact.astro'
 import CaseDetailHero from '@/components/cases/CaseDetailHero.astro'
 import CaseDetailOverview from '@/components/cases/CaseDetailOverview.astro'
+import { CASE_FALLBACKS } from '@/data/cases'
 import { BRAND, CASE_DETAILS } from '@/lib/brand'
 import { getCaseDetail, getCases } from '@/lib/directus'
 import { ORGANIZATION_ID, createBreadcrumbSchema } from '@/lib/seo'
 
 const slug = Astro.params.slug
 const caseEntry = Object.entries(CASE_DETAILS).find(([, detail]) => detail.slug === slug)
-const cases = await getCases()
+const cases = await getCases(CASE_FALLBACKS)
 const caseSummary = cases.find((item) => item.slug === slug || item.label === caseEntry?.[0])
 const fallbackDetail =
   caseEntry?.[1] ??

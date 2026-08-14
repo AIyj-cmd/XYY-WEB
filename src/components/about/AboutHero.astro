@@ -11,14 +11,13 @@ const { description } = Astro.props
 ---
 
 <section
-  class="relative overflow-hidden"
-  style="height: 72vh; min-height: 560px; max-height: 760px;"
+  class="relative overflow-hidden lg:h-[72vh] lg:min-h-[560px] lg:max-h-[760px]"
   aria-labelledby="about-hero-heading"
 >
   <AboutHeroMedia />
 
   <div
-    class="relative z-10 h-full max-w-7xl mx-auto px-8 lg:px-12 pb-24 lg:pb-20 flex flex-col justify-center"
+    class="relative z-10 mx-auto flex min-h-[560px] max-w-7xl flex-col justify-center px-8 pb-12 pt-28 lg:h-full lg:min-h-0 lg:px-12 lg:pb-20 lg:pt-0"
   >
     <div class="max-w-xl">
       <p class="text-brand-orange font-bold text-[11px] tracking-[0.4em] uppercase mb-5">

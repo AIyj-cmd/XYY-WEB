@@ -9,27 +9,31 @@ import type {
   AboutContentRecord,
   AboutHistoryRecord,
   AboutHonorRecord,
-  CaseDetailRecord,
-  CaseStatRecord,
   PublicationRecord,
-  ServiceFeatureRecord,
   ServicePageRecord,
-  ServiceStatRecord,
   SiteSettingsRecord,
 } from './directus-types'
 
 const published = { status: { _eq: 'published' } }
 
+function cmsValue(value: string | null | undefined) {
+  return typeof value === 'string' ? value : ''
+}
+
+function cmsText(value: string | null | undefined) {
+  return interpolateClaims(cmsValue(value))
+}
+
 function unifiedCaseDetail(item: Case, fallback: CaseDetail): CaseDetail {
   return {
     slug: item.slug || fallback.slug,
-    name: item.name || item.label || fallback.name,
-    fullName: item.full_name || item.label || fallback.fullName,
-    category: item.category || fallback.category,
-    image: item.img || fallback.image,
-    accent: item.accent || fallback.accent,
-    description: interpolateClaims(item.case_description || item.details || fallback.description),
-    stats: item.stats?.length ? item.stats : fallback.stats,
+    name: item.name || item.label || '',
+    fullName: item.full_name || item.label || '',
+    category: item.category || '',
+    image: item.img || '',
+    accent: item.accent || '#2563EB',
+    description: interpolateClaims(item.case_description || item.details || ''),
+    stats: item.stats || [],
   }
 }
 
@@ -39,34 +43,7 @@ export async function getCaseDetail(
   caseItem?: Case
 ): Promise<CaseDetail> {
   if (caseItem) return unifiedCaseDetail(caseItem, fallback)
-  try {
-    const [details, stats] = await Promise.all([
-      requestItems<CaseDetailRecord[]>('case_details', {
-        filter: { slug: { _eq: slug }, ...published },
-        limit: 1,
-      }),
-      requestItems<CaseStatRecord[]>('case_stats', {
-        filter: { case_slug: { _eq: slug }, ...published },
-        sort: ['sort'],
-      }),
-    ])
-    const detail = details[0]
-    if (!detail) return fallback
-    return {
-      slug: detail.slug,
-      name: detail.name,
-      fullName: detail.full_name,
-      category: fallback.category,
-      image: fallback.image,
-      accent: detail.accent || fallback.accent,
-      description: interpolateClaims(detail.description),
-      stats: stats.length
-        ? stats.map(({ label, value, unit }) => ({ label, value, unit }))
-        : fallback.stats,
-    }
-  } catch {
-    return fallback
-  }
+  return { ...fallback, slug }
 }
 
 export async function getPublications(fallback: PublicationIssue[]): Promise<PublicationIssue[]> {
@@ -117,7 +94,7 @@ export interface ServicePageContent {
   imgAlt: string
   contentDesc: string
   featuresLabel: string
-  stats: [StatItem, StatItem, StatItem, StatItem]
+  stats: readonly StatItem[]
   features: FeatureItem[]
 }
 
@@ -129,48 +106,27 @@ export async function getServicePageContent(slug: string, fallback: ServicePageC
     })
     const page = pages[0]
     if (!page) return fallback
-    let stats = page.stats || []
-    let features = page.features || []
-    if (!stats.length || !features.length) {
-      const [legacyStats, legacyFeatures] = await Promise.all([
-        !stats.length
-          ? requestItems<ServiceStatRecord[]>('service_stats', {
-              filter: { service_slug: { _eq: slug }, ...published },
-              sort: ['sort'],
-            })
-          : Promise.resolve([]),
-        !features.length
-          ? requestItems<ServiceFeatureRecord[]>('service_features', {
-              filter: { service_slug: { _eq: slug }, ...published },
-              sort: ['sort'],
-            })
-          : Promise.resolve([]),
-      ])
-      if (!stats.length) stats = legacyStats
-      if (!features.length) features = legacyFeatures
-    }
+    const stats = page.stats || []
+    const features = page.features || []
     const displayStats = stats.map(({ stat, label, sub }) => ({
       stat: interpolateClaims(stat),
       label,
       sub: interpolateClaims(sub),
     }))
     return {
-      title: interpolateClaims(page.title),
-      description: interpolateClaims(page.description),
-      breadcrumbLabel: page.breadcrumb_label,
-      eyebrow: page.eyebrow,
-      h1: page.h1,
-      h1sub: interpolateClaims(page.h1sub),
-      heroDesc: interpolateClaims(page.hero_desc),
-      imgSrc: getDirectusAssetUrl(page.hero_image) || page.img_src,
-      imgAlt: page.img_alt,
-      contentDesc: interpolateClaims(page.content_desc),
-      featuresLabel: page.features_label,
-      stats:
-        displayStats.length === 4 ? (displayStats as ServicePageContent['stats']) : fallback.stats,
-      features: features.length
-        ? features.map(({ title, desc }) => ({ title, desc: interpolateClaims(desc) }))
-        : fallback.features,
+      title: cmsText(page.title),
+      description: cmsText(page.description),
+      breadcrumbLabel: cmsText(page.breadcrumb_label),
+      eyebrow: cmsText(page.eyebrow),
+      h1: cmsText(page.h1),
+      h1sub: cmsText(page.h1sub),
+      heroDesc: cmsText(page.hero_desc),
+      imgSrc: getDirectusAssetUrl(page.hero_image) || cmsValue(page.img_src),
+      imgAlt: cmsText(page.img_alt),
+      contentDesc: cmsText(page.content_desc),
+      featuresLabel: cmsText(page.features_label),
+      stats: displayStats,
+      features: features.map(({ title, desc }) => ({ title, desc: interpolateClaims(desc) })),
     }
   } catch {
     return fallback
@@ -182,8 +138,8 @@ export async function getAboutContent(fallback: { overview: string; heroDescript
     const row = await requestSingleton<AboutContentRecord>('about_content')
     return row && row.status !== 'draft'
       ? {
-          overview: interpolateClaims(row.overview),
-          heroDescription: interpolateClaims(row.hero_description),
+          overview: cmsText(row.overview),
+          heroDescription: cmsText(row.hero_description),
         }
       : fallback
   } catch {
@@ -232,11 +188,11 @@ export async function getSiteSettings(fallback: Omit<SiteSettingsRecord, 'id' | 
     const row = await requestSingleton<SiteSettingsRecord>('site_settings')
     return row && row.status !== 'draft'
       ? {
-          phone: row.phone,
-          headquarters_label: row.headquarters_label,
-          headquarters_address: row.headquarters_address,
-          icp: row.icp,
-          footer_description: interpolateClaims(row.footer_description),
+          phone: cmsValue(row.phone),
+          headquarters_label: cmsValue(row.headquarters_label),
+          headquarters_address: cmsValue(row.headquarters_address),
+          icp: cmsValue(row.icp),
+          footer_description: cmsText(row.footer_description),
         }
       : fallback
   } catch {
