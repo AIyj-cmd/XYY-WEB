@@ -8,13 +8,14 @@
 - 关于页移动端、产品页滚动揭示和 12 个仓配服务专题页动效已修复，并将通用动效拆分为独立模块，避免继续堆积单文件技术债；
 - 本地完整门禁通过：Astro 305 个输入 0 错误、ESLint、450 文件可维护性预算、55 个引用资源与 103 个部署资源、20 个测试文件 94 项单测、36 项浏览器测试、3 项正式域名契约测试和生产构建全部通过；
 - `npm audit --omit=dev` 为 0 个生产依赖漏洞，Prettier、`git diff --check` 和敏感信息扫描通过；
-- 验收站已原子发布到 `/var/www/xyy-web/releases/20260814T071724Z`，Web 与 CMS 的 PM2 进程在线，首页、新闻、`/healthz`、Directus ping、robots、sitemap 和 llms.txt 外部检查通过；
-- 本轮应用提交为 `ceaef24`；真实 `.env` 仅保留在本地和验收服务器，GitHub 继续只跟踪无密钥的 `.env.example`；
+- 验收站已原子发布到 `/var/www/xyy-web/releases/20260814T093101Z`，Web 监听 `0.0.0.0:50031`，CMS 与 Web 的 PM2 进程在线，首页、新闻、`/healthz`、Directus ping、robots、sitemap 和 llms.txt 外部检查通过；
+- 发布脚本会在服务器端硬链接复用上一 release 的未变资源，期刊 PDF 等大文件不再随每次发布重复上传；
+- 本轮应用提交为 `ab3b45d`；真实 `.env` 仅保留在本地和验收服务器，GitHub 继续只跟踪无密钥的 `.env.example`；
 - 验收站数据库继续使用 PostgreSQL 16，本轮不修改正式域名、DNS、Nginx，也不执行 Oracle 19c 迁移。
 
 ## 当前结论
 
-新版官网运行在验收服务器 `47.82.105.103`，验收域名为 `https://wz.tomatopia.top`，当前发布目录为 `/var/www/xyy-web/releases/20260814T071724Z`。Web 与 CMS 的 PM2 进程在线，Web 健康接口返回 `contactStorage: ok`。Directus 内容模型已升级，数据库仍是 PostgreSQL 16；Oracle 19c 迁移保持“脚本已准备、独立数据库环境待执行和恢复验证”，不能描述为已上线。
+新版官网运行在验收服务器 `47.82.105.103`，验收域名为 `https://wz.tomatopia.top`，当前发布目录为 `/var/www/xyy-web/releases/20260814T093101Z`。Web 与 CMS 的 PM2 进程在线，Web 健康接口返回 `contactStorage: ok`。Directus 内容模型已升级，数据库仍是 PostgreSQL 16；Oracle 19c 迁移保持“脚本已准备、独立数据库环境待执行和恢复验证”，不能描述为已上线。
 
 正式域名 `https://56xyy.com` 已由另一台服务器提供新版页面和健康接口，但尚未同步本轮完整资源包与 Directus 聚合内容模型。因此“正式站可访问”不能等同于“与验收站版本一致”。
 
@@ -127,7 +128,7 @@
 | 环境         | 地址 / 位置                | 状态                           |
 | ------------ | -------------------------- | ------------------------------ |
 | 本地候选版本 | `/home/yj/XYY-GEO/website` | 全部门禁通过                   |
-| 验收域名     | `https://wz.tomatopia.top` | 20260814T071724Z 已部署，严格健康检查通过 |
+| 验收域名     | `https://wz.tomatopia.top` | 20260814T093101Z 已部署，严格健康检查通过 |
 | 正式域名     | `https://56xyy.com`        | 新版页面可用，但资源包与 CMS 内容模型未完全同步 |
 | CMS数据库    | PostgreSQL                 | 当前实际运行数据库             |
 | Oracle 19C   | 独立数据库服务器方案       | 脚本已准备，未实迁             |
