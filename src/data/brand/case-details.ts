@@ -19,8 +19,7 @@ export const CASE_DETAILS = {
     name: 'UR',
     fullName: 'Urban Revivo（UR）',
     category: '头部快时尚女装',
-    image:
-      'https://images.unsplash.com/photo-1445205170230-053b83016050?w=800&q=75&auto=format&fit=crop',
+    image: '/images/cases/ur.webp',
     accent: '#2563EB',
     description:
       'UR 是中国头部快时尚女装品牌。在天猫超品日期间，UR 创下服饰类目 GMV 新纪录，官方旗舰店同比增长 116%；618 大促斩获天猫、抖音、京东三大平台女装榜首。全球门店超 400 家，覆盖新加坡、泰国、菲律宾等海外市场。',
@@ -40,8 +39,7 @@ export const CASE_DETAILS = {
     name: 'MAXRIENY',
     fullName: '玛克茜妮（MAXRIENY）',
     category: '高端设计师女装',
-    image:
-      'https://images.unsplash.com/photo-1516762689617-e1cffcef479d?w=800&q=75&auto=format&fit=crop',
+    image: '/images/cases/maxrieny.webp',
     accent: '#7C3AED',
     description:
       '深圳玛克茜妮（MAXRIENY）聚焦 28–38 岁独立都市高知女性，主打"精致职场"与"社交聚会"场景。以欧洲中世纪宫廷奇幻美学为核心，融合巴洛克艺术与街拍风格，产品均价春夏 800–3500 元、秋冬 1000–4500 元。曾获《深圳服装创新品牌奖》《原创设计师奖》，旗下涵盖高级成衣系列 SARAWONG、Lifestyle 系列及家居产品线 HOME。',
@@ -61,8 +59,7 @@ export const CASE_DETAILS = {
     name: '幸棉',
     fullName: '幸棉',
     category: '内衣基础品类',
-    image:
-      'https://images.unsplash.com/photo-1512436991641-6745cdb1723f?w=800&q=75&auto=format&fit=crop',
+    image: '/images/cases/xingmian.webp',
     accent: '#0D9488',
     description:
       '幸棉是国内内衣基础品类的代表性品牌。新亦源为其提供从多渠道订单聚合、运输平台连通，到新货退货质检、达播寄样、订单全程跟踪及次品分类返厂的全链路一体化服务，实现电商仓配与逆向物流的高效统一管理。',
@@ -81,8 +78,7 @@ export const CASE_DETAILS = {
     name: '美一(MEIYI)',
     fullName: '美一（MEIYI）',
     category: '跨境全品类女装',
-    image:
-      'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=800&q=75&auto=format&fit=crop',
+    image: '/images/cases/meiyi.webp',
     accent: '#D97706',
     description:
       '美一（MEIYI）是专注跨境全品类女装的服饰品牌。新亦源为其提供 B2B+B2C 一体化仓储服务，涵盖收货验货、新货质检、包装整理、库存上架及发货打包全流程，年综合处理量达百万件级别。',
@@ -98,8 +94,7 @@ export const CASE_DETAILS = {
     name: 'ROMI STUDIO',
     fullName: 'ROMI STUDIO',
     category: '直播女装',
-    image:
-      'https://images.unsplash.com/photo-1554881070-74595ca2b74c?w=800&q=75&auto=format&fit=crop',
+    image: '/images/cases/romi-studio.webp',
     accent: '#DB2777',
     description:
       'ROMI STUDIO 是创立于 2010 年的中国极简轻奢女装品牌，总部位于深圳，2019 年正式进入电商领域，2024 年抖音 GMV 达 22.5 亿元，成为抖音 IP 女装 TOP1。',
@@ -114,8 +109,7 @@ export const CASE_DETAILS = {
     name: '茵曼',
     fullName: '茵曼（Inman）',
     category: '棉麻生活服装',
-    image:
-      'https://images.unsplash.com/photo-1448070299168-7dede6dc70b4?w=800&q=75&auto=format&fit=crop',
+    image: '/images/cases/inman.webp',
     accent: '#B7791F',
     description:
       '知名棉麻生活服装品牌，多年线上线下融合运营。新亦源提供全渠道一盘货仓储，实现多平台库存统一。',
