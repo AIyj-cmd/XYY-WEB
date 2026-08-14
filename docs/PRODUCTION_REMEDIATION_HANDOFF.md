@@ -4,10 +4,11 @@
 
 ## 结论
 
-CMS 聚合维护、中文后台、内容回退、运行时最小权限兼容层、公开素材和健康检查已发布到
-`wz.tomatopia.top` 的 `20260814T222944Z` release，GitHub 应用提交为 `6a55eeb`。数据库保持
-PostgreSQL 16；Oracle 19c 迁移不在本轮执行。验收服务器仍使用旧共享 Directus Token，拆分
-Policy/Token 与备份 timer 仍由部署团队按本清单执行。
+CMS 聚合维护、中文后台、后台内容优先读取、运行时最小权限兼容层、公开素材、响应式修复和
+健康检查已发布到 `wz.tomatopia.top` 的 `20260814T071724Z` release，应用提交为 `ceaef24`。
+数据库保持 PostgreSQL 16；Oracle 19c 迁移不在本轮执行。验收服务器仍使用旧共享 Directus
+Token，拆分 Policy/Token 与备份 timer 仍由部署团队按本清单执行。服务器运行时使用真实
+`.env`，仓库仅保留不含密钥的 `.env.example`。
 
 此前浏览器审计确认的问题包括：
 
