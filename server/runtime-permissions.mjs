@@ -1,23 +1,6 @@
-export const CONTENT_COLLECTIONS = [
-  'homepage_stats',
-  'homepage_content',
-  'faq_pages',
-  'services',
-  'warehouses',
-  'cases',
-  'news',
-  'faqs',
-  'case_details',
-  'case_stats',
-  'publications',
-  'service_pages',
-  'service_stats',
-  'service_features',
-  'about_content',
-  'about_history',
-  'about_honors',
-  'site_settings',
-]
+import { CMS_CONTENT_COLLECTIONS } from '../config/cms-collections.mjs'
+
+export const CONTENT_COLLECTIONS = CMS_CONTENT_COLLECTIONS
 
 export function resolveRuntimeTokens(env = process.env) {
   const legacyToken = env.DIRECTUS_TOKEN || ''

@@ -58,7 +58,7 @@ rsync -az --delete -e "$RSYNC_RSH" \
   dist/ "$DEPLOY_HOST:$RELEASE_DIR/dist/"
 
 rsync -az -e "$RSYNC_RSH" \
-  package.json package-lock.json server.mjs ecosystem.config.cjs server \
+  package.json package-lock.json server.mjs ecosystem.config.cjs config server \
   "$DEPLOY_HOST:$RELEASE_DIR/"
 
 "${ssh_cmd[@]}" "$DEPLOY_HOST" "set -euo pipefail

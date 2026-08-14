@@ -118,6 +118,10 @@
 `scripts/verify-runtime-permissions.mjs` 负责部署前严格越权探测，避免把管理级 Token 当成
 网站运行凭据。代码仍为滚动升级兼容旧共享变量，但这不是长期权限模型。
 
+公开内容集合、私有联系集合与全量CMS集合统一定义在 `config/cms-collections.mjs`；运行权限、
+权限同步和模型契约测试共用该清单。测试会把19个模型定义与共享契约做完整集合比对，避免新增
+后台栏目后漏配前端只读权限。
+
 字体构建同样拆成35行入口、字符语料提取和字体生成三个职责。Oracle准备流程拆成55行编排入口与可复用运行函数库，保持“先验证端口、安装Directus Oracle依赖、再建立真实连接”的顺序；这些边界通过部署契约与Shell语法检查锁定，但真实Oracle仍属于外部验证。
 
 原 `src/lib/directus.ts` 同时承担类型、SDK、查询和工具函数，现保留为兼容门面，内部拆为：
@@ -126,6 +130,9 @@
 - `directus-client.ts`：URL、Token客户端、测试注入、请求与失败降级；
 - `directus-queries.ts`：首页、服务、仓库、案例和新闻查询；
 - `directus.ts`：稳定的统一导出路径。
+
+关于页数据类型直接依赖 `directus-types.ts`，不再经兼容门面反向引用内容查询；源码依赖图已
+确认没有导入循环。
 
 CMS管理脚本共享 `scripts/lib/directus-admin.mjs`，避免初始化和审核同步各自实现认证、JSON解析和错误策略。CMS初始化由176行降到42行，集合模型和建模运行时独立；审核同步由224行降到91行，差异/备份、固定集合语义匹配与仓点规则分别维护；审核统计按`sort`、服务按`slug`匹配，不再把数据库ID当业务标识。审核内容也按统计、服务和仓点拆成三份事实数据。
 
@@ -139,7 +146,11 @@ CMS管理脚本共享 `scripts/lib/directus-admin.mjs`，避免初始化和审�
 
 测试与运维同样进入可维护性范围：原 332 行 `smoke.spec.ts` 已按首页/产品、响应式、服务专题和发布契约拆为 4 个 E2E 文件；CMS案例种子从初始化流程抽离；Nginx、Oracle切换、部署脚本与根级运行配置均受行数和契约测试约束。
 
-`/healthz` 现在会在 1.5 秒超时内真实请求 Directus `/server/ping`。配置存在但CMS不可达时返回503，不再仅凭环境变量存在返回健康。Web响应和外部检查统一约定 `dependencies.contactStorage: "ok"`，`scripts/lib/health-contract.mjs` 以纯函数拒绝缺字段、`degraded`和不可达状态，修复了此前服务端返回`ok`但检查脚本误等`configured`会触发错误回滚的问题。
+`/healthz` 现在会在 1.5 秒超时内请求 Directus `/server/ping`，并分别读取内容令牌与联系令牌的
+`/permissions/me`，单次检查由约20个下游请求收敛为3个。配置存在但CMS不可达、18个内容集合
+未全部具备已发布内容读取权限，或联系令牌不能创建留言时均返回503。逐集合真实读取和越权探测
+保留在发布验收命令中。Web响应和外部检查统一约定 `dependencies.contactStorage: "ok"`，
+`scripts/lib/health-contract.mjs` 以纯函数拒绝缺字段、`degraded`和不可达状态。
 
 联系接口不再只信任可伪造或缺失的 `Content-Length`：应用会对实际UTF-8请求体再次执行8KB校验，Nginx也对该端点单独限流请求体。发布契约单测同时锁定原子发布静态目录、联系端点限制和Oracle失败回滚。
 

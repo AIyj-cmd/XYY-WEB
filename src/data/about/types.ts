@@ -1,4 +1,4 @@
-import type { Warehouse } from '@/lib/directus'
+import type { Warehouse } from '@/lib/directus-types'
 
 export interface AboutHistoryItem {
   year: string

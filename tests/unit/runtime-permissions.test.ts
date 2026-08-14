@@ -5,6 +5,11 @@ import { describe, expect, it } from 'vitest'
 
 import { CMS_COLLECTION_DEFINITIONS } from '../../scripts/data/cms-collection-definitions.mjs'
 import {
+  CMS_ALL_COLLECTIONS,
+  CMS_CONTENT_COLLECTIONS,
+  CMS_PRIVATE_COLLECTIONS,
+} from '../../config/cms-collections.mjs'
+import {
   CONTENT_COLLECTIONS,
   hasRestrictedContactCreateFields,
   hasContactCreatePermission,
@@ -25,6 +30,15 @@ describe('Directus runtime permission contracts', () => {
   it('keeps private contact leads out of the public content collection set', () => {
     expect(CONTENT_COLLECTIONS).toContain('faqs')
     expect(CONTENT_COLLECTIONS).not.toContain('contact_leads')
+    expect(CONTENT_COLLECTIONS).toEqual(CMS_CONTENT_COLLECTIONS)
+    expect(CMS_PRIVATE_COLLECTIONS).toEqual(['contact_leads'])
+  })
+
+  it('keeps the CMS schema and runtime collection contract synchronized', () => {
+    const definitionNames = CMS_COLLECTION_DEFINITIONS.map((definition) => definition.name)
+
+    expect(definitionNames).toHaveLength(new Set(definitionNames).size)
+    expect(new Set(definitionNames)).toEqual(new Set(CMS_ALL_COLLECTIONS))
   })
 
   it('prefers split least-privilege tokens', () => {

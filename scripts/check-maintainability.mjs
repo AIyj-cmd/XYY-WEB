@@ -2,7 +2,7 @@ import { readdir, readFile } from 'node:fs/promises'
 import { extname, relative, resolve } from 'node:path'
 
 const projectRoot = resolve(import.meta.dirname, '..')
-const scanRoots = ['src', 'server', 'scripts', 'deploy', 'tests'].map((path) =>
+const scanRoots = ['config', 'src', 'server', 'scripts', 'deploy', 'tests'].map((path) =>
   resolve(projectRoot, path)
 )
 const rootFiles = [

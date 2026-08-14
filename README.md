@@ -45,6 +45,9 @@ npm run audit                # 生产依赖安全审计
 ## 目录结构
 
 ```text
+DEV_STATE.md         当前发布、验证结果和下一步任务的唯一实时记录
+config/
+  cms-collections.mjs  CMS公开内容与私有集合的统一契约
 src/
   components/          按业务职责拆分的首页、产品、服务、关于、案例、期刊和联系组件
   data/                页面级静态内容配置，与模板和交互解耦
@@ -67,7 +70,7 @@ deploy/
   nginx-56xyy.conf     正式域名迁移参考配置，当前未启用
   oracle19c/           Oracle 安装、内容迁移、切换、回滚与备份脚本
 docs/
-  PROJECT_STATUS.md    当前发布、环境与待办状态
+  PROJECT_STATUS.md    历史项目状态记录，不作为当前状态依据
   MAINTAINABILITY.md   页面、组件、数据、脚本和后端维护状态矩阵
   archive/             历史检查报告和优化计划
 tests/                 单元与端到端测试

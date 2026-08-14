@@ -1,6 +1,6 @@
 import { URLSearchParams } from 'node:url'
 
-import { CONTENT_COLLECTIONS } from '../../server/runtime-permissions.mjs'
+import { CMS_CONTENT_COLLECTIONS } from '../../config/cms-collections.mjs'
 
 export const DEFAULT_CONTENT_POLICY_NAME = 'Website Content Read-Only'
 
@@ -32,7 +32,7 @@ export async function resolveContentPolicy(directus, options = {}) {
 }
 
 export async function syncContentReadPermissions(directus, options = {}) {
-  const collections = options.collections || CONTENT_COLLECTIONS
+  const collections = options.collections || CMS_CONTENT_COLLECTIONS
   const policy = await resolveContentPolicy(directus, options)
   const query = new URLSearchParams({
     'filter[policy][_eq]': policy.id,

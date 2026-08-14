@@ -1,6 +1,7 @@
 import {
   CONTENT_COLLECTIONS,
   hasContactCreatePermission,
+  permissionAccess,
   resolveRuntimeTokens,
 } from './runtime-permissions.mjs'
 
@@ -18,27 +19,27 @@ export async function contactStorageStatus(env = process.env) {
 
     const contentHeaders = { Authorization: `Bearer ${contentToken}` }
     const contactHeaders = { Authorization: `Bearer ${contactToken}` }
-    const [checks, contactPermissionsResponse] = await Promise.all([
-      Promise.all(
-        CONTENT_COLLECTIONS.map((collection) =>
-          fetch(`${directusUrl}/items/${collection}?limit=1&fields=id`, {
-            headers: contentHeaders,
-            signal: globalThis.AbortSignal.timeout(1500),
-          })
-        )
-      ),
+    const [contentPermissionsResponse, contactPermissionsResponse] = await Promise.all([
+      fetch(`${directusUrl}/permissions/me`, {
+        headers: contentHeaders,
+        signal: globalThis.AbortSignal.timeout(1500),
+      }),
       fetch(`${directusUrl}/permissions/me`, {
         headers: contactHeaders,
         signal: globalThis.AbortSignal.timeout(1500),
       }),
     ])
 
-    if (!checks.every((response) => response.ok) || !contactPermissionsResponse.ok) {
+    if (!contentPermissionsResponse.ok || !contactPermissionsResponse.ok) {
       return 'incomplete'
     }
 
+    const contentPermissions = await contentPermissionsResponse.json()
     const contactPermissions = await contactPermissionsResponse.json()
-    return hasContactCreatePermission(contactPermissions) ? 'ok' : 'incomplete'
+    const canReadAllContent = CONTENT_COLLECTIONS.every(
+      (collection) => permissionAccess(contentPermissions, collection, 'read') === 'partial'
+    )
+    return canReadAllContent && hasContactCreatePermission(contactPermissions) ? 'ok' : 'incomplete'
   } catch {
     return 'unreachable'
   }

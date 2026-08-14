@@ -1,4 +1,4 @@
-import type { Warehouse } from '@/lib/directus'
+import type { Warehouse } from '@/lib/directus-types'
 import type { WarehouseGroup } from './types'
 
 export const ABOUT_WAREHOUSE_TIERS = [
