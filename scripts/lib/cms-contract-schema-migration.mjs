@@ -1,4 +1,8 @@
 import { CMS_CONTRACT_BY_COLLECTION } from '../data/cms-contract-definitions.mjs'
+import {
+  applyContractFieldConvergence,
+  planContractFieldConvergence,
+} from './cms-contract-field-convergence.mjs'
 
 export const STABLE_IDENTITY_FIELDS = {
   faqs: 'content_key',
@@ -58,7 +62,8 @@ export function planIdentitySchemaPhases(snapshot, changes, issues) {
 }
 
 export function planSafeSchemaChanges(snapshot, issues) {
-  const schemaChanges = []
+  const schemaChanges = planContractFieldConvergence(snapshot, issues)
+
   const newsFields = fieldsFor(snapshot, 'news')
   if (newsFields) {
     const slug = newsFields.find(({ field }) => field === 'slug')
@@ -134,7 +139,7 @@ export async function verifyRemoteIdentities(directus, checks) {
 }
 
 export async function applyIdentityConstraints(directus, schemaChanges) {
-  let applied = 0
+  let applied = await applyContractFieldConvergence(directus, schemaChanges)
   for (const change of schemaChanges.filter(({ phase }) => phase === 'require')) {
     await directus.request('PATCH', `/fields/${change.collection}/${change.field}`, {
       meta: { required: true, readonly: true },

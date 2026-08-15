@@ -23,6 +23,7 @@ export const CMS_CONTRACT_MIGRATION_COLLECTIONS = [
   'warehouses',
   'about_history',
   'about_honors',
+  'cases',
   'news',
 ]
 
