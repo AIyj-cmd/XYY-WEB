@@ -73,6 +73,8 @@ export async function applyContractFieldConvergence(directus, changes) {
   for (const change of changes.filter(({ phase }) => phase === 'type')) {
     await directus.request('PATCH', `/fields/${change.collection}/${change.field}`, {
       type: change.type,
+      // Directus only runs the database column alteration path when schema is present.
+      schema: {},
     })
     applied += 1
   }

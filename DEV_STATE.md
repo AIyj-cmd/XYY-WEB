@@ -305,3 +305,10 @@
 - 当前状态：代码尚未提交或推送；真实 dry-run 尚未使用新映射重跑；真实 CMS 未 apply、权限未变更、staging 未部署。
 - 新映射的真实 CMS 默认 dry-run 已只读执行成功：137条内容 PATCH 计划覆盖仓库12、FAQ100、发展历程9、荣誉15及首页单例1条整体 stats PATCH（内含8个 claimKey），另有4个 Active 身份字段各3阶段共12条 Schema 计划；没有 `manual_mapping_required`、`singleton_migration_required`、重复稳定身份、关系错误、contract review 或 legacy mapping。真实 CMS 仍未 apply，运行权限与 staging 尚未变更。
 - 首次真实 Apply 已生成迁移前快照并完成普通 Active 集合的幂等身份写入，但在首页单例处因使用普通集合的 `/items/homepage_content/1` 路由被 Directus 拒绝；流程在首页 claimKey 和约束收紧前安全停止。当前实现改为单例专用 `/items/homepage_content` PATCH，并增加精确路由回归测试；需要重新完成本地门禁、GitHub CI、Apply 后 verify 和零变更 dry-run 后才能视为迁移完成。
+
+## Staging 字段类型迁移阻塞修复（2026-08-15）
+
+- 基线提交为 `518445ddd784947def7f202f07950b12448dae46`。真实 staging 已完成 Active 身份与 claimKey 内容迁移、身份约束和 `about_honors.image` 必填约束；当前只剩 `cases.metrics`、`news.summary`、`news.published_at` 三个字段类型变更，网站仍保持在迁移前 Release，尚未部署本轮代码。
+- 根因已从 staging 安装的 Directus 12.1.1 实现确认：`PATCH /fields/{collection}/{field}` 只有请求体包含 `schema` 时才进入数据库列变更路径；旧实现只发送 `{ type }`，因此 API 返回成功但数据库类型没有变化。修复保持目标类型不变，仅在三个受控类型变更请求中增加空 `schema` 触发器，不新增迁移框架或其他 Schema 目标。
+- 测试先行：回归断言先改为要求 `{ type, schema: {} }`，旧实现按预期1项失败；实现修复后3个迁移定向测试文件共23项通过。隔离环境 `npm run verify:release` 通过：350个 Astro 文件无诊断、38个 Vitest 文件260项通过、E2E 38项通过且6项按配置跳过、正式域名契约3项通过、生产构建通过，`git diff --check` 通过。
+- 当前状态：修复尚未提交、推送或部署；三项真实字段类型尚未重试，`cms:verify` 与零变更 dry-run 仍需在本提交 CI 通过后验证。未修改运行权限、CMS 内容、映射、页面或业务数字。

@@ -138,9 +138,9 @@ describe('real-environment CMS contract convergence', () => {
       schemaApplied: 5,
     })
     expect(directus.request.mock.calls).toEqual([
-      ['PATCH', '/fields/cases/metrics', { type: 'text' }],
-      ['PATCH', '/fields/news/summary', { type: 'text' }],
-      ['PATCH', '/fields/news/published_at', { type: 'timestamp' }],
+      ['PATCH', '/fields/cases/metrics', { type: 'text', schema: {} }],
+      ['PATCH', '/fields/news/summary', { type: 'text', schema: {} }],
+      ['PATCH', '/fields/news/published_at', { type: 'timestamp', schema: {} }],
       ['PATCH', '/fields/faqs/page_key', expect.any(Object)],
       ['PATCH', '/fields/about_honors/image', expect.any(Object)],
     ])
