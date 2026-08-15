@@ -13,13 +13,14 @@
 
 - 第一、第二、第三阶段分别作为连续的独立本地提交管理；第三阶段已完成 Directus CMS 模型契约、稳定内容身份、FAQ 单一归属、幂等 setup、严格 verify 和默认 dry-run 迁移工具的本地验收。
 - 第三阶段状态为 `PHASE_3_LOCALLY_VERIFIED`、`CMS_CONTRACT_READY`、`MIGRATION_TOOL_READY`、`REAL_CMS_DRY_RUN_NOT_EXECUTED`、`NOT_APPLIED`、`NOT_DEPLOYED`；迁移工具仅通过 mock、fixture 和本地测试，未连接真实 CMS 或修改真实数据库。
+- 第四阶段已完成 Web 运行权限残余的本地收口并作为独立本地提交管理：专用双 Token、主契约运行集合、轻量 readiness 与完整失败关闭审计；状态为 `PHASE_4_LOCALLY_VERIFIED`、`RUNTIME_TOKEN_CONTRACT_VERIFIED`、`MOCK_PERMISSION_AUDIT_VERIFIED`、`REAL_PERMISSION_AUDIT_NOT_EXECUTED`、`NOT_PUSHED`、`NOT_DEPLOYED`。
 
 ## 当前版本与环境
 
 - 拆分前基线：`62095867ce74aabf6352cc9d08a361d9e217d108`（`6209586 记录验收站发布与运行权限状态`），该提交不包含第一、第二阶段修复。
 - 第一阶段提交：`526f5b2 修复 Directus 返回状态语义`，父提交为上述基线。
 - 第二阶段提交：`9cb7b426547582a84d865b18bc24397685aefe5c`（`9cb7b42 统一公开业务事实与 CMS 引用`），父提交为 `526f5b2`。
-- 第三阶段：基于 `9cb7b42` 形成独立本地提交，尚未推送或部署；模型版本为 `2026-08-phase3`，真实 CMS dry-run 尚未执行。
+- 第三阶段提交：`ad54a4bd6aaa081f9109ac8ba65f4ff383eb5f5b`（`ad54a4b feat(cms): establish stable content contract and migration tooling`），尚未推送或部署；模型版本为 `2026-08-phase3`，真实 CMS dry-run 尚未执行。
 - 验收站：`https://wz.tomatopia.top`。
 - 当前 Release：`/var/www/xyy-web/releases/20260814T171015Z`，对应运行代码提交 `3f7f705`。
 - 运行状态：PM2 中 `xyy-web` 在线，Web 端口为 `50031`。
@@ -33,8 +34,8 @@
 - CMS 内容可用时以后台数据为准；审核源码只在 CMS 不可用时提供故障回退。
 - 首页案例固定为六个已确认品牌；公开运营数据统一从 `src/lib/claims/` 维护。
 - `scripts/setup-cms.mjs` 可幂等创建十九个业务集合及初始化内容。
-- 十八个官网内容集合统一定义在 `server/runtime-permissions.mjs`。
-- 新增内容权限同步：`Website Content Read-Only` 策略只获得18个官网内容集合的读取动作，不获得新增、修改或删除权限；实例具备自定义权限授权时可进一步下沉 `published` 过滤。
+- 官网运行读取集合从 `config/cms-contract.mjs` 的 active 生命周期派生；13个运行集合与5个 legacy、1个 private 集合明确分离，不在运行权限代码中维护第二份数组。
+- 内容权限同步：`Website Content Read-Only` 策略只获得运行集合的读取动作，不获得新增、修改或删除权限；实例具备自定义权限授权时可进一步下沉 `published` 过滤。
 - 联系表单继续使用独立的“仅创建留言”权限，不允许读取历史留言。
 
 ## 关键决策
@@ -239,6 +240,17 @@
 - Seed 生成：`scripts/generate-faq-seeds.mjs`、`scripts/generate-cms-content-seeds.mjs`、`scripts/data/service-page-slugs.mjs`、两份 generated seed 及稳定仓库 seed。
 - 测试：`tests/unit/cms-contract.test.ts`、`tests/unit/cms-contract-runtime.test.ts`、`tests/unit/cms-contract-migration.test.ts`、`tests/unit/cms-contract-schema-migration.test.ts`、`tests/unit/cms-contract-snapshot.test.ts`、`tests/unit/cms-seed-identity.test.ts`、`tests/unit/cms-setup-contract.test.ts`，以及直接调整的 setup、Directus 和最小发布包既有测试。
 - 文档：`docs/CMS_CONTENT_MODEL.md`、`DEV_STATE.md`。
+
+## Web 运行权限残余收口（第四阶段，2026-08-15）
+
+- 基线为第三阶段独立提交 `ad54a4bd6aaa081f9109ac8ba65f4ff383eb5f5b`；开始前工作树干净。第四阶段完成后作为独立本地提交管理，未推送、未部署，未主动执行真实 CMS 权限审计，也未修改真实 Token、策略或数据。首次未隔离构建曾向本机既有 Directus 配置发出一次 `site_settings` 只读请求并收到403，不能表述为“完全未连接真实 CMS”；后续完整验收均使用本机不可达地址和虚拟 Token 隔离运行。
+- 确认并修复三项运行风险：内容读取与联系写入不再回退 `DIRECTUS_TOKEN`；缺少任一专用 Token 或两枚专用 Token 相同时运行契约失败；内容运行集合由主 CMS 契约的 active 生命周期派生，排除5个 legacy、`contact_leads` private 集合及显式 `runtimeRead=false` 的 active 集合。`DIRECTUS_TOKEN` 继续仅供 setup、迁移和管理权限脚本使用。
+- `/healthz` 继续只执行1次 Directus ping 和2次 `/permissions/me`，证明服务就绪、双 Token 存在且不同、13个运行集合可读、联系 Token 可创建留言；不逐集合请求内容，也不冒充完整最小权限审计。
+- `cms:verify-runtime-permissions` 负责完整 mock 可验证契约：内容 Token 可读取全部运行集合且无写动作，不能读取 legacy、private、咨询或系统集合；联系 Token 仅可创建 `contact_leads`，不能读取/修改/删除/分享留言，不能读取运行、legacy 或系统集合。允许端点必须返回2xx，禁止端点只有401/403可证明拒绝；2xx、404和网络错误均失败关闭，网络错误标记为 `permission_verification_unreachable`。
+- Directus 12 Community 的集合 create 权限可能返回 `fields=['*']`，因此字段限制模式明确为 `application_enforced`；服务端只把 `name`、`phone`、`company`、`email`、`service`、`message` 写入 Directus，浏览器提交的 `status`、`source`、时间和系统字段会被丢弃，不声称 CMS 已实施不存在的字段级策略。
+- 集合导出消费者已逐项核查：`CMS_CONTENT_COLLECTIONS` 只供 Web 运行权限与 `Website Content Read-Only` 权限同步使用，二者都需要13个运行集合；`CMS_ALL_COLLECTIONS` 只用于19个 Schema 定义的完整性校验；`CMS_LEGACY_COLLECTIONS` 只用于负权限映射与拒绝探测；`CMS_PRIVATE_COLLECTIONS` 只用于边界断言。未发现把运行集合误用于 Schema、seed、迁移或快照的消费者。
+- 测试先行证据：旧实现下4个定向测试文件为8项失败、18项通过，另有权限审计测试因脚本导入即调用 `process.exit(1)` 无法运行；失败证据包括共享 Token 实际用于留言 POST、health 对相同 Token 继续请求下游、运行集合无法排除 legacy，以及审计缺少可注入的失败关闭语义。修复后5个定向测试文件共37项通过；`npm run format:check` 与 `npm run typecheck` 已通过。
+- 首次未隔离环境执行完整门禁时，本机既有 Directus 配置在构建 `/404.html` 读取 `site_settings` 时返回403，门禁据此正确失败；未执行权限审计、写请求或数据修改。随后显式使用本机不可达地址和两枚虚拟且不同的测试 Token 重新执行 `npm run verify:release`，退出码为0：338个 Astro 文件无诊断、ESLint通过、483个文件通过维护预算、55个引用资源与103个部署资源完整、33个单元测试文件共206项通过、38项 E2E 通过且6项按配置跳过、3项正式域名契约通过、两次生产构建通过，`git diff --check` 通过。该结果只证明本地代码和 mock/fixture 权限契约，不代表真实运行权限已重新审计。
 
 ## 下一步
 

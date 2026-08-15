@@ -120,7 +120,7 @@ Directus 读取失败时返回空集合并报告依赖降级，不在进程内�
 | `DIRECTUS_URL`            | 服务端 Directus 地址；服务器建议 `http://127.0.0.1:8055` |
 | `DIRECTUS_CONTENT_TOKEN`  | 仅可读取官网内容集合的运行令牌                           |
 | `DIRECTUS_CONTACT_TOKEN`  | 仅可创建 `contact_leads` 的表单写入令牌                  |
-| `DIRECTUS_TOKEN`          | 仅用于滚动升级兼容；完成令牌拆分后删除                   |
+| `DIRECTUS_TOKEN`          | 仅供建模、迁移和权限维护脚本临时使用，不得作为 Web 运行凭据 |
 | `PUBLIC_SITE_URL`         | 当前构建与 canonical 使用的站点地址                      |
 | `PUBLIC_DIRECTUS_URL`     | 浏览器可访问的 CMS 地址                                  |
 | `ENABLE_DOMAIN_REDIRECTS` | 正式域名切换完成后才可设为 `true`                        |
@@ -128,6 +128,8 @@ Directus 读取失败时返回空集合并报告依赖降级，不在进程内�
 
 `.env`、`.env.production` 仅保存在本地和服务器，不提交 GitHub，也不由部署脚本上传。
 内容令牌与联系令牌必须不同；建模脚本使用的短期管理令牌不能写入 Web 运行环境。
+Web 内容读取和联系写入不会回退使用 `DIRECTUS_TOKEN`；缺少任一专用令牌或两枚令牌相同
+时，运行就绪检查必须失败。
 Directus 12 Community 不提供自定义项目过滤和字段级权限时，内容令牌使用集合级只读、
 联系令牌使用 `contact_leads` 集合级仅创建；官网查询仍统一附加 `status=published`，联系
 接口仍在服务端只接收表单白名单字段。具备相应 Directus 授权时，可设置

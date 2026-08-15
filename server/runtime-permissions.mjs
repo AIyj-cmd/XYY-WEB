@@ -3,14 +3,19 @@ import { CMS_CONTENT_COLLECTIONS } from '../config/cms-collections.mjs'
 export const CONTENT_COLLECTIONS = CMS_CONTENT_COLLECTIONS
 
 export function resolveRuntimeTokens(env = process.env) {
-  const legacyToken = env.DIRECTUS_TOKEN || ''
-  const dedicatedContentToken = env.DIRECTUS_CONTENT_TOKEN || ''
-  const dedicatedContactToken = env.DIRECTUS_CONTACT_TOKEN || ''
+  const contentToken = env.DIRECTUS_CONTENT_TOKEN || ''
+  const contactToken = env.DIRECTUS_CONTACT_TOKEN || ''
+  const error =
+    !contentToken || !contactToken
+      ? 'runtime_tokens_missing'
+      : contentToken === contactToken
+        ? 'runtime_tokens_must_be_distinct'
+        : null
 
   return {
-    contentToken: dedicatedContentToken || legacyToken,
-    contactToken: dedicatedContactToken || legacyToken,
-    usingLegacyToken: Boolean(legacyToken) && (!dedicatedContentToken || !dedicatedContactToken),
+    contentToken,
+    contactToken,
+    error,
   }
 }
 

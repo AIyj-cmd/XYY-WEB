@@ -8,6 +8,7 @@ const env = {
   DIRECTUS_CONTENT_TOKEN: 'content-token',
   DIRECTUS_CONTACT_TOKEN: 'contact-token',
 }
+const runtimeCollections: string[] = CONTENT_COLLECTIONS
 
 describe('CMS-backed health status', () => {
   afterEach(() => vi.unstubAllGlobals())
@@ -15,7 +16,7 @@ describe('CMS-backed health status', () => {
   function contentPermissions(excludedCollection?: string) {
     return {
       data: Object.fromEntries(
-        CONTENT_COLLECTIONS.map((collection) => [
+        runtimeCollections.map((collection) => [
           collection,
           { read: { access: collection === excludedCollection ? 'none' : 'partial' } },
         ])
@@ -55,6 +56,33 @@ describe('CMS-backed health status', () => {
       expect.stringContaining('/items/contact_leads?'),
       expect.anything()
     )
+  })
+
+  it('does not accept the legacy shared token when dedicated tokens are missing', async () => {
+    const fetchMock = vi.fn()
+    vi.stubGlobal('fetch', fetchMock)
+
+    await expect(
+      contactStorageStatus({
+        DIRECTUS_URL: 'https://directus.test',
+        DIRECTUS_TOKEN: 'legacy-token',
+      })
+    ).resolves.toBe('missing')
+    expect(fetchMock).not.toHaveBeenCalled()
+  })
+
+  it('reports identical dedicated tokens as incomplete without downstream requests', async () => {
+    const fetchMock = vi.fn()
+    vi.stubGlobal('fetch', fetchMock)
+
+    await expect(
+      contactStorageStatus({
+        DIRECTUS_URL: 'https://directus.test',
+        DIRECTUS_CONTENT_TOKEN: 'same-token',
+        DIRECTUS_CONTACT_TOKEN: 'same-token',
+      })
+    ).resolves.toBe('incomplete')
+    expect(fetchMock).not.toHaveBeenCalled()
   })
 
   it('reports an incomplete CMS when a required collection is absent or forbidden', async () => {

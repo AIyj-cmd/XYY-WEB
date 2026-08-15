@@ -89,6 +89,9 @@ describe('contact API', () => {
         service: 'cloud-warehouse',
         message: '想了解仓配一体方案',
         privacyConsent: 'on',
+        status: 'published',
+        source: 'attacker-controlled',
+        date_created: '2000-01-01T00:00:00.000Z',
       }),
     } as any)
 
@@ -108,6 +111,26 @@ describe('contact API', () => {
         }),
       })
     )
+  })
+
+  it('does not use the legacy shared token for contact storage', async () => {
+    vi.stubEnv('DIRECTUS_URL', 'https://directus.test')
+    vi.stubEnv('DIRECTUS_CONTACT_TOKEN', '')
+    vi.stubEnv('DIRECTUS_TOKEN', 'legacy-token')
+    const fetchMock = vi.fn()
+    vi.stubGlobal('fetch', fetchMock)
+
+    const response = await POST({
+      request: request({
+        name: '张三',
+        phone: '13800138000',
+        message: '想了解仓配一体方案',
+        privacyConsent: 'on',
+      }),
+    } as any)
+
+    expect(response.status).toBe(503)
+    expect(fetchMock).not.toHaveBeenCalled()
   })
 
   it('rejects valid leads when Directus storage is not configured', async () => {

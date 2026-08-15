@@ -6,8 +6,9 @@ import {
 } from './runtime-permissions.mjs'
 
 export async function contactStorageStatus(env = process.env) {
-  const { contentToken, contactToken } = resolveRuntimeTokens(env)
+  const { contentToken, contactToken, error } = resolveRuntimeTokens(env)
   if (!env.DIRECTUS_URL || !contentToken || !contactToken) return 'missing'
+  if (error) return 'incomplete'
 
   try {
     const directusUrl = env.DIRECTUS_URL.replace(/\/+$/, '')

@@ -7,7 +7,9 @@ import { CMS_COLLECTION_DEFINITIONS } from '../../scripts/data/cms-collection-de
 import {
   CMS_ALL_COLLECTIONS,
   CMS_CONTENT_COLLECTIONS,
+  CMS_LEGACY_COLLECTIONS,
   CMS_PRIVATE_COLLECTIONS,
+  deriveRuntimeReadCollections,
 } from '../../config/cms-collections.mjs'
 import {
   CONTENT_COLLECTIONS,
@@ -26,6 +28,8 @@ describe('Directus runtime permission contracts', () => {
     ].join('\n')
 
     expect(runtimeSources).not.toMatch(/import\.meta\.env\.DIRECTUS_(?:CONTENT_|CONTACT_)?TOKEN/)
+    expect(runtimeSources).not.toContain("serverEnv('DIRECTUS_TOKEN')")
+    expect(runtimeSources).not.toContain('process.env.DIRECTUS_TOKEN')
   })
 
   it('keeps private contact leads out of the public content collection set', () => {
@@ -33,6 +37,19 @@ describe('Directus runtime permission contracts', () => {
     expect(CONTENT_COLLECTIONS).not.toContain('contact_leads')
     expect(CONTENT_COLLECTIONS).toEqual(CMS_CONTENT_COLLECTIONS)
     expect(CMS_PRIVATE_COLLECTIONS).toEqual(['contact_leads'])
+    expect(CMS_LEGACY_COLLECTIONS).not.toEqual([])
+    expect(CONTENT_COLLECTIONS).not.toEqual(expect.arrayContaining(CMS_LEGACY_COLLECTIONS))
+  })
+
+  it('derives runtime reads from the main CMS contract and excludes explicit opt-outs', () => {
+    expect(
+      deriveRuntimeReadCollections([
+        { name: 'visible', lifecycle: 'active', runtimeRead: true },
+        { name: 'active_opt_out', lifecycle: 'active', runtimeRead: false },
+        { name: 'legacy', lifecycle: 'legacy', runtimeRead: true },
+        { name: 'private', lifecycle: 'private', runtimeRead: true },
+      ])
+    ).toEqual(['visible'])
   })
 
   it('keeps the CMS schema and runtime collection contract synchronized', () => {
@@ -52,15 +69,28 @@ describe('Directus runtime permission contracts', () => {
     ).toEqual({
       contentToken: 'content-token',
       contactToken: 'contact-token',
-      usingLegacyToken: false,
+      error: null,
     })
   })
 
-  it('temporarily supports the legacy shared token during rollout', () => {
+  it('never exposes the legacy shared token to the web runtime', () => {
     expect(resolveRuntimeTokens({ DIRECTUS_TOKEN: 'legacy-token' })).toEqual({
-      contentToken: 'legacy-token',
-      contactToken: 'legacy-token',
-      usingLegacyToken: true,
+      contentToken: '',
+      contactToken: '',
+      error: 'runtime_tokens_missing',
+    })
+  })
+
+  it('rejects identical dedicated runtime tokens without exposing their values', () => {
+    expect(
+      resolveRuntimeTokens({
+        DIRECTUS_CONTENT_TOKEN: 'same-token',
+        DIRECTUS_CONTACT_TOKEN: 'same-token',
+      })
+    ).toEqual({
+      contentToken: 'same-token',
+      contactToken: 'same-token',
+      error: 'runtime_tokens_must_be_distinct',
     })
   })
 

@@ -14,7 +14,7 @@ function logStorageFailure(reason: string, lead: ContactLead, status?: number) {
 
 export async function storeContactLead(lead: ContactLead) {
   const directusUrl = process.env.DIRECTUS_URL || import.meta.env.DIRECTUS_URL
-  const directusToken = process.env.DIRECTUS_CONTACT_TOKEN || process.env.DIRECTUS_TOKEN
+  const directusToken = process.env.DIRECTUS_CONTACT_TOKEN
 
   if (!directusUrl || !directusToken) {
     logStorageFailure('Directus storage is not configured; lead rejected', lead)

@@ -1,3 +1,6 @@
+import { pathToFileURL } from 'node:url'
+
+import { CMS_LEGACY_COLLECTIONS } from '../config/cms-collections.mjs'
 import {
   CONTENT_COLLECTIONS,
   hasAllowedContactCreateFields,
@@ -6,138 +9,191 @@ import {
   permissionAccess,
 } from '../server/runtime-permissions.mjs'
 
-const directusUrl = (process.env.DIRECTUS_URL || '').replace(/\/+$/, '')
-const contentToken = process.env.DIRECTUS_CONTENT_TOKEN || ''
-const contactToken = process.env.DIRECTUS_CONTACT_TOKEN || ''
-
-if (!directusUrl || !contentToken || !contactToken) {
-  console.error('DIRECTUS_URL, DIRECTUS_CONTENT_TOKEN and DIRECTUS_CONTACT_TOKEN are required')
-  process.exit(1)
-}
-
-if (contentToken === contactToken) {
-  console.error('Content and contact tokens must be different')
-  process.exit(1)
-}
-
-async function readPermissions(token, label) {
-  const response = await fetch(`${directusUrl}/permissions/me`, {
-    headers: { Authorization: `Bearer ${token}` },
-  })
-  if (!response.ok) throw new Error(`${label} permission check returned ${response.status}`)
-  return response.json()
-}
-
-async function requestStatus(token, path) {
-  const response = await fetch(`${directusUrl}${path}`, {
-    headers: { Authorization: `Bearer ${token}` },
-  })
-  return response.status
-}
-
-const [contentPermissions, contactPermissions] = await Promise.all([
-  readPermissions(contentToken, 'content token'),
-  readPermissions(contactToken, 'contact token'),
-])
-
-const failures = []
-const privilegedCollections = [
+const ACTIONS = ['create', 'read', 'update', 'delete', 'share']
+const PRIVILEGED_COLLECTIONS = [
   'directus_users',
   'directus_roles',
   'directus_permissions',
   'directus_policies',
 ]
-const sensitiveEndpoints = [
+const SYSTEM_ENDPOINTS = [
   '/users?limit=1&fields=id',
   '/roles?limit=1&fields=id',
   '/permissions?limit=1&fields=id',
   '/policies?limit=1&fields=id',
-  '/items/contact_leads?limit=1&fields=id',
 ]
 
-for (const collection of CONTENT_COLLECTIONS) {
-  if (!hasContentReadPermission(contentPermissions, collection)) {
-    failures.push(`content token cannot read ${collection}`)
+function authorization(token) {
+  return { Authorization: `Bearer ${token}` }
+}
+
+async function fetchStatus(fetchImpl, directusUrl, token, path, label) {
+  try {
+    const response = await fetchImpl(`${directusUrl}${path}`, {
+      headers: authorization(token),
+    })
+    return response.status
+  } catch {
+    throw new Error(`permission_verification_unreachable: ${label}`)
   }
-  for (const action of ['create', 'update', 'delete', 'share']) {
-    if (permissionAccess(contentPermissions, collection, action) !== 'none') {
-      failures.push(`content token unexpectedly has ${action} access to ${collection}`)
+}
+
+async function readPermissions(fetchImpl, directusUrl, token, label) {
+  let response
+  try {
+    response = await fetchImpl(`${directusUrl}/permissions/me`, {
+      headers: authorization(token),
+    })
+  } catch {
+    throw new Error(`permission_verification_unreachable: ${label} permission map`)
+  }
+  if (!response.ok) throw new Error(`${label} permission check returned ${response.status}`)
+  return response.json()
+}
+
+function requireNoActions(failures, payload, tokenLabel, collections) {
+  for (const collection of collections) {
+    for (const action of ACTIONS) {
+      if (permissionAccess(payload, collection, action) !== 'none') {
+        failures.push(`${tokenLabel} unexpectedly has ${action} access to ${collection}`)
+      }
     }
   }
 }
 
-for (const collection of ['contact_leads']) {
-  for (const action of ['create', 'read', 'update', 'delete', 'share']) {
-    if (permissionAccess(contentPermissions, collection, action) !== 'none') {
-      failures.push(`content token unexpectedly has ${action} access to ${collection}`)
+function forbiddenProbe(label, token, path) {
+  return { label, token, path }
+}
+
+export async function verifyRuntimePermissions({
+  directusUrl,
+  contentToken,
+  contactToken,
+  fetchImpl = fetch,
+}) {
+  const normalizedUrl = (directusUrl || '').replace(/\/+$/, '')
+  if (!normalizedUrl || !contentToken || !contactToken) {
+    throw new Error('runtime_tokens_missing')
+  }
+  if (contentToken === contactToken) throw new Error('runtime_tokens_must_be_distinct')
+
+  const [contentPermissions, contactPermissions] = await Promise.all([
+    readPermissions(fetchImpl, normalizedUrl, contentToken, 'content token'),
+    readPermissions(fetchImpl, normalizedUrl, contactToken, 'contact token'),
+  ])
+  const failures = []
+
+  for (const collection of CONTENT_COLLECTIONS) {
+    if (!hasContentReadPermission(contentPermissions, collection)) {
+      failures.push(`content token cannot read ${collection}`)
+    }
+    for (const action of ['create', 'update', 'delete', 'share']) {
+      if (permissionAccess(contentPermissions, collection, action) !== 'none') {
+        failures.push(`content token unexpectedly has ${action} access to ${collection}`)
+      }
     }
   }
-}
 
-if (!hasContactCreatePermission(contactPermissions)) {
-  failures.push('contact token cannot create contact_leads')
-}
-if (!hasAllowedContactCreateFields(contactPermissions)) {
-  failures.push('contact token has an unsupported create field permission shape')
-}
+  requireNoActions(failures, contentPermissions, 'content token', [
+    ...CMS_LEGACY_COLLECTIONS,
+    'contact_leads',
+    ...PRIVILEGED_COLLECTIONS,
+  ])
 
-for (const collection of [...privilegedCollections, ...CONTENT_COLLECTIONS]) {
-  for (const action of ['create', 'read', 'update', 'delete', 'share']) {
-    if (permissionAccess(contactPermissions, collection, action) !== 'none') {
-      failures.push(`contact token unexpectedly has ${action} access to ${collection}`)
+  if (!hasContactCreatePermission(contactPermissions)) {
+    failures.push('contact token cannot create contact_leads')
+  }
+  if (!hasAllowedContactCreateFields(contactPermissions)) {
+    failures.push('contact token has an unsupported create field permission shape')
+  }
+  requireNoActions(failures, contactPermissions, 'contact token', [
+    ...CONTENT_COLLECTIONS,
+    ...CMS_LEGACY_COLLECTIONS,
+    ...PRIVILEGED_COLLECTIONS,
+  ])
+  for (const action of ['read', 'update', 'delete', 'share']) {
+    if (permissionAccess(contactPermissions, 'contact_leads', action) !== 'none') {
+      failures.push(`contact token unexpectedly has ${action} access to contact_leads`)
     }
   }
-}
 
-for (const action of ['read', 'update', 'delete', 'share']) {
-  if (permissionAccess(contactPermissions, 'contact_leads', action) !== 'none') {
-    failures.push(`contact token unexpectedly has ${action} access to contact_leads`)
-  }
-}
-
-const contentReadStatuses = await Promise.all(
-  CONTENT_COLLECTIONS.map((collection) =>
-    requestStatus(contentToken, `/items/${collection}?limit=1&fields=id`)
+  const contentReadStatuses = await Promise.all(
+    CONTENT_COLLECTIONS.map((collection) =>
+      fetchStatus(
+        fetchImpl,
+        normalizedUrl,
+        contentToken,
+        `/items/${collection}?limit=1&fields=id`,
+        `content token ${collection}`
+      )
+    )
   )
-)
-contentReadStatuses.forEach((status, index) => {
-  if (status < 200 || status >= 300) {
-    failures.push(`content token request for ${CONTENT_COLLECTIONS[index]} returned ${status}`)
+  contentReadStatuses.forEach((status, index) => {
+    if (status < 200 || status >= 300) {
+      failures.push(`content token request for ${CONTENT_COLLECTIONS[index]} returned ${status}`)
+    }
+  })
+
+  const contentForbiddenPaths = [
+    ...SYSTEM_ENDPOINTS,
+    '/items/contact_leads?limit=1&fields=id',
+    ...CMS_LEGACY_COLLECTIONS.map((collection) => `/items/${collection}?limit=1&fields=id`),
+  ]
+  const contactForbiddenPaths = [
+    ...SYSTEM_ENDPOINTS,
+    '/items/contact_leads?limit=1&fields=id',
+    ...CONTENT_COLLECTIONS.map((collection) => `/items/${collection}?limit=1&fields=id`),
+    ...CMS_LEGACY_COLLECTIONS.map((collection) => `/items/${collection}?limit=1&fields=id`),
+  ]
+  const probes = [
+    ...contentForbiddenPaths.map((path) =>
+      forbiddenProbe(`content token ${path}`, contentToken, path)
+    ),
+    ...contactForbiddenPaths.map((path) =>
+      forbiddenProbe(`contact token ${path}`, contactToken, path)
+    ),
+  ]
+  const probeResults = await Promise.all(
+    probes.map(async (probe) => ({
+      ...probe,
+      status: await fetchStatus(fetchImpl, normalizedUrl, probe.token, probe.path, probe.label),
+    }))
+  )
+  for (const probe of probeResults) {
+    if (![401, 403].includes(probe.status)) {
+      failures.push(`${probe.label} should be forbidden but returned ${probe.status}`)
+    }
   }
-})
 
-const probes = await Promise.all(
-  [
-    ...sensitiveEndpoints.map((path) => ({
-      label: `content token ${path}`,
-      token: contentToken,
-      path,
-    })),
-    ...sensitiveEndpoints.map((path) => ({
-      label: `contact token ${path}`,
-      token: contactToken,
-      path,
-    })),
-    ...CONTENT_COLLECTIONS.map((collection) => ({
-      label: `contact token /items/${collection}`,
-      token: contactToken,
-      path: `/items/${collection}?limit=1&fields=id`,
-    })),
-  ].map(async (probe) => ({ ...probe, status: await requestStatus(probe.token, probe.path) }))
-)
-
-for (const probe of probes) {
-  if (![401, 403].includes(probe.status)) {
-    failures.push(`${probe.label} should be forbidden but returned ${probe.status}`)
+  return {
+    ok: failures.length === 0,
+    failures,
+    fieldRestrictionMode: 'application_enforced',
+    contentCollections: [...CONTENT_COLLECTIONS],
   }
 }
 
-if (failures.length) {
-  console.error('Runtime Directus permissions are not least-privilege:')
-  for (const failure of failures) console.error(`- ${failure}`)
-  process.exit(1)
+async function runCli() {
+  try {
+    const result = await verifyRuntimePermissions({
+      directusUrl: process.env.DIRECTUS_URL || '',
+      contentToken: process.env.DIRECTUS_CONTENT_TOKEN || '',
+      contactToken: process.env.DIRECTUS_CONTACT_TOKEN || '',
+    })
+    if (!result.ok) {
+      console.error('Runtime Directus permissions are not least-privilege:')
+      for (const failure of result.failures) console.error(`- ${failure}`)
+      process.exitCode = 1
+      return
+    }
+    console.log(
+      `Verified separate least-privilege Directus tokens (${result.contentCollections.length} runtime content collections + contact create-only; fields=${result.fieldRestrictionMode}).`
+    )
+  } catch (error) {
+    console.error(error instanceof Error ? error.message : 'Runtime permission verification failed')
+    process.exitCode = 1
+  }
 }
 
-console.log(
-  `Verified separate least-privilege Directus tokens (${CONTENT_COLLECTIONS.length} content collections + contact create-only).`
-)
+const isMain = process.argv[1] && pathToFileURL(process.argv[1]).href === import.meta.url
+if (isMain) await runCli()

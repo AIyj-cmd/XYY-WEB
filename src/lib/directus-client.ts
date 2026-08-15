@@ -45,7 +45,7 @@ export function getDirectusAssetUrl(fileId?: string | null) {
 }
 
 export function getDirectusContentToken() {
-  return serverEnv('DIRECTUS_CONTENT_TOKEN') || serverEnv('DIRECTUS_TOKEN') || ''
+  return serverEnv('DIRECTUS_CONTENT_TOKEN') || ''
 }
 
 type DirectusRequester = (
