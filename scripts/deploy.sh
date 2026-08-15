@@ -87,14 +87,14 @@ verify_release_identity() {
     echo 'legacy_previous_release_identity_unavailable' >&2
     return 2
   fi
-  RELEASE_MANIFEST=\"\$manifest\" WEB_PORT='$WEB_PORT' PATH='$NODE_BIN':\$PATH node -e '
-    const fs=require("node:fs"),expected=JSON.parse(fs.readFileSync(process.env.RELEASE_MANIFEST,"utf8"));
-    fetch(`http://127.0.0.1:${process.env.WEB_PORT}/version`).then(async response=>{
-      if(!response.ok) throw new Error(`version HTTP ${response.status}`);
+  RELEASE_MANIFEST=\"\$manifest\" WEB_PORT='$WEB_PORT' PATH='$NODE_BIN':\$PATH node -e \"
+    const fs=require('node:fs'),expected=JSON.parse(fs.readFileSync(process.env.RELEASE_MANIFEST,'utf8'));
+    fetch('http://127.0.0.1:' + process.env.WEB_PORT + '/version').then(async response=>{
+      if(!response.ok) throw new Error('version HTTP ' + response.status);
       const actual=await response.json();
-      for(const key of ["gitSha","releaseId","environment","cmsSchemaVersion"])
-        if(actual[key]!==expected[key]) throw new Error(`release identity mismatch: ${key}`);
-    }).catch(error=>{console.error(error.message);process.exit(1)});'
+      for(const key of ['gitSha','releaseId','environment','cmsSchemaVersion'])
+        if(actual[key]!==expected[key]) throw new Error('release identity mismatch: ' + key);
+    }).catch(error=>{console.error(error.message);process.exit(1)});\"
 }
 restore_previous() {
   PATH='$NODE_BIN':\$PATH pm2 delete xyy-web >/dev/null 2>&1 || true
@@ -178,10 +178,10 @@ PATH='$NODE_BIN':\$PATH pm2 save
 for _ in {1..30}; do
   if curl -fsS http://127.0.0.1:$WEB_PORT/healthz >/dev/null; then
     if [[ -f \"\$previous_target/release-manifest.json\" ]]; then
-      RELEASE_MANIFEST=\"\$previous_target/release-manifest.json\" WEB_PORT='$WEB_PORT' PATH='$NODE_BIN':\$PATH node -e '
-        const fs=require("node:fs");const e=JSON.parse(fs.readFileSync(process.env.RELEASE_MANIFEST));
-        fetch(`http://127.0.0.1:${process.env.WEB_PORT}/version`).then(async r=>{const a=await r.json();
-        if(!r.ok||["gitSha","releaseId","environment","cmsSchemaVersion"].some(k=>a[k]!==e[k]))process.exit(1)})'
+      RELEASE_MANIFEST=\"\$previous_target/release-manifest.json\" WEB_PORT='$WEB_PORT' PATH='$NODE_BIN':\$PATH node -e \"
+        const fs=require('node:fs');const e=JSON.parse(fs.readFileSync(process.env.RELEASE_MANIFEST));
+        fetch('http://127.0.0.1:' + process.env.WEB_PORT + '/version').then(async r=>{const a=await r.json();
+        if(!r.ok||['gitSha','releaseId','environment','cmsSchemaVersion'].some(k=>a[k]!==e[k]))process.exit(1)})\"
     else
       echo 'legacy_previous_release_identity_unavailable' >&2
     fi

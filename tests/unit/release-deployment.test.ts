@@ -61,6 +61,28 @@ async function makeDeployFixture() {
 }
 
 describe('deployment release identity', () => {
+  it('keeps inline release verification safe from outer shell parameter expansion', async () => {
+    const root = resolve(import.meta.dirname, '../..')
+    const deployScript = await readFile(resolve(root, 'scripts/deploy.sh'), 'utf8')
+
+    for (const shellSensitiveTemplate of [
+      '${process.env.WEB_PORT}',
+      '${response.status}',
+      '${key}',
+    ]) {
+      expect(deployScript).not.toContain(shellSensitiveTemplate)
+    }
+    for (const requiredIdentityCheck of [
+      '/version',
+      'gitSha',
+      'releaseId',
+      'environment',
+      'cmsSchemaVersion',
+    ]) {
+      expect(deployScript).toContain(requiredIdentityCheck)
+    }
+  })
+
   it.each(['modified', 'staged', 'untracked'])(
     'rejects a %s worktree before deployment',
     async (mode) => {
