@@ -1,5 +1,6 @@
 export {
   __setDirectusRequesterForTests,
+  __setDirectusTimeoutForTests,
   getDirectusApiUrl,
   getDirectusAssetUrl,
   getDirectusContentToken,
@@ -9,6 +10,7 @@ export {
   formatDate,
   getFaqs,
   getCases,
+  getCasesResolution,
   getHomepageStats,
   getNewsArticle,
   getNewsByCategory,

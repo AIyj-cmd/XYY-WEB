@@ -5,6 +5,7 @@ import type { PublicationIssue } from '@/data/publications/issues'
 import type { FeatureItem, StatItem } from '@/data/service'
 import { getDirectusAssetUrl, requestItems, requestSingleton } from './directus-client'
 import { interpolateClaims } from './directus-interpolation'
+import { fallbackForUnavailable } from './directus/request-state'
 import type {
   AboutContentRecord,
   AboutHistoryRecord,
@@ -52,33 +53,20 @@ export async function getPublications(fallback: PublicationIssue[]): Promise<Pub
       filter: published,
       sort: ['sort'],
     })
-    return rows.length
-      ? rows.map(
-          ({
-            issue,
-            title,
-            season,
-            summary,
-            cover,
-            pdf,
-            cover_file,
-            pdf_file,
-            date,
-            is_latest,
-          }) => ({
-            issue,
-            title,
-            season,
-            summary,
-            cover: getDirectusAssetUrl(cover_file) || cover,
-            pdf: getDirectusAssetUrl(pdf_file) || pdf,
-            date,
-            isLatest: is_latest,
-          })
-        )
-      : fallback
-  } catch {
-    return fallback
+    return rows.map(
+      ({ issue, title, season, summary, cover, pdf, cover_file, pdf_file, date, is_latest }) => ({
+        issue,
+        title,
+        season,
+        summary,
+        cover: getDirectusAssetUrl(cover_file) || cover,
+        pdf: getDirectusAssetUrl(pdf_file) || pdf,
+        date,
+        isLatest: is_latest,
+      })
+    )
+  } catch (error) {
+    return fallbackForUnavailable(error, fallback)
   }
 }
 
@@ -98,6 +86,22 @@ export interface ServicePageContent {
   features: FeatureItem[]
 }
 
+const emptyServicePageContent = (): ServicePageContent => ({
+  title: '',
+  description: '',
+  breadcrumbLabel: '',
+  eyebrow: '',
+  h1: '',
+  h1sub: '',
+  heroDesc: '',
+  imgSrc: '',
+  imgAlt: '',
+  contentDesc: '',
+  featuresLabel: '',
+  stats: [],
+  features: [],
+})
+
 export async function getServicePageContent(slug: string, fallback: ServicePageContent) {
   try {
     const pages = await requestItems<ServicePageRecord[]>('service_pages', {
@@ -105,7 +109,7 @@ export async function getServicePageContent(slug: string, fallback: ServicePageC
       limit: 1,
     })
     const page = pages[0]
-    if (!page) return fallback
+    if (!page) return emptyServicePageContent()
     const stats = page.stats || []
     const features = page.features || []
     const displayStats = stats.map(({ stat, label, sub }) => ({
@@ -128,8 +132,8 @@ export async function getServicePageContent(slug: string, fallback: ServicePageC
       stats: displayStats,
       features: features.map(({ title, desc }) => ({ title, desc: interpolateClaims(desc) })),
     }
-  } catch {
-    return fallback
+  } catch (error) {
+    return fallbackForUnavailable(error, fallback)
   }
 }
 
@@ -141,9 +145,9 @@ export async function getAboutContent(fallback: { overview: string; heroDescript
           overview: cmsText(row.overview),
           heroDescription: cmsText(row.hero_description),
         }
-      : fallback
-  } catch {
-    return fallback
+      : { overview: '', heroDescription: '' }
+  } catch (error) {
+    return fallbackForUnavailable(error, fallback)
   }
 }
 
@@ -153,16 +157,14 @@ export async function getAboutHistory(fallback: AboutHistoryItem[]): Promise<Abo
       filter: published,
       sort: ['sort'],
     })
-    return rows.length
-      ? rows.map(({ year, subtitle, text, img, image_file }) => ({
-          year,
-          subtitle,
-          text,
-          img: getDirectusAssetUrl(image_file) || img,
-        }))
-      : fallback
-  } catch {
-    return fallback
+    return rows.map(({ year, subtitle, text, img, image_file }) => ({
+      year,
+      subtitle,
+      text,
+      img: getDirectusAssetUrl(image_file) || img,
+    }))
+  } catch (error) {
+    return fallbackForUnavailable(error, fallback)
   }
 }
 
@@ -172,14 +174,12 @@ export async function getAboutHonors(fallback: { title: string; image: string }[
       filter: published,
       sort: ['sort'],
     })
-    return rows.length
-      ? rows.map(({ title, image, image_file }) => ({
-          title,
-          image: getDirectusAssetUrl(image_file) || image,
-        }))
-      : fallback
-  } catch {
-    return fallback
+    return rows.map(({ title, image, image_file }) => ({
+      title,
+      image: getDirectusAssetUrl(image_file) || image,
+    }))
+  } catch (error) {
+    return fallbackForUnavailable(error, fallback)
   }
 }
 
@@ -194,8 +194,14 @@ export async function getSiteSettings(fallback: Omit<SiteSettingsRecord, 'id' | 
           icp: cmsValue(row.icp),
           footer_description: cmsText(row.footer_description),
         }
-      : fallback
-  } catch {
-    return fallback
+      : {
+          phone: '',
+          headquarters_label: '',
+          headquarters_address: '',
+          icp: '',
+          footer_description: '',
+        }
+  } catch (error) {
+    return fallbackForUnavailable(error, fallback)
   }
 }

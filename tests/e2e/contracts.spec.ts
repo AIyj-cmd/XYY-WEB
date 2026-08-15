@@ -1,4 +1,40 @@
 import { expect, test } from '@playwright/test'
+import { spawn, type ChildProcess } from 'node:child_process'
+import { createServer, type Server } from 'node:http'
+import type { AddressInfo } from 'node:net'
+
+async function listen(server: Server): Promise<number> {
+  await new Promise<void>((resolve, reject) => {
+    server.once('error', reject)
+    server.listen(0, '127.0.0.1', resolve)
+  })
+  return (server.address() as AddressInfo).port
+}
+
+async function reservePort(): Promise<number> {
+  const server = createServer()
+  const port = await listen(server)
+  await new Promise<void>((resolve, reject) =>
+    server.close((error) => (error ? reject(error) : resolve()))
+  )
+  return port
+}
+
+async function waitForOrigin(origin: string, child: ChildProcess) {
+  const deadline = Date.now() + 10_000
+  while (Date.now() < deadline) {
+    if (child.exitCode !== null)
+      throw new Error(`isolated Astro server exited with ${child.exitCode}`)
+    try {
+      const response = await fetch(origin)
+      if (response.status > 0) return
+    } catch {
+      // The child process may still be binding its port.
+    }
+    await new Promise((resolve) => setTimeout(resolve, 100))
+  }
+  throw new Error(`isolated Astro server did not start at ${origin}`)
+}
 
 test('core pages and discovery endpoints preserve SEO and AEO contracts', async ({
   page,
@@ -64,6 +100,46 @@ test('case detail has a crawlable URL and project data', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'Urban Revivo（UR）' })).toBeVisible()
   await expect(page.getByRole('heading', { name: '品牌背景与服务场景' })).toBeVisible()
   await expect(page.getByText('数据来源于新亦源内部项目运营统计', { exact: false })).toBeVisible()
+})
+
+test('case detail returns HTTP 404 when the available CMS has no published slug', async ({
+  playwright,
+}, testInfo) => {
+  test.skip(testInfo.project.name !== 'chromium', 'SSR status contract only needs one server run')
+
+  const directus = createServer((_request, response) => {
+    response.writeHead(200, { 'content-type': 'application/json' })
+    response.end(JSON.stringify({ data: [] }))
+  })
+  const directusPort = await listen(directus)
+  const appPort = await reservePort()
+  const origin = `http://127.0.0.1:${appPort}`
+  const app = spawn(process.execPath, ['server.mjs'], {
+    cwd: process.cwd(),
+    env: {
+      ...process.env,
+      DIRECTUS_URL: `http://127.0.0.1:${directusPort}`,
+      DIRECTUS_CONTENT_TOKEN: 'cms-empty-contract-token',
+      DIRECTUS_CONTACT_TOKEN: 'cms-empty-contact-token',
+      PUBLIC_DIRECTUS_URL: `http://127.0.0.1:${directusPort}`,
+      PUBLIC_SITE_URL: origin,
+      ENABLE_DOMAIN_REDIRECTS: 'false',
+      HOST: '127.0.0.1',
+      PORT: String(appPort),
+    },
+    stdio: 'ignore',
+  })
+
+  try {
+    await waitForOrigin(origin, app)
+    const context = await playwright.request.newContext({ baseURL: origin })
+    const response = await context.get('/cases/ur', { maxRedirects: 0 })
+    expect(response.status()).toBe(404)
+    await context.dispose()
+  } finally {
+    app.kill('SIGTERM')
+    await new Promise<void>((resolve) => directus.close(() => resolve()))
+  }
 })
 
 test('contact form shows API validation errors', async ({ page }) => {

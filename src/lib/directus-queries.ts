@@ -1,4 +1,5 @@
-import { freshItems, getDirectusAssetUrl, requestItems, requestSingleton } from './directus-client'
+import { getDirectusAssetUrl, requestItems, requestSingleton } from './directus-client'
+import { fallbackForUnavailable, invalidDirectusData } from './directus/request-state'
 import { interpolateClaims } from './directus-interpolation'
 import type {
   Case,
@@ -18,15 +19,9 @@ export async function getFaqs(pageKey: string, fallback: FaqItem[]): Promise<Faq
       sort: ['sort'],
       fields: ['id', 'sort', 'question', 'answer'],
     })
-    if (!rows.length) return fallback
     return rows.map(({ question, answer }) => ({ q: question, a: interpolateClaims(answer) }))
   } catch (error) {
-    console.error(
-      '[directus] FAQ fetch failed for',
-      pageKey,
-      error instanceof Error ? error.message : String(error)
-    )
-    return fallback
+    return fallbackForUnavailable(error, fallback)
   }
 }
 
@@ -37,69 +32,60 @@ export async function getHomepageStats(
     const row = await requestSingleton<HomepageContentRecord>('homepage_content', {
       fields: ['id', 'stats'],
     })
-    if (row?.status !== 'draft' && row?.stats?.length) {
+    if (!row || row.status === 'draft') return []
+    if (!Array.isArray(row.stats)) {
+      throw invalidDirectusData('homepage_content', 'read_singleton', 'invalid_data')
+    }
+    if (row.stats.length) {
       return row.stats.map((item, index) => ({
         id: index + 1,
         sort: index + 1,
         ...item,
       }))
     }
-  } catch {
-    return [...fallback]
+  } catch (error) {
+    return fallbackForUnavailable(error, [...fallback])
   }
-  return [...fallback]
+  return []
 }
 
 export async function getServices(fallback: readonly Service[] = []): Promise<Service[]> {
-  const services = await freshItems<Service>('services', {
-    filter: { status: { _eq: 'published' } },
-    sort: ['sort'],
-    fields: ['id', 'sort', 'slug', 'icon', 'name', 'subtitle', 'description', 'features'],
-  })
-  return services.length ? services : [...fallback]
+  try {
+    const rows = await requestItems<Service[]>('services', {
+      filter: { status: { _eq: 'published' } },
+      sort: ['sort'],
+      fields: ['id', 'sort', 'slug', 'icon', 'name', 'subtitle', 'description', 'features'],
+    })
+    return rows
+  } catch (error) {
+    return fallbackForUnavailable(error, [...fallback])
+  }
 }
 
 export async function getWarehouses(fallback: readonly Warehouse[] = []): Promise<Warehouse[]> {
-  const warehouses = await freshItems<Warehouse>('warehouses', {
-    filter: { status: { _eq: 'published' } },
-    sort: ['sort'],
-    fields: [
-      'id',
-      'sort',
-      'name',
-      'city',
-      'since',
-      'address',
-      'park',
-      'rent',
-      'height',
-      'highlight',
-    ],
-  })
-  return warehouses.length ? warehouses : [...fallback]
+  try {
+    return await requestItems<Warehouse[]>('warehouses', {
+      filter: { status: { _eq: 'published' } },
+      sort: ['sort'],
+      fields: [
+        'id',
+        'sort',
+        'name',
+        'city',
+        'since',
+        'address',
+        'park',
+        'rent',
+        'height',
+        'highlight',
+      ],
+    })
+  } catch (error) {
+    return fallbackForUnavailable(error, [...fallback])
+  }
 }
 
-export async function getCases(fallback: readonly Case[] = []): Promise<Case[]> {
-  const cases = await freshItems<Case>('cases', {
-    filter: { status: { _eq: 'published' } },
-    sort: ['sort'],
-    fields: [
-      'id',
-      'slug',
-      'category',
-      'label',
-      'name',
-      'full_name',
-      'accent',
-      'case_description',
-      'stats',
-      'metrics',
-      'details',
-      'tags',
-      'img',
-      'image_file',
-    ],
-  })
+function resolveCases(cases: Case[]) {
   const resolvedCases = cases.map((item) => {
     const description = item.case_description ?? item.details
     const metrics = Array.isArray(item.stats)
@@ -117,17 +103,59 @@ export async function getCases(fallback: readonly Case[] = []): Promise<Case[]> 
       img: getDirectusAssetUrl(item.image_file) || item.img,
     }
   })
-  return resolvedCases.length ? resolvedCases : [...fallback]
+  return resolvedCases
+}
+
+export type CasesResolution =
+  { source: 'cms'; items: Case[] } | { source: 'fallback'; items: Case[] }
+
+export async function getCasesResolution(fallback: readonly Case[] = []): Promise<CasesResolution> {
+  try {
+    const cases = await requestItems<Case[]>('cases', {
+      filter: { status: { _eq: 'published' } },
+      sort: ['sort'],
+      fields: [
+        'id',
+        'slug',
+        'category',
+        'label',
+        'name',
+        'full_name',
+        'accent',
+        'case_description',
+        'stats',
+        'metrics',
+        'details',
+        'tags',
+        'img',
+        'image_file',
+      ],
+    })
+    return { source: 'cms', items: resolveCases(cases) }
+  } catch (error) {
+    return {
+      source: 'fallback',
+      items: fallbackForUnavailable(error, [...fallback]),
+    }
+  }
+}
+
+export async function getCases(fallback: readonly Case[] = []): Promise<Case[]> {
+  return (await getCasesResolution(fallback)).items
 }
 
 export async function getPublishedNews(limit = 10, page = 1): Promise<NewsArticle[]> {
-  return freshItems<NewsArticle>('news', {
-    filter: { status: { _eq: 'published' } },
-    sort: ['-published_at'],
-    limit,
-    offset: (page - 1) * limit,
-    fields: ['id', 'title', 'slug', 'summary', 'category', 'published_at', 'cover_image'],
-  })
+  try {
+    return await requestItems<NewsArticle[]>('news', {
+      filter: { status: { _eq: 'published' } },
+      sort: ['-published_at'],
+      limit,
+      offset: (page - 1) * limit,
+      fields: ['id', 'title', 'slug', 'summary', 'category', 'published_at', 'cover_image'],
+    })
+  } catch (error) {
+    return fallbackForUnavailable(error, [])
+  }
 }
 
 export async function getNewsArticle(slug: string): Promise<NewsArticle | null> {
@@ -137,18 +165,22 @@ export async function getNewsArticle(slug: string): Promise<NewsArticle | null> 
       limit: 1,
     })
     return items[0] ?? null
-  } catch {
-    return null
+  } catch (error) {
+    return fallbackForUnavailable(error, null)
   }
 }
 
 export async function getNewsByCategory(category: string, limit = 6): Promise<NewsArticle[]> {
-  return freshItems<NewsArticle>('news', {
-    filter: { category: { _eq: category }, status: { _eq: 'published' } },
-    sort: ['-published_at'],
-    limit,
-    fields: ['id', 'title', 'slug', 'summary', 'category', 'published_at', 'cover_image'],
-  })
+  try {
+    return await requestItems<NewsArticle[]>('news', {
+      filter: { category: { _eq: category }, status: { _eq: 'published' } },
+      sort: ['-published_at'],
+      limit,
+      fields: ['id', 'title', 'slug', 'summary', 'category', 'published_at', 'cover_image'],
+    })
+  } catch (error) {
+    return fallbackForUnavailable(error, [])
+  }
 }
 
 export function formatDate(dateStr: string): string {

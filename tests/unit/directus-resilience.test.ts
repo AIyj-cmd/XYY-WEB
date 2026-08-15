@@ -1,7 +1,8 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import {
   __setDirectusRequesterForTests,
+  __setDirectusTimeoutForTests,
   getCases,
   getFaqs,
   getHomepageStats,
@@ -12,6 +13,13 @@ import {
 describe('Directus public content resilience', () => {
   beforeEach(() => {
     __setDirectusRequesterForTests(null)
+    vi.restoreAllMocks()
+  })
+
+  afterEach(() => {
+    __setDirectusRequesterForTests(null)
+    __setDirectusTimeoutForTests()
+    vi.unstubAllGlobals()
     vi.restoreAllMocks()
   })
 
@@ -40,8 +48,18 @@ describe('Directus public content resilience', () => {
             {
               id: 1,
               stats: [
-                { value: '135+', label: '合作品牌', unit: '家', detail: '后台维护的品牌说明' },
-                { value: '48万', label: '直营仓储', unit: '㎡', detail: '后台维护的仓储说明' },
+                {
+                  value: '135+',
+                  label: '合作品牌',
+                  unit: '家',
+                  detail: '后台维护的品牌说明',
+                },
+                {
+                  value: '48万',
+                  label: '直营仓储',
+                  unit: '㎡',
+                  detail: '后台维护的仓储说明',
+                },
               ],
             },
           ]
@@ -68,8 +86,8 @@ describe('Directus public content resilience', () => {
     ])
   })
 
-  it('uses reviewed fallbacks for critical collections when CMS is unavailable', async () => {
-    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+  it('uses reviewed fallbacks and logs the collection when the CMS network is unavailable', async () => {
+    const warningSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
     const homepageFallback = [
       { id: 1, sort: 1, value: '150+', label: '合作品牌', unit: '家', detail: '鞋服品牌' },
     ]
@@ -120,28 +138,54 @@ describe('Directus public content resilience', () => {
     await expect(getServices(serviceFallback)).resolves.toEqual(serviceFallback)
     await expect(getWarehouses(warehouseFallback)).resolves.toEqual(warehouseFallback)
     await expect(getCases(caseFallback)).resolves.toEqual(caseFallback)
-    expect(errorSpy).toHaveBeenCalled()
+    expect(warningSpy).toHaveBeenCalledWith(
+      expect.stringContaining('[directus:fallback] collection=homepage_content')
+    )
+    expect(warningSpy).toHaveBeenCalledWith(expect.stringContaining('reason=network'))
   })
 
-  it.each([
-    [
-      'CMS is unavailable',
-      async () => {
-        throw new Error('CMS unavailable')
-      },
-    ],
-    ['CMS returns no published rows', async () => []],
-  ])('uses the reviewed FAQ fallback when %s', async (_scenario, requester) => {
-    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+  it('keeps a successful empty FAQ response empty instead of restoring old FAQs', async () => {
     const fallback = [{ q: '本地问题', a: '本地答案' }]
-    __setDirectusRequesterForTests(requester)
+    __setDirectusRequesterForTests(async () => [])
 
-    await expect(getFaqs('home', fallback)).resolves.toEqual(fallback)
-    if (_scenario === 'CMS is unavailable') expect(errorSpy).toHaveBeenCalled()
+    await expect(getFaqs('home', fallback)).resolves.toEqual([])
+  })
+
+  it('keeps successful empty service and case collections empty', async () => {
+    __setDirectusRequesterForTests(async () => [])
+
+    await expect(
+      getServices([
+        {
+          id: 1,
+          sort: 1,
+          slug: 'old-service',
+          icon: 'warehouse',
+          name: '旧服务',
+          subtitle: '旧副标题',
+          description: '旧说明',
+          features: [],
+        },
+      ])
+    ).resolves.toEqual([])
+    await expect(
+      getCases([
+        {
+          id: 1,
+          slug: 'old-case',
+          category: '旧分类',
+          label: '旧案例',
+          metrics: '旧数据',
+          details: '旧说明',
+          tags: [],
+          img: '/old.webp',
+        },
+      ])
+    ).resolves.toEqual([])
   })
 
   it('falls back directly when the homepage singleton is unavailable', async () => {
-    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+    const warningSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
     const requester = vi.fn(async (collection) => {
       if (collection === 'homepage_content') throw new Error('CMS unavailable')
       throw new Error(`legacy collection queried: ${collection}`)
@@ -154,6 +198,8 @@ describe('Directus public content resilience', () => {
     await expect(getHomepageStats(fallback)).resolves.toEqual(fallback)
     expect(requester).toHaveBeenCalledTimes(1)
     expect(requester).toHaveBeenCalledWith('homepage_content', expect.any(Object))
-    errorSpy.mockRestore()
+    expect(warningSpy).toHaveBeenCalledWith(
+      expect.stringContaining('[directus:fallback] collection=homepage_content')
+    )
   })
 })

@@ -5,13 +5,19 @@ import CaseDetailHero from '@/components/cases/CaseDetailHero.astro'
 import CaseDetailOverview from '@/components/cases/CaseDetailOverview.astro'
 import { CASE_FALLBACKS } from '@/data/cases'
 import { BRAND, CASE_DETAILS } from '@/lib/brand'
-import { getCaseDetail, getCases } from '@/lib/directus'
+import { getCaseDetail, getCasesResolution } from '@/lib/directus'
 import { ORGANIZATION_ID, createBreadcrumbSchema } from '@/lib/seo'
 
 const slug = Astro.params.slug
 const caseEntry = Object.entries(CASE_DETAILS).find(([, detail]) => detail.slug === slug)
-const cases = await getCases(CASE_FALLBACKS)
+const caseResolution = await getCasesResolution(CASE_FALLBACKS)
+const cases = caseResolution.items
 const caseSummary = cases.find((item) => item.slug === slug || item.label === caseEntry?.[0])
+
+if (caseResolution.source === 'cms' && !caseSummary) {
+  return new Response(null, { status: 404 })
+}
+
 const fallbackDetail =
   caseEntry?.[1] ??
   (caseSummary && {
@@ -25,7 +31,7 @@ const fallbackDetail =
     stats: [],
   })
 
-if (!fallbackDetail) return Astro.redirect('/cases', 302)
+if (!fallbackDetail) return new Response(null, { status: 404 })
 
 const detail = await getCaseDetail(slug!, fallbackDetail, caseSummary)
 const displayDetail = {
