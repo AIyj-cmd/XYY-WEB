@@ -9,7 +9,7 @@ import HomeCoreSolutions from '@/components/home/HomeCoreSolutions.astro'
 import { HOME_FAQS, HOME_IMAGES, HOME_SERVICE_FALLBACKS, HOME_STATS_FALLBACKS } from '@/data/home'
 import { CASE_FALLBACKS, createHomeCaseDetails } from '@/data/cases'
 import { BRAND, CASE_DETAILS } from '@/lib/brand'
-import { CLAIM_TEXT } from '@/lib/claims'
+import { getClaimText } from '@/lib/claims'
 import { getHomepageStats, getServices, getCases, getFaqs } from '@/lib/directus'
 import { ORGANIZATION_ID, createBreadcrumbSchema, createFaqSchema } from '@/lib/seo'
 
@@ -20,6 +20,13 @@ const [STATS, SERVICES, allCases, FAQS] = await Promise.all([
   getFaqs('home', HOME_FAQS),
 ])
 const CASES = allCases.slice(0, 6)
+const homeClaims = {
+  warehouseArea: getClaimText('warehouseArea', 'home'),
+  partnerBrands: getClaimText('partnerBrands', 'home'),
+  servedStores: getClaimText('servedStores', 'home'),
+  coveredCities: getClaimText('coveredCities', 'home'),
+  shippingAccuracy: getClaimText('shippingAccuracy', 'home'),
+}
 
 // Parse "库存 260万件+ · ..." → { value: '260万件+', label: '库存' } for card display
 function parseFirstMetric(metrics: string) {
@@ -76,15 +83,15 @@ const faqSchema = createFaqSchema(FAQS)
 
 <Layout
   title="新亦源鞋服云仓｜鞋服仓储、质检、发货一体化服务"
-  description={`新亦源2011年成立，提供鞋服仓配、退货质检、瑕疵修复及全渠道库存管理。直营仓储${CLAIM_TEXT.warehouseArea}，服务${CLAIM_TEXT.partnerBrands}品牌，发货准确率与库存准确率${CLAIM_TEXT.shippingAccuracy}。`}
+  description={`新亦源2011年成立，提供鞋服仓配、退货质检、瑕疵修复及全渠道库存管理。直营仓储${homeClaims.warehouseArea}，服务${homeClaims.partnerBrands}品牌，发货准确率与库存准确率${homeClaims.shippingAccuracy}。`}
   jsonLd={[orgSchema, webSiteSchema, breadcrumbSchema, faqSchema]}
 >
   <HomeHero
     image={HOME_IMAGES.hero}
-    warehouseArea={CLAIM_TEXT.warehouseArea}
-    partnerBrands={CLAIM_TEXT.partnerBrands}
-    servedStores={CLAIM_TEXT.servedStores}
-    coveredCities={CLAIM_TEXT.coveredCities}
+    warehouseArea={homeClaims.warehouseArea}
+    partnerBrands={homeClaims.partnerBrands}
+    servedStores={homeClaims.servedStores}
+    coveredCities={homeClaims.coveredCities}
   />
   <HomeCapabilityStats stats={STATS} />
   <HomeCoreSolutions services={SERVICES} />
@@ -92,7 +99,7 @@ const faqSchema = createFaqSchema(FAQS)
     cases={CASES}
     cardMeta={caseCardMeta}
     caseDetails={caseDetailsWithDisplayImages}
-    partnerBrands={CLAIM_TEXT.partnerBrands}
+    partnerBrands={homeClaims.partnerBrands}
   />
 
   <HomeFulfillment />

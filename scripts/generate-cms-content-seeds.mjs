@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url'
 import { format, resolveConfig } from 'prettier'
 import { APPROVED_CASE_SEEDS } from './data/approved-case-seeds.mjs'
 import { parseServiceProps, parseVariable } from './lib/source-seed-extractor.mjs'
+import { assertKnownClaimReferences } from './lib/claim-reference-validation.mjs'
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const read = (file) => readFileSync(resolve(root, file), 'utf8')
@@ -171,6 +172,8 @@ const exports = {
   APPROVED_SERVICE_STAT_SEEDS: serviceStatSeeds,
   APPROVED_SERVICE_FEATURE_SEEDS: serviceFeatureSeeds,
 }
+
+assertKnownClaimReferences(exports, { root, source: 'generate-cms-content-seeds' })
 
 const raw = Object.entries(exports)
   .map(([name, value]) => `export const ${name} = ${JSON.stringify(value, null, 2)}`)

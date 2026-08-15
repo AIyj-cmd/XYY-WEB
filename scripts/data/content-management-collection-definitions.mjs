@@ -62,7 +62,7 @@ export const CONTENT_MANAGEMENT_COLLECTION_DEFINITIONS = [
               meta: { interface: 'input', width: 'half' },
             },
           ]),
-          note: '首页8项业务数据集中维护。品牌数量统一使用150+口径。',
+          note: '首页8项业务数据集中维护，公开数字以审核事实注册表为准。',
         },
       },
       dateUpdatedField(),

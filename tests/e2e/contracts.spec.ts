@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test'
 import { spawn, type ChildProcess } from 'node:child_process'
 import { createServer, type Server } from 'node:http'
 import type { AddressInfo } from 'node:net'
+import { getClaimText } from '../../src/lib/claims'
 
 async function listen(server: Server): Promise<number> {
   await new Promise<void>((resolve, reject) => {
@@ -66,6 +67,39 @@ test('core pages and discovery endpoints preserve SEO and AEO contracts', async 
   const llms = await request.get('/llms.txt')
   expect(llms.ok()).toBe(true)
   expect(await llms.text()).toContain('新亦源供应链')
+})
+
+test('homepage, SEO, structured data, FAQ and llms share reviewed claims', async ({
+  page,
+  request,
+}, testInfo) => {
+  test.skip(testInfo.project.name !== 'chromium', 'Claim contract only needs one browser run')
+
+  const partnerBrands = getClaimText('partnerBrands', 'home')
+  const warehouseArea = getClaimText('warehouseArea', 'home')
+  await page.goto('/')
+
+  await expect(page.locator('body')).toContainText(partnerBrands)
+  await expect(page.locator('body')).toContainText(warehouseArea)
+  await expect(page.locator('meta[name="description"]')).toHaveAttribute(
+    'content',
+    new RegExp(partnerBrands.replace('+', '\\+'))
+  )
+  const structuredData = await page.locator('script[type="application/ld+json"]').allTextContents()
+  expect(structuredData.join('\n')).toContain(partnerBrands)
+  expect(structuredData.join('\n')).toContain(warehouseArea)
+  await expect(page.locator('#s-faq')).toContainText(partnerBrands)
+
+  const llms = await request.get('/llms.txt')
+  const llmsBody = await llms.text()
+  expect(llmsBody).toContain(getClaimText('partnerBrands', 'llms'))
+  expect(llmsBody).toContain(getClaimText('warehouseArea', 'llms'))
+
+  const rendered = `${await page.content()}\n${llmsBody}`
+  expect(rendered).not.toContain('{{')
+  expect(rendered).not.toContain('140+')
+  expect(rendered).not.toContain('50万㎡+')
+  expect(rendered).not.toContain(`${warehouseArea}㎡`)
 })
 
 test('health endpoint fails closed when configured CMS is unreachable', async ({

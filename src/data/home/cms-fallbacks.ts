@@ -1,73 +1,25 @@
 import type { HomepageStat, Service } from '@/lib/directus'
-import { CLAIM_TEXT } from '@/lib/claims'
+import { CLAIM_TEXT, getClaimPresentation, type BrandClaimKey } from '@/lib/claims'
 
-const withoutSuffix = (value: string, suffix: string) => value.replace(suffix, '')
+function fallbackStat(
+  id: number,
+  claimKey: BrandClaimKey,
+  label: string,
+  detail: string
+): HomepageStat {
+  const { value, unit } = getClaimPresentation(claimKey, 'home')
+  return { id, sort: id, claimKey, value, unit, label, detail }
+}
 
 export const HOME_STATS_FALLBACKS: HomepageStat[] = [
-  {
-    id: 1,
-    sort: 1,
-    value: CLAIM_TEXT.partnerBrands,
-    label: '合作品牌',
-    unit: '家',
-    detail: '鞋服及相关细分行业',
-  },
-  {
-    id: 2,
-    sort: 2,
-    value: withoutSuffix(CLAIM_TEXT.warehouseArea, '㎡'),
-    label: '直营仓储',
-    unit: '㎡',
-    detail: '华南、华东、华中仓网',
-  },
-  {
-    id: 3,
-    sort: 3,
-    value: CLAIM_TEXT.coveredCities,
-    label: '覆盖城市',
-    unit: '个',
-    detail: '仓配与运输服务网络',
-  },
-  {
-    id: 4,
-    sort: 4,
-    value: CLAIM_TEXT.managedSkus,
-    label: '管理SKU',
-    unit: '',
-    detail: '鞋服款色码精细管理',
-  },
-  {
-    id: 5,
-    sort: 5,
-    value: withoutSuffix(CLAIM_TEXT.newGoodsInspectionAnnual, '件'),
-    label: '全年新货质检',
-    unit: '件',
-    detail: '按项目规则验货',
-  },
-  {
-    id: 6,
-    sort: 6,
-    value: withoutSuffix(CLAIM_TEXT.returnInspectionAnnual, '件'),
-    label: '全年退货质检',
-    unit: '件',
-    detail: '质检、分流与二次上架',
-  },
-  {
-    id: 7,
-    sort: 7,
-    value: withoutSuffix(CLAIM_TEXT.inventoryAccuracy, '%'),
-    label: '库存准确率',
-    unit: '%',
-    detail: '系统与仓内流程协同',
-  },
-  {
-    id: 8,
-    sort: 8,
-    value: CLAIM_TEXT.servedStores,
-    label: '服务门店',
-    unit: '家',
-    detail: '连锁与全渠道零售场景',
-  },
+  fallbackStat(1, 'partnerBrands', '合作品牌', '鞋服及相关细分行业'),
+  fallbackStat(2, 'warehouseArea', '直营仓储', '华南、华东、华中仓网'),
+  fallbackStat(3, 'coveredCities', '覆盖城市', '仓配与运输服务网络'),
+  fallbackStat(4, 'managedSkus', '管理SKU', '鞋服款色码精细管理'),
+  fallbackStat(5, 'newGoodsInspectionAnnual', '全年新货质检', '按项目规则验货'),
+  fallbackStat(6, 'returnInspectionAnnual', '全年退货质检', '质检、分流与二次上架'),
+  fallbackStat(7, 'inventoryAccuracy', '库存准确率', '系统与仓内流程协同'),
+  fallbackStat(8, 'servedStores', '服务门店', '连锁与全渠道零售场景'),
 ]
 
 export const HOME_SERVICE_FALLBACKS: Service[] = [

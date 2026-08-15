@@ -1,4 +1,6 @@
-import { CLAIM_TEXT } from '@/lib/claims'
+import { getClaimText } from '@/lib/claims'
+
+const homeClaim = (key: Parameters<typeof getClaimText>[0]) => getClaimText(key, 'home')
 
 export const HOME_FAQS = [
   {
@@ -15,7 +17,7 @@ export const HOME_FAQS = [
   },
   {
     q: '能否处理退货质检、瑕疵修复和二次上架？',
-    a: `可以。退货商品可完成拆包、质检分级、清洁修复与二次上架；按AQL标准可识别7大类${CLAIM_TEXT.recognizableAnomalies}鞋服异常。退货质检与二次上架时效为${CLAIM_TEXT.returnTurnaround}，具体处置规则可按品牌要求配置。`,
+    a: `可以。退货商品可完成拆包、质检分级、清洁修复与二次上架；按AQL标准可识别7大类${homeClaim('recognizableAnomalies')}鞋服异常。退货质检与二次上架时效为${homeClaim('returnTurnaround')}，具体处置规则可按品牌要求配置。`,
   },
   {
     q: '是否支持抖音、天猫、唯品会和线下门店订单？',
@@ -23,11 +25,11 @@ export const HOME_FAQS = [
   },
   {
     q: '是否支持一件代发和跨境仓配？',
-    a: `支持一件代发。货物完成入仓与系统对接后，订单可按单完成拣货、复核、包装、发货和物流回传，${CLAIM_TEXT.shippingSla}。跨境项目可提供国内端仓储、项目质检、换标换包装与物流协同。`,
+    a: `支持一件代发。货物完成入仓与系统对接后，订单可按单完成拣货、复核、包装、发货和物流回传，${homeClaim('shippingSla')}。跨境项目可提供国内端仓储、项目质检、换标换包装与物流协同。`,
   },
   {
     q: '有哪些可以验证的案例和运营数据？',
-    a: `目前服务${CLAIM_TEXT.partnerBrands}鞋服及相关品牌、${CLAIM_TEXT.servedStores}门店，直营仓储${CLAIM_TEXT.warehouseArea}。网站案例页展示不同业务场景；发货、库存和退货处理等数据均以对应统计周期、项目范围及经营记录为准。`,
+    a: `目前服务${homeClaim('partnerBrands')}鞋服及相关品牌、${homeClaim('servedStores')}门店，直营仓储${homeClaim('warehouseArea')}。网站案例页展示不同业务场景；发货、库存和退货处理等数据均以对应统计周期、项目范围及经营记录为准。`,
   },
   {
     q: '如何获取仓配方案和报价？',

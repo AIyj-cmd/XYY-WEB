@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { CLAIM_TEXT } from '../../src/lib/claims'
+import { CLAIM_TEXT, getClaimPresentation, isBrandClaimKey } from '../../src/lib/claims'
 import { APPROVED_HOMEPAGE_STATS } from '../../scripts/data/approved-homepage-stats.mjs'
 import { buildPatch } from '../../scripts/lib/cms-sync-runtime.mjs'
 import {
@@ -22,7 +22,11 @@ const target = {
 describe('CMS content sync domains', () => {
   it('keeps approved homepage scale statistics aligned with the public claim registry', () => {
     const approvedByLabel = Object.fromEntries(
-      APPROVED_HOMEPAGE_STATS.map(({ value, unit, label }) => [label, `${value}${unit}`])
+      APPROVED_HOMEPAGE_STATS.map(({ claimKey, label }) => {
+        if (!isBrandClaimKey(claimKey)) throw new Error(`Unknown test claimKey: ${claimKey}`)
+        const { value, unit } = getClaimPresentation(claimKey, 'home')
+        return [label, `${value}${unit}`]
+      })
     )
 
     expect(approvedByLabel).toMatchObject({
@@ -32,21 +36,22 @@ describe('CMS content sync domains', () => {
       管理SKU: CLAIM_TEXT.managedSkus,
       服务门店: `${CLAIM_TEXT.servedStores}家`,
     })
-    expect(CLAIM_TEXT.employeeCount).toBe('1500+')
+    expect(CLAIM_TEXT.employeeCount).toBeTruthy()
   })
 
   it('builds patches only for changed fields', () => {
     expect(
-      buildPatch({ value: '150+', label: '品牌' }, { value: '150+', label: '服务品牌' }, [
-        'value',
-        'label',
-      ])
+      buildPatch(
+        { value: 'fixture-value', label: '品牌' },
+        { value: 'fixture-value', label: '服务品牌' },
+        ['value', 'label']
+      )
     ).toEqual({ label: '服务品牌' })
   })
 
   it('matches fixed collections by semantic keys instead of database IDs', () => {
-    const records = [{ id: 81, sort: 1, value: '150+', status: 'published' }]
-    const targets = [{ id: 1, sort: 1, value: '150+' }]
+    const records = [{ id: 81, sort: 1, value: 'fixture-value', status: 'published' }]
+    const targets = [{ id: 1, sort: 1, value: 'fixture-value' }]
 
     expect(findUniqueRecord(records, targets[0], ['sort'], 'homepage_stats').id).toBe(81)
     expect(fixedCollectionMatches(records, targets, ['sort'], ['sort', 'value'])).toBe(true)

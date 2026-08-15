@@ -1,7 +1,11 @@
+import type { BrandClaimKey } from './claims'
+import type { CmsHomepageStatReference } from './claims/cms'
+
 export interface HomepageStat {
   id: number
   status?: 'published' | 'draft' | 'archived'
   sort: number
+  claimKey?: BrandClaimKey
   value: string
   label: string
   unit: string
@@ -12,7 +16,7 @@ export interface HomepageContentRecord {
   id: number
   status?: 'published' | 'draft' | 'archived'
   key: string
-  stats: Array<Omit<HomepageStat, 'id' | 'sort' | 'status'>>
+  stats: CmsHomepageStatReference[]
 }
 
 export interface Service {

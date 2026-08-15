@@ -7,7 +7,7 @@ import CasesGrid from '@/components/cases/CasesGrid.astro'
 import CasesValueProps from '@/components/cases/CasesValueProps.astro'
 import { CASE_FAQS, CASE_FALLBACKS } from '@/data/cases'
 import { BRAND, CASE_DETAILS } from '@/lib/brand'
-import { CLAIM_TEXT } from '@/lib/claims'
+import { getClaimText } from '@/lib/claims'
 import { getCases, getFaqs } from '@/lib/directus'
 import { createFaqSchema } from '@/lib/seo'
 import '@/styles/cases.css'
@@ -16,6 +16,7 @@ const [displayCases, faqs] = await Promise.all([
   getCases(CASE_FALLBACKS),
   getFaqs('cases', CASE_FAQS),
 ])
+const partnerBrands = getClaimText('partnerBrands', 'cases')
 const getCasePath = (label: string) => {
   const slug =
     displayCases.find((item) => item.label === label)?.slug ??
@@ -36,7 +37,7 @@ const caseListSchema = {
   '@context': 'https://schema.org',
   '@type': 'ItemList',
   name: '新亦源供应链合作案例',
-  description: `新亦源供应链服务${CLAIM_TEXT.partnerBrands}知名鞋服品牌合作案例`,
+  description: `新亦源供应链服务${partnerBrands}知名鞋服品牌合作案例`,
   numberOfItems: displayCases.length,
   itemListElement: displayCases.slice(0, 10).map((item, index) => ({
     '@type': 'ListItem',
@@ -51,7 +52,7 @@ const faqSchema = createFaqSchema(faqs)
 
 <Layout
   title="鞋服云仓合作案例｜仓配、质检与退货处理实践｜新亦源"
-  description={`新亦源供应链合作案例展示，服务鞋服、潮玩等品类${CLAIM_TEXT.partnerBrands}知名品牌。包含头部快时尚女装、国际运动品牌、商务男装、内衣家居、跨境出海等多种类型案例。`}
+  description={`新亦源供应链合作案例展示，服务鞋服、潮玩等品类${partnerBrands}知名品牌。包含头部快时尚女装、国际运动品牌、商务男装、内衣家居、跨境出海等多种类型案例。`}
   jsonLd={[breadcrumbSchema, caseListSchema, faqSchema]}
 >
   <CasesHero />

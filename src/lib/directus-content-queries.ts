@@ -21,8 +21,18 @@ function cmsValue(value: string | null | undefined) {
   return typeof value === 'string' ? value : ''
 }
 
-function cmsText(value: string | null | undefined) {
-  return interpolateClaims(cmsValue(value))
+function cmsText(
+  value: string | null | undefined,
+  context: { pageScope: string; collection: string; recordId?: string | number; field: string }
+) {
+  return interpolateClaims(cmsValue(value), {
+    pageScope: context.pageScope,
+    source: {
+      collection: context.collection,
+      recordId: context.recordId,
+      field: context.field,
+    },
+  })
 }
 
 function unifiedCaseDetail(item: Case, fallback: CaseDetail): CaseDetail {
@@ -33,7 +43,10 @@ function unifiedCaseDetail(item: Case, fallback: CaseDetail): CaseDetail {
     category: item.category || '',
     image: item.img || '',
     accent: item.accent || '#2563EB',
-    description: interpolateClaims(item.case_description || item.details || ''),
+    description: interpolateClaims(item.case_description || item.details || '', {
+      pageScope: 'cases',
+      source: { collection: 'cases', recordId: item.id, field: 'case_description' },
+    }),
     stats: item.stats || [],
   }
 }
@@ -110,27 +123,33 @@ export async function getServicePageContent(slug: string, fallback: ServicePageC
     })
     const page = pages[0]
     if (!page) return emptyServicePageContent()
+    const pageScope = `service:${slug}`
+    const text = (value: string | null | undefined, field: string) =>
+      cmsText(value, { pageScope, collection: 'service_pages', recordId: page.id, field })
     const stats = page.stats || []
     const features = page.features || []
     const displayStats = stats.map(({ stat, label, sub }) => ({
-      stat: interpolateClaims(stat),
+      stat: text(stat, 'stats.stat'),
       label,
-      sub: interpolateClaims(sub),
+      sub: text(sub, 'stats.sub'),
     }))
     return {
-      title: cmsText(page.title),
-      description: cmsText(page.description),
-      breadcrumbLabel: cmsText(page.breadcrumb_label),
-      eyebrow: cmsText(page.eyebrow),
-      h1: cmsText(page.h1),
-      h1sub: cmsText(page.h1sub),
-      heroDesc: cmsText(page.hero_desc),
+      title: text(page.title, 'title'),
+      description: text(page.description, 'description'),
+      breadcrumbLabel: text(page.breadcrumb_label, 'breadcrumb_label'),
+      eyebrow: text(page.eyebrow, 'eyebrow'),
+      h1: text(page.h1, 'h1'),
+      h1sub: text(page.h1sub, 'h1sub'),
+      heroDesc: text(page.hero_desc, 'hero_desc'),
       imgSrc: getDirectusAssetUrl(page.hero_image) || cmsValue(page.img_src),
-      imgAlt: cmsText(page.img_alt),
-      contentDesc: cmsText(page.content_desc),
-      featuresLabel: cmsText(page.features_label),
+      imgAlt: text(page.img_alt, 'img_alt'),
+      contentDesc: text(page.content_desc, 'content_desc'),
+      featuresLabel: text(page.features_label, 'features_label'),
       stats: displayStats,
-      features: features.map(({ title, desc }) => ({ title, desc: interpolateClaims(desc) })),
+      features: features.map(({ title, desc }) => ({
+        title,
+        desc: text(desc, 'features.desc'),
+      })),
     }
   } catch (error) {
     return fallbackForUnavailable(error, fallback)
@@ -142,8 +161,18 @@ export async function getAboutContent(fallback: { overview: string; heroDescript
     const row = await requestSingleton<AboutContentRecord>('about_content')
     return row && row.status !== 'draft'
       ? {
-          overview: cmsText(row.overview),
-          heroDescription: cmsText(row.hero_description),
+          overview: cmsText(row.overview, {
+            pageScope: 'about',
+            collection: 'about_content',
+            recordId: row.id,
+            field: 'overview',
+          }),
+          heroDescription: cmsText(row.hero_description, {
+            pageScope: 'about',
+            collection: 'about_content',
+            recordId: row.id,
+            field: 'hero_description',
+          }),
         }
       : { overview: '', heroDescription: '' }
   } catch (error) {
@@ -192,7 +221,12 @@ export async function getSiteSettings(fallback: Omit<SiteSettingsRecord, 'id' | 
           headquarters_label: cmsValue(row.headquarters_label),
           headquarters_address: cmsValue(row.headquarters_address),
           icp: cmsValue(row.icp),
-          footer_description: cmsText(row.footer_description),
+          footer_description: cmsText(row.footer_description, {
+            pageScope: 'site',
+            collection: 'site_settings',
+            recordId: row.id,
+            field: 'footer_description',
+          }),
         }
       : {
           phone: '',

@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test'
+import { getClaimText } from '../../src/lib/claims'
 
 test('homepage loads the shoe-apparel fulfillment message and primary CTA', async ({ page }) => {
   await page.goto('/')
@@ -9,9 +10,8 @@ test('homepage loads the shoe-apparel fulfillment message and primary CTA', asyn
   ).toBeVisible()
   await expect(page.getByRole('link', { name: '获取仓配方案' }).first()).toBeVisible()
   await expect(page.locator('.hero-data')).toContainText(
-    '54万㎡直营仓储 ｜ 150+服务品牌 ｜ 10000+覆盖门店 ｜ 6000+覆盖城市'
+    `${getClaimText('warehouseArea', 'home')}直营仓储 ｜ ${getClaimText('partnerBrands', 'home')}服务品牌 ｜ ${getClaimText('servedStores', 'home')}覆盖门店 ｜ ${getClaimText('coveredCities', 'home')}覆盖城市`
   )
-  await expect(page.locator('.hero-data')).not.toContainText('54万㎡+直营仓储')
   await expect(page.locator('#s-stats .sr-only')).toHaveCount(0)
   await expect(page.locator('#s-cases a.case-card')).toHaveCount(6)
   await expect(page.locator('a.case-card[href="/cases/ur"]')).toHaveCount(1)

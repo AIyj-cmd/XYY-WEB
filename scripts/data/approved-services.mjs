@@ -7,11 +7,11 @@ export const APPROVED_SERVICES = [
     name: '鞋服云仓',
     subtitle: '全渠道一盘货与鞋服专用仓配',
     description:
-      '提供B2C+B2B+O2O全渠道仓配、库存同步和门店补货服务。实际单仓单日峰值50万单/日，18:00前截单，当日24:00前发出。',
+      '提供B2C+B2B+O2O全渠道仓配、库存同步和门店补货服务。实际单仓单日峰值{{singleWarehousePeak}}，{{shippingSla}}。',
     features: [
-      '发货准确率99.99%，库存准确率99.99%',
-      '18:00前截单，当日24:00前发出',
-      '实际单仓单日峰值50万单/日',
+      '发货准确率{{shippingAccuracy}}，库存准确率{{inventoryAccuracy}}',
+      '{{shippingSla}}',
+      '实际单仓单日峰值{{singleWarehousePeak}}',
       'RFID、电子标签与出库复核协同管理款色码',
       '支持唯品会JIT/JITX等项目，平台规则按项目核验',
     ],
@@ -22,15 +22,15 @@ export const APPROVED_SERVICES = [
     slug: 'quality-inspection',
     icon: 'inspection',
     name: '退货质检与瑕疵修复',
-    subtitle: '135+种异常识别，24小时二次上架',
+    subtitle: '{{recognizableAnomalies}}异常识别，{{returnTurnaround}}二次上架',
     description:
-      '与广检集团合作QC团队，按AQL 1.0–6.5执行；质检技师经广检集团资深讲师培训认证。可识别7大类135+种异常，按质检结果进入对应修复流程；退货质检与二次上架24小时，瑕疵修复成功率90%。',
+      '与广检集团合作QC团队，按AQL 1.0–6.5执行；质检技师经广检集团资深讲师培训认证。可识别7大类{{recognizableAnomalies}}异常，按质检结果进入对应修复流程；退货质检与二次上架{{returnTurnaround}}，瑕疵修复成功率{{repairSuccessRate}}。',
     features: [
-      '可识别7大类135+种异常',
-      '退货质检与二次上架24小时，平均拆包4小时、质检12小时',
-      '瑕疵修复成功率90%',
+      '可识别7大类{{recognizableAnomalies}}异常',
+      '退货质检与二次上架{{returnTurnaround}}，平均拆包4小时、质检12小时',
+      '瑕疵修复成功率{{repairSuccessRate}}',
       '设置九大修复专区，完成后按品牌标准复检',
-      '全年新货质检1.17亿件，退货质检1.53亿件',
+      '全年新货质检{{newGoodsInspectionAnnual}}，退货质检{{returnInspectionAnnual}}',
     ],
   },
   {

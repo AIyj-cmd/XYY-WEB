@@ -16,7 +16,7 @@ export const FULFILLMENT_PERFORMANCE_CLAIMS = {
     expiresAt: null,
     publishStatus: 'approved',
     allowedPages: ALL_PUBLIC_PAGES,
-    notes: '不得改写为17:00或当日揽收。',
+    notes: '履约规则不适用单一统计周期；不得改写为17:00或当日揽收。',
   },
   shippingAccuracy: {
     claimKey: 'shipping_accuracy',
@@ -67,7 +67,7 @@ export const FULFILLMENT_PERFORMANCE_CLAIMS = {
     expiresAt: null,
     publishStatus: 'approved',
     allowedPages: ALL_PUBLIC_PAGES,
-    notes: '不得与WMS系统容量混写。',
+    notes: '统计周期待运营峰值记录补录；不得与WMS系统容量混写。',
   },
   regionalPeak: {
     claimKey: 'regional_daily_peak',
@@ -84,6 +84,6 @@ export const FULFILLMENT_PERFORMANCE_CLAIMS = {
     expiresAt: null,
     publishStatus: 'approved',
     allowedPages: ALL_PUBLIC_PAGES,
-    notes: '不得表述为日常发货量。',
+    notes: '统计周期待地区运营峰值记录补录；不得表述为日常发货量。',
   },
 } as const satisfies Record<string, BrandClaim>

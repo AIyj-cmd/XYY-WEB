@@ -1,6 +1,7 @@
 import { getDirectusAssetUrl, requestItems, requestSingleton } from './directus-client'
 import { fallbackForUnavailable, invalidDirectusData } from './directus/request-state'
 import { interpolateClaims } from './directus-interpolation'
+import { resolveHomepageClaimStat } from './claims/cms'
 import type {
   Case,
   FaqItem,
@@ -19,7 +20,13 @@ export async function getFaqs(pageKey: string, fallback: FaqItem[]): Promise<Faq
       sort: ['sort'],
       fields: ['id', 'sort', 'question', 'answer'],
     })
-    return rows.map(({ question, answer }) => ({ q: question, a: interpolateClaims(answer) }))
+    return rows.map(({ id, question, answer }) => ({
+      q: question,
+      a: interpolateClaims(answer, {
+        pageScope: pageKey,
+        source: { collection: 'faqs', recordId: id, field: 'answer' },
+      }),
+    }))
   } catch (error) {
     return fallbackForUnavailable(error, fallback)
   }
@@ -37,11 +44,8 @@ export async function getHomepageStats(
       throw invalidDirectusData('homepage_content', 'read_singleton', 'invalid_data')
     }
     if (row.stats.length) {
-      return row.stats.map((item, index) => ({
-        id: index + 1,
-        sort: index + 1,
-        ...item,
-      }))
+      const warned = new Set<string>()
+      return row.stats.map((item, index) => resolveHomepageClaimStat(item, index, warned))
     }
   } catch (error) {
     return fallbackForUnavailable(error, [...fallback])
@@ -56,7 +60,19 @@ export async function getServices(fallback: readonly Service[] = []): Promise<Se
       sort: ['sort'],
       fields: ['id', 'sort', 'slug', 'icon', 'name', 'subtitle', 'description', 'features'],
     })
-    return rows
+    return rows.map((row) => {
+      const text = (value: string, field: string) =>
+        interpolateClaims(value, {
+          pageScope: 'home',
+          source: { collection: 'services', recordId: row.id, field },
+        })
+      return {
+        ...row,
+        subtitle: text(row.subtitle, 'subtitle'),
+        description: text(row.description, 'description'),
+        features: row.features.map((feature) => text(feature, 'features')),
+      }
+    })
   } catch (error) {
     return fallbackForUnavailable(error, [...fallback])
   }

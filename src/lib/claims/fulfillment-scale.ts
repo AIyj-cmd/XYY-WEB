@@ -16,7 +16,7 @@ export const FULFILLMENT_SCALE_CLAIMS = {
     expiresAt: null,
     publishStatus: 'approved',
     allowedPages: ALL_PUBLIC_PAGES,
-    notes: '不得拆算为未经验证的地区仓面积。',
+    notes: '统计周期待仓储资产台账补录；不得拆算为未经验证的地区仓面积。',
   },
   partnerBrands: {
     claimKey: 'partner_brand_count',
@@ -84,7 +84,7 @@ export const FULFILLMENT_SCALE_CLAIMS = {
     expiresAt: null,
     publishStatus: 'approved',
     allowedPages: ALL_PUBLIC_PAGES,
-    notes: '具体线路和可达范围按项目核验。',
+    notes: '统计周期待线路台账补录；具体线路和可达范围按项目核验。',
   },
   employeeCount: {
     claimKey: 'employee_count',
@@ -101,6 +101,6 @@ export const FULFILLMENT_SCALE_CLAIMS = {
     expiresAt: null,
     publishStatus: 'approved',
     allowedPages: ALL_PUBLIC_PAGES,
-    notes: '公开展示使用1500+名员工口径。',
+    notes: '统计周期待人力台账补录；公开展示使用1500+名员工口径。',
   },
 } as const satisfies Record<string, BrandClaim>

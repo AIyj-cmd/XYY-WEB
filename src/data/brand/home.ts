@@ -1,4 +1,9 @@
-import { CLAIM_TEXT } from '@/lib/claims'
+import { CLAIM_TEXT, getClaimPresentation } from '@/lib/claims'
+
+const aboutPresentation = (key: Parameters<typeof getClaimPresentation>[0]) => {
+  const { value, unit } = getClaimPresentation(key, 'about')
+  return { value, unit }
+}
 
 export const DIGITAL_PRODUCTS = [
   {
@@ -20,15 +25,15 @@ export const DIGITAL_PRODUCTS = [
 
 export const ABOUT_STATS = [
   {
-    value: CLAIM_TEXT.newGoodsInspectionAnnual.replace('件', ''),
+    value: aboutPresentation('newGoodsInspectionAnnual').value,
     unit: '件/年',
     label: '新货质检',
   },
-  { value: CLAIM_TEXT.returnInspectionAnnual.replace('件', ''), unit: '件/年', label: '退货质检' },
-  { value: CLAIM_TEXT.inventoryAccuracy.replace('%', ''), unit: '%', label: '库存准确率' },
-  { value: CLAIM_TEXT.recognizableAnomalies.replace('种', ''), unit: '种', label: '缺陷识别' },
-  { value: CLAIM_TEXT.returnTurnaround.replace('小时', ''), unit: '小时', label: '退货二次上架' },
-  { value: CLAIM_TEXT.repairSuccessRate.replace('%', ''), unit: '%', label: '瑕疵修复成功率' },
+  { value: aboutPresentation('returnInspectionAnnual').value, unit: '件/年', label: '退货质检' },
+  { ...aboutPresentation('inventoryAccuracy'), label: '库存准确率' },
+  { ...aboutPresentation('recognizableAnomalies'), label: '缺陷识别' },
+  { ...aboutPresentation('returnTurnaround'), label: '退货二次上架' },
+  { ...aboutPresentation('repairSuccessRate'), label: '瑕疵修复成功率' },
   { value: '40', unit: '%↑', label: 'RFID拣货提效' },
   { value: '30', unit: '%↑', label: '人效提升' },
 ] as const

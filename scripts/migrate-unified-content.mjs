@@ -48,10 +48,9 @@ async function migrateFaqRelations() {
 
 async function syncHomepageFacts() {
   const main = await directus.request('GET', '/items/homepage_content')
-  const stats = APPROVED_HOMEPAGE_STATS.map(({ value, label, unit, detail }) => ({
-    value,
+  const stats = APPROVED_HOMEPAGE_STATS.map(({ claimKey, label, detail }) => ({
+    claimKey,
     label,
-    unit,
     detail,
   }))
   await directus.request('PATCH', '/items/homepage_content', {
@@ -59,18 +58,7 @@ async function syncHomepageFacts() {
     key: main?.key || 'main',
     stats,
   })
-  const legacy = await directus.request('GET', '/items/homepage_stats?limit=-1')
-  for (const approved of APPROVED_HOMEPAGE_STATS) {
-    const row = legacy.find((item) => Number(item.sort) === Number(approved.sort))
-    if (!row) continue
-    await directus.request('PATCH', `/items/homepage_stats/${row.id}`, {
-      value: approved.value,
-      label: approved.label,
-      unit: approved.unit,
-      detail: approved.detail,
-    })
-  }
-  console.log('Homepage facts synchronized to approved 150+ / 54万㎡ source.')
+  console.log('Homepage facts synchronized as reviewed claimKey references.')
 }
 
 await migrateServicePages()

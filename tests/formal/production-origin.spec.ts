@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test'
+import { getClaimText } from '../../src/lib/claims'
 
 const formalOrigin = 'https://56xyy.com'
 
@@ -43,11 +44,11 @@ test('formal discovery files use the production origin without a global crawl bl
   expect(llms.headers()['content-type']).toContain('text/plain')
   const llmsBody = await llms.text()
   expect(llmsBody).toContain(`[产品服务](${formalOrigin}/product)`)
-  expect(llmsBody).toContain('直营仓储54万㎡')
-  expect(llmsBody).toContain('服务150+品牌')
-  expect(llmsBody).toContain('员工1500+名')
-  expect(llmsBody).toContain('管理SKU 45万+')
-  expect(llmsBody).toContain('覆盖6000+城市')
+  expect(llmsBody).toContain(`直营仓储${getClaimText('warehouseArea', 'llms')}`)
+  expect(llmsBody).toContain(`服务${getClaimText('partnerBrands', 'llms')}品牌`)
+  expect(llmsBody).toContain(`员工${getClaimText('employeeCount', 'llms')}名`)
+  expect(llmsBody).toContain(`管理SKU ${getClaimText('managedSkus', 'llms')}`)
+  expect(llmsBody).toContain(`覆盖${getClaimText('coveredCities', 'llms')}城市`)
   expect(llmsBody).not.toContain('127.0.0.1')
   expect(llmsBody).not.toContain('wz.tomatopia.top')
 })

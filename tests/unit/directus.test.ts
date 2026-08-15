@@ -14,6 +14,7 @@ import {
   getServices,
   getWarehouses,
 } from '@/lib/directus'
+import { getClaimPresentation } from '@/lib/claims'
 
 describe('Directus helpers', () => {
   beforeEach(() => {
@@ -86,10 +87,32 @@ describe('Directus helpers', () => {
     ['services', getServices],
     ['warehouses', getWarehouses],
   ] as const)('reads %s from Directus instead of local constants', async (collection, fetcher) => {
-    const item = { id: 1, marker: collection }
+    const item =
+      collection === 'services'
+        ? {
+            id: 1,
+            sort: 1,
+            slug: 'fixture-service',
+            icon: 'fixture',
+            name: '测试服务',
+            subtitle: '测试副标题',
+            description: '测试说明',
+            features: ['测试能力'],
+          }
+        : {
+            id: 1,
+            sort: 1,
+            name: '测试仓',
+            city: '测试城市',
+            since: '',
+            address: '测试地址',
+            park: '',
+            rent: '',
+            height: '',
+            highlight: '测试能力',
+          }
     const requester = vi.fn(async () => [item])
     __setDirectusRequesterForTests(requester)
-
     await expect(fetcher()).resolves.toEqual([item])
     expect(requester).toHaveBeenCalledTimes(1)
     expect(requester).toHaveBeenCalledWith(
@@ -100,14 +123,14 @@ describe('Directus helpers', () => {
       })
     )
   })
-
   it('reads the unified homepage configuration instead of scattered metric rows', async () => {
+    const approved = getClaimPresentation('partnerBrands', 'home')
     const requester = vi.fn(async (collection) =>
       collection === 'homepage_content'
         ? [
             {
               id: 1,
-              stats: [{ value: '150+', label: '合作品牌', unit: '家', detail: '鞋服品牌' }],
+              stats: [{ claimKey: 'partnerBrands', label: '合作品牌', detail: '鞋服品牌' }],
             },
           ]
         : []
@@ -118,9 +141,10 @@ describe('Directus helpers', () => {
       {
         id: 1,
         sort: 1,
-        value: '150+',
+        claimKey: 'partnerBrands',
+        value: approved.value,
         label: '合作品牌',
-        unit: '家',
+        unit: approved.unit,
         detail: '鞋服品牌',
       },
     ])

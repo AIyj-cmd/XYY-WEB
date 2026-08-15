@@ -1,7 +1,7 @@
 import type { APIRoute } from 'astro'
 
 import { CASE_FALLBACKS } from '@/data/cases'
-import { CLAIM_TEXT } from '@/lib/claims'
+import { getClaimText } from '@/lib/claims'
 import { getCases } from '@/lib/directus'
 import { absoluteUrl } from '@/lib/seo'
 
@@ -9,6 +9,7 @@ const page = (pathname: string) => absoluteUrl(pathname)
 const singleLine = (value: string) => value.replace(/\s+/g, ' ').trim()
 
 export const GET: APIRoute = async () => {
+  const claim = (key: Parameters<typeof getClaimText>[0]) => getClaimText(key, 'llms')
   const cases = await getCases(CASE_FALLBACKS)
   const caseLinks = cases
     .filter((item) => item.slug)
@@ -21,7 +22,7 @@ export const GET: APIRoute = async () => {
 
 > 广州新亦源供应链管理有限公司，2011年成立，专注鞋服供应链服务，为品牌提供鞋服云仓、订单履约、退货质检、瑕疵修复、物流数字化和智能寄件服务。
 
-官网当前公开运营口径包括：直营仓储${CLAIM_TEXT.warehouseArea}、服务${CLAIM_TEXT.partnerBrands}品牌、员工${CLAIM_TEXT.employeeCount}名、管理SKU ${CLAIM_TEXT.managedSkus}、服务门店${CLAIM_TEXT.servedStores}、覆盖${CLAIM_TEXT.coveredCities}城市。运营数据的统计周期、项目范围和适用条件以对应页面说明及经营记录为准。
+官网当前公开运营口径包括：直营仓储${claim('warehouseArea')}、服务${claim('partnerBrands')}品牌、员工${claim('employeeCount')}名、管理SKU ${claim('managedSkus')}、服务门店${claim('servedStores')}、覆盖${claim('coveredCities')}城市。运营数据的统计周期、项目范围和适用条件以对应页面说明及经营记录为准。
 
 ## 关键页面
 

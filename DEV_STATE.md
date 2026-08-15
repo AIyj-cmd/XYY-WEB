@@ -11,12 +11,14 @@
 
 ## 当前目标
 
-- 以 Directus 作为官网可维护内容源，同时保留前端故障回退、发布安全和移动端可用性。
-- 保持验收站稳定运行，完成 CMS 权限落地后，再将同一版本同步到正式环境。
+- 在第一阶段 Directus 返回状态语义之上，完成公开业务事实唯一来源治理：全局公开事实只由 `src/lib/claims/` 审核注册表维护，页面、CMS、FAQ、SEO、JSON-LD、`llms.txt` 和 CMS seed 只能引用 `claimKey` 或 `{{claimKey}}`。
+- 第一、第二阶段已拆分为两个连续的本地提交供人工审查；当前不推送、不部署，也不连接真实 CMS。
 
 ## 当前版本与环境
 
-- Git：Directus 12 Community 权限兼容与运行令牌拆分已提交并推送到 `main`，运行代码提交为 `3f7f705`；其后仅追加本状态记录。
+- 拆分前基线：`62095867ce74aabf6352cc9d08a361d9e217d108`（`6209586 记录验收站发布与运行权限状态`），该提交不包含第一、第二阶段修复。
+- 第一阶段提交：`526f5b2 修复 Directus 返回状态语义`，父提交为上述基线。
+- 第二阶段提交：本文件所在的当前本地提交，父提交为 `526f5b2`，只包含公开业务事实唯一来源与 CMS 防漂移治理。最终提交号通过 `git log -1` 获取，避免在提交自身内容中记录无法自洽的自身哈希。
 - 验收站：`https://wz.tomatopia.top`。
 - 当前 Release：`/var/www/xyy-web/releases/20260814T171015Z`，对应运行代码提交 `3f7f705`。
 - 运行状态：PM2 中 `xyy-web` 在线，Web 端口为 `50031`。
@@ -40,13 +42,16 @@
 - 管理员 Token 只临时用于建模和权限配置，不进入网站运行环境或 Git。
 - 网站运行时使用两枚不同 Token：内容只读 Token、联系表单仅创建 Token。
 - 后台已发布数据优先于静态回退内容，避免后台修改后前端仍显示旧数据。
+- CMS 成功返回空数据代表运营侧当前没有已发布内容，必须保持为空；只有网络失败、超时和 HTTP 5xx 才能启用审核静态回退。
+- HTTP 401/403 和非法响应必须明确失败，不能用静态内容掩盖权限或数据契约问题。
 - 正式环境必须发布同一 Git 提交、完整资源包和对应 CMS 模型，不能只同步前端构建文件。
 
 ## 核心维护文件
 
 - 页面与组件：`src/pages/`、`src/components/`。
 - 内容与事实：`src/data/`、`src/lib/claims/`。
-- Directus 查询：`src/lib/directus-content-queries.ts`。
+- Directus 请求与查询：`src/lib/directus-client.ts`、`src/lib/directus/request-state.ts`、`src/lib/directus-queries.ts`、`src/lib/directus-content-queries.ts`。
+- 案例详情状态：`src/pages/cases/[slug].astro`。
 - 服务端运行逻辑：`server/`、`server/runtime-permissions.mjs`。
 - CMS 初始化：`scripts/setup-cms.mjs`。
 - CMS 权限同步：`scripts/lib/content-policy-sync.mjs`、`scripts/sync-content-policy-permissions.mjs`。
@@ -55,18 +60,26 @@
 
 ## 已验证结果
 
-- Astro：309 个文件，0 错误、0 警告、0 提示。
+- Astro：319 个文件，0 错误、0 警告、0 提示。
 - ESLint：通过。
-- 可维护性检查：454 个项目文件通过。
+- Prettier：通过。
+- 可维护性检查：464 个项目文件通过。
 - 资源检查：55 个引用资源和 103 个部署资源完整。
-- Vitest：21 个测试文件、98 项测试通过。
-- Playwright：35 项在全量运行中通过，4 项按项目配置跳过；1 项桌面案例页并发加载超时后单独重跑通过，因此36项功能均获得通过结果，但本轮没有取得一次性全绿的完整回归记录。
+- Vitest：24 个测试文件、137 项测试通过。
+- Playwright：38 项通过，6 项按项目配置跳过。
 - 正式域名契约：3 项通过。
 - 生产构建：通过。
+- `npm run verify:release`：完整通过。
 - 服务器生产依赖安装：0 个已报告漏洞。
 - 测试日志中的 Directus `fetch failed` 来自刻意使用不可达 CMS 验证回退和健康失败关闭，不是发布故障。
 
 ## 已知问题与未完成事项
+
+- Directus 状态语义修复与事实唯一来源治理已拆分为两个本地提交，但均未推送或部署，也未连接生产 CMS；线上状态不能由本地测试结果推断。
+- 本轮 E2E 使用本地隔离的空 Directus 响应验证案例真实 404，生产环境仍需在后续发布流程中单独验收。
+- 代码已支持新的 `claimKey` 契约及旧首页统计的受控兼容路径；真实 CMS 内容迁移尚未执行。
+- 注册表中的 16 项全局公开事实均有结构化来源引用、审核人和审核日期，但仓库内未找到可独立核验的正式来源附件；全部 16 项的统计周期仍为 `null`，现有备注只如实说明缺失、待补录或不适用，不能据此声称证据闭环已经完成。
+- 案例专属指标目前没有统一的来源文件、审核时间、公开授权和统计周期字段；需要在后续阶段设计独立的案例证据模型，不能机械并入全局 claims。
 
 - 验收站 Directus 12.1.1 已建立两套独立运行策略和静态令牌：18个内容集合只读、`contact_leads` 仅创建；运行权限审计已经通过。
 - 管理令牌已移出 Web `.env` 并保存在服务器独立的受限维护环境文件中；Web `.env` 只保留两枚运行令牌且权限为600。
@@ -130,11 +143,79 @@
 - 权限兼容提交 `3f7f705` 已推送到 GitHub `main`。首次推送遇到GitHub HTTPS短暂超时，连通性恢复后重试成功，远端与本地提交一致。
 - 验收站原子发布成功切换到 `/var/www/xyy-web/releases/20260814T171015Z`；PM2 `xyy-web` 在线、无重启，内部和外部 `/healthz` 均返回200与 `contactStorage: ok`，首页、Directus ping、robots、sitemap、llms.txt及本地案例封面资源均通过发布后检查。
 
+## Directus 返回状态语义修复（2026-08-15）
+
+- 本轮基于 Git SHA `62095867ce74aabf6352cc9d08a361d9e217d108` 开展，最终形成独立本地提交 `526f5b2`；未推送、未部署、未修改真实 Directus 或数据库。
+- 统一内容请求语义：HTTP 成功且响应结构合法为 `success`，空数组或空单例保持为空；网络连接失败、超时和 HTTP 5xx 为 `unavailable`；401/403 为 `unauthorized`；其他异常 4xx、非法 JSON、缺少 `data` 或数据类型错误为 `invalid`。
+- 所有集合和单例内容读取统一经过 Directus 请求适配层，并使用集中维护的 3000ms 超时；测试可以临时注入更短超时，且每个测试后都会恢复默认请求器和超时。
+- 只有 `unavailable` 可以使用审核静态回退，并输出带集合、操作、原因和可选 HTTP 状态的 `[directus:fallback]` 日志；相同降级日志在短时间内去重。401/403 与非法响应会抛出包含集合和错误类型的明确错误。
+- 案例列表在 CMS 正常返回空数据时保持为空；案例 slug 不存在或取消发布时返回真正的 HTTP 404，不再 302 跳转或恢复静态详情。CMS 网络失败、超时或 5xx 时，审核静态案例仍可访问。
+- 修改范围：Directus 客户端与两组查询、状态错误适配器、Directus 门面、案例详情路由，以及相关 Vitest、Playwright 契约测试；未修改视觉、业务文案、公开数字、CMS 模型、权限、部署、Oracle 或依赖版本。
+- 测试先行证据：旧实现下定向 Vitest 为12项失败、2项通过；案例空 CMS 的 Playwright 契约为1项失败、1项通过，失败原因均符合待修语义。实现后5个Directus定向测试文件共33项通过，案例与回退定向 Playwright 3项通过；另有一条空记录校验测试先失败再由统一客户端校验修复。
+- 首次完整发布验证因新增测试文件332行超过220行维护预算而失败；随后按成功/空数据与故障分类职责拆成195行和157行两个测试文件，没有放宽预算或删除断言。
+- 最终实际验证：`npm run format:check`、`npm run typecheck`、`npm run lint`、`npm run test`、`npm run test:e2e`、`npm run test:formal-contract`、`npm run build`、`npm run verify:release` 均通过；最终为311个Astro文件无问题、456个文件通过维护预算、112项单元测试通过、37项E2E通过且5项按配置跳过、3项正式域名契约通过、生产构建通过。
+
+### 第一阶段文件范围
+
+- 已修改：`DEV_STATE.md`、`src/lib/directus-client.ts`、`src/lib/directus-content-queries.ts`、`src/lib/directus-queries.ts`、`src/lib/directus.ts`、`src/pages/cases/[slug].astro`、`tests/e2e/contracts.spec.ts`、`tests/unit/directus-content-resilience.test.ts`、`tests/unit/directus-resilience.test.ts`。
+- 第一阶段新增且仍未跟踪：`src/lib/directus/request-state.ts`、`tests/unit/directus-error-semantics.test.ts`。
+- `DEV_STATE.md`、两组 Directus 查询、案例契约测试和 `directus-resilience.test.ts` 在第二阶段继续发生修改，因此属于两阶段共享文件；不能仅凭最终 `git diff` 自动归属某一个阶段。
+
+## 公开业务事实唯一来源与 CMS 防漂移治理（2026-08-15）
+
+- 本轮以第一阶段提交 `526f5b2` 为父提交，形成独立的第二阶段本地提交；未推送、未部署、未连接或修改真实 Directus，也未修改数据库、权限、页面视觉、公开审核值或依赖版本。
+- 第一阶段前置条件已确认：Directus 请求能够区分 `success`、`unavailable`、`unauthorized` 和 `invalid`，成功空数据不回退，401/403 与非法响应明确失败，案例取消发布返回真实 404；相关定向测试 18 项全部通过。
+- `src/lib/claims.ts` 继续作为稳定公开入口，新增注册表验证、页面范围校验、审核状态与过期校验、统一展示值拆分、严格占位符插值、CMS 首页统计解析和旧格式映射等小型职责模块，避免事实解析重新堆入巨型文件。
+- 全局公开事实只能从 claims 注册表读取；调用方必须通过 `getApprovedClaim()`、`getClaimText()` 或 `getClaimPresentation()` 并传入明确页面范围。`CLAIM_TEXT` 仅作为兼容导出保留，运行时只包含确实允许 `*` 全站使用的事实，不能绕过页面权限。
+- CMS 首页统计的新契约使用 `claimKey`；CMS 即使同时提交冲突的 `value` 或 `unit`，页面仍使用审核注册表的值，并输出去重的兼容警告。旧记录只能通过集中、受测试保护的稳定数字 ID 映射；禁止按 CMS 数值、标签、单位、说明、其他自由文本或当前排序猜测事实。没有稳定 ID 或映射未命中时明确判为非法。
+- 旧格式兼容层是上线迁移期间的临时措施，只支持 `LEGACY_HOMEPAGE_CLAIM_BY_ID` 中明确列出的旧记录 ID。自由文本指纹映射已删除，并有“文本完全匹配但缺少稳定 ID 仍失败”的回归测试。待真实 CMS 全部写入合法 `claimKey`、迁移结果经过验收并确认没有旧记录后，应删除 ID 映射与 `[claims:legacy]` 警告路径。
+- CMS 文本占位符必须以 `interpolateClaims(value, { pageScope, source })` 解析；未知、未审核、已过期或当前页面越权的 claim 均明确失败，不再原样输出 `{{...}}`。错误只包含 claimKey、页面范围和有限来源定位，不包含 Token 或完整 CMS 正文。
+- 首页统计、FAQ、服务 seed、首页可见文本、品牌数据、案例页公共文案、SEO/JSON-LD 与 `llms.txt` 已改为引用同一 claims 注册表；数据卡的值和单位由统一 presentation 层拆分，防止重复单位。
+- CMS seed 生成源改为保存 `claimKey` 或 `{{claimKey}}`，生成前统一验证引用；`npm run cms:generate-faq-seeds` 成功生成 17 个页面的 100 条 FAQ，`npm run cms:generate-content-seeds` 成功生成 12 个服务页、14 期期刊、6 个案例详情及关于/站点内容。两个生成输出 `scripts/data/approved-faq-seeds.mjs` 和 `scripts/data/approved-cms-page-seeds.mjs` 与 Git 中现有内容一致，没有产生工作树差异。
+- CMS 字段 Schema 未修改：`scripts/data/core-content-collection-definitions.mjs`、`scripts/setup-cms.mjs`、`server/runtime-permissions.mjs` 和 `scripts/data/cms-admin-translations.mjs` 相对 HEAD 均无差异；`scripts/data/content-management-collection-definitions.mjs` 只有首页统计字段的后台说明文字由硬编码 `150+` 改为引用审核事实注册表，没有增加、删除或更改字段名、类型、接口、选项、关系或权限。
+- 漂移检查覆盖 `src/**/*.{astro,ts,tsx}`、`scripts/**/*.{mjs,json}` 和测试源码，并对非业务百分比等明确场景设置窄范围排除；页面、seed 和测试不得重新维护一份全局审核数字。案例专属指标继续留在案例域，只记录证据缺口。
+- 测试先行证据：新增测试在旧实现下因缺少严格插值模块和 presentation API、未知 claimKey 被接受、CMS 值直接透传而失败；实现后新增两组核心契约测试 18 项全部通过。
+- 实际验证结果：阶段一前置定向测试 18 项通过；自由文本指纹回归测试在修复前按预期 1 项失败、4 项通过，删除指纹后 claims 定向测试 3 个文件共 26 项通过；单元测试 24 个文件共 137 项通过；`npm run format:check`、`npm run typecheck`、`npm run lint`、`npm run test`、`npm run test:e2e`、`npm run test:formal-contract`、`npm run build` 和 `npm run verify:release` 全部通过。最终门禁为 319 个 Astro 文件无问题、464 个文件通过维护预算、38 项 E2E 通过且 6 项按项目配置跳过、3 项正式域名契约通过、生产构建通过。
+- 首次完整门禁发现三个已有或本轮触及的文件超过维护预算；通过复用类型和抽取测试夹具完成拆分，未提高阈值、未删除测试、未降低断言。测试期间出现的 `[directus:fallback]` 网络日志来自本地不可达 CMS 的受控降级验证，不代表真实环境已经连接或验证。
+
+### 第二阶段文件范围
+
+- Claims：`src/lib/claims.ts`、`src/lib/claims/cms.ts`、`src/lib/claims/interpolation.ts`、`src/lib/claims/legacy-mapping.ts`、`src/lib/claims/presentation.ts`、`src/lib/claims/validation.ts`、`src/lib/claims/fulfillment-performance.ts`、`src/lib/claims/fulfillment-scale.ts`、`src/lib/claims/quality.ts`。
+- Directus 契约：`src/lib/directus-content-queries.ts`、`src/lib/directus-interpolation.ts`、`src/lib/directus-queries.ts`、`src/lib/directus-types.ts`。
+- 页面与数据：`src/data/brand/core.ts`、`src/data/brand/home.ts`、`src/data/home/cms-fallbacks.ts`、`src/data/home/faqs.ts`、`src/pages/cases.astro`、`src/pages/index.astro`、`src/pages/llms.txt.ts`。
+- Seed 与生成：`scripts/data/approved-homepage-stats.mjs`、`scripts/data/approved-services.mjs`、`scripts/data/cms-seed-config.mjs`、`scripts/data/content-management-collection-definitions.mjs`、`scripts/generate-cms-content-seeds.mjs`、`scripts/generate-faq-seeds.mjs`、`scripts/lib/claim-reference-validation.mjs`、`scripts/migrate-unified-content.mjs`、`scripts/sync-approved-cms-content.mjs`。
+- 测试：`tests/e2e/contracts.spec.ts`、`tests/e2e/home-product.spec.ts`、`tests/formal/production-origin.spec.ts`、`tests/unit/claims-contract.test.ts`、`tests/unit/claims.test.ts`、`tests/unit/cms-sync.test.ts`、`tests/unit/directus-resilience.test.ts`、`tests/unit/directus.test.ts`、`tests/unit/homepage-claims-contract.test.ts`。
+- 状态记录：`DEV_STATE.md`。
+- 第二阶段新增文件：`scripts/lib/claim-reference-validation.mjs`、`src/lib/claims/cms.ts`、`src/lib/claims/interpolation.ts`、`src/lib/claims/legacy-mapping.ts`、`src/lib/claims/presentation.ts`、`src/lib/claims/validation.ts`、`tests/unit/claims-contract.test.ts`、`tests/unit/homepage-claims-contract.test.ts`。
+
+### 第二阶段准确验证命令
+
+- `npx vitest run tests/unit/homepage-claims-contract.test.ts`：删除自由文本指纹前为 1 项失败、4 项通过，证明相同自由文本在没有稳定 ID 时会被旧实现错误接受。
+- `npx vitest run tests/unit/homepage-claims-contract.test.ts tests/unit/claims-contract.test.ts tests/unit/claims.test.ts`：3 个文件、26 项通过。
+- `npm run cms:generate-faq-seeds`：成功，生成 17 个页面的 100 条 FAQ；生成文件无 Git 差异。
+- `npm run cms:generate-content-seeds`：成功，生成 12 个服务页、14 期期刊、6 个案例详情及关于/站点内容；生成文件无 Git 差异。
+- `npm run format:check`：通过。
+- `npm run typecheck`：319 个文件，0 错误、0 警告、0 提示。
+- `npm run lint`：通过。
+- `npm run test`：24 个文件、137 项通过、0 失败、0 跳过。
+- `npm run test:e2e`：38 项通过、0 失败、6 项按项目配置跳过。
+- `npm run test:formal-contract`：3 项通过、0 失败、0 跳过。
+- `npm run build`：通过。
+- `npm run verify:release`：通过；聚合门禁再次完成类型、Lint、464 个文件维护预算、55 个引用资源、103 个部署资源、137 项单元测试、38 项 E2E、3 项正式域名契约和生产构建。
+
+### 两阶段提交拆分与独立验证
+
+- 第一阶段已独立提交为 `526f5b2 修复 Directus 返回状态语义`，包含10个文件；第二阶段以该提交为父提交，包含39个文件。共享查询和测试文件按具体代码块拆分，没有把 claims API、`claimKey` 或页面范围校验混入第一阶段。
+- 在独立临时 worktree 检出 `526f5b2` 后，`npx vitest run tests/unit/directus-error-semantics.test.ts tests/unit/directus-content-resilience.test.ts tests/unit/directus-resilience.test.ts` 为3个文件、18项通过；`npm run typecheck` 检查311个文件，0错误、0警告、0提示。
+- 临时 worktree 首次执行 `npm ci` 长时间无进展后被中止；残留的部分依赖目录一度被 Astro 当成项目文件扫描并导致内存耗尽。将该临时目录移出 worktree 后，第一阶段 typecheck 正常通过，证明该失败来自临时验证环境而不是提交代码。临时 worktree 与残留依赖目录均已清理。
+- 第二阶段提交前重新执行 `npm run format:check` 与 `npm run test`，结果为格式通过、24个测试文件共137项通过。两个提交均仅存在于本地，未推送、未部署。
+
 ## 下一步
 
-1. 验证后台修改已发布内容后，前端下一次请求能立即显示新内容。
-2. 验收通过后，将运行代码提交 `3f7f705`、资源包和 CMS 模型同步到正式环境。
-3. 在不改变业务行为的前提下，将十二个仓配专题页的静态回退内容迁入类型化单一数据源，并增加CMS生成内容漂移检查。
-4. 精简 CSS 转发入口并将 `docs/PROJECT_STATUS.md` 归档为历史记录；PDF 外置迁移作为附件治理稳定后的独立任务，不与近期发布混做。
+1. 人工审查两个连续的本地提交，重点确认成功空数据、案例 404、页面范围、CMS `claimKey`、旧格式映射和严格占位符符合运营预期。
+2. 第三阶段单独处理 CMS 模型契约：为真实内容增加稳定 `claimKey` 并执行受控迁移；迁移验收完成后删除旧首页统计 ID 兼容层。本轮没有执行真实 CMS 迁移。
+3. 建立案例专属 evidence 模型，明确来源文件、统计周期、审核时间和公开授权；在依据不足前不得将案例指标并入全局 claims，也不得补造证据。
+4. 后续阶段分别处理权限治理、内容发布审批与过期提醒，不与本轮事实唯一来源改动混做。
+5. 补齐 16 项全局事实的正式来源附件和统计周期；对于确实不适用统计周期的事实，应由业务审核后形成明确证明，而不是由代码推断。
 
 任何密码、Token、API Key、私钥、Cookie 和真实 `.env` 都不得写入本文档或提交到 Git。

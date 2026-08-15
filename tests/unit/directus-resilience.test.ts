@@ -9,6 +9,20 @@ import {
   getServices,
   getWarehouses,
 } from '@/lib/directus'
+import { getClaimPresentation } from '@/lib/claims'
+
+function homepageStat(detail = '鞋服品牌') {
+  const { value, unit } = getClaimPresentation('partnerBrands', 'home')
+  return {
+    id: 1,
+    sort: 1,
+    claimKey: 'partnerBrands' as const,
+    value,
+    label: '合作品牌',
+    unit,
+    detail,
+  }
+}
 
 describe('Directus public content resilience', () => {
   beforeEach(() => {
@@ -23,20 +37,16 @@ describe('Directus public content resilience', () => {
     vi.restoreAllMocks()
   })
 
-  it('uses published CMS metric values without replacing them with static fallbacks', async () => {
+  it('uses published CMS presentation fields but never replaces the reviewed claim value', async () => {
+    const partnerBrands = getClaimPresentation('partnerBrands', 'home')
+    const warehouseArea = getClaimPresentation('warehouseArea', 'home')
     const reviewedStats = [
-      {
-        id: 1,
-        sort: 1,
-        value: '150+',
-        label: '合作品牌',
-        unit: '家',
-        detail: '审核后的默认说明',
-      },
+      homepageStat('审核后的默认说明'),
       {
         id: 2,
         sort: 2,
-        value: '54万',
+        claimKey: 'warehouseArea' as const,
+        value: warehouseArea.value,
         label: '直营仓储',
         unit: '㎡',
         detail: '审核后的仓储说明',
@@ -49,13 +59,15 @@ describe('Directus public content resilience', () => {
               id: 1,
               stats: [
                 {
-                  value: '135+',
+                  claimKey: 'partnerBrands',
+                  value: '冲突品牌值',
                   label: '合作品牌',
                   unit: '家',
                   detail: '后台维护的品牌说明',
                 },
                 {
-                  value: '48万',
+                  claimKey: 'warehouseArea',
+                  value: '冲突仓储值',
                   label: '直营仓储',
                   unit: '㎡',
                   detail: '后台维护的仓储说明',
@@ -70,7 +82,8 @@ describe('Directus public content resilience', () => {
       {
         id: 1,
         sort: 1,
-        value: '135+',
+        claimKey: 'partnerBrands',
+        value: partnerBrands.value,
         label: '合作品牌',
         unit: '家',
         detail: '后台维护的品牌说明',
@@ -78,7 +91,8 @@ describe('Directus public content resilience', () => {
       {
         id: 2,
         sort: 2,
-        value: '48万',
+        claimKey: 'warehouseArea',
+        value: warehouseArea.value,
         label: '直营仓储',
         unit: '㎡',
         detail: '后台维护的仓储说明',
@@ -88,9 +102,7 @@ describe('Directus public content resilience', () => {
 
   it('uses reviewed fallbacks and logs the collection when the CMS network is unavailable', async () => {
     const warningSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
-    const homepageFallback = [
-      { id: 1, sort: 1, value: '150+', label: '合作品牌', unit: '家', detail: '鞋服品牌' },
-    ]
+    const homepageFallback = [homepageStat()]
     const serviceFallback = [
       {
         id: 1,
@@ -190,9 +202,7 @@ describe('Directus public content resilience', () => {
       if (collection === 'homepage_content') throw new Error('CMS unavailable')
       throw new Error(`legacy collection queried: ${collection}`)
     })
-    const fallback = [
-      { id: 1, sort: 1, value: '150+', label: '合作品牌', unit: '家', detail: '鞋服品牌' },
-    ]
+    const fallback = [homepageStat()]
     __setDirectusRequesterForTests(requester)
 
     await expect(getHomepageStats(fallback)).resolves.toEqual(fallback)

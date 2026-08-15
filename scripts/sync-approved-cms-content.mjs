@@ -1,5 +1,4 @@
 import {
-  APPROVED_HOMEPAGE_STATS,
   APPROVED_SERVICES,
   APPROVED_WAREHOUSES,
   LEGACY_WAREHOUSE_NAMES,
@@ -22,19 +21,9 @@ const directus = createDirectusAdminClient({ baseUrl, token })
 const runtime = createCmsSyncRuntime({ directus, apply })
 
 async function verify() {
-  const stats = await directus.readCollection('homepage_stats')
   const services = await directus.readCollection('services')
   const warehouses = await directus.readCollection('warehouses')
 
-  assertSync(
-    fixedCollectionMatches(
-      stats,
-      APPROVED_HOMEPAGE_STATS,
-      ['sort'],
-      ['sort', 'value', 'label', 'unit', 'detail']
-    ),
-    'homepage_stats verification failed'
-  )
   assertSync(
     fixedCollectionMatches(
       services,
@@ -55,20 +44,11 @@ console.log(
 )
 
 const snapshot = {
-  homepage_stats: await directus.readCollection('homepage_stats'),
   services: await directus.readCollection('services'),
   warehouses: await directus.readCollection('warehouses'),
 }
 await runtime.writeBackup(snapshot)
 
-await syncFixedCollection({
-  collection: 'homepage_stats',
-  records: snapshot.homepage_stats,
-  targets: APPROVED_HOMEPAGE_STATS,
-  keyFields: ['sort'],
-  fields: ['sort', 'value', 'label', 'unit', 'detail'],
-  runtime,
-})
 await syncFixedCollection({
   collection: 'services',
   records: snapshot.services,

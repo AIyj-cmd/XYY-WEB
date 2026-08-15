@@ -27,15 +27,13 @@ export const CMS_SEEDS = {
     {
       status: 'published',
       key: 'main',
-      stats: APPROVED_HOMEPAGE_STATS.map(({ value, label, unit, detail }) => ({
-        value,
+      stats: APPROVED_HOMEPAGE_STATS.map(({ claimKey, label, detail }) => ({
+        claimKey,
         label,
-        unit,
         detail,
       })),
     },
   ],
-  homepage_stats: APPROVED_HOMEPAGE_STATS.map((item) => omit(item, ['id'])),
   services: APPROVED_SERVICES.map((item) => omit(item, ['id'])),
   warehouses: APPROVED_WAREHOUSES.map((item) => omit(item, ['aliases'])),
   cases: APPROVED_UNIFIED_CASE_SEEDS,
@@ -57,7 +55,6 @@ export const CMS_SEEDS = {
 
 export const CMS_SEED_IDENTITIES = {
   homepage_content: ['key'],
-  homepage_stats: ['sort'],
   services: ['slug'],
   warehouses: ['name'],
   cases: ['label'],

@@ -16,7 +16,7 @@ export const QUALITY_CLAIMS = {
     expiresAt: null,
     publishStatus: 'approved',
     allowedPages: ALL_PUBLIC_PAGES,
-    notes: '不拆分为未经确认的固定等级时效。',
+    notes: '服务规则不适用单一统计周期；不拆分为未经确认的固定等级时效。',
   },
   returnInspectionAnnual: {
     claimKey: 'annual_return_inspection_volume',
@@ -67,7 +67,7 @@ export const QUALITY_CLAIMS = {
     expiresAt: null,
     publishStatus: 'approved',
     allowedPages: ALL_PUBLIC_PAGES,
-    notes: '只代表识别能力，不代表全部可以修复。',
+    notes: '统计周期待质检能力台账补录；只代表识别能力，不代表全部可以修复。',
   },
   repairSuccessRate: {
     claimKey: 'repair_success_rate',
