@@ -86,26 +86,24 @@ Directus 暂时不可用，页面会使用代码中的审核版 FAQ，避免整�
 
 ## 集合生命周期与稳定身份
 
-| 生命周期 | 集合                                                  | 稳定身份                              |
-| -------- | ----------------------------------------------------- | ------------------------------------- |
-| active   | `homepage_content`、`about_content`、`site_settings`  | `key`                                 |
-| active   | `services`、`cases`、`news`、`service_pages`          | `slug`                                |
-| active   | `faq_pages`                                           | `key`                                 |
-| active   | `faqs`、`warehouses`、`about_history`、`about_honors` | `content_key`                         |
-| active   | `publications`                                        | `issue`                               |
-| legacy   | `homepage_stats`、`case_stats`、`service_stats`       | `metric_key`                          |
-| legacy   | `service_features`                                    | `content_key`                         |
-| legacy   | `case_details`                                        | `slug`                                |
-| private  | `contact_leads`                                       | Directus 主键；不参与 seed 或内容迁移 |
+| 生命周期 | 集合                                                                                | 稳定身份                                  |
+| -------- | ----------------------------------------------------------------------------------- | ----------------------------------------- |
+| active   | `homepage_content`、`about_content`、`site_settings`                                | `key`                                     |
+| active   | `services`、`cases`、`news`、`service_pages`                                        | `slug`                                    |
+| active   | `faq_pages`                                                                         | `key`                                     |
+| active   | `faqs`、`warehouses`、`about_history`、`about_honors`                               | `content_key`                             |
+| active   | `publications`                                                                      | `issue`                                   |
+| legacy   | `homepage_stats`、`case_details`、`case_stats`、`service_stats`、`service_features` | 无新增稳定身份要求；保留现有 Schema       |
+| private  | `contact_leads`                                                                     | Directus 主键；不参与 seed 或内容记录迁移 |
 
-`label`、`name`、`title`、`sort` 和 `year` 都是可编辑展示字段，不能作为 seed 身份。已有数据
+`label`、`name`、`title`、`sort` 和 `year` 都是可编辑展示字段，不能作为 seed 身份。active 集合
 若缺少新的稳定身份，`setup-cms` 会返回 `migration_required`，不会在有数据的集合上直接创建
-必填且唯一的字段。
+必填且唯一的字段；legacy 集合不再为了理想模型新增 `content_key` 或 `metric_key`。
 
 每个集合还具有明确的 seedPolicy：active 为 `normal`，legacy 为 `migration_only`，private 为
-`never`。因此 `case_details`、`case_stats`、`service_stats`、`service_features` 等 legacy 集合仍
-保留 Schema，供旧数据核对、迁移和必要回滚使用，但全新 CMS 不再写入 legacy seed；
-`contact_leads` 不参与 seed、内容快照或迁移。
+`never`。因此 legacy 集合仍保留当前 Schema 供旧数据核对和必要回滚使用，但不写入 seed、
+不参与运行读取、正常内容迁移、稳定身份校验或稳定身份约束收紧；`contact_leads` 不参与 seed、
+内容快照或记录迁移。
 
 ## Setup、Verify 与迁移边界
 
@@ -126,17 +124,22 @@ Directus 暂时不可用，页面会使用代码中的审核版 FAQ，避免整�
   已由 ID 选中的记录，不能用于寻找记录；未知记录禁止按名称、标签、数字、说明或排序猜测；
 - 旧 `homepage_content.stats` 只有在条目本身携带稳定 ID 且该 ID 与审核映射及 expected-before
   一致时才可迁移；缺少稳定 ID 时必须人工映射，禁止使用数组顺序推断；
-- 对已有数据集合补充 `content_key` 或 `metric_key` 时，迁移严格按“创建 nullable/非 unique
+- 对 active 已有数据集合补充 `content_key` 时，迁移严格按“创建 nullable/非 unique
   字段 → 回填 → 重新读取并验证无 null → 验证无重复 → 收紧 required → 增加 unique → 完整
   verify”执行。各步骤幂等，中途失败后可安全重跑，第二次运行应为零变更；
-- verify 对 private `contact_leads` 只读取集合、字段和关系元数据，不请求任何记录内容；
+- `cases.metrics`、`news.summary` 与 `news.published_at` 保持真实环境当前的 string 契约，不为
+  当前短文本和空数据开发 string→text/timestamp 转换；`news.slug` 的 unique 仍是必要目标；
+- verify 对 private `contact_leads` 只读取集合、字段和关系元数据，不请求任何记录内容；迁移
+  只允许针对 `status= new` 与 `source=website` 的默认值执行显式 schema-only 计划，不能读取、
+  快照或回填历史留言；
 - Directus API 的多次写入不具备单一数据库事务保证。迁移因此采用 fail-fast、逐步幂等、先备份
   和可安全重跑策略，不宣称原子性。
 
-第三阶段状态为 `PHASE_3_LOCALLY_VERIFIED`、`CMS_CONTRACT_READY`、`MIGRATION_TOOL_READY`、
-`REAL_CMS_DRY_RUN_NOT_EXECUTED`、`NOT_APPLIED`、`NOT_DEPLOYED`；迁移工具只通过 mock、fixture
-和本地测试，没有自动连接或迁移真实 CMS。正式操作顺序必须是：数据库与附件备份、真实 dry-run、
-人工审核映射与计划、显式 apply、迁移后 `npm run cms:verify`。
+真实 CMS 已在发布提交 `1c3c81e336d3fc67de74ccd5d550981c9603052d` 基线上执行只读 dry-run。
+初次理想化契约产生296项人工映射；本次真实环境契约收口补丁的只读复检降为144项，均来自
+active 的仓库、FAQ、发展历程、荣誉和首页统计 claimKey。legacy 映射为0，仍未 apply、未部署。
+正式操作仍必须经过人工审核映射、异机备份、显式 apply、迁移后 `npm run cms:verify` 和第二次
+零变更 dry-run。
 
 答案支持 `{{partnerBrands}}`、`{{warehouseArea}}`、`{{shippingAccuracy}}` 等事实占位符。
 渲染时由 `src/lib/claims.ts` 替换为当前审核值，避免品牌数量、仓储面积和时效口径在

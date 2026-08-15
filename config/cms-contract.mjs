@@ -1,7 +1,7 @@
 export const CMS_SCHEMA_VERSION = '2026-08-phase3'
 
 const policies = {
-  homepage_stats: { lifecycle: 'legacy', identity: ['metric_key'], seedPolicy: 'migration_only' },
+  homepage_stats: { lifecycle: 'legacy', identity: [], seedPolicy: 'migration_only' },
   homepage_content: { lifecycle: 'active', identity: ['key'], seedPolicy: 'normal' },
   faq_pages: { lifecycle: 'active', identity: ['key'], seedPolicy: 'normal' },
   services: { lifecycle: 'active', identity: ['slug'], seedPolicy: 'normal' },
@@ -9,14 +9,14 @@ const policies = {
   cases: { lifecycle: 'active', identity: ['slug'], seedPolicy: 'normal' },
   news: { lifecycle: 'active', identity: ['slug'], seedPolicy: 'normal' },
   faqs: { lifecycle: 'active', identity: ['content_key'], seedPolicy: 'normal' },
-  case_details: { lifecycle: 'legacy', identity: ['slug'], seedPolicy: 'migration_only' },
-  case_stats: { lifecycle: 'legacy', identity: ['metric_key'], seedPolicy: 'migration_only' },
+  case_details: { lifecycle: 'legacy', identity: [], seedPolicy: 'migration_only' },
+  case_stats: { lifecycle: 'legacy', identity: [], seedPolicy: 'migration_only' },
   publications: { lifecycle: 'active', identity: ['issue'], seedPolicy: 'normal' },
   service_pages: { lifecycle: 'active', identity: ['slug'], seedPolicy: 'normal' },
-  service_stats: { lifecycle: 'legacy', identity: ['metric_key'], seedPolicy: 'migration_only' },
+  service_stats: { lifecycle: 'legacy', identity: [], seedPolicy: 'migration_only' },
   service_features: {
     lifecycle: 'legacy',
-    identity: ['content_key'],
+    identity: [],
     seedPolicy: 'migration_only',
   },
   about_content: { lifecycle: 'active', identity: ['key'], seedPolicy: 'normal' },

@@ -111,28 +111,30 @@ export function validateCollectionSnapshot(contract, snapshot, options = {}) {
     }
   }
 
-  const identities = new Map()
-  for (const record of snapshot.records ?? []) {
-    const values = contract.identity.fields.map((field) => record[field])
-    if (values.some((value) => value === undefined || value === null || value === '')) {
-      errors.push(
-        error('identity_missing', collection, contract.identity.fields.join(','), 'set', values)
-      )
-      continue
-    }
-    const signature = JSON.stringify(values)
-    if (identities.has(signature)) {
-      errors.push(
-        error(
-          'identity_duplicate',
-          collection,
-          contract.identity.fields.join(','),
-          'unique',
-          values
+  if (contract.lifecycle === 'active') {
+    const identities = new Map()
+    for (const record of snapshot.records ?? []) {
+      const values = contract.identity.fields.map((field) => record[field])
+      if (values.some((value) => value === undefined || value === null || value === '')) {
+        errors.push(
+          error('identity_missing', collection, contract.identity.fields.join(','), 'set', values)
         )
-      )
+        continue
+      }
+      const signature = JSON.stringify(values)
+      if (identities.has(signature)) {
+        errors.push(
+          error(
+            'identity_duplicate',
+            collection,
+            contract.identity.fields.join(','),
+            'unique',
+            values
+          )
+        )
+      }
+      identities.set(signature, true)
     }
-    identities.set(signature, true)
   }
 
   return { errors, warnings }
@@ -152,7 +154,7 @@ export async function loadCollectionSnapshot(directus, contract) {
     contract.relations?.length
       ? directus.request('GET', `/relations/${contract.name}`)
       : Promise.resolve([]),
-    contract.lifecycle === 'private'
+    contract.lifecycle !== 'active'
       ? Promise.resolve({ data: [] })
       : directus.request(
           'GET',

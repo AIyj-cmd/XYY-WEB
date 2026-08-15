@@ -9,7 +9,6 @@ import {
 type CmsSnapshot = Record<string, Array<Record<string, unknown>>>
 
 const fixture = (): CmsSnapshot => ({
-  homepage_stats: [{ id: 1, label: '合作品牌', detail: '鞋服及相关细分行业' }],
   homepage_content: [
     {
       id: 1,
@@ -28,9 +27,7 @@ const fixture = (): CmsSnapshot => ({
   warehouses: [{ id: 201, name: '旧显示名' }],
   about_history: [],
   about_honors: [],
-  case_stats: [],
-  service_stats: [],
-  service_features: [],
+  news: [],
 })
 
 const mappings = {
@@ -52,6 +49,17 @@ describe('CMS contract migration planning', () => {
   it('excludes the private contact collection from migration reads', () => {
     expect(CMS_CONTRACT_MIGRATION_COLLECTIONS).not.toContain('contact_leads')
   })
+  it('excludes retained legacy collections from content migration reads', () => {
+    expect(CMS_CONTRACT_MIGRATION_COLLECTIONS).not.toEqual(
+      expect.arrayContaining([
+        'homepage_stats',
+        'case_details',
+        'case_stats',
+        'service_stats',
+        'service_features',
+      ])
+    )
+  })
   it('plans exact stable keys, FAQ relationships and homepage claimKey references', () => {
     const result = buildCmsContractMigrationPlan(fixture(), mappings)
     expect(result.issues).toEqual([])
@@ -71,11 +79,6 @@ describe('CMS contract migration planning', () => {
           patch: { content_key: 'warehouse-guangzhou-huangpu' },
         }),
         expect.objectContaining({ collection: 'homepage_content', id: 1 }),
-        expect.objectContaining({
-          collection: 'homepage_stats',
-          id: 1,
-          patch: { metric_key: 'partnerBrands' },
-        }),
       ])
     )
   })

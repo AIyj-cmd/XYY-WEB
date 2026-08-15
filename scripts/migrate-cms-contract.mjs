@@ -9,7 +9,7 @@ import { createDirectusAdminClient } from './lib/directus-admin.mjs'
 import {
   applyCmsContractPlan,
   buildCmsContractMigrationPlan,
-  CMS_CONTRACT_MIGRATION_COLLECTIONS,
+  readCmsContractMigrationSnapshot,
   writeCmsMigrationSnapshot,
 } from './lib/cms-contract-migration.mjs'
 
@@ -26,19 +26,6 @@ if (apply && process.env.CONFIRM_CMS_CONTRACT_MIGRATION !== CMS_SCHEMA_VERSION) 
 
 const directus = createDirectusAdminClient({ baseUrl, token })
 
-async function readSnapshot() {
-  const snapshot = { records: {}, fields: {} }
-  for (const collection of CMS_CONTRACT_MIGRATION_COLLECTIONS) {
-    const [value, fields] = await Promise.all([
-      directus.request('GET', `/items/${collection}?limit=-1`),
-      directus.request('GET', `/fields/${collection}`),
-    ])
-    snapshot.records[collection] = Array.isArray(value) ? value : value ? [value] : []
-    snapshot.fields[collection] = Array.isArray(fields) ? fields : []
-  }
-  return snapshot
-}
-
 async function readMappings() {
   if (!mappingPath) return {}
   return JSON.parse(await readFile(resolve(mappingPath), 'utf8'))
@@ -48,7 +35,7 @@ console.log(
   `CMS contract migration schema=${CMS_SCHEMA_VERSION} mode=${apply ? 'apply' : 'dry-run'}`
 )
 const mappings = await readMappings()
-const before = await readSnapshot()
+const before = await readCmsContractMigrationSnapshot(directus)
 const plan = buildCmsContractMigrationPlan(before, mappings)
 
 for (const change of plan.changes) {
@@ -75,7 +62,7 @@ const backup = await writeCmsMigrationSnapshot(before)
 console.log(`Migration snapshot: ${backup.path}`)
 console.log(`Migration snapshot SHA-256: ${backup.sha256}`)
 await applyCmsContractPlan(directus, plan, { apply: true })
-const after = await readSnapshot()
+const after = await readCmsContractMigrationSnapshot(directus)
 const verification = buildCmsContractMigrationPlan(after, mappings)
 if (
   verification.issues.length ||

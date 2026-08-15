@@ -19,12 +19,14 @@ describe('CMS model contract', () => {
   it('classifies every collection and never uses mutable display fields as seed identity', () => {
     for (const contract of CMS_COLLECTION_CONTRACTS) {
       expect(['active', 'legacy', 'private']).toContain(contract.lifecycle)
-      expect(contract.identity.fields.length).toBeGreaterThan(0)
       expect(['normal', 'migration_only', 'never']).toContain(contract.seedPolicy)
-      if (contract.seedPolicy === 'normal') {
+      if (contract.lifecycle === 'active') {
+        expect(contract.identity.fields.length).toBeGreaterThan(0)
         expect(contract.identity.fields.some((field) => MUTABLE_IDENTITY_FIELDS.has(field))).toBe(
           false
         )
+      } else if (contract.lifecycle === 'legacy') {
+        expect(contract.identity.fields).toEqual([])
       }
     }
   })
@@ -58,6 +60,19 @@ describe('CMS model contract', () => {
       service_stats: 'legacy',
       service_features: 'legacy',
       contact_leads: 'private',
+    })
+  })
+
+  it('does not require stable identities for retained legacy collections', () => {
+    const identities = Object.fromEntries(
+      CMS_COLLECTION_CONTRACTS.map(({ name, identity }) => [name, identity.fields])
+    )
+    expect(identities).toMatchObject({
+      homepage_stats: [],
+      case_details: [],
+      case_stats: [],
+      service_stats: [],
+      service_features: [],
     })
   })
 })

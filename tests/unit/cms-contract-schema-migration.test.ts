@@ -133,4 +133,36 @@ describe('CMS contract identity schema migration', () => {
       issues: [],
     })
   })
+
+  it('keeps active identity migration requirements while omitting legacy identities', () => {
+    const plan = buildCmsContractMigrationPlan(
+      {
+        records: {
+          warehouses: [{ id: 201, name: '旧显示名' }],
+          case_stats: [{ id: 301 }],
+          service_stats: [{ id: 401 }],
+          service_features: [{ id: 501 }],
+        },
+        fields: {
+          warehouses: [],
+          case_stats: [],
+          service_stats: [],
+          service_features: [],
+        },
+      },
+      mappings
+    )
+    expect(plan.schemaChanges).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ collection: 'warehouses', field: 'content_key' }),
+      ])
+    )
+    expect(plan.schemaChanges).not.toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ collection: 'case_stats' }),
+        expect.objectContaining({ collection: 'service_stats' }),
+        expect.objectContaining({ collection: 'service_features' }),
+      ])
+    )
+  })
 })

@@ -272,4 +272,16 @@
 5. 人工审查第五阶段 Release Identity、`/version`、部署与回滚身份核对 Diff；审查通过后再决定是否建立独立提交和执行真实部署。本轮代码治理到此结束，不创建第六阶段。
 6. 补齐 16 项全局事实的正式来源附件和统计周期；对于确实不适用统计周期的事实，应由业务审核后形成明确证明，而不是由代码推断。
 
+## 真实环境契约收口补丁（2026-08-15，不是第六阶段）
+
+- 基线为已发布提交 `1c3c81e336d3fc67de74ccd5d550981c9603052d`，开始前工作区干净。本补丁仅收口 CMS 目标契约和 dry-run 计划，当前仍未提交、未推送、未 apply、未部署。
+- 真实预检确认5个 legacy 集合不参与运行读取或 seed，因此取消 `homepage_stats.metric_key`、`case_stats.metric_key`、`service_stats.metric_key`、`service_features.content_key` 的新增、映射、必填与唯一要求；legacy 继续保留现有 Schema，但 verify 不读取其记录，也不再产生人工映射。
+- Active 要求保持不变：`warehouses.content_key`、`faqs.content_key`、`about_history.content_key`、`about_honors.content_key` 与 `homepage_content.stats.claimKey` 仍必须经人工确认；FAQ 继续以 `faq_page` 关系为唯一页面归属。
+- 契约接受真实环境现状：`cases.metrics`、`news.summary`、`news.published_at` 均保持 string，不生成 string→text/timestamp 转换。仍保留 `news.slug` unique、`contact_leads.status` 默认 `new`、`contact_leads.source` 默认 `website` 三项必要 Schema 目标。
+- 迁移读取边界：正常内容快照只包含 active 迁移集合；private `contact_leads` 只读取字段元数据并只允许上述两个默认值的 schema-only 计划，不读取、快照、修改或回填任何留言记录。
+- 测试先行证据：旧实现下4个定向测试文件共14项失败、30项通过，失败准确覆盖 legacy 人工映射、legacy 身份字段、三项类型升级、private 记录读取边界和缺失安全 Schema 计划；实现后5个定向测试文件共45项通过。维护性预算曾因新增用例令两个测试文件超过220行而失败，随后按“真实环境契约收口”职责拆出专用测试文件，没有提高阈值或删除断言。
+- 本地验证使用不可达 Directus 地址与两枚虚拟 Token 隔离执行：Prettier、Astro typecheck、ESLint、维护性、资源检查、245项 Vitest、38项 Playwright（6项按配置跳过）、3项正式域名契约、构建和 `npm run verify:release` 全部通过。未隔离的首次聚合构建因开发机既有 CMS Token 对 `site_settings` 返回403而正确失败，未发生写请求；隔离重跑退出码为0。
+- 真实验收 CMS 只读复检：`cms:verify` 不再因4个 legacy 身份字段或 `cases.metrics`、`news.summary`、`news.published_at` 的 string 类型失败；它仍按预期阻塞4个 active 身份字段、`news.slug` unique 和两项联系默认值。默认 `cms:migrate-contract` dry-run 产生144项 `manual_mapping_required`（仓库12、FAQ100、发展历程9、荣誉15、首页 claimKey 8），legacy 映射0；`singleton_migration_required`、重复身份、关系错误与 contract review 均为0。Schema 计划为4个 active nullable 身份字段、`news.slug` unique 和两项 private schema-only 默认值。
+- 范围外状态不变：内容 Token 仍有5条 legacy read 权限待精确撤销；数据库和附件备份虽已完成同机校验，但 `offsite_backup_missing`。两项均未在本补丁中处理，并继续阻止真实 apply。
+
 任何密码、Token、API Key、私钥、Cookie 和真实 `.env` 都不得写入本文档或提交到 Git。

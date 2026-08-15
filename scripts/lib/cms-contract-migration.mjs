@@ -3,6 +3,7 @@ import {
   applyIdentityConstraints,
   createNullableIdentityFields,
   planIdentitySchemaPhases,
+  planSafeSchemaChanges,
   STABLE_IDENTITY_FIELDS,
   verifyRemoteIdentities,
 } from './cms-contract-schema-migration.mjs'
@@ -10,17 +11,16 @@ import {
 export { writeCmsMigrationSnapshot } from './cms-contract-snapshot.mjs'
 
 export const CMS_CONTRACT_MIGRATION_COLLECTIONS = [
-  'homepage_stats',
   'homepage_content',
   'faq_pages',
   'faqs',
   'warehouses',
   'about_history',
   'about_honors',
-  'case_stats',
-  'service_stats',
-  'service_features',
+  'news',
 ]
+
+export const CMS_CONTRACT_SCHEMA_ONLY_COLLECTIONS = ['contact_leads']
 
 const recordId = (record) => String(record.id)
 const recordsFor = (snapshot, collection) =>
@@ -51,22 +51,12 @@ const homepageClaimByLegacyId = new Map(
   ])
 )
 
-function homepageMapping(record) {
-  const entry = homepageClaimByLegacyId.get(Number(record.id))
-  if (!entry || !matchesExpectedBefore(record, entry.expectedBefore)) return null
-  return entry.targetStableKey
-}
-
 function planStableIdentities(snapshot, mappings, changes, issues) {
   for (const [collection, field] of Object.entries(STABLE_IDENTITY_FIELDS)) {
     const records = recordsFor(snapshot, collection)
     const identities = new Map()
     for (const record of records) {
-      const mapped =
-        record[field] ||
-        (collection === 'homepage_stats'
-          ? homepageMapping(record)
-          : mappingFor(collection, record, mappings))
+      const mapped = record[field] || mappingFor(collection, record, mappings)
       if (!mapped) {
         issues.push(
           `manual_mapping_required collection=${collection} id=${recordId(record)} reason=missing_or_expected_before_mismatch`
@@ -165,7 +155,25 @@ export function buildCmsContractMigrationPlan(snapshot, mappings = {}) {
   planHomepageClaims(snapshot, changes, issues)
   planFaqRelations(snapshot, changes, issues)
   const { schemaChanges, identityChecks } = planIdentitySchemaPhases(snapshot, changes, issues)
+  schemaChanges.push(...planSafeSchemaChanges(snapshot, issues))
   return { changes, schemaChanges, identityChecks, issues }
+}
+
+export async function readCmsContractMigrationSnapshot(directus) {
+  const snapshot = { records: {}, fields: {} }
+  for (const collection of CMS_CONTRACT_MIGRATION_COLLECTIONS) {
+    const [value, fields] = await Promise.all([
+      directus.request('GET', `/items/${collection}?limit=-1`),
+      directus.request('GET', `/fields/${collection}`),
+    ])
+    snapshot.records[collection] = Array.isArray(value) ? value : value ? [value] : []
+    snapshot.fields[collection] = Array.isArray(fields) ? fields : []
+  }
+  for (const collection of CMS_CONTRACT_SCHEMA_ONLY_COLLECTIONS) {
+    const fields = await directus.request('GET', `/fields/${collection}`)
+    snapshot.fields[collection] = Array.isArray(fields) ? fields : []
+  }
+  return snapshot
 }
 
 export async function applyCmsContractPlan(directus, plan, { apply = false } = {}) {

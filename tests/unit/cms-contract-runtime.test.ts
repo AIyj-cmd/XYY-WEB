@@ -128,6 +128,47 @@ describe('CMS contract runtime validation', () => {
     expect(result.warnings.join('\n')).toContain('legacy_field collection=cases field=image_file')
   })
 
+  it.each([
+    ['homepage_stats', 'metric_key'],
+    ['case_stats', 'metric_key'],
+    ['service_stats', 'metric_key'],
+    ['service_features', 'content_key'],
+  ])('does not require retired legacy identity field %s.%s', (collection, field) => {
+    const contract = CMS_CONTRACT_BY_COLLECTION[collection]
+    expect(contract.fields.some((candidate: ContractField) => candidate.field === field)).toBe(
+      false
+    )
+    expect(contract.identity.fields).toEqual([])
+  })
+
+  it.each([
+    ['cases', 'metrics'],
+    ['news', 'summary'],
+    ['news', 'published_at'],
+  ])('accepts the current string contract for %s.%s', (collection, field) => {
+    const contract = CMS_CONTRACT_BY_COLLECTION[collection]
+    expect(
+      contract.fields.find((candidate: ContractField) => candidate.field === field)?.type
+    ).toBe('string')
+  })
+
+  it('does not read retained legacy records while verifying their schema', async () => {
+    const contract = CMS_CONTRACT_BY_COLLECTION.case_stats
+    const request = vi.fn(async (_method: string, path: string) => {
+      if (path === '/collections/case_stats') {
+        return { collection: 'case_stats', meta: { singleton: false } }
+      }
+      if (path === '/fields/case_stats') {
+        return contract.fields.map((field: ContractField) => toSnapshotField(field))
+      }
+      return []
+    })
+    await expect(loadCollectionSnapshot({ request }, contract)).resolves.toMatchObject({
+      records: [],
+    })
+    expect(request.mock.calls.some(([, path]) => path.startsWith('/items/case_stats'))).toBe(false)
+  })
+
   it('blocks an unknown legacy exception instead of weakening validation', () => {
     const result = validateCollectionSnapshot(homepage, validHomepageSnapshot, {
       legacyAllowlist: [
