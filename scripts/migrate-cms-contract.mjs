@@ -5,6 +5,7 @@ import { resolve } from 'node:path'
 import { spawnSync } from 'node:child_process'
 
 import { CMS_SCHEMA_VERSION } from '../config/cms-contract.mjs'
+import { APPROVED_CMS_CONTRACT_MAPPINGS } from './data/approved-cms-contract-mappings.mjs'
 import { createDirectusAdminClient } from './lib/directus-admin.mjs'
 import {
   applyCmsContractPlan,
@@ -27,8 +28,19 @@ if (apply && process.env.CONFIRM_CMS_CONTRACT_MIGRATION !== CMS_SCHEMA_VERSION) 
 const directus = createDirectusAdminClient({ baseUrl, token })
 
 async function readMappings() {
-  if (!mappingPath) return {}
-  return JSON.parse(await readFile(resolve(mappingPath), 'utf8'))
+  if (!mappingPath) return APPROVED_CMS_CONTRACT_MAPPINGS
+  const overrides = JSON.parse(await readFile(resolve(mappingPath), 'utf8'))
+  return Object.fromEntries(
+    [...new Set([...Object.keys(APPROVED_CMS_CONTRACT_MAPPINGS), ...Object.keys(overrides)])].map(
+      (collection) => [
+        collection,
+        {
+          ...(APPROVED_CMS_CONTRACT_MAPPINGS[collection] ?? {}),
+          ...(overrides[collection] ?? {}),
+        },
+      ]
+    )
+  )
 }
 
 console.log(

@@ -285,3 +285,13 @@
 - 范围外状态不变：内容 Token 仍有5条 legacy read 权限待精确撤销；数据库和附件备份虽已完成同机校验，但 `offsite_backup_missing`。两项均未在本补丁中处理，并继续阻止真实 apply。
 
 任何密码、Token、API Key、私钥、Cookie 和真实 `.env` 都不得写入本文档或提交到 Git。
+
+## Active 身份映射最终收口（2026-08-15）
+
+- 当前基线为 `b726ccba2bbd4c25bfc705193195380683b9dee1`。本轮只修正审核映射的 expected-before 语义并装载已确认的144项 Active 身份，不新增 Schema、legacy 治理或迁移框架。
+- expected-before 现在只对旧审查流程已经定义的 comparable business fields 生成 canonical SHA-256；FAQ 额外纳入权威 `faq_page.key`。Directus 更新时间、系统用户和其他不参与身份审核的元数据变化不再误判为身份丢失，业务字段或 FAQ 页面关系变化仍会阻断。
+- FAQ 100条继续使用旧审查包中同一 record ID 对应的 content_key，并以当前业务字段和 `faq_page.key` 刷新 canonical precondition；仓库1–3保留原审核结果，仓库7–12按已审核 record ID 到 stable key 的连续性保留身份，仓库4–6使用与 record ID 绑定的随机 UUID 风格 content_key。发展历程9条、荣誉15条和首页8项 claimKey 决策保持原样。
+- 已批准映射集中在 `scripts/data/approved-cms-contract-mappings.mjs`，迁移仍通过现有 `cms-contract-migration` 实现按 record ID、stable key 和 canonical hash 三重校验；没有运行时文本匹配或新建第二套迁移机制。
+- 本地定向验证为4个文件26项通过；完整隔离门禁为348个 Astro 文件无诊断、ESLint通过、493个文件满足维护预算、37个 Vitest 文件250项通过、Playwright 38项通过且6项按配置跳过、正式域名契约3项通过、两轮生产构建通过，`npm run verify:release` 与 `git diff --check` 均通过。
+- 当前状态：代码尚未提交或推送；真实 dry-run 尚未使用新映射重跑；真实 CMS 未 apply、权限未变更、staging 未部署。
+- 新映射的真实 CMS 默认 dry-run 已只读执行成功：137条内容 PATCH 计划覆盖仓库12、FAQ100、发展历程9、荣誉15及首页单例1条整体 stats PATCH（内含8个 claimKey），另有4个 Active 身份字段各3阶段共12条 Schema 计划；没有 `manual_mapping_required`、`singleton_migration_required`、重复稳定身份、关系错误、contract review 或 legacy mapping。真实 CMS 仍未 apply，运行权限与 staging 尚未变更。

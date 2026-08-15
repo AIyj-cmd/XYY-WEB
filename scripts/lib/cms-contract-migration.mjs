@@ -1,4 +1,3 @@
-import { APPROVED_HOMEPAGE_STATS } from '../data/approved-homepage-stats.mjs'
 import {
   applyIdentityConstraints,
   createNullableIdentityFields,
@@ -7,8 +6,15 @@ import {
   STABLE_IDENTITY_FIELDS,
   verifyRemoteIdentities,
 } from './cms-contract-schema-migration.mjs'
+import { planHomepageClaims } from './cms-homepage-claim-migration.mjs'
+import {
+  createCmsMigrationPreconditionHash,
+  createCmsMigrationValueHash,
+  resolveCmsMigrationStableKey,
+} from './cms-migration-preconditions.mjs'
 
 export { writeCmsMigrationSnapshot } from './cms-contract-snapshot.mjs'
+export { createCmsMigrationPreconditionHash, createCmsMigrationValueHash }
 
 export const CMS_CONTRACT_MIGRATION_COLLECTIONS = [
   'homepage_content',
@@ -26,37 +32,27 @@ const recordId = (record) => String(record.id)
 const recordsFor = (snapshot, collection) =>
   snapshot.records?.[collection] ?? snapshot[collection] ?? []
 
-function matchesExpectedBefore(record, expectedBefore) {
-  if (
-    !expectedBefore ||
-    typeof expectedBefore !== 'object' ||
-    !Object.keys(expectedBefore).length
-  ) {
-    return false
-  }
-  return Object.entries(expectedBefore).every(([field, value]) => record[field] === value)
+function relatedFaqPageKey(record, snapshot) {
+  const relationId =
+    typeof record.faq_page === 'object' && record.faq_page ? record.faq_page.id : record.faq_page
+  const page = recordsFor(snapshot, 'faq_pages').find(
+    (candidate) => String(candidate.id) === String(relationId)
+  )
+  return page?.key
 }
 
-function mappingFor(collection, record, mappings) {
+function mappingFor(collection, record, mappings, snapshot) {
   const entry = mappings[collection]?.[recordId(record)]
-  if (!entry || typeof entry !== 'object') return null
-  if (!entry.targetStableKey || !matchesExpectedBefore(record, entry.expectedBefore)) return null
-  return entry.targetStableKey
+  const faqPageKey = collection === 'faqs' ? relatedFaqPageKey(record, snapshot) : undefined
+  return resolveCmsMigrationStableKey({ collection, record, entry, faqPageKey })
 }
-
-const homepageClaimByLegacyId = new Map(
-  APPROVED_HOMEPAGE_STATS.map(({ id, claimKey, label, detail }) => [
-    id,
-    { targetStableKey: claimKey, expectedBefore: { label, detail } },
-  ])
-)
 
 function planStableIdentities(snapshot, mappings, changes, issues) {
   for (const [collection, field] of Object.entries(STABLE_IDENTITY_FIELDS)) {
     const records = recordsFor(snapshot, collection)
     const identities = new Map()
     for (const record of records) {
-      const mapped = record[field] || mappingFor(collection, record, mappings)
+      const mapped = record[field] || mappingFor(collection, record, mappings, snapshot)
       if (!mapped) {
         issues.push(
           `manual_mapping_required collection=${collection} id=${recordId(record)} reason=missing_or_expected_before_mismatch`
@@ -69,32 +65,6 @@ function planStableIdentities(snapshot, mappings, changes, issues) {
       identities.set(mapped, record.id)
       if (!record[field]) changes.push({ collection, id: record.id, patch: { [field]: mapped } })
     }
-  }
-}
-
-function planHomepageClaims(snapshot, changes, issues) {
-  for (const record of recordsFor(snapshot, 'homepage_content')) {
-    if (!Array.isArray(record.stats)) continue
-    let changed = false
-    const stats = record.stats.map((stat) => {
-      if (stat.claimKey) return stat
-      if (stat.id === undefined || stat.id === null) {
-        issues.push(
-          `manual_mapping_required collection=homepage_content id=${recordId(record)} stat=missing reason=stable_id_required`
-        )
-        return stat
-      }
-      const entry = homepageClaimByLegacyId.get(Number(stat.id))
-      if (!entry || !matchesExpectedBefore(stat, entry.expectedBefore)) {
-        issues.push(
-          `manual_mapping_required collection=homepage_content id=${recordId(record)} stat=${String(stat.id)} reason=expected_before_mismatch`
-        )
-        return stat
-      }
-      changed = true
-      return { ...stat, claimKey: entry.targetStableKey }
-    })
-    if (changed) changes.push({ collection: 'homepage_content', id: record.id, patch: { stats } })
   }
 }
 
@@ -152,7 +122,7 @@ export function buildCmsContractMigrationPlan(snapshot, mappings = {}) {
   const changes = []
   const issues = []
   planStableIdentities(snapshot, mappings, changes, issues)
-  planHomepageClaims(snapshot, changes, issues)
+  planHomepageClaims(recordsFor(snapshot, 'homepage_content'), mappings, changes, issues)
   planFaqRelations(snapshot, changes, issues)
   const { schemaChanges, identityChecks } = planIdentitySchemaPhases(snapshot, changes, issues)
   schemaChanges.push(...planSafeSchemaChanges(snapshot, issues))
