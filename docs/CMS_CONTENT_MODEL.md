@@ -9,27 +9,27 @@ seed 与迁移工具从绑定结果工作。运行时依赖方向固定为
 
 ## 当前已接入
 
-| 集合               | 用途                 | 前端行为                         |
-| ------------------ | -------------------- | -------------------------------- |
-| `homepage_content` | 首页集中配置         | 单例内维护全部运营数据           |
+| 集合                 | 用途          | 前端行为                 |
+| ------------------ | ----------- | -------------------- |
+| `homepage_content` | 首页集中配置      | 单例内维护全部运营数据          |
 | `homepage_stats`   | 旧首页数据兼容备份   | 后台隐藏，运行时不再读取         |
-| `services`         | 导航与首页服务入口   | 发布记录按 `sort` 展示           |
-| `warehouses`       | 仓网信息             | 发布记录按 `sort` 展示           |
+| `services`         | 导航与首页服务入口   | 发布记录按 `sort` 展示      |
+| `warehouses`       | 仓网信息        | 发布记录按 `sort` 展示      |
 | `cases`            | 案例正文与全部指标   | 每个品牌一条记录，按 `sort` 展示 |
-| `news`             | 行业动态文章         | 发布记录按发布时间展示           |
-| `faq_pages`        | 17 个页面的 FAQ      | 每个页面内聚合维护问题列表       |
-| `faqs`             | FAQ 子项兼容集合     | 由 `faq_pages` 关系字段维护      |
+| `news`             | 行业动态文章      | 发布记录按发布时间展示          |
+| `faq_pages`        | 17 个页面的 FAQ | 每个页面内聚合维护问题列表        |
+| `faqs`             | FAQ 子项兼容集合  | 由 `faq_pages` 关系字段维护 |
 | `case_details`     | 旧案例正文兼容备份   | 后台隐藏，运行时不再读取         |
 | `case_stats`       | 旧案例指标兼容备份   | 后台隐藏，运行时不再读取         |
-| `publications`     | 森林期刊目录         | 按 `sort` 展示封面和 PDF         |
-| `service_pages`    | 服务文案、指标、能力 | 每个专题一条记录集中维护         |
+| `publications`     | 森林期刊目录      | 按 `sort` 展示封面和 PDF   |
+| `service_pages`    | 服务文案、指标、能力  | 每个专题一条记录集中维护         |
 | `service_stats`    | 旧服务指标兼容备份   | 后台隐藏，运行时不再读取         |
 | `service_features` | 旧服务能力兼容备份   | 后台隐藏，运行时不再读取         |
-| `about_content`    | 关于我们主文案       | Directus 单例                    |
-| `about_history`    | 公司发展历程         | 按 `sort` 展示                   |
-| `about_honors`     | 公司荣誉             | 按 `sort` 展示                   |
-| `site_settings`    | 全站联系方式与页脚   | Directus 单例                    |
-| `contact_leads`    | 官网咨询线索         | 仅供提交和后台跟进               |
+| `about_content`    | 关于我们主文案     | Directus 单例          |
+| `about_history`    | 公司发展历程      | 按 `sort` 展示          |
+| `about_honors`     | 公司荣誉        | 按 `sort` 展示          |
+| `site_settings`    | 全站联系方式与页脚   | Directus 单例          |
+| `contact_leads`    | 官网咨询线索      | 仅供提交和后台跟进            |
 
 ## 内容源优先级
 
@@ -86,15 +86,15 @@ Directus 暂时不可用，页面会使用代码中的审核版 FAQ，避免整�
 
 ## 集合生命周期与稳定身份
 
-| 生命周期 | 集合                                                                                | 稳定身份                                  |
-| -------- | ----------------------------------------------------------------------------------- | ----------------------------------------- |
-| active   | `homepage_content`、`about_content`、`site_settings`                                | `key`                                     |
-| active   | `services`、`cases`、`news`、`service_pages`                                        | `slug`                                    |
-| active   | `faq_pages`                                                                         | `key`                                     |
-| active   | `faqs`、`warehouses`、`about_history`、`about_honors`                               | `content_key`                             |
-| active   | `publications`                                                                      | `issue`                                   |
-| legacy   | `homepage_stats`、`case_details`、`case_stats`、`service_stats`、`service_features` | 无新增稳定身份要求；保留现有 Schema       |
-| private  | `contact_leads`                                                                     | Directus 主键；不参与 seed 或内容记录迁移 |
+| 生命周期    | 集合                                                                              | 稳定身份                         |
+| ------- | ------------------------------------------------------------------------------- | ---------------------------- |
+| active  | `homepage_content`、`about_content`、`site_settings`                              | `key`                        |
+| active  | `services`、`cases`、`news`、`service_pages`                                       | `slug`                       |
+| active  | `faq_pages`                                                                     | `key`                        |
+| active  | `faqs`、`warehouses`、`about_history`、`about_honors`                              | `content_key`                |
+| active  | `publications`                                                                  | `issue`                      |
+| legacy  | `homepage_stats`、`case_details`、`case_stats`、`service_stats`、`service_features` | 无新增稳定身份要求；保留现有 Schema        |
+| private | `contact_leads`                                                                 | Directus 主键；不参与 seed 或内容记录迁移 |
 
 `label`、`name`、`title`、`sort` 和 `year` 都是可编辑展示字段，不能作为 seed 身份。active 集合
 若缺少新的稳定身份，`setup-cms` 会返回 `migration_required`，不会在有数据的集合上直接创建
@@ -136,11 +136,10 @@ Directus 暂时不可用，页面会使用代码中的审核版 FAQ，避免整�
 - Directus API 的多次写入不具备单一数据库事务保证。迁移因此采用 fail-fast、逐步幂等、先备份
   和可安全重跑策略，不宣称原子性。
 
-真实 CMS 已在发布提交 `1c3c81e336d3fc67de74ccd5d550981c9603052d` 基线上执行只读 dry-run。
-初次理想化契约产生296项人工映射；本次真实环境契约收口补丁的只读复检降为144项，均来自
-active 的仓库、FAQ、发展历程、荣誉和首页统计 claimKey。legacy 映射为0，仍未 apply、未部署。
-正式操作仍必须经过人工审核映射、异机备份、显式 apply、迁移后 `npm run cms:verify` 和第二次
-零变更 dry-run。
+真实 staging CMS 已完成144项 active 稳定身份与首页 claimKey 迁移，legacy 映射为0；迁移后
+`npm run cms:verify` 为0 failure，运行权限审计通过，第二次 `npm run cms:migrate-contract`
+为0项内容变更、0项 Schema 变更。后续只有新增真实模型变更时才重新进入 dry-run、备份、人工审核、
+显式 apply 和迁移后 Verify 流程。
 
 答案支持 `{{partnerBrands}}`、`{{warehouseArea}}`、`{{shippingAccuracy}}` 等事实占位符。
 渲染时由 `src/lib/claims.ts` 替换为当前审核值，避免品牌数量、仓储面积和时效口径在
@@ -155,7 +154,8 @@ DIRECTUS_URL=https://example.com/cms DIRECTUS_TOKEN='<admin-token>' node scripts
 
 初始化只补齐缺失页面和问题，不会覆盖后台已经编辑的记录。Singleton 运营内容应通过 Directus
 后台、受控内容同步或显式迁移维护，不能依赖 setup 更新。初始化完成后会查找
-`Website Content Read-Only` 策略，并自动为18个公开内容集合补齐“仅查看已发布记录”权限。
+`Website Content Read-Only` 策略，并为主契约中的13个 active 运行集合补齐只读动作；发布状态
+继续由网站查询显式过滤，5个 legacy 集合和 `contact_leads` 不进入内容读取权限。
 若策略使用了其他名称，可设置 `DIRECTUS_CONTENT_POLICY_NAME`；也可以直接设置
 `DIRECTUS_CONTENT_POLICY_ID`。已有数据库只需补权限时运行：
 

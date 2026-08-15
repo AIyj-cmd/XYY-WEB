@@ -4,7 +4,7 @@
 
 - 当前验收入口：<https://wz.tomatopia.top>
 - 正式域名：<https://56xyy.com>（切换完成前仍需核对证书、DNS 与搜索引擎策略）
-- 项目状态：[docs/PROJECT_STATUS.md](docs/PROJECT_STATUS.md)
+- 当前状态：[DEV_STATE.md](DEV_STATE.md)
 
 ## 技术栈
 
@@ -71,9 +71,11 @@ deploy/
   nginx-56xyy.conf     正式域名迁移参考配置，当前未启用
   oracle19c/           Oracle 安装、内容迁移、切换、回滚与备份脚本
 docs/
-  PROJECT_STATUS.md    历史项目状态记录，不作为当前状态依据
-  MAINTAINABILITY.md   页面、组件、数据、脚本和后端维护状态矩阵
-  archive/             历史检查报告和优化计划
+  CMS_CONTENT_MODEL.md  Directus 内容、权限与迁移维护规则
+  MAINTAINABILITY.md    页面、组件、数据、脚本和后端维护边界
+  MAIN_DOMAIN_CUTOVER.md  正式域名切换与回滚清单
+  DESIGN_REFERENCE.md  明确设计任务使用的可选参考
+  PERFORMANCE_BASELINE.md  历史性能观察基线
 tests/                 单元与端到端测试
 ```
 
@@ -90,15 +92,15 @@ tests/                 单元与端到端测试
 | 官网统一运营口径                 | `src/lib/claims.ts`                               | 修改代码并部署               |
 | SEO 与结构化数据                 | 页面代码与 `src/lib/seo.ts`                       | 修改代码并部署               |
 
-Directus 读取失败时返回空集合并报告依赖降级，不在进程内缓存 CMS 内容；首页案例另有已审核代码回退。统计和服务目前不使用陈旧快照，因此发布环境必须把 CMS 健康检查作为门槛。动态页面响应设置为 `no-store`。
+Directus 成功返回空数据时页面保持为空；只有网络失败、超时或 HTTP 5xx 才使用审核版代码回退。401/403 和非法响应明确失败，不能用旧内容掩盖权限或数据问题。动态页面不缓存 CMS 内容并设置 `no-store`，发布环境继续把 CMS 健康检查作为门槛。
 
 ## 可维护性
 
 - 页面入口只负责取数、Schema、页面级配置与模块编排；
 - 静态业务内容进入 `src/data/`，组件、样式和浏览器控制器按职责隔离；
 - `npm run verify` 会执行可维护性预算和静态资源完整性检查；
-- 当前最大业务组件113行、最大CSS147行；关于页Hero、联系表单、华南仓网、服务独有内容、Express运行时、字体生成和Oracle准备流程均已按变化原因拆分；
-- 当前门禁覆盖432个项目文件；CSS上限200行、内容数据上限180行，Astro页面入口、API路由、自动化入口和部署脚本另有更严格的专项预算；
+- 关于页Hero、联系表单、华南仓网、服务独有内容、Express运行时、字体生成和Oracle准备流程均已按变化原因拆分；
+- CSS上限200行、内容数据上限180行，Astro页面入口、API路由、自动化入口和部署脚本另有更严格的专项预算；具体测试数量和最新结果以 `DEV_STATE.md` 为准；
 - 公开规模、履约和质检数字统一从 `src/lib/claims/` 注册表读取，单元测试禁止在页面、组件和内容配置中重新手写同一口径；
 - 不为追求行数机械拆分事实注册表或原子请求；
 - 详细状态、保留理由与剩余债务见 [docs/MAINTAINABILITY.md](docs/MAINTAINABILITY.md)。
@@ -204,10 +206,9 @@ npm run cms:sync-approved
 npm run cms:sync-approved -- --apply
 ```
 
-当前生产修复责任和操作顺序见
-[`docs/PRODUCTION_REMEDIATION_HANDOFF.md`](docs/PRODUCTION_REMEDIATION_HANDOFF.md)。
-Directus 字段职责、FAQ 页面标识和下一阶段后台化建议见
-[`docs/CMS_CONTENT_MODEL.md`](docs/CMS_CONTENT_MODEL.md)。
+Directus 字段职责、FAQ 页面标识和维护规则见
+[`docs/CMS_CONTENT_MODEL.md`](docs/CMS_CONTENT_MODEL.md)；正式域名发布与回滚步骤见
+[`docs/MAIN_DOMAIN_CUTOVER.md`](docs/MAIN_DOMAIN_CUTOVER.md)。
 
 ## 提交边界
 
