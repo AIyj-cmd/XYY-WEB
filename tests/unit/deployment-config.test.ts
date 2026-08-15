@@ -141,11 +141,15 @@ describe('production deployment contracts', () => {
     const deploy = read('scripts/deploy.sh')
 
     expect(packageJson.scripts['verify:release']).toMatch(/test:formal-contract && npm run build$/)
-    expect(deploy).toContain('if ! SITE_URL="$HEALTHCHECK_SITE_URL" node scripts/health-check.mjs')
+    expect(deploy).toContain('EXPECTED_GIT_SHA="$GIT_SHA"')
+    expect(deploy).toContain('node scripts/health-check.mjs')
     expect(deploy).toContain('external release checks failed; restoring previous release')
     expect(deploy).toContain('refusing unsafe rollback target')
     expect(deploy).toMatch(/releases_dir\\"\/\*\|\\"\\\$legacy_dir/)
     expect(deploy).toContain('rolled-back release failed health check')
+    expect(deploy).toContain('release-manifest.json')
+    expect(deploy).toContain('verify_release_identity')
+    expect(deploy).toContain('legacy_previous_release_identity_unavailable')
   })
 
   it('rolls Oracle startup and health failures back to PostgreSQL', () => {

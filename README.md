@@ -12,7 +12,7 @@
 | ---- | ------------------------------------------------------ |
 | 前端 | Astro 7 SSR、TypeScript、Tailwind CSS 4、页面级 CSS    |
 | 交互 | GSAP 3、Lenis、原生 IntersectionObserver               |
-| CMS  | Directus 12、PostgreSQL 16（Oracle 19c 迁移目标）       |
+| CMS  | Directus 12、PostgreSQL 16（Oracle 19c 迁移目标）      |
 | 服务 | Express 5、PM2、Nginx                                  |
 | 测试 | Astro Check、ESLint、Vitest、Playwright、Lighthouse CI |
 
@@ -63,6 +63,7 @@ scripts/
   check-public-assets.mjs    本地资源引用完整性门禁
   deploy.sh            验证、构建、上传、PM2 重启和健康检查
   health-check.mjs     官网、Web 进程与 Directus 健康检查
+  create-release-manifest.mjs  生成不可变发布身份文件
   bootstrap-cms-server.sh  服务器端 CMS 初始化编排，具体步骤位于 scripts/lib/
   setup-cms.mjs        Directus 集合初始化编排，模型与运行时分别维护
   sync-approved-cms-content.mjs  按语义业务键执行审核内容同步
@@ -115,16 +116,17 @@ Directus 读取失败时返回空集合并报告依赖降级，不在进程内�
 
 ## 环境变量
 
-| 变量                      | 说明                                                     |
-| ------------------------- | -------------------------------------------------------- |
-| `DIRECTUS_URL`            | 服务端 Directus 地址；服务器建议 `http://127.0.0.1:8055` |
-| `DIRECTUS_CONTENT_TOKEN`  | 仅可读取官网内容集合的运行令牌                           |
-| `DIRECTUS_CONTACT_TOKEN`  | 仅可创建 `contact_leads` 的表单写入令牌                  |
+| 变量                      | 说明                                                        |
+| ------------------------- | ----------------------------------------------------------- |
+| `DIRECTUS_URL`            | 服务端 Directus 地址；服务器建议 `http://127.0.0.1:8055`    |
+| `DIRECTUS_CONTENT_TOKEN`  | 仅可读取官网内容集合的运行令牌                              |
+| `DIRECTUS_CONTACT_TOKEN`  | 仅可创建 `contact_leads` 的表单写入令牌                     |
 | `DIRECTUS_TOKEN`          | 仅供建模、迁移和权限维护脚本临时使用，不得作为 Web 运行凭据 |
-| `PUBLIC_SITE_URL`         | 当前构建与 canonical 使用的站点地址                      |
-| `PUBLIC_DIRECTUS_URL`     | 浏览器可访问的 CMS 地址                                  |
-| `ENABLE_DOMAIN_REDIRECTS` | 正式域名切换完成后才可设为 `true`                        |
-| `LEGACY_DOMAINS`          | 正式切换后需要 301 的旧域名列表                          |
+| `PUBLIC_SITE_URL`         | 当前构建与 canonical 使用的站点地址                         |
+| `PUBLIC_DIRECTUS_URL`     | 浏览器可访问的 CMS 地址                                     |
+| `ENABLE_DOMAIN_REDIRECTS` | 正式域名切换完成后才可设为 `true`                           |
+| `LEGACY_DOMAINS`          | 正式切换后需要 301 的旧域名列表                             |
+| `DEPLOY_ENVIRONMENT`      | 部署时显式指定 `staging` 或 `production`                    |
 
 `.env`、`.env.production` 仅保存在本地和服务器，不提交 GitHub，也不由部署脚本上传。
 内容令牌与联系令牌必须不同；建模脚本使用的短期管理令牌不能写入 Web 运行环境。
@@ -141,6 +143,7 @@ Directus 12 Community 不提供自定义项目过滤和字段级权限时，内�
 
 ```bash
 DEPLOY_HOST='root@47.82.105.103' \
+DEPLOY_ENVIRONMENT='staging' \
 SITE_URL='https://wz.tomatopia.top' \
 bash scripts/deploy.sh
 ```
@@ -158,11 +161,17 @@ Directus 从 PostgreSQL 迁移至独立 Oracle Database 19c 的数据库安装�
 
 部署脚本会：
 
-1. 以 `SITE_URL` 覆盖构建期公开地址并运行 `npm run verify:release`；
-2. 上传到独立版本目录并在服务器安装生产依赖；
-3. 保留服务器现有 `.env`，通过 `current` 软链原子切换后重启 `xyy-web`；
-4. 检查首页、`/healthz` 和 Directus ping；失败时恢复上一软链；
-5. 默认保留最近5个版本，便于人工回滚。
+1. 拒绝包含已修改、已暂存或未跟踪文件的工作区，并为当前 Git SHA 生成 Release Manifest；
+2. 以 `SITE_URL` 覆盖构建期公开地址并运行 `npm run verify:release`；
+3. 将 Manifest、应用与构建产物上传到同一独立版本目录，并安装生产依赖；
+4. 保留服务器现有 `.env`，通过 `current` 软链原子切换后重启 `xyy-web`；
+5. 用 `/healthz` 检查依赖就绪，用 `/version` 精确核对 Git SHA、Release ID、环境和 CMS 模型版本；任一不符即恢复上一软链并尽可能核对旧版本身份；
+6. 默认保留最近5个版本，便于人工回滚。
+
+`/healthz` 只证明依赖是否就绪；`/version` 只返回可公开的不可变发布身份并禁止缓存。
+生产 Release 缺少或损坏 `release-manifest.json` 时，`/version` 返回503，不读取 Git、源码目录
+或开发者环境作为替代。第五阶段以前创建的旧 Release 没有 Manifest 时仍允许首次回滚，但只会
+输出 `legacy_previous_release_identity_unavailable`，不能声称旧版本身份已验证。
 
 在 `56xyy.com` DNS、证书与 Nginx 未切换到目标服务器前，不得启用旧域名跳转。迁移参考配置位于 `deploy/nginx-56xyy.conf`。
 
@@ -206,5 +215,6 @@ Directus 字段职责、FAQ 页面标识和下一阶段后台化建议见
 `public/logos/`、`public/about/` 及其他被页面引用且已优化的发布素材属于可复现构建输入，
 必须提交；`resources/` 中的原始素材继续留在仓库外。
 
-GitHub Actions 会从干净检出执行格式检查、生产依赖审计和 `verify:release`。CI 通过只表示
+GitHub Actions 会从干净检出使用 `github.sha` 生成 `environment=ci` 的候选 Manifest，执行格式
+检查、生产依赖审计和 `verify:release`，且只有 `contents: read` 权限，不具备部署权限。CI 通过只表示
 候选版本具备发布条件，不代表服务器令牌、备份 timer、DNS 或数据库迁移已经完成。

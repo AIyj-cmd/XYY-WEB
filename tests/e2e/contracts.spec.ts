@@ -112,6 +112,12 @@ test('health endpoint fails closed when configured CMS is unreachable', async ({
     status: 'degraded',
     dependencies: { contactStorage: 'unreachable' },
   })
+  const version = await request.get('/version')
+  expect(version.status()).toBe(503)
+  await expect(version.json()).resolves.toEqual({
+    status: 'unavailable',
+    error: 'release_identity_unavailable',
+  })
 
   const pageResponse = await request.get('/')
   expect(pageResponse.headers()['x-content-type-options']).toBe('nosniff')

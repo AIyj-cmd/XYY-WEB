@@ -7,6 +7,7 @@ import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
 import { handler as ssrHandler } from './dist/server/entry.mjs'
 import { healthHandler } from './server/health.mjs'
+import { createVersionHandler } from './server/release-info.mjs'
 import { createCanonicalRedirect, createSecurityHeaders } from './server/request-policy.mjs'
 import { getRuntimeConfig } from './server/runtime-config.mjs'
 
@@ -22,6 +23,12 @@ app.set('trust proxy', 1)
 app.use(createCanonicalRedirect(runtime))
 app.use(createSecurityHeaders(runtime))
 app.get('/healthz', healthHandler)
+app.get(
+  '/version',
+  createVersionHandler({
+    manifestPath: process.env.RELEASE_MANIFEST_PATH || join(__dirname, 'release-manifest.json'),
+  })
+)
 
 app.get('/privacy', (_req, res) => res.sendFile(join(clientDir, 'privacy/index.html')))
 

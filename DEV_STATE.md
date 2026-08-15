@@ -252,13 +252,24 @@
 - 测试先行证据：旧实现下4个定向测试文件为8项失败、18项通过，另有权限审计测试因脚本导入即调用 `process.exit(1)` 无法运行；失败证据包括共享 Token 实际用于留言 POST、health 对相同 Token 继续请求下游、运行集合无法排除 legacy，以及审计缺少可注入的失败关闭语义。修复后5个定向测试文件共37项通过；`npm run format:check` 与 `npm run typecheck` 已通过。
 - 首次未隔离环境执行完整门禁时，本机既有 Directus 配置在构建 `/404.html` 读取 `site_settings` 时返回403，门禁据此正确失败；未执行权限审计、写请求或数据修改。随后显式使用本机不可达地址和两枚虚拟且不同的测试 Token 重新执行 `npm run verify:release`，退出码为0：338个 Astro 文件无诊断、ESLint通过、483个文件通过维护预算、55个引用资源与103个部署资源完整、33个单元测试文件共206项通过、38项 E2E 通过且6项按配置跳过、3项正式域名契约通过、两次生产构建通过，`git diff --check` 通过。该结果只证明本地代码和 mock/fixture 权限契约，不代表真实运行权限已重新审计。
 
+## 发布身份与运行可追溯治理（第五阶段，本地验收完成）
+
+- 基线为第四阶段独立提交 `54fa9e64642403548f2c3e04f0242e427445aa30`；开始前工作区干净。本阶段只建立 Release Identity、`/version`、部署版本核对、CI 候选身份、测试环境隔离证明和性能观察基线，不修改 CMS、运行权限、页面或性能实现。
+- 已新增唯一 Release Identity 契约：字段为 `schemaVersion`、完整 Git SHA、派生短 SHA、包含短 SHA 的 Release ID、UTC 构建时间、显式环境和从 CMS 主契约读取的模型版本；Manifest 拒绝未知字段，不能携带 Token、密码、Cookie、私钥、内部地址或部署路径。
+- 部署入口现在会在构建、SSH 和上传之前拒绝已修改、已暂存或未跟踪文件，生成与当前提交绑定的 `release-manifest.json` 并放入独立 Release 根目录；新版本切换和带 Manifest 的回滚都必须同时通过 `/healthz` 与版本身份核对。旧 Release 没有 Manifest 时保留首次兼容回滚，但输出 `legacy_previous_release_identity_unavailable`，不能声称身份已验证。
+- `/version` 与 `/healthz` 职责分离：前者返回不可缓存的公开 Release 身份，Manifest 缺失或非法时安全返回503；后者继续只证明 Directus 与双 Token 权限映射就绪。外部健康检查支持精确核对 Git SHA、Release ID、环境和 CMS 模型版本；未提供预期值时只验证基本结构，不声称目标版本匹配。
+- CI 使用 `github.sha` 和 `environment=ci` 生成候选 Manifest，仍只有 `contents: read` 权限，不具备生产部署能力；CI、Playwright 与正式域名契约显式覆盖不可达 Directus 地址和虚拟双 Token，不依赖开发者机器的 `.env`。
+- 测试先行证据：实现前两个新增定向测试文件因缺少契约、Manifest 生成器、`/version`、脏工作区门禁、版本核对和 CI SHA 绑定而失败。首次失败测试在重构前导入旧 `scripts/health-check.mjs` 时，旧脚本的顶层副作用对现有验收地址执行了一次只读健康检查；未写入数据、未部署、未修改服务器。脚本现已改为仅在 CLI 直接执行时发起请求，测试导入不再访问网络。
+- 最终本地验证：4个 Release/部署/健康定向测试文件共43项通过；可维护性检查曾发现 `scripts/deploy.sh` 超出200行预算1行，已通过压缩同一职责代码恢复到预算内。`npm run format:check`、`npm run typecheck`、`npm run lint`、`npm run test` 和 `npm run verify:release` 均通过；聚合门禁为343个 Astro 文件无诊断、488个文件通过维护预算、55个引用资源与103个部署资源完整、35个单元测试文件共230项通过、38项 E2E 通过且6项按配置跳过、3项正式域名契约通过、生产构建通过，`git diff --check` 通过。第五阶段作为独立本地提交管理，提交 SHA 以 Git 历史为准；当前状态为 `PHASE_5_LOCALLY_VERIFIED`、`RELEASE_IDENTITY_CONTRACT_VERIFIED`、`VERSION_ENDPOINT_VERIFIED`、`MOCK_DEPLOYMENT_IDENTITY_VERIFIED`、`PERFORMANCE_BASELINE_RECORDED`、`REAL_DEPLOYMENT_NOT_EXECUTED`、`REAL_VERSION_NOT_VERIFIED`、`LOCALLY_COMMITTED`、`NOT_PUSHED`、`NOT_DEPLOYED`。
+- 已登记用户提供的 2026-08-15 桌面 PageSpeed 实验室基线：性能82、无障碍100、最佳做法100、SEO100、FCP 0.8秒、LCP 1.9秒、TBT 0毫秒、CLS 0、Speed Index 4.0秒；无 CrUX 数据且无法确认当时 Git SHA。本阶段没有修改任何性能代码，真实部署后需结合 `/version` 重新采集。
+
 ## 下一步
 
 1. 人工审查两个连续的本地提交，重点确认成功空数据、案例 404、页面范围、CMS `claimKey`、旧格式映射和严格占位符符合运营预期。
 2. 对真实 CMS 先完成独立数据库备份，再使用第三阶段工具执行只读 dry-run；人工审核所有 `manual_mapping_required`、稳定身份、FAQ 关系和 claimKey 计划后，才可决定是否 apply。
 3. 真实 apply 后运行完整 verify，并确认第二次 dry-run 为 0 changes；达成前不得删除 `page_key`、旧首页统计 ID 映射或 legacy 文件字段例外。
 4. 建立案例专属 evidence 模型，明确来源文件、统计周期、审核时间和公开授权；在依据不足前不得将案例指标并入全局 claims，也不得补造证据。
-5. 后续阶段分别处理权限残余治理、内容发布身份与审批、过期提醒，不与第三阶段模型迁移混做。
+5. 人工审查第五阶段 Release Identity、`/version`、部署与回滚身份核对 Diff；审查通过后再决定是否建立独立提交和执行真实部署。本轮代码治理到此结束，不创建第六阶段。
 6. 补齐 16 项全局事实的正式来源附件和统计周期；对于确实不适用统计周期的事实，应由业务审核后形成明确证明，而不是由代码推断。
 
 任何密码、Token、API Key、私钥、Cookie 和真实 `.env` 都不得写入本文档或提交到 Git。

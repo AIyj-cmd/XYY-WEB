@@ -16,6 +16,15 @@ jobs:
   release-verification:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    env:
+      RELEASE_GIT_SHA: ${{ github.sha }}
+      DEPLOY_ENVIRONMENT: ci
+      DIRECTUS_URL: http://127.0.0.1:1
+      DIRECTUS_CONTENT_TOKEN: ci-content-check-only
+      DIRECTUS_CONTACT_TOKEN: ci-contact-check-only
+      PUBLIC_DIRECTUS_URL: http://127.0.0.1:1
+      PUBLIC_SITE_URL: http://127.0.0.1:4399
+      ENABLE_DOMAIN_REDIRECTS: 'false'
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
@@ -32,6 +41,14 @@ jobs:
 
       - name: Check formatting
         run: npm run format:check
+
+      - name: Validate candidate release identity
+        run: |
+          node scripts/create-release-manifest.mjs \
+            --output /tmp/xyy-release-manifest.json \
+            --git-sha "$RELEASE_GIT_SHA" \
+            --build-time "$(date -u +%Y-%m-%dT%H:%M:%S.000Z)" \
+            --environment "$DEPLOY_ENVIRONMENT"
 
       - name: Audit production dependencies
         run: npm audit --omit=dev
