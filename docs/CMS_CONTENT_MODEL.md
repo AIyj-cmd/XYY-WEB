@@ -1,35 +1,42 @@
 # Directus 内容维护模型
 
+当前机器可读模型版本为 `2026-08-phase3`，唯一契约入口是
+`config/cms-contract.mjs`。集合生命周期、稳定身份和 seedPolicy 均从该契约派生；
+`scripts/data/cms-contract-definitions.mjs` 只负责把脚本侧字段定义绑定到主契约，setup、verify、
+seed 与迁移工具从绑定结果工作。运行时依赖方向固定为
+`server/runtime-permissions.mjs → config/cms-collections.mjs → config/cms-contract.mjs`，`config/`
+与 `server/` 均不得反向导入 `scripts/`。
+
 ## 当前已接入
 
-| 集合               | 用途                | 前端行为                        |
-| ------------------ | ------------------- | ------------------------------- |
-| `homepage_content` | 首页集中配置        | 单例内维护全部运营数据          |
-| `homepage_stats`   | 旧首页数据兼容备份  | 后台隐藏，运行时不再读取        |
-| `services`         | 导航与首页服务入口  | 发布记录按 `sort` 展示          |
-| `warehouses`       | 仓网信息            | 发布记录按 `sort` 展示          |
-| `cases`            | 案例正文与全部指标  | 每个品牌一条记录，按 `sort` 展示 |
-| `news`             | 行业动态文章        | 发布记录按发布时间展示          |
-| `faq_pages`        | 17 个页面的 FAQ     | 每个页面内聚合维护问题列表      |
-| `faqs`             | FAQ 子项兼容集合    | 由 `faq_pages` 关系字段维护     |
-| `case_details`     | 旧案例正文兼容备份  | 后台隐藏，运行时不再读取        |
-| `case_stats`       | 旧案例指标兼容备份  | 后台隐藏，运行时不再读取        |
-| `publications`     | 森林期刊目录        | 按 `sort` 展示封面和 PDF        |
-| `service_pages`    | 服务文案、指标、能力 | 每个专题一条记录集中维护        |
-| `service_stats`    | 旧服务指标兼容备份  | 后台隐藏，运行时不再读取        |
-| `service_features` | 旧服务能力兼容备份  | 后台隐藏，运行时不再读取        |
-| `about_content`    | 关于我们主文案      | Directus 单例                   |
-| `about_history`    | 公司发展历程        | 按 `sort` 展示                  |
-| `about_honors`     | 公司荣誉            | 按 `sort` 展示                  |
-| `site_settings`    | 全站联系方式与页脚  | Directus 单例                   |
-| `contact_leads`    | 官网咨询线索        | 仅供提交和后台跟进              |
+| 集合               | 用途                 | 前端行为                         |
+| ------------------ | -------------------- | -------------------------------- |
+| `homepage_content` | 首页集中配置         | 单例内维护全部运营数据           |
+| `homepage_stats`   | 旧首页数据兼容备份   | 后台隐藏，运行时不再读取         |
+| `services`         | 导航与首页服务入口   | 发布记录按 `sort` 展示           |
+| `warehouses`       | 仓网信息             | 发布记录按 `sort` 展示           |
+| `cases`            | 案例正文与全部指标   | 每个品牌一条记录，按 `sort` 展示 |
+| `news`             | 行业动态文章         | 发布记录按发布时间展示           |
+| `faq_pages`        | 17 个页面的 FAQ      | 每个页面内聚合维护问题列表       |
+| `faqs`             | FAQ 子项兼容集合     | 由 `faq_pages` 关系字段维护      |
+| `case_details`     | 旧案例正文兼容备份   | 后台隐藏，运行时不再读取         |
+| `case_stats`       | 旧案例指标兼容备份   | 后台隐藏，运行时不再读取         |
+| `publications`     | 森林期刊目录         | 按 `sort` 展示封面和 PDF         |
+| `service_pages`    | 服务文案、指标、能力 | 每个专题一条记录集中维护         |
+| `service_stats`    | 旧服务指标兼容备份   | 后台隐藏，运行时不再读取         |
+| `service_features` | 旧服务能力兼容备份   | 后台隐藏，运行时不再读取         |
+| `about_content`    | 关于我们主文案       | Directus 单例                    |
+| `about_history`    | 公司发展历程         | 按 `sort` 展示                   |
+| `about_honors`     | 公司荣誉             | 按 `sort` 展示                   |
+| `site_settings`    | 全站联系方式与页脚   | Directus 单例                    |
+| `contact_leads`    | 官网咨询线索         | 仅供提交和后台跟进               |
 
 ## 内容源优先级
 
 - Directus 中已发布的统一记录是前端唯一权威内容源；后台保存后，SSR 页面会在下一次请求时
   重新读取，不需要重新构建前端；
-- 代码内审核版内容只在 Directus 请求失败、统一单例不存在或集合完全没有已发布记录时启用，
-  不再逐字段覆盖、拼接或纠正后台已经返回的内容；
+- 代码内审核版内容只在 Directus 网络失败、超时或 HTTP 5xx 时启用；CMS 正常返回空数据代表
+  当前没有已发布内容，不得恢复旧静态内容；401/403 或非法结构必须明确失败；
 - 合作案例统一维护 `cases`，首页卡片、案例列表、案例详情、站点地图和 `llms.txt` 均从该集合
   生成；`case_description` 与 `stats` 会同步投影到所有展示位置，旧 `details/metrics` 不再成为
   独立内容源；
@@ -64,13 +71,69 @@ Directus 12 Community 未授权自定义权限规则时，只能配置集合级�
 `faqs` 作为关系子项保留，不在后台主导航单独展示。子项字段：
 
 - `status`：只有 `published` 会在官网显示；
-- `faq_page`：所属 FAQ 页面关系；`page_key` 仅为兼容标识；
+- `faq_page`：唯一权威页面归属，通过 `faq_pages.key` 跨环境解析真实关系 ID；
+- `content_key`：不可随问题文案或排序改变的稳定身份；
+- `page_key`：只读 legacy 标识，仅用于迁移核对，新查询和 seed 身份均不依赖它；
 - `sort`：同一页面内的顺序；
 - `question`：问题；
 - `answer`：纯文本答案。
 
 网站每次服务端渲染都会读取已发布 FAQ，因此后台保存并发布后无需重新构建前端。若
 Directus 暂时不可用，页面会使用代码中的审核版 FAQ，避免整块内容消失。
+
+## 集合生命周期与稳定身份
+
+| 生命周期 | 集合                                                  | 稳定身份                              |
+| -------- | ----------------------------------------------------- | ------------------------------------- |
+| active   | `homepage_content`、`about_content`、`site_settings`  | `key`                                 |
+| active   | `services`、`cases`、`news`、`service_pages`          | `slug`                                |
+| active   | `faq_pages`                                           | `key`                                 |
+| active   | `faqs`、`warehouses`、`about_history`、`about_honors` | `content_key`                         |
+| active   | `publications`                                        | `issue`                               |
+| legacy   | `homepage_stats`、`case_stats`、`service_stats`       | `metric_key`                          |
+| legacy   | `service_features`                                    | `content_key`                         |
+| legacy   | `case_details`                                        | `slug`                                |
+| private  | `contact_leads`                                       | Directus 主键；不参与 seed 或内容迁移 |
+
+`label`、`name`、`title`、`sort` 和 `year` 都是可编辑展示字段，不能作为 seed 身份。已有数据
+若缺少新的稳定身份，`setup-cms` 会返回 `migration_required`，不会在有数据的集合上直接创建
+必填且唯一的字段。
+
+每个集合还具有明确的 seedPolicy：active 为 `normal`，legacy 为 `migration_only`，private 为
+`never`。因此 `case_details`、`case_stats`、`service_stats`、`service_features` 等 legacy 集合仍
+保留 Schema，供旧数据核对、迁移和必要回滚使用，但全新 CMS 不再写入 legacy seed；
+`contact_leads` 不参与 seed、内容快照或迁移。
+
+## Setup、Verify 与迁移边界
+
+- `scripts/setup-cms.mjs` 只创建缺失集合、安全的缺失字段与关系，并补齐缺失 seed；不会删除
+  集合、字段或记录，也不会覆盖运营人员已编辑正文。它不是 Singleton 内容同步工具：只有稳定
+  身份和全部 seed 管理业务字段都为空时才会写入完整初始 seed；身份相同的现有 Singleton 不会
+  回填正文，身份缺失或不一致且已有内容时返回 `singleton_migration_required`；
+- 已存在字段的类型、必填、唯一、默认值、singleton、关系目标或 `on_delete` 与契约不一致时，
+  setup 和 verify 均阻断并输出 `migration_required`；
+- 经过确认的旧字符串文件字段只允许出现在 `CMS_LEGACY_FIELD_ALLOWLIST`，verify 会持续输出
+  删除条件明确的 legacy 警告；
+- `npm run cms:migrate-contract` 默认 dry-run。真实写入必须显式增加 `--apply`，并设置
+  `CONFIRM_CMS_CONTRACT_MIGRATION=2026-08-phase3`；写入前会在 Git 忽略的
+  `output/cms-migrations/` 保存受影响集合快照及 SHA-256；
+- 迁移只接受已有稳定 slug/key/issue、审核 seed key 或人工确认的“集合记录 ID → 稳定 key”
+  映射。每个 ID 映射必须同时声明 collection、record ID、target stable key 与 expected-before
+  精确断言；ID 对应记录不符合审核预期时输出 `manual_mapping_required`。文本或 hash 只能验证
+  已由 ID 选中的记录，不能用于寻找记录；未知记录禁止按名称、标签、数字、说明或排序猜测；
+- 旧 `homepage_content.stats` 只有在条目本身携带稳定 ID 且该 ID 与审核映射及 expected-before
+  一致时才可迁移；缺少稳定 ID 时必须人工映射，禁止使用数组顺序推断；
+- 对已有数据集合补充 `content_key` 或 `metric_key` 时，迁移严格按“创建 nullable/非 unique
+  字段 → 回填 → 重新读取并验证无 null → 验证无重复 → 收紧 required → 增加 unique → 完整
+  verify”执行。各步骤幂等，中途失败后可安全重跑，第二次运行应为零变更；
+- verify 对 private `contact_leads` 只读取集合、字段和关系元数据，不请求任何记录内容；
+- Directus API 的多次写入不具备单一数据库事务保证。迁移因此采用 fail-fast、逐步幂等、先备份
+  和可安全重跑策略，不宣称原子性。
+
+第三阶段状态为 `PHASE_3_LOCALLY_VERIFIED`、`CMS_CONTRACT_READY`、`MIGRATION_TOOL_READY`、
+`REAL_CMS_DRY_RUN_NOT_EXECUTED`、`NOT_APPLIED`、`NOT_DEPLOYED`；迁移工具只通过 mock、fixture
+和本地测试，没有自动连接或迁移真实 CMS。正式操作顺序必须是：数据库与附件备份、真实 dry-run、
+人工审核映射与计划、显式 apply、迁移后 `npm run cms:verify`。
 
 答案支持 `{{partnerBrands}}`、`{{warehouseArea}}`、`{{shippingAccuracy}}` 等事实占位符。
 渲染时由 `src/lib/claims.ts` 替换为当前审核值，避免品牌数量、仓储面积和时效口径在
@@ -83,7 +146,8 @@ npm run cms:generate-faq-seeds
 DIRECTUS_URL=https://example.com/cms DIRECTUS_TOKEN='<admin-token>' node scripts/setup-cms.mjs
 ```
 
-初始化只补齐缺失页面和问题，不会覆盖后台已经编辑的记录。初始化完成后会查找
+初始化只补齐缺失页面和问题，不会覆盖后台已经编辑的记录。Singleton 运营内容应通过 Directus
+后台、受控内容同步或显式迁移维护，不能依赖 setup 更新。初始化完成后会查找
 `Website Content Read-Only` 策略，并自动为18个公开内容集合补齐“仅查看已发布记录”权限。
 若策略使用了其他名称，可设置 `DIRECTUS_CONTENT_POLICY_NAME`；也可以直接设置
 `DIRECTUS_CONTENT_POLICY_ID`。已有数据库只需补权限时运行：

@@ -1,4 +1,4 @@
-import { dateUpdatedField, statusField } from './cms-field-builders.mjs'
+import { dateUpdatedField, stableKeyField, statusField } from './cms-field-builders.mjs'
 
 export const ORGANIZATION_COLLECTION_DEFINITIONS = [
   {
@@ -28,6 +28,7 @@ export const ORGANIZATION_COLLECTION_DEFINITIONS = [
     meta: { sort_field: 'sort', group: 'brand_content' },
     fields: [
       statusField(),
+      stableKeyField(),
       { field: 'sort', type: 'integer', meta: { required: true, width: 'half' } },
       { field: 'year', type: 'string', meta: { required: true, width: 'half' } },
       { field: 'subtitle', type: 'string', meta: { required: true } },
@@ -70,6 +71,7 @@ export const ORGANIZATION_COLLECTION_DEFINITIONS = [
     meta: { sort_field: 'sort', group: 'brand_content' },
     fields: [
       statusField(),
+      stableKeyField(),
       { field: 'sort', type: 'integer', meta: { required: true, width: 'half' } },
       { field: 'title', type: 'string', meta: { required: true } },
       {

@@ -11,14 +11,15 @@
 
 ## 当前目标
 
-- 在第一阶段 Directus 返回状态语义之上，完成公开业务事实唯一来源治理：全局公开事实只由 `src/lib/claims/` 审核注册表维护，页面、CMS、FAQ、SEO、JSON-LD、`llms.txt` 和 CMS seed 只能引用 `claimKey` 或 `{{claimKey}}`。
-- 第一、第二阶段已拆分为两个连续的本地提交供人工审查；当前不推送、不部署，也不连接真实 CMS。
+- 第一、第二、第三阶段分别作为连续的独立本地提交管理；第三阶段已完成 Directus CMS 模型契约、稳定内容身份、FAQ 单一归属、幂等 setup、严格 verify 和默认 dry-run 迁移工具的本地验收。
+- 第三阶段状态为 `PHASE_3_LOCALLY_VERIFIED`、`CMS_CONTRACT_READY`、`MIGRATION_TOOL_READY`、`REAL_CMS_DRY_RUN_NOT_EXECUTED`、`NOT_APPLIED`、`NOT_DEPLOYED`；迁移工具仅通过 mock、fixture 和本地测试，未连接真实 CMS 或修改真实数据库。
 
 ## 当前版本与环境
 
 - 拆分前基线：`62095867ce74aabf6352cc9d08a361d9e217d108`（`6209586 记录验收站发布与运行权限状态`），该提交不包含第一、第二阶段修复。
 - 第一阶段提交：`526f5b2 修复 Directus 返回状态语义`，父提交为上述基线。
-- 第二阶段提交：本文件所在的当前本地提交，父提交为 `526f5b2`，只包含公开业务事实唯一来源与 CMS 防漂移治理。最终提交号通过 `git log -1` 获取，避免在提交自身内容中记录无法自洽的自身哈希。
+- 第二阶段提交：`9cb7b426547582a84d865b18bc24397685aefe5c`（`9cb7b42 统一公开业务事实与 CMS 引用`），父提交为 `526f5b2`。
+- 第三阶段：基于 `9cb7b42` 形成独立本地提交，尚未推送或部署；模型版本为 `2026-08-phase3`，真实 CMS dry-run 尚未执行。
 - 验收站：`https://wz.tomatopia.top`。
 - 当前 Release：`/var/www/xyy-web/releases/20260814T171015Z`，对应运行代码提交 `3f7f705`。
 - 运行状态：PM2 中 `xyy-web` 在线，Web 端口为 `50031`。
@@ -210,12 +211,42 @@
 - 临时 worktree 首次执行 `npm ci` 长时间无进展后被中止；残留的部分依赖目录一度被 Astro 当成项目文件扫描并导致内存耗尽。将该临时目录移出 worktree 后，第一阶段 typecheck 正常通过，证明该失败来自临时验证环境而不是提交代码。临时 worktree 与残留依赖目录均已清理。
 - 第二阶段提交前重新执行 `npm run format:check` 与 `npm run test`，结果为格式通过、24个测试文件共137项通过。两个提交均仅存在于本地，未推送、未部署。
 
+## Directus CMS 模型契约与迁移准备（第三阶段，2026-08-15）
+
+- 基线为第二阶段本地提交 `9cb7b426547582a84d865b18bc24397685aefe5c`。开始前工作树干净；第一、第二阶段快照保存为 `/tmp/xyy-phase1-2-status.txt` 与 `/tmp/xyy-phase1-2-tracked.patch`，两者均为空文件且 SHA-256 均为 `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855`。开始时没有未跟踪文件，因此未创建空压缩包。
+- 前置回归通过：Directus 状态分类、成功空数据、401/403/invalid、案例真实 404、claims、claimKey、占位符、首页统计和事实漂移相关 6 个测试文件共 44 项通过，确认第一、第二阶段没有退化。
+- 审查发现原实现存在 `config/cms-collections.mjs → scripts/data/cms-contract.mjs` 的运行反向依赖，已将唯一机器可读主契约移动为 `config/cms-contract.mjs`，模型版本为 `2026-08-phase3`。当前运行 import graph 为 `server/runtime-permissions.mjs → config/cms-collections.mjs → config/cms-contract.mjs`；`scripts/data/cms-contract-definitions.mjs` 仅在脚本侧绑定字段定义，`config/` 与 `server/` 不再依赖 `scripts/`。最小发布包测试只复制真实发布目录 `config/` 与 `server/`，可以成功导入运行权限模块。
+- 集合生命周期分类：13 个 active（`homepage_content`、`faq_pages`、`services`、`warehouses`、`cases`、`news`、`faqs`、`publications`、`service_pages`、`about_content`、`about_history`、`about_honors`、`site_settings`）；5 个 legacy（`homepage_stats`、`case_details`、`case_stats`、`service_stats`、`service_features`）；1 个 private（`contact_leads`）。private 集合不参与内容 seed 或合同迁移。
+- 稳定身份规则：沿用 `key`、`slug`、`issue` 等既有不可变字段；为 `warehouses`、`faqs`、`about_history`、`about_honors`、`service_features` 定义只读、必填、唯一 `content_key`；为 `homepage_stats`、`case_stats`、`service_stats` 定义只读、必填、唯一 `metric_key`。所有新 seed key 均显式存在于审核源数据；问题、标题、标签、名称、排序、年份、数组索引、显示文案、数字和单位不再生成稳定身份，并有改文案、改排序、改年份仍保持同一身份的测试。
+- FAQ 归属以 `faq_page` 关系为唯一权威来源，前端按 `faq_page.key` 查询；seed 保存 `faqPageKey` 并在 setup 时解析当前环境真实关系 ID。`page_key` 暂时保留为只读 legacy 字段，只用于迁移核对；真实 CMS 完成关系迁移、验证全部一致且新代码不再读取后方可删除。
+- setup 只创建缺失集合、安全缺失字段和关系，并按稳定身份补齐缺失 seed；已匹配的集合和字段元数据不会重复写入，已存在的运营正文不会被覆盖。有数据集合缺少 required+unique 身份字段时，迁移按“创建 nullable/非 unique 字段 → 回填 → 重新读取验证无 null → 验证无重复 → 收紧 required → 增加 unique → 完整 verify”分阶段执行；中途失败可以安全重跑，完成后第二次计划为零变更。现有字段 type、required、unique、default、singleton、relation target、on_delete 不兼容时明确返回 `migration_required`。
+- 第三阶段提交前审查复现了 Singleton Seed 覆盖风险：稳定身份不一致时，旧实现会把审核 seed 整条 PATCH 到现有单例。当前 setup 只允许在稳定身份为空且所有 seed 管理的业务字段均无内容时初始化 Singleton；身份相同的现有 Singleton 始终 no-op，不同步或补齐正文；身份缺失或不一致但已有内容时返回 `singleton_migration_required`，且错误不包含运营正文。setup-cms 不是运营正文同步工具；运营内容只能通过 Directus 后台、受控内容同步或显式迁移维护。修复前新增回归测试为 6 项失败、11 项通过；修复后 Singleton/Setup 两个定向测试文件共 18 项通过，第三阶段 9 个定向文件共 63 项通过。最终 `npm run verify:release` 以状态码 0 完成：337 个 Astro 文件无诊断、482 个文件通过维护预算、193 项单元测试通过、38 项 E2E 通过且 6 项按配置跳过、3 项正式域名契约通过、生产构建通过。真实 CMS 未执行 dry-run 或迁移；第三阶段作为独立本地提交管理，尚未推送或部署。
+- verify 输出模型版本、集合总数与 active/legacy/private 数量，并阻塞字段、关系、singleton、稳定身份缺失或重复等关键契约错误。已确认的旧字符串文件字段进入显式 allowlist，必须输出原因和删除条件；未知例外仍然阻塞。
+- 新增 `npm run cms:migrate-contract`。默认只读 dry-run；`--apply` 还必须提供与模型版本完全一致的确认值。每个旧 ID 映射必须同时包含 collection、record ID、target stable key 与 expected-before 精确断言；只先按 ID 选中记录，再验证内容，验证不一致即 `manual_mapping_required`。旧 `homepage_stats` 通过审核记录 ID 精确回填 `metric_key`，首页单例内嵌 stats 只有携带稳定 ID 且满足同一审核断言时才能回填 `claimKey`；缺少稳定 ID 时禁止按数组顺序推断。其他迁移只接受稳定 slug/key/issue、审核 seed key或人工确认的精确记录 ID 映射，禁止使用文本寻找记录。
+- apply 前会将受影响的非 private 集合保存到 Git 已忽略的 `output/cms-migrations/`，写入 SHA-256 后才允许外部修改。Directus API 不提供跨请求原子事务，因此实现采用 fail-fast、逐步幂等、保留快照和安全重跑，不声称原子迁移；apply 后自动验证剩余变更、稳定身份、FAQ 关系、claimKey 和完整 Schema。
+- seedPolicy 已统一：active 为 `normal`，legacy 为 `migration_only`，private 为 `never`。`case_details`、`case_stats`、`service_stats`、`service_features` 等 legacy Schema 仅为旧数据迁移、核对和必要回滚保留，全新 CMS 不再 Seed legacy 内容；`contact_leads` 不参与 seed、内容读取、迁移或快照，verify 只检查它的集合、字段和关系 Schema。
+- CMS 生成结果已重新生成并保留第三阶段差异：17 个页面的 100 条 FAQ 增加显式稳定 `content_key` 与 `faqPageKey`；12 个服务页、14 期期刊、6 个案例详情以及 history、honor 内容使用显式稳定身份。生成文件仍由脚本产生，没有直接手改 generated 输出；legacy case/service 指标不再进入新 seed 输出。
+- 测试先行证据：验收补强前，legacy 集合仍被 normal seed、FAQ key 仍由数组索引生成的测试按预期失败；实现后第三阶段定向测试 9 个文件、86 项通过，第一、第二阶段回归 6 个文件、44 项通过。Schema 分阶段迁移拆分后的 3 个定向文件共 16 项通过，覆盖创建、回填、远端无空值/无重复校验、约束收紧、中断重跑、零变更和快照边界。
+- 最终验证：两项 CMS seed 生成命令分别生成 17 页/100 条 FAQ 与 12 个服务页、14 期期刊、6 个案例详情；`npm run format:check` 通过；`npm run typecheck` 检查 336 个文件，0 错误、0 警告、0 提示；`npm run lint` 通过；维护性预算检查 481 个文件通过；`npm run test` 为 31 个文件、183 项通过；`npm run test:e2e` 为 38 项通过、6 项按配置跳过；`npm run test:formal-contract` 为 3 项通过；`npm run build` 通过；`npm run verify:release` 以状态码 0 完成；`git diff --check` 通过。
+- 真实 CMS 尚未执行 dry-run 或 apply；没有连接真实 Directus、修改真实 Schema 或迁移真实内容。第三阶段代码、测试和文档已完成本地验收并作为独立本地提交管理，但尚未推送或部署，不能描述为“CMS 已迁移”。
+
+### 第三阶段主要文件范围
+
+- 主契约与定义：`config/cms-contract.mjs`、`config/cms-collections.mjs`、`scripts/data/cms-contract-definitions.mjs`、`scripts/data/*collection-definitions.mjs`、`scripts/data/cms-field-builders.mjs`、`scripts/data/cms-seed-config.mjs`。
+- setup/verify 运行时：`scripts/setup-cms.mjs`、`scripts/verify-production-cms.mjs`、`scripts/lib/cms-setup-runtime.mjs`、`scripts/lib/cms-seed-runtime.mjs`、`scripts/lib/cms-navigation-runtime.mjs`、`scripts/lib/cms-contract-runtime.mjs`。
+- 迁移：`scripts/migrate-cms-contract.mjs`、`scripts/lib/cms-contract-migration.mjs`、`scripts/lib/cms-contract-schema-migration.mjs`、`scripts/lib/cms-contract-snapshot.mjs`、`package.json` 的 `cms:migrate-contract` 脚本。
+- FAQ 读取：`src/lib/directus-queries.ts`、`src/lib/directus-types.ts`。
+- Seed 生成：`scripts/generate-faq-seeds.mjs`、`scripts/generate-cms-content-seeds.mjs`、`scripts/data/service-page-slugs.mjs`、两份 generated seed 及稳定仓库 seed。
+- 测试：`tests/unit/cms-contract.test.ts`、`tests/unit/cms-contract-runtime.test.ts`、`tests/unit/cms-contract-migration.test.ts`、`tests/unit/cms-contract-schema-migration.test.ts`、`tests/unit/cms-contract-snapshot.test.ts`、`tests/unit/cms-seed-identity.test.ts`、`tests/unit/cms-setup-contract.test.ts`，以及直接调整的 setup、Directus 和最小发布包既有测试。
+- 文档：`docs/CMS_CONTENT_MODEL.md`、`DEV_STATE.md`。
+
 ## 下一步
 
 1. 人工审查两个连续的本地提交，重点确认成功空数据、案例 404、页面范围、CMS `claimKey`、旧格式映射和严格占位符符合运营预期。
-2. 第三阶段单独处理 CMS 模型契约：为真实内容增加稳定 `claimKey` 并执行受控迁移；迁移验收完成后删除旧首页统计 ID 兼容层。本轮没有执行真实 CMS 迁移。
-3. 建立案例专属 evidence 模型，明确来源文件、统计周期、审核时间和公开授权；在依据不足前不得将案例指标并入全局 claims，也不得补造证据。
-4. 后续阶段分别处理权限治理、内容发布审批与过期提醒，不与本轮事实唯一来源改动混做。
-5. 补齐 16 项全局事实的正式来源附件和统计周期；对于确实不适用统计周期的事实，应由业务审核后形成明确证明，而不是由代码推断。
+2. 对真实 CMS 先完成独立数据库备份，再使用第三阶段工具执行只读 dry-run；人工审核所有 `manual_mapping_required`、稳定身份、FAQ 关系和 claimKey 计划后，才可决定是否 apply。
+3. 真实 apply 后运行完整 verify，并确认第二次 dry-run 为 0 changes；达成前不得删除 `page_key`、旧首页统计 ID 映射或 legacy 文件字段例外。
+4. 建立案例专属 evidence 模型，明确来源文件、统计周期、审核时间和公开授权；在依据不足前不得将案例指标并入全局 claims，也不得补造证据。
+5. 后续阶段分别处理权限残余治理、内容发布身份与审批、过期提醒，不与第三阶段模型迁移混做。
+6. 补齐 16 项全局事实的正式来源附件和统计周期；对于确实不适用统计周期的事实，应由业务审核后形成明确证明，而不是由代码推断。
 
 任何密码、Token、API Key、私钥、Cookie 和真实 `.env` 都不得写入本文档或提交到 Git。

@@ -2,6 +2,7 @@ import {
   dateCreatedField,
   dateUpdatedField,
   leadStatusField,
+  stableKeyField,
   statusChoices,
   statusField,
 } from './cms-field-builders.mjs'
@@ -17,6 +18,7 @@ export const CORE_CONTENT_COLLECTION_DEFINITIONS = [
     },
     fields: [
       statusField(),
+      stableKeyField('metric_key'),
       { field: 'sort', type: 'integer', meta: { width: 'half' } },
       { field: 'value', type: 'string', meta: { required: true } },
       { field: 'label', type: 'string', meta: { required: true } },
@@ -49,6 +51,7 @@ export const CORE_CONTENT_COLLECTION_DEFINITIONS = [
     meta: { group: 'brand_content' },
     fields: [
       statusField(statusChoices({ text: '归档', value: 'archived' })),
+      stableKeyField(),
       { field: 'sort', type: 'integer', meta: { width: 'half' } },
       { field: 'name', type: 'string', meta: { required: true } },
       { field: 'city', type: 'string' },

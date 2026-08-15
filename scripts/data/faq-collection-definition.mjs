@@ -1,4 +1,9 @@
-import { dateCreatedField, dateUpdatedField, statusField } from './cms-field-builders.mjs'
+import {
+  dateCreatedField,
+  dateUpdatedField,
+  stableKeyField,
+  statusField,
+} from './cms-field-builders.mjs'
 import { FAQ_PAGE_OPTIONS } from './faq-page-options.mjs'
 
 export const FAQ_COLLECTION_DEFINITION = {
@@ -12,15 +17,16 @@ export const FAQ_COLLECTION_DEFINITION = {
   },
   fields: [
     statusField(),
+    stableKeyField(),
     {
       field: 'page_key',
       type: 'string',
       meta: {
-        required: true,
+        readonly: true,
         width: 'half',
         interface: 'select-dropdown',
         options: { choices: FAQ_PAGE_OPTIONS, allowOther: true },
-        note: 'FAQ 所属页面；新增专题页时允许录入新的页面标识。',
+        note: '旧版页面标识，仅用于迁移核对；页面归属以 FAQ 页面关系为准。',
       },
     },
     {

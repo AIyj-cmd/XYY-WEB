@@ -1,5 +1,8 @@
 import { readFileSync } from 'node:fs'
+import { cp, mkdtemp, rm } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
 import { resolve } from 'node:path'
+import { pathToFileURL } from 'node:url'
 
 import { describe, expect, it } from 'vitest'
 
@@ -116,6 +119,22 @@ describe('production deployment contracts', () => {
     expect(deploy).not.toContain('readlink -f \\"\\$current_link\\" 2>/dev/null || true')
     expect(deploy.match(/pm2 delete xyy-web/g)).toHaveLength(3)
     expect(deploy).toContain('grep -q \'\\"contactStorage\\":\\"ok\\"\'')
+  })
+
+  it('imports runtime permission checks from the minimal real release package', async () => {
+    const release = await mkdtemp(resolve(tmpdir(), 'xyy-minimal-release-'))
+    try {
+      await cp(resolve(root, 'config'), resolve(release, 'config'), { recursive: true })
+      await cp(resolve(root, 'server'), resolve(release, 'server'), { recursive: true })
+      const runtime = await import(
+        `${pathToFileURL(resolve(release, 'server/runtime-permissions.mjs')).href}?release-test=${Date.now()}`
+      )
+      expect(runtime.CONTENT_COLLECTIONS).toContain('homepage_content')
+      expect(runtime.CONTENT_COLLECTIONS).not.toContain('contact_leads')
+      expect(() => readFileSync(resolve(release, 'scripts/setup-cms.mjs'), 'utf8')).toThrow()
+    } finally {
+      await rm(release, { recursive: true, force: true })
+    }
   })
 
   it('rebuilds the caller target after formal tests and rolls back external failures', () => {

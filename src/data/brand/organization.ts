@@ -10,23 +10,43 @@ export const MILESTONES = [
   { year: '2025', text: '布局跨境出海，从数字化过渡到数智化，建设管理人才体系' },
 ] as const
 
-export const HONORS = [
-  'CFLP服装物流分会·一届理事会理事单位',
-  'CFLP·服装物流行业贡献企业（2019年度）',
-  '上海张江劳动人事协会·会员单位',
-  'CFLP服装物流分会·一届理事会感谢状',
-  '中华全国工商业联合会纺织服装业商会·会员单位',
-  '全球鞋服供应链与物流技术研讨会十周年·杰出贡献奖',
-  '招商银行广州分行·2024年度薪酬福利典范企业',
-  '海尔智家·2019年度金牌供应链运营商',
-  '广东物流协会·广东省信息化建设优秀企业',
-  '中国交通运输协会·值得推荐企业奖',
-  '全球鞋服行业供应链与物流研讨会·优秀物流服务商',
-  'CFLP中国物流与采购联合会服装物流分会·理事单位',
-  '时尚物流联盟·2017年双11中国行活动鼎力支持',
-  '广州税务局·纳税信用A级荣誉证书（2022年度）',
-  '第十一届国际物流节·十佳物流企业奖',
+export const HONOR_CMS_SOURCE = [
+  { contentKey: 'honor-cflp-council-member', title: 'CFLP服装物流分会·一届理事会理事单位' },
+  {
+    contentKey: 'honor-cflp-industry-contribution',
+    title: 'CFLP·服装物流行业贡献企业（2019年度）',
+  },
+  { contentKey: 'honor-zhangjiang-association', title: '上海张江劳动人事协会·会员单位' },
+  { contentKey: 'honor-cflp-thank-you', title: 'CFLP服装物流分会·一届理事会感谢状' },
+  {
+    contentKey: 'honor-textile-chamber-member',
+    title: '中华全国工商业联合会纺织服装业商会·会员单位',
+  },
+  {
+    contentKey: 'honor-footwear-supply-chain-contribution',
+    title: '全球鞋服供应链与物流技术研讨会十周年·杰出贡献奖',
+  },
+  { contentKey: 'honor-cmb-payroll', title: '招商银行广州分行·2024年度薪酬福利典范企业' },
+  { contentKey: 'honor-haier-gold-supplier', title: '海尔智家·2019年度金牌供应链运营商' },
+  { contentKey: 'honor-guangdong-digitalization', title: '广东物流协会·广东省信息化建设优秀企业' },
+  { contentKey: 'honor-ctta-recommended', title: '中国交通运输协会·值得推荐企业奖' },
+  {
+    contentKey: 'honor-footwear-logistics-provider',
+    title: '全球鞋服行业供应链与物流研讨会·优秀物流服务商',
+  },
+  {
+    contentKey: 'honor-cflp-logistics-council',
+    title: 'CFLP中国物流与采购联合会服装物流分会·理事单位',
+  },
+  {
+    contentKey: 'honor-fashion-logistics-support',
+    title: '时尚物流联盟·2017年双11中国行活动鼎力支持',
+  },
+  { contentKey: 'honor-tax-credit-a', title: '广州税务局·纳税信用A级荣誉证书（2022年度）' },
+  { contentKey: 'honor-logistics-festival-top-ten', title: '第十一届国际物流节·十佳物流企业奖' },
 ] as const
+
+export const HONORS = HONOR_CMS_SOURCE.map(({ title }) => title)
 
 export const WAREHOUSES = [
   {

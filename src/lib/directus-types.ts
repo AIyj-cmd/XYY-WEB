@@ -95,11 +95,11 @@ export interface ContactLeadRecord {
 export interface FaqRecord {
   id: number
   status?: 'published' | 'draft' | 'archived'
-  page_key: string
+  page_key?: string | null
   sort: number
   question: string
   answer: string
-  faq_page?: number | null
+  faq_page?: number | FaqPageRecord | null
   date_created?: string
   date_updated?: string | null
 }

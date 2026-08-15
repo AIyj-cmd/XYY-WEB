@@ -16,6 +16,7 @@
     "cms:generate-content-seeds": "node scripts/generate-cms-content-seeds.mjs",
     "cms:migrate-unified-cases": "node scripts/migrate-unified-cases.mjs",
     "cms:migrate-unified-content": "node scripts/migrate-unified-content.mjs",
+    "cms:migrate-contract": "node scripts/migrate-cms-contract.mjs",
     "cms:verify": "node scripts/verify-production-cms.mjs",
     "cms:sync-content-permissions": "node scripts/sync-content-policy-permissions.mjs",
     "cms:verify-runtime-permissions": "node scripts/verify-runtime-permissions.mjs",

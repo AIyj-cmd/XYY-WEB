@@ -1,50 +1,24 @@
 import { collectionTranslations, fieldTranslations } from '../data/cms-admin-translations.mjs'
+import { CMS_LEGACY_FIELD_ALLOWLIST } from '../../config/cms-contract.mjs'
+import { assertCollectionSnapshot } from './cms-contract-runtime.mjs'
+import { createCmsNavigationRuntime, metadataIncludes } from './cms-navigation-runtime.mjs'
+import { createCmsSeedRuntime } from './cms-seed-runtime.mjs'
 
 export function createCmsSetupRuntime(directus) {
-  async function createNavigationGroup({ name, icon = 'folder', meta = {} }) {
-    const collections = await directus.request('GET', '/collections')
-    const exists = collections.some((collection) => collection.collection === name)
-    const translations = collectionTranslations(name)
-    const collectionMeta = {
-      icon,
-      collapse: 'open',
-      ...meta,
-      ...(translations && { translations }),
-    }
-    if (!exists) {
-      await directus.request('POST', '/collections', {
-        collection: name,
-        schema: null,
-        meta: collectionMeta,
-      })
-      return
-    }
-    await directus.request('PATCH', `/collections/${name}`, { meta: collectionMeta })
-  }
+  const seedRuntime = createCmsSeedRuntime(directus)
+  const createNavigationGroup = createCmsNavigationRuntime(directus)
 
   /**
    * @param {{
    *   name: string,
    *   icon?: string,
    *   meta?: Record<string, unknown>,
-   *   fields?: Array<{
-   *     field: string,
-   *     type: string,
-   *     meta?: Record<string, unknown>,
-   *     schema?: Record<string, unknown>
-   *   }>
-   *   aliases?: Array<{
-   *     field: string,
-   *     type: 'alias',
-   *     meta?: Record<string, unknown>
-   *   }>
-   *   relations?: Array<{
-   *     collection: string,
-   *     field: string,
-   *     related_collection: string,
-   *     schema?: Record<string, unknown>,
-   *     meta?: Record<string, unknown>
-   *   }>
+   *   fields?: Array<{field: string, type: string, meta?: Record<string, unknown>, schema?: Record<string, unknown>}>,
+   *   aliases?: Array<{field: string, type: 'alias', meta?: Record<string, unknown>}>,
+   *   relations?: Array<{collection: string, field: string, related_collection: string, schema?: Record<string, unknown>, meta?: Record<string, unknown>}>,
+   *   lifecycle?: 'active' | 'legacy' | 'private',
+   *   identity?: { fields: string[] },
+   *   seedPolicy?: 'normal' | 'migration_only' | 'never'
    * }} definition
    */
   async function createCollection({
@@ -54,35 +28,75 @@ export function createCmsSetupRuntime(directus) {
     fields = [],
     relations = [],
     aliases = [],
+    lifecycle = 'active',
+    identity = { fields: [] },
+    seedPolicy = 'never',
   }) {
     console.log(`\n[collection] ${name}`)
     const collections = await directus.request('GET', '/collections')
-    const exists = collections.some((collection) => collection.collection === name)
+    const existingCollection = collections.find((collection) => collection.collection === name)
+    const exists = Boolean(existingCollection)
     const translations = collectionTranslations(name)
+    const collectionMeta = { icon, ...meta, ...(translations && { translations }) }
     if (!exists) {
       await directus.request('POST', '/collections', {
         collection: name,
         schema: { name },
-        meta: { icon, ...meta, ...(translations && { translations }) },
+        meta: collectionMeta,
       })
     } else {
-      await directus.request('PATCH', `/collections/${name}`, {
-        meta: { icon, ...meta, ...(translations && { translations }) },
-      })
+      assertCollectionSnapshot(
+        { name, meta, fields: [], relations: [], identity, lifecycle, seedPolicy },
+        { collection: existingCollection, fields: [], relations: [], records: [] },
+        { validateLegacyAllowlist: false }
+      )
+      if (!metadataIncludes(existingCollection.meta, collectionMeta)) {
+        await directus.request('PATCH', `/collections/${name}`, { meta: collectionMeta })
+      }
     }
 
-    const existingFields = exists
-      ? new Set((await directus.request('GET', `/fields/${name}`)).map(({ field }) => field))
-      : new Set()
+    const existingFieldRecords = exists ? await directus.request('GET', `/fields/${name}`) : []
+    const existingFields = new Map(existingFieldRecords.map((field) => [field.field, field]))
+    let existingItems
 
     for (const definition of fields) {
       const { field, type, meta: fieldMeta = {}, schema = {} } = definition
       const translations = fieldTranslations(name, field)
+      const desiredMeta = { ...fieldMeta, ...(translations && { translations }) }
       if (existingFields.has(field)) {
-        await directus.request('PATCH', `/fields/${name}/${field}`, {
-          meta: { ...fieldMeta, ...(translations && { translations }) },
-        })
+        assertCollectionSnapshot(
+          {
+            name,
+            meta,
+            fields: [definition],
+            relations: [],
+            identity: { fields: [] },
+            lifecycle,
+            seedPolicy,
+          },
+          {
+            collection: existingCollection,
+            fields: [existingFields.get(field)],
+            relations: [],
+            records: [],
+          },
+          { validateLegacyAllowlist: false }
+        )
+        if (!metadataIncludes(existingFields.get(field)?.meta, desiredMeta)) {
+          await directus.request('PATCH', `/fields/${name}/${field}`, { meta: desiredMeta })
+        }
         continue
+      }
+      if (exists && identity.fields.includes(field) && fieldMeta.required && schema.is_unique) {
+        existingItems ??= await directus.request('GET', `/items/${name}?limit=1`)
+        const populated = Array.isArray(existingItems)
+          ? existingItems.length > 0
+          : Boolean(existingItems && Object.keys(existingItems).length)
+        if (populated) {
+          throw new Error(
+            `migration_required:missing_identity_field collection=${name} field=${field}`
+          )
+        }
       }
       await directus.request('POST', `/fields/${name}`, {
         field,
@@ -102,22 +116,47 @@ export function createCmsSetupRuntime(directus) {
       : []
     const existingRelations = exists ? await directus.request('GET', `/relations/${name}`) : []
     for (const relation of relations) {
-      const relationExists = existingRelations.some(
-        ({ field, related_collection: relatedCollection }) =>
-          field === relation.field && relatedCollection === relation.related_collection
-      )
-      if (relationExists) continue
+      const existingRelation = existingRelations.find(({ field }) => field === relation.field)
+      if (existingRelation) {
+        assertCollectionSnapshot(
+          {
+            name,
+            meta,
+            fields: [],
+            relations: [relation],
+            identity: { fields: [] },
+            lifecycle,
+            seedPolicy,
+          },
+          {
+            collection: existingCollection,
+            fields: [],
+            relations: [existingRelation],
+            records: [],
+          },
+          { validateLegacyAllowlist: false }
+        )
+        continue
+      }
 
       const relationField = collectionFields.find(({ field }) => field === relation.field)
       const incompatibleLegacyFileField =
         relation.related_collection === 'directus_files' &&
         relationField?.schema?.data_type &&
         relationField.schema.data_type !== 'uuid'
-      if (incompatibleLegacyFileField) {
+      const legacyAllowed = CMS_LEGACY_FIELD_ALLOWLIST.some(
+        (entry) => entry.collection === name && entry.field === relation.field
+      )
+      if (incompatibleLegacyFileField && legacyAllowed) {
         console.warn(
           `  keeping legacy path field ${name}.${relation.field} without a directus_files foreign key`
         )
         continue
+      }
+      if (incompatibleLegacyFileField) {
+        throw new Error(
+          `migration_required:relation_type collection=${name} field=${relation.field}`
+        )
       }
       await directus.request('POST', '/relations', relation)
     }
@@ -142,39 +181,5 @@ export function createCmsSetupRuntime(directus) {
     }
   }
 
-  async function seed(collection, items, { singleton = false } = {}) {
-    console.log(`  seeding ${items.length} items into ${collection}...`)
-    if (singleton && items[0]) {
-      await directus.request('PATCH', `/items/${collection}`, {
-        status: 'published',
-        ...items[0],
-      })
-      return
-    }
-    for (const item of items) {
-      await directus.request('POST', `/items/${collection}`, { status: 'published', ...item })
-    }
-  }
-
-  async function seedMissing(collection, items, identityFields, options = {}) {
-    if (!items.length) return
-    const identityQuery = identityFields.length
-      ? `?limit=-1&fields=${identityFields.map(encodeURIComponent).join(',')}`
-      : '?limit=-1'
-    const current = await directus.request('GET', `/items/${collection}${identityQuery}`)
-    const currentItems = Array.isArray(current)
-      ? current
-      : current && Object.keys(current).length
-        ? [current]
-        : []
-    const missing = items.filter(
-      (item) =>
-        !currentItems.some((record) =>
-          identityFields.every((field) => record[field] === item[field])
-        )
-    )
-    await seed(collection, missing, options)
-  }
-
-  return { createNavigationGroup, createCollection, seed, seedMissing }
+  return { createNavigationGroup, createCollection, ...seedRuntime }
 }

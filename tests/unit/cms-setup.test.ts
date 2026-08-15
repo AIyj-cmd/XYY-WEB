@@ -113,7 +113,9 @@ describe('CMS setup domains', () => {
   it('repairs only missing fields and relations on an existing collection', async () => {
     const request = vi.fn(async (method: string, path: string) => {
       if (method === 'GET' && path === '/collections') return [{ collection: 'news' }]
-      if (method === 'GET' && path === '/fields/news') return [{ field: 'title' }]
+      if (method === 'GET' && path === '/fields/news') {
+        return [{ field: 'title', type: 'string', meta: {}, schema: {} }]
+      }
       if (method === 'GET' && path === '/relations/news') return []
       return {}
     })

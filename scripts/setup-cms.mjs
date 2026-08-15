@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { CMS_COLLECTION_DEFINITIONS } from './data/cms-collection-definitions.mjs'
+import { CMS_COLLECTION_CONTRACTS, CMS_SCHEMA_VERSION } from './data/cms-contract-definitions.mjs'
 import { CMS_NAVIGATION_GROUP_DEFINITIONS } from './data/content-management-collection-definitions.mjs'
 import { CMS_SEEDS, CMS_SEED_COUNTS, CMS_SEED_IDENTITIES } from './data/cms-seed-config.mjs'
 import { createDirectusAdminClient } from './lib/directus-admin.mjs'
@@ -19,23 +19,26 @@ if (!token) {
 }
 
 const directus = createDirectusAdminClient({ baseUrl, token })
-const { createNavigationGroup, createCollection, seedMissing } = createCmsSetupRuntime(directus)
+const { createNavigationGroup, createCollection, seedMissing, resolveFaqSeedRelations } =
+  createCmsSetupRuntime(directus)
 
 for (const group of CMS_NAVIGATION_GROUP_DEFINITIONS) {
   await createNavigationGroup(group)
 }
 
-for (const definition of CMS_COLLECTION_DEFINITIONS) {
+for (const definition of CMS_COLLECTION_CONTRACTS) {
   await createCollection(definition)
 }
 
-for (const definition of CMS_COLLECTION_DEFINITIONS) {
-  await seedMissing(
-    definition.name,
-    CMS_SEEDS[definition.name] ?? [],
-    CMS_SEED_IDENTITIES[definition.name],
-    { singleton: Boolean(definition.meta?.singleton) }
-  )
+for (const definition of CMS_COLLECTION_CONTRACTS) {
+  if (definition.seedPolicy !== 'normal') continue
+  const seeds =
+    definition.name === 'faqs'
+      ? await resolveFaqSeedRelations(CMS_SEEDS[definition.name] ?? [])
+      : (CMS_SEEDS[definition.name] ?? [])
+  await seedMissing(definition.name, seeds, CMS_SEED_IDENTITIES[definition.name], {
+    singleton: Boolean(definition.meta?.singleton),
+  })
 }
 
 const permissionResult = await syncContentReadPermissions(directus, {
@@ -45,7 +48,8 @@ const permissionResult = await syncContentReadPermissions(directus, {
 })
 
 console.log('\n✅ CMS setup complete!')
-console.log(`   collections: ${CMS_COLLECTION_DEFINITIONS.map(({ name }) => name).join(', ')}`)
+console.log(`   schema version: ${CMS_SCHEMA_VERSION}`)
+console.log(`   collections: ${CMS_COLLECTION_CONTRACTS.map(({ name }) => name).join(', ')}`)
 console.log(`   cases: seeded with ${CMS_SEED_COUNTS.cases} items`)
 console.log(`   faqs: seeded with ${CMS_SEED_COUNTS.faqs} items`)
 console.log(`   service pages: seeded with ${CMS_SEED_COUNTS.servicePages} items`)

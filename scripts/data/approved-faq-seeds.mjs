@@ -2,6 +2,8 @@
 export const APPROVED_FAQ_SEEDS = [
   {
     status: 'published',
+    content_key: 'faq-home-01',
+    faqPageKey: 'home',
     page_key: 'home',
     sort: 1,
     question: '新亦源主要提供哪些鞋服仓配服务？',
@@ -10,6 +12,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-home-02',
+    faqPageKey: 'home',
     page_key: 'home',
     sort: 2,
     question: '新亦源适合哪些类型的鞋服品牌？',
@@ -18,6 +22,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-home-03',
+    faqPageKey: 'home',
     page_key: 'home',
     sort: 3,
     question: '与普通云仓和普通仓配公司有什么区别？',
@@ -26,6 +32,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-home-04',
+    faqPageKey: 'home',
     page_key: 'home',
     sort: 4,
     question: '能否处理退货质检、瑕疵修复和二次上架？',
@@ -34,6 +42,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-home-05',
+    faqPageKey: 'home',
     page_key: 'home',
     sort: 5,
     question: '是否支持抖音、天猫、唯品会和线下门店订单？',
@@ -42,6 +52,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-home-06',
+    faqPageKey: 'home',
     page_key: 'home',
     sort: 6,
     question: '是否支持一件代发和跨境仓配？',
@@ -50,6 +62,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-home-07',
+    faqPageKey: 'home',
     page_key: 'home',
     sort: 7,
     question: '有哪些可以验证的案例和运营数据？',
@@ -58,6 +72,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-home-08',
+    faqPageKey: 'home',
     page_key: 'home',
     sort: 8,
     question: '如何获取仓配方案和报价？',
@@ -66,6 +82,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-about-01',
+    faqPageKey: 'about',
     page_key: 'about',
     sort: 1,
     question: '新亦源的核心服务时效是什么？',
@@ -74,6 +92,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-about-02',
+    faqPageKey: 'about',
     page_key: 'about',
     sort: 2,
     question: '新亦源的发展历程是怎样的？有哪些里程碑节点？',
@@ -82,6 +102,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-about-03',
+    faqPageKey: 'about',
     page_key: 'about',
     sort: 3,
     question: '新亦源的仓网如何分工？',
@@ -90,6 +112,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-about-04',
+    faqPageKey: 'about',
     page_key: 'about',
     sort: 4,
     question: '新亦源有哪些行业认证和技术资质？',
@@ -98,6 +122,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-about-05',
+    faqPageKey: 'about',
     page_key: 'about',
     sort: 5,
     question: '新亦源目前服务了哪些类型的品牌？有没有典型客户案例？',
@@ -106,6 +132,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-about-06',
+    faqPageKey: 'about',
     page_key: 'about',
     sort: 6,
     question: '新亦源的仓储团队是怎么配置的？旺季人力如何保障？',
@@ -114,6 +142,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-about-07',
+    faqPageKey: 'about',
     page_key: 'about',
     sort: 7,
     question: '可以到仓参观考察吗？需要提前预约吗？',
@@ -122,6 +152,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-about-08',
+    faqPageKey: 'about',
     page_key: 'about',
     sort: 8,
     question: '新亦源如何保障数据安全和库存信息保密？',
@@ -130,6 +162,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-cases-01',
+    faqPageKey: 'cases',
     page_key: 'cases',
     sort: 1,
     question: '新亦源可以服务多大规模的品牌？有没有量级门槛？',
@@ -138,6 +172,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-cases-02',
+    faqPageKey: 'cases',
     page_key: 'cases',
     sort: 2,
     question: '案例中提到的“时效保障”和“SLA”具体是什么含义？',
@@ -146,6 +182,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-cases-03',
+    faqPageKey: 'cases',
     page_key: 'cases',
     sort: 3,
     question: '案例中的品牌背景和项目数据分别来自哪里？',
@@ -154,6 +192,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-cases-04',
+    faqPageKey: 'cases',
     page_key: 'cases',
     sort: 4,
     question: '合作前新亦源如何评估一个品牌是否适合入仓？',
@@ -162,6 +202,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-cases-05',
+    faqPageKey: 'cases',
     page_key: 'cases',
     sort: 5,
     question: '品牌在多个仓点有库存时，新亦源如何协调跨仓发货？',
@@ -170,6 +212,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-cases-06',
+    faqPageKey: 'cases',
     page_key: 'cases',
     sort: 6,
     question: '案例品牌为何选择新亦源而非自建仓或选择其他三方仓？',
@@ -178,6 +222,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-cases-07',
+    faqPageKey: 'cases',
     page_key: 'cases',
     sort: 7,
     question: '合作一般需要多长时间才能"跑顺"？上线后要多久看到效果？',
@@ -186,6 +232,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-cases-08',
+    faqPageKey: 'cases',
     page_key: 'cases',
     sort: 8,
     question: '如果我们想参考某个具体案例，可以进一步深入了解吗？',
@@ -194,6 +242,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-news-01',
+    faqPageKey: 'news',
     page_key: 'news',
     sort: 1,
     question: '新亦源为什么建立行业动态栏目？',
@@ -202,6 +252,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-news-02',
+    faqPageKey: 'news',
     page_key: 'news',
     sort: 2,
     question: '新亦源的行业内容主要来自哪些一线资料？',
@@ -210,6 +262,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-news-03',
+    faqPageKey: 'news',
     page_key: 'news',
     sort: 3,
     question: '新亦源如何区分公司数据、项目数据和行业公开数据？',
@@ -218,6 +272,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-news-04',
+    faqPageKey: 'news',
     page_key: 'news',
     sort: 4,
     question: '涉及平台规则和物流政策的内容，新亦源如何核验？',
@@ -226,6 +282,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-news-05',
+    faqPageKey: 'news',
     page_key: 'news',
     sort: 5,
     question: '旧文章与新亦源当前官网口径不一致时，以哪个为准？',
@@ -234,6 +292,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-news-06',
+    faqPageKey: 'news',
     page_key: 'news',
     sort: 6,
     question: '新亦源如何保证不同时期文章中的术语口径一致？',
@@ -242,6 +302,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-news-07',
+    faqPageKey: 'news',
     page_key: 'news',
     sort: 7,
     question: '新亦源会优先解读哪些行业问题？',
@@ -250,6 +312,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-news-08',
+    faqPageKey: 'news',
     page_key: 'news',
     sort: 8,
     question: '如何向新亦源提出希望核验或解读的问题？',
@@ -258,6 +322,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-senlinqikan-01',
+    faqPageKey: 'senlinqikan',
     page_key: 'senlinqikan',
     sort: 1,
     question: '《森林期刊》是什么？面向哪类读者？',
@@ -266,6 +332,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-senlinqikan-02',
+    faqPageKey: 'senlinqikan',
     page_key: 'senlinqikan',
     sort: 2,
     question: '如何下载或获取各期PDF？',
@@ -274,6 +342,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-senlinqikan-03',
+    faqPageKey: 'senlinqikan',
     page_key: 'senlinqikan',
     sort: 3,
     question: '森林期刊的出版周期是多长？在哪里可以第一时间获取新刊？',
@@ -282,6 +352,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-senlinqikan-04',
+    faqPageKey: 'senlinqikan',
     page_key: 'senlinqikan',
     sort: 4,
     question: '期刊中的数据和案例如何展示？',
@@ -290,6 +362,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-senlinqikan-05',
+    faqPageKey: 'senlinqikan',
     page_key: 'senlinqikan',
     sort: 5,
     question: '我可以在公司内部培训或行业活动中引用期刊内容吗？',
@@ -298,6 +372,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-senlinqikan-06',
+    faqPageKey: 'senlinqikan',
     page_key: 'senlinqikan',
     sort: 6,
     question: '森林期刊是否接受投稿或行业专家合作？',
@@ -306,6 +382,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-senlinqikan-07',
+    faqPageKey: 'senlinqikan',
     page_key: 'senlinqikan',
     sort: 7,
     question: '为什么有些期次（如第10期）没有出现在目录里？',
@@ -314,6 +392,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-senlinqikan-08',
+    faqPageKey: 'senlinqikan',
     page_key: 'senlinqikan',
     sort: 8,
     question: '期刊中的工具、模板或清单是否可以直接复用？',
@@ -322,6 +402,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-fuzhuang-yuncang-01',
+    faqPageKey: 'fuzhuang-yuncang',
     page_key: 'fuzhuang-yuncang',
     sort: 1,
     question: '服装云仓和普通电商云仓有什么区别？',
@@ -330,6 +412,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-fuzhuang-yuncang-02',
+    faqPageKey: 'fuzhuang-yuncang',
     page_key: 'fuzhuang-yuncang',
     sort: 2,
     question: '新亦源服装云仓合作过哪些品类？',
@@ -338,6 +422,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-fuzhuang-yuncang-03',
+    faqPageKey: 'fuzhuang-yuncang',
     page_key: 'fuzhuang-yuncang',
     sort: 3,
     question: '服装云仓如何解决尺码颜色混淆问题？',
@@ -346,6 +432,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-fuzhuang-yuncang-04',
+    faqPageKey: 'fuzhuang-yuncang',
     page_key: 'fuzhuang-yuncang',
     sort: 4,
     question: '服装退货的质检和修复服务怎么算费用？',
@@ -354,6 +442,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-fuzhuang-yuncang-05',
+    faqPageKey: 'fuzhuang-yuncang',
     page_key: 'fuzhuang-yuncang',
     sort: 5,
     question: '新亦源服装云仓有哪些仓库地址？',
@@ -362,6 +452,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-houzheng-xiufu-01',
+    faqPageKey: 'houzheng-xiufu',
     page_key: 'houzheng-xiufu',
     sort: 1,
     question: '后整修复包含哪些具体服务？',
@@ -370,6 +462,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-houzheng-xiufu-02',
+    faqPageKey: 'houzheng-xiufu',
     page_key: 'houzheng-xiufu',
     sort: 2,
     question: '新亦源的瑕疵修复成功率是多少？',
@@ -378,6 +472,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-houzheng-xiufu-03',
+    faqPageKey: 'houzheng-xiufu',
     page_key: 'houzheng-xiufu',
     sort: 3,
     question: '后整修复和退货质检是什么关系？',
@@ -386,6 +482,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-houzheng-xiufu-04',
+    faqPageKey: 'houzheng-xiufu',
     page_key: 'houzheng-xiufu',
     sort: 4,
     question: '高档服装（真丝/羽绒/皮草）可以修复吗？',
@@ -394,6 +492,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-houzheng-xiufu-05',
+    faqPageKey: 'houzheng-xiufu',
     page_key: 'houzheng-xiufu',
     sort: 5,
     question: '修复后货品的质量由谁保证？',
@@ -402,6 +502,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-weipinhui-jit-jitx-01',
+    faqPageKey: 'weipinhui-jit-jitx',
     page_key: 'weipinhui-jit-jitx',
     sort: 1,
     question: '唯品会JIT和JITX模式有什么区别？',
@@ -410,6 +512,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-weipinhui-jit-jitx-02',
+    faqPageKey: 'weipinhui-jit-jitx',
     page_key: 'weipinhui-jit-jitx',
     sort: 2,
     question: '新亦源唯品会仓配有什么核心优势？',
@@ -418,6 +522,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-weipinhui-jit-jitx-03',
+    faqPageKey: 'weipinhui-jit-jitx',
     page_key: 'weipinhui-jit-jitx',
     sort: 3,
     question: '新亦源肇庆唯品会物流园仓规模如何？',
@@ -426,6 +532,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-weipinhui-jit-jitx-04',
+    faqPageKey: 'weipinhui-jit-jitx',
     page_key: 'weipinhui-jit-jitx',
     sort: 4,
     question: 'JIT模式对发货时效有什么要求，新亦源能达到吗？',
@@ -434,6 +542,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-weipinhui-jit-jitx-05',
+    faqPageKey: 'weipinhui-jit-jitx',
     page_key: 'weipinhui-jit-jitx',
     sort: 5,
     question: '开始唯品会JIT/JITX合作需要什么条件？',
@@ -442,6 +552,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-kuajing-yuncang-01',
+    faqPageKey: 'kuajing-yuncang',
     page_key: 'kuajing-yuncang',
     sort: 1,
     question: '新亦源跨境云仓支持哪些跨境平台？',
@@ -450,6 +562,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-kuajing-yuncang-02',
+    faqPageKey: 'kuajing-yuncang',
     page_key: 'kuajing-yuncang',
     sort: 2,
     question: '跨境退货从海外回来后怎么处理？',
@@ -458,6 +572,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-kuajing-yuncang-03',
+    faqPageKey: 'kuajing-yuncang',
     page_key: 'kuajing-yuncang',
     sort: 3,
     question: '跨境换标换包装需要注意什么？',
@@ -466,6 +582,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-kuajing-yuncang-04',
+    faqPageKey: 'kuajing-yuncang',
     page_key: 'kuajing-yuncang',
     sort: 4,
     question: '跨境仓储费用和国内仓储有差异吗？',
@@ -474,6 +592,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-kuajing-yuncang-05',
+    faqPageKey: 'kuajing-yuncang',
     page_key: 'kuajing-yuncang',
     sort: 5,
     question: '新亦源跨境云仓有实际合作案例吗？',
@@ -482,6 +602,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-huanan-xiefu-yuncang-01',
+    faqPageKey: 'huanan-xiefu-yuncang',
     page_key: 'huanan-xiefu-yuncang',
     sort: 1,
     question: '华南鞋服云仓覆盖哪些区域？',
@@ -490,6 +612,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-huanan-xiefu-yuncang-02',
+    faqPageKey: 'huanan-xiefu-yuncang',
     page_key: 'huanan-xiefu-yuncang',
     sort: 2,
     question: '华南鞋服云仓发货到全国时效怎么样？',
@@ -498,6 +622,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-huanan-xiefu-yuncang-03',
+    faqPageKey: 'huanan-xiefu-yuncang',
     page_key: 'huanan-xiefu-yuncang',
     sort: 3,
     question: '华南仓储费用有没有地区优势？',
@@ -505,6 +631,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-huanan-xiefu-yuncang-04',
+    faqPageKey: 'huanan-xiefu-yuncang',
     page_key: 'huanan-xiefu-yuncang',
     sort: 4,
     question: '新亦源华南仓适合哪类鞋服品牌？',
@@ -513,6 +641,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-huanan-xiefu-yuncang-05',
+    faqPageKey: 'huanan-xiefu-yuncang',
     page_key: 'huanan-xiefu-yuncang',
     sort: 5,
     question: '华南仓能支持多大规模的品牌？',
@@ -521,6 +651,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-zhibo-cangpei-01',
+    faqPageKey: 'zhibo-cangpei',
     page_key: 'zhibo-cangpei',
     sort: 1,
     question: '直播仓配和普通电商仓配有什么不同？',
@@ -529,6 +661,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-zhibo-cangpei-02',
+    faqPageKey: 'zhibo-cangpei',
     page_key: 'zhibo-cangpei',
     sort: 2,
     question: '新亦源支持哪些直播平台的仓配对接？',
@@ -537,6 +671,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-zhibo-cangpei-03',
+    faqPageKey: 'zhibo-cangpei',
     page_key: 'zhibo-cangpei',
     sort: 3,
     question: '遇到直播大场爆单，仓库能应对吗？',
@@ -545,6 +681,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-zhibo-cangpei-04',
+    faqPageKey: 'zhibo-cangpei',
     page_key: 'zhibo-cangpei',
     sort: 4,
     question: '直播间超卖了怎么处理？',
@@ -553,6 +691,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-zhibo-cangpei-05',
+    faqPageKey: 'zhibo-cangpei',
     page_key: 'zhibo-cangpei',
     sort: 5,
     question: 'MCN机构或代播服务商可以用新亦源做多品牌仓配吗？',
@@ -561,6 +701,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-b2b-mendian-cangpei-01',
+    faqPageKey: 'b2b-mendian-cangpei',
     page_key: 'b2b-mendian-cangpei',
     sort: 1,
     question: '新亦源B2B仓配和B2C仓配有什么区别？',
@@ -569,6 +711,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-b2b-mendian-cangpei-02',
+    faqPageKey: 'b2b-mendian-cangpei',
     page_key: 'b2b-mendian-cangpei',
     sort: 2,
     question: '门店数量较多（50家以上），新亦源能处理吗？',
@@ -577,6 +721,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-b2b-mendian-cangpei-03',
+    faqPageKey: 'b2b-mendian-cangpei',
     page_key: 'b2b-mendian-cangpei',
     sort: 3,
     question: '新亦源支持与哪些ERP系统对接？',
@@ -585,6 +731,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-b2b-mendian-cangpei-04',
+    faqPageKey: 'b2b-mendian-cangpei',
     page_key: 'b2b-mendian-cangpei',
     sort: 4,
     question: '季节换新集中铺货时，能在多少天内完成全国发货？',
@@ -593,6 +741,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-b2b-mendian-cangpei-05',
+    faqPageKey: 'b2b-mendian-cangpei',
     page_key: 'b2b-mendian-cangpei',
     sort: 5,
     question: 'B2B发货的货架标签和分货明细单怎么定制？',
@@ -601,6 +751,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-huadong-xiefu-yuncang-01',
+    faqPageKey: 'huadong-xiefu-yuncang',
     page_key: 'huadong-xiefu-yuncang',
     sort: 1,
     question: '新亦源华东仓在哪里？适合哪些品牌？',
@@ -609,6 +761,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-huadong-xiefu-yuncang-02',
+    faqPageKey: 'huadong-xiefu-yuncang',
     page_key: 'huadong-xiefu-yuncang',
     sort: 2,
     question: '华东仓发货到长三角主要城市需要多久？',
@@ -617,6 +771,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-huadong-xiefu-yuncang-03',
+    faqPageKey: 'huadong-xiefu-yuncang',
     page_key: 'huadong-xiefu-yuncang',
     sort: 3,
     question: '华东仓和广州仓可以同时使用，统一管理库存吗？',
@@ -625,6 +781,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-huadong-xiefu-yuncang-04',
+    faqPageKey: 'huadong-xiefu-yuncang',
     page_key: 'huadong-xiefu-yuncang',
     sort: 4,
     question: '华东仓规模多大？能应对大促爆单吗？',
@@ -633,6 +791,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-huadong-xiefu-yuncang-05',
+    faqPageKey: 'huadong-xiefu-yuncang',
     page_key: 'huadong-xiefu-yuncang',
     sort: 5,
     question: '华东仓收费与广州仓有区别吗？',
@@ -641,6 +801,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-guangzhou-xiefu-yuncang-01',
+    faqPageKey: 'guangzhou-xiefu-yuncang',
     page_key: 'guangzhou-xiefu-yuncang',
     sort: 1,
     question: '新亦源广州仓位置在哪里，交通方便吗？',
@@ -649,6 +811,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-guangzhou-xiefu-yuncang-02',
+    faqPageKey: 'guangzhou-xiefu-yuncang',
     page_key: 'guangzhou-xiefu-yuncang',
     sort: 2,
     question: '广州仓的发货和运输时效如何确认？',
@@ -656,6 +820,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-guangzhou-xiefu-yuncang-03',
+    faqPageKey: 'guangzhou-xiefu-yuncang',
     page_key: 'guangzhou-xiefu-yuncang',
     sort: 3,
     question: '广州仓适合什么类型的鞋服品牌？',
@@ -664,6 +830,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-guangzhou-xiefu-yuncang-04',
+    faqPageKey: 'guangzhou-xiefu-yuncang',
     page_key: 'guangzhou-xiefu-yuncang',
     sort: 4,
     question: '广州仓的规模是多少？能支持大促爆单吗？',
@@ -672,6 +840,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-guangzhou-xiefu-yuncang-05',
+    faqPageKey: 'guangzhou-xiefu-yuncang',
     page_key: 'guangzhou-xiefu-yuncang',
     sort: 5,
     question: '新亦源广州仓收费模式是什么？',
@@ -680,6 +850,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-tuihuo-zhijian-01',
+    faqPageKey: 'tuihuo-zhijian',
     page_key: 'tuihuo-zhijian',
     sort: 1,
     question: '退货质检的AQL标准是什么意思？',
@@ -688,6 +860,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-tuihuo-zhijian-02',
+    faqPageKey: 'tuihuo-zhijian',
     page_key: 'tuihuo-zhijian',
     sort: 2,
     question: '质检发现问题后货品怎么处理？',
@@ -696,6 +870,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-tuihuo-zhijian-03',
+    faqPageKey: 'tuihuo-zhijian',
     page_key: 'tuihuo-zhijian',
     sort: 3,
     question: '退货质检多长时间完成？',
@@ -704,6 +880,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-tuihuo-zhijian-04',
+    faqPageKey: 'tuihuo-zhijian',
     page_key: 'tuihuo-zhijian',
     sort: 4,
     question: '退货质检能识别哪些具体缺陷？',
@@ -712,6 +890,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-tuihuo-zhijian-05',
+    faqPageKey: 'tuihuo-zhijian',
     page_key: 'tuihuo-zhijian',
     sort: 5,
     question: '新货质检（非退货）新亦源也能做吗？',
@@ -720,6 +900,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-xiefu-yuncang-01',
+    faqPageKey: 'xiefu-yuncang',
     page_key: 'xiefu-yuncang',
     sort: 1,
     question: '鞋服云仓和普通仓库有什么区别？',
@@ -728,6 +910,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-xiefu-yuncang-02',
+    faqPageKey: 'xiefu-yuncang',
     page_key: 'xiefu-yuncang',
     sort: 2,
     question: '新亦源鞋服云仓支持哪些电商平台对接？',
@@ -736,6 +920,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-xiefu-yuncang-03',
+    faqPageKey: 'xiefu-yuncang',
     page_key: 'xiefu-yuncang',
     sort: 3,
     question: '鞋服云仓如何应对618/双11大促爆仓？',
@@ -744,6 +930,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-xiefu-yuncang-04',
+    faqPageKey: 'xiefu-yuncang',
     page_key: 'xiefu-yuncang',
     sort: 4,
     question: '新亦源鞋服云仓发货时效是多少？',
@@ -752,6 +940,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-xiefu-yuncang-05',
+    faqPageKey: 'xiefu-yuncang',
     page_key: 'xiefu-yuncang',
     sort: 5,
     question: '小型品牌也可以入驻新亦源鞋服云仓吗？',
@@ -760,6 +950,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-yundao-zhineng-jijian-01',
+    faqPageKey: 'yundao-zhineng-jijian',
     page_key: 'yundao-zhineng-jijian',
     sort: 1,
     question: '运到智能寄件平台主要解决什么问题？',
@@ -768,6 +960,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-yundao-zhineng-jijian-02',
+    faqPageKey: 'yundao-zhineng-jijian',
     page_key: 'yundao-zhineng-jijian',
     sort: 2,
     question: '平台目前可以接入哪些承运商？',
@@ -776,6 +970,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-yundao-zhineng-jijian-03',
+    faqPageKey: 'yundao-zhineng-jijian',
     page_key: 'yundao-zhineng-jijian',
     sort: 3,
     question: '门店调拨和退仓寄回也可以统一管理吗？',
@@ -784,6 +980,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-yundao-zhineng-jijian-04',
+    faqPageKey: 'yundao-zhineng-jijian',
     page_key: 'yundao-zhineng-jijian',
     sort: 4,
     question: '平台会自动保证最低价格或固定时效吗？',
@@ -792,6 +990,8 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
+    content_key: 'faq-yundao-zhineng-jijian-05',
+    faqPageKey: 'yundao-zhineng-jijian',
     page_key: 'yundao-zhineng-jijian',
     sort: 5,
     question: '发生运输异常后如何处理？',

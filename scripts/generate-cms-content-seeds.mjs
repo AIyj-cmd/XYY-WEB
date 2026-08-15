@@ -5,25 +5,12 @@ import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { format, resolveConfig } from 'prettier'
 import { APPROVED_CASE_SEEDS } from './data/approved-case-seeds.mjs'
+import { SERVICE_PAGE_SLUGS } from './data/service-page-slugs.mjs'
 import { parseServiceProps, parseVariable } from './lib/source-seed-extractor.mjs'
 import { assertKnownClaimReferences } from './lib/claim-reference-validation.mjs'
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const read = (file) => readFileSync(resolve(root, file), 'utf8')
-const serviceSlugs = [
-  'fuzhuang-yuncang',
-  'houzheng-xiufu',
-  'weipinhui-jit-jitx',
-  'kuajing-yuncang',
-  'huanan-xiefu-yuncang',
-  'zhibo-cangpei',
-  'b2b-mendian-cangpei',
-  'huadong-xiefu-yuncang',
-  'guangzhou-xiefu-yuncang',
-  'tuihuo-zhijian',
-  'xiefu-yuncang',
-  'yundao-zhineng-jijian',
-]
 
 const caseDetails = parseVariable(
   read('src/data/brand/case-details.ts'),
@@ -39,14 +26,6 @@ const caseDetailSeeds = Object.entries(caseDetails).map(([label, detail]) => ({
   accent: detail.accent,
   description: detail.description,
 }))
-const caseStatSeeds = Object.values(caseDetails).flatMap((detail) =>
-  detail.stats.map((stat, index) => ({
-    status: 'published',
-    case_slug: detail.slug,
-    sort: index + 1,
-    ...stat,
-  }))
-)
 const unifiedCaseSeeds = APPROVED_CASE_SEEDS.map((item) => {
   const detail = caseDetails[item.label]
   return detail
@@ -73,20 +52,26 @@ const publications = parseVariable(
   is_latest: isLatest,
 }))
 const history = parseVariable(read('src/data/about/history.ts'), 'history.ts', 'ABOUT_HISTORY').map(
-  (item, index) => ({ status: 'published', sort: index + 1, ...item })
+  ({ contentKey, ...item }, index) => ({
+    status: 'published',
+    content_key: contentKey,
+    sort: index + 1,
+    ...item,
+  })
 )
 const honors = parseVariable(
   read('src/data/brand/organization.ts'),
   'organization.ts',
-  'HONORS'
-).map((title, index) => ({
+  'HONOR_CMS_SOURCE'
+).map(({ contentKey, title }, index) => ({
   status: 'published',
+  content_key: contentKey,
   sort: index + 1,
   title,
   image: `/about/honor/${index + 1}.jpg`,
 }))
 
-const servicePages = serviceSlugs.map((slug) => {
+const servicePages = SERVICE_PAGE_SLUGS.map((slug) => {
   const props = parseServiceProps(read(`src/pages/${slug}.astro`), `${slug}.astro`)
   return {
     status: 'published',
@@ -122,27 +107,9 @@ const servicePageSeeds = servicePages.map((page) => ({
   content_desc: page.content_desc,
   features_label: page.features_label,
 }))
-const serviceStatSeeds = servicePages.flatMap(({ slug, stats }) =>
-  stats.map((item, index) => ({
-    status: 'published',
-    service_slug: slug,
-    sort: index + 1,
-    ...item,
-  }))
-)
-const serviceFeatureSeeds = servicePages.flatMap(({ slug, features }) =>
-  features.map((item, index) => ({
-    status: 'published',
-    service_slug: slug,
-    sort: index + 1,
-    ...item,
-  }))
-)
-
 const exports = {
   APPROVED_UNIFIED_CASE_SEEDS: unifiedCaseSeeds,
   APPROVED_CASE_DETAIL_SEEDS: caseDetailSeeds,
-  APPROVED_CASE_STAT_SEEDS: caseStatSeeds,
   APPROVED_PUBLICATION_SEEDS: publications,
   APPROVED_ABOUT_CONTENT_SEEDS: [
     {
@@ -169,8 +136,6 @@ const exports = {
     },
   ],
   APPROVED_SERVICE_PAGE_SEEDS: servicePageSeeds,
-  APPROVED_SERVICE_STAT_SEEDS: serviceStatSeeds,
-  APPROVED_SERVICE_FEATURE_SEEDS: serviceFeatureSeeds,
 }
 
 assertKnownClaimReferences(exports, { root, source: 'generate-cms-content-seeds' })

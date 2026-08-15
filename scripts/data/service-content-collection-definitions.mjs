@@ -1,4 +1,9 @@
-import { dateCreatedField, dateUpdatedField, statusField } from './cms-field-builders.mjs'
+import {
+  dateCreatedField,
+  dateUpdatedField,
+  stableKeyField,
+  statusField,
+} from './cms-field-builders.mjs'
 
 export const SERVICE_CONTENT_COLLECTION_DEFINITIONS = [
   {
@@ -129,6 +134,7 @@ export const SERVICE_CONTENT_COLLECTION_DEFINITIONS = [
     },
     fields: [
       statusField(),
+      stableKeyField('metric_key'),
       { field: 'service_slug', type: 'string', meta: { required: true, width: 'half' } },
       { field: 'sort', type: 'integer', meta: { required: true, width: 'half' } },
       { field: 'stat', type: 'string', meta: { required: true, width: 'half' } },
@@ -147,6 +153,7 @@ export const SERVICE_CONTENT_COLLECTION_DEFINITIONS = [
     },
     fields: [
       statusField(),
+      stableKeyField(),
       { field: 'service_slug', type: 'string', meta: { required: true, width: 'half' } },
       { field: 'sort', type: 'integer', meta: { required: true, width: 'half' } },
       { field: 'title', type: 'string', meta: { required: true } },

@@ -210,7 +210,7 @@ describe('Directus helpers', () => {
     expect(requester).toHaveBeenCalledWith(
       'faqs',
       expect.objectContaining({
-        filter: { page_key: { _eq: 'home' }, status: { _eq: 'published' } },
+        filter: { faq_page: { key: { _eq: 'home' } }, status: { _eq: 'published' } },
         sort: ['sort'],
       })
     )

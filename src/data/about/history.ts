@@ -3,54 +3,63 @@ import { CLAIM_TEXT } from '@/lib/claims'
 
 export const ABOUT_HISTORY: AboutHistoryItem[] = [
   {
+    contentKey: 'history-team-founded',
     year: '2011',
     subtitle: '起点·团队成立',
     text: '团队在广州成立，开始深耕鞋服物流与仓配服务',
     img: '',
   },
   {
+    contentKey: 'history-angel-investment',
     year: '2017',
     subtitle: '夯实·天使投资',
     text: '获千万级天使投资，定位服饰客户专业化物流',
     img: '/about/history/2017.png',
   },
   {
+    contentKey: 'history-strategic-positioning',
     year: '2019',
     subtitle: '聚焦·战略定位',
     text: '完成战略定位，布局服装仓储中心并建立仓配服务SOP',
     img: '/about/history/2019.png',
   },
   {
+    contentKey: 'history-series-a',
     year: '2020',
     subtitle: '发展·A轮融资',
     text: '完成A轮融资，布局全国物流中心，打造线上线下融合新物流模式',
     img: '/about/history/2020.png',
   },
   {
+    contentKey: 'history-three-pillars',
     year: '2021',
     subtitle: '协同·三架马车',
     text: '布局行业垂直整合“三架马车”，建设全国区域后整检品服务',
     img: '/about/history/2021.png',
   },
   {
+    contentKey: 'history-pre-a',
     year: '2022',
     subtitle: '成长·PRE-A轮',
     text: '完成PRE-A轮融资并获上市公司参股，启动“启明星计划”',
     img: '/about/history/2022.png',
   },
   {
+    contentKey: 'history-otd-launch',
     year: '2023',
     subtitle: '升级·OTD上线',
     text: '物流服务中台OTD上线，人效通和店配O2O平台升级，推进内部阿米巴管理',
     img: '/about/history/2023.jpg',
   },
   {
+    contentKey: 'history-digital-upgrade',
     year: '2024',
     subtitle: '深耕·数字化升级',
     text: '业绩逆势持续增长，深耕鞋服战略，推进仓内作业数字化升级',
     img: '/about/history/2024.jpg',
   },
   {
+    contentKey: 'history-cross-border',
     year: '2025',
     subtitle: '出海·数智化升级',
     text: '布局跨境出海业务，从数字化过渡到数智化，建设中高层管理人才培养体系',

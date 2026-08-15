@@ -16,7 +16,7 @@ import type {
 export async function getFaqs(pageKey: string, fallback: FaqItem[]): Promise<FaqItem[]> {
   try {
     const rows = await requestItems<FaqRecord[]>('faqs', {
-      filter: { page_key: { _eq: pageKey }, status: { _eq: 'published' } },
+      filter: { faq_page: { key: { _eq: pageKey } }, status: { _eq: 'published' } },
       sort: ['sort'],
       fields: ['id', 'sort', 'question', 'answer'],
     })

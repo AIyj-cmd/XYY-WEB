@@ -1,4 +1,9 @@
-import { dateCreatedField, dateUpdatedField, statusField } from './cms-field-builders.mjs'
+import {
+  dateCreatedField,
+  dateUpdatedField,
+  stableKeyField,
+  statusField,
+} from './cms-field-builders.mjs'
 
 export const CASE_PUBLICATION_COLLECTION_DEFINITIONS = [
   {
@@ -41,6 +46,7 @@ export const CASE_PUBLICATION_COLLECTION_DEFINITIONS = [
     },
     fields: [
       statusField(),
+      stableKeyField('metric_key'),
       { field: 'case_slug', type: 'string', meta: { required: true, width: 'half' } },
       { field: 'sort', type: 'integer', meta: { required: true, width: 'half' } },
       { field: 'label', type: 'string', meta: { required: true } },

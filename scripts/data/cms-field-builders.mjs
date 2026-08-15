@@ -40,6 +40,18 @@ export const dateUpdatedField = () => ({
   },
 })
 
+export const stableKeyField = (field = 'content_key') => ({
+  field,
+  type: 'string',
+  meta: {
+    required: true,
+    readonly: true,
+    width: 'half',
+    note: '稳定内容标识；初始化后不可随标题、排序或年份修改。',
+  },
+  schema: { is_nullable: false, is_unique: true },
+})
+
 export const leadStatusField = () => ({
   field: 'status',
   type: 'string',

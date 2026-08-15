@@ -1,6 +1,7 @@
 import type { Warehouse } from '@/lib/directus-types'
 
 export interface AboutHistoryItem {
+  contentKey?: string
   year: string
   subtitle: string
   text: string

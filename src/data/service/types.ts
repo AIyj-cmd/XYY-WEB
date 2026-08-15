@@ -24,6 +24,7 @@ export interface FeatureItem {
 }
 
 export interface FaqItem {
+  contentKey?: string
   q: string
   a: string
 }

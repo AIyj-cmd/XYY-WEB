@@ -106,8 +106,10 @@ function parseFaqs(arraySource, file) {
         textValue(property.initializer),
       ])
     )
-    if (!values.q || !values.a) throw new Error(`FAQ item missing q/a in ${file}`)
-    return { question: values.q, answer: values.a }
+    if (!values.contentKey || !values.q || !values.a) {
+      throw new Error(`FAQ item missing explicit contentKey/q/a in ${file}`)
+    }
+    return { contentKey: values.contentKey, question: values.q, answer: values.a }
   })
 }
 
@@ -115,9 +117,12 @@ const seeds = sources.flatMap(([pageKey, file, symbol]) => {
   const source = readFileSync(resolve(root, file), 'utf8')
   return parseFaqs(findArray(source, symbol), file).map((faq, index) => ({
     status: 'published',
+    content_key: faq.contentKey,
+    faqPageKey: pageKey,
     page_key: pageKey,
     sort: index + 1,
-    ...faq,
+    question: faq.question,
+    answer: faq.answer,
   }))
 })
 
