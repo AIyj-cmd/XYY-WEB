@@ -9,8 +9,8 @@ import {
 const currentFields = {
   news: [
     { field: 'slug', type: 'string', meta: { required: true }, schema: { is_unique: false } },
-    { field: 'summary', type: 'string', meta: { required: true }, schema: {} },
-    { field: 'published_at', type: 'string', meta: {}, schema: {} },
+    { field: 'summary', type: 'text', meta: { required: true }, schema: {} },
+    { field: 'published_at', type: 'timestamp', meta: {}, schema: {} },
   ],
   contact_leads: [
     { field: 'status', type: 'string', meta: {}, schema: { default_value: null } },

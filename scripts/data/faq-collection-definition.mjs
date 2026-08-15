@@ -22,6 +22,7 @@ export const FAQ_COLLECTION_DEFINITION = {
       field: 'page_key',
       type: 'string',
       meta: {
+        required: true,
         readonly: true,
         width: 'half',
         interface: 'select-dropdown',

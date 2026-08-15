@@ -127,8 +127,9 @@ Directus 暂时不可用，页面会使用代码中的审核版 FAQ，避免整�
 - 对 active 已有数据集合补充 `content_key` 时，迁移严格按“创建 nullable/非 unique
   字段 → 回填 → 重新读取并验证无 null → 验证无重复 → 收紧 required → 增加 unique → 完整
   verify”执行。各步骤幂等，中途失败后可安全重跑，第二次运行应为零变更；
-- `cases.metrics`、`news.summary` 与 `news.published_at` 保持真实环境当前的 string 契约，不为
-  当前短文本和空数据开发 string→text/timestamp 转换；`news.slug` 的 unique 仍是必要目标；
+- 最终迁移 Schema 以真实严格 Verify 为准：`cases.metrics=text`、`news.summary=text`、
+  `news.published_at=timestamp`；这三项不再由 contract 绑定层覆盖为 string，也不生成反向迁移；
+  `news.slug` 的 unique 仍是必要目标；
 - verify 对 private `contact_leads` 只读取集合、字段和关系元数据，不请求任何记录内容；迁移
   只允许针对 `status= new` 与 `source=website` 的默认值执行显式 schema-only 计划，不能读取、
   快照或回填历史留言；

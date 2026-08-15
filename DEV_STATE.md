@@ -277,7 +277,7 @@
 - 基线为已发布提交 `1c3c81e336d3fc67de74ccd5d550981c9603052d`，开始前工作区干净。本补丁仅收口 CMS 目标契约和 dry-run 计划，当前仍未提交、未推送、未 apply、未部署。
 - 真实预检确认5个 legacy 集合不参与运行读取或 seed，因此取消 `homepage_stats.metric_key`、`case_stats.metric_key`、`service_stats.metric_key`、`service_features.content_key` 的新增、映射、必填与唯一要求；legacy 继续保留现有 Schema，但 verify 不读取其记录，也不再产生人工映射。
 - Active 要求保持不变：`warehouses.content_key`、`faqs.content_key`、`about_history.content_key`、`about_honors.content_key` 与 `homepage_content.stats.claimKey` 仍必须经人工确认；FAQ 继续以 `faq_page` 关系为唯一页面归属。
-- 契约接受真实环境现状：`cases.metrics`、`news.summary`、`news.published_at` 均保持 string，不生成 string→text/timestamp 转换。仍保留 `news.slug` unique、`contact_leads.status` 默认 `new`、`contact_leads.source` 默认 `website` 三项必要 Schema 目标。
+- 该轮曾按预检快照将 `cases.metrics`、`news.summary`、`news.published_at` 视为 string；真实 Apply 后的严格复核确认最终 Schema 分别为 text、text、timestamp，后续“Verify 契约漂移收口”已以真实迁移结果更正这项历史判断。
 - 迁移读取边界：正常内容快照只包含 active 迁移集合；private `contact_leads` 只读取字段元数据并只允许上述两个默认值的 schema-only 计划，不读取、快照、修改或回填任何留言记录。
 - 测试先行证据：旧实现下4个定向测试文件共14项失败、30项通过，失败准确覆盖 legacy 人工映射、legacy 身份字段、三项类型升级、private 记录读取边界和缺失安全 Schema 计划；实现后5个定向测试文件共45项通过。维护性预算曾因新增用例令两个测试文件超过220行而失败，随后按“真实环境契约收口”职责拆出专用测试文件，没有提高阈值或删除断言。
 - 本地验证使用不可达 Directus 地址与两枚虚拟 Token 隔离执行：Prettier、Astro typecheck、ESLint、维护性、资源检查、245项 Vitest、38项 Playwright（6项按配置跳过）、3项正式域名契约、构建和 `npm run verify:release` 全部通过。未隔离的首次聚合构建因开发机既有 CMS Token 对 `site_settings` 返回403而正确失败，未发生写请求；隔离重跑退出码为0。
@@ -285,6 +285,15 @@
 - 范围外状态不变：内容 Token 仍有5条 legacy read 权限待精确撤销；数据库和附件备份虽已完成同机校验，但 `offsite_backup_missing`。两项均未在本补丁中处理，并继续阻止真实 apply。
 
 任何密码、Token、API Key、私钥、Cookie 和真实 `.env` 都不得写入本文档或提交到 Git。
+
+## Verify 契约漂移收口（2026-08-15）
+
+- 基线提交为 `f2d47bd47060db5e6d4dd42b8fae6861f76facc1`。144项 Active 身份与 claimKey、5条 legacy read 权限、真实 migration Apply 和运行权限审计均已完成；本轮不再执行 Apply，也不修改真实 CMS、内容或权限。
+- 根因是 `scripts/data/cms-contract-definitions.mjs` 在权威 collection definitions 之后又把 `cases.metrics`、`news.summary`、`news.published_at` 覆盖为 string，同时 `faqs.page_key` 与 `about_honors.image` 的 definitions 没有表达真实 required 状态；migration planner 不规划这些反向变更，因此第二次 dry-run 已为零，但 verify 仍读取了漂移后的契约。
+- 最终严格契约与已迁移 Schema 对齐：`cases.metrics=text`、`news.summary=text`、`news.published_at=timestamp`、`faqs.page_key required=true`、`about_honors.image required=true`。没有增加 allowlist、warning 或 verify 跳过；错误类型和 required 状态仍由严格回归测试阻断。
+- 测试先行证据：旧实现下五项目标断言和五项反向漂移断言共10项失败；修复后5个定向测试文件共47项通过。新增严格漂移测试拆为独立文件以维持220行维护预算，没有提高阈值或删减断言。
+- 隔离环境完整门禁通过：349个 Astro 文件无诊断、38个 Vitest 文件257项通过、E2E 38项通过且6项按配置跳过、正式域名契约3项通过、构建和 `npm run verify:release` 均成功。直接使用开发机 `.env` 的首次构建因本机内容 Token 对 `site_settings` 返回403而停止；按 CI 契约显式覆盖不可达 Directus 和虚拟双 Token 后完整通过，未发生 CMS 写入。
+- 真实 CMS 只读结果：`npm run cms:verify` 为19个集合、0 warning、0 failure；`npm run cms:migrate-contract` 为0项内容变更、0项 Schema 变更。本轮修复作为独立提交管理，提交 SHA 以 Git 历史为准；真实 CMS 未再次 Apply，staging 尚未部署。
 
 ## Active 身份映射最终收口（2026-08-15）
 

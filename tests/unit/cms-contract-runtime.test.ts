@@ -142,14 +142,18 @@ describe('CMS contract runtime validation', () => {
   })
 
   it.each([
-    ['cases', 'metrics'],
-    ['news', 'summary'],
-    ['news', 'published_at'],
-  ])('accepts the current string contract for %s.%s', (collection, field) => {
+    ['cases', 'metrics', 'text', false],
+    ['news', 'summary', 'text', true],
+    ['news', 'published_at', 'timestamp', false],
+    ['faqs', 'page_key', 'string', true],
+    ['about_honors', 'image', 'string', true],
+  ])('uses the migrated schema contract for %s.%s', (collection, field, type, isRequired) => {
     const contract = CMS_CONTRACT_BY_COLLECTION[collection]
-    expect(
-      contract.fields.find((candidate: ContractField) => candidate.field === field)?.type
-    ).toBe('string')
+    const contractField = contract.fields.find(
+      (candidate: ContractField) => candidate.field === field
+    )
+    expect(contractField?.type).toBe(type)
+    expect(Boolean(contractField?.meta?.required)).toBe(isRequired)
   })
 
   it('does not read retained legacy records while verifying their schema', async () => {

@@ -77,7 +77,7 @@ export const ORGANIZATION_COLLECTION_DEFINITIONS = [
       {
         field: 'image',
         type: 'string',
-        meta: { hidden: true, note: '旧版静态图片路径，仅兼容回退。' },
+        meta: { hidden: true, required: true, note: '旧版静态图片路径，仅兼容回退。' },
       },
       {
         field: 'image_file',

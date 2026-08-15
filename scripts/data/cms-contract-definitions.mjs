@@ -10,19 +10,11 @@ const RETIRED_LEGACY_IDENTITY_FIELDS = {
   service_features: new Set(['content_key']),
 }
 
-const CURRENT_STRING_FIELDS = new Set(['cases.metrics', 'news.summary', 'news.published_at'])
-
 function alignWithCurrentCmsContract(definition) {
   const retiredFields = RETIRED_LEGACY_IDENTITY_FIELDS[definition.name] ?? new Set()
   return {
     ...definition,
-    fields: (definition.fields ?? [])
-      .filter(({ field }) => !retiredFields.has(field))
-      .map((field) =>
-        CURRENT_STRING_FIELDS.has(`${definition.name}.${field.field}`)
-          ? { ...field, type: 'string' }
-          : field
-      ),
+    fields: (definition.fields ?? []).filter(({ field }) => !retiredFields.has(field)),
   }
 }
 
