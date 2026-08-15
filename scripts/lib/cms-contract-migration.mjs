@@ -152,7 +152,11 @@ export async function applyCmsContractPlan(directus, plan, { apply = false } = {
   let applied = 0
   let schemaApplied = await createNullableIdentityFields(directus, plan.schemaChanges)
   for (const change of plan.changes) {
-    await directus.request('PATCH', `/items/${change.collection}/${change.id}`, change.patch)
+    const path =
+      change.collection === 'homepage_content'
+        ? `/items/${change.collection}`
+        : `/items/${change.collection}/${change.id}`
+    await directus.request('PATCH', path, change.patch)
     applied += 1
   }
   await verifyRemoteIdentities(directus, plan.identityChecks)

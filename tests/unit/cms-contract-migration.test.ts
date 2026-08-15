@@ -168,6 +168,11 @@ describe('CMS contract migration planning', () => {
 
     await applyCmsContractPlan(directus, plan, { apply: true })
     expect(directus.request).toHaveBeenCalledTimes(plan.changes.length)
+    expect(directus.request).toHaveBeenCalledWith(
+      'PATCH',
+      '/items/homepage_content',
+      expect.objectContaining({ stats: expect.any(Array) })
+    )
     expect(directus.request).not.toHaveBeenCalledWith(
       expect.anything(),
       expect.stringContaining('contact_leads'),

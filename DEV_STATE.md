@@ -295,3 +295,4 @@
 - 本地定向验证为4个文件26项通过；完整隔离门禁为348个 Astro 文件无诊断、ESLint通过、493个文件满足维护预算、37个 Vitest 文件250项通过、Playwright 38项通过且6项按配置跳过、正式域名契约3项通过、两轮生产构建通过，`npm run verify:release` 与 `git diff --check` 均通过。
 - 当前状态：代码尚未提交或推送；真实 dry-run 尚未使用新映射重跑；真实 CMS 未 apply、权限未变更、staging 未部署。
 - 新映射的真实 CMS 默认 dry-run 已只读执行成功：137条内容 PATCH 计划覆盖仓库12、FAQ100、发展历程9、荣誉15及首页单例1条整体 stats PATCH（内含8个 claimKey），另有4个 Active 身份字段各3阶段共12条 Schema 计划；没有 `manual_mapping_required`、`singleton_migration_required`、重复稳定身份、关系错误、contract review 或 legacy mapping。真实 CMS 仍未 apply，运行权限与 staging 尚未变更。
+- 首次真实 Apply 已生成迁移前快照并完成普通 Active 集合的幂等身份写入，但在首页单例处因使用普通集合的 `/items/homepage_content/1` 路由被 Directus 拒绝；流程在首页 claimKey 和约束收紧前安全停止。当前实现改为单例专用 `/items/homepage_content` PATCH，并增加精确路由回归测试；需要重新完成本地门禁、GitHub CI、Apply 后 verify 和零变更 dry-run 后才能视为迁移完成。
