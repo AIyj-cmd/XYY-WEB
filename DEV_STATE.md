@@ -311,4 +311,7 @@
 - 基线提交为 `518445ddd784947def7f202f07950b12448dae46`。真实 staging 已完成 Active 身份与 claimKey 内容迁移、身份约束和 `about_honors.image` 必填约束；当前只剩 `cases.metrics`、`news.summary`、`news.published_at` 三个字段类型变更，网站仍保持在迁移前 Release，尚未部署本轮代码。
 - 根因已从 staging 安装的 Directus 12.1.1 实现确认：`PATCH /fields/{collection}/{field}` 只有请求体包含 `schema` 时才进入数据库列变更路径；旧实现只发送 `{ type }`，因此 API 返回成功但数据库类型没有变化。修复保持目标类型不变，仅在三个受控类型变更请求中增加空 `schema` 触发器，不新增迁移框架或其他 Schema 目标。
 - 测试先行：回归断言先改为要求 `{ type, schema: {} }`，旧实现按预期1项失败；实现修复后3个迁移定向测试文件共23项通过。隔离环境 `npm run verify:release` 通过：350个 Astro 文件无诊断、38个 Vitest 文件260项通过、E2E 38项通过且6项按配置跳过、正式域名契约3项通过、生产构建通过，`git diff --check` 通过。
-- 当前状态：修复尚未提交、推送或部署；三项真实字段类型尚未重试，`cms:verify` 与零变更 dry-run 仍需在本提交 CI 通过后验证。未修改运行权限、CMS 内容、映射、页面或业务数字。
+- 修复已作为提交 `1c7b6571ff843ef0b31b5630209489006525f9a2` 推送到 `main`，GitHub CI Run `31893117581` 的 release verification 全部通过。两份既有备份 SHA-256 复核一致后，真实 staging 仅重试上述3项类型变更；迁移快照 SHA-256 为 `cc8289fa85d436aaaf382dd10640629fa3b9b88aa05c870056283ce9850f007f`，Apply 成功且严格后置 Verify 为0 failure。
+- Apply 后 `npm run cms:verify` 为19个集合、0 failure；真实双 Token 运行权限审计通过；第二次 `npm run cms:migrate-contract` 为0项内容变更、0项 Schema 变更。未重新处理映射、权限、业务内容或其他 Schema。
+- 首次部署尝试在上传前因开发机 `.env` 中过期的内容 Token 对 staging CMS 返回403而停止，没有创建远端 Release；临时注入服务器现有受限双 Token 后，现有发布脚本成功部署 staging Release `20260815T162408Z-1c7b657`。`/version` 返回完整 Git SHA `1c7b6571ff843ef0b31b5630209489006525f9a2`、环境 `staging` 与 CMS Schema `2026-08-phase3`，`/healthz` 返回200。
+- 真实浏览器 smoke test 覆盖首页、产品、案例列表、案例详情、关于、新闻、森林期刊、联系、鞋服云仓专题及404：业务页面均为200、未知路径为真实404，无未解析 `{{claimKey}}`、无旧 `140+` 或 `50万㎡+`、无水平溢出，联系表单必填校验生效。首页与关于页各存在一个无 `src`、无 `alt` 的装饰性图片占位，但没有实际资源 URL 加载失败；本轮未提交真实联系线索。
