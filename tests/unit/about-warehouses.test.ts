@@ -33,12 +33,7 @@ describe('about warehouse regions', () => {
   it('keeps reviewed CMS seed data aligned with the public Dongguan list', () => {
     const dongguan = APPROVED_WAREHOUSES.filter(({ city }) => city === '东莞')
 
-    expect(dongguan.map(({ name }) => name)).toEqual([
-      '智谷仓',
-      '朗州仓',
-      '桥头仓',
-      '东莞云谷仓',
-    ])
+    expect(dongguan.map(({ name }) => name)).toEqual(['智谷仓', '朗州仓', '桥头仓', '东莞云谷仓'])
     expect(new Set(dongguan.map(({ content_key }) => content_key)).size).toBe(4)
     expect(LEGACY_WAREHOUSE_NAMES).toEqual([])
   })
