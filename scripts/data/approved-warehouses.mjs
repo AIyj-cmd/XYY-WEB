@@ -32,6 +32,7 @@ const warehouses = [
     '东莞市桥头镇多宝路2号常平桥头',
     '东部高速5公里，方正大开间，动线流畅，弹性扩容灵活',
   ],
+  ['warehouse-dongguan-yungu', '东莞云谷仓', ['东莞云谷仓', '云谷仓'], '东莞', '暂不公布'],
   [
     'warehouse-foshan-hongsheng',
     '佛山宏盛仓',
@@ -86,4 +87,4 @@ export const APPROVED_WAREHOUSES = warehouses.map(
   })
 )
 
-export const LEGACY_WAREHOUSE_NAMES = ['东莞云谷仓']
+export const LEGACY_WAREHOUSE_NAMES = []
