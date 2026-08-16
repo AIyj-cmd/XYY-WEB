@@ -1,0 +1,116 @@
+.about-stage {
+  position: relative;
+  min-height: 100svh;
+  overflow: hidden;
+  background: #071427;
+  color: #fff;
+}
+
+.about-stage__media {
+  object-fit: cover;
+  object-position: center bottom;
+}
+
+.about-stage__shell {
+  position: relative;
+  z-index: 10;
+  width: min(100%, 100rem);
+  min-height: 100svh;
+  margin: 0 auto;
+  padding: 7.5rem 4rem 2.25rem;
+}
+
+.about-stage__intro {
+  width: min(31rem, 38vw);
+}
+
+.about-stage__eyebrow {
+  margin: 0 0 1.15rem;
+  color: #f16a2d;
+  font-size: 0.6875rem;
+  font-weight: 800;
+  letter-spacing: 0.4em;
+}
+
+.about-stage__title {
+  margin: 0;
+  font-size: clamp(3rem, 4.25vw, 4.75rem);
+  font-weight: 900;
+  line-height: 1.02;
+  letter-spacing: -0.045em;
+}
+
+.about-stage__brand {
+  display: block;
+  margin-bottom: 0.65rem;
+  color: #f16a2d;
+  font-size: 0.42em;
+  letter-spacing: 0.03em;
+}
+
+.about-stage__accent {
+  color: #f16a2d;
+}
+
+.about-overview {
+  max-width: 29rem;
+  margin-top: 1.85rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+.about-overview__heading {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.about-overview h2 {
+  margin: 0;
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+}
+
+.about-overview__logo {
+  display: inline-block;
+}
+
+.about-overview__logo img {
+  display: block;
+  width: 5.9rem;
+  height: auto;
+}
+
+.about-overview p {
+  margin: 0.85rem 0 0;
+  color: rgba(255, 255, 255, 0.76);
+  font-size: 0.8125rem;
+  line-height: 1.85;
+}
+
+.about-stage__video-controls {
+  position: absolute;
+  z-index: 30;
+  top: 1.25rem;
+  right: 3rem;
+}
+
+.about-stage__video-controls #btn-label {
+  display: none;
+}
+
+.about-stage__video-controls #hero-video-btn > span,
+.about-stage__video-controls #hero-mute-btn {
+  border-color: #0b1c36;
+  background: #0b1c36;
+  color: #fff;
+  box-shadow: 0 0.5rem 1.5rem rgba(3, 12, 28, 0.24);
+}
+
+.about-stage__video-controls #hero-video-btn:hover > span,
+.about-stage__video-controls #hero-mute-btn:hover {
+  border-color: #f16a2d;
+  background: #f16a2d;
+}

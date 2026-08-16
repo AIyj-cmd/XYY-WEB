@@ -16,6 +16,8 @@ interface Props {
   jsonLd?: Record<string, unknown> | Record<string, unknown>[]
   noIndex?: boolean
   siteSettings?: typeof DEFAULT_SITE_SETTINGS
+  showFooter?: boolean
+  showFloatingContact?: boolean
 }
 
 const {
@@ -26,6 +28,8 @@ const {
   jsonLd,
   noIndex = false,
   siteSettings: providedSiteSettings,
+  showFooter = true,
+  showFloatingContact = true,
 } = Astro.props
 const siteSettings = providedSiteSettings ?? (await getSiteSettings(DEFAULT_SITE_SETTINGS))
 ---
@@ -40,8 +44,8 @@ const siteSettings = providedSiteSettings ?? (await getSiteSettings(DEFAULT_SITE
     <main>
       <slot />
     </main>
-    <Footer settings={siteSettings} />
+    {showFooter && <Footer settings={siteSettings} />}
 
-    <FloatingContact phone={siteSettings.phone} />
+    {showFloatingContact && <FloatingContact phone={siteSettings.phone} />}
   </body>
 </html>

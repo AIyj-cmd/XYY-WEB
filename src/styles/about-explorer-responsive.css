@@ -1,0 +1,32 @@
+@media (max-width: 1199px) {
+  .about-explorer {
+    width: min(30rem, 43vw);
+  }
+}
+
+@media (max-width: 767px) {
+  .about-explorer {
+    width: 100%;
+    margin-top: 1.5rem;
+  }
+
+  .about-explorer__trigger {
+    width: auto;
+  }
+
+  .about-explorer-dialog {
+    width: 100vw;
+    height: 100dvh;
+    border-radius: 0;
+  }
+
+  .about-explorer-dialog__header {
+    min-height: 5rem;
+    padding: 0.75rem 1rem 0.75rem 1.25rem;
+  }
+
+  .about-explorer__panel > section {
+    padding-top: 2.5rem !important;
+    padding-bottom: 2.5rem !important;
+  }
+}

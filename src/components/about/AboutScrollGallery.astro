@@ -1,0 +1,130 @@
+---
+import '@/styles/about-gallery.css'
+import '@/styles/about-gallery-responsive.css'
+import { aboutGalleryImages, type AboutGalleryImage } from '@/data/about/gallery-images'
+
+function fixedShuffle(values: AboutGalleryImage[]) {
+  const result = [...values]
+  let seed = 5615
+
+  for (let index = result.length - 1; index > 0; index -= 1) {
+    seed = (seed * 16807) % 2147483647
+    const target = seed % (index + 1)
+    ;[result[index], result[target]] = [result[target], result[index]]
+  }
+
+  return result
+}
+
+const shuffledImages = fixedShuffle(aboutGalleryImages)
+
+interface GalleryPosition {
+  x: number
+  y: number
+  width: number
+  height: number
+}
+
+function buildPositions(columns: number, mobile = false) {
+  const gutter: number = mobile ? 2.5 : 1.25
+  const columnHeights = Array.from({ length: columns }, () => gutter)
+  const positions = shuffledImages.map((image) => {
+    const width = (100 - gutter * (columns + 1)) / columns
+    const height = width / (image.width / image.height)
+    const column = columnHeights.indexOf(Math.min(...columnHeights))
+    const x = gutter + column * (width + gutter)
+    const y = columnHeights[column]
+    columnHeights[column] = y + height + gutter
+    return { x, y, width, height }
+  })
+
+  return { positions, height: Math.max(...columnHeights) + gutter }
+}
+
+const desktopLayout = buildPositions(4)
+const mobileLayout = buildPositions(2, true)
+
+const statements = [
+  {
+    title: '每一次认真，\n都在为下一次抵达铺路。',
+    body: '那些看似平常的坚持，最终都会成为客户心里的可靠。',
+  },
+  {
+    title: '把普通的岗位做好，\n就是我们共同的专业。',
+    body: '不急于被看见，也不辜负每一份托付。',
+  },
+  {
+    title: '并肩时，\n我们把复杂变成可靠。',
+    body: '彼此补位、彼此信任，让每一次协作都更有力量。',
+  },
+  {
+    title: '今天多走一步，\n明天就多一份底气。',
+    body: '成长没有捷径，但每一步都算数。',
+  },
+  {
+    title: '新亦源的下一程，\n由每一个我们共同写下。',
+    body: '保持热爱，继续向前；更好的答案，始终在路上。',
+  },
+]
+---
+
+<section
+  class="about-gallery"
+  aria-labelledby="about-gallery-heading"
+  data-about-gallery
+  style={`--gallery-height:${desktopLayout.height}vw;--gallery-height-mobile:${mobileLayout.height}vw`}
+>
+  <div class="about-gallery__stage">
+    <div class="about-gallery__field" aria-label="新亦源团队与工作影像" data-about-gallery-field>
+      {
+        shuffledImages.map((image, index) => {
+          const desktop = desktopLayout.positions[index] as GalleryPosition
+          const mobile = mobileLayout.positions[index] as GalleryPosition
+          return (
+            <figure
+              class="about-gallery__frame"
+              data-about-gallery-image
+              style={`--gallery-x:${desktop.x}vw;--gallery-y:${desktop.y}vw;--gallery-width:${desktop.width}vw;--gallery-frame-height:${desktop.height}vw;--gallery-x-mobile:${mobile.x}vw;--gallery-y-mobile:${mobile.y}vw;--gallery-width-mobile:${mobile.width}vw;--gallery-frame-height-mobile:${mobile.height}vw`}
+            >
+              <img
+                src={`/about/gallery/gallery-${String(image.id).padStart(3, '0')}.webp`}
+                alt={`新亦源团队与工作现场影像 ${image.id}`}
+                width={image.width}
+                height={image.height}
+                loading="lazy"
+                decoding="async"
+                fetchpriority="low"
+              />
+            </figure>
+          )
+        })
+      }
+    </div>
+
+    <div class="about-gallery__copy">
+      <div class="about-gallery__statements">
+        {
+          statements.map((statement, index) => (
+            <article
+              class="about-gallery__statement"
+              data-about-gallery-statement
+              data-active={index === 0 ? 'true' : 'false'}
+              aria-hidden={index === 0 ? 'false' : 'true'}
+            >
+              {index === 0 && <p class="about-gallery__eyebrow">致每一位新亦源同行者</p>}
+              <h2 id={index === 0 ? 'about-gallery-heading' : undefined}>
+                {statement.title.split('\n').map((line) => (
+                  <>
+                    {line}
+                    <br />
+                  </>
+                ))}
+              </h2>
+              <p>{statement.body}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>

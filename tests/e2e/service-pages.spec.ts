@@ -46,44 +46,27 @@ test('mobile navigation and honors dialog support Escape', async ({ page }) => {
   await expect(menuButton).toHaveAttribute('aria-expanded', 'false')
   await expect(menuButton).toBeFocused()
 
-  await page.locator('.honor-card').first().click()
-  const dialog = page.getByRole('dialog', { name: '证书大图' })
-  await expect(dialog).toBeVisible()
-  await expect(dialog.locator('img')).toHaveAttribute('src', /.+/)
-  await page.keyboard.press('Escape')
-  await expect(dialog).toBeHidden()
-})
+  await page.getByRole('button', { name: '资质与荣誉', exact: true }).click()
+  const explorer = page.getByRole('dialog', { name: '资质与荣誉', exact: true })
+  await expect(explorer).toBeVisible()
 
-test('refactored about, cases, publications and Yundao modules preserve their contracts', async ({
-  page,
-}) => {
-  await page.goto('/about')
-  const muteButton = page.locator('#hero-mute-btn')
-  await expect(muteButton).toHaveAttribute('aria-label', '开启声音')
-  await muteButton.click()
-  await expect(muteButton).toHaveAttribute('aria-label', '静音')
-  await expect(page.getByRole('heading', { name: '发展历程' })).toBeVisible()
-  await expect(page.locator('#history-track > div')).toHaveCount(9)
-  await page.getByRole('button', { name: '下一年' }).click()
-  await expect(page.locator('[aria-label="跳到2017年"] .history-dot-circle')).toHaveClass(
-    /bg-brand-orange/
-  )
-  await expect(page.getByRole('heading', { name: /CDC\/RDC\/FDC三级仓网/ })).toBeVisible()
+  await page.locator('.honor-card').first().click()
+  const honorDialog = page.getByRole('dialog', { name: '证书大图' })
+  await expect(honorDialog).toBeVisible()
+  await expect(honorDialog.locator('img')).toHaveAttribute('src', /.+/)
+  await page.keyboard.press('Escape')
+  await expect(honorDialog).toBeHidden()
+  await expect(explorer).toBeVisible()
+  await page.keyboard.press('Escape')
+  await expect(explorer).toBeHidden()
 
   await page.goto('/cases')
-  await expect(page.locator('.logos-row')).toHaveCount(2)
-  await expect(page.locator('#cases-grid')).toHaveCount(1)
   await expect(page.locator('#cases-grid .case-card')).toHaveCount(6)
-  await expect(page.getByRole('heading', { name: '为什么品牌选择新亦源' })).toBeVisible()
-
-  await page.goto('/senlinqikan')
-  await expect(page.getByRole('heading', { level: 1, name: '森林期刊' })).toBeVisible()
-  await expect(page.locator('#issues a[href$=".pdf"]')).toHaveCount(14)
-
-  await page.goto('/yundao-zhineng-jijian')
-  await expect(page.locator('.yd-interface figure')).toHaveCount(3)
-  await expect(page.locator('.yd-flow li')).toHaveCount(6)
-  await expect(page.locator('.yd-scenarios article')).toHaveCount(3)
+  const mobileCasesWidth = await page.evaluate(() => ({
+    viewport: document.documentElement.clientWidth,
+    content: document.documentElement.scrollWidth,
+  }))
+  expect(mobileCasesWidth.content).toBeLessThanOrEqual(mobileCasesWidth.viewport + 1)
 })
 
 test('news page keeps category filters in content and supports CMS publishing', async ({

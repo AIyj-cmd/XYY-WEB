@@ -536,7 +536,7 @@ export const APPROVED_ABOUT_HISTORY_SEEDS = [
     year: '2011',
     subtitle: '起点·团队成立',
     text: '团队在广州成立，开始深耕鞋服物流与仓配服务',
-    img: '',
+    img: '/logo.png',
   },
   {
     status: 'published',
@@ -609,6 +609,15 @@ export const APPROVED_ABOUT_HISTORY_SEEDS = [
     subtitle: '出海·数智化升级',
     text: '布局跨境出海业务，从数字化过渡到数智化，建设中高层管理人才培养体系',
     img: '/about/history/2025.jpg',
+  },
+  {
+    status: 'published',
+    content_key: 'history-huawei-management',
+    sort: 10,
+    year: '2026',
+    subtitle: '精进·管理升级',
+    text: '引入华为管理体系，全面提升公司管理水平，建立可支撑长远发展的运作体系',
+    img: '/logo.png',
   },
 ]
 

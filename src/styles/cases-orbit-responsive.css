@@ -1,0 +1,121 @@
+@media (max-width: 767px) {
+  .case-orbit {
+    min-height: 0;
+    padding: 3rem 1rem;
+  }
+
+  .case-orbit__stage {
+    display: flex;
+    min-height: 0;
+    margin-top: 0;
+    flex-direction: column;
+  }
+
+  .case-brand-orbits {
+    position: relative;
+    display: flex;
+    min-height: 0;
+    order: 2;
+    overflow-x: auto;
+    gap: 0.9rem;
+    padding: 0.6rem 0 1rem;
+    border-left: 0;
+    scrollbar-width: thin;
+  }
+
+  .case-brand-ring,
+  .case-brand-ring--1,
+  .case-brand-ring--2,
+  .case-brand-ring--3 {
+    position: relative;
+    top: auto;
+    left: auto;
+    display: flex;
+    width: max-content;
+    flex: 0 0 auto;
+    aspect-ratio: auto;
+    gap: 0.6rem;
+    border: 0;
+    animation: none;
+    transform: none;
+  }
+
+  .case-brand-ring__item,
+  .case-brand-ring--2 .case-brand-ring__item,
+  .case-brand-ring--3 .case-brand-ring__item {
+    position: relative;
+    top: auto;
+    left: auto;
+    width: 64px;
+    flex: 0 0 64px;
+    transform: none;
+  }
+
+  .case-brand-ring__counter {
+    padding: 0.38rem;
+    border: 1px solid rgb(10 31 61 / 7%);
+    border-radius: 0.75rem;
+    background: rgb(255 255 255 / 84%);
+    animation: none !important;
+  }
+
+  .case-orbit__content {
+    position: relative;
+    top: auto;
+    left: auto;
+    order: 1;
+    width: min(100%, 430px);
+    min-height: 0;
+    margin: 0 auto 2.5rem;
+    padding: clamp(2.5rem, 10vw, 3.5rem) clamp(1.35rem, 7vw, 2.5rem) clamp(2rem, 8vw, 3rem);
+    transform: none;
+  }
+
+  .case-orbit__content::before {
+    display: none;
+  }
+
+  .case-orbit__panel {
+    text-align: center;
+  }
+
+  .case-orbit__meta {
+    justify-content: center;
+  }
+
+  .case-orbit__intro {
+    font-size: 0.7rem;
+    -webkit-line-clamp: 4;
+  }
+
+  .case-orbit__data-stage {
+    height: auto;
+    margin-top: 0.9rem;
+  }
+
+  .case-orbit__summary {
+    position: static;
+  }
+
+  .case-orbit__details,
+  .case-orbit__data-hint {
+    display: none;
+  }
+
+  .case-orbit__panel h3 {
+    font-size: clamp(1.75rem, 8.5vw, 2.75rem);
+  }
+
+  .case-orbit__controls {
+    gap: 0.75rem;
+  }
+
+  .case-orbit__nav-copy strong {
+    max-width: 22vw;
+  }
+
+  .case-orbit__note {
+    margin-top: 2rem;
+    text-align: left;
+  }
+}

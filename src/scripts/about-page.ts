@@ -1,3 +1,5 @@
+import './about/explorer'
 import './about/history'
 import './about/stats'
 import './about/video'
+import './about/gallery'

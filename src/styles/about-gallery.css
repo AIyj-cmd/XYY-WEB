@@ -1,0 +1,114 @@
+.about-gallery {
+  position: relative;
+  height: var(--gallery-height, 900svh);
+  min-height: 800svh;
+  background: #fff;
+  color: #fff;
+}
+
+.about-gallery__stage {
+  position: relative;
+  height: 100%;
+  overflow: visible;
+  background: #fff;
+}
+
+.about-gallery__field {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.about-gallery__frame {
+  position: absolute;
+  top: var(--gallery-y);
+  left: var(--gallery-x);
+  width: var(--gallery-width);
+  height: var(--gallery-frame-height);
+  margin: 0;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 1.25rem 3.5rem rgba(0, 7, 18, 0.2);
+}
+
+.about-gallery__frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: none;
+}
+
+.about-gallery__copy {
+  position: sticky;
+  z-index: 3;
+  top: 0;
+  display: grid;
+  height: 100svh;
+  padding: 5rem 1.5rem;
+  place-items: center;
+  text-align: center;
+  pointer-events: none;
+}
+
+.about-gallery__eyebrow {
+  margin: 0 0 1.25rem;
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.34em;
+  white-space: nowrap;
+}
+
+.about-gallery__statements {
+  position: relative;
+  width: min(58rem, 90vw);
+  min-height: 17rem;
+}
+
+.about-gallery__statement {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.about-gallery__statement[data-active='true'],
+.about-gallery__statement[data-exiting='true'] {
+  opacity: 1;
+  visibility: visible;
+}
+
+.about-gallery__statement h2 {
+  margin: 0;
+  color: #fff;
+  font-size: clamp(2.5rem, 5.2vw, 5.5rem);
+  font-weight: 900;
+  line-height: 1.08;
+  letter-spacing: -0.045em;
+  text-wrap: balance;
+  text-shadow:
+    0 0.12rem 0.35rem rgba(1, 7, 18, 0.95),
+    0 0.5rem 2rem rgba(1, 7, 18, 0.8);
+}
+
+.about-gallery__statement h2 br:last-child {
+  display: none;
+}
+
+.about-gallery__statement p {
+  max-width: 38rem;
+  margin: 1.35rem auto 0;
+  color: #fff;
+  font-size: clamp(0.9rem, 1.15vw, 1.1rem);
+  line-height: 1.85;
+  text-shadow:
+    0 0.1rem 0.3rem rgba(1, 7, 18, 0.95),
+    0 0.25rem 1rem rgba(1, 7, 18, 0.85);
+}

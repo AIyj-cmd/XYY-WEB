@@ -1,5 +1,6 @@
 ---
 import { SPECIALTY_LINKS } from '@/data/navigation'
+import '@/styles/header-liquid-glass.css'
 import DesktopNavigation from './navigation/DesktopNavigation.astro'
 import MobileNavigation from './navigation/MobileNavigation.astro'
 
@@ -9,12 +10,9 @@ const isProductActive =
 ---
 
 <header
-  class="fixed top-3 left-3 right-3 z-50 lg:top-5 lg:left-1/2 lg:right-auto lg:w-max lg:-translate-x-1/2"
+  class="site-header fixed top-3 left-3 right-3 z-50 lg:top-5 lg:left-1/2 lg:right-auto lg:w-max lg:-translate-x-1/2"
 >
-  <div
-    class="rounded-[999px] border border-white/20 px-2 shadow-[0_2px_6px_rgba(0,0,0,0.15)]"
-    style="background: rgba(10,26,51,0.76); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);"
-  >
+  <div class="site-header__glass px-2">
     <div class="flex h-12 items-center justify-between gap-2 lg:justify-start">
       <a
         href="/"

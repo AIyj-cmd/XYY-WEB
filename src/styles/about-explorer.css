@@ -1,0 +1,77 @@
+.about-explorer {
+  width: min(31rem, 38vw);
+  margin-top: 1.45rem;
+  color: #fff;
+}
+
+.about-explorer__viewport {
+  overflow: visible;
+}
+
+.about-explorer__track {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.15rem 2.5rem;
+}
+
+.about-explorer__trigger {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  opacity: 0.72;
+  text-align: left;
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease;
+}
+
+.about-explorer__trigger:hover,
+.about-explorer__trigger:focus-visible {
+  opacity: 1;
+  transform: translateY(-0.15rem);
+}
+
+.about-explorer__trigger:focus-visible {
+  outline: 3px solid #93c5fd;
+  outline-offset: 0.35rem;
+}
+
+.about-explorer__meta {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.about-explorer__number,
+.about-explorer__copy small {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.5625rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.about-explorer__trigger strong {
+  display: block;
+  margin-top: 0.45rem;
+  font-size: clamp(1.1rem, 1.45vw, 1.55rem);
+  font-weight: 850;
+  line-height: 1.1;
+}
+
+.about-explorer-dialog__header p {
+  margin: 0 0 0.3rem;
+  color: #f16a2d;
+  font-size: 0.625rem;
+  font-weight: 800;
+  letter-spacing: 0.32em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-explorer__trigger {
+    transition: none;
+  }
+}

@@ -1,0 +1,131 @@
+.case-orbit {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(2.5rem, 4vw, 4rem) clamp(1rem, 2vw, 2rem);
+  background: #fbfaf8;
+}
+
+.case-orbit__stage {
+  position: relative;
+  width: min(100%, 1600px);
+  min-height: 620px;
+  margin: 0 auto;
+}
+
+.case-brand-orbits {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.case-brand-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  aspect-ratio: 1;
+  border: 0;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.case-brand-ring--1 {
+  width: clamp(1240px, 94vw, 1500px);
+  animation: brand-orbit-clockwise 116s linear infinite;
+}
+
+.case-brand-ring--2 {
+  width: clamp(980px, 74vw, 1220px);
+  animation: brand-orbit-counterclockwise 98s linear infinite;
+}
+
+.case-brand-ring--3 {
+  z-index: 1;
+  width: clamp(720px, 54vw, 900px);
+  animation: brand-orbit-clockwise 82s linear infinite;
+}
+
+.case-brand-ring__item {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: clamp(66px, 5.4vw, 92px);
+  transform: rotate(var(--brand-angle)) translateX(clamp(620px, 47vw, 750px))
+    rotate(var(--brand-angle-back));
+  transform-origin: 0 0;
+}
+
+.case-brand-ring--2 .case-brand-ring__item {
+  width: clamp(58px, 4.8vw, 80px);
+  transform: rotate(var(--brand-angle)) translateX(clamp(490px, 37vw, 610px))
+    rotate(var(--brand-angle-back));
+}
+
+.case-brand-ring--3 .case-brand-ring__item {
+  width: clamp(64px, 5.2vw, 88px);
+  transform: rotate(var(--brand-angle)) translateX(clamp(360px, 27vw, 450px))
+    rotate(var(--brand-angle-back));
+}
+
+.case-brand-ring__counter {
+  display: flex;
+  width: 100%;
+  aspect-ratio: 1.35;
+  align-items: center;
+  justify-content: center;
+}
+
+.case-brand-ring--1 .case-brand-ring__counter {
+  animation: brand-counter-clockwise 116s linear infinite;
+}
+
+.case-brand-ring--2 .case-brand-ring__counter {
+  animation: brand-counter-counterclockwise 98s linear infinite;
+}
+
+.case-brand-ring--3 .case-brand-ring__counter {
+  animation: brand-counter-clockwise 82s linear infinite;
+}
+
+.case-brand-ring__counter img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  filter: grayscale(0.12) drop-shadow(0 8px 14px rgb(15 34 58 / 8%));
+  opacity: var(--brand-opacity);
+  transform: rotate(var(--brand-tilt)) scale(var(--brand-scale));
+}
+
+.case-brand-ring--3 .case-brand-ring__counter img {
+  opacity: calc(0.7 + var(--brand-opacity) * 0.3);
+}
+
+@keyframes brand-orbit-clockwise {
+  to {
+    transform: translate(-50%, -50%) rotate(1turn);
+  }
+}
+
+@keyframes brand-counter-clockwise {
+  to {
+    transform: rotate(-1turn);
+  }
+}
+
+@keyframes brand-orbit-counterclockwise {
+  to {
+    transform: translate(-50%, -50%) rotate(-1turn);
+  }
+}
+
+@keyframes brand-counter-counterclockwise {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .case-brand-ring,
+  .case-brand-ring__counter {
+    animation: none;
+  }
+}

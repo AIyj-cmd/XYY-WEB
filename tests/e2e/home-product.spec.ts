@@ -38,13 +38,27 @@ test('homepage case dialogs reuse all six card covers and close with Escape', as
   }
 })
 
-test('cases page exposes only the six current brands', async ({ page }) => {
+test('cases page exposes only the six current brands', async ({ page }, testInfo) => {
   await page.goto('/cases')
 
   await expect(page.locator('#cases-grid .case-card')).toHaveCount(6)
-  await expect(page.getByRole('heading', { name: '茵曼（Inman）' })).toBeVisible()
+  await expect(page.locator('.case-brand-ring')).toHaveCount(3)
+  await expect(page.locator('.case-orbit__case-image')).toHaveCount(6)
+  const visiblePanel = page.locator('[data-case-orbit-panel]:not([hidden])')
+  await expect(visiblePanel).toContainText('UR')
+  await expect(visiblePanel.locator('.case-orbit__details > div')).toHaveCount(8)
+  if (testInfo.project.name === 'chromium') {
+    await page.locator('.case-orbit__content').hover()
+    await expect(visiblePanel.locator('.case-orbit__summary')).toHaveCSS('opacity', '0')
+    await expect(visiblePanel.locator('.case-orbit__details')).toHaveCSS('opacity', '1')
+  } else {
+    await expect(visiblePanel.locator('.case-orbit__summary')).toHaveCSS('opacity', '1')
+    await expect(visiblePanel.locator('.case-orbit__details')).toHaveCSS('opacity', '0')
+  }
+  await page.getByRole('button', { name: '下一个案例' }).click()
+  await expect(visiblePanel).toContainText('玛克茜妮')
   await expect(page.getByText('初语（TOYOUTH）', { exact: true })).toHaveCount(0)
-  await expect(page.getByRole('link', { name: '查看案例详情 →' })).toHaveCount(6)
+  await expect(page.locator('#cases-grid a[aria-label="查看案例详情 →"]')).toHaveCount(1)
 })
 
 test('product page presents three service series and an accessible six-need directory', async ({

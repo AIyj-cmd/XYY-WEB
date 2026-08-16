@@ -1,0 +1,87 @@
+---
+import '@/styles/about-explorer.css'
+import '@/styles/about-dialog.css'
+import '@/styles/about-explorer-responsive.css'
+
+const entries = [
+  { id: 'history', number: '01', title: '发展历程', eyebrow: 'HISTORY' },
+  {
+    id: 'warehouse',
+    number: '02',
+    title: '仓网布局',
+    eyebrow: 'WAREHOUSE NETWORK',
+  },
+  { id: 'honors', number: '03', title: '资质与荣誉', eyebrow: 'HONORS' },
+  { id: 'faq', number: '04', title: '常见问题', eyebrow: 'FAQ' },
+]
+---
+
+<section class="about-explorer" aria-label="浏览新亦源">
+  <div class="about-explorer__viewport">
+    <div class="about-explorer__track">
+      {
+        entries.map(({ id, number, title, eyebrow }) => (
+          <button
+            type="button"
+            class="about-explorer__trigger"
+            data-about-explorer-open={id}
+            data-about-explorer-title={title}
+            aria-controls="about-explorer-dialog"
+            aria-haspopup="dialog"
+            aria-label={title}
+          >
+            <span class="about-explorer__copy">
+              <span class="about-explorer__meta">
+                <span class="about-explorer__number" aria-hidden="true">
+                  {number}
+                </span>
+                <small>{eyebrow}</small>
+              </span>
+              <strong>{title}</strong>
+            </span>
+          </button>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<dialog
+  id="about-explorer-dialog"
+  class="about-explorer-dialog"
+  aria-labelledby="about-explorer-dialog-title"
+>
+  <div class="about-explorer-dialog__shell">
+    <header class="about-explorer-dialog__header">
+      <div>
+        <p>ABOUT XYY</p>
+        <h2 id="about-explorer-dialog-title" class="m-0 text-2xl font-black text-navy-800">
+          了解新亦源
+        </h2>
+      </div>
+      <button
+        type="button"
+        class="about-explorer-dialog__close grid h-11 w-11 cursor-pointer place-items-center rounded-full border border-slate-200 bg-white text-[1.7rem] leading-none text-navy-800 focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-blue-300"
+        data-about-explorer-close
+        aria-label="关闭内容层"
+      >
+        <span aria-hidden="true">×</span>
+      </button>
+    </header>
+
+    <div class="about-explorer-dialog__body">
+      <div class="about-explorer__panel" data-about-explorer-panel="history" hidden>
+        <slot name="history" />
+      </div>
+      <div class="about-explorer__panel" data-about-explorer-panel="warehouse" hidden>
+        <slot name="warehouse" />
+      </div>
+      <div class="about-explorer__panel" data-about-explorer-panel="honors" hidden>
+        <slot name="honors" />
+      </div>
+      <div class="about-explorer__panel" data-about-explorer-panel="faq" hidden>
+        <slot name="faq" />
+      </div>
+    </div>
+  </div>
+</dialog>

@@ -1,4 +1,5 @@
 ---
+import { CASE_LOGO_ROWS } from '@/data/cases'
 import { CASE_DETAILS } from '@/lib/brand'
 import type { Case } from '@/lib/directus'
 
@@ -11,69 +12,151 @@ const getCasePath = (item: Case) => {
   const slug = item.slug ?? (CASE_DETAILS as Record<string, { slug: string }>)[item.label]?.slug
   return slug ? `/cases/${slug}` : null
 }
+const featuredIndex = cases.findIndex((item) => getCasePath(item) === '/cases/ur')
+const orderedCases =
+  featuredIndex > 0
+    ? [cases[featuredIndex], ...cases.filter((_, index) => index !== featuredIndex)]
+    : cases
+const caseLogoNumbers = CASE_LOGO_ROWS.flat()
+const caseLogoRings = [
+  caseLogoNumbers.slice(0, 34),
+  caseLogoNumbers.slice(34, 60),
+  caseLogoNumbers.slice(60),
+]
+const ringOffsets = [0, 7, 13]
+const logoScales = [0.78, 0.92, 1.1, 0.84, 1.02]
+const logoTilts = [-13, 8, -5, 12, 2]
+const logoOpacities = [0.48, 0.68, 0.94, 0.58, 0.82]
+const firstCasePath = orderedCases[0] ? getCasePath(orderedCases[0]) : null
+const initialPreviousLabel = orderedCases.at(-1)?.label ?? ''
+const initialNextLabel = orderedCases[1]?.label ?? orderedCases[0]?.label ?? ''
 ---
 
-<section class="py-16 bg-white" aria-label="合作案例列表">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div id="cases-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<section class="case-orbit" aria-label="合作案例" data-case-orbit>
+  <div id="cases-grid" class="case-orbit__stage">
+    <div class="case-brand-orbits" aria-hidden="true">
       {
-        cases.map((item) => {
+        caseLogoRings.map((ring, ringIndex) => (
+          <div class={`case-brand-ring case-brand-ring--${ringIndex + 1}`}>
+            {ring.map((number, index) => (
+              <span
+                class="case-brand-ring__item"
+                style={`--brand-angle: ${(360 / ring.length) * index + ringOffsets[ringIndex]}deg; --brand-angle-back: ${
+                  (360 / ring.length) * -index - ringOffsets[ringIndex]
+                }deg; --brand-scale: ${logoScales[(index + ringIndex) % logoScales.length]}; --brand-tilt: ${
+                  logoTilts[(index + ringIndex * 2) % logoTilts.length]
+                }deg; --brand-opacity: ${logoOpacities[(index + ringIndex) % logoOpacities.length]}`}
+              >
+                <span class="case-brand-ring__counter">
+                  <img src={`/logos/imgi_${number}_default.png`} alt="" loading="lazy" />
+                </span>
+              </span>
+            ))}
+          </div>
+        ))
+      }
+    </div>
+
+    <div class="case-orbit__content" aria-live="polite">
+      {
+        orderedCases.map((item, index) => {
           const casePath = getCasePath(item)
+          const caseIntroduction = item.case_description ?? item.details
+          const detailedStats = (item.stats ?? []).filter(
+            (stat) => stat.label.trim() && stat.value.trim()
+          )
           return (
             <article
-              class="case-card group bg-white rounded-2xl border border-gray-100 hover:border-navy-200 hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col"
+              id={`case-orbit-panel-${index}`}
+              class="case-card case-orbit__panel"
               data-category={item.category}
+              data-case-orbit-panel={index}
+              data-case-name={item.label}
+              data-case-path={casePath ?? ''}
+              hidden={index !== 0}
             >
-              <div class="relative h-44 overflow-hidden">
-                <img
-                  src={item.img}
-                  alt={item.category}
-                  loading="lazy"
-                  class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-                <div
-                  class="absolute inset-0"
-                  style="background: linear-gradient(to top, rgba(8,20,42,0.88) 0%, rgba(8,20,42,0.40) 55%, rgba(8,20,42,0.05) 100%);"
-                />
-                <div class="absolute bottom-0 left-0 right-0 px-5 pb-4">
-                  <span class="text-xs font-bold text-brand-orange tracking-wider uppercase mb-1 block">
-                    {item.category}
-                  </span>
-                  <h2 class="text-white font-bold text-base leading-snug">{item.label}</h2>
-                </div>
+              <img
+                class="case-orbit__case-image"
+                src={item.img}
+                alt=""
+                loading={index === 0 ? 'eager' : 'lazy'}
+                decoding="async"
+              />
+              <span class="case-orbit__case-shade" aria-hidden="true" />
+              <div class="case-orbit__meta">
+                <span>{String(index + 1).padStart(2, '0')}</span>
+                <span>{item.category}</span>
               </div>
-              <div class="p-6 flex flex-col flex-1">
-                <p class="text-xs font-bold text-navy-700 uppercase tracking-wide mb-1">
-                  新亦源合作数据
-                </p>
-                <p class="text-sm text-gray-700 font-medium mb-3 leading-relaxed">{item.metrics}</p>
-                <p class="text-sm text-gray-500 leading-relaxed mb-4 flex-1">
-                  品牌公开背景：{item.details}
-                </p>
-                <div class="flex flex-wrap gap-2 pt-3 border-t border-gray-100">
-                  {item.tags.map((tag) => (
-                    <span class="text-xs px-2.5 py-1 rounded-full bg-navy-50 text-navy-700 font-medium">
-                      {tag}
-                    </span>
-                  ))}
+              <h3>{item.label}</h3>
+              <div class="case-orbit__data-stage">
+                <div class="case-orbit__summary">
+                  <p class="case-orbit__intro">{caseIntroduction}</p>
+                  {detailedStats.length > 0 && (
+                    <span class="case-orbit__data-hint">移入查看完整数据</span>
+                  )}
                 </div>
-                {casePath && (
-                  <a
-                    href={casePath}
-                    class="mt-5 inline-flex items-center text-sm font-bold text-blue-600 hover:text-blue-700"
+                {detailedStats.length > 0 && (
+                  <dl
+                    class="case-orbit__details"
+                    aria-label={`${item.label}完整案例数据`}
+                    style={`--case-stat-columns: ${Math.min(detailedStats.length, 4)}`}
                   >
-                    查看案例详情 →
-                  </a>
+                    {detailedStats.map((stat) => (
+                      <div>
+                        <dt>{stat.label}</dt>
+                        <dd>
+                          {stat.value}
+                          {stat.unit && <small>{stat.unit}</small>}
+                        </dd>
+                      </div>
+                    ))}
+                  </dl>
                 )}
               </div>
             </article>
           )
         })
       }
+      {
+        orderedCases.length > 0 && (
+          <div class="case-orbit__controls">
+            <button type="button" aria-label="上一个案例" data-case-orbit-prev>
+              <span aria-hidden="true">←</span>
+              <span class="case-orbit__nav-copy">
+                <small>上一案例</small>
+                <strong data-case-orbit-prev-label>{initialPreviousLabel}</strong>
+              </span>
+            </button>
+            <div class="case-orbit__primary-action">
+              {firstCasePath && (
+                <a href={firstCasePath} data-case-orbit-link aria-label="查看案例详情 →">
+                  <span>查看案例详情</span>
+                  <span aria-hidden="true">→</span>
+                </a>
+              )}
+              <span data-case-orbit-status>
+                01 / {String(orderedCases.length).padStart(2, '0')}
+              </span>
+            </div>
+            <button type="button" aria-label="下一个案例" data-case-orbit-next>
+              <span class="case-orbit__nav-copy">
+                <small>下一案例</small>
+                <strong data-case-orbit-next-label>{initialNextLabel}</strong>
+              </span>
+              <span aria-hidden="true">→</span>
+            </button>
+          </div>
+        )
+      }
     </div>
-    <p class="text-center text-xs text-gray-400 mt-10">
-      *
-      合作品牌名称与Logo按合作关系展示；品牌背景数据来自公开资料；项目运营数据来自合作统计，部分业务细节已脱敏。
-    </p>
   </div>
+
+  <p class="case-orbit__note">
+    *
+    合作品牌名称与Logo按合作关系展示；品牌背景数据来自公开资料；项目运营数据来自合作统计，部分业务细节已脱敏。
+  </p>
 </section>
+
+<script>
+  import '@/scripts/cases-orbit'
+</script>

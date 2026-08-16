@@ -9,20 +9,25 @@ interface Props {
 const { settings } = Astro.props
 ---
 
-<footer class="bg-navy-900 text-navy-100 pt-14 pb-8">
+<footer class="border-t border-slate-200 bg-slate-50 pt-10 pb-6 text-navy-700">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <!-- Main grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-10">
+    <div class="mb-8 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
       <!-- Brand column -->
       <div class="lg:col-span-1">
         <a href="/" class="inline-block mb-5" aria-label="新亦源供应链首页">
-          <img src="/logo.png" alt="新亦源供应链" class="h-12 w-auto" loading="lazy" />
+          <img
+            src="/logo.png"
+            alt="新亦源供应链"
+            class="h-12 w-auto brightness-0 opacity-80"
+            loading="lazy"
+          />
         </a>
-        <p class="text-sm text-navy-200 leading-relaxed mb-5">{settings.footer_description}</p>
+        <p class="mb-5 text-sm leading-relaxed text-slate-600">{settings.footer_description}</p>
         <div class="space-y-1.5">
           <a
             href={`tel:${settings.phone}`}
-            class="flex items-center gap-2 text-sm text-navy-100 hover:text-white transition-colors"
+            class="flex items-center gap-2 text-sm text-navy-800 transition-colors hover:text-brand-orange"
           >
             <svg
               class="w-4 h-4 text-brand-orange flex-shrink-0"
@@ -45,12 +50,12 @@ const { settings } = Astro.props
 
       <!-- Products -->
       <div>
-        <h3 class="text-white font-semibold text-sm uppercase tracking-wider mb-4">仓配服务</h3>
+        <h3 class="mb-4 text-sm font-semibold uppercase tracking-wider text-navy-900">仓配服务</h3>
         <ul class="space-y-2.5">
           {
             FOOTER_SERVICE_LINKS.map(({ href, label }) => (
               <li>
-                <a href={href} class="text-sm text-navy-200 hover:text-white transition-colors">
+                <a href={href} class="text-sm text-slate-600 transition-colors hover:text-navy-900">
                   {label}
                 </a>
               </li>
@@ -61,12 +66,12 @@ const { settings } = Astro.props
 
       <!-- Navigation -->
       <div>
-        <h3 class="text-white font-semibold text-sm uppercase tracking-wider mb-4">快速入口</h3>
+        <h3 class="mb-4 text-sm font-semibold uppercase tracking-wider text-navy-900">快速入口</h3>
         <ul class="space-y-2.5">
           {
             NAV_LINKS.map(({ href, label }) => (
               <li>
-                <a href={href} class="text-sm text-navy-200 hover:text-white transition-colors">
+                <a href={href} class="text-sm text-slate-600 transition-colors hover:text-navy-900">
                   {label}
                 </a>
               </li>
@@ -77,11 +82,13 @@ const { settings } = Astro.props
 
       <!-- Contact -->
       <div>
-        <h3 class="text-white font-semibold text-sm uppercase tracking-wider mb-4">联系与地址</h3>
+        <h3 class="mb-4 text-sm font-semibold uppercase tracking-wider text-navy-900">
+          联系与地址
+        </h3>
         <ul class="space-y-3.5">
           <li class="text-sm">
             <span class="text-brand-orange font-medium">{settings.headquarters_label}</span>
-            <p class="text-navy-200 mt-0.5 leading-relaxed">{settings.headquarters_address}</p>
+            <p class="mt-0.5 leading-relaxed text-slate-600">{settings.headquarters_address}</p>
           </li>
         </ul>
       </div>
@@ -89,21 +96,21 @@ const { settings } = Astro.props
 
     <!-- Bottom bar -->
     <div
-      class="border-t border-white/10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3"
+      class="flex flex-col items-center justify-between gap-3 border-t border-slate-200 pt-5 sm:flex-row"
     >
-      <p class="text-xs text-navy-300">
+      <p class="text-xs text-slate-500">
         © {new Date().getFullYear()}
         {BRAND.fullName}. 保留所有权利.
       </p>
       <div class="flex items-center gap-4">
-        <a href="/privacy" class="text-xs text-navy-300 hover:text-navy-100 transition-colors">
+        <a href="/privacy" class="text-xs text-slate-500 transition-colors hover:text-navy-900">
           个人信息保护说明
         </a>
         <a
           href="https://beian.miit.gov.cn/"
           target="_blank"
           rel="noopener noreferrer"
-          class="text-xs text-navy-300 hover:text-navy-100 transition-colors"
+          class="text-xs text-slate-500 transition-colors hover:text-navy-900"
         >
           {settings.icp}
         </a>

@@ -1,56 +1,44 @@
 ---
 import AboutHeroControls from './AboutHeroControls.astro'
 import AboutHeroMedia from './AboutHeroMedia.astro'
-import AboutHeroStats from './AboutHeroStats.astro'
+import '@/styles/about-stage.css'
+import '@/styles/about-stage-responsive.css'
 
 interface Props {
-  description: string
+  overview: string
 }
 
-const { description } = Astro.props
+const { overview } = Astro.props
 ---
 
-<section
-  class="relative overflow-hidden lg:h-[72vh] lg:min-h-[560px] lg:max-h-[760px]"
-  aria-labelledby="about-hero-heading"
->
+<section id="about-hero" class="about-stage" aria-labelledby="about-hero-heading">
   <AboutHeroMedia />
 
-  <div
-    class="relative z-10 mx-auto flex min-h-[560px] max-w-7xl flex-col justify-center px-8 pb-12 pt-28 lg:h-full lg:min-h-0 lg:px-12 lg:pb-20 lg:pt-0"
-  >
-    <div class="max-w-xl">
-      <p class="text-brand-orange font-bold text-[11px] tracking-[0.4em] uppercase mb-5">
-        关于我们
-      </p>
-      <h1
-        id="about-hero-heading"
-        class="text-5xl lg:text-[3.75rem] font-black text-white leading-[1.08] mb-6"
-      >
-        <span class="block text-[0.45em] font-bold tracking-[0.05em] text-brand-orange mb-2"
-          >新亦源供应链</span
-        >
+  <div class="about-stage__video-controls">
+    <AboutHeroControls />
+  </div>
+
+  <div class="about-stage__shell">
+    <div class="about-stage__intro">
+      <p class="about-stage__eyebrow">关于我们</p>
+      <h1 id="about-hero-heading" class="about-stage__title">
+        <span class="about-stage__brand">新亦源供应链</span>
         让每个品牌<br />
         都有专业的<br />
-        <span class="text-brand-orange">出货能力</span>
+        <span class="about-stage__accent">出货能力</span>
       </h1>
-      <p class="text-white/55 text-sm leading-relaxed max-w-sm mb-10 whitespace-pre-line">
-        {description}
-      </p>
 
-      <AboutHeroControls />
+      <div class="about-overview" aria-labelledby="about-overview-heading">
+        <div class="about-overview__heading">
+          <a class="about-overview__logo" href="/" aria-label="新亦源供应链首页">
+            <img src="/logo.png" alt="新亦源供应链" width="2362" height="905" />
+          </a>
+          <h2 id="about-overview-heading">关于新亦源</h2>
+        </div>
+        <p>{overview}</p>
+      </div>
     </div>
-  </div>
 
-  <div
-    class="hidden lg:flex absolute right-12 xl:right-20 bottom-28 max-w-md justify-end pointer-events-none z-10"
-  >
-    <p
-      id="hero-caption"
-      class="inline-block bg-[#08142A]/50 backdrop-blur-sm text-white text-lg font-semibold leading-snug px-5 py-2.5 rounded-lg text-right opacity-0 transition-opacity duration-300"
-    >
-    </p>
+    <slot />
   </div>
-
-  <AboutHeroStats />
 </section>

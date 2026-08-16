@@ -1,0 +1,98 @@
+.site-header__glass,
+.site-header__popover,
+.site-header__mobile-menu {
+  position: relative;
+  isolation: isolate;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.035) 34%),
+    rgba(7, 20, 39, 0.5);
+  box-shadow:
+    0 0.75rem 2rem rgba(1, 8, 20, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.1);
+  -webkit-backdrop-filter: blur(22px) saturate(180%) contrast(1.06);
+  backdrop-filter: blur(22px) saturate(180%) contrast(1.06);
+}
+
+.site-header__glass {
+  overflow: visible;
+  border-radius: 999px;
+}
+
+.site-header__glass::before,
+.site-header__popover::before,
+.site-header__mobile-menu::before {
+  position: absolute;
+  z-index: -1;
+  inset: 1px;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: inherit;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(255, 255, 255, 0.22), transparent 34%),
+    linear-gradient(100deg, transparent 52%, rgba(255, 255, 255, 0.07), transparent 78%);
+  content: '';
+  pointer-events: none;
+}
+
+.site-header__glass::after {
+  position: absolute;
+  z-index: -1;
+  right: 8%;
+  bottom: -70%;
+  width: 38%;
+  height: 140%;
+  border-radius: 50%;
+  background: rgba(125, 211, 252, 0.08);
+  filter: blur(1rem);
+  content: '';
+  pointer-events: none;
+}
+
+.site-header__popover,
+.site-header__mobile-menu {
+  border-radius: 1.25rem;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.14), transparent 32%), rgba(7, 20, 39, 0.72);
+}
+
+.site-header :is(a, button):focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(241, 106, 45, 0.72);
+}
+
+@supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  .site-header__glass,
+  .site-header__popover,
+  .site-header__mobile-menu {
+    background: rgba(7, 20, 39, 0.94);
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .site-header__glass,
+  .site-header__popover,
+  .site-header__mobile-menu {
+    border-color: rgba(255, 255, 255, 0.18);
+    background: #0a1a33;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  .site-header__glass::before,
+  .site-header__glass::after,
+  .site-header__popover::before,
+  .site-header__mobile-menu::before {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-header *,
+  .site-header *::before,
+  .site-header *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}

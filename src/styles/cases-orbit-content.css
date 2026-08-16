@@ -1,0 +1,161 @@
+.case-orbit__content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 2;
+  display: flex;
+  width: min(46vw, 580px);
+  aspect-ratio: 1;
+  flex-direction: column;
+  justify-content: center;
+  padding: 3.7rem 3.25rem 2.8rem;
+  overflow: hidden;
+  border-radius: 50%;
+  box-shadow: 0 24px 70px rgb(7 26 53 / 16%);
+  isolation: isolate;
+  transform: translate(-50%, -50%);
+}
+
+.case-orbit__content::before {
+  display: none;
+}
+
+.case-orbit__panel {
+  position: static;
+  text-align: center;
+}
+
+.case-orbit__case-image,
+.case-orbit__case-shade {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
+.case-orbit__case-image {
+  z-index: -2;
+  object-fit: cover;
+}
+
+.case-orbit__case-shade {
+  z-index: -1;
+  background:
+    linear-gradient(180deg, rgb(4 17 36 / 28%) 0%, rgb(4 17 36 / 58%) 100%),
+    radial-gradient(circle at 50% 35%, transparent 10%, rgb(4 17 36 / 24%) 100%);
+}
+
+.case-orbit__meta {
+  display: flex;
+  justify-content: center;
+  gap: 0.7rem;
+  color: #e85d26;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.case-orbit__panel h3 {
+  margin-top: 0.65rem;
+  color: #fff;
+  font-size: clamp(2rem, 3vw, 2.55rem);
+  font-weight: 900;
+  line-height: 1.04;
+  text-wrap: balance;
+}
+
+.case-orbit__primary-action a {
+  display: inline-flex;
+  gap: 0.7rem;
+  align-items: center;
+  padding-bottom: 0.3rem;
+  border-bottom: 1px solid currentColor;
+  color: #fff;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.case-orbit__controls {
+  display: grid;
+  align-items: center;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: 1.15rem;
+  margin-top: 1.8rem;
+}
+
+.case-orbit__controls button {
+  display: flex;
+  min-width: 0;
+  gap: 0.65rem;
+  align-items: center;
+  color: #fff;
+  transition:
+    transform 180ms ease,
+    color 180ms ease;
+}
+
+.case-orbit__controls button:first-child {
+  justify-content: flex-start;
+  text-align: left;
+}
+
+.case-orbit__controls button:last-child {
+  justify-content: flex-end;
+  text-align: right;
+}
+
+.case-orbit__controls button:hover,
+.case-orbit__controls button:focus-visible {
+  color: #e85d26;
+  transform: translateX(-2px);
+}
+
+.case-orbit__controls button:last-child:hover,
+.case-orbit__controls button:last-child:focus-visible {
+  transform: translateX(2px);
+}
+
+.case-orbit__nav-copy {
+  display: grid;
+  min-width: 0;
+  gap: 0.15rem;
+}
+
+.case-orbit__nav-copy small {
+  color: rgb(255 255 255 / 64%);
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.case-orbit__nav-copy strong {
+  font-size: 0.66rem;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.case-orbit__primary-action {
+  display: grid;
+  justify-items: center;
+  gap: 0.45rem;
+}
+
+.case-orbit__primary-action > span {
+  min-width: 4rem;
+  color: rgb(255 255 255 / 68%);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-align: center;
+}
+
+.case-orbit__note {
+  max-width: 760px;
+  margin: 1.25rem auto 0;
+  color: #8a96a8;
+  font-size: 0.7rem;
+  line-height: 1.7;
+  text-align: center;
+}

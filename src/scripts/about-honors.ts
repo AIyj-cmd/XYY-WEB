@@ -32,7 +32,11 @@ lightbox?.addEventListener('click', (event) => {
   if (event.target === lightbox) closeLightbox()
 })
 document.addEventListener('keydown', (event) => {
-  if (event.key === 'Escape' && lightbox && !lightbox.hidden) closeLightbox()
+  if (event.key === 'Escape' && lightbox && !lightbox.hidden) {
+    event.preventDefault()
+    event.stopPropagation()
+    closeLightbox()
+  }
 })
 
 export {}
