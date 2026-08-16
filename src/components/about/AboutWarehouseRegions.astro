@@ -8,89 +8,93 @@ interface Props {
 }
 
 const { southGroups, eastGroups } = Astro.props
+
+const regions = [
+  {
+    id: 'southwh-heading',
+    label: '华南仓点',
+    cities: '广州 · 东莞 · 佛山 · 肇庆',
+    note: '新货质检 · 退货质检 · 整烫修复',
+    accent: '#B94718',
+    groups: southGroups,
+  },
+  {
+    id: 'eastwh-heading',
+    label: '华东仓点',
+    cities: '昆山 · 上海 · 合肥',
+    note: '长三角区域节点 · 区域仓网协同',
+    accent: '#0E7490',
+    groups: eastGroups,
+  },
+]
 ---
 
-<section class="py-14 bg-gray-50" aria-labelledby="southwh-heading">
+<section class="py-14 bg-gray-50" aria-labelledby="warehouse-regions-heading">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex items-end justify-between mb-10">
-      <div>
-        <p class="text-[#B94718] font-bold text-[11px] tracking-[0.35em] uppercase mb-2">
-          华南仓点
-        </p>
-        <h3 id="southwh-heading" class="text-2xl font-black text-navy-800">
-          广州 · 东莞 · 佛山 · 肇庆
-        </h3>
-      </div>
-      <p class="text-xs text-gray-400 max-w-xs text-right leading-relaxed hidden sm:block">
-        仓点状态与资质按项目核验<br />新货质检 · 退货质检 · 整烫修复
-      </p>
-    </div>
+    <h2 id="warehouse-regions-heading" class="sr-only">华南与华东仓点</h2>
 
-    <div class="space-y-8 mb-14">
+    <div class="lg:grid lg:grid-cols-2 lg:divide-x lg:divide-slate-200">
       {
-        southGroups.map(({ city, cfg, items }) => (
-          <div>
-            <div class="flex items-center gap-3 mb-1">
-              <div class="w-1 h-4 rounded-full flex-shrink-0" style={`background:${cfg.color}`} />
-              <span
-                class="text-xs font-bold tracking-[0.25em] uppercase"
-                style={`color:${cfg.color}`}
-              >
-                {city}
-              </span>
-              <span class="text-xs text-gray-400">{items.length} 个仓点</span>
-              <div class="flex-1 h-px bg-gray-200" />
-            </div>
-            <div
-              class="divide-y divide-gray-100 pl-4"
-              style={`border-left: 2px solid ${cfg.color}22`}
-            >
-              {items.map((warehouse) => (
-                <AboutWarehouseRow warehouse={warehouse} />
-              ))}
-            </div>
-          </div>
-        ))
-      }
-    </div>
+        regions.map((region, regionIndex) => {
+          const warehouseCount = region.groups.reduce(
+            (total, group) => total + group.items.length,
+            0
+          )
 
-    <div class="flex items-end justify-between mb-10 pt-8 border-t border-gray-200">
-      <div>
-        <p class="text-[#0E7490] font-bold text-[11px] tracking-[0.35em] uppercase mb-2">
-          华东仓点
-        </p>
-        <h3 id="eastwh-heading" class="text-2xl font-black text-navy-800">昆山 · 上海 · 合肥</h3>
-      </div>
-      <p class="text-xs text-gray-400 max-w-xs text-right leading-relaxed hidden sm:block">
-        长三角区域节点<br />实际启用范围按项目确认
-      </p>
-    </div>
-
-    <div class="space-y-8">
-      {
-        eastGroups.map(({ city, cfg, items }) => (
-          <div>
-            <div class="flex items-center gap-3 mb-1">
-              <div class="w-1 h-4 rounded-full flex-shrink-0" style={`background:${cfg.color}`} />
-              <span
-                class="text-xs font-bold tracking-[0.25em] uppercase"
-                style={`color:${cfg.color}`}
-              >
-                {city}
-              </span>
-              <span class="text-xs text-gray-400">{items.length} 个仓点</span>
-              <div class="flex-1 h-px bg-gray-200" />
-            </div>
-            <div
-              class="divide-y divide-gray-100 pl-4"
-              style={`border-left: 2px solid ${cfg.color}22`}
+          return (
+            <section
+              class:list={[
+                'px-5 py-7 sm:px-8 sm:py-9 lg:px-10',
+                regionIndex > 0 && 'border-t border-slate-200 lg:border-t-0',
+              ]}
+              aria-labelledby={region.id}
             >
-              {items.map((warehouse) => (
-                <AboutWarehouseRow warehouse={warehouse} />
-              ))}
-            </div>
-          </div>
-        ))
+              <header class="mb-7 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                  <div class="mb-2.5 flex items-center gap-2.5">
+                    <span
+                      class="block h-2 w-2 rounded-full"
+                      style={`background:${region.accent}`}
+                      aria-hidden="true"
+                    />
+                    <p
+                      class="font-bold text-[11px] tracking-[0.3em] uppercase"
+                      style={`color:${region.accent}`}
+                    >
+                      {region.label}
+                    </p>
+                  </div>
+                  <h3 id={region.id} class="text-xl font-black text-navy-800 leading-snug">
+                    {region.cities}
+                  </h3>
+                  <p class="mt-2 text-xs text-gray-500 leading-relaxed">{region.note}</p>
+                </div>
+                <div class="w-fit text-xs font-bold text-navy-800/50">{warehouseCount} 个仓点</div>
+              </header>
+
+              <div class="grid gap-x-8 gap-y-7 sm:grid-cols-2">
+                {region.groups.map(({ city, cfg, items }) => (
+                  <article>
+                    <div class="mb-2 flex items-center gap-2.5 border-b border-slate-200 pb-3">
+                      <span
+                        class="h-2.5 w-2.5 rounded-full"
+                        style={`background:${cfg.color}`}
+                        aria-hidden="true"
+                      />
+                      <span class="text-sm font-black text-navy-800">{city}</span>
+                      <span class="ml-auto text-[11px] text-gray-400">{items.length} 个</span>
+                    </div>
+                    <div class="divide-y divide-slate-100">
+                      {items.map((warehouse) => (
+                        <AboutWarehouseRow warehouse={warehouse} />
+                      ))}
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </section>
+          )
+        })
       }
     </div>
   </div>

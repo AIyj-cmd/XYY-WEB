@@ -6,7 +6,7 @@ test('critical public content remains complete when CMS is unavailable', async (
   await expect(page.locator('.s-service')).toHaveCount(4)
 
   await page.goto('/about')
-  const warehouseRegion = page.locator('#southwh-heading').locator('..').locator('..').locator('..')
+  const warehouseRegion = page.locator('[aria-labelledby="warehouse-regions-heading"]')
   await expect(warehouseRegion.getByText('黄埔仓', { exact: true })).toBeVisible()
   await expect(warehouseRegion.getByText('上海青浦汇金仓', { exact: true })).toBeVisible()
 
