@@ -9,6 +9,9 @@ test('critical public content remains complete when CMS is unavailable', async (
   const warehouseRegion = page.locator('[aria-labelledby="warehouse-regions-heading"]')
   await expect(warehouseRegion.getByText('黄埔仓', { exact: true })).toBeVisible()
   await expect(warehouseRegion.getByText('上海青浦汇金仓', { exact: true })).toBeVisible()
+  await expect(warehouseRegion.getByText(/高速出口3公里/)).toHaveCount(0)
+  await expect(warehouseRegion.getByText(/东部高速5公里/)).toHaveCount(0)
+  await expect(warehouseRegion.getByText(/专配电商货梯/)).toHaveCount(0)
 
   await page.goto('/cases')
   await expect(page.locator('#cases-grid .case-card')).toHaveCount(6)

@@ -7,15 +7,10 @@ interface Props {
 
 const { warehouse } = Astro.props
 const pendingAddress = /^具体地址/.test(warehouse.address.trim())
-const genericHighlight =
-  warehouse.highlight === '仓容、作业范围和可用服务以双方确认的项目方案为准。'
 ---
 
 <div class="py-3.5">
-  <div class="flex items-baseline justify-between gap-3">
-    <div class="text-sm font-bold text-navy-800 leading-tight">{warehouse.name}</div>
-    {warehouse.since && <div class="text-[10px] text-gray-400">自 {warehouse.since}</div>}
-  </div>
+  <div class="text-sm font-bold text-navy-800 leading-tight">{warehouse.name}</div>
   <p
     class:list={[
       'mt-1.5 text-xs leading-relaxed',
@@ -24,9 +19,4 @@ const genericHighlight =
   >
     {pendingAddress ? '地址待确认' : warehouse.address || '地址待公布'}
   </p>
-  {
-    !genericHighlight && warehouse.highlight && (
-      <p class="mt-1 text-[11px] text-gray-400 leading-relaxed">{warehouse.highlight}</p>
-    )
-  }
 </div>
