@@ -164,4 +164,23 @@ describe('Directus error semantics', () => {
 
     await expect(getServices()).resolves.toEqual([])
   })
+
+  it('treats an optional null service feature list as empty content', async () => {
+    __setDirectusRequesterForTests(async () => [
+      {
+        id: 2,
+        sort: 2,
+        slug: 'optional-features',
+        icon: 'warehouse',
+        name: '可选能力列表',
+        subtitle: '',
+        description: '',
+        features: null,
+      },
+    ])
+
+    await expect(getServices()).resolves.toEqual([
+      expect.objectContaining({ slug: 'optional-features', features: [] }),
+    ])
+  })
 })

@@ -70,7 +70,9 @@ export async function getServices(fallback: readonly Service[] = []): Promise<Se
         ...row,
         subtitle: text(row.subtitle, 'subtitle'),
         description: text(row.description, 'description'),
-        features: row.features.map((feature) => text(feature, 'features')),
+        features: Array.isArray(row.features)
+          ? row.features.map((feature) => text(feature, 'features'))
+          : [],
       }
     })
   } catch (error) {
