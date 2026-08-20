@@ -42,8 +42,15 @@ export function planIdentitySchemaPhases(snapshot, changes, issues) {
     if (!actualFields) continue
     const definition = stableFieldDefinition(collection, field)
     const actual = actualFields.find((candidate) => candidate.field === field)
+    const desiredMeta = {
+      ...definition.meta,
+      readonly: definition.meta?.readonly ?? false,
+    }
     if (!actual) {
       schemaChanges.push({ phase: 'create_nullable', collection, field, definition })
+    }
+    if (desiredMeta.readonly === false && (!actual || actual.meta?.readonly === true)) {
+      schemaChanges.push({ phase: 'identity_meta', collection, field, meta: desiredMeta })
     }
 
     const simulated = recordsFor(snapshot, collection).map((record) => {
@@ -171,6 +178,12 @@ export async function applyIdentityConstraints(directus, schemaChanges) {
   for (const change of schemaChanges.filter(({ phase }) => phase === 'default')) {
     await directus.request('PATCH', `/fields/${change.collection}/${change.field}`, {
       schema: { default_value: change.value },
+    })
+    applied += 1
+  }
+  for (const change of schemaChanges.filter(({ phase }) => phase === 'identity_meta')) {
+    await directus.request('PATCH', `/fields/${change.collection}/${change.field}`, {
+      meta: change.meta,
     })
     applied += 1
   }
