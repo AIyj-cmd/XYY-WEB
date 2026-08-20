@@ -539,3 +539,8 @@
 - 验收站已通过原子发布脚本部署 Release `20260820T124758Z-0e40c56`，精确应用 SHA 为 `0e40c563cd123d551884b15c8db86fd55ee81dd3`、`environment=staging`、CMS Schema `2026-08-cms-hardening`；依赖安装无漏洞，PM2切换、内部健康检查、外部健康检查和 Release 身份核对均通过，未回滚。
 - 发布后首页、仓配服务、案例、关于、新闻、森林期刊、联系和直播仓配专题均返回HTTP 200；`/healthz` 返回 `status=ok`、`contactStorage=ok`，`/version` 与目标提交和 Release 完全一致。发布过程中只临时读取服务器现有受限 Web 运行环境用于构建验证，临时副本已由退出清理机制删除，未输出或提交任何 Token。
 - 本次合并和部署只包含既有 CMS 修复、测试与文档，不包含 Lighthouse 性能建议或任何测试站专用性能修改。正式主站未部署、未迁移、未写入，也未修改正式站服务器配置。
+
+## 测试站 CMS 管理员凭据重置（2026-08-20）
+
+- 按明确授权，已将验收站 Directus 管理员账号 `admin@wz.tomatopia.top` 重置为一次性临时密码，并通过测试服务器本机 Directus API 登录验证；未修改内容表、CMS Schema、权限或正式站。
+- 临时密码不写入仓库、`DEV_STATE.md`、服务器环境文件、命令输出记录或 GitHub；登录后必须立即在 Directus 用户设置中改为长期密码。Chrome 自动连接不可用，因此未代填浏览器。
