@@ -496,3 +496,10 @@
 
 - 用户已明确授权同步 GitHub 并部署验收站；主站、真实 CMS 迁移和权限 Apply 不在本次授权范围。由于 `main` 是默认分支，本轮建立功能分支 `codex/cms-hardening-20260820` 管理提交。
 - 提交前使用不可达测试 CMS 与两枚不同的虚拟运行令牌重新执行 `npm run verify:release`，结果为364个 Astro/TypeScript 文件0问题、522个文件通过维护预算、41个单测文件278项通过、E2E 37项通过且7项按矩阵跳过、正式域名契约3项通过、两轮生产构建成功。
+
+## CMS 修复验收站发布（2026-08-20）
+
+- 修复提交 `da8f4e69112a4a6cee99dca781721682f653b201` 已推送到 GitHub 分支 `codex/cms-hardening-20260820`；远端分支 SHA 与本地一致。仓库工作流未对该功能分支产生 GitHub Actions Run，本地与发布脚本内的两轮完整 `verify:release` 均已通过。
+- 现有原子发布脚本已将同一提交部署为验收站 Release `20260820T085234Z-da8f4e6`。`/version` 返回完整 Git SHA、`environment=staging` 与 `cmsSchemaVersion=2026-08-cms-hardening`；`/healthz`、Directus Ping、首页、新闻、产品、案例、关于、服务详情、期刊和联系页面均返回预期状态。首页实际输出9个 FAQ 条目，FAQ 内容未丢失。
+- 发布后独立检查发现站内资源代理读取当前已发布文件 `a9be7a91-e74c-43f4-947c-52c3fc25879a` 返回502；服务器使用现有内容令牌只读访问 `/files/{id}` 与 `/assets/{id}` 均为403，`npm run cms:verify-runtime-permissions` 明确报告 `content token cannot read directus_files`。这证明应用代码已部署，但验收站 Directus 运行权限尚未同步，CMS 图片代理与文章封面端到端仍未完成。
+- 本次没有执行 CMS Schema 迁移、权限 Apply、后台写入或主站部署，也没有回滚当前验收 Release。下一步必须获得单独授权后，为验收站内容令牌补齐 `directus_files` 只读权限并执行只读后置审计；文章封面后台字段若仍为旧字符串类型，还需另行授权 Schema 迁移后再做真实保存/重开验证。
