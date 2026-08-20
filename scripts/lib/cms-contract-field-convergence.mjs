@@ -13,6 +13,7 @@ const SAFE_REQUIRED_MIGRATIONS = [
 const recordsFor = (snapshot, collection) =>
   snapshot.records?.[collection] ?? snapshot[collection] ?? []
 const fieldsFor = (snapshot, collection) => snapshot.fields?.[collection]
+const relationsFor = (snapshot, collection) => snapshot.relations?.[collection] ?? []
 const required = (field) => field?.meta?.required === true || field?.schema?.is_nullable === false
 const empty = (value) => value === undefined || value === null || value === ''
 
@@ -21,6 +22,14 @@ function contractField(collection, field) {
     (candidate) => candidate.field === field
   )
   if (!definition) throw new Error(`missing field contract ${collection}.${field}`)
+  return definition
+}
+
+function contractRelation(collection, field) {
+  const definition = CMS_CONTRACT_BY_COLLECTION[collection]?.relations?.find(
+    (candidate) => candidate.field === field
+  )
+  if (!definition) throw new Error(`missing relation contract ${collection}.${field}`)
   return definition
 }
 
@@ -54,15 +63,29 @@ export function planContractFieldConvergence(snapshot, issues) {
   const newsCover = fieldsFor(snapshot, 'news')?.find(
     (candidate) => candidate.field === 'cover_image'
   )
+  const newsCoverValuesAreSafe = uuidValuesAreSafe(recordsFor(snapshot, 'news'), 'cover_image')
   if (
     newsCover?.type === 'uuid' &&
     newsCover.schema?.data_type &&
     newsCover.schema.data_type !== 'uuid'
   ) {
-    if (uuidValuesAreSafe(recordsFor(snapshot, 'news'), 'cover_image')) {
+    if (newsCoverValuesAreSafe) {
       changes.push({ phase: 'type', collection: 'news', field: 'cover_image', type: 'uuid' })
     } else {
       issues.push('data_validation_required collection=news field=cover_image')
+    }
+  }
+  if (newsCover?.type === 'uuid' && newsCoverValuesAreSafe) {
+    const expected = contractRelation('news', 'cover_image')
+    const actual = relationsFor(snapshot, 'news').find(
+      (candidate) => candidate.field === 'cover_image'
+    )
+    if (!actual) {
+      changes.push({ phase: 'relation', ...expected })
+    } else if (actual.related_collection !== expected.related_collection) {
+      issues.push(
+        `unsupported_relation collection=news field=cover_image expected=${expected.related_collection} actual=${actual.related_collection}`
+      )
     }
   }
   for (const [collection, field, sourceType] of SAFE_TYPE_MIGRATIONS) {
@@ -102,6 +125,16 @@ export async function applyContractFieldConvergence(directus, changes) {
       type: change.type,
       // Directus only runs the database column alteration path when schema is present.
       schema: {},
+    })
+    applied += 1
+  }
+  for (const change of changes.filter(({ phase }) => phase === 'relation')) {
+    await directus.request('POST', '/relations', {
+      collection: change.collection,
+      field: change.field,
+      related_collection: change.related_collection,
+      schema: change.schema,
+      meta: change.meta,
     })
     applied += 1
   }

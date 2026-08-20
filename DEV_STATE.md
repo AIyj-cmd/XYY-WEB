@@ -503,3 +503,14 @@
 - 现有原子发布脚本已将同一提交部署为验收站 Release `20260820T085234Z-da8f4e6`。`/version` 返回完整 Git SHA、`environment=staging` 与 `cmsSchemaVersion=2026-08-cms-hardening`；`/healthz`、Directus Ping、首页、新闻、产品、案例、关于、服务详情、期刊和联系页面均返回预期状态。首页实际输出9个 FAQ 条目，FAQ 内容未丢失。
 - 发布后独立检查发现站内资源代理读取当前已发布文件 `a9be7a91-e74c-43f4-947c-52c3fc25879a` 返回502；服务器使用现有内容令牌只读访问 `/files/{id}` 与 `/assets/{id}` 均为403，`npm run cms:verify-runtime-permissions` 明确报告 `content token cannot read directus_files`。这证明应用代码已部署，但验收站 Directus 运行权限尚未同步，CMS 图片代理与文章封面端到端仍未完成。
 - 本次没有执行 CMS Schema 迁移、权限 Apply、后台写入或主站部署，也没有回滚当前验收 Release。下一步必须获得单独授权后，为验收站内容令牌补齐 `directus_files` 只读权限并执行只读后置审计；文章封面后台字段若仍为旧字符串类型，还需另行授权 Schema 迁移后再做真实保存/重开验证。
+
+## CMS 验收站迁移与权限执行（2026-08-20，进行中）
+
+- 用户已明确授权验收站 CMS Schema 迁移、`directus_files` 权限 Apply 和迁移后真实回归；主站继续不在范围内。Chrome 控制接口当前未发现用户已登录的 Chrome，因此后台 UI 闭环暂候浏览器扩展恢复，API、迁移和公开前台验证继续执行。
+- 迁移 dry-run 未写入数据；计划11项 Schema 变更，但被新闻记录 `slug` 首尾空格阻断。迁移器报告 `data_validation_required collection=news field=slug reason=whitespace`，Schema Apply 尚未执行。
+- 迁移前在验收服务器生成 PostgreSQL 备份 `/var/backups/xyy-postgresql/directus-20260820T091048Z.dump`（361650 bytes）和附件备份 `/var/backups/xyy-uploads/directus-uploads-20260820T091048Z.tar.gz`（203854 bytes）；两份 SHA-256 校验均通过，备份及清单权限均为600。正式备份配置和两个定时器仍缺失，备份尚未证明已复制到加密异机。
+- 已同步 `Website Content Read-Only` 策略的14项读取权限（新增1项、更新13项）。服务器后置审计通过：13个运行内容集合、1个文件集合和联系仅创建令牌保持分离且最小权限；已发布文件代理从502恢复为 HTTP 200、`image/jpeg`、201655 bytes。
+- 新闻 `id=5` 的异常 slug 已在确认目标无重复后由 `chehsi ` 精确规范化为 `chehsi`，未修改标题、正文、状态或发布时间。随后 dry-run 为0项内容变更、11项 Schema 变更且无阻断。
+- 首次 Schema Apply 生成迁移快照 `output/cms-migrations/2026-08-cms-hardening-2026-08-20T09-14-56-932Z.json`，SHA-256 为 `3431a57966e2f339e7c75d5681453ec305a861cd1c2ff7b1745148b47ed54128`；11项字段和约束已执行，但自动后置验证发现 `news.cover_image` 已转 UUID 而 `directus_files` 关系仍缺失，因此以 `post_migration_schema_verify_failed` 停止。文件元数据与两条现有新闻记录均保留。
+- 根因为迁移快照没有读取关系元数据，字段收敛器也只转换物理列类型而未规划文件关系。新增关系迁移回归测试在旧实现下3项全部失败；修复后迁移器会读取带关系合同集合的 `/relations/{collection}`，在 UUID 值安全时规划并创建缺失关系，支持类型转换后中断重跑，再次完成后 dry-run 为零。错误目标关系仍失败关闭，不执行猜测修复。
+- 迁移、Setup 与新闻加固定向测试5个文件29项通过；相关新旧定向测试8项通过。完整门禁首次仅因既有 About/Cases 综合 E2E 在并行负载下30秒超时而失败，该用例单独重跑9.3秒通过；未修改测试或放宽超时。随后完整 `npm run verify:release` 退出码为0：365个 Astro/TypeScript 文件0问题、523个文件通过维护预算、42个单测文件281项、E2E 37项通过且7项按矩阵跳过、正式域名契约3项和两轮生产构建全部通过。

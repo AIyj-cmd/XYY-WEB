@@ -12,6 +12,7 @@ import {
   createCmsMigrationValueHash,
   resolveCmsMigrationStableKey,
 } from './cms-migration-preconditions.mjs'
+import { CMS_CONTRACT_BY_COLLECTION } from '../data/cms-contract-definitions.mjs'
 
 export { writeCmsMigrationSnapshot } from './cms-contract-snapshot.mjs'
 export { createCmsMigrationPreconditionHash, createCmsMigrationValueHash }
@@ -136,14 +137,17 @@ export function buildCmsContractMigrationPlan(snapshot, mappings = {}) {
 }
 
 export async function readCmsContractMigrationSnapshot(directus) {
-  const snapshot = { records: {}, fields: {} }
+  const snapshot = { records: {}, fields: {}, relations: {} }
   for (const collection of CMS_CONTRACT_MIGRATION_COLLECTIONS) {
-    const [value, fields] = await Promise.all([
+    const hasRelations = Boolean(CMS_CONTRACT_BY_COLLECTION[collection]?.relations?.length)
+    const [value, fields, relations] = await Promise.all([
       directus.request('GET', `/items/${collection}?limit=-1`),
       directus.request('GET', `/fields/${collection}`),
+      hasRelations ? directus.request('GET', `/relations/${collection}`) : Promise.resolve([]),
     ])
     snapshot.records[collection] = Array.isArray(value) ? value : value ? [value] : []
     snapshot.fields[collection] = Array.isArray(fields) ? fields : []
+    snapshot.relations[collection] = Array.isArray(relations) ? relations : []
   }
   for (const collection of CMS_CONTRACT_SCHEMA_ONLY_COLLECTIONS) {
     const fields = await directus.request('GET', `/fields/${collection}`)
