@@ -1,7 +1,9 @@
 import { pathToFileURL } from 'node:url'
 
 import { CMS_LEGACY_COLLECTIONS } from '../config/cms-collections.mjs'
+import { runRuntimePermissionCli } from './lib/runtime-permission-cli.mjs'
 import {
+  ASSET_COLLECTIONS,
   CONTENT_COLLECTIONS,
   hasAllowedContactCreateFields,
   hasContactCreatePermission,
@@ -83,7 +85,7 @@ export async function verifyRuntimePermissions({
   ])
   const failures = []
 
-  for (const collection of CONTENT_COLLECTIONS) {
+  for (const collection of [...CONTENT_COLLECTIONS, ...ASSET_COLLECTIONS]) {
     if (!hasContentReadPermission(contentPermissions, collection)) {
       failures.push(`content token cannot read ${collection}`)
     }
@@ -108,6 +110,7 @@ export async function verifyRuntimePermissions({
   }
   requireNoActions(failures, contactPermissions, 'contact token', [
     ...CONTENT_COLLECTIONS,
+    ...ASSET_COLLECTIONS,
     ...CMS_LEGACY_COLLECTIONS,
     ...PRIVILEGED_COLLECTIONS,
   ])
@@ -117,20 +120,24 @@ export async function verifyRuntimePermissions({
     }
   }
 
-  const contentReadStatuses = await Promise.all(
-    CONTENT_COLLECTIONS.map((collection) =>
-      fetchStatus(
-        fetchImpl,
-        normalizedUrl,
-        contentToken,
-        `/items/${collection}?limit=1&fields=id`,
-        `content token ${collection}`
-      )
+  const readProbes = [
+    ...CONTENT_COLLECTIONS.map((collection) => ({
+      collection,
+      path: `/items/${collection}?limit=1&fields=id`,
+    })),
+    ...ASSET_COLLECTIONS.map((collection) => ({
+      collection,
+      path: '/files?limit=1&fields=id',
+    })),
+  ]
+  const readStatuses = await Promise.all(
+    readProbes.map(({ collection, path }) =>
+      fetchStatus(fetchImpl, normalizedUrl, contentToken, path, `content token ${collection}`)
     )
   )
-  contentReadStatuses.forEach((status, index) => {
+  readStatuses.forEach((status, index) => {
     if (status < 200 || status >= 300) {
-      failures.push(`content token request for ${CONTENT_COLLECTIONS[index]} returned ${status}`)
+      failures.push(`content token request for ${readProbes[index].collection} returned ${status}`)
     }
   })
 
@@ -143,6 +150,7 @@ export async function verifyRuntimePermissions({
     ...SYSTEM_ENDPOINTS,
     '/items/contact_leads?limit=1&fields=id',
     ...CONTENT_COLLECTIONS.map((collection) => `/items/${collection}?limit=1&fields=id`),
+    '/files?limit=1&fields=id',
     ...CMS_LEGACY_COLLECTIONS.map((collection) => `/items/${collection}?limit=1&fields=id`),
   ]
   const probes = [
@@ -170,30 +178,9 @@ export async function verifyRuntimePermissions({
     failures,
     fieldRestrictionMode: 'application_enforced',
     contentCollections: [...CONTENT_COLLECTIONS],
-  }
-}
-
-async function runCli() {
-  try {
-    const result = await verifyRuntimePermissions({
-      directusUrl: process.env.DIRECTUS_URL || '',
-      contentToken: process.env.DIRECTUS_CONTENT_TOKEN || '',
-      contactToken: process.env.DIRECTUS_CONTACT_TOKEN || '',
-    })
-    if (!result.ok) {
-      console.error('Runtime Directus permissions are not least-privilege:')
-      for (const failure of result.failures) console.error(`- ${failure}`)
-      process.exitCode = 1
-      return
-    }
-    console.log(
-      `Verified separate least-privilege Directus tokens (${result.contentCollections.length} runtime content collections + contact create-only; fields=${result.fieldRestrictionMode}).`
-    )
-  } catch (error) {
-    console.error(error instanceof Error ? error.message : 'Runtime permission verification failed')
-    process.exitCode = 1
+    assetCollections: [...ASSET_COLLECTIONS],
   }
 }
 
 const isMain = process.argv[1] && pathToFileURL(process.argv[1]).href === import.meta.url
-if (isMain) await runCli()
+if (isMain) await runRuntimePermissionCli(verifyRuntimePermissions)

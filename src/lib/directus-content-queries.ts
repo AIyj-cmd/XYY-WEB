@@ -147,7 +147,7 @@ export async function getServicePageContent(slug: string, fallback: ServicePageC
       featuresLabel: text(page.features_label, 'features_label'),
       stats: displayStats,
       features: features.map(({ title, desc }) => ({
-        title,
+        title: text(title, 'features.title'),
         desc: text(desc, 'features.desc'),
       })),
     }

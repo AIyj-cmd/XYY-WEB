@@ -66,7 +66,7 @@ if [[ -d '$CURRENT_LINK/dist' ]]; then
 fi"
 rsync -az --delete -e "$RSYNC_RSH" dist/ "$DEPLOY_HOST:$RELEASE_DIR/dist/"
 rsync -az -e "$RSYNC_RSH" \
-  package.json package-lock.json server.mjs ecosystem.config.cjs config server \
+  package.json package-lock.json server.mjs ecosystem.config.cjs config server scripts \
   "$DEPLOY_HOST:$RELEASE_DIR/"
 rsync -az -e "$RSYNC_RSH" "$RELEASE_MANIFEST_FILE" "$DEPLOY_HOST:$RELEASE_DIR/release-manifest.json"
 "${ssh_cmd[@]}" "$DEPLOY_HOST" "set -euo pipefail

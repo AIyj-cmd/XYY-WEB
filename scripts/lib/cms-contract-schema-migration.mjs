@@ -5,16 +5,25 @@ import {
 } from './cms-contract-field-convergence.mjs'
 
 export const STABLE_IDENTITY_FIELDS = {
+  homepage_content: 'key',
+  faq_pages: 'key',
+  services: 'slug',
   faqs: 'content_key',
   warehouses: 'content_key',
+  cases: 'slug',
+  news: 'slug',
+  publications: 'issue',
+  service_pages: 'slug',
+  about_content: 'key',
   about_history: 'content_key',
   about_honors: 'content_key',
+  site_settings: 'key',
 }
 
 const recordsFor = (snapshot, collection) =>
   snapshot.records?.[collection] ?? snapshot[collection] ?? []
 const fieldsFor = (snapshot, collection) => snapshot.fields?.[collection]
-const required = (field) => field?.meta?.required === true || field?.schema?.is_nullable === false
+const databaseRequired = (field) => field?.schema?.is_nullable === false
 const unique = (field) => field?.schema?.is_unique === true
 
 function stableFieldDefinition(collection, field) {
@@ -52,9 +61,11 @@ export function planIdentitySchemaPhases(snapshot, changes, issues) {
       issues.push(`migration_required:identity_duplicate collection=${collection} field=${field}`)
       continue
     }
-    if (!actual || !required(actual)) schemaChanges.push({ phase: 'require', collection, field })
+    if (!actual || !databaseRequired(actual)) {
+      schemaChanges.push({ phase: 'require', collection, field })
+    }
     if (!actual || !unique(actual)) schemaChanges.push({ phase: 'unique', collection, field })
-    if (!actual || !required(actual) || !unique(actual)) {
+    if (!actual || !databaseRequired(actual) || !unique(actual)) {
       identityChecks.push({ collection, field, expectedCount: simulated.length })
     }
   }
@@ -69,14 +80,18 @@ export function planSafeSchemaChanges(snapshot, issues) {
     const slug = newsFields.find(({ field }) => field === 'slug')
     if (!slug) {
       issues.push('migration_required:missing_field collection=news field=slug')
-    } else if (!unique(slug)) {
+    } else {
       const values = recordsFor(snapshot, 'news').map((record) => record.slug)
       if (values.some((value) => typeof value !== 'string' || !value.trim())) {
         issues.push('data_validation_required collection=news field=slug reason=empty')
-      } else if (new Set(values).size !== values.length) {
-        issues.push('data_validation_required collection=news field=slug reason=duplicate')
-      } else {
-        schemaChanges.push({ phase: 'unique', collection: 'news', field: 'slug' })
+      } else if (values.some((value) => value !== value.trim())) {
+        issues.push('data_validation_required collection=news field=slug reason=whitespace')
+      } else if (new Set(values.map((value) => value.toLowerCase())).size !== values.length) {
+        issues.push(
+          'data_validation_required collection=news field=slug reason=normalized_duplicate'
+        )
+      } else if (values.some((value) => !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(value))) {
+        issues.push('data_validation_required collection=news field=slug reason=format')
       }
     }
   }

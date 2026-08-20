@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest'
 
 import { verifyRuntimePermissions } from '../../scripts/verify-runtime-permissions.mjs'
 import { CMS_LEGACY_COLLECTIONS } from '../../config/cms-collections.mjs'
-import { CONTENT_COLLECTIONS } from '../../server/runtime-permissions.mjs'
+import { ASSET_COLLECTIONS, CONTENT_COLLECTIONS } from '../../server/runtime-permissions.mjs'
 
 const contentToken = 'content-token'
 const contactToken = 'contact-token'
@@ -19,7 +19,7 @@ function permissionEntry(actions: Record<string, unknown>) {
 
 function permissionsPayload(): PermissionPayloads {
   const content = Object.fromEntries(
-    runtimeCollections.map((collection) => [
+    [...runtimeCollections, ...ASSET_COLLECTIONS].map((collection) => [
       collection,
       permissionEntry({
         read: { access: 'full' },
@@ -58,7 +58,8 @@ function auditFetch(
     }
     const isAllowedContentRead =
       (init?.headers as Record<string, string>)?.Authorization === `Bearer ${contentToken}` &&
-      runtimeCollections.some((collection) => url.includes(`/items/${collection}?`))
+      (runtimeCollections.some((collection) => url.includes(`/items/${collection}?`)) ||
+        url.includes('/files?'))
     if (isAllowedContentRead) return Response.json({ data: [] })
     if (forbiddenStatus === 'network') throw new TypeError('connection refused')
     return new Response(null, { status: forbiddenStatus })

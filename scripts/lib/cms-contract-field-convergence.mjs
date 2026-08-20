@@ -36,8 +36,35 @@ function timestampValuesAreSafe(records, field) {
   })
 }
 
+function uuidValuesAreSafe(records, field) {
+  return records.every((record) => {
+    const value = record[field]
+    return (
+      value === undefined ||
+      value === null ||
+      value === '' ||
+      (typeof value === 'string' &&
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value))
+    )
+  })
+}
+
 export function planContractFieldConvergence(snapshot, issues) {
   const changes = []
+  const newsCover = fieldsFor(snapshot, 'news')?.find(
+    (candidate) => candidate.field === 'cover_image'
+  )
+  if (
+    newsCover?.type === 'uuid' &&
+    newsCover.schema?.data_type &&
+    newsCover.schema.data_type !== 'uuid'
+  ) {
+    if (uuidValuesAreSafe(recordsFor(snapshot, 'news'), 'cover_image')) {
+      changes.push({ phase: 'type', collection: 'news', field: 'cover_image', type: 'uuid' })
+    } else {
+      issues.push('data_validation_required collection=news field=cover_image')
+    }
+  }
   for (const [collection, field, sourceType] of SAFE_TYPE_MIGRATIONS) {
     const actual = fieldsFor(snapshot, collection)?.find((candidate) => candidate.field === field)
     if (!actual) continue

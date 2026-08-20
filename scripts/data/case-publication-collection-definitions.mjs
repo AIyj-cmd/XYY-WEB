@@ -65,7 +65,7 @@ export const CASE_PUBLICATION_COLLECTION_DEFINITIONS = [
         field: 'issue',
         type: 'integer',
         meta: { required: true, width: 'half' },
-        schema: { is_unique: true },
+        schema: { is_nullable: false, is_unique: true },
       },
       { field: 'title', type: 'string', meta: { required: true } },
       { field: 'season', type: 'string', meta: { width: 'half' } },

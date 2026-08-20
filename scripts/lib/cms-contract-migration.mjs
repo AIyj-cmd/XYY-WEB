@@ -19,12 +19,17 @@ export { createCmsMigrationPreconditionHash, createCmsMigrationValueHash }
 export const CMS_CONTRACT_MIGRATION_COLLECTIONS = [
   'homepage_content',
   'faq_pages',
+  'services',
   'faqs',
   'warehouses',
-  'about_history',
-  'about_honors',
   'cases',
   'news',
+  'publications',
+  'service_pages',
+  'about_content',
+  'about_history',
+  'about_honors',
+  'site_settings',
 ]
 
 export const CMS_CONTRACT_SCHEMA_ONLY_COLLECTIONS = ['contact_leads']

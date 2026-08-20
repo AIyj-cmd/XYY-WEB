@@ -162,25 +162,34 @@ export async function getCases(fallback: readonly Case[] = []): Promise<Case[]> 
 
 export async function getPublishedNews(limit = 10, page = 1): Promise<NewsArticle[]> {
   try {
-    return await requestItems<NewsArticle[]>('news', {
-      filter: { status: { _eq: 'published' } },
+    const items = await requestItems<NewsArticle[]>('news', {
+      filter: {
+        status: { _eq: 'published' },
+        published_at: { _nnull: true, _lte: '$NOW' },
+      },
       sort: ['-published_at'],
       limit,
       offset: (page - 1) * limit,
       fields: ['id', 'title', 'slug', 'summary', 'category', 'published_at', 'cover_image'],
     })
+    return items.filter(isPublicNewsArticle)
   } catch (error) {
     return fallbackForUnavailable(error, [])
   }
 }
 
 export async function getNewsArticle(slug: string): Promise<NewsArticle | null> {
+  if (!isCanonicalSlug(slug)) return null
   try {
     const items = await requestItems<NewsArticle[]>('news', {
-      filter: { slug: { _eq: slug }, status: { _eq: 'published' } },
+      filter: {
+        slug: { _eq: slug },
+        status: { _eq: 'published' },
+        published_at: { _nnull: true, _lte: '$NOW' },
+      },
       limit: 1,
     })
-    return items[0] ?? null
+    return items[0] && isPublicNewsArticle(items[0]) ? items[0] : null
   } catch (error) {
     return fallbackForUnavailable(error, null)
   }
@@ -188,19 +197,41 @@ export async function getNewsArticle(slug: string): Promise<NewsArticle | null> 
 
 export async function getNewsByCategory(category: string, limit = 6): Promise<NewsArticle[]> {
   try {
-    return await requestItems<NewsArticle[]>('news', {
-      filter: { category: { _eq: category }, status: { _eq: 'published' } },
+    const items = await requestItems<NewsArticle[]>('news', {
+      filter: {
+        category: { _eq: category },
+        status: { _eq: 'published' },
+        published_at: { _nnull: true, _lte: '$NOW' },
+      },
       sort: ['-published_at'],
       limit,
       fields: ['id', 'title', 'slug', 'summary', 'category', 'published_at', 'cover_image'],
     })
+    return items.filter(isPublicNewsArticle)
   } catch (error) {
     return fallbackForUnavailable(error, [])
   }
 }
 
-export function formatDate(dateStr: string): string {
-  return new Date(dateStr).toLocaleDateString('zh-CN', {
+const CANONICAL_SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
+
+export function isCanonicalSlug(value: unknown): value is string {
+  return typeof value === 'string' && CANONICAL_SLUG.test(value)
+}
+
+function isPublicNewsArticle(article: NewsArticle) {
+  return (
+    isCanonicalSlug(article.slug) &&
+    Boolean(article.published_at) &&
+    !Number.isNaN(Date.parse(article.published_at))
+  )
+}
+
+export function formatDate(dateStr: string | null | undefined): string {
+  if (!dateStr) return ''
+  const date = new Date(dateStr)
+  if (Number.isNaN(date.getTime())) return ''
+  return date.toLocaleDateString('zh-CN', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',

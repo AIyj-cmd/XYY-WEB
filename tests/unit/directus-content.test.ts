@@ -67,6 +67,41 @@ describe('Directus structured page content', () => {
     })
   })
 
+  it('resolves approved claim placeholders in service feature titles', async () => {
+    __setDirectusRequesterForTests(async (collection) =>
+      collection === 'service_pages'
+        ? [
+            {
+              id: 1,
+              slug: 'sample',
+              stats: [],
+              features: [{ title: '截单规则：{{shippingSla}}', desc: '能力说明' }],
+            },
+          ]
+        : []
+    )
+
+    const fallback = {
+      title: '',
+      description: '',
+      breadcrumbLabel: '',
+      eyebrow: '',
+      h1: '',
+      h1sub: '',
+      heroDesc: '',
+      imgSrc: '',
+      imgAlt: '',
+      contentDesc: '',
+      featuresLabel: '',
+      stats: [] as [],
+      features: [],
+    }
+    const page = await getServicePageContent('sample', fallback)
+
+    expect(page.features[0]?.title).not.toContain('{{shippingSla}}')
+    expect(page.features[0]?.title).toContain('18:00')
+  })
+
   it('reads publications, about content and settings from their canonical collections', async () => {
     __setDirectusRequesterForTests(async (collection) => {
       if (collection === 'publications')
@@ -78,8 +113,8 @@ describe('Directus structured page content', () => {
             summary: '摘要',
             cover: '/15.jpg',
             pdf: '/15.pdf',
-            cover_file: 'cover-id',
-            pdf_file: 'pdf-id',
+            cover_file: '11111111-1111-4111-8111-111111111111',
+            pdf_file: '22222222-2222-4222-8222-222222222222',
             date: '2026',
             is_latest: true,
           },
@@ -98,8 +133,8 @@ describe('Directus structured page content', () => {
     })
     const publications = await getPublications([])
     expect(publications).toHaveLength(1)
-    expect(publications[0]?.cover).toContain('/assets/cover-id')
-    expect(publications[0]?.pdf).toContain('/assets/pdf-id')
+    expect(publications[0]?.cover).toContain('/api/cms-assets/11111111-1111-4111-8111-111111111111')
+    expect(publications[0]?.pdf).toContain('/api/cms-assets/22222222-2222-4222-8222-222222222222')
     await expect(getAboutContent({ overview: '', heroDescription: '' })).resolves.toEqual({
       overview: '公司介绍',
       heroDescription: '首屏介绍',

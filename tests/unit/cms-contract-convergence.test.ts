@@ -8,7 +8,12 @@ import {
 
 const currentFields = {
   news: [
-    { field: 'slug', type: 'string', meta: { required: true }, schema: { is_unique: false } },
+    {
+      field: 'slug',
+      type: 'string',
+      meta: { required: true },
+      schema: { is_nullable: false, is_unique: false },
+    },
     { field: 'summary', type: 'text', meta: { required: true }, schema: {} },
     { field: 'published_at', type: 'timestamp', meta: {}, schema: {} },
   ],
@@ -58,6 +63,12 @@ describe('real-environment CMS contract convergence', () => {
         { phase: 'default', collection: 'contact_leads', field: 'source', value: 'website' },
       ])
     )
+    expect(
+      plan.schemaChanges.filter(
+        ({ phase, collection, field }) =>
+          phase === 'unique' && collection === 'news' && field === 'slug'
+      )
+    ).toHaveLength(1)
     expect(plan.schemaChanges.map(({ collection, field }) => `${collection}.${field}`)).not.toEqual(
       expect.arrayContaining(['cases.metrics', 'news.summary', 'news.published_at'])
     )
@@ -69,7 +80,12 @@ describe('real-environment CMS contract convergence', () => {
       fields: {
         ...currentFields,
         news: [
-          { field: 'slug', type: 'string', meta: {}, schema: { is_unique: true } },
+          {
+            field: 'slug',
+            type: 'string',
+            meta: {},
+            schema: { is_nullable: false, is_unique: true },
+          },
           { field: 'summary', type: 'text', meta: { required: true }, schema: {} },
           { field: 'published_at', type: 'timestamp', meta: {}, schema: {} },
         ],
@@ -91,16 +107,29 @@ describe('real-environment CMS contract convergence', () => {
   it('plans and applies the reviewed field convergence without content writes', async () => {
     const plan = buildCmsContractMigrationPlan({
       records: {
-        cases: [{ id: 1, metrics: '短指标摘要' }],
+        cases: [{ id: 1, slug: 'case-one', metrics: '短指标摘要' }],
         news: [],
         faq_pages: [{ id: 10, key: 'home' }],
         faqs: [{ id: 1, page_key: 'home', faq_page: 10, content_key: 'faq-home-01' }],
         about_honors: [{ id: 1, image: '/honor.jpg', content_key: 'honor-one' }],
       },
       fields: {
-        cases: [{ field: 'metrics', type: 'string', meta: {}, schema: {} }],
+        cases: [
+          {
+            field: 'slug',
+            type: 'string',
+            meta: { required: true },
+            schema: { is_nullable: false, is_unique: true },
+          },
+          { field: 'metrics', type: 'string', meta: {}, schema: {} },
+        ],
         news: [
-          { field: 'slug', type: 'string', meta: {}, schema: { is_unique: true } },
+          {
+            field: 'slug',
+            type: 'string',
+            meta: {},
+            schema: { is_nullable: false, is_unique: true },
+          },
           { field: 'summary', type: 'string', meta: {}, schema: {} },
           { field: 'published_at', type: 'string', meta: {}, schema: {} },
         ],

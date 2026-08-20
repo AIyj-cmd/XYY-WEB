@@ -7,6 +7,7 @@ export function deriveRuntimeReadCollections(contracts) {
 }
 
 export const CMS_CONTENT_COLLECTIONS = deriveRuntimeReadCollections(CMS_COLLECTION_CONTRACTS)
+export const CMS_ASSET_COLLECTIONS = ['directus_files']
 
 export const CMS_LEGACY_COLLECTIONS = CMS_COLLECTION_CONTRACTS.filter(
   ({ lifecycle }) => lifecycle === 'legacy'

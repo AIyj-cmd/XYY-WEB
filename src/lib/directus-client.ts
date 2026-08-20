@@ -41,7 +41,10 @@ export function getDirectusPublicUrl() {
 }
 
 export function getDirectusAssetUrl(fileId?: string | null) {
-  return fileId ? `${getDirectusPublicUrl()}/assets/${fileId}` : ''
+  return fileId &&
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(fileId)
+    ? `${SITE_URL}/api/cms-assets/${fileId}`
+    : ''
 }
 
 export function getDirectusContentToken() {

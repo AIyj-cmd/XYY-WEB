@@ -1,6 +1,6 @@
 import { URLSearchParams } from 'node:url'
 
-import { CMS_CONTENT_COLLECTIONS } from '../../config/cms-collections.mjs'
+import { CMS_ASSET_COLLECTIONS, CMS_CONTENT_COLLECTIONS } from '../../config/cms-collections.mjs'
 
 export const DEFAULT_CONTENT_POLICY_NAME = 'Website Content Read-Only'
 
@@ -32,7 +32,7 @@ export async function resolveContentPolicy(directus, options = {}) {
 }
 
 export async function syncContentReadPermissions(directus, options = {}) {
-  const collections = options.collections || CMS_CONTENT_COLLECTIONS
+  const collections = options.collections || [...CMS_CONTENT_COLLECTIONS, ...CMS_ASSET_COLLECTIONS]
   const publishedOnly = options.publishedOnly === true
   const policy = await resolveContentPolicy(directus, options)
   const query = new URLSearchParams({
@@ -55,7 +55,10 @@ export async function syncContentReadPermissions(directus, options = {}) {
       policy: policy.id,
       collection,
       action: 'read',
-      permissions: publishedOnly ? { status: { _eq: 'published' } } : null,
+      permissions:
+        publishedOnly && !CMS_ASSET_COLLECTIONS.includes(collection)
+          ? { status: { _eq: 'published' } }
+          : null,
       validation: null,
       presets: null,
       fields: ['*'],

@@ -16,7 +16,7 @@ export const SERVICE_CONTENT_COLLECTION_DEFINITIONS = [
         field: 'slug',
         type: 'string',
         meta: { required: true },
-        schema: { is_unique: true },
+        schema: { is_nullable: false, is_unique: true },
       },
       { field: 'title', type: 'string', meta: { required: true } },
       {

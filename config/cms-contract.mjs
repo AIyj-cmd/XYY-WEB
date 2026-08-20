@@ -1,4 +1,4 @@
-export const CMS_SCHEMA_VERSION = '2026-08-phase3'
+export const CMS_SCHEMA_VERSION = '2026-08-cms-hardening'
 
 const policies = {
   homepage_stats: { lifecycle: 'legacy', identity: [], seedPolicy: 'migration_only' },
@@ -63,12 +63,6 @@ export const CMS_LEGACY_FIELD_ALLOWLIST = [
     field: 'image_file',
     reason: '部分旧环境仍将案例封面保存为静态字符串路径。',
     removeWhen: '真实 CMS 案例封面完成 UUID 迁移并通过迁移后 verify。',
-  },
-  {
-    collection: 'news',
-    field: 'cover_image',
-    reason: '部分旧环境仍将文章封面保存为静态字符串路径。',
-    removeWhen: '真实 CMS 文章封面完成 UUID 迁移并通过迁移后 verify。',
   },
   {
     collection: 'publications',

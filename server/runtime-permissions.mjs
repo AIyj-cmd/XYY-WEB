@@ -1,6 +1,7 @@
-import { CMS_CONTENT_COLLECTIONS } from '../config/cms-collections.mjs'
+import { CMS_ASSET_COLLECTIONS, CMS_CONTENT_COLLECTIONS } from '../config/cms-collections.mjs'
 
 export const CONTENT_COLLECTIONS = CMS_CONTENT_COLLECTIONS
+export const ASSET_COLLECTIONS = CMS_ASSET_COLLECTIONS
 
 export function resolveRuntimeTokens(env = process.env) {
   const contentToken = env.DIRECTUS_CONTENT_TOKEN || ''

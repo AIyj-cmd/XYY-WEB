@@ -165,4 +165,28 @@ describe('CMS contract identity schema migration', () => {
       ])
     )
   })
+
+  it('does not treat an admin required marker as a database NOT NULL constraint', () => {
+    const plan = buildCmsContractMigrationPlan({
+      records: { services: [{ id: 1, slug: 'warehouse-service' }] },
+      fields: {
+        services: [
+          {
+            field: 'slug',
+            type: 'string',
+            meta: { required: true },
+            schema: { is_nullable: true, is_unique: false },
+          },
+        ],
+      },
+    })
+
+    expect(plan.issues).toEqual([])
+    expect(plan.schemaChanges).toEqual(
+      expect.arrayContaining([
+        { phase: 'require', collection: 'services', field: 'slug' },
+        { phase: 'unique', collection: 'services', field: 'slug' },
+      ])
+    )
+  })
 })

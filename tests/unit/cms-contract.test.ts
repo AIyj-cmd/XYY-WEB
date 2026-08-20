@@ -7,7 +7,7 @@ const MUTABLE_IDENTITY_FIELDS = new Set(['label', 'name', 'title', 'sort', 'year
 
 describe('CMS model contract', () => {
   it('publishes one stable schema version and one contract per collection definition', () => {
-    expect(CMS_SCHEMA_VERSION).toBe('2026-08-phase3')
+    expect(CMS_SCHEMA_VERSION).toBe('2026-08-cms-hardening')
     expect(CMS_COLLECTION_CONTRACTS.map(({ name }) => name)).toEqual(
       CMS_COLLECTION_DEFINITIONS.map(({ name }) => name)
     )
@@ -27,6 +27,38 @@ describe('CMS model contract', () => {
         )
       } else if (contract.lifecycle === 'legacy') {
         expect(contract.identity.fields).toEqual([])
+      }
+    }
+  })
+
+  it('enforces every active stable identity as required and unique in the database', () => {
+    const definitions = new Map(
+      CMS_COLLECTION_DEFINITIONS.map((definition) => [definition.name, definition])
+    )
+
+    for (const contract of CMS_COLLECTION_CONTRACTS.filter(
+      ({ lifecycle }) => lifecycle === 'active'
+    )) {
+      const definition = definitions.get(contract.name)
+      expect(definition).toBeDefined()
+
+      for (const identityField of contract.identity.fields) {
+        const field = definition?.fields.find(({ field }) => field === identityField) as
+          | {
+              meta?: { required?: boolean }
+              schema?: { is_nullable?: boolean; is_unique?: boolean }
+            }
+          | undefined
+        expect(field?.meta?.required, `${contract.name}.${identityField} must be required`).toBe(
+          true
+        )
+        expect(
+          field?.schema?.is_nullable,
+          `${contract.name}.${identityField} must be NOT NULL`
+        ).toBe(false)
+        expect(field?.schema?.is_unique, `${contract.name}.${identityField} must be unique`).toBe(
+          true
+        )
       }
     }
   })

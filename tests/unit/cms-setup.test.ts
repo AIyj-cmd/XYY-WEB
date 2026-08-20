@@ -42,6 +42,15 @@ describe('CMS setup domains', () => {
     }
 
     const news = CMS_COLLECTION_DEFINITIONS.find((definition) => definition.name === 'news')
+    const slug = news?.fields.find(({ field }) => field === 'slug')
+    const publishedAt = news?.fields.find(({ field }) => field === 'published_at')
+    expect(slug?.meta).toMatchObject({
+      options: { trim: true, slug: true },
+      validation: { slug: { _regex: expect.any(String) } },
+    })
+    expect((publishedAt?.meta as { conditions?: unknown[] })?.conditions).toEqual(
+      expect.arrayContaining([expect.objectContaining({ required: true })])
+    )
     const newsRelations = news && 'relations' in news ? news.relations : undefined
     expect(newsRelations).toEqual(
       expect.arrayContaining([
@@ -154,7 +163,7 @@ describe('CMS setup domains', () => {
     )
   })
 
-  it('keeps an existing string asset path without forcing an incompatible UUID relation', async () => {
+  it('fails loudly when an existing news cover column still needs UUID migration', async () => {
     const request = vi.fn(async (method: string, path: string) => {
       if (method === 'GET' && path === '/collections') return [{ collection: 'news' }]
       if (method === 'GET' && path === '/fields/news') {
@@ -171,23 +180,19 @@ describe('CMS setup domains', () => {
     })
     const runtime = createCmsSetupRuntime({ request })
 
-    await runtime.createCollection({
-      name: 'news',
-      fields: [{ field: 'cover_image', type: 'uuid', meta: { interface: 'file-image' } }],
-      relations: [
-        {
-          collection: 'news',
-          field: 'cover_image',
-          related_collection: 'directus_files',
-        },
-      ],
-    })
-
-    expect(request).not.toHaveBeenCalledWith(
-      'POST',
-      '/relations',
-      expect.objectContaining({ field: 'cover_image' })
-    )
+    await expect(
+      runtime.createCollection({
+        name: 'news',
+        fields: [{ field: 'cover_image', type: 'uuid', meta: { interface: 'file-image' } }],
+        relations: [
+          {
+            collection: 'news',
+            field: 'cover_image',
+            related_collection: 'directus_files',
+          },
+        ],
+      })
+    ).rejects.toThrow('migration_required:relation_type collection=news field=cover_image')
   })
 
   it('seeds only missing reviewed records when setup is re-run', async () => {

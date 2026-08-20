@@ -22,6 +22,25 @@ const singletonSeed = async (
 }
 
 describe('CMS singleton seed safety', () => {
+  it('only requests fields that exist in a fresh singleton collection', async () => {
+    const request = vi.fn(async (...requestArgs: [string, string]) => {
+      void requestArgs
+      return [{ key: 'main', hero_title: '现有标题' }]
+    })
+    const runtime = createCmsSeedRuntime({ request })
+
+    await runtime.seedMissing(
+      'homepage_content',
+      [{ key: 'main', hero_title: '审核标题' }],
+      ['key'],
+      { singleton: true }
+    )
+
+    const getPath = request.mock.calls[0]?.[1] as string
+    expect(getPath).toContain('fields=key,hero_title')
+    expect(getPath).not.toMatch(/date_created|date_updated|user_created|user_updated/)
+  })
+
   it.each([
     ['homepage_content', 'hero_title'],
     ['about_content', 'overview'],

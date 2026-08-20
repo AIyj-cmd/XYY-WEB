@@ -57,6 +57,32 @@ describe('Directus content policy synchronization', () => {
     )
   })
 
+  it('keeps Directus file reads unfiltered while published content stays filtered', async () => {
+    const request = vi.fn(async (method: string, path: string) => {
+      if (method === 'GET' && path.startsWith('/policies?')) {
+        return [{ id: 'policy-1', name: DEFAULT_CONTENT_POLICY_NAME }]
+      }
+      if (method === 'GET' && path.startsWith('/permissions?')) return []
+      return {}
+    })
+
+    await syncContentReadPermissions(
+      { request },
+      { collections: ['news', 'directus_files'], publishedOnly: true }
+    )
+
+    expect(request).toHaveBeenCalledWith(
+      'POST',
+      '/permissions',
+      expect.objectContaining({ collection: 'news', permissions: { status: { _eq: 'published' } } })
+    )
+    expect(request).toHaveBeenCalledWith(
+      'POST',
+      '/permissions',
+      expect.objectContaining({ collection: 'directus_files', permissions: null })
+    )
+  })
+
   it('fails closed when the named policy does not exist', async () => {
     const request = vi.fn(async () => [])
 

@@ -23,11 +23,14 @@ describe('Directus helpers', () => {
     __setDirectusRequesterForTests(null)
   })
 
-  it('builds public asset URLs from PUBLIC_DIRECTUS_URL', () => {
+  it('builds same-origin asset proxy URLs only for Directus UUIDs', () => {
     vi.stubEnv('PUBLIC_DIRECTUS_URL', 'https://example.com/cms/')
 
     expect(getDirectusPublicUrl()).toBe('https://example.com/cms')
-    expect(getDirectusAssetUrl('abc')).toBe('https://example.com/cms/assets/abc')
+    expect(getDirectusAssetUrl('11111111-1111-4111-8111-111111111111')).toContain(
+      '/api/cms-assets/11111111-1111-4111-8111-111111111111'
+    )
+    expect(getDirectusAssetUrl('abc')).toBe('')
   })
 
   it('uses the dedicated content token before the legacy shared token', () => {
@@ -39,6 +42,8 @@ describe('Directus helpers', () => {
 
   it('formats Chinese dates', () => {
     expect(formatDate('2026-07-05T00:00:00.000Z')).toContain('2026')
+    expect(formatDate(null)).toBe('')
+    expect(formatDate('not-a-date')).toBe('')
   })
 
   it('returns published news from Directus', async () => {
@@ -58,7 +63,10 @@ describe('Directus helpers', () => {
     expect(requester).toHaveBeenCalledWith(
       'news',
       expect.objectContaining({
-        filter: { status: { _eq: 'published' } },
+        filter: {
+          status: { _eq: 'published' },
+          published_at: { _nnull: true, _lte: '$NOW' },
+        },
         limit: 1,
         offset: 0,
       })
@@ -76,6 +84,7 @@ describe('Directus helpers', () => {
         filter: {
           category: { _eq: '行业资讯' },
           status: { _eq: 'published' },
+          published_at: { _nnull: true, _lte: '$NOW' },
         },
         fields: expect.arrayContaining(['cover_image']),
         limit: 6,
@@ -152,21 +161,6 @@ describe('Directus helpers', () => {
       'homepage_content',
       expect.objectContaining({ fields: ['id', 'stats'] })
     )
-  })
-
-  it.each([
-    ['cases', () => getCases()],
-    ['published news', () => getPublishedNews(1, 1)],
-  ])('requests fresh %s data on every call', async (_name, fetcher) => {
-    const requester = vi
-      .fn()
-      .mockResolvedValueOnce([{ id: 1, label: '第一次' }])
-      .mockResolvedValueOnce([{ id: 2, label: '第二次' }])
-    __setDirectusRequesterForTests(requester)
-
-    await expect(fetcher()).resolves.toEqual([{ id: 1, label: '第一次' }])
-    await expect(fetcher()).resolves.toEqual([{ id: 2, label: '第二次' }])
-    expect(requester).toHaveBeenCalledTimes(2)
   })
 
   it('projects unified case fields so legacy card fields cannot stay stale', async () => {

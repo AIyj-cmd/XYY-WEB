@@ -18,7 +18,7 @@ const identity = {
   releaseId: '20260815T120000Z-54fa9e6',
   buildTime: '2026-08-15T12:00:00.000Z',
   environment: 'staging',
-  cmsSchemaVersion: '2026-08-phase3',
+  cmsSchemaVersion: '2026-08-cms-hardening',
 }
 
 const servers: ReturnType<typeof createServer>[] = []

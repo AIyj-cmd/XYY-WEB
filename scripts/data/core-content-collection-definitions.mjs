@@ -33,7 +33,12 @@ export const CORE_CONTENT_COLLECTION_DEFINITIONS = [
     fields: [
       statusField(),
       { field: 'sort', type: 'integer', meta: { width: 'half' } },
-      { field: 'slug', type: 'string', meta: { required: true } },
+      {
+        field: 'slug',
+        type: 'string',
+        meta: { required: true },
+        schema: { is_nullable: false, is_unique: true },
+      },
       { field: 'icon', type: 'string' },
       { field: 'name', type: 'string', meta: { required: true } },
       { field: 'subtitle', type: 'string' },

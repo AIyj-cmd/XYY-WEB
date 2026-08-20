@@ -11,7 +11,7 @@ export const ORGANIZATION_COLLECTION_DEFINITIONS = [
         field: 'key',
         type: 'string',
         meta: { required: true, readonly: true },
-        schema: { is_unique: true },
+        schema: { is_nullable: false, is_unique: true },
       },
       { field: 'overview', type: 'text', meta: { required: true, interface: 'input-multiline' } },
       {
@@ -116,7 +116,7 @@ export const ORGANIZATION_COLLECTION_DEFINITIONS = [
         field: 'key',
         type: 'string',
         meta: { required: true, readonly: true },
-        schema: { is_unique: true },
+        schema: { is_nullable: false, is_unique: true },
       },
       { field: 'phone', type: 'string', meta: { required: true, width: 'half' } },
       { field: 'icp', type: 'string', meta: { required: true, width: 'half' } },

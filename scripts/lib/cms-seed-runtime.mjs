@@ -69,9 +69,7 @@ export function createCmsSeedRuntime(directus) {
       const managedFields = Object.keys(seedItem).filter(
         (field) => !singletonMetadataFields.has(field) && !identityFields.includes(field)
       )
-      const requestedFields = [
-        ...new Set([...identityFields, ...managedFields, ...singletonMetadataFields]),
-      ]
+      const requestedFields = [...new Set([...identityFields, ...managedFields])]
       const query = `?limit=-1&fields=${requestedFields.map(encodeURIComponent).join(',')}`
       const current = await directus.request('GET', `/items/${collection}${query}`)
       if (Array.isArray(current) && current.length > 1) {

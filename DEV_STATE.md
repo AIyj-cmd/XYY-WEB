@@ -1,6 +1,6 @@
 # DEV_STATE
 
-更新时间：2026-08-16
+更新时间：2026-08-20
 
 ## 协作记录约定
 
@@ -428,3 +428,71 @@
 - 提交前完整门禁使用不可达测试 CMS 与两枚不同虚拟 Token 隔离运行并通过：Astro 检查359个文件0诊断、ESLint通过、517个文件符合维护预算、56个引用资源与103个部署资源完整、39个 Vitest 文件共268项通过、Playwright 37项通过且7项按项目矩阵跳过、正式域名契约3项通过、两轮生产构建成功。维护性检查首次发现 About 极简页脚样式、案例轨道内容样式和综合 E2E 超出预算，已按样式与测试职责拆分，未提高阈值、删除断言或改变页面视觉。
 - 本批次已提交并普通推送至 `main`，应用提交为 `2f60c4fa7d0102e784013d19e351ff1484b1bbe9`（`feat(site): refresh about and case experiences`）；GitHub Actions Run `31954344791` 对该完整 SHA 执行完成且为 `success`。首次本地验证因开发机遗留内容 Token 对 `site_settings` 返回403而在上传前终止，随后使用不可达构建 CMS 与虚拟双 Token 完成隔离构建，未改动服务器运行环境。
 - 验收站 `https://wz.tomatopia.top` 已通过现有原子发布脚本部署 Release `20260816T150610Z-2f60c4f`，未发生回滚；公开 `/version` 返回应用 SHA `2f60c4fa7d0102e784013d19e351ff1484b1bbe9`、`environment=staging`、CMS Schema `2026-08-phase3`，`/healthz` 返回 HTTP 200。桌面1440×900与移动430×932共检查首页、仓配服务、案例列表、UR案例详情、关于、新闻、森林期刊、联系及真实404共18项：状态码均符合预期，无水平溢出、可见断图、未解析 `{{...}}` 或非预期控制台错误。
+
+## 主站 FAQ 与 CMS 文章封面只读诊断（2026-08-20）
+
+- 主站与验收站不是同一运行环境：`56xyy.com` 和 `wz.tomatopia.top` 解析到不同服务器，并各自暴露独立 Directus 项目信息；两站 `/healthz` 和 `/cms/server/ping` 均正常，不能据此推断应用 Release、CMS Schema 或内容已经同步。
+- 主站首页、关于页和案例页均保留 FAQ 区标题，但代表性已审核问题不存在；验收站同一路由正常返回对应问题。当前源码按 `faq_page.key` 与 `status=published` 查询，Directus 成功返回空数组时明确保持为空，只有网络失败、超时或 5xx 才使用审核回退。
+- 验收站 `/version` 明确返回 Release `20260816T150610Z-2f60c4f` 和应用 SHA `2f60c4fa7d0102e784013d19e351ff1484b1bbe9`；主站 `/version` 落入站内 404，首页静态资源指纹也与验收站不同。现有证据将 FAQ 故障定位为正式环境的应用/CMS 内容契约未同步，而不是当前仓库 FAQ 查询在已部署验收版本上的通用代码故障。主站服务器未接受现有 SSH 公钥，本轮不能进一步只读确认其精确 Release、FAQ 记录数量、发布状态或关系迁移结果。
+- 当前 CMS 模型把 `news.cover_image` 定义为 `uuid`、`file-image` 界面和 `directus_files` 关系；但兼容清单仍允许文章封面保留旧字符串路径，Setup 遇到非 UUID 数据库字段时会主动保留旧字段并跳过文件关系。测试站和主站后台均不能选择封面的现象与该兼容路径一致，属于两个 CMS 实例尚未完成的文件字段迁移，不是新闻页面组件或普通前端部署问题。
+- 定向契约测试 `tests/unit/directus.test.ts`、`tests/unit/cms-setup.test.ts`、`tests/unit/cms-schema-drift.test.ts` 共25项通过。诊断期间未修改应用代码、CMS 数据、数据库、权限、服务器配置或部署；后续处理前需分别备份两个 CMS 的数据库与附件，先只读核对主站 FAQ 关系/发布状态和 `news.cover_image` 真实字段类型，再单独审批正式站 Release 同步、FAQ 内容迁移与封面 UUID/文件关系迁移。
+- 当前源码使用不可达隔离 CMS 构建并通过正式 SSR 入口运行后，首页、关于页和案例页均显示审核 FAQ；Playwright 在1440×900与430×932下确认首页8条问题存在，控制台0错误、0警告。本地实例仅用于只读页面验证，完成后已停止；没有修改 `.env` 或连接真实 CMS。
+- 验收站实时 `/version` 仍为 `2f60c4fa7d0102e784013d19e351ff1484b1bbe9`，该提交到仓库 HEAD 只相差 `DEV_STATE.md` 文档，应用代码一致；验收站首页实时响应也包含审核 FAQ。由此进一步确认 FAQ 组件与当前应用发布包正常，正式站缺失来自其独立 Release/CMS 数据契约未同步。文章封面仍属于 CMS 旧字符串字段到 Directus 文件 UUID 关系尚未执行的独立迁移，不会因重新发布同一 Web 构建自动恢复文件选择器。
+- 已新增 `docs/DEPLOYMENT_FAQ_COVER_DIAGNOSTIC.md` 作为部署侧交接报告，包含正式 Release/Nginx/环境变量检查、FAQ 数据与关系查询、运行令牌权限判定、新闻封面迁移顺序、验收标准和脱敏证据清单。报告不含密码或 Token，未授权任何部署、Apply、权限或真实 CMS 写入。
+- 后续只读复查确认验收 CMS 的 `news.cover_image` 物理列仍为 `varchar`，Directus 元数据虽为 `file-image`/`special=file`，但没有指向 `directus_files` 的关系；两条已发布新闻中一条保存 UUID 字符串、一条封面为空，符合“文件上传成功但文章选择、保存或回显不可靠”的半迁移状态。验收 Release 未包含 `scripts/verify-production-cms.mjs`，因此服务器内执行 `npm run cms:verify` 报 `MODULE_NOT_FOUND`；未改动服务器或 CMS。
+- 验收站还复现了新闻详情问题：发布记录 ID 5 的 slug 为 `chehsi `（末尾 ASCII 空格），列表原样生成 `/news/chehsi `；`/news/chehsi` 返回302到 `/news`，`/news/chehsi%20` 返回200，正常记录 `/news/cheshi` 返回200。当前契约仅在 slug 唯一约束缺失时检查空值/重复，且未校验首尾空格；需先经授权修正 CMS 数据，再补充 slug 规范化校验、规范化重复检查和详情不存在时的404测试。FAQ 前端结论不变，但不能再表述为“项目完全无需代码修复”。
+
+## CMS 全功能只读审计（2026-08-20）
+
+- 按用户要求只排查、不修复；未修改业务代码、Directus 数据、数据库结构、权限、服务器配置或部署。完整报告见 `docs/CMS_FULL_READONLY_AUDIT_2026-08-20.md`。
+- 验收 Directus 的19个预期集合均存在；100条 FAQ 全部已发布且17个页面关系完整；真实运行令牌下49组内容查询全部成功，27条 CMS 驱动路由和 sitemap 的29条 URL 均返回200，63个静态内容资源可访问，必填字段、状态、嵌套结构与富文本安全检查未发现新增问题。
+- 新确认用户可见故障：验收 CMS 中已被新闻引用的封面资源，无论匿名、内容令牌还是公开 `/cms/assets/` 代理均返回403，页面已经输出该失效资源 URL；这会影响当前文章封面，并可能影响未来所有 Directus 文件字段。
+- 新确认代码问题：`src/lib/directus-content-queries.ts` 只替换服务功能项 `desc` 中的 Claim 变量，未处理 `title`；验收站 `/zhibo-cangpei` 实际泄漏两处 `{{shippingSla}}`。本轮未改代码。
+- 结合此前结果，仍存在 `news.cover_image` 为 varchar、元数据却为文件界面且无文件关系的半迁移状态，以及已发布新闻 slug 尾随空格导致正常 URL 302 回新闻列表的问题。验收 Release 还同时缺少两份 CMS 验证脚本，声明的 `cms:verify` 命令无法在发布目录运行。
+- 定向 Vitest 6个文件61项全部通过，但未覆盖真实资源 HTTP 状态、后台 CRUD/发布、封面保存后重开、slug 规范、功能标题变量替换和发布制品内 CMS 自检，不能据此宣称整个 CMS 已测试。
+- 真实 CMS 写入需单独授权，因此本轮没有创建/编辑/发布/删除测试文章、上传一次性附件或成功提交联系表单；Chrome 自动化也未能稳定接管已登录后台。后续完整写入闭环须在授权后使用带测试前缀的草稿和一次性图片执行并清理。
+
+## CMS 本地隔离写入审计（2026-08-20）
+
+- 按用户后续要求改用本机完全隔离环境实际写入；启动独立 PostgreSQL 数据库、Directus 12.1.1 和本地 Astro SSR，未连接或修改验收站、主站、真实 CMS、真实数据库、权限或部署。完整报告见 `docs/CMS_LOCAL_WRITE_AUDIT_2026-08-20.md`。
+- 通过真实 Directus 后台完成新闻新建、草稿保存、PNG 附件上传、封面选择、列表返回后重开回显、发布、取消发布、文章删除和文件库附件删除。正确的全新 PostgreSQL 字段与文件关系下，封面选择和保存本身正常；清理后 `news=0`、`directus_files=0`。
+- 发布状态下本地 `/news` 与文章详情均返回200并读取到测试内容；切回草稿后列表不再显示，详情返回302到 `/news`。另实际创建一条关联 `faq_pages.key=news` 的 FAQ，前台显示成功，删除后消失，FAQ 总数恢复为100。
+- 全新实例中的封面匿名 `/assets/{uuid}` 返回403。当前内容权限同步只覆盖业务内容集合，未建立 Directus 文件公开交付策略；因此后台关系保存正常也不能保证前台图片可用，需要仓库明确资源交付方案并由部署侧配置验证。
+- 全新数据库直接执行 `scripts/setup-cms.mjs` 会在 Singleton Seed 阶段失败：运行时固定查询 `date_created`、`user_created`、`user_updated`，部分单例集合定义并未创建这些字段。本轮只在一次性本地数据库补临时占位字段以继续审计，没有修改仓库代码；该初始化缺陷需要后续修复。
+- 文章允许在 `published_at=null` 时发布，当前前台 `formatDate(null)` 显示为“1970年1月1日”；需补发布校验或空值回退。本地 `/admin/content/news/+` 与完整生命周期均正常，未复现远端 new 页面偶发打不开，远端应结合半迁移 Schema、异常 slug、浏览器失败请求和 Directus 日志继续定位。
+
+## CMS 修复与隔离完整回归（2026-08-20）
+
+- 已按本地写入审计结果修复代码：Singleton Seed 只读取实际定义字段；新闻 slug 增加格式、空白和规范化重复校验；已发布新闻强制 `published_at` 且前台只展示到期记录；非法日期不再渲染为1970年；服务功能标题补齐 Claim 变量替换。
+- `news.cover_image` 已退出旧字符串字段兼容清单；契约迁移仅在全部非空值均为 UUID 时计划转换，否则报告 `data_validation_required`。该保护要求部署侧先清洗真实环境异常封面数据，不能强制迁移。
+- 新增站内 `/api/cms-assets/{uuid}` 资源代理；内容令牌权限同步与审计纳入 `directus_files` 只读，但代理只放行已发布案例、新闻、期刊、服务页和关于内容实际引用的文件。匿名 Directus 文件仍不开放，令牌不进入浏览器。
+- 发布脚本已包含 `scripts/`，部署目录中的 `cms:verify` 和运行权限审计具备代码文件；CMS Schema 版本更新为 `2026-08-cms-hardening`。
+- 全新隔离 PostgreSQL + Directus 12.1.1 一次 Setup 成功：19个集合、100条 FAQ、14项内容读取权限，`cms:verify` 为0 failure。没有再补临时 Singleton 字段。
+- 真实后台回归完成：`news/+` 打开、草稿创建、富文本、PNG上传、封面选择、保存后重开回显、无发布时间发布被阻止、补时间后发布、取消发布、文章删除和文件库附件删除均符合预期。
+- 发布阶段前台新闻列表、详情与封面均成功；资源代理返回200、Range返回206、未引用UUID返回404，Directus匿名资源保持403。切回草稿后列表消失且详情302回 `/news`。
+- 临时新闻 FAQ 创建后前台显示，删除后消失；最终测试文章0、测试附件0、临时 FAQ 0，FAQ总数恢复100。完整报告见 `docs/CMS_REPAIR_AND_REGRESSION_2026-08-20.md`。
+- 清理后的 `cms:verify` 为19个集合、0 warning、0 failure；双令牌运行权限审计通过。`npm run verify:release` 全部通过：364个 Astro/TypeScript 文件0问题、522个文件维护预算、41个单元测试文件276项、E2E 37项通过且7项按配置跳过、正式域名契约3项和最终生产构建均通过。
+- 发布级 E2E 在隔离库产生的10条联系表单记录随一次性数据库删除；本地 Directus、Astro、浏览器会话和临时目录均已停止或移除。本轮未提交、推送、部署、迁移或修改验收站/主站及真实 CMS。远端执行仍须先备份、dry-run、清洗异常 slug/封面数据并获得明确授权。
+
+## CMS 全功能测试计划（2026-08-20）
+
+- 已确认上一轮真实写入闭环只完整覆盖 `news`、`directus_files` 和一条关联既有页面的 `faqs`；`contact_leads` 覆盖前台创建与权限边界。其他 active 集合此前虽通过 Schema、读取、权限和前台检查，但不能据此视为已完成后台 CRUD 测试。
+- 已新增 `docs/CMS_COMPLETE_FUNCTIONAL_TEST_PLAN_2026-08-20.md`，覆盖13个 active 集合、1个 private 集合和文件库，区分普通内容、Singleton、关系、文件、富文本、权限、后台导航稳定性及桌面/移动前台消费者。
+- 计划要求先在一次性本地 Directus/PostgreSQL 中实现可重复自动化和失败后强制清理，连续通过两次后再申请验收站写入；主站默认只读。当前仅制定方案，未再次启动本地 CMS，未写入验收站/主站，未执行部署、迁移或权限变更。
+
+## CMS 全功能回归与身份约束加固（2026-08-20）
+
+- 已按全功能方案在两套一次性本地 PostgreSQL + Directus 12.1.1 环境执行；未连接、写入、迁移或部署验收站与主站。完整报告见 `docs/CMS_COMPLETE_FUNCTIONAL_TEST_REPORT_2026-08-20.md`。
+- 14个内容入口与文件库共15个页面各连续打开5次，75/75通过；11个可创建集合的 `new` 页面各打开5次，55/55通过。10个普通集合、3个 Singleton、联系留言和文件库均完成真实写入、重开、状态、关系、前台联动与清理。
+- 新闻封面已实际执行移除旧封面、从文件库选择另一张图片、保存、返回列表和重开；后台、Directus字段与前台详情均读取新UUID。WebP/PDF/PNG、Range 206、未引用404、匿名Directus资源403和删除引用文件后的SET NULL行为均通过。
+- 新发现并修复 active 稳定身份只做后台必填、未完整落到数据库约束的问题；13个 active 身份字段统一为 `NOT NULL + UNIQUE`，案例slug同时设为后台必填。合同迁移扩展到全部13个 active 集合，并用物理 `is_nullable=false` 判定数据库必填，避免把Directus UI `required`误认为NOT NULL。
+- 本地既有库 dry-run正确计划10项身份约束并成功Apply；修复后的全新Setup直接生成正确约束，随后迁移dry-run为0。10个普通集合空写入全部400，有基线记录的重复身份全部为`RECORD_NOT_UNIQUE`，无意外创建。
+- 新发现并修复联系限流单测在执行环境存在真实可写令牌时会写入当前CMS的问题；单测现在默认清空CMS环境并模拟存储。删除本轮30条一次性“张三/咨询”记录后，使用真实本地令牌运行联系单测和整套发布验证，`contact_leads`保持0。
+- 最终 `cms:verify` 为19集合、0 warning、0 failure、文件0；运行权限审计通过。`npm run verify:release` 通过：364个Astro/TypeScript文件0问题、522个文件维护预算、41个单测文件278项、E2E 37项通过且7项按配置跳过、正式域名契约3项和最终构建全部通过。
+- 清理后新闻0、联系留言0、Directus文件0，集合计数与Singleton均恢复基线。Directus 12.1.1新闻富文本仍有一次非阻塞 `Unexpected token '<'`，对应TinyMCE相对语言脚本路径返回Admin HTML；不影响编辑、封面、保存和重开，作为低优先级上游问题记录。
+- 两套本地 Directus、Astro 和浏览器会话均已停止；两套一次性 PostgreSQL 数据库、临时上传目录、浏览器证据缓存和本地迁移快照均已删除，不可恢复。本轮未提交、推送、部署或修改任何远端环境。
+
+## CMS 修复发布准备（2026-08-20）
+
+- 用户已明确授权同步 GitHub 并部署验收站；主站、真实 CMS 迁移和权限 Apply 不在本次授权范围。由于 `main` 是默认分支，本轮建立功能分支 `codex/cms-hardening-20260820` 管理提交。
+- 提交前使用不可达测试 CMS 与两枚不同的虚拟运行令牌重新执行 `npm run verify:release`，结果为364个 Astro/TypeScript 文件0问题、522个文件通过维护预算、41个单测文件278项通过、E2E 37项通过且7项按矩阵跳过、正式域名契约3项通过、两轮生产构建成功。

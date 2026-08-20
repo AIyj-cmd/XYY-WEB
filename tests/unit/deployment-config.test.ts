@@ -112,7 +112,7 @@ describe('production deployment contracts', () => {
 
     expect(deploy).toContain('RELEASE_DIR="$RELEASES_DIR/$RELEASE_ID"')
     expect(deploy).toContain('CURRENT_LINK="$REMOTE_DIR/current"')
-    expect(deploy).toContain('server.mjs ecosystem.config.cjs config server')
+    expect(deploy).toContain('server.mjs ecosystem.config.cjs config server scripts')
     expect(deploy).toMatch(/mv -Tf \\"\\\$current_link\.next\\" \\"\\\$current_link\\"/)
     expect(deploy).toContain('.previous_target')
     expect(deploy).toContain('if [[ -L \\"\\$current_link\\" ]]')

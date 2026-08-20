@@ -30,7 +30,7 @@ export const CONTENT_MANAGEMENT_COLLECTION_DEFINITIONS = [
         field: 'key',
         type: 'string',
         meta: { required: true, readonly: true },
-        schema: { is_unique: true },
+        schema: { is_nullable: false, is_unique: true },
       },
       {
         field: 'stats',
@@ -83,7 +83,7 @@ export const CONTENT_MANAGEMENT_COLLECTION_DEFINITIONS = [
         field: 'key',
         type: 'string',
         meta: { required: true, width: 'half', readonly: true },
-        schema: { is_unique: true },
+        schema: { is_nullable: false, is_unique: true },
       },
       { field: 'name', type: 'string', meta: { required: true } },
     ],

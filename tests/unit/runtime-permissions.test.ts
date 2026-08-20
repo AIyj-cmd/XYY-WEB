@@ -6,6 +6,7 @@ import { describe, expect, it } from 'vitest'
 import { CMS_COLLECTION_DEFINITIONS } from '../../scripts/data/cms-collection-definitions.mjs'
 import {
   CMS_ALL_COLLECTIONS,
+  CMS_ASSET_COLLECTIONS,
   CMS_CONTENT_COLLECTIONS,
   CMS_LEGACY_COLLECTIONS,
   CMS_PRIVATE_COLLECTIONS,
@@ -13,6 +14,7 @@ import {
 } from '../../config/cms-collections.mjs'
 import {
   CONTENT_COLLECTIONS,
+  ASSET_COLLECTIONS,
   hasAllowedContactCreateFields,
   hasContactCreatePermission,
   hasContentReadPermission,
@@ -36,6 +38,8 @@ describe('Directus runtime permission contracts', () => {
     expect(CONTENT_COLLECTIONS).toContain('faqs')
     expect(CONTENT_COLLECTIONS).not.toContain('contact_leads')
     expect(CONTENT_COLLECTIONS).toEqual(CMS_CONTENT_COLLECTIONS)
+    expect(ASSET_COLLECTIONS).toEqual(CMS_ASSET_COLLECTIONS)
+    expect(ASSET_COLLECTIONS).toEqual(['directus_files'])
     expect(CMS_PRIVATE_COLLECTIONS).toEqual(['contact_leads'])
     expect(CMS_LEGACY_COLLECTIONS).not.toEqual([])
     expect(CONTENT_COLLECTIONS).not.toEqual(expect.arrayContaining(CMS_LEGACY_COLLECTIONS))

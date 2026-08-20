@@ -30,6 +30,9 @@ describe('contact API', () => {
   beforeEach(() => {
     vi.unstubAllEnvs()
     vi.unstubAllGlobals()
+    vi.stubEnv('DIRECTUS_URL', '')
+    vi.stubEnv('DIRECTUS_CONTACT_TOKEN', '')
+    vi.stubEnv('DIRECTUS_TOKEN', '')
     __resetContactRateLimitForTests()
   })
 
@@ -157,6 +160,12 @@ describe('contact API', () => {
   })
 
   it('rate limits repeated submissions from the same IP', async () => {
+    vi.stubEnv('DIRECTUS_URL', 'https://directus.test')
+    vi.stubEnv('DIRECTUS_CONTACT_TOKEN', 'contact-token')
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => new Response(JSON.stringify({ data: { id: 1 } }), { status: 200 }))
+    )
     const body = { name: '张三', phone: '13800138000', message: '咨询', privacyConsent: 'on' }
     let lastResponse = new Response(null)
 
@@ -178,6 +187,12 @@ describe('contact API', () => {
   })
 
   it('does not let spoofed X-Forwarded-For prefixes evade rate limiting', async () => {
+    vi.stubEnv('DIRECTUS_URL', 'https://directus.test')
+    vi.stubEnv('DIRECTUS_CONTACT_TOKEN', 'contact-token')
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => new Response(JSON.stringify({ data: { id: 1 } }), { status: 200 }))
+    )
     const body = { name: '张三', phone: '13800138000', message: '咨询', privacyConsent: 'on' }
     let lastResponse = new Response(null)
 

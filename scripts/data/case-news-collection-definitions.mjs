@@ -25,8 +25,8 @@ export const CASE_NEWS_COLLECTION_DEFINITIONS = [
       {
         field: 'slug',
         type: 'string',
-        meta: { width: 'half', note: '案例详情 URL 标识，发布后慎改' },
-        schema: { is_unique: true },
+        meta: { required: true, width: 'half', note: '案例详情 URL 标识，发布后慎改' },
+        schema: { is_nullable: false, is_unique: true },
       },
       { field: 'category', type: 'string', meta: { required: true, width: 'half' } },
       { field: 'label', type: 'string', meta: { required: true, width: 'half' } },
@@ -110,8 +110,16 @@ export const CASE_NEWS_COLLECTION_DEFINITIONS = [
       {
         field: 'slug',
         type: 'string',
-        meta: { required: true, width: 'half', note: '英文或拼音 URL 标识，发布后慎改' },
-        schema: { is_unique: true },
+        meta: {
+          required: true,
+          width: 'half',
+          interface: 'input',
+          options: { trim: true, slug: true },
+          note: '仅使用小写英文字母、数字和连字符，发布后慎改',
+          validation: { slug: { _regex: '^[a-z0-9]+(?:-[a-z0-9]+)*$' } },
+          validation_message: '仅使用小写英文字母、数字和连字符，且不能有首尾空格。',
+        },
+        schema: { is_nullable: false, is_unique: true },
       },
       {
         field: 'category',
@@ -139,7 +147,19 @@ export const CASE_NEWS_COLLECTION_DEFINITIONS = [
       {
         field: 'published_at',
         type: 'timestamp',
-        meta: { interface: 'datetime', display: 'datetime', width: 'half' },
+        meta: {
+          interface: 'datetime',
+          display: 'datetime',
+          width: 'half',
+          note: '草稿可留空；发布时必须填写，未来时间将在到点后展示。',
+          conditions: [
+            {
+              name: '发布时必填',
+              rule: { status: { _eq: 'published' } },
+              required: true,
+            },
+          ],
+        },
       },
       dateCreatedField(),
       dateUpdatedField(),
