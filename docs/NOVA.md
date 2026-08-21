@@ -70,6 +70,48 @@ Remaining Risks: CTA 文案仍为静态页面内容，未来若要求 CMS 可编
 
 Handoff: 返工复审仍为 APPROVED，维护预算阻断已关闭；返回 Sol 做最终验收，无其他阻断项，不需要再次返工，不涉及部署。
 
+### XYY-20260822-01
+
+Status: APPROVED
+
+Review Scope: Review 提交 `eac67903d1e65437b74f9b4ee74890dad01e3843` 在本地、GitHub `main` / 功能分支与测试站 `https://wz.tomatopia.top` 的发布一致性；核对发布前门禁、失败尝试边界、原子发布身份、Luna 发布后结果及生产/CMS/数据库隔离。不执行推送、部署、CMS 写入、数据库或生产操作。
+
+Architecture: 本地 `main`、`origin/main`、本地功能分支与远端功能分支均指向 `eac67903d1e65437b74f9b4ee74890dad01e3843`；`main` reflog 明确记录从 `ba07fd4` 快进合并，远端通过普通 push 更新，未发现强推或历史改写。测试站 `/version` 实时返回同一完整 SHA、`releaseId=20260821T170201Z-eac6790`、`environment=staging` 与 `cmsSchemaVersion=2026-08-cms-hardening`，`/healthz` 返回 `status=ok`。现有发布脚本在首次 SSH 前执行完整本地门禁，因此两次门禁失败均发生在远端预检、上传和切换之前；最终发布沿用既有原子 Release、身份核对和健康失败回滚路径。
+
+Security: 提交变更未发现凭据赋值或 Secret；测试站回读和 Luna 验收均为只读，没有表单提交、CMS 写入或数据库操作。发布身份明确为 `staging`，审查证据未显示正式主站、DNS、TLS、Nginx、生产环境变量或手工 PM2 配置变更。`CI=1` 在 Playwright 配置中只把 worker 收敛为 1 并禁止复用既有 Web Server，测试清单、30 秒用例超时和断言保持不变，不构成绕过失败断言。
+
+Maintainability: 本任务未新增业务实现；发布内容仍是已由 Terra、Luna、Nova 和 Sol 验收的三个关闭任务。首次非 CI 模式超时涉及 `about-cases` 总用例时限而非断言不匹配，使用单 worker 的 CI 运行符合项目既有配置并降低共享本地资源争用。强制 `RELEASE_ID` 的重试被 Release Identity 单元 fixture 在本地正确阻断，随后恢复脚本生成身份是正确闭环。
+
+Contract Risks: GitHub 实际为该 SHA 触发了 CI Run `32505147175`，结论为 `failure`，与“没有 GitHub Actions 触发”的交接声明不一致。失败点是 `npm run format:check` 检出 `tests/unit/image-cache-contract.test.ts` 格式不合规；候选 Release Identity、依赖审计和 `verify:release` 步骤因此全部跳过。该文件不是本提交引入的变化，父提交 `ba07fd4` 的 CI 也因同一问题失败，但当前 `main` 仍然是红色，不能据此宣称 GitHub 发布门禁通过。本地 `verify:release` 未包含 `format:check`，因此本地全绿不能替代该 CI 结果。
+
+Test Coverage Review: 发布脚本最终门禁证据为 45 个 Vitest 文件 / 292 项测试通过、39 项 E2E 通过 / 7 项跳过、3 项正式契约通过及构建通过；Luna 发布后独立验证 `/version`、`/healthz`、13 条目标路由的桌面与移动共 26/26 PASS，排除路由保持旧 CTA。Nova 另行实时回读 13 条目标路由均为 HTTP 200 且恰好一个共享 CTA，排除路由没有共享 CTA。上述证据足以证明当前测试站运行内容，但不足以把 GitHub CI 状态记录为通过。
+
+Initial Result: REJECTED
+
+Initial Remaining Risks: 测试站当前 Release 健康且与本地和 GitHub SHA 一致，运行风险较低；阻断项是 GitHub `main` CI 红色和交接状态不准确。若修正格式并形成新提交，则本地、GitHub 和测试站 SHA 会再次分叉，必须重新执行 CI、测试站发布身份核对与 Luna/Nova 验收后才能关闭本任务。
+
+Initial Handoff: 返回 Sol。沿用 `XYY-20260822-01` 闭环 GitHub 格式门禁；由 Sol 决定返工调度，Nova 不直接修改测试或业务代码、不部署。完成后需提供绿色 GitHub CI、新目标 SHA 的三方一致性和必要的发布后测试证据，再交 Nova Re-review。
+
+#### Re-review after formatting remediation
+
+Review Scope: 仅复审 `tests/unit/image-cache-contract.test.ts` 的格式返工、Terra 实现记录和 Luna 独立复测；不重新扩大到业务实现，不执行提交、推送或部署。
+
+Architecture: 唯一代码差异是将 `readProjectFile` 的单行箭头函数表达式按 Prettier 拆为两行；调用、返回值、URL 构造、编码参数、测试结构和断言均未改变。没有应用代码、运行时依赖、API/CMS 契约或发布脚本变化。
+
+Security: 纯空白与换行格式调整不引入输入面、网络访问、凭据、权限或数据边界变化；未发现 Secret 或生产操作。
+
+Maintainability: 修复精确作用于 GitHub CI 指定的唯一格式失败文件，没有顺手重构。Nova 独立运行 `npx prettier --check tests/unit/image-cache-contract.test.ts` 通过；完整 `npm run format:check` 已由 Terra 与 Luna 分别验证通过。
+
+Contract Risks: 原 CI 阻断是该文件不符合项目 Prettier 输出；当前工作树内容已符合 Prettier，能够关闭该确定性格式失败。修复不改变测试契约或应用发布内容。
+
+Test Coverage Review: Terra 与 Luna 均报告目标测试 8/8 PASS 和 `git diff --check` PASS；Nova 独立复跑同一测试为 1 个文件、8 项通过，并确认 `git diff --check` 通过。对纯格式调整，该覆盖充分。
+
+Result: APPROVED
+
+Remaining Risks: 返工尚未提交和推送，因此 GitHub 对新 SHA 的实际 CI 结果、三方新 SHA 一致性及测试站新 Release 身份仍待 Sol 后续验证；这些是发布流程后续门禁，不是当前格式修复的代码阻断。
+
+Handoff: 返回 Sol；该最小返工可以提交并推送。需等待 GitHub 新 SHA CI 全部通过；由于提交将改变 SHA，随后应重新发布测试站并由 Luna/Nova核对新 `/version`、健康状态及必要回归后再关闭 `XYY-20260822-01`。
+
 ### XYY-YYYYMMDD-NN
 
 Status:

@@ -90,6 +90,36 @@ Risks:
 
 Handoff: 请 Luna 独立验证所有目标页在桌面与移动端的视觉一致性、CTA 仅出现一次、`/contact` 主链接可用、滚动显现及无横向溢出；请确认 `/yundao-zhineng-jijian` 仍保留原 CTA，未被本任务影响。
 
+### XYY-20260822-01
+
+Status: DONE
+
+Task: 修复阻塞当前 main CI 的 Prettier 格式检查失败。
+
+Scope: 仅机械格式化 `tests/unit/image-cache-contract.test.ts`，不改变断言、测试行为或应用代码。
+
+Implementation:
+
+- 使用项目 Prettier 格式化该单一测试文件；唯一 diff 是将超过行宽的 `readProjectFile` 表达式拆为两行。
+
+Changed Files:
+
+- `tests/unit/image-cache-contract.test.ts`
+- `docs/TERRA.md`
+
+Validation:
+
+- `npm run format:check`：通过。
+- `npx vitest run tests/unit/image-cache-contract.test.ts`：1 个文件、8 项测试通过。
+- `git diff --check`：通过。
+- 已核对实现 diff 仅包含上述格式变更，没有断言或行为调整。
+
+Risks:
+
+- 无已知功能风险；此次修复只处理既有 CI 格式门禁缺陷。
+
+Handoff: 请 Luna 复核 `tests/unit/image-cache-contract.test.ts` 仍为纯格式调整，并确认完整 `npm run format:check` 与该文件的 8 项测试通过。
+
 ### XYY-YYYYMMDD-NN
 
 Status:

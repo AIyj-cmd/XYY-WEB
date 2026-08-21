@@ -1,7 +1,8 @@
 import { readFileSync, statSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 
-const readProjectFile = (path: string) => readFileSync(new URL(`../../${path}`, import.meta.url), 'utf8')
+const readProjectFile = (path: string) =>
+  readFileSync(new URL(`../../${path}`, import.meta.url), 'utf8')
 
 describe('cache-safe image references', () => {
   it('uses the uniquely named warehouse image for every product hero source', () => {
