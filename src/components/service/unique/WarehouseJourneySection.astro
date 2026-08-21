@@ -20,13 +20,14 @@ const FLOW_STEPS = [
     <p class="text-xs text-gray-400 text-center mb-10">
       从货物到仓到发货出库，每步标准化操作，全程1080P监控可追溯
     </p>
-    <div class="overflow-x-auto -mx-4 px-4 pb-2">
-      <div class="flex items-start min-w-max">
+    <div class="journey-scroll overflow-x-auto -mx-4 px-4 pb-2">
+      <div class="journey-track">
+        <div class="journey-rail" aria-hidden="true"><span></span></div>
         {
           FLOW_STEPS.map(({ num, title, desc }, i) => (
-            <div class="flex items-start">
+            <div class="journey-group" style={`--journey-index: ${i}`}>
               <div class="flex flex-col items-center text-center w-32 px-1">
-                <div class="w-11 h-11 rounded-2xl bg-brand-orange/10 border border-brand-orange/20 flex items-center justify-center mb-3 flex-shrink-0">
+                <div class="journey-badge w-11 h-11 rounded-2xl bg-white border border-brand-orange/25 flex items-center justify-center mb-3 flex-shrink-0">
                   <span class="text-[11px] font-black text-brand-orange tracking-widest">
                     {num}
                   </span>
@@ -35,8 +36,8 @@ const FLOW_STEPS = [
                 <p class="text-xs text-gray-400 leading-snug whitespace-pre-line">{desc}</p>
               </div>
               {i < FLOW_STEPS.length - 1 && (
-                <div class="flex-shrink-0 flex items-start pt-4 text-brand-orange/30 text-xl font-light px-1">
-                  ›
+                <div class="journey-connector" aria-hidden="true">
+                  <span>›</span>
                 </div>
               )}
             </div>
@@ -55,3 +56,120 @@ const FLOW_STEPS = [
     </div>
   </div>
 </section>
+
+<style>
+  .journey-track {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    width: max-content;
+  }
+
+  .journey-group {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: flex-start;
+    animation: journey-enter 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: calc(var(--journey-index) * 90ms);
+  }
+
+  .journey-badge {
+    box-shadow: 0 0 0 5px rgb(255 255 255 / 85%);
+    animation: journey-breathe 3.2s ease-in-out infinite;
+    animation-delay: calc(var(--journey-index) * 180ms);
+  }
+
+  .journey-connector {
+    display: flex;
+    flex-shrink: 0;
+    align-items: flex-start;
+    padding: 0.8rem 0.25rem 0;
+    color: rgb(244 82 24 / 40%);
+    font-size: 1.25rem;
+    font-weight: 300;
+    line-height: 1;
+  }
+
+  .journey-connector span {
+    animation: journey-arrow 1.8s ease-in-out infinite;
+    animation-delay: calc(var(--journey-index) * 120ms);
+  }
+
+  .journey-rail {
+    position: absolute;
+    top: 1.34rem;
+    right: 4rem;
+    left: 4rem;
+    height: 1px;
+    overflow: hidden;
+    background: rgb(244 82 24 / 12%);
+  }
+
+  .journey-rail span {
+    position: absolute;
+    inset-block: 0;
+    left: -22%;
+    width: 22%;
+    background: linear-gradient(90deg, transparent, rgb(244 82 24 / 65%), transparent);
+    animation: journey-sweep 4.2s linear infinite;
+  }
+
+  @media (min-width: 1024px) {
+    .journey-track {
+      margin-inline: auto;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .journey-group,
+    .journey-badge,
+    .journey-connector span,
+    .journey-rail span {
+      animation: none;
+    }
+  }
+
+  @keyframes journey-enter {
+    from {
+      opacity: 0.35;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes journey-breathe {
+    0%,
+    100% {
+      border-color: rgb(244 82 24 / 25%);
+      box-shadow: 0 0 0 5px rgb(255 255 255 / 85%);
+    }
+    50% {
+      border-color: rgb(244 82 24 / 55%);
+      box-shadow:
+        0 0 0 5px rgb(255 255 255 / 0.9),
+        0 0 0 9px rgb(244 82 24 / 6%);
+    }
+  }
+
+  @keyframes journey-arrow {
+    0%,
+    100% {
+      opacity: 0.35;
+      transform: translateX(-2px);
+    }
+    50% {
+      opacity: 0.9;
+      transform: translateX(3px);
+    }
+  }
+
+  @keyframes journey-sweep {
+    to {
+      left: 100%;
+    }
+  }
+</style>

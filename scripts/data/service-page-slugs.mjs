@@ -1,7 +1,5 @@
 export const SERVICE_PAGE_SLUGS = [
-  'fuzhuang-yuncang',
   'houzheng-xiufu',
-  'weipinhui-jit-jitx',
   'kuajing-yuncang',
   'huanan-xiefu-yuncang',
   'zhibo-cangpei',

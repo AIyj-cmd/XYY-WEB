@@ -64,7 +64,7 @@ describe('CMS setup domains', () => {
   })
 
   it('keeps all reviewed page FAQs available for first-time CMS initialization', () => {
-    expect(APPROVED_FAQ_SEEDS).toHaveLength(100)
+    expect(APPROVED_FAQ_SEEDS).toHaveLength(90)
     expect(new Set(APPROVED_FAQ_SEEDS.map(({ page_key }) => page_key))).toEqual(
       new Set(FAQ_PAGE_OPTIONS.map(({ value }) => value))
     )
@@ -76,10 +76,10 @@ describe('CMS setup domains', () => {
   it('keeps the five structured content domains ready for first-time initialization', () => {
     expect(APPROVED_CASE_DETAIL_SEEDS).toHaveLength(6)
     expect(APPROVED_PUBLICATION_SEEDS).toHaveLength(14)
-    expect(APPROVED_SERVICE_PAGE_SEEDS).toHaveLength(12)
+    expect(APPROVED_SERVICE_PAGE_SEEDS).toHaveLength(10)
     expect(APPROVED_ABOUT_CONTENT_SEEDS).toHaveLength(1)
     expect(APPROVED_SITE_SETTING_SEEDS).toHaveLength(1)
-    expect(new Set(APPROVED_SERVICE_PAGE_SEEDS.map(({ slug }) => slug)).size).toBe(12)
+    expect(new Set(APPROVED_SERVICE_PAGE_SEEDS.map(({ slug }) => slug)).size).toBe(10)
     expect(APPROVED_PUBLICATION_SEEDS.filter(({ is_latest }) => is_latest)).toHaveLength(1)
   })
 

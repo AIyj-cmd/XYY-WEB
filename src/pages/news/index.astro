@@ -14,7 +14,18 @@ const requestedCategory = Astro.url.searchParams.get('cat') ?? ''
 const category = NEWS_CATEGORIES.includes(requestedCategory as (typeof NEWS_CATEGORIES)[number])
   ? requestedCategory
   : ''
-const articles = category ? await getNewsByCategory(category, 24) : await getPublishedNews(24, 1)
+const showAll = Astro.url.searchParams.get('all') === '1'
+const allArticles = category
+  ? await getNewsByCategory(category, 100)
+  : await getPublishedNews(100, 1)
+const hasMore = allArticles.length > 10
+const articles = showAll ? allArticles : allArticles.slice(0, 10)
+const viewAllHref =
+  !showAll && hasMore
+    ? category
+      ? `/news?cat=${encodeURIComponent(category)}&all=1`
+      : '/news?all=1'
+    : undefined
 const faqs = await getFaqs('news', NEWS_FAQS)
 
 const breadcrumbSchema = {
@@ -44,7 +55,13 @@ const faqSchema = createFaqSchema(faqs)
   jsonLd={[breadcrumbSchema, pageSchema, faqSchema]}
 >
   <NewsLandingIntro {category} />
-  {articles.length ? <NewsGrid {articles} /> : <NewsEmptyState {category} />}
+  {
+    articles.length ? (
+      <NewsGrid {articles} totalCount={allArticles.length} {viewAllHref} />
+    ) : (
+      <NewsEmptyState {category} />
+    )
+  }
 
   <!-- FAQ -->
   <PageFAQ heading="行业内容使用与更新说明" items={faqs} />

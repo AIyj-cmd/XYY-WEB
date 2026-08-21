@@ -3,14 +3,12 @@ import { expect, test } from '@playwright/test'
 test('shared service landing layout renders every visual variant', async ({ page }) => {
   const serviceRoutes = [
     '/xiefu-yuncang',
-    '/fuzhuang-yuncang',
     '/guangzhou-xiefu-yuncang',
     '/huanan-xiefu-yuncang',
     '/huadong-xiefu-yuncang',
     '/b2b-mendian-cangpei',
     '/kuajing-yuncang',
     '/zhibo-cangpei',
-    '/weipinhui-jit-jitx',
     '/tuihuo-zhijian',
     '/houzheng-xiufu',
     '/yundao-zhineng-jijian',

@@ -745,24 +745,6 @@ export const APPROVED_SITE_SETTING_SEEDS = [
 export const APPROVED_SERVICE_PAGE_SEEDS = [
   {
     status: 'published',
-    slug: 'fuzhuang-yuncang',
-    title: '服装云仓服务商 — 全渠道仓配+退货质检+深加工，专注鞋服行业 | 新亦源',
-    description:
-      '新亦源服装云仓，针对女装/男装/内衣/运动服深度优化，RFID智能识别解决高SKU管理难题，弹性人力池保障大促不延迟，B2C+B2B+O2O多渠道发货。',
-    breadcrumb_label: '服装云仓',
-    eyebrow: '服装云仓 · 全渠道仓配一体化',
-    h1: '服装云仓',
-    h1sub: 'T恤/卫衣/内衣/运动服 全品类仓储',
-    hero_desc:
-      '新亦源服装云仓深度适配女装、男装、内衣、袜类、运动服等品类，RFID全域识别解决高SKU管理难题，弹性产能保障大促不延迟，服务品牌{{partnerBrands}}。',
-    img_src: '/w-apparel.webp',
-    img_alt: '服装云仓 — 专业服装仓储管理',
-    content_desc:
-      '适合以服装为主品类的电商品牌，尤其T恤、卫衣、内衣、女装等高SKU服装卖家。服装多色多码SKU组合导致普通仓管理成本高、出错率大。新亦源服装云仓内置RFID全域识别+电子标签拣货+自动化分拣，深度定制WMS，年服务快时尚、设计师品牌、内衣、运动服等多个细分类目，库存准确率{{inventoryAccuracy}}。',
-    features_label: '核心能力',
-  },
-  {
-    status: 'published',
     slug: 'houzheng-xiufu',
     title: '服装瑕疵修复｜9大修复专区，修复成功率{{repairSuccessRate}}｜新亦源',
     description:
@@ -773,29 +755,11 @@ export const APPROVED_SERVICE_PAGE_SEEDS = [
     h1sub: '瑕疵修复成功率{{repairSuccessRate}}，专属9区修复分区',
     hero_desc:
       '根据新亦源运营统计，后整修复服务分为6类，实际设置9个专业修复专区；修复完成后进行二次质检，并按客户确认标准进入后续流程。',
-    img_src: '/w-repair.webp',
+    img_src: '/w-post-processing.webp',
     img_alt: '后整修复 — 专业服装瑕疵修复',
     content_desc:
       '适合需要对退货商品进行分级、修复和二次利用的鞋服品牌。后整修复服务分为6类，实际设置自动熨烫、手工熨烫、异味晾晒、手工清污、配饰修复、缝补、鞋类修复、干湿洗、补换标识9个专业修复专区。根据新亦源运营统计，修复成功率{{repairSuccessRate}}；具体标准按客户销售渠道定制。',
     features_label: '修复服务类型',
-  },
-  {
-    status: 'published',
-    slug: 'weipinhui-jit-jitx',
-    title: '唯品会JIT/JITX仓配服务商 — 60+品牌专属经验，肇庆唯品会物流园内 | 新亦源',
-    description:
-      '新亦源是唯品会JIT/JITX深度合作仓配服务商，合作品牌{{partnerBrands}}中60+涉及唯品会运营，肇庆四会仓位于唯品会物流园内，JIT+JITX双模式对接，{{shippingSla}}。',
-    breadcrumb_label: '唯品会JIT/JITX',
-    eyebrow: '唯品会JIT/JITX · 专业仓配对接服务商',
-    h1: '唯品会JIT/JITX仓配',
-    h1sub: '60+品牌专属运营经验，肇庆唯品会物流园内直发',
-    hero_desc:
-      '新亦源是唯品会深度合作仓配服务商，合作品牌{{partnerBrands}}中60+涉及唯品会运营，肇庆四会仓位于唯品会物流园内，JIT/JITX标准化对接经验丰富，SLA合同保障。',
-    img_src: '/w-fulfill.webp',
-    img_alt: '唯品会JIT/JITX仓配 — 专业快速发货',
-    content_desc:
-      '适合唯品会平台鞋服品牌商家，尤其申请或已在运营JIT/JITX模式的场景。唯品会JIT对仓配服务商的系统、时效、质量要求极高，普通仓难以达标。新亦源在唯品会物流园内设专属仓，OMS/WMS与唯品会平台深度打通，{{partnerBrands}}合作品牌中60+涉及唯品会运营，积累完善的大促应急预案。',
-    features_label: '核心能力',
   },
   {
     status: 'published',
@@ -845,7 +809,7 @@ export const APPROVED_SERVICE_PAGE_SEEDS = [
     h1sub: '多平台订单协同与弹性履约',
     hero_desc:
       '新亦源直播电商仓配以弹性产能和多平台库存同步为核心，支持主流直播电商平台；动态人力池支持小时级调配，单仓峰值{{singleWarehousePeak}}，帮助直播品牌和代播机构稳定履约。',
-    img_src: '/w-fulfill.webp',
+    img_src: '/w-live-commerce.webp',
     img_alt: '直播电商仓配 — 直播爆单弹性发货',
     content_desc:
       '适合主流直播电商平台的服饰主播和品牌自播团队。直播订单集中、多平台库存同步和退货处理是主要难点。新亦源以动态人力池支持小时级调配，可按项目实时同步库存、降低超卖风险，退货质检与二次上架{{returnTurnaround}}完成。',
@@ -917,7 +881,7 @@ export const APPROVED_SERVICE_PAGE_SEEDS = [
     h1sub: '{{recognizableAnomalies}}异常识别，A/B+/B-/C四级管理',
     hero_desc:
       '新亦源配置与广检集团合作QC团队，按AQL 1.0–6.5执行；质检技师经广检集团资深讲师培训认证。服务覆盖拆包核对、质检分级、修复分流和二次上架，全年退货质检量{{returnInspectionAnnual}}，退货质检与二次上架{{returnTurnaround}}，平均拆包4小时、质检12小时。',
-    img_src: '/w-inspect.webp',
+    img_src: '/w-return-inspection.webp',
     img_alt: '退货质检 — 专业质检团队',
     content_desc:
       '适合需要标准化退货分级和二次上架的鞋服电商品牌及运营商。新亦源与广检集团合作QC团队，按AQL 1.0–6.5执行，可识别7大类{{recognizableAnomalies}}异常，并按品牌确认规则进行A/B+/B-/C四级管理。退货质检与二次上架{{returnTurnaround}}。',
@@ -935,7 +899,7 @@ export const APPROVED_SERVICE_PAGE_SEEDS = [
     h1sub: 'B2C+B2B+O2O全渠道库存协同',
     hero_desc:
       '新亦源专注鞋服物流15年，RFID智能仓三代演进，支持B2C+B2B+O2O全渠道发货，采用CDC/RDC/FDC三级仓网架构，合作品牌{{partnerBrands}}，单仓单日峰值{{singleWarehousePeak}}。',
-    img_src: '/w-apparel.webp',
+    img_src: '/w-footwear-cloud.webp',
     img_alt: '鞋服云仓 — 专业鞋服仓储配送',
     content_desc:
       '适合需要全渠道一盘货管理的鞋服品牌，重点解决高SKU管理、旺季产能波动和多仓库存协同问题。三代智能仓采用RFID、电子标签和自动化分拣，配合动态人力池与CDC/RDC/FDC三级仓网。库存准确率{{inventoryAccuracy}}，综合损耗下降20%。',

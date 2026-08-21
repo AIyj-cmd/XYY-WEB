@@ -402,56 +402,6 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
-    content_key: 'faq-fuzhuang-yuncang-01',
-    faqPageKey: 'fuzhuang-yuncang',
-    page_key: 'fuzhuang-yuncang',
-    sort: 1,
-    question: '服装云仓和普通电商云仓有什么区别？',
-    answer:
-      '核心区别在于对服装品类的专业化适配：①针对高SKU、多色多码，新亦源WMS支持RFID、序列号和货号多维索引；②针对较高退货率，仓内配套退货质检、瑕疵修复和二次上架，不只提供存储与发货；③针对季节性大促，通过弹性人力池、多仓协同和波次计划降低订单积压与延迟风险。',
-  },
-  {
-    status: 'published',
-    content_key: 'faq-fuzhuang-yuncang-02',
-    faqPageKey: 'fuzhuang-yuncang',
-    page_key: 'fuzhuang-yuncang',
-    sort: 2,
-    question: '新亦源服装云仓合作过哪些品类？',
-    answer:
-      '已服务品类覆盖：快时尚女装（UR）、高端设计师女装（MAXRIENY）、内衣基础品类（幸棉）、运动鞋服（头部国际运动品牌）、跨境快时尚（Urbanic）等{{partnerBrands}}个品牌。B2C/B2B/O2O全渠道均有规模化运营案例。',
-  },
-  {
-    status: 'published',
-    content_key: 'faq-fuzhuang-yuncang-03',
-    faqPageKey: 'fuzhuang-yuncang',
-    page_key: 'fuzhuang-yuncang',
-    sort: 3,
-    question: '服装云仓如何解决尺码颜色混淆问题？',
-    answer:
-      '采用RFID、电子标签和出库复核组成的多重防错流程：①入库时为商品绑定RFID或条码，记录颜色、尺码和批次；②拣货时由电子标签亮灯引导，并通过RFID核验款色码；③出库前逐包扫码复核，异常件停止流转。当前公开的发货准确率为{{shippingAccuracy}}。',
-  },
-  {
-    status: 'published',
-    content_key: 'faq-fuzhuang-yuncang-04',
-    faqPageKey: 'fuzhuang-yuncang',
-    page_key: 'fuzhuang-yuncang',
-    sort: 4,
-    question: '服装退货的质检和修复服务怎么算费用？',
-    answer:
-      '退货质检和修复是独立计费服务（不含在仓储费中）。计费方式：质检按件数，修复按修复类型（清污/缝补/换配件等）。新客可申请样品试质检，确认质检标准和报价后再正式合作。',
-  },
-  {
-    status: 'published',
-    content_key: 'faq-fuzhuang-yuncang-05',
-    faqPageKey: 'fuzhuang-yuncang',
-    page_key: 'fuzhuang-yuncang',
-    sort: 5,
-    question: '新亦源服装云仓有哪些仓库地址？',
-    answer:
-      '新亦源仓网覆盖华南、华东和华中：华南包括广州、东莞、佛山和肇庆区域，华东包括上海、昆山和合肥区域，湖北设有华中仓点。实际启用仓点、地址、仓容和作业范围按项目核验确认。',
-  },
-  {
-    status: 'published',
     content_key: 'faq-houzheng-xiufu-01',
     faqPageKey: 'houzheng-xiufu',
     page_key: 'houzheng-xiufu',
@@ -499,56 +449,6 @@ export const APPROVED_FAQ_SEEDS = [
     question: '修复后货品的质量由谁保证？',
     answer:
       '修复后需按品牌确认的质检标准进行二次质检，通过后才可上架；项目可采用AQL抽检规则及A/B+/B-/C分级设置判定方式。未通过商品按约定继续修复或转入相应等级，关键操作记录可按项目约定用于追溯。',
-  },
-  {
-    status: 'published',
-    content_key: 'faq-weipinhui-jit-jitx-01',
-    faqPageKey: 'weipinhui-jit-jitx',
-    page_key: 'weipinhui-jit-jitx',
-    sort: 1,
-    question: '唯品会JIT和JITX模式有什么区别？',
-    answer:
-      'JIT（Just-In-Time）是唯品会的按需采购模式，品牌按活动计划备货，活动开始后按单快速发货，降低积压；JITX是JIT的升级版，要求更快速的备货响应和更严格的发货时效，适合爆款和高频复购商品。两种模式都要求仓配服务商具备实时库存同步和极速发货能力，新亦源均支持。',
-  },
-  {
-    status: 'published',
-    content_key: 'faq-weipinhui-jit-jitx-02',
-    faqPageKey: 'weipinhui-jit-jitx',
-    page_key: 'weipinhui-jit-jitx',
-    sort: 2,
-    question: '新亦源唯品会仓配有什么核心优势？',
-    answer:
-      '三大核心优势：①肇庆四会仓在唯品会物流园内，物流节点最近，时效优势明显；②合作品牌60+涉及唯品会运营，有大量真实案例和应急预案；③WMS与唯品会系统深度对接，库存+订单+发货全链路自动化，人工干预少、出错率低。',
-  },
-  {
-    status: 'published',
-    content_key: 'faq-weipinhui-jit-jitx-03',
-    faqPageKey: 'weipinhui-jit-jitx',
-    page_key: 'weipinhui-jit-jitx',
-    sort: 3,
-    question: '新亦源肇庆唯品会物流园仓规模如何？',
-    answer:
-      '肇庆四会仓：总园区面积100,000㎡，新亦源使用面积50,000㎡；12米超高仓，多条自动打包线，快递资源发达（位于物流园内，多家快递公司驻仓）。',
-  },
-  {
-    status: 'published',
-    content_key: 'faq-weipinhui-jit-jitx-04',
-    faqPageKey: 'weipinhui-jit-jitx',
-    page_key: 'weipinhui-jit-jitx',
-    sort: 4,
-    question: 'JIT模式对发货时效有什么要求，新亦源能达到吗？',
-    answer:
-      '唯品会JIT/JITX的平台时效以当前规则和具体活动要求为准。新亦源仓内履约口径为{{shippingSla}}，大促期间的仓容、人力与物流资源按项目计划配置。',
-  },
-  {
-    status: 'published',
-    content_key: 'faq-weipinhui-jit-jitx-05',
-    faqPageKey: 'weipinhui-jit-jitx',
-    page_key: 'weipinhui-jit-jitx',
-    sort: 5,
-    question: '开始唯品会JIT/JITX合作需要什么条件？',
-    answer:
-      '通常需要：①商品已在唯品会平台上线并开通JIT/JITX资格；②与新亦源签署仓配服务协议（含SLA条款）；③完成系统对接测试（通常1-2周）；④首批货物入库验收。新亦源提供全程对接支持，商务团队协助办理平台对接手续。',
   },
   {
     status: 'published',

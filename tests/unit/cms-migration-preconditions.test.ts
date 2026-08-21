@@ -42,7 +42,7 @@ describe('CMS migration canonical preconditions', () => {
       faqs: Object.keys(approvedRecords.faqs).length,
       about_history: Object.keys(approvedRecords.about_history).length,
       about_honors: Object.keys(approvedRecords.about_honors).length,
-    }).toEqual({ warehouses: 12, faqs: 100, about_history: 9, about_honors: 15 })
+    }).toEqual({ warehouses: 12, faqs: 90, about_history: 9, about_honors: 15 })
     expect(Object.keys(APPROVED_CMS_CONTRACT_MAPPINGS.homepage_content)).toEqual(['1'])
     for (const id of [4, 5, 6] as const) {
       expect(approvedRecords.warehouses[id].targetStableKey).toMatch(

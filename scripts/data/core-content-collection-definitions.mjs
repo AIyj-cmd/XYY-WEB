@@ -7,6 +7,14 @@ import {
   statusField,
 } from './cms-field-builders.mjs'
 
+const contactServiceChoices = [
+  { text: '鞋服云仓', value: 'cloud-warehouse' },
+  { text: '后整质检修复', value: 'quality-inspection' },
+  { text: '物流云', value: 'logistics-cloud' },
+  { text: '全链路解决方案', value: 'all' },
+  { text: '其他', value: 'other' },
+]
+
 export const CORE_CONTENT_COLLECTION_DEFINITIONS = [
   {
     name: 'homepage_stats',
@@ -82,7 +90,17 @@ export const CORE_CONTENT_COLLECTION_DEFINITIONS = [
       { field: 'phone', type: 'string', meta: { required: true, width: 'half' } },
       { field: 'company', type: 'string', meta: { width: 'half' } },
       { field: 'email', type: 'string', meta: { width: 'half' } },
-      { field: 'service', type: 'string', meta: { width: 'half' } },
+      {
+        field: 'service',
+        type: 'string',
+        meta: {
+          interface: 'select-dropdown',
+          display: 'labels',
+          width: 'half',
+          options: { choices: contactServiceChoices },
+          display_options: { choices: contactServiceChoices },
+        },
+      },
       {
         field: 'source',
         type: 'string',
