@@ -630,4 +630,8 @@
 
 - 修复提交 `57072cada3a5f7bb0819ee0bb3113e3632688899` 已通过原子发布脚本部署为测试站 Release `20260821T110023Z-57072ca`；发布脚本内完整 `verify:release`、依赖安装、PM2 切换、内部与外部健康检查及精确版本核对全部通过，未回滚。`/version` 返回目标提交和 `staging`，`/healthz` 返回 `status=ok`、`contactStorage=ok`。
 - 按明确授权，仅同步测试站 `service_pages` 中6条 `img_src`：鞋服云仓、退货质检、后整修复、跨境云仓、直播仓配和B2B门店仓配。操作前备份为 `/var/backups/xyy-cms/service-page-images-2026-08-21T11-15-22-440Z.json`；回读6条均与代码和 Seed 一致，临时管理员 Token 已恢复，未修改其他字段、记录、权限或密码。
-- 发布后真实 HTML 验收通过：6个服务专题页均输出各自新 Hero 地址；仓配服务页桌面与后备图片均只引用 `/images/services/warehouse-product-1800.webp`；首页退货质检区输出 `/w-home-return-inspection.webp`；4个唯一新资源均返回 HTTP 200。正式主站未部署、未迁移、未写入，本次提交尚未推送 GitHub。
+- 发布后真实 HTML 验收通过：6个服务专题页均输出各自新 Hero 地址；仓配服务页桌面与后备图片均只引用 `/images/services/warehouse-product-1800.webp`；首页退货质检区输出 `/w-home-return-inspection.webp`；4个唯一新资源均返回 HTTP 200。正式主站未部署、未迁移、未写入。
+
+## 测试站图片修复 GitHub 同步（2026-08-21）
+
+- 图片修复提交 `57072cada3a5f7bb0819ee0bb3113e3632688899` 与测试站发布记录提交 `00c4203` 已推送到 GitHub `main`；推送前刷新远端并确认 `origin/main` 无新增提交，本地仅领先上述2个提交。
