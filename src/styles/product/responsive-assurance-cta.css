@@ -49,20 +49,4 @@
   .assurance-mechanisms p {
     white-space: normal;
   }
-  .warehouse-cta {
-    padding: 5rem 0;
-  }
-  .warehouse-cta__inner {
-    gap: 3.25rem;
-    margin-bottom: 0;
-  }
-  .warehouse-cta aside {
-    padding: 1.8rem 0 0;
-    border-top: 1px solid #bfc5c2;
-    border-left: 0;
-  }
-  .warehouse-cta li {
-    grid-template-columns: 7rem minmax(0, 1fr);
-    padding: 0.85rem 0;
-  }
 }

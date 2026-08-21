@@ -1,0 +1,71 @@
+---
+import '@/styles/conversion-cta.css'
+
+interface PreparationItem {
+  label: string
+  detail: string
+}
+
+interface Props {
+  headingId: string
+  eyebrow: string
+  headingLines: string[]
+  description: string
+  actionLabel: string
+  preparationTitle: string
+  preparationItems: PreparationItem[]
+  reveal?: 'product' | 'service'
+}
+
+const {
+  headingId,
+  eyebrow,
+  headingLines,
+  description,
+  actionLabel,
+  preparationTitle,
+  preparationItems,
+  reveal,
+} = Astro.props
+
+const productReveal = reveal === 'product' ? 'copy' : undefined
+const serviceReveal = reveal === 'service' ? 'copy' : undefined
+---
+
+<section class="conversion-cta" aria-labelledby={headingId} data-conversion-cta>
+  <div class="conversion-cta__inner">
+    <div
+      class="conversion-cta__message"
+      data-reveal={productReveal}
+      data-service-reveal={serviceReveal}
+    >
+      <p class="conversion-cta__eyebrow">{eyebrow}</p>
+      <h2 id={headingId}>
+        {headingLines.map((line) => <span>{line}</span>)}
+      </h2>
+      <p class="conversion-cta__description">{description}</p>
+      <a class="conversion-cta__action" href="/contact">
+        {actionLabel}
+        <span aria-hidden="true">→</span>
+      </a>
+    </div>
+
+    <aside
+      aria-label={preparationTitle}
+      data-reveal={productReveal}
+      data-service-reveal={serviceReveal}
+    >
+      <p>{preparationTitle}</p>
+      <ol>
+        {
+          preparationItems.map(({ label, detail }) => (
+            <li>
+              <strong>{label}</strong>
+              <span>{detail}</span>
+            </li>
+          ))
+        }
+      </ol>
+    </aside>
+  </div>
+</section>

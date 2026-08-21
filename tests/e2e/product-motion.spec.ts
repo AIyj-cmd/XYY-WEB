@@ -26,7 +26,7 @@ test('product page reveals late sections when they enter the viewport', async ({
   ).toBeGreaterThan(0.05)
   await expect(process.locator('#process-heading')).toHaveCSS('opacity', '1', { timeout: 2_000 })
 
-  const callToAction = page.locator('.warehouse-cta')
+  const callToAction = page.locator('[data-conversion-cta]')
   await callToAction.scrollIntoViewIfNeeded()
   await expect(callToAction).toBeInViewport()
   await page.waitForTimeout(300)

@@ -4,6 +4,7 @@ import PageFAQ from '@/components/PageFAQ.astro'
 import CasesHero from '@/components/cases/CasesHero.astro'
 import CasesGrid from '@/components/cases/CasesGrid.astro'
 import CasesValueProps from '@/components/cases/CasesValueProps.astro'
+import ConversionCTA from '@/components/conversion/ConversionCTA.astro'
 import { CASE_FAQS, CASE_FALLBACKS } from '@/data/cases'
 import { BRAND, CASE_DETAILS } from '@/lib/brand'
 import { getClaimText } from '@/lib/claims'
@@ -63,18 +64,17 @@ const faqSchema = createFaqSchema(faqs)
   <CasesValueProps />
   <PageFAQ heading="合作案例常见问题" items={faqs} />
 
-  <section class="py-14 bg-[#EFF4FF]" aria-labelledby="cases-cta-heading">
-    <div class="max-w-4xl mx-auto px-4 text-center">
-      <h2 id="cases-cta-heading" class="text-2xl lg:text-3xl font-black text-navy-800 mb-4">
-        想看与您品类相近的案例详情？
-      </h2>
-      <p class="text-gray-600 mb-6">联系我们，我们会为您推荐最匹配的成功案例，并提供定制报价</p>
-      <a
-        href="/contact"
-        class="inline-flex items-center px-7 py-3.5 bg-brand-orange text-white font-bold rounded-xl hover:bg-brand-orange-dark transition-colors"
-      >
-        预约案例分享
-      </a>
-    </div>
-  </section>
+  <ConversionCTA
+    headingId="cases-conversion-cta-heading"
+    eyebrow="START A CONVERSATION"
+    headingLines={['想看与您品类相近的', '案例详情？']}
+    description="告诉我们品牌品类、履约场景和当前挑战，我们会推荐匹配的合作案例，并提供定制建议。"
+    actionLabel="预约案例分享"
+    preparationTitle="沟通前可准备这 3 类信息"
+    preparationItems={[
+      { label: '品牌与品类', detail: '商品类型 · 主要销售渠道' },
+      { label: '服务场景', detail: '仓配履约 · 退货质检 · 增值处理' },
+      { label: '关注重点', detail: '希望了解的案例经验 · 当前问题' },
+    ]}
+  />
 </Layout>

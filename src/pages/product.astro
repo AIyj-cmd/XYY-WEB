@@ -5,6 +5,7 @@ import ProductServiceSeries from '@/components/product/ProductServiceSeries.astr
 import ProductCare from '@/components/product/ProductCare.astro'
 import ProductServiceProcess from '@/components/product/ProductServiceProcess.astro'
 import ProductAssurance from '@/components/product/ProductAssurance.astro'
+import ConversionCTA from '@/components/conversion/ConversionCTA.astro'
 import '@/styles/product.css'
 import { DIRECTORY_NEEDS } from '@/data/product'
 import { BRAND } from '@/lib/brand'
@@ -106,26 +107,20 @@ const breadcrumbSchema = {
 
     <ProductAssurance />
 
-    <section class="warehouse-cta" aria-labelledby="warehouse-cta-heading">
-      <div class="warehouse-shell warehouse-cta__inner">
-        <div class="warehouse-cta__message" data-reveal="copy">
-          <p class="kicker">START A CONVERSATION</p><h2 id="warehouse-cta-heading">
-            需要的不只是<br />一个仓库？
-          </h2><p>告诉我们你的商品类型、订单规模和当前问题，新亦源将根据实际业务提供仓配建议。</p><a
-            class="primary-link"
-            href="/contact">提交仓配需求 <span aria-hidden="true">→</span></a
-          >
-        </div>
-        <aside aria-label="沟通前可准备的信息" data-reveal="copy">
-          <p>沟通前可准备这 3 类信息</p>
-          <ol>
-            <li><strong>商品与渠道</strong><span>商品类型 · 主要销售平台</span></li>
-            <li><strong>业务规模</strong><span>日均单量 · SKU 与库存规模</span></li>
-            <li><strong>处理需求</strong><span>退货处理 · 增值服务</span></li>
-          </ol>
-        </aside>
-      </div>
-    </section>
+    <ConversionCTA
+      headingId="warehouse-cta-heading"
+      eyebrow="START A CONVERSATION"
+      headingLines={['需要的不只是', '一个仓库？']}
+      description="告诉我们你的商品类型、订单规模和当前问题，新亦源将根据实际业务提供仓配建议。"
+      actionLabel="提交仓配需求"
+      preparationTitle="沟通前可准备这 3 类信息"
+      preparationItems={[
+        { label: '商品与渠道', detail: '商品类型 · 主要销售平台' },
+        { label: '业务规模', detail: '日均单量 · SKU 与库存规模' },
+        { label: '处理需求', detail: '退货处理 · 增值服务' },
+      ]}
+      reveal="product"
+    />
   </div>
 </Layout>
 

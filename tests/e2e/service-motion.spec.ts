@@ -46,9 +46,9 @@ test('service motion remains readable on mobile and with reduced motion', async 
   await page.setViewportSize({ width: 430, height: 900 })
   await page.goto('/xiefu-yuncang')
 
-  const callToAction = page.locator('.service-cta')
+  const callToAction = page.locator('[data-conversion-cta]')
   await callToAction.scrollIntoViewIfNeeded()
-  await expect(callToAction.locator('#lp-cta-heading')).toHaveCSS('opacity', '1', {
+  await expect(callToAction.locator('#service-conversion-cta-heading')).toHaveCSS('opacity', '1', {
     timeout: 2_000,
   })
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(430)

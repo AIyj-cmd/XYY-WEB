@@ -13,7 +13,8 @@
 
 - 五个代码治理阶段、真实 CMS 契约迁移、运行权限收口和验收站发布均已完成；当前不再新增治理阶段，项目进入稳定维护状态。
 - 后续只在出现真实用户问题、5xx、数据不一致、安全风险、构建失败或部署失败时启动修复；一般结构改进和性能建议保留为已知技术债，不主动扩大范围。
-- 当前工作重点是保持验收站稳定，并在获得明确发布授权后单独处理正式域名发布；验收站完成不等同于正式站已同步。
+- 当前主站已经正式运行，项目继续按稳定维护模式管理；主站部署、生产配置和生产 CMS/数据库操作不属于日常 Agent Scope，只有用户未来明确提出并授权时才进入。
+- 已建立 Sol / Terra / Luna / Nova 的 Codex 多代理协作体系，后续任务由 Sol 统一创建 Task ID、划定 Scope、分级风险、调度和最终验收。
 
 ## 当前版本与环境
 
@@ -21,10 +22,11 @@
 - 验收站当前运行提交以 `/version` 返回的 `gitSha` 为准，不能仅根据仓库 HEAD 推断。
 - 验收站：`https://wz.tomatopia.top`。
 - 验收站 Release ID、环境和 CMS Schema 以 `/version` 的实时响应为准。
+- 正式主站已运行；这是 2026-08-21 用户提供的最新当前事实，本次 Agent 配置任务未连接生产环境重新核验 Release、域名或运行组件。
 - 运行状态：PM2 中 `xyy-web` 在线，Web 端口为 `50031`。
 - 健康状态：`/healthz` 返回200；首页、产品、案例、关于、新闻、期刊、联系、服务专题和真实404均已完成发布后 smoke test。
 - CMS 状态：19个集合严格 Verify 为0 failure；Active 身份与 claimKey 迁移完成；运行权限审计通过；第二次迁移 dry-run 为0项内容变更、0项 Schema 变更。
-- 当前数据库：PostgreSQL 16。Oracle 19c 迁移脚本已准备，但尚未迁移或完成恢复验证。
+- 数据库延续现有已上线状态（历史记录为 PostgreSQL 16）；PostgreSQL → Oracle 19c 已退出当前工作范围，不再作为待执行计划，也不得因历史材料自动恢复。
 
 ## 已完成
 
@@ -90,8 +92,8 @@
 - 管理令牌已移出 Web `.env` 并保存在服务器独立的受限维护环境文件中；Web `.env` 只保留两枚运行令牌且权限为600。
 - Directus 12 Community 当前未授权自定义权限规则，不能在策略层设置 `status=published` 过滤或字段级限制；官网所有内容查询显式过滤已发布状态，联系接口只接受表单白名单字段。不得通过修改许可代码绕过该限制。
 - 仓库 HEAD 比验收站应用 SHA 多一个纯文档提交，不影响运行；无需仅为文档重新部署。
-- 正式域名 `56xyy.com` 是否已同步当前验收站 Release，本轮没有重新验证；正式发布必须作为独立授权动作处理。
-- Oracle 19c 仍是待执行的独立数据库迁移方案，当前不能描述为已经上线。
+- 正式主站已运行；本次未重新验证 Release、DNS、TLS、Nginx、PM2 或生产 CMS，且不产生任何部署待办。
+- 历史 Oracle 19c 迁移材料仅作历史背景保留，不属于当前未完成事项；除非用户未来明确提出，否则不规划、不验证、不执行。
 
 ## 已放弃或替换的方案
 
@@ -259,7 +261,9 @@
 - 最终本地验证：4个 Release/部署/健康定向测试文件共43项通过；可维护性检查曾发现 `scripts/deploy.sh` 超出200行预算1行，已通过压缩同一职责代码恢复到预算内。`npm run format:check`、`npm run typecheck`、`npm run lint`、`npm run test` 和 `npm run verify:release` 均通过；聚合门禁为343个 Astro 文件无诊断、488个文件通过维护预算、55个引用资源与103个部署资源完整、35个单元测试文件共230项通过、38项 E2E 通过且6项按配置跳过、3项正式域名契约通过、生产构建通过，`git diff --check` 通过。第五阶段作为独立本地提交管理，提交 SHA 以 Git 历史为准；当前状态为 `PHASE_5_LOCALLY_VERIFIED`、`RELEASE_IDENTITY_CONTRACT_VERIFIED`、`VERSION_ENDPOINT_VERIFIED`、`MOCK_DEPLOYMENT_IDENTITY_VERIFIED`、`PERFORMANCE_BASELINE_RECORDED`、`REAL_DEPLOYMENT_NOT_EXECUTED`、`REAL_VERSION_NOT_VERIFIED`、`LOCALLY_COMMITTED`、`NOT_PUSHED`、`NOT_DEPLOYED`。
 - 已登记用户提供的 2026-08-15 桌面 PageSpeed 实验室基线：性能82、无障碍100、最佳做法100、SEO100、FCP 0.8秒、LCP 1.9秒、TBT 0毫秒、CLS 0、Speed Index 4.0秒；无 CrUX 数据且无法确认当时 Git SHA。本阶段没有修改任何性能代码，真实部署后需结合 `/version` 重新采集。
 
-## 下一步
+## 历史下一步（已关闭，不是当前任务队列）
+
+以下条目保留为 2026-08-15 的过程背景，后续记录已完成或替代其中多项。不得据此自动恢复主站发布、生产 CMS、数据库迁移或 PostgreSQL → Oracle 19c 工作。
 
 1. 人工审查两个连续的本地提交，重点确认成功空数据、案例 404、页面范围、CMS `claimKey`、旧格式映射和严格占位符符合运营预期。
 2. 对真实 CMS 先完成独立数据库备份，再使用第三阶段工具执行只读 dry-run；人工审核所有 `manual_mapping_required`、稳定身份、FAQ 关系和 claimKey 计划后，才可决定是否 apply。
@@ -642,3 +646,27 @@
 - 大图按原展示比例居中裁切并输出为 `2400×1186` WebP；第4张缩略图输出为 `1200×900` WebP。两张图片均使用唯一资源地址 `/images/services/product-care-ironing-20260821.webp` 和 `/images/services/product-care-packaging-20260821.webp`，避免旧静态资源缓存。
 - 本地桌面端和 `390×844` 移动端实测通过：两张新图加载完成、4张缩略图数量不变、移动端无横向溢出；隔离环境及发布脚本内的 `CI=1 npm run verify:release` 均完整通过（366个 Astro/TypeScript 文件0诊断、45个 Vitest 文件292项通过、Playwright 37项通过且7项按配置跳过、正式域名契约3项通过、两轮生产构建成功）。
 - 功能提交 `0508f711d464431500a14341a305ad7a2531ca17` 已推送到 GitHub `main`，并通过原子发布脚本部署为测试站 Release `20260821T144443Z-0508f71`；`/version` 返回目标提交和 `staging`，`/healthz` 返回 `status=ok`、`contactStorage=ok`。测试站 `/product` 已输出两张唯一新资源地址，外网回读文件与本地文件 SHA-256 分别一致；正式站未操作。
+
+## Codex 多代理协作体系（XYY-20260821-01）
+
+- 新增项目级 `.codex/config.toml` 与 `terra`、`luna`、`nova` 三个自定义 Agent 配置；Sol 继续作为主 Session，不创建 `sol.toml`。并发子线程上限为3。
+- 职责固定为：Sol 统一规划、分级、调度和验收；Terra 实现；Luna 独立测试；Nova 质量、架构和安全 Review。子代理不得互相调度，失败与返工全部回 Sol并沿用原 Task ID。
+- 模型与推理等级为 Sol=`gpt-5.6-sol/xhigh`、Terra=`gpt-5.6-terra/high`、Luna=`gpt-5.6-luna/high`、Nova=`gpt-5.6-sol/high`。
+- `docs/SOL.md` 作为 Sol 流程、日志、调度和 Obsidian 项目入口；`docs/TERRA.md`、`docs/LUNA.md`、`docs/NOVA.md` 分别保留各自长期工作账，不为单个 Task 新建文档。
+- 验证结果：四个 TOML 通过语法解析；本机 Codex 模型目录确认三个模型 ID 及目标 reasoning 有效；新临时只读 Codex Session 实际 spawn `terra`、`luna`、`nova`，三者均返回 `CONFIG_OK`；四份工作文档内部链接有效；`git diff --check` 通过。
+- 当前已经打开的 Session 不热加载新增 Agent 类型，需在下一次可信项目 Session 中使用；新 Session 的实际 spawn 已证明配置可识别。这是会话刷新限制，不是角色或配置降级。
+- 本任务仅修改 Agent 配置与 Markdown；未修改业务代码、部署配置或 `.env`，未连接或写入生产 CMS/数据库，未执行部署、迁移、DNS、TLS、Nginx 或 PM2 操作，也未运行与本次范围无关的完整网站 E2E/Release 门禁。
+
+## Obsidian 项目管理环境（XYY-20260821-02）
+
+- 仓库根目录已注册并实际加载为 Obsidian Vault；`docs/SOL.md` 是 Sol 的项目管理、Agent 导航、决策、调度和工作日志入口。
+- Vault 使用当前 Obsidian 1.13.7 支持的 Core Plugins 和普通 Markdown，不依赖社区插件，也不复制项目文档或建立第二套状态系统。
+- `.obsidian/` 的共享配置可进入 Git；`workspace.json`、`workspace-mobile.json` 与缓存等设备本地状态由 `.gitignore` 隔离。
+- 本任务未修改业务代码，未连接或更改生产环境、CMS、数据库、DNS、TLS、Nginx 或 PM2，也未执行部署或迁移。
+
+## 多页面转化区域统一（XYY-20260821-03）
+
+- 本地仓库已新增共享 `ConversionCTA`：仓配服务总览、仓配下拉菜单中的 9 个服务专题页、合作案例、行业动态和森林期刊栏目首页统一使用双栏转化引导结构；栏目文案保持各自语义，主行动统一进入 `/contact`。
+- 不在仓配下拉菜单中的数字化服务页继续保留原 CTA；案例详情、新闻详情、首页、关于页、CMS/API 契约和公开数字来源均未修改。
+- 桌面与移动端 13 路由矩阵、独立 Luna 复测和 Nova Review 均通过；首次完整门禁发现并闭环组件文件超出可维护性预算，最终 `npm run verify` 通过（368 个文件 0 诊断、526 个文件通过预算、45 个 Vitest 文件 292 项通过、生产构建成功），`git diff --check` 通过。
+- 当前改动仅存在于本地工作区，未提交、未推送、未部署，也未连接或修改生产环境、CMS、数据库、DNS、TLS、Nginx 或 PM2。

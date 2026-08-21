@@ -21,7 +21,13 @@ test('shared service landing layout renders every visual variant', async ({ page
     await expect(page.locator('.signature')).toHaveCount(1)
     await expect(page.locator('.service-detail')).toHaveCount(1)
     await expect(page.locator('.service-faq')).toHaveCount(1)
-    await expect(page.locator('.service-cta')).toHaveCount(1)
+    if (path === '/yundao-zhineng-jijian') {
+      await expect(page.locator('.service-cta')).toHaveCount(1)
+      await expect(page.locator('[data-conversion-cta]')).toHaveCount(0)
+    } else {
+      await expect(page.locator('[data-conversion-cta]')).toHaveCount(1)
+      await expect(page.locator('.service-cta')).toHaveCount(0)
+    }
     const dimensions = await page.evaluate(() => ({
       viewport: document.documentElement.clientWidth,
       content: document.documentElement.scrollWidth,

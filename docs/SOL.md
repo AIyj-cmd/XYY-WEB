@@ -1,0 +1,191 @@
+# Sol
+
+XYY-WEB 产品管理、Agent 调度与 Obsidian 项目入口。
+
+导航： [Terra 实现记录](TERRA.md) · [Luna 测试记录](LUNA.md) · [Nova Review 记录](NOVA.md) · [项目当前状态](../DEV_STATE.md) · [协作规则](../AGENTS.md)
+
+## Project
+
+XYY-WEB 已运行于正式环境，当前处于稳定维护阶段。仓库根目录同时作为 Obsidian Vault；Obsidian 只负责阅读、导航、关联和管理现有 Markdown，不建立第二套项目数据库。
+
+| Authority                       | Purpose               |
+| ------------------------------- | --------------------- |
+| [AGENTS.md](../AGENTS.md)       | 怎么工作、Agent 层级、风险和生产边界 |
+| [DEV_STATE.md](../DEV_STATE.md) | 项目当前客观状态的唯一实时记录       |
+| `docs/SOL.md`                   | Sol 的产品管理、调度、决策与工作日志  |
+| [TERRA.md](TERRA.md)            | Terra 实现记录            |
+| [LUNA.md](LUNA.md)              | Luna 独立测试记录           |
+| [NOVA.md](NOVA.md)              | Nova 质量与架构 Review 记录  |
+
+## Current State
+
+- 主站已正式运行；日常 Agent Scope 不包含部署、生产 CMS、数据库、DNS、TLS、Nginx 或 PM2。
+- 当前客观状态以 [DEV_STATE.md](../DEV_STATE.md) 为准，协作方式以 [AGENTS.md](../AGENTS.md) 为准。
+- Sol / Terra / Luna / Nova 多代理体系已启用；所有调度、失败和返工回到 Sol。
+- 仓库根目录已作为 Obsidian Vault 正常加载；`docs/SOL.md` 是项目管理入口。
+
+## Current Tasks
+
+| Task | Risk | Owner | Status |
+| --- | --- | --- | --- |
+| XYY-20260822-01 | HIGH | Sol | IN PROGRESS |
+| XYY-20260821-03 | MEDIUM | Sol | CLOSED |
+| XYY-20260821-02 | LOW | Sol | CLOSED |
+
+## Priorities
+
+1. 保持正式站稳定，不从历史 TODO 自动恢复生产或数据库工作。
+2. 只处理真实需求、故障、风险或明确授权的改动。
+3. 保持 Task ID、Scope、Acceptance Criteria、验证证据和工作日志连续。
+
+## Agent Team
+
+| Agent | Responsibility | Work Log |
+| --- | --- | --- |
+| Sol | 产品管理、任务规划、Scope、风险、调度与最终验收 | 本页 |
+| Terra | 全栈实现，只执行 Sol 明确 Scope | [TERRA.md](TERRA.md) |
+| Luna | 独立测试，只向 Sol 报告 PASS/FAIL | [LUNA.md](LUNA.md) |
+| Nova | 质量、架构、安全与契约 Review | [NOVA.md](NOVA.md) |
+
+子代理不得互相调度；所有失败、冲突、返工和升级返回 Sol。
+
+## Workflow
+
+Sol 的角色是 Product Manager / Orchestrator / Task Planner / Scope Controller / Risk Classifier / Final Acceptance Owner。模型为 `gpt-5.6-sol`，推理等级为 `xhigh`。
+
+- 理解用户需求并检查项目当前状态，判断任务是否值得执行。
+- 创建 Task ID，定义 Scope、Acceptance Criteria 和风险等级。
+- 决定是否调度 Terra、Luna、Nova，并接收所有失败、返工、冲突和升级。
+- 按风险流程完成最终验收，更新必要工作日志和 `DEV_STATE.md`。
+- Sol 原则上不修改业务代码；业务实现默认交给 Terra。
+- Sol 可直接修改 Markdown、Agent 配置、流程文档、状态记录和 Agent 任务记录。
+- 未经用户明确授权，不部署、不写生产 CMS、不操作数据库，不处理 DNS、TLS、Nginx、PM2 或 PostgreSQL → Oracle 19c。
+- 不从历史 TODO 自动恢复已退出当前范围的生产或数据库工作。
+
+1. 读取 `AGENTS.md`、`DEV_STATE.md`、本文件及任务相关上下文。
+2. 创建 `XYY-YYYYMMDD-NN` Task ID，记录 Scope、Acceptance Criteria、风险与排除项。
+3. 向所需 Agent 提供最小充分上下文和明确输出合同。
+4. Terra 完成后回 Sol；Sol 再派 Luna，不允许 Terra 直接派 Luna。
+5. Luna FAIL 时沿用 Task ID 返回 Terra 修复并复测；PASS 后按风险决定是否派 Nova。
+6. Nova REJECTED 时沿用 Task ID 返回 Terra，随后重新经过 Luna 和 Nova。
+7. Sol 核对 Acceptance Criteria、验证证据、剩余风险和授权边界后最终验收。
+8. 更新四本工作账中的实际参与记录；只有客观项目状态变化才更新 `DEV_STATE.md`。
+
+### Risk Classification
+
+- `LOW`：小文案、小 CSS、简单 UI、很小的局部修复。流程：Sol → Terra → Luna → Sol；产品治理任务可由 Sol 直接完成。
+- `MEDIUM`：页面或组件逻辑、API、CMS 查询、表单、重要业务行为。流程：Sol → Terra → Luna → Nova → Sol。
+- `HIGH`：安全、Auth、核心数据契约、Server 核心逻辑、跨模块架构、高影响公共逻辑。流程：Sol → Terra → Luna → Nova → Sol，必要时等待用户决策。
+
+高风险不等于生产授权；任何生产动作仍需用户明确要求。
+
+## Decisions
+
+- `XYY-20260822-01` 获得用户明确授权，将当前已验收的 Agent/Obsidian 治理配置与多页面 CTA 改动提交并推送到 GitHub，并通过现有原子发布脚本部署到测试站；正式主站、CMS 写入、数据库和生产配置不在 Scope。当前位于默认分支，按 GitHub 工作流先使用功能分支管理提交，通过门禁后再无冲突快进同步 `main`。
+- `XYY-20260821-03` 统一仓配下拉菜单中的 9 个服务专题页与合作案例、行业动态、森林期刊栏目首页的底部转化区域；使用共享组件复用仓配页视觉结构，各页面保留与内容语义匹配的标题和行动文案。详情页、首页、关于页及不在仓配下拉菜单中的数字化页面不在本次 Scope。
+- Sol 是当前 Codex 主 Session，不创建 `sol.toml`。
+- 子代理并发上限为 3；正常业务任务按有序流水线运行，不默认并行写代码。
+- 模型映射：Sol=`gpt-5.6-sol`，Terra=`gpt-5.6-terra`，Luna=`gpt-5.6-luna`，Nova=`gpt-5.6-sol`。
+- 项目级 `.codex/` 仅在 Codex 将仓库标记为可信时加载。
+- 当前已打开的主 Session 不热加载新 Agent 类型；新 Session 已实际 spawn 并识别 `terra`、`luna`、`nova`。
+- 仓库根目录是唯一 Obsidian Vault；不复制 Markdown，不建立 `docs/XYY-WEB/` 或第二个 Dashboard。
+- Obsidian 第一阶段仅使用 Core Plugins 和普通 Markdown，不安装社区插件。
+- 共享 Vault 配置进入 Git，设备窗口布局、移动端布局和缓存留在本地。
+
+## Dispatch Log
+
+### XYY-20260822-01
+
+- Risk: HIGH。
+- 当前发布内容已在 `XYY-20260821-01` 至 `XYY-20260821-03` 完成实现、测试和 Review；本任务不重新派 Terra 修改业务代码。
+- Sol 负责显式暂存、提交、GitHub 推送、测试站原子发布和三方版本核对；发布后派 Luna 独立 smoke test，再派 Nova 复核发布证据、Scope 与版本一致性。
+
+### XYY-20260821-03
+
+- Risk: MEDIUM。
+- Terra 完成共享 CTA 与定向测试，Luna 独立验证 `PASS`，Nova Review `APPROVED`。
+- Sol 首次运行完整门禁时发现组件 228 行超过 180 行可维护性预算；沿用原 Task ID 返回 Terra 拆分专用样式，再经 Luna Re-test `PASS` 与 Nova Re-review `APPROVED`。
+- Sol 最终重新运行 `npm run verify` 通过并完成验收；未执行推送、部署、CMS 或生产操作。
+
+### XYY-20260821-02
+
+- 产品管理配置由 Sol 独立执行。
+- Agent Dispatch: Sol only；未调用 Terra、Luna 或 Nova。
+
+### XYY-20260821-01
+
+- Bootstrap 任务由 Sol 直接修改允许范围内的 Agent 配置和 Markdown。
+- 未向 Terra、Luna、Nova 派发业务实现、测试或 Review；最终验证在新临时只读 Session 中实际 spawn 三个 Agent，均返回 `CONFIG_OK`。
+- 该烟雾测试不构成角色工作交付，因此不在三本子代理工作账中伪造 Implementation、QA 或 Review 记录；工作账从首次真实职责任务开始记录。
+
+## Work Log
+
+### XYY-20260822-01
+
+Status: IN PROGRESS
+
+Risk: HIGH
+
+Task: 将当前已验收改动推送到 GitHub 并部署到测试服务器，同步核对本地、GitHub 与测试站状态。
+
+Scope: 创建功能分支；只暂存当前三个已关闭任务的确认文件；执行完整发布门禁；推送功能分支并快进同步 `main`；使用现有 `scripts/deploy.sh` 发布到 `https://wz.tomatopia.top`；核对 Git SHA、Release ID、健康状态和目标页面；更新工作账与 `DEV_STATE.md`。
+
+Acceptance Criteria: GitHub 接收全部确认提交且无强推；测试站 `/version` 返回目标应用提交、`staging` 与有效 Release ID；`/healthz` 为健康；CTA 目标页面回读新共享结构；Luna 发布后验证 PASS、Nova Review APPROVED；本地与 GitHub 状态清晰、工作树无未纳管任务文件；不触碰正式主站、生产 CMS、数据库、DNS、TLS、Nginx 或 PM2 手工配置。
+
+Decision: 用户已明确授权 GitHub 推送和测试站部署；遵循功能分支、完整门禁、原子发布、失败自动回滚和只读发布后验证。
+
+Result: IN PROGRESS。
+
+### XYY-20260821-03
+
+Status: CLOSED
+
+Risk: MEDIUM
+
+Task: 将仓配页底部转化区域的视觉结构统一应用到仓配下拉菜单中的 9 个服务专题页，以及合作案例、行业动态和森林期刊栏目首页。
+
+Scope: 抽取共享 CTA；替换 9 个服务专题页共享布局中的旧 CTA，以及 `/cases`、`/news`、`/senlinqikan` 三个栏目首页的旧 CTA；补充与风险匹配的回归测试。详情页和其他页面不改。
+
+Acceptance Criteria: 目标 12 个页面均使用同一共享 CTA 结构；仓配 `/product` 视觉基准保持一致；各页面 CTA 文案与链接语义正确；不存在重复旧 CTA；桌面与移动端无横向溢出；键盘可访问且标题关联有效；相关测试、`npm run verify` 与 `git diff --check` 通过；不触碰 CMS、生产环境或部署。
+
+Decision: 由 Terra 实现、Luna 独立测试、Nova 完成质量与架构 Review，最终由 Sol 验收。
+
+Changes: 新增共享 `ConversionCTA` 与专用样式；`/product`、9 个仓配下拉服务页、`/cases`、`/news`、`/senlinqikan` 使用统一双栏转化结构；三个栏目保留各自语义文案；排除的数字化页面继续使用原 CTA；新增 13 路由 Playwright 回归。
+
+Validation: Terra 定向套件 `13 passed / 1 skipped`；Luna 首轮与返工复测均 `PASS`，覆盖桌面、移动端、13 路由、ARIA、键盘焦点、控制台、无溢出及排除路由；Nova 首审与复审均 `APPROVED`。Sol 首次完整门禁捕获 228 行组件超预算，返工后组件降为 71 行、专用 CSS 为 155 行；最终 `npm run verify` 通过：368 个 Astro/TypeScript 文件 0 诊断、526 个文件通过可维护性预算、56 个引用资源与 103 个部署资源完整、45 个 Vitest 文件 292 项通过、生产构建成功；`git diff --check` 通过。
+
+Result: CLOSED。Acceptance Criteria 已满足；未推送、未部署，未修改 CMS、数据库或生产环境。
+
+### XYY-20260821-02
+
+Status: CLOSED
+
+Risk: LOW
+
+Task: 将仓库根目录配置为 XYY-WEB 的 Obsidian 项目管理 Vault。
+
+Decision: 使用仓库根目录作为唯一 Vault；只启用当前 Obsidian 1.13.7 支持的 Core Plugins，不安装社区插件；共享设置进入 Git，设备状态由 `.gitignore` 隔离。
+
+Changes: 新增最小 `.obsidian/` Core/Community 插件配置；增加设备状态忽略规则；将本页优化为项目状态、任务、优先级、Agent 导航、流程、决策、调度与日志入口。
+
+Validation: Obsidian 1.13.7 已将 `/home/yj/XYY-GEO/website` 注册并实际加载为 Vault；通过 Obsidian URI 打开 `docs/SOL.md`；Core Plugin 配置与 Community Plugin 空列表通过 JSON 解析且插件 ID 均由当前版本支持；重要链接目标全部存在；设备状态文件命中 `.gitignore`；`git diff --check` 与修改范围检查通过。
+
+Result: CLOSED。Acceptance Criteria 已满足；未修改业务代码，未触碰生产环境。
+
+### XYY-20260821-01
+
+Status: DONE
+
+Task: 建立 Sol / Terra / Luna / Nova 四 Agent 长期协作体系。
+
+Scope: `.codex/`、`AGENTS.md`、`DEV_STATE.md`、`docs/SOL.md`、`docs/TERRA.md`、`docs/LUNA.md`、`docs/NOVA.md`。
+
+Acceptance Criteria: 配置可解析；Codex 可发现三个项目子代理；模型与 reasoning 有效；职责、失败闭环、风险流程、上下文和生产边界明确；内部链接有效；diff 不越界。
+
+Risk: LOW（仅项目级 Agent 配置与 Markdown，可逆，不修改业务或运行环境）。
+
+Validation: 四个 TOML 均通过语法解析；本机模型目录确认三个模型及目标 reasoning 有效；新临时只读 Codex Session 实际 spawn `terra`、`luna`、`nova` 并全部返回 `CONFIG_OK`；四份文档内部链接有效；`git diff --check` 通过；范围检查无业务文件。
+
+Decision: Sol 直接完成允许范围内的引导配置；不创建 `sol.toml`，并发上限保持 3。
+
+Result: ACCEPTED。

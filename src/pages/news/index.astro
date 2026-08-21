@@ -4,6 +4,7 @@ import PageFAQ from '@/components/PageFAQ.astro'
 import NewsEmptyState from '@/components/news/NewsEmptyState.astro'
 import NewsGrid from '@/components/news/NewsGrid.astro'
 import NewsLandingIntro from '@/components/news/NewsLandingIntro.astro'
+import ConversionCTA from '@/components/conversion/ConversionCTA.astro'
 import { BRAND } from '@/lib/brand'
 import { getFaqs, getNewsByCategory, getPublishedNews, NEWS_CATEGORIES } from '@/lib/directus'
 import { createFaqSchema } from '@/lib/seo'
@@ -66,17 +67,17 @@ const faqSchema = createFaqSchema(faqs)
   <!-- FAQ -->
   <PageFAQ heading="行业内容使用与更新说明" items={faqs} />
 
-  <!-- CTA -->
-  <section class="py-12 bg-white border-t border-gray-100" aria-label="订阅与联系">
-    <div class="max-w-3xl mx-auto px-4 text-center">
-      <h2 class="text-xl font-bold text-navy-800 mb-3">想了解适合您品类的物流方案？</h2>
-      <p class="text-gray-600 text-sm mb-6">我们的物流顾问可以为您提供定制分析，免费咨询</p>
-      <a
-        href="/contact"
-        class="inline-flex items-center px-6 py-3 bg-brand-orange hover:bg-brand-orange-dark text-white font-bold rounded-xl text-sm transition-colors"
-      >
-        免费获取方案
-      </a>
-    </div>
-  </section>
+  <ConversionCTA
+    headingId="news-conversion-cta-heading"
+    eyebrow="START A CONVERSATION"
+    headingLines={['想了解适合您品类的', '物流方案？']}
+    description="告诉我们商品类型、销售渠道和当前履约问题，物流顾问将为您提供针对性的分析与建议。"
+    actionLabel="获取物流方案"
+    preparationTitle="沟通前可准备这 3 类信息"
+    preparationItems={[
+      { label: '商品与渠道', detail: '商品类型 · 主要销售平台' },
+      { label: '业务规模', detail: '订单量 · SKU 与库存规模' },
+      { label: '关注方向', detail: '仓配运营 · 退货处理 · 行业趋势' },
+    ]}
+  />
 </Layout>

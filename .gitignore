@@ -21,6 +21,12 @@ npm-debug.log*
 .DS_Store
 Thumbs.db
 
+# Obsidian device-local state; keep shared Vault settings tracked.
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.obsidian/cache/
+.obsidian/graph.json
+
 # Claude internals
 .claude/
 

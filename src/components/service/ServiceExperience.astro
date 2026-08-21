@@ -5,6 +5,7 @@ import {
   type FeatureItem,
   type ServiceVariant,
 } from '@/data/service'
+import ConversionCTA from '@/components/conversion/ConversionCTA.astro'
 import '@/styles/service-experience.css'
 
 interface Props {
@@ -15,9 +16,19 @@ interface Props {
   featuresLabel: string
   features: FeatureItem[]
   faqs: FaqItem[]
+  useConversionCta: boolean
 }
 
-const { variant, h1, breadcrumbLabel, contentDesc, featuresLabel, features, faqs } = Astro.props
+const {
+  variant,
+  h1,
+  breadcrumbLabel,
+  contentDesc,
+  featuresLabel,
+  features,
+  faqs,
+  useConversionCta,
+} = Astro.props
 const copy = SERVICE_EXPERIENCE_COPY[variant]
 ---
 
@@ -87,19 +98,45 @@ const copy = SERVICE_EXPERIENCE_COPY[variant]
   </div>
 </section>
 
-<section class:list={['service-cta', `service-cta--${variant}`]} aria-labelledby="lp-cta-heading">
-  <div class="service-cta__inner">
-    <div class="service-cta__number" aria-hidden="true">
-      {String(Object.keys(SERVICE_EXPERIENCE_COPY).indexOf(variant) + 1).padStart(2, '0')}
-    </div>
-    <div class="service-cta__copy" data-service-reveal="copy">
-      <p>NEXT STEP · {copy.detailCode}</p>
-      <h2 id="lp-cta-heading">把{h1}变成可执行方案</h2>
-      <span>{copy.ctaPrompt}</span>
-    </div>
-    <div class="service-cta__actions" data-service-reveal="copy">
-      <a href="/contact">免费获取方案 <span aria-hidden="true">↗</span></a>
-      <a href="/cases">查看合作案例 <span aria-hidden="true">→</span></a>
-    </div>
-  </div>
-</section>
+{
+  useConversionCta ? (
+    <ConversionCTA
+      headingId="service-conversion-cta-heading"
+      eyebrow="START A CONVERSATION"
+      headingLines={[`把${h1}变成`, '可执行方案']}
+      description={copy.ctaPrompt}
+      actionLabel="获取专属方案"
+      preparationTitle="沟通前可准备这 3 类信息"
+      preparationItems={[
+        { label: '业务现状', detail: '当前仓配流程 · 主要问题' },
+        { label: '商品与订单', detail: 'SKU · 销售渠道 · 日均单量' },
+        { label: '目标与节奏', detail: '服务重点 · 计划上线时间' },
+      ]}
+      reveal="service"
+    />
+  ) : (
+    <section
+      class:list={['service-cta', `service-cta--${variant}`]}
+      aria-labelledby="lp-cta-heading"
+    >
+      <div class="service-cta__inner">
+        <div class="service-cta__number" aria-hidden="true">
+          {String(Object.keys(SERVICE_EXPERIENCE_COPY).indexOf(variant) + 1).padStart(2, '0')}
+        </div>
+        <div class="service-cta__copy" data-service-reveal="copy">
+          <p>NEXT STEP · {copy.detailCode}</p>
+          <h2 id="lp-cta-heading">把{h1}变成可执行方案</h2>
+          <span>{copy.ctaPrompt}</span>
+        </div>
+        <div class="service-cta__actions" data-service-reveal="copy">
+          <a href="/contact">
+            免费获取方案 <span aria-hidden="true">↗</span>
+          </a>
+          <a href="/cases">
+            查看合作案例 <span aria-hidden="true">→</span>
+          </a>
+        </div>
+      </div>
+    </section>
+  )
+}

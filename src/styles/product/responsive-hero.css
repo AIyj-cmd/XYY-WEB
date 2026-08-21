@@ -35,8 +35,7 @@
   }
   .section-heading,
   .care-heading,
-  .assurance-heading,
-  .warehouse-cta__inner {
+  .assurance-heading {
     grid-template-columns: 1fr;
     gap: 1.25rem;
     margin-bottom: 3rem;
@@ -44,8 +43,7 @@
   .section-heading h2,
   .care-heading h2,
   .process-heading h2,
-  .assurance-heading h2,
-  .warehouse-cta h2 {
+  .assurance-heading h2 {
     font-size: 2.65rem;
   }
   .series-intro {

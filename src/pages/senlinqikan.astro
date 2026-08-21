@@ -3,6 +3,7 @@ import Layout from '@/layouts/Layout.astro'
 import PageFAQ from '@/components/PageFAQ.astro'
 import PublicationsHero from '@/components/publications/PublicationsHero.astro'
 import PublicationsDirectory from '@/components/publications/PublicationsDirectory.astro'
+import ConversionCTA from '@/components/conversion/ConversionCTA.astro'
 import { PUBLICATION_FAQS, PUBLICATION_ISSUES, PUBLICATION_STATS } from '@/data/publications'
 import { BRAND } from '@/lib/brand'
 import { getFaqs, getPublications } from '@/lib/directus'
@@ -63,19 +64,17 @@ const faqSchema = createFaqSchema(faqs)
   <PublicationsDirectory issues={issues} />
   <PageFAQ heading="森林期刊常见问题" items={faqs} />
 
-  <section class="py-14 bg-white border-t border-gray-100" aria-labelledby="slj-cta-heading">
-    <div class="max-w-4xl mx-auto px-4 text-center">
-      <h2 id="slj-cta-heading" class="text-2xl font-black text-navy-800 mb-3">
-        想合作 · 想投稿 · 想收到期刊？
-      </h2>
-      <p class="text-gray-500 mb-6 leading-relaxed">
-        森林期刊早期以双月刊形式发行，后续按季度或专题安排更新，并面向合作品牌及行业读者分享。如需纸质版或了解合作方式，欢迎联系我们。
-      </p>
-      <a
-        href="/contact"
-        class="inline-flex items-center px-7 py-3.5 bg-brand-orange text-white font-bold rounded-xl hover:bg-brand-orange-dark transition-colors"
-        >立即联系</a
-      >
-    </div>
-  </section>
+  <ConversionCTA
+    headingId="publications-conversion-cta-heading"
+    eyebrow="START A CONVERSATION"
+    headingLines={['想合作 · 想投稿', '想收到期刊？']}
+    description="森林期刊面向合作品牌与行业读者分享仓配实践。如需纸质版、了解合作方式或提交选题，欢迎联系我们。"
+    actionLabel="立即联系"
+    preparationTitle="沟通前可准备这 3 类信息"
+    preparationItems={[
+      { label: '联系目的', detail: '合作 · 投稿 · 纸质期刊申请' },
+      { label: '品牌与身份', detail: '所属品牌 · 所在行业 · 联系方式' },
+      { label: '关注内容', detail: '感兴趣的专题 · 希望探讨的方向' },
+    ]}
+  />
 </Layout>

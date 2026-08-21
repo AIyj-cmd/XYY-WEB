@@ -3,6 +3,7 @@ import ServiceSignature from '@/components/service/ServiceSignature.astro'
 import ServiceLandingHero from '@/components/service/ServiceLandingHero.astro'
 import ServiceExperience from '@/components/service/ServiceExperience.astro'
 import Layout from '@/layouts/Layout.astro'
+import { SPECIALTY_LINKS } from '@/data/navigation'
 import {
   absoluteUrl,
   createBreadcrumbSchema,
@@ -78,6 +79,7 @@ const serviceSchema = createServiceSchema({
 })
 const displayFaqs = await getFaqs(slug, faqs)
 const faqSchema = createFaqSchema(displayFaqs)
+const useConversionCta = SPECIALTY_LINKS.some(({ href }) => href === `/${slug}`)
 ---
 
 <Layout
@@ -116,6 +118,7 @@ const faqSchema = createFaqSchema(displayFaqs)
     featuresLabel={content.featuresLabel}
     features={content.features}
     faqs={displayFaqs}
+    {useConversionCta}
   />
 </Layout>
 
