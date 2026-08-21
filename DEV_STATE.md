@@ -625,3 +625,9 @@
 - 测试站文件与本地文件哈希一致，但静态资源响应设置了7天缓存；仓配服务顶部、跨境云仓、B2B门店仓配和首页退货质检此前沿用旧 URL，浏览器可继续显示旧缓存。同时测试站 `service_pages.img_src` 仍保留鞋服云仓、退货质检、后整修复和直播仓配的旧地址，覆盖了代码中的新图。
 - 仓配服务顶部现统一引用新资源 `/images/services/warehouse-product-1800.webp`；跨境云仓、B2B门店仓配和首页退货质检分别切换到唯一的新 URL，并同步更新服务页 CMS Seed。未修改页面文案、布局、其他图片或正式站。
 - 新增8项图片缓存契约测试并全部通过；`npm run verify:release` 完整通过：366个 Astro/TypeScript 文件0诊断、524个文件通过维护预算、45个 Vitest 文件292项通过、Playwright 37项通过且7项按配置跳过、正式域名契约3项通过、生产构建成功。当前尚未部署或写入测试站 CMS。
+
+## 测试站图片缓存与 CMS 覆盖修复发布（2026-08-21）
+
+- 修复提交 `57072cada3a5f7bb0819ee0bb3113e3632688899` 已通过原子发布脚本部署为测试站 Release `20260821T110023Z-57072ca`；发布脚本内完整 `verify:release`、依赖安装、PM2 切换、内部与外部健康检查及精确版本核对全部通过，未回滚。`/version` 返回目标提交和 `staging`，`/healthz` 返回 `status=ok`、`contactStorage=ok`。
+- 按明确授权，仅同步测试站 `service_pages` 中6条 `img_src`：鞋服云仓、退货质检、后整修复、跨境云仓、直播仓配和B2B门店仓配。操作前备份为 `/var/backups/xyy-cms/service-page-images-2026-08-21T11-15-22-440Z.json`；回读6条均与代码和 Seed 一致，临时管理员 Token 已恢复，未修改其他字段、记录、权限或密码。
+- 发布后真实 HTML 验收通过：6个服务专题页均输出各自新 Hero 地址；仓配服务页桌面与后备图片均只引用 `/images/services/warehouse-product-1800.webp`；首页退货质检区输出 `/w-home-return-inspection.webp`；4个唯一新资源均返回 HTTP 200。正式主站未部署、未迁移、未写入，本次提交尚未推送 GitHub。
