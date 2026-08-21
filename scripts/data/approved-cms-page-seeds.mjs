@@ -773,7 +773,7 @@ export const APPROVED_SERVICE_PAGE_SEEDS = [
     h1sub: '国内仓储 · 项目质检 · 换标换包装',
     hero_desc:
       '新亦源跨境云仓以广州华南总部为核心节点，支持天猫国际、Amazon等跨境电商平台的国内备货发货及跨境退货国内处理；Urbanic项目年处理1800万—2300万件。',
-    img_src: '/w-flower.webp',
+    img_src: '/w-crossborder-cloud-hero.webp',
     img_alt: '跨境云仓 — 跨境电商仓储发货',
     content_desc:
       '适合需要国内端仓储、质检、换标换包装和退货整理的跨境鞋服项目。新亦源以广州华南仓为核心提供仓内服务，可协同EMS及跨境专线资源；报关、清关和运输责任以项目合同约定为准。Urbanic项目为千万件级处理规模。',
@@ -827,7 +827,7 @@ export const APPROVED_SERVICE_PAGE_SEEDS = [
     h1sub: '批发铺货、分色分码与全渠道库存协同',
     hero_desc:
       '新亦源B2B门店仓配专为鞋服连锁品牌、批发商和加盟体系设计，提供门店补货配送、按门店分货分拣、货架标签制作、ERP系统对接等全流程B2B仓配服务，服务合作品牌遍布全国的门店网络。',
-    img_src: '/w-hanging3.webp',
+    img_src: '/w-b2b-store-hero.webp',
     img_alt: 'B2B门店仓配 — 连锁门店批量补货配送',
     content_desc:
       '适合有连锁门店补货需求的服饰品牌，尤其季节性铺货、按需补货和紧急调货场景。新亦源B2B仓配支持按门店SKU分货、零担/整车/同城快运混合发货，并可与品牌ERP协同处理补货指令，发货准确率{{shippingAccuracy}}。',
