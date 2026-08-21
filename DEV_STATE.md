@@ -614,4 +614,8 @@
 - 测试站首页、仓配服务、鞋服云仓、退货质检、后整修复、跨境云仓、直播仓配、行业动态及一篇真实文章详情均返回 HTTP 200；指定下线的 `/fuzhuang-yuncang` 与 `/weipinhui-jit-jitx` 均返回 HTTP 404。不存在的文章 slug 会按现有逻辑 302 返回行业动态列表。
 - 按已授权范围，仅同步测试站 Directus 的 `contact_leads.service` 字段展示元数据：英文稳定值分别显示为“鞋服云仓、后整质检修复、物流云、全链路解决方案、其他”。服务器备份为 `/var/backups/xyy-cms/contact-leads-service-2026-08-21T08-52-56-454Z.json`；临时管理 Token 已恢复原值，未修改管理员密码、客户留言记录、其他字段或权限。
 - Git 历史核对确认 `origin/codex/cms-hardening-20260820` 的最新提交 `0e40c56` 已是 `main` 与本次发布分支的祖先，因此其全部 CMS 修复已包含在当前代码中；合并主分支时仍执行显式合并检查，不删除该远端分支。
-- 发布分支 `codex/site-content-ux-20260821` 已推送到 GitHub；在刷新远端状态并确认本地 `main` 与 `origin/main` 无分歧后，旧 CMS 分支的显式快进合并返回 `Already up to date`，本次发布分支随后无冲突快进合并并推送到 `main`。两个远端分支均保留，未执行强推、变基或删除。
+- 发布分支 `codex/site-content-ux-20260821` 已推送到 GitHub；在刷新远端状态并确认本地 `main` 与 `origin/main` 无分歧后，旧 CMS 分支的显式快进合并返回 `Already up to date`，本次发布分支随后无冲突快进合并并推送到 `main`。合并完成时两个远端分支均保留，未执行强推、变基或删除。
+
+## 已合并分支清理（2026-08-21）
+
+- 按用户明确要求，在再次确认 `codex/cms-hardening-20260820` 与 `codex/site-content-ux-20260821` 均已被 `main` 完整包含后，删除了这两个 GitHub 远端分支及对应本地分支；未删除提交、未修改 `main` 历史，也未影响测试站 Release。
