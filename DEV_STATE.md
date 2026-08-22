@@ -1,6 +1,6 @@
 # DEV_STATE
 
-更新时间：2026-08-21
+更新时间：2026-08-22
 
 ## 协作记录约定
 
@@ -18,10 +18,10 @@
 
 ## 当前版本与环境
 
-- 仓库最新提交以 `git log -1` 为准；关于页仓点局部修复的范围和验证记录见本文件末尾。
-- 验收站当前运行提交以 `/version` 返回的 `gitSha` 为准，不能仅根据仓库 HEAD 推断。
+- 仓库最新提交以 `git log -1` 为准；当前应用发布基线为 `539bfd44c05d81b5b7a1246cb009beec4c58f4c1`，其后的纯文档状态提交不代表新的应用 Release。
+- 验收站当前运行提交以 `/version` 返回的 `gitSha` 为准，不能仅根据仓库 HEAD 推断；当前为 `539bfd44c05d81b5b7a1246cb009beec4c58f4c1`。
 - 验收站：`https://wz.tomatopia.top`。
-- 验收站 Release ID、环境和 CMS Schema 以 `/version` 的实时响应为准。
+- 验收站当前 Release 为 `20260821T235850Z-539bfd4`，环境为 `staging`，CMS Schema 为 `2026-08-cms-hardening`；仍以 `/version` 的实时响应为准。
 - 正式主站已运行；这是 2026-08-21 用户提供的最新当前事实，本次 Agent 配置任务未连接生产环境重新核验 Release、域名或运行组件。
 - 运行状态：PM2 中 `xyy-web` 在线，Web 端口为 `50031`。
 - 健康状态：`/healthz` 返回200；首页、产品、案例、关于、新闻、期刊、联系、服务专题和真实404均已完成发布后 smoke test。
@@ -669,4 +669,14 @@
 - 本地仓库已新增共享 `ConversionCTA`：仓配服务总览、仓配下拉菜单中的 9 个服务专题页、合作案例、行业动态和森林期刊栏目首页统一使用双栏转化引导结构；栏目文案保持各自语义，主行动统一进入 `/contact`。
 - 不在仓配下拉菜单中的数字化服务页继续保留原 CTA；案例详情、新闻详情、首页、关于页、CMS/API 契约和公开数字来源均未修改。
 - 桌面与移动端 13 路由矩阵、独立 Luna 复测和 Nova Review 均通过；首次完整门禁发现并闭环组件文件超出可维护性预算，最终 `npm run verify` 通过（368 个文件 0 诊断、526 个文件通过预算、45 个 Vitest 文件 292 项通过、生产构建成功），`git diff --check` 通过。
-- 当前改动仅存在于本地工作区，未提交、未推送、未部署，也未连接或修改生产环境、CMS、数据库、DNS、TLS、Nginx 或 PM2。
+- 功能改动已提交并推送到 GitHub，并作为应用提交 `539bfd44c05d81b5b7a1246cb009beec4c58f4c1` 发布到测试站；正式主站、生产 CMS、数据库、DNS、TLS、Nginx 和手工 PM2 配置均未修改。
+
+## 多页面转化区域 GitHub 与测试站同步（XYY-20260822-01）
+
+- 发布分支 `codex/unified-cta-governance-20260822` 与 GitHub `main` 已无冲突快进到应用提交 `539bfd44c05d81b5b7a1246cb009beec4c58f4c1`，未强推、变基或删除分支。
+- 首次应用提交 `eac6790` 的 GitHub CI 在格式检查发现继承自基线的 `tests/unit/image-cache-contract.test.ts` 单行格式问题；同一 Task ID 下仅做 Prettier 机械换行，不改变断言或业务逻辑。新提交的 GitHub CI Run `32538099712` 中格式、候选 Release Identity、生产依赖审计和完整 Release verification 均通过。
+- 测试站已通过现有原子发布脚本切换到 Release `20260821T235850Z-539bfd4`；`/version` 精确返回目标应用 SHA、`environment=staging` 和 CMS Schema，`/healthz` 返回 `status=ok`、`contactStorage=ok`。13 个目标页面均为 HTTP 200 且各有一个共享 CTA。
+- Luna 对当前 Release 的 13 条路由执行桌面与移动端共 26 次真实浏览器检查并 `PASS`；Nova 复核 GitHub CI、版本一致性、Scope、安全边界和回归覆盖后最终 `APPROVED`。
+- 两次发布前失败均在服务器上传或切换前安全停止：一次为浏览器并发资源超时，一次为手工注入 Release ID 影响本地部署契约 fixture；最终使用 `CI=1` 和脚本生成 Release ID 完成全部门禁与发布，没有回滚或遗留半发布状态。
+- 本节工作账与状态收口会形成一个不改变运行代码的纯文档提交，因此 GitHub 仓库 HEAD 可领先测试站应用 SHA；应用内容以 `539bfd44c05d81b5b7a1246cb009beec4c58f4c1` 为三方共同基线，无需为纯文档重复部署。
+- 本任务仅部署测试环境；未部署正式主站，未写入 CMS 或数据库，未修改 DNS、TLS、Nginx、生产环境变量或手工 PM2 配置。

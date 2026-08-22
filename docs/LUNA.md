@@ -145,3 +145,25 @@ Regression coverage: 覆盖 Nova 指出的 GitHub CI 格式门禁和受影响图
 Remaining risks: 无新增功能风险；完整发布门禁由 Sol 按流程决定是否重新执行。
 
 Handoff: 返回 Sol；Task `XYY-20260822-01` 的格式阻塞已通过独立复测，可进入最终 Review/同步。
+
+#### Re-test after staging release 539bfd4
+
+Status: PASS
+
+Test Target: 测试站 `https://wz.tomatopia.top` 当前发布 Release `20260821T235850Z-539bfd4`。
+
+Tests performed:
+
+- 只读 HTTP 验证：`/version` 返回完整 SHA `539bfd44c05d81b5b7a1246cb009beec4c58f4c1`、`releaseId=20260821T235850Z-539bfd4`、`environment=staging`、`cmsSchemaVersion=2026-08-cms-hardening`；`/healthz` 返回 HTTP 200、`status=ok`、`contactStorage=ok`。
+- 真实 Chromium 矩阵：13 条目标路由分别在 1440×900 桌面端和 390×844 移动端检查，共 26/26 通过；每页 HTTP 200、恰好 1 个 `[data-conversion-cta]`、1 个 `/contact` 链接、3 条准备信息、CTA 滚动后可见、无水平溢出。
+- 响应式结构：桌面端 13/13 为双栏，代表性计算列 `746.875px 497.922px`；移动端 13/13 为单栏，代表性计算列 `366px`。
+- 排除边界 `/yundao-zhineng-jijian`：HTTP 200，统一 CTA 为 0，既有 `.service-cta` 为 1。
+- 26 次目标路由检查及排除页检查均未发现 console error 或 page error；当前 Release 截图保存在 Git 忽略的 `output/playwright/staging-*-539bfd4.png`。
+
+Result: PASS
+
+Regression coverage: 覆盖当前目标 SHA 的发布身份、健康状态、13 条 CTA 路由桌面/移动布局、联系入口、准备信息、无溢出、渲染错误和排除页面边界；未执行 CMS 写入、表单提交或生产环境操作。
+
+Remaining risks: 本次为发布后只读验收；CTA 文案仍为静态页面内容，未来如需 CMS 编辑需另行定义数据契约与权限范围。截图检查覆盖滚动后的 CTA 可见态，不覆盖动画首帧。
+
+Handoff: 返回 Sol；Task `XYY-20260822-01` 当前 staging Release 已通过独立发布后复验，可完成最终验收与状态同步。

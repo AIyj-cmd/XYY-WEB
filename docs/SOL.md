@@ -28,7 +28,7 @@ XYY-WEB 已运行于正式环境，当前处于稳定维护阶段。仓库根目
 
 | Task | Risk | Owner | Status |
 | --- | --- | --- | --- |
-| XYY-20260822-01 | HIGH | Sol | IN PROGRESS |
+| XYY-20260822-01 | HIGH | Sol | CLOSED |
 | XYY-20260821-03 | MEDIUM | Sol | CLOSED |
 | XYY-20260821-02 | LOW | Sol | CLOSED |
 
@@ -99,6 +99,8 @@ Sol 的角色是 Product Manager / Orchestrator / Task Planner / Scope Controlle
 - Risk: HIGH。
 - 当前发布内容已在 `XYY-20260821-01` 至 `XYY-20260821-03` 完成实现、测试和 Review；本任务不重新派 Terra 修改业务代码。
 - Sol 负责显式暂存、提交、GitHub 推送、测试站原子发布和三方版本核对；发布后派 Luna 独立 smoke test，再派 Nova 复核发布证据、Scope 与版本一致性。
+- GitHub 首轮 CI 暴露继承自基线的单文件 Prettier 格式问题；沿用本 Task ID 返回 Terra 做最小机械修复，经 Luna Re-test `PASS`、Nova Review `APPROVED` 后重新推送、等待新 CI 全绿并重新发布对应 SHA。
+- 当前测试站 Release 经 Luna 发布后验证 `PASS`，Nova 最终发布 Review `APPROVED`；所有失败、返工和复验均回到 Sol，未发生子代理直接调度。
 
 ### XYY-20260821-03
 
@@ -122,7 +124,7 @@ Sol 的角色是 Product Manager / Orchestrator / Task Planner / Scope Controlle
 
 ### XYY-20260822-01
 
-Status: IN PROGRESS
+Status: CLOSED
 
 Risk: HIGH
 
@@ -134,7 +136,11 @@ Acceptance Criteria: GitHub 接收全部确认提交且无强推；测试站 `/v
 
 Decision: 用户已明确授权 GitHub 推送和测试站部署；遵循功能分支、完整门禁、原子发布、失败自动回滚和只读发布后验证。
 
-Result: IN PROGRESS。
+Changes: 在 `codex/unified-cta-governance-20260822` 显式提交确认范围并无冲突快进同步 `main`；首轮应用提交为 `eac6790`。GitHub CI 发现基线测试文件格式问题后，沿用原 Task ID 形成最小修复提交 `539bfd44c05d81b5b7a1246cb009beec4c58f4c1`，再次同步功能分支与 `main`，随后将该应用提交原子发布到测试站 Release `20260821T235850Z-539bfd4`。
+
+Validation: 本地 `CI=1 npm run verify:release` 与 GitHub CI Run `32538099712` 全部通过；测试站 `/version` 精确匹配应用 SHA、Release、`staging` 和 CMS Schema，`/healthz` 为 `status=ok`、`contactStorage=ok`。13 个目标页面均 HTTP 200 且恰好 1 个共享 CTA；Luna 对 13 路由桌面/移动矩阵完成 26/26 `PASS`，Nova 最终发布 Review `APPROVED`。推送均为快进，无强推；正式主站、生产 CMS、数据库、DNS、TLS、Nginx 和手工 PM2 配置均未触碰。
+
+Result: CLOSED。应用代码在本地、GitHub 与测试站均对应 `539bfd44c05d81b5b7a1246cb009beec4c58f4c1`；最终工作账和状态记录作为纯文档提交同步 GitHub，不为文档重复部署。
 
 ### XYY-20260821-03
 
