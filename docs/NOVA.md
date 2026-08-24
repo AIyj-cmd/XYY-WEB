@@ -178,6 +178,28 @@ Remaining Risks: 当前只是本地实现与契约验证，不代表生产已切
 
 Handoff: Re-review `APPROVED`，原三项 Nova 阻断已关闭；返回 Sol 对照 Acceptance Criteria 做最终验收与状态收口。无需再次返工，不涉及部署、push、merge、PM2、生产 CMS / Oracle / SQLite 操作。
 
+### XYY-20260824-02
+
+Status: APPROVED
+
+Review Scope: 独立 Review `XYY-20260824-01` 已验收实现发布到 XYY-xiansuo 与 XYY-WEB staging 的版本身份、环境与 Secret 边界、active owner、Integration 鉴权、direct smoke / duplicate、真实浏览器 E2E、字段与审计、无 Directus 双写、健康检查、Git 同步、回滚证据和正式主站未切换事实。审查只执行 Git、HTTP、SSH 服务状态与文件元数据等只读检查；未读取或输出 Token 值，未修改业务实现、生产配置、CMS、Oracle 或数据库，未部署、push、merge 或操作 PM2。
+
+Architecture: Xiansuo `xiansuo-api.service` 实时为 `active/running`、`NRestarts=0`，`ExecStart` 精确指向 `/opt/xiansuo-releases/3c3eb1baa82a942c4a5f867a50d3e640b8497a5c/server/dist/index.js`，`RELEASE_SHA` 与 GitHub `main` 一致，数据库可写路径仍是原 `/var/lib/xiansuo/7bb238...`，没有 Schema 或 migration 切换。Web `current` 精确指向 Release `20260824T090653Z-4c1f313`，manifest、外部 `/version` 与 GitHub `main` 均为 `4c1f31346ebe19664bccfec13d69841bd31a5e4e` / `staging`；`/healthz` 同时为 `cmsContent=ok`、`contactStorage=ok`。浏览器证据显示两次请求均只到 staging `/api/contact`，没有直接访问 Xiansuo；新留言只进入 Xiansuo，Directus 只读计数为 0，符合无双写边界。
+
+Security: Xiansuo Integration health 无 Authorization 实时返回 401；Luna 已独立验证受控服务 Token 为 200、无 Token与伪员工 JWT 均为 401。运行环境文件 `/etc/xiansuo/xiansuo-api.env` 和 `/var/www/xyy-web/.env` 均为 `600 root:root`，预部署备份目录为 `700 root:root`。远端 Token 为受控生成的至少 32-byte Secret，Nova 未读取其值；Luna 的 journal、两端 release tree、Web PM2 日志扫描以及 Nova 对两仓 tracked/worktree 文档与 diff 的无值扫描均未发现 Secret 泄露。owner ID 2 已由 Luna 证明为 active member `jj`，请求无法覆盖 owner/created_by；员工 API 未认证仍为 401，现有权限检查返回 403，没有扩大员工 JWT 权限。
+
+Maintainability: 本 Task 没有代码缺陷或业务返工，因而没有机械调度 Terra。Web 使用既有 `scripts/deploy.sh` 原子 current symlink、双健康与 release identity 门禁；新 Release 的 `.previous_target` 精确保留旧 Release `20260821T235850Z-539bfd4`，脚本在启动、健康、身份或外部检查失败时恢复该目标。Xiansuo 保留旧 Release `7bb238f76e35e11e298d32175f8d406383e4e0f6`，并有 `/var/backups/xiansuo/XYY-20260824-02-predeploy` 受控备份。首次缺少本地构建 CMS Token、第二次既有四 worker E2E 超时都在远端发布前停止；隔离复测通过后，最终完整 `CI=1 verify:release` 通过才执行成功发布，没有形成半发布状态。
+
+Contract Risks: direct smoke 线索 ID 8 的首次创建与第二次 `duplicate=true` 已验证；真实 UI 线索 ID 9 两次页面成功，但 Xiansuo 仅有一条 lead、一条 `website_integration` create audit、0 follow-up，字段、日期、source/status/intent、owner/created_by、source_note 与 demand_note 均符合契约且未覆盖。Xiansuo `/api/health` 与 Web 双依赖健康均为 200；正式 `56xyy.com` 主页和 robots 哈希仍精确等于发布前基线，未提交正式主站表单。Oracle 未执行命令、未改 Schema，历史 Directus / Oracle `contact_leads` 未迁移、删除或写入。
+
+Test Coverage Review: Luna 最终 PASS 覆盖服务 Token / 无鉴权 / 伪员工 JWT、direct create / duplicate、active owner、字段与 audit、桌面和 390×844 移动端真实 Chromium、浏览器网络边界、Xiansuo 与 Directus 只读计数、员工权限、主站完整性和 Secret 扫描。实现门禁证据为 Web 47 files / 306 tests、39 E2E passed / 7 configured skips、3 formal passed、构建及格式通过；Xiansuo build 与 179 tests 通过；两仓 `git diff --check` 通过。Nova 另行实时核对两仓远端 `main` / feature ref、服务 release identity、健康响应、旧 Release / `.previous_target`、备份权限和主站哈希，结果均与 Luna 证据一致。
+
+Result: APPROVED
+
+Remaining Risks: 正式主站 `56xyy.com` 尚未执行切换，本 Task 仅激活 Xiansuo 与 Web staging；测试线索 ID 8 和 ID 9 按审计约定保留并标记 TEST ONLY / DO NOT FOLLOW，员工不得业务跟进。
+
+Handoff: 返回 Sol 做 `XYY-20260824-02` 最终验收与状态收口。当前发布版本、健康、数据契约、无双写、Secret、回滚和主站边界均无剩余阻断；无需业务返工或重复部署。
+
 ### XYY-YYYYMMDD-NN
 
 Status:

@@ -1,6 +1,6 @@
 # DEV_STATE
 
-更新时间：2026-08-22
+更新时间：2026-08-24
 
 ## 协作记录约定
 
@@ -18,15 +18,25 @@
 
 ## 当前版本与环境
 
-- 仓库最新提交以 `git log -1` 为准；当前应用发布基线为 `539bfd44c05d81b5b7a1246cb009beec4c58f4c1`，其后的纯文档状态提交不代表新的应用 Release。
-- 验收站当前运行提交以 `/version` 返回的 `gitSha` 为准，不能仅根据仓库 HEAD 推断；当前为 `539bfd44c05d81b5b7a1246cb009beec4c58f4c1`。
+- 仓库最新提交以 `git log -1` 为准；当前 staging 应用发布基线为 `4c1f31346ebe19664bccfec13d69841bd31a5e4e`，其后的纯文档状态提交不代表新的应用 Release。
+- 验收站当前运行提交以 `/version` 返回的 `gitSha` 为准，不能仅根据仓库 HEAD 推断；当前为 `4c1f31346ebe19664bccfec13d69841bd31a5e4e`。
 - 验收站：`https://wz.tomatopia.top`。
-- 验收站当前 Release 为 `20260821T235850Z-539bfd4`，环境为 `staging`，CMS Schema 为 `2026-08-cms-hardening`；仍以 `/version` 的实时响应为准。
-- 正式主站已运行；这是 2026-08-21 用户提供的最新当前事实，本次 Agent 配置任务未连接生产环境重新核验 Release、域名或运行组件。
+- 验收站当前 Release 为 `20260824T090653Z-4c1f313`，环境为 `staging`，CMS Schema 为 `2026-08-cms-hardening`；仍以 `/version` 的实时响应为准。
+- 正式主站已运行；本次只通过公开 HTTP 对主页和 robots 做发布前后哈希比对并确认内容未变化，未连接主站服务器、未修改主站环境，也未提交主站联系表单。
 - 运行状态：PM2 中 `xyy-web` 在线，Web 端口为 `50031`。
-- 健康状态：`/healthz` 返回200；首页、产品、案例、关于、新闻、期刊、联系、服务专题和真实404均已完成发布后 smoke test。
+- 健康状态：`/healthz` 返回200，`cmsContent=ok`、`contactStorage=ok`；首页、产品、案例、关于、新闻、期刊、联系、服务专题和真实404均已完成发布后 smoke test。
 - CMS 状态：19个集合严格 Verify 为0 failure；Active 身份与 claimKey 迁移完成；运行权限审计通过；第二次迁移 dry-run 为0项内容变更、0项 Schema 变更。
 - 数据库延续现有已上线状态（历史记录为 PostgreSQL 16）；PostgreSQL → Oracle 19c 已退出当前工作范围，不再作为待执行计划，也不得因历史材料自动恢复。
+
+## 官网线索 Integration 发布状态（2026-08-24）
+
+- XYY-xiansuo Integration 已在 `https://xs.tomatopia.top` 激活，运行代码 SHA 为 `3c3eb1baa82a942c4a5f867a50d3e640b8497a5c`；独立机器 Token 已配置，owner ID 2 已确认 active。真实 Token 不记录在仓库或本文档。
+- XYY-WEB staging 已在 `https://wz.tomatopia.top` 激活并验证官网线索 Integration；当前 Release 为 `20260824T090653Z-4c1f313`，浏览器仍只请求 staging `/api/contact`，再由 Web Server 通过 HTTPS 调用 XYY-xiansuo。
+- `https://56xyy.com` 未在本次发布中部署或改配，主站页面与 robots 内容哈希均与发布前一致；Main-site Integration 当前为 `NOT ACTIVE`。
+- 受控 direct smoke lead ID 8 与 website E2E lead ID 9 已创建并保留，均标记 `TEST ONLY / DO NOT FOLLOW`。两次相同 website phone 提交后 XYY-xiansuo 仍只有一条记录、一条 create audit、零条 follow-up。
+- staging Directus 通过强制只读事务确认本次 website E2E phone 在 `contact_leads` 中计数为 0，XYY-xiansuo 中计数为 1；当前链路不存在 Directus 双写。
+- Xiansuo 保留旧不可变 Release 与部署前数据库、unit、env 备份；Web staging Release 保存 `.previous_target` 并继续使用既有原子 rollback。两仓库本地、GitHub `main` 与已发布应用 SHA 已完成核对。
+- 本次未执行 Oracle 命令、Schema 修改、历史迁移、Directus Schema 写入或正式主站发布。若切换 `56xyy.com`，必须建立新的独立 HIGH Risk Task。
 
 ## 已完成
 
@@ -37,13 +47,13 @@
 - `scripts/setup-cms.mjs` 可幂等创建十九个业务集合及初始化内容。
 - 官网运行读取集合从 `config/cms-contract.mjs` 的 active 生命周期派生；13个运行集合与5个 legacy、1个 private 集合明确分离，不在运行权限代码中维护第二份数组。
 - 内容权限同步：`Website Content Read-Only` 策略只获得运行集合的读取动作，不获得新增、修改或删除权限；实例具备自定义权限授权时可进一步下沉 `published` 过滤。
-- 联系表单继续使用独立的“仅创建留言”权限，不允许读取历史留言。
+- 历史 Directus `contact_leads` 与其“仅创建留言”权限继续保留；XYY-WEB staging 的新留言已不再写入该集合，而是通过服务端 Integration 写入 XYY-xiansuo。正式主站尚未切换。
 
 ## 关键决策
 
 - Web 代码发布与 Directus 数据库初始化分开执行，避免发布过程自动修改数据库。
 - 管理员 Token 只临时用于建模和权限配置，不进入网站运行环境或 Git。
-- 网站运行时使用两枚不同 Token：内容只读 Token、联系表单仅创建 Token。
+- XYY-WEB staging 运行时使用职责分离的 Directus 内容只读 Token 与 XYY-xiansuo Integration Token；Token 不进入浏览器、Git、Markdown 或日志。
 - 后台已发布数据优先于静态回退内容，避免后台修改后前端仍显示旧数据。
 - CMS 成功返回空数据代表运营侧当前没有已发布内容，必须保持为空；只有网络失败、超时和 HTTP 5xx 才能启用审核静态回退。
 - HTTP 401/403 和非法响应必须明确失败，不能用静态内容掩盖权限或数据契约问题。
@@ -63,16 +73,17 @@
 
 ## 已验证结果
 
-- Astro：350 个文件，0 错误、0 警告、0 提示。
+- Astro：370 个文件，0 错误、0 警告、0 提示。
 - ESLint：通过。
 - Prettier：通过。
 - 可维护性检查：通过。
-- 资源检查：55 个引用资源和 103 个部署资源完整。
-- Vitest：38 个测试文件、260 项测试通过。
-- Playwright：38 项通过，6 项按项目配置跳过。
+- 资源检查：56 个引用资源和 103 个部署资源完整。
+- Vitest：47 个测试文件、306 项测试通过。
+- Playwright：39 项通过，7 项按项目配置跳过；发布后另以真实 Chromium 完成 staging 联系表单两次提交和桌面/移动验证。
 - 正式域名契约：3 项通过。
 - 生产构建：通过。
 - `npm run verify:release`：完整通过。
+- XYY-xiansuo：构建与 179 项测试通过；发布后 Integration health、鉴权、direct create / duplicate 与真实 website E2E 均通过。
 - GitHub CI：应用提交 `1c7b657` 与状态文档提交 `0578cd0` 均通过。
 - 验收站：`/version`、`/healthz`、CMS Verify、运行权限审计和核心页面 smoke test 均通过。
 - 测试日志中的 Directus `fetch failed` 来自刻意使用不可达 CMS 验证回退和健康失败关闭，不是发布故障。

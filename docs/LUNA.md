@@ -254,3 +254,81 @@ Regression coverage: 覆盖 Nova 指出的三项阻断：生产 Web 三处配置
 Remaining risks: 真实生产 token、有效 `WEBSITE_LEAD_OWNER_ID` 和双方运行环境仍需未来经授权配置；本次只验证模板、代码和测试，不代表生产已切换。
 
 Handoff: 返回 Sol；Nova 指出的配置/文档阻断已通过独立复测，`XYY-20260824-01` 的 Luna 结果为 PASS，可进入 Nova Re-review。
+
+### XYY-20260824-02
+
+Status: FAIL
+
+Risk: HIGH
+
+Test Target: 发布后 `xs.tomatopia.top` Xiansuo、`wz.tomatopia.top` staging Web、真实浏览器联系表单端到端链路，以及正式主站只读完整性。
+
+Tests performed:
+
+- XYY-xiansuo public checks：`https://xs.tomatopia.top/` HTTP 200；`/api/health` HTTP 200；Integration health with server-side token HTTP 200、`code=0`、`data.status=ok`；Integration health without Authorization HTTP 401；伪造员工 JWT HTTP 401；员工 `/api/leads` without Authorization HTTP 401。
+- Xiansuo systemd：`xiansuo-api.service` 为 `active/running`，`NRestarts=0`；未执行 PM2、部署或生产写入。
+- Website staging：`/version` 返回 `gitSha=4c1f31346ebe19664bccfec13d69841bd31a5e4e`、`releaseId=20260824T090653Z-4c1f313`、`environment=staging`；`/healthz` 返回 `status=ok`、`cmsContent=ok`、`contactStorage=ok`。
+- 主站只读 SHA：主页 `45291ef9c7c8ab1751a7747469f701a073db64236abc9acc51fea45d64ed291e`；robots `1a3b3749ed2976e528adbe550381110e98f669decc0d3f5e6043ac05f2e026ee`，均与验收基线一致；未提交主站表单。
+- 只读 SSH SQLite 核对：配置 owner 为 `2`；当前已存在的 direct smoke lead ID 8 为测试数据，但手机号为 `01000000001`。查询本 Task 要求的规范化手机号 `01000000002` 返回不存在，未发现本次要求的第二条测试线索。
+- Git：任务开始时仅有用户已有 `.codex/config.toml` 修改；未修改业务代码、生产配置、CMS、数据库或 Secret。`git diff --check` 已通过。
+
+Result: FAIL
+
+Expected: 使用真实 Chrome UI 打开 `https://wz.tomatopia.top/contact`，提交手机号 `010-00000002` 的受控测试留言两次，并获得两次 UI 成功后再做 Xiansuo SQLite 字段/duplicate/audit 核对。
+
+Actual: Chrome 扩展浏览器在两种真实 UI 操作路径均无法加载 staging 联系页：`tab.goto('https://wz.tomatopia.top/contact')` 两次各超时约 30 秒；认领现有 Chrome 空白标签后再次导航仍超时，标签保持 `about:blank`。因此没有实际提交表单，也没有创建本 Task 的测试 lead；不能将 HTTP/SSH 只读结果冒充 UI PASS。
+
+Reproduction: 通过 browser skill 连接 Chrome，创建/认领 `about:blank` 标签后导航到 `https://wz.tomatopia.top/contact`；两次 `goto` 均在 30 秒超时。内置浏览器表面不可用，未切换到 curl 或其他自动化方式代替 UI 操作。
+
+Evidence: 浏览器导航失败；SQLite 只读查询 `phone='0100000002'` 返回 `lead=null`；现有 ID 8 的手机号为 `01000000001`，不是本 Task 要求的 `010-00000002`。发布版本、健康、鉴权和主站 SHA 只读检查均通过。
+
+Likely affected area: 当前 Chrome 扩展/浏览器控制环境与 staging 页面导航，不是已验证的应用发布版本或 Integration API；无法据此判断真实 UI 表单提交、浏览器请求仅到 Web、桌面/移动 UI 提交结果。
+
+Severity: HIGH（用户明确要求的真实 UI 端到端验收未完成；不得以服务端 smoke 替代）。
+
+Remaining risks: 未验证第二条受控线索的字段映射、duplicate 不覆盖、无 follow-up、audit、Directus 中不存在该 phone，以及桌面/移动真实 UI 的控制台/网络请求证据。当前未产生新的测试线索，无需清理。
+
+Handoff: 返回 Sol；`XYY-20260824-02` 保持 FAIL。需恢复可用浏览器控制后沿用同一 Task ID 重试 UI 表单；未部署、未写生产 CMS、未操作 Oracle、未 push/merge。
+
+#### Re-test: real Playwright UI after browser-control failure
+
+Status: PASS
+
+Test Target: 使用独立 Playwright CLI Chromium session `luna-task02-retest-headless` 复测 `https://wz.tomatopia.top/contact` 桌面/移动 UI、两次相同手机号提交、浏览器网络边界，以及 Xiansuo staging 数据落库。
+
+Tests performed:
+
+- 真实 Playwright CLI：`bash /home/yj/.codex/skills/playwright/scripts/playwright_cli.sh --session luna-task02-retest-headless open https://wz.tomatopia.top/contact`；headed 模式因当前会话无 X server 不可用，改用同一真实 Chromium 的 headless UI session，未改仓库 Playwright 配置。
+- 桌面表单实际填写并提交两次：姓名 `STAGING E2E 测试`、电话 `01000000002`、公司 `XYY-STAGING-DO-NOT-FOLLOW`、邮箱 `test@example.test`、服务“其他”、受控 E2E message、隐私同意。两次页面均显示“提交成功！商务团队将根据您的需求与您联系”。
+- Playwright `requests` 记录两次均为 `POST https://wz.tomatopia.top/api/contact => 200 OK`；未出现浏览器直连 `xs.tomatopia.top`，未出现其他 contact 目标。`console`：0 messages，Errors 0，Warnings 0。
+- 移动 viewport `390x844` 真实打开 contact 页面；表单、提交按钮和移动导航均可见，点击“打开菜单”后出现“移动端导航”及全部主要入口；保存了 snapshot 与 screenshot：`.playwright-cli/page-2026-08-24T09-33-48-737Z.yml`、`.playwright-cli/page-2026-08-24T09-34-00-265Z.png`、`.playwright-cli/page-2026-08-24T09-34-09-515Z.yml`。
+- 只读 SSH SQLite：测试线索唯一为 ID `9`（TEST ONLY / DO NOT FOLLOW），`phone=01000000002`，`contact_name`、`company_name`、`source=官网留言`、`status=新线索`、`intent_level=未知`、`lead_date=2026-08-24`、`owner_id=2`、`created_by=2` 均正确；`demand_note` 完整保留受控 message，`source_note` 包含 `咨询服务：other` 与 `邮箱：test@example.test`。
+- 同号第二次提交未覆盖原记录：`leads` count=1；`audit_logs` 仅有该 lead 的一条 `create`（`user_id=2`、`source=website_integration`）；`follow_ups` 为空。未删除或修改任何记录。
+- staging Directus `contact_leads` 只读查询返回 HTTP 403（当前内容 Token 无权读取该历史私有集合），未执行写入/删除/迁移；因此不能以无权限响应冒充记录不存在，但 Xiansuo 唯一测试线索与浏览器证据均已核对。
+- Xiansuo 公开 H5 根页面 HTTP 200、`/api/health` HTTP 200；Integration health 正确服务 Token HTTP 200，缺失 Authorization HTTP 401，伪造员工 JWT HTTP 401；员工 `/api/leads` 无认证 HTTP 401。staging `/version` 为 SHA `4c1f31346ebe19664bccfec13d69841bd31a5e4e`、release `20260824T090653Z-4c1f313`，`/healthz` 为 `cmsContent=ok/contactStorage=ok`。
+- 正式主站只读 SHA 仍为主页 `45291ef9c7c8ab1751a7747469f701a073db64236abc9acc51fea45d64ed291e`、robots `1a3b3749ed2976e528adbe550381110e98f669decc0d3f5e6043ac05f2e026ee`；未提交主站表单。前轮 Xiansuo `build + test`、Website `verify`、正式 E2E/formal 和安全边界证据未因本次 UI-only 重试而改变，继续适用。
+- 两仓库 `git diff --check`：通过；Xiansuo 工作树无新修改，Website 仅保留用户 `.codex/config.toml` 与本工作账改动。未输出或提交 Secret，未触碰 Oracle、生产 CMS、生产数据库、部署、PM2、push 或 merge。
+
+Result: PASS
+
+Regression coverage: 关闭初轮浏览器控制通道 FAIL；完成真实桌面两次 UI 提交、移动页面可用性、浏览器仅调用 Web `/api/contact`、Xiansuo duplicate/字段/owner/audit/follow-up 只读核验，并复核发布版本、健康、鉴权和正式主站完整性。
+
+Remaining risks: staging Directus `contact_leads` 当前 Token 无读取权限（HTTP 403），无法从该接口直接证明该 phone 的历史集合记录数；本次未扩大权限。测试线索 ID 9 必须保留并标记 TEST ONLY / DO NOT FOLLOW。真实生产配置、生产提交和生产数据仍未在本次执行。
+
+Handoff: 返回 Sol；同一 Task ID `XYY-20260824-02` 的发布后独立 QA 复测 PASS，可进入 Sol Final Acceptance。测试线索 ID 9：TEST ONLY / DO NOT FOLLOW。
+
+#### No Double Write supplement
+
+Status: PASS
+
+Independent evidence:
+
+- 检查 `/tmp/xyy-staging-directus-readonly.sh`：脚本只读取 `/var/www/xyy-cms/.env` 以供连接，设置运行时 `PGPASSWORD`，执行 `BEGIN TRANSACTION READ ONLY`、单条 `contact_leads` 规范化手机号计数查询和 `COMMIT`；不含写入、删除、迁移命令，不输出凭据。
+- 通过 SSH 独立执行该脚本，实际输出事务边界与计数 `0`：Directus staging `contact_leads` 中不存在 `01000000002`。API 403 后未扩大 Token 权限。
+- 通过只读 SQLite 独立复核 Xiansuo `phone=01000000002` 的 `leads` count=`1`。未执行删除、更新或其他数据库写操作。
+
+Result: PASS
+
+No Double Write: 对本次受控线索，Directus=0、XYY-xiansuo=1，符合新留言唯一登记目标；Oracle/Directus 历史数据未迁移或修改。
+
+Handoff: 返回 Sol；`XYY-20260824-02` 的 No Double Write 补证完成，最终 QA 仍为 PASS。

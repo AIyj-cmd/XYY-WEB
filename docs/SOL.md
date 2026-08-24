@@ -23,12 +23,13 @@ XYY-WEB 已运行于正式环境，当前处于稳定维护阶段。仓库根目
 - 当前客观状态以 [DEV_STATE.md](../DEV_STATE.md) 为准，协作方式以 [AGENTS.md](../AGENTS.md) 为准。
 - Sol / Terra / Luna / Nova 多代理体系已启用；所有调度、失败和返工回到 Sol。
 - 仓库根目录已作为 Obsidian Vault 正常加载；`docs/SOL.md` 是项目管理入口。
+- 官网线索 Integration 已在 XYY-xiansuo 正式服务与 XYY-WEB staging 激活并通过真实 E2E；`56xyy.com` 主站未切换，仍保持原运行版本。
 
 ## Current Tasks
 
 | Task | Risk | Owner | Status |
 | --- | --- | --- | --- |
-| XYY-20260824-02 | HIGH | Sol | IN PROGRESS |
+| XYY-20260824-02 | HIGH | Sol | CLOSED |
 | XYY-20260824-01 | HIGH | Sol | CLOSED |
 | XYY-20260822-01 | HIGH | Sol | CLOSED |
 | XYY-20260821-03 | MEDIUM | Sol | CLOSED |
@@ -104,6 +105,9 @@ Sol 的角色是 Product Manager / Orchestrator / Task Planner / Scope Controlle
 - 用户授权仅覆盖 XYY-xiansuo Integration、XYY-WEB staging、双方对应环境变量和明确标记测试线索；主站、Oracle、Directus Schema、DNS、TLS、Nginx 与主站 PM2 均排除。
 - Sol 负责 Git 范围收口、发布顺序、Secret 安全传递、基础 smoke、版本与回滚证据；基础链路通过后派 Luna 独立真实浏览器与数据验证，Luna `PASS` 后派 Nova 发布 Review。
 - 发布前必须确认 Xiansuo 当前实际 systemd release 与回滚方式；不得因仓库历史 PM2 脚本存在而绕过线上现行部署机制。
+- Sol 按顺序发布 Xiansuo `3c3eb1b` 并完成 direct create / duplicate 后，使用仓库原子发布脚本将 Web `4c1f313` 发布为 staging Release `20260824T090653Z-4c1f313`；两仓库均以 fast-forward 同步 GitHub `main`。
+- Luna 首轮因 Chrome 控制通道停留在 `about:blank` 返回 `FAIL`；Sol 使用真实 Playwright CLI 证明页面可加载后，沿用原 Task ID 派 Luna Re-test。Luna 完成桌面两次真实 UI 提交、移动端、网络边界、字段、duplicate 与 Directus 只读补证并最终 `PASS`；该失败未暴露代码缺陷，因此未机械调度 Terra。
+- Nova 对 live release、Secret、owner、数据契约、无双写、回滚、Git 和主站边界完成发布 Review，最终 `APPROVED`。
 
 ### XYY-20260824-01
 
@@ -144,7 +148,7 @@ Sol 的角色是 Product Manager / Orchestrator / Task Planner / Scope Controlle
 
 ### XYY-20260824-02
 
-Status: IN PROGRESS
+Status: CLOSED
 
 Risk: HIGH
 
@@ -156,7 +160,11 @@ Acceptance Criteria: 两个目标 release 可审计且可回滚；Xiansuo Integr
 
 Decision: 严格按 Xiansuo → 验证 → Web staging → 验证 → E2E 顺序执行，任一关键阶段失败立即停止后续步骤。Token 使用密码学安全随机值并仅保存在受控环境；测试 lead 默认保留作为审计证据，不用临时 SQL 删除。
 
-Result: IN PROGRESS。
+Changes: XYY-xiansuo 以现行 hardened systemd 不可变 release 方式激活 `3c3eb1baa82a942c4a5f867a50d3e640b8497a5c`，配置独立随机 Integration Token 和 active member owner ID 2；XYY-WEB staging 使用既有原子发布流程激活 Release `20260824T090653Z-4c1f313`。两仓库审计分支和 `main` 均 fast-forward 同步 GitHub；用户已有 `.codex/config.toml` 未进入提交。正式主站、Oracle、Directus Schema 与历史数据均未修改。
+
+Validation: Xiansuo health 与 Integration health 正常，无凭据和伪员工 JWT 均被拒绝；direct smoke lead ID 8 首次创建、第二次 duplicate，字段、owner 和 audit 正确。Luna 最终 `PASS`：真实 Chromium 桌面表单两次提交均成功，浏览器只请求 staging `/api/contact`，移动端正常；website lead ID 9 在 Xiansuo 中仅一条、audit 一条、follow-up 为零，Directus 强制只读事务计数为零。Web `/version` 精确匹配目标 SHA，`cmsContent` 与 `contactStorage` 均为 `ok`；Secret 扫描通过。Nova 最终 `APPROVED`；主站主页和 robots 哈希与发布前一致。
+
+Result: CLOSED。XYY-xiansuo Integration 为 `PRODUCTION ACTIVE`，XYY-WEB staging Integration 为 `ACTIVE AND VERIFIED`；`56xyy.com` 未部署且 Main-site Integration 仍为 `NOT ACTIVE`。测试线索 ID 8、9 保留并标记 `TEST ONLY / DO NOT FOLLOW`；下一步如需主站切换，必须建立新的独立 HIGH Risk Task。
 
 ### XYY-20260824-01
 
