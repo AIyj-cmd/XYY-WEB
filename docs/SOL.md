@@ -259,3 +259,21 @@ Validation: 四个 TOML 均通过语法解析；本机模型目录确认三个�
 Decision: Sol 直接完成允许范围内的引导配置；不创建 `sol.toml`，并发上限保持 3。
 
 Result: ACCEPTED。
+
+### XYY-20260824-03
+
+Status: CLOSED
+
+Risk: LOW
+
+Task: 通过 `https://wz.tomatopia.top/contact` 真实提交一条明确标记的测试留言，验证 staging `/api/contact` 经服务端 HTTPS Integration 写入 XYY-xiansuo `leads` 的现行路径。
+
+Scope: 仅验证已部署路径；不修改业务代码、运行配置、数据库、Directus、Oracle、Nginx、DNS、TLS 或 PM2，不访问或测试 `56xyy.com`。
+
+Acceptance Criteria: 测试站表单显示成功；浏览器请求 staging `/api/contact` 成功；XYY-xiansuo 出现本次唯一新线索；联系人、来源、状态和 `[XYY PATH TEST]` 需求标记一致；Luna 独立确认 PASS。
+
+Decision: 使用不会与现有线索重复的测试座机 `010-00000003`，仅提交一次；Sol 完成真实浏览器提交和只读落库核对，Luna 不重复提交，仅独立复核保存的浏览器证据与数据库记录。
+
+Validation: 页面显示提交成功；网络记录恰好一次 `POST https://wz.tomatopia.top/api/contact` 且为 HTTP 200，控制台无错误。只读查询确认新线索 ID 10 唯一存在，联系人为 `Codex路径测试-请勿跟进`、来源为 `官网留言`、状态为 `新线索`，需求完整包含 `[XYY PATH TEST]`。Luna 独立结果为 PASS。
+
+Result: CLOSED。路径测试 PASS；无业务代码、部署、配置或数据库修改，`56xyy.com` 与 Oracle 均未触碰。

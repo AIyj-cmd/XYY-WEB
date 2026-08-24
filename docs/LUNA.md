@@ -332,3 +332,23 @@ Result: PASS
 No Double Write: 对本次受控线索，Directus=0、XYY-xiansuo=1，符合新留言唯一登记目标；Oracle/Directus 历史数据未迁移或修改。
 
 Handoff: 返回 Sol；`XYY-20260824-02` 的 No Double Write 补证完成，最终 QA 仍为 PASS。
+
+### XYY-20260824-03
+
+Status: PASS
+
+Test Target: `wz.tomatopia.top` 联系表单经 staging `/api/contact` 和服务端 HTTPS Integration 写入 XYY-xiansuo `leads` 的真实路径。
+
+Acceptance Criteria: 表单成功；浏览器 staging `/api/contact` 请求成功；XYY-xiansuo 中出现且仅出现本次测试线索；联系人、来源、状态及 `[XYY PATH TEST]` 标记一致。
+
+Tests: 独立只读检查 Playwright 提交后快照、网络 trace、控制台/page error 与截图；只读查询 XYY-xiansuo live SQLite 中规范化电话、姓名和需求标记的唯一记录，并复核 audit 和 follow-up。
+
+Result: PASS
+
+Evidence: 页面显示提交成功；trace 仅有一次 `POST https://wz.tomatopia.top/api/contact`，HTTP 200，无浏览器直连 Xiansuo、无控制台或页面错误。线索 ID 10 唯一匹配，`contact_name=Codex路径测试-请勿跟进`、`source=官网留言`、`status=新线索`，`demand_note` 包含 `[XYY PATH TEST]`；对应一条 website Integration create audit，无 follow-up。
+
+Regression: 本任务只验证指定路径，未重新提交表单，未访问 `56xyy.com`，未写 CMS/数据库，未修改应用、配置或生产基础设施。
+
+Risks: 无阻断；证据来自 Sol 本次真实浏览器会话和 Luna 的独立只读远端复核。
+
+Handoff: 返回 Sol；路径验证 PASS，可最终关闭 `XYY-20260824-03`。
