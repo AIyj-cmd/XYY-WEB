@@ -132,6 +132,52 @@ Remaining Risks: 当前未提交变化仅为 Luna 与 Nova 的最终工作日志
 
 Handoff: 返回 Sol 做最终验收、状态文档收口与 GitHub 同步。`XYY-20260822-01` 的应用发布、CI、staging 身份、健康检查和发布后回归均无剩余阻断；无需再次修改业务代码或重复部署纯文档变化。
 
+### XYY-20260824-01
+
+Status: APPROVED
+
+Review Scope: Review XYY-WEB `/api/contact` 到 XYY-xiansuo `/api/integrations/website-leads` 的最终两仓 diff（含 untracked route / tests）、Terra 返工记录、Luna 首次 FAIL 与最终 Re-test PASS、两端 Auth / payload / owner / duplicate / audit / health / release 契约及生产边界。用户既有 `.codex/config.toml` 变化不归属本 Task；审查未修改业务实现、未连接生产、未部署、未 push / merge，也未执行 CMS、Oracle 或生产 SQLite 操作。
+
+Architecture: 运行时主链路设计正确：浏览器仍只调用 `/api/contact`，原 body/content-type/rate-limit/honeypot/privacy/validation 保留；XYY-WEB 服务端以单次 5 秒 HTTPS 请求调用专用 Integration route，没有 Directus 双写。XYY-xiansuo 路由与员工 JWT 路由分离，服务端解析 active owner，lead 与 `website_integration` audit 同一 SQLite transaction，审计失败会回滚。Directus `cmsContent` 与 Xiansuo `contactStorage` 健康依赖已拆分，没有删除 CMS 内容健康检查。Graphify 的现有图谱也确认 `contact.ts → storage.ts` 与 `health.mjs → health-contract` 为本次跨边界主路径。
+
+Security: Integration 仅接受独立 Bearer Token；空、短、错误、非 Bearer 和员工 JWT 均失败关闭。配置 Token trim 后要求至少 32 UTF-8 bytes，Xiansuo 对两端 SHA-256 固定长摘要使用 `timingSafeEqual`，请求 Token 不被 trim 改写。owner/created_by 不在公开 schema，伪造字段被 strict schema 拒绝；URL/body/response/客户端不承载 Secret，未发现真实凭据。Luna 首轮发现的 SQLite 错误详情泄露已修复：路由局部固定返回 `{ code: 1, msg: '线索接收失败', data: null }`，Re-test 证明不含 `SQLITE`、trigger 详情、Token、电话或 stack，且 lead 已回滚。
+
+Maintainability: 新增一个局部 Integration route 与一个官网 storage adapter，复用 `getDb()`、`assertActiveOwner()`、`todayDate()` 和既有 API envelope，未引入 Redis、MQ、OAuth、API gateway、通用 CRM connector 或新数据库抽象。电话先删除空白/连字符再校验、查重和存储，格式变体无法绕过唯一索引；duplicate 不更新旧线索。当前主要维护缺口不在运行码，而在下述两端发布/环境契约没有与新设计收敛。
+
+Contract Risks:
+
+- **HIGH — XYY-WEB 官方生产 Web 环境模板与预备入口仍是旧 Directus contact 契约。** `deploy/production/web/web.env.example:5` 仍只给出 `DIRECTUS_CONTACT_TOKEN`，没有 `XIANSUO_API_URL` / `XIANSUO_INGEST_TOKEN`；`deploy/production/web/prepare-web-server.sh:13-17` 仍强制“两枚 Directus Token 或 legacy Token”；`deploy/production/web/README.md:24-26` 仍把联系写入说明为 Directus。按当前官方步骤准备 `.env` 后，根 `scripts/deploy.sh:55` 又会因缺少 Xiansuo 配置拒绝发布。这使当前 diff 不能满足“环境变量最终契约可按现有发布路径落地”的 Acceptance Criteria。
+- **MEDIUM — XYY-xiansuo API 的 PM2 运行契约未显式纳入两个 Integration 变量。** `deploy/.env.example` 已新增两项，但 `deploy/ecosystem.config.cjs:17-52` 的 `xiansuo-api.env` 没有 `WEBSITE_LEAD_INGEST_TOKEN` 和 `WEBSITE_LEAD_OWNER_ID`；Nova 以隔离假值读取该 config，两个 `hasOwn` 均为 `false`。当前 deploy shell 可能通过启动环境继承它们，但这没有被 PM2 配置或契约测试固化，与该仓库对 API 进程变量显式列举的做法不一致，无法作为可重现的发布保证。
+- **MEDIUM — 当前 CMS 运行说明仍宣称联系表单使用 Directus Token，且 `/healthz` 检查两枚 Directus Token。** `docs/CMS_CONTENT_MODEL.md:46-69` 与实际新代码直接冲突。历史 `contact_leads` 集合、Schema 和必要维护权限可以保留，但文档必须区分“历史/维护”与“当前 Web 运行写入目标”，否则会引导下次环境准备恢复旧路径。
+
+Test Coverage Review: Luna 最终 PASS 证据充分覆盖运行代码：XYY-WEB `verify` 为 46 files / 305 tests，Playwright 为 39 passed / 7 configured skips（含桌面/移动），formal 为 3 passed；XYY-xiansuo build 通过、178 tests 通过，两仓 `git diff --check` 通过。Auth、strict payload、null/max length、owner 伪造、无效 owner、手机/座机、格式变体 duplicate、transaction rollback、错误脱敏、员工 JWT 语义及 Web 下游 400/401/403/500/network/timeout/invalid JSON 均有证据。但现有测试只检查根 `scripts/deploy.sh` 和浏览器/CI 配置，没有检查 XYY-WEB `deploy/production/web/{web.env.example,prepare-web-server.sh,README.md}` 的新契约，也没有检查 XYY-xiansuo `deploy/ecosystem.config.cjs` 的 Integration env 传递；因此全绿未能暴露本次阻断。
+
+Result: REJECTED
+
+Remaining Risks: 运行时 API 实现未发现其他阻断；尚未进行两个正式系统的真实 HTTPS 端到端联调，未验证真实 owner ID、Secret 注入、发布顺序、回滚和网络可达性。这些生产动作仍需未来单独明确授权，不影响当前必须先修复仓库内发布契约的结论。Oracle / Directus 历史 `contact_leads` 未修改、未迁移、未删除，也未双写。
+
+Handoff: 返回 Sol。建议沿用 `XYY-20260824-01` 对两端发布/环境契约与当前 CMS 说明做最小收敛，并增加能防止两类漂移的契约测试；由 Sol 决定返工调度。任何改动后仍需 Luna Re-test，通过后再交 Nova Re-review；Nova 不直接指挥 Terra，也不执行部署。
+
+#### Re-review after production configuration and documentation contract remediation
+
+Review Scope: Re-review 原三项 REJECTED 阻断的最小返工与两仓最终完整 diff：XYY-WEB 正式 Web 环境模板、prepare 脚本、部署说明、CMS 内容模型和新契约测试；XYY-xiansuo PM2 API env 显式传递与实际 CJS load 测试。同时复核前轮已通过的运行时 Auth、事务、错误脱敏、健康检查、Oracle / Directus 历史边界和 Scope。用户既有 `.codex/config.toml` 仍排除在本 Task 之外。
+
+Architecture: 官方 Web 准备链路已与根部署入口收敛：`web.env.example`、`prepare-web-server.sh` 和 `scripts/deploy.sh` 一致要求 `DIRECTUS_CONTENT_TOKEN`、HTTPS `XIANSUO_API_URL` 与非空 `XIANSUO_INGEST_TOKEN`，不再要求旧 `DIRECTUS_CONTACT_TOKEN` 或 legacy `DIRECTUS_TOKEN`。Xiansuo `xiansuo-api.env` 已显式从受控运行环境传递 `WEBSITE_LEAD_INGEST_TOKEN` 和 `WEBSITE_LEAD_OWNER_ID`，不提供 fallback 或默认 owner。Graphify 所示 `contact.ts → storage.ts` 与 `health.mjs → health-contract` 运行路径未被返工改写；浏览器仍只请求 `/api/contact`，Directus 仍只承担 CMS 内容。
+
+Security: 模板中 Integration Token 保持空值，仓库没有真实 Secret；新测试仅使用 `randomBytes(32)` 产生的隔离临时 Token，且恢复 process env 和 `require.cache`。PM2 配置仅原样传递环境值，不硬编码、不弱默认、不把 Token 放入浏览器。前轮 Bearer 固定摘要比较、空/短/错误/员工 JWT 失败关闭、owner/created_by 服务端控制以及 SQLite 错误细节脱敏证据仍有效。未发现 query/body/client/log Secret 或新的公开写入绕过。
+
+Maintainability: 返工只收敛现有发布契约和当前文档，未调整业务 route、数据库 Schema、CMS 脚本或员工 API。`production-web-contact-config.test.ts` 固化 Web 模板 / prepare / root deploy 的一致性和旧 Token 排除；`deploy-ecosystem.test.ts` 通过实际加载 CJS config 证明 PM2 值传递，没有仅靠文本搜索声称通过。未引入新依赖、新框架或不必要抽象。
+
+Contract Risks: 原 HIGH Web 环境模板/预备入口冲突、MEDIUM Xiansuo PM2 env 未固化、MEDIUM CMS 文档旧语义均已关闭。`docs/CMS_CONTENT_MODEL.md` 现在明确历史 `contact_leads` 保留、不接收新写入、不迁移，Web 运行时仅使用 Directus 内容 Token，健康依赖分为 `cmsContent` 与 `contactStorage`。历史 Directus contact 维护工具保留不等于新线索双写；最终 diff 没有 Oracle/SQLite Schema、历史记录迁移、删除或清空。
+
+Test Coverage Review: Luna Re-test 为 PASS：XYY-WEB `npm run verify` 共 47 files / 306 tests，`format:check`、`bash -n prepare-web-server.sh` 和 diff check 通过；XYY-xiansuo build 及 179 tests 通过，diff check 通过。Nova 独立复跑 Web 新契约测试为 1/1 PASS，`bash -n` 和 diff check 通过；独立复跑 Xiansuo PM2 实际加载测试为 1/1 PASS，diff check 通过。前轮 Web E2E 39 passed / 7 configured skips、formal 3 passed 以及 Auth/payload/owner/duplicate/transaction/error-envelope 全量证据在运行代码未改动的前提下仍有效。
+
+Result: APPROVED
+
+Remaining Risks: 当前只是本地实现与契约验证，不代表生产已切换。真实上线仍需受控生成同一枚密码学随机 Token，选择 active Xiansuo owner，先部署 Xiansuo 后部署 Web，并在明确授权的变更窗口验证真实 HTTPS、健康检查、线索落库、日志与回滚。当前 prepare/deploy 预检只验证 Token 非空，少于 32 bytes 会由运行时健康检查失败关闭并阻止新 Release 存活；这是可接受的非阻断运维风险，可在未来获授权的部署 Task 中再加强早期预检。
+
+Handoff: Re-review `APPROVED`，原三项 Nova 阻断已关闭；返回 Sol 对照 Acceptance Criteria 做最终验收与状态收口。无需再次返工，不涉及部署、push、merge、PM2、生产 CMS / Oracle / SQLite 操作。
+
 ### XYY-YYYYMMDD-NN
 
 Status:

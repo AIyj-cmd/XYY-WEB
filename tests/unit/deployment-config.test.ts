@@ -118,9 +118,10 @@ describe('production deployment contracts', () => {
     expect(deploy).toContain('if [[ -L \\"\\$current_link\\" ]]')
     expect(deploy).not.toContain('readlink -f \\"\\$current_link\\" 2>/dev/null || true')
     expect(deploy.match(/pm2 delete xyy-web/g)).toHaveLength(3)
-    expect(deploy).toContain('grep -q \'\\"contactStorage\\":\\"ok\\"\'')
+    const healthLoop = deploy.match(/healthy=0[\s\S]*?done/)?.[0] ?? ''
+    expect(healthLoop.match(/curl -fsS http:\/\/127\.0\.0\.1:\$WEB_PORT\/healthz/g)).toHaveLength(1)
+    expect(healthLoop).toMatch(/health_payload[\s\S]*cmsContent[\s\S]*contactStorage/)
   })
-
   it('imports runtime permission checks from the minimal real release package', async () => {
     const release = await mkdtemp(resolve(tmpdir(), 'xyy-minimal-release-'))
     try {

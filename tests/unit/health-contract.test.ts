@@ -5,7 +5,10 @@ import { assertWebHealthPayload } from '../../scripts/lib/health-contract.mjs'
 describe('web health contract', () => {
   it('accepts the healthy server payload', () => {
     expect(() =>
-      assertWebHealthPayload({ status: 'ok', dependencies: { contactStorage: 'ok' } })
+      assertWebHealthPayload({
+        status: 'ok',
+        dependencies: { cmsContent: 'ok', contactStorage: 'ok' },
+      })
     ).not.toThrow()
   })
 
@@ -13,7 +16,7 @@ describe('web health contract', () => {
     expect(() =>
       assertWebHealthPayload({
         status: 'degraded',
-        dependencies: { contactStorage: 'unreachable' },
+        dependencies: { cmsContent: 'ok', contactStorage: 'unreachable' },
       })
     ).toThrow(/unexpected status/)
   })
@@ -22,7 +25,7 @@ describe('web health contract', () => {
     expect(() =>
       assertWebHealthPayload({
         status: 'degraded',
-        dependencies: { contactStorage: 'incomplete' },
+        dependencies: { cmsContent: 'incomplete', contactStorage: 'ok' },
       })
     ).toThrow(/unexpected status/)
   })

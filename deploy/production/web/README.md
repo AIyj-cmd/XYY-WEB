@@ -21,9 +21,11 @@ sudo editor /etc/xyy/web.env
 sudo bash deploy/production/web/prepare-web-server.sh /etc/xyy/web.env
 ```
 
-Web环境使用不同的 `DIRECTUS_CONTENT_TOKEN` 和 `DIRECTUS_CONTACT_TOKEN`。部署前从密码
-管理器临时导出两枚 Token，运行 `npm run cms:verify-runtime-permissions`；通过后再写入
-`/var/www/xyy-web/.env`。不得把 Directus 管理员 Token 用作任一运行 Token。
+Web运行环境只使用只读 `DIRECTUS_CONTENT_TOKEN` 访问 CMS 内容，并使用
+`XIANSUO_API_URL` 与 `XIANSUO_INGEST_TOKEN` 将官网联系留言以服务端 HTTPS 请求写入
+XYY-xiansuo。两端 Integration Token 必须相同；`WEBSITE_LEAD_OWNER_ID` 只配置在
+XYY-xiansuo 服务端。不得把 Directus 管理员 Token 或历史 `DIRECTUS_CONTACT_TOKEN` 用作
+当前 Web 运行配置；历史 Directus contact 权限审计不是当前联系写入的部署前置条件。
 
 ## 2. 从构建机部署Web
 

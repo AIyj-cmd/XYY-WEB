@@ -203,7 +203,7 @@ describe('CI and test environment contracts', () => {
     for (const config of [playwright, formal]) {
       expect(config).toContain('DIRECTUS_URL=http://127.0.0.1:1')
       expect(config).toContain('DIRECTUS_CONTENT_TOKEN=')
-      expect(config).toContain('DIRECTUS_CONTACT_TOKEN=')
+      expect(config).toContain('XIANSUO_INGEST_TOKEN=')
     }
   })
 })

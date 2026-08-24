@@ -120,6 +120,52 @@ Risks:
 
 Handoff: 请 Luna 复核 `tests/unit/image-cache-contract.test.ts` 仍为纯格式调整，并确认完整 `npm run format:check` 与该文件的 8 项测试通过。
 
+### XYY-20260824-01
+
+Status: DONE
+
+Task: 将官网联系留言由 Directus `contact_leads` 的新写入切换为 XYY-xiansuo 的专用服务端 Integration API。
+
+Scope: 在 XYY-WEB 与 XYY-xiansuo 两个真实仓库实现最小 HTTPS + JSON 契约；保留浏览器 `/api/contact`、既有表单安全校验、Directus CMS 内容读取和历史 `contact_leads`。不双写、不改 Oracle/SQLite Schema、不做生产操作。
+
+Implementation:
+
+- XYY-xiansuo 新增 `/api/integrations/website-leads` 和同 Bearer 鉴权的只读 health endpoint；Token 运行时读取并作定时安全比较，空/错误/员工 JWT 均拒绝。
+- 接口严格接收官网最小 payload，负责人由 `WEBSITE_LEAD_OWNER_ID` 服务端解析并由 `assertActiveOwner` 校验；手机号兼容官网手机号和座机；以 `官网留言`、`未知`、`新线索`、当前业务日期创建，email/service 仅在非空时映射入 `source_note`。
+- 重复手机号预查与唯一索引冲突均返回稳定 duplicate 成功语义，不更新既有线索；新建审计记录标为 `website_integration`，不伪装成员工请求。
+- XYY-WEB `storeContactLead()` 改为对 HTTPS Xiansuo endpoint 的单次 5 秒超时调用；配置、网络、鉴权、下游状态或 JSON 契约异常均失败关闭，且不记录 URL、Token 或下游错误；duplicate 对浏览器仍返回成功。
+- `/healthz` 拆为 Directus `cmsContent` 与 Xiansuo `contactStorage` 两项依赖；保留 Directus 内容 ping/权限验证，部署预检改为要求内容 Token 与 Xiansuo runtime 配置。
+
+Changed Files:
+
+- XYY-WEB：`.env.example`、`.github/workflows/ci.yml`、`README.md`、`playwright*.config.ts`、`scripts/deploy.sh`、`scripts/lib/health-contract.mjs`、`server/health.mjs`、`src/lib/contact/storage.ts`、相关 unit/e2e contract tests。
+- XYY-xiansuo：`.env.example`、`deploy/.env.example`、`server/src/index.ts`、`server/src/routes/website-leads.ts`、`server/test/website-leads-integration.test.ts`。
+
+Validation:
+
+- XYY-xiansuo：`cd server && npm run build && npm test` 通过（176 tests）。
+- XYY-WEB 定向测试：6 files、56 tests 通过。
+- XYY-WEB：`npm run typecheck`（369 files，0 diagnostics）、`npm run lint`、`npm run check:maintainability`、`npm run format:check` 通过。
+- XYY-WEB：`npm run verify` 通过（46 files、301 tests，含生产 build）。
+- `CI=1 npm run verify:release` 的完整 verify 阶段通过；E2E 阶段未能启动，原因是当前机器没有 Playwright Chromium binary。尝试下载该本地测试依赖未完成且已中止，未产生仓库或生产变更；Luna 应在具备浏览器二进制的环境独立重跑 release gate。
+- 两仓库 `git diff --check` 已执行且通过（后续 Sol/Luna 仍需在最终交接 diff 上独立复核）。
+
+Rework (Sol first review):
+
+- Token 配置现在先 trim 后要求至少 32 UTF-8 bytes；Xiansuo 用固定长度 SHA-256 digest 的 `timingSafeEqual` 比较，输入 token 不 trim 改写。XYY-WEB contact storage 与 health 同样拒绝短 token。
+- 官网电话在 Xiansuo 校验后规范化为空格/连字符剔除的数字再查重和存储；lead 与 audit insert 置于同一 SQLite transaction，审计失败会回滚 lead。
+- CI、Playwright 和单元/E2E 测试改用隔离 `.test` endpoint 与运行时随机 token；部署健康循环每轮只读取一次 `/healthz` payload。
+- 新增短 token、owner 缺失/无效、格式变体 duplicate、强制 audit failure rollback、timeout rejection 和 invalid JSON 证据。返工后 Xiansuo `npm run build && npm test` 通过（178 tests），XYY-WEB 定向 60 tests 与 `npm run verify` 通过（46 files、305 tests）。
+- Luna FAIL 返工：Integration route 的非 duplicate 数据库/audit 异常现在在 rollback 后返回稳定 `{ code: 1, msg: '线索接收失败', data: null }`；强制 SQLite `secret-detail` audit failure 测试确认响应不包含 SQLite 或异常细节且没有遗留 lead。Xiansuo build 与全量 178 tests 再次通过。
+- Nova REJECTED 返工：Web 官方生产 env 模板、prepare 脚本、部署 README 与 CMS 模型文档改为 Directus 内容读取 + Xiansuo 联系 Integration 的当前运行契约，且添加模板/prepare/根部署脚本的一致性测试；Xiansuo PM2 ecosystem 显式透传 Integration Token 与 owner ID，并以实际加载 CJS config 的隔离测试验证。未执行脚本、PM2 或部署。
+
+Risks:
+
+- 代码已 ready，但生产环境尚未配置双方同一随机 Token 和有效 owner ID，因而未切换生产流量。
+- Xiansuo 服务端部署与官网部署必须同一变更窗口完成；任一端未部署或环境变量缺失时官网会明确失败关闭，不会回退写 Directus。
+
+Handoff: 请 Luna 独立验证两端 Auth/payload/owner/duplicate/手机号与座机/审计映射、官网保留 honeypot/限流/隐私与失败语义、HTTPS-only 与 Secret 不进入客户端；检查 `/healthz` 必须同时要求 `cmsContent` 和 `contactStorage`，且本 Task 没有 Oracle/Directus 写入、Schema 改动、双写或生产操作。
+
 ### XYY-YYYYMMDD-NN
 
 Status:

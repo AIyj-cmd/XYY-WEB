@@ -28,6 +28,8 @@ XYY-WEB 已运行于正式环境，当前处于稳定维护阶段。仓库根目
 
 | Task | Risk | Owner | Status |
 | --- | --- | --- | --- |
+| XYY-20260824-02 | HIGH | Sol | IN PROGRESS |
+| XYY-20260824-01 | HIGH | Sol | CLOSED |
 | XYY-20260822-01 | HIGH | Sol | CLOSED |
 | XYY-20260821-03 | MEDIUM | Sol | CLOSED |
 | XYY-20260821-02 | LOW | Sol | CLOSED |
@@ -81,6 +83,8 @@ Sol 的角色是 Product Manager / Orchestrator / Task Planner / Scope Controlle
 
 ## Decisions
 
+- `XYY-20260824-02` 仅将已验收 Integration 发布到 `xs.tomatopia.top` 与 XYY-WEB 测试站 `wz.tomatopia.top`，严格按 Xiansuo → 基础验证与直接 smoke → Web staging → 浏览器 E2E 顺序执行；`56xyy.com`、Oracle、Directus Schema 和历史 `contact_leads` 不在发布范围。真实 Token 只在受控运行环境中生成和传递，不进入 Git、Markdown、日志或 Agent 报告。
+- `XYY-20260824-01` 将官网联系留言的唯一新登记目标从 Directus `contact_leads` 切换为 XYY-xiansuo 专用 Server-to-Server Integration API；历史 Directus / Oracle 数据保留且不迁移、不删除、不双写。浏览器继续只调用 `/api/contact`；机器身份使用独立 Bearer Token，负责人由 XYY-xiansuo 服务端配置并校验。Directus 继续承担 CMS 内容职责，健康检查必须区分 CMS 内容依赖与 Xiansuo contact storage。
 - `XYY-20260822-01` 获得用户明确授权，将当前已验收的 Agent/Obsidian 治理配置与多页面 CTA 改动提交并推送到 GitHub，并通过现有原子发布脚本部署到测试站；正式主站、CMS 写入、数据库和生产配置不在 Scope。当前位于默认分支，按 GitHub 工作流先使用功能分支管理提交，通过门禁后再无冲突快进同步 `main`。
 - `XYY-20260821-03` 统一仓配下拉菜单中的 9 个服务专题页与合作案例、行业动态、森林期刊栏目首页的底部转化区域；使用共享组件复用仓配页视觉结构，各页面保留与内容语义匹配的标题和行动文案。详情页、首页、关于页及不在仓配下拉菜单中的数字化页面不在本次 Scope。
 - Sol 是当前 Codex 主 Session，不创建 `sol.toml`。
@@ -93,6 +97,22 @@ Sol 的角色是 Product Manager / Orchestrator / Task Planner / Scope Controlle
 - 共享 Vault 配置进入 Git，设备窗口布局、移动端布局和缓存留在本地。
 
 ## Dispatch Log
+
+### XYY-20260824-02
+
+- Risk: HIGH；涉及两个运行系统的受控发布、机器 Secret、真实业务 SQLite 测试记录、跨系统 HTTPS E2E 与回滚。
+- 用户授权仅覆盖 XYY-xiansuo Integration、XYY-WEB staging、双方对应环境变量和明确标记测试线索；主站、Oracle、Directus Schema、DNS、TLS、Nginx 与主站 PM2 均排除。
+- Sol 负责 Git 范围收口、发布顺序、Secret 安全传递、基础 smoke、版本与回滚证据；基础链路通过后派 Luna 独立真实浏览器与数据验证，Luna `PASS` 后派 Nova 发布 Review。
+- 发布前必须确认 Xiansuo 当前实际 systemd release 与回滚方式；不得因仓库历史 PM2 脚本存在而绕过线上现行部署机制。
+
+### XYY-20260824-01
+
+- Risk: HIGH；新增跨系统 HTTPS API、独立机器鉴权、客户联系方式数据契约和 XYY-xiansuo `leads` 核心写入，并切换官网联系线索唯一存储目标。
+- Sol 已只读审计 XYY-WEB 与 `/home/yj/xiansuo` 的真实代码、Git、测试、环境变量契约、健康检查和项目治理；当前不执行生产、Oracle、CMS、SQLite 生产库、部署、推送或合并。
+- 顺序调度：Terra 同一 Task ID 完成两仓库最小实现并返回 Sol；Sol 检查 diff 后派 Luna 独立测试；Luna `PASS` 后再由 Sol 派 Nova Review；所有失败或驳回沿用原 Task ID 回 Sol 决策。
+- Luna 首轮发现 Integration route 的非 duplicate SQLite 错误详情泄露并返回 `FAIL`；Sol 沿用原 Task ID 退回 Terra，修复为固定通用 500 且保持事务回滚，Luna Re-test `PASS`。
+- Nova 首轮发现官方 Web 环境模板、Xiansuo PM2 env 透传和 CMS 文档仍保留旧联系写入契约并 `REJECTED`；Terra 最小收敛发布契约并增加测试，Luna 再次 `PASS`，Nova Re-review 最终 `APPROVED`。
+- Sol 最终验收确认两仓库仅完成本地实现与契约验证；未提交、推送、合并、部署或修改生产环境与数据库。
 
 ### XYY-20260822-01
 
@@ -121,6 +141,42 @@ Sol 的角色是 Product Manager / Orchestrator / Task Planner / Scope Controlle
 - 该烟雾测试不构成角色工作交付，因此不在三本子代理工作账中伪造 Implementation、QA 或 Review 记录；工作账从首次真实职责任务开始记录。
 
 ## Work Log
+
+### XYY-20260824-02
+
+Status: IN PROGRESS
+
+Risk: HIGH
+
+Task: 将 `XYY-20260824-01` 已验收实现先发布到 `xs.tomatopia.top`，验证 Integration health、active owner、直接创建与 duplicate；随后原子发布到 `wz.tomatopia.top`，完成版本、双健康依赖、真实浏览器 E2E、duplicate、字段映射与无 Directus 双写验证。
+
+Scope: 允许推送两仓已验收范围、配置双方 Integration 环境、发布 Xiansuo 与 Web staging，并在 Xiansuo 业务库创建少量带 `XYY-20260824-02 / STAGING / DO-NOT-FOLLOW` 标识的测试 lead。禁止部署或改配 `56xyy.com`，禁止 Oracle、Directus Schema、历史迁移、双写及其他渠道功能。
+
+Acceptance Criteria: 两个目标 release 可审计且可回滚；Xiansuo Integration health、直接创建、duplicate、owner 与 audit 正确；Web staging `/version` 匹配、`cmsContent=ok`、`contactStorage=ok`；真实桌面/移动浏览器提交与 duplicate 成功；测试 lead 只在 Xiansuo 出现、不进入 staging Directus；主站版本不变；Luna `PASS`、Nova `APPROVED`、Secret 无泄露。
+
+Decision: 严格按 Xiansuo → 验证 → Web staging → 验证 → E2E 顺序执行，任一关键阶段失败立即停止后续步骤。Token 使用密码学安全随机值并仅保存在受控环境；测试 lead 默认保留作为审计证据，不用临时 SQL 删除。
+
+Result: IN PROGRESS。
+
+### XYY-20260824-01
+
+Status: CLOSED
+
+Risk: HIGH
+
+Task: 将 `56xyy.com/api/contact` 验证通过的新官网留言通过 XYY-WEB 服务端 HTTPS 调用登记到 XYY-xiansuo `leads`，建立独立机器鉴权、稳定数据契约、重复手机号语义和健康检查边界。
+
+Scope: XYY-WEB 仅修改 contact storage、Integration 环境契约、必要 health/release contract、文档与测试；XYY-xiansuo 仅新增 website lead Integration route、Bearer 鉴权、payload/owner/phone/duplicate/字段映射、创建审计、环境契约和测试。员工 `/api/leads`、联系页面 UI、Directus CMS 内容读取与现有数据库 Schema 保持不变。
+
+Acceptance Criteria: 浏览器仍只调用 `/api/contact`；XYY-WEB 单次有限超时 HTTPS 调用专用 Integration API，所有配置/网络/鉴权/响应异常失败关闭且不泄密；XYY-xiansuo 只接受独立 Token，服务端控制并验证 owner/created_by，完整映射 message/email/service，兼容官网手机号和座机，duplicate 不重复插入且不是 500；Directus CMS health 与 Xiansuo contact storage health 分离；不双写、不迁移或修改 Oracle / SQLite Schema；两仓库完整门禁通过，Luna `PASS`、Nova `APPROVED`。
+
+Decision: 采用一个专用 POST 接口和一个只读、同鉴权的 Integration health endpoint；不复用员工 JWT，不引入 Redis、队列、重试框架、通用连接器或数据库抽象。真实 Secret 只由未来运行环境配置，本任务仅使用测试随机值。
+
+Changes: XYY-WEB 将 contact storage 改为带 5 秒超时的 Xiansuo HTTPS 调用，拆分 Directus `cmsContent` 与 Xiansuo `contactStorage` 健康依赖，并同步环境、发布和测试契约；XYY-xiansuo 新增独立 Bearer Integration route、服务端 owner、字段映射、电话规范化、duplicate 语义、lead/audit 原子事务、通用错误包络及 PM2 环境透传。历史 Directus / Oracle `contact_leads` 保留且未迁移、删除或写入。
+
+Validation: Luna 最终 `PASS`：XYY-WEB `npm run verify` 为 47 files / 306 tests，系统 Chrome E2E 39 passed / 7 configured skips（桌面与移动）、formal 3 passed；XYY-xiansuo build 与 179 tests 通过；格式、脚本语法和两仓 `git diff --check` 通过。Nova Re-review 最终 `APPROVED`，未发现真实 Secret、鉴权绕过、双写、数据库 Schema 变化或生产副作用。
+
+Result: CLOSED。代码与运行契约已完成本地验收，但生产尚未切换；真实 Token、active owner、双端部署和 HTTPS 联调须在未来获得明确授权后执行。
 
 ### XYY-20260822-01
 

@@ -21,7 +21,8 @@ jobs:
       DEPLOY_ENVIRONMENT: ci
       DIRECTUS_URL: http://127.0.0.1:1
       DIRECTUS_CONTENT_TOKEN: ci-content-check-only
-      DIRECTUS_CONTACT_TOKEN: ci-contact-check-only
+      XIANSUO_API_URL: https://xiansuo-integration.test
+      XIANSUO_INGEST_TOKEN: ci-${{ github.run_id }}-${{ github.run_attempt }}-${{ github.sha }}
       PUBLIC_DIRECTUS_URL: http://127.0.0.1:1
       PUBLIC_SITE_URL: http://127.0.0.1:4399
       ENABLE_DOMAIN_REDIRECTS: 'false'

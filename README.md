@@ -122,7 +122,8 @@ Directus 成功返回空数据时页面保持为空；只有网络失败、超�
 | ------------------------- | ----------------------------------------------------------- |
 | `DIRECTUS_URL`            | 服务端 Directus 地址；服务器建议 `http://127.0.0.1:8055`    |
 | `DIRECTUS_CONTENT_TOKEN`  | 仅可读取官网内容集合及文件元数据的运行令牌                  |
-| `DIRECTUS_CONTACT_TOKEN`  | 仅可创建 `contact_leads` 的表单写入令牌                     |
+| `XIANSUO_API_URL`         | XYY-xiansuo 服务端 HTTPS 根地址                              |
+| `XIANSUO_INGEST_TOKEN`    | 仅用于官网服务端提交联系线索的 Integration Bearer Token     |
 | `DIRECTUS_TOKEN`          | 仅供建模、迁移和权限维护脚本临时使用，不得作为 Web 运行凭据 |
 | `PUBLIC_SITE_URL`         | 当前构建与 canonical 使用的站点地址                         |
 | `PUBLIC_DIRECTUS_URL`     | 浏览器可访问的 CMS 地址                                     |
@@ -131,12 +132,13 @@ Directus 成功返回空数据时页面保持为空；只有网络失败、超�
 | `DEPLOY_ENVIRONMENT`      | 部署时显式指定 `staging` 或 `production`                    |
 
 `.env`、`.env.production` 仅保存在本地和服务器，不提交 GitHub，也不由部署脚本上传。
-内容令牌与联系令牌必须不同；建模脚本使用的短期管理令牌不能写入 Web 运行环境。
-Web 内容读取和联系写入不会回退使用 `DIRECTUS_TOKEN`；缺少任一专用令牌或两枚令牌相同
-时，运行就绪检查必须失败。
-Directus 12 Community 不提供自定义项目过滤和字段级权限时，内容令牌对13个运行内容集合和 `directus_files` 使用集合级只读、
-联系令牌使用 `contact_leads` 集合级仅创建；官网查询仍统一附加 `status=published`，联系
-接口仍在服务端只接收表单白名单字段，文件代理仍只放行已发布内容的引用。具备相应 Directus 授权时，可设置
+建模脚本使用的短期管理令牌不能写入 Web 运行环境。官网内容读取不会回退使用
+`DIRECTUS_TOKEN`；联系表单仅由 `POST /api/contact` 在服务端通过 HTTPS 调用
+XYY-xiansuo，缺少 Xiansuo 配置、网络/鉴权失败或下游响应不符合契约时均失败关闭。
+浏览器不会接触 Integration Token，也不会直接请求 XYY-xiansuo。
+Directus 12 Community 不提供自定义项目过滤和字段级权限时，内容令牌对13个运行内容集合和 `directus_files` 使用集合级只读。
+历史 `contact_leads` 集合继续保留，但 Web 运行时不再向其写入新留言；官网查询仍统一附加
+`status=published`，联系接口仍在服务端只接收表单白名单字段，文件代理仍只放行已发布内容的引用。具备相应 Directus 授权时，可设置
 `DIRECTUS_CUSTOM_PERMISSION_RULES=true`，由权限同步脚本进一步下沉已发布内容过滤。
 
 ## 部署

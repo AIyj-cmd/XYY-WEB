@@ -8,4 +8,7 @@ export function assertWebHealthPayload(value) {
   if (value.dependencies?.contactStorage !== 'ok') {
     throw new Error('contact storage is not healthy')
   }
+  if (value.dependencies?.cmsContent !== 'ok') {
+    throw new Error('CMS content is not healthy')
+  }
 }

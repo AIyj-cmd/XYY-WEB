@@ -167,3 +167,90 @@ Regression coverage: 覆盖当前目标 SHA 的发布身份、健康状态、13 
 Remaining risks: 本次为发布后只读验收；CTA 文案仍为静态页面内容，未来如需 CMS 编辑需另行定义数据契约与权限范围。截图检查覆盖滚动后的 CTA 可见态，不覆盖动画首帧。
 
 Handoff: 返回 Sol；Task `XYY-20260822-01` 当前 staging Release 已通过独立发布后复验，可完成最终验收与状态同步。
+
+### XYY-20260824-01
+
+Status: FAIL
+
+Test Target: XYY-WEB `/api/contact` → XYY-xiansuo `/api/integrations/website-leads`，包括两端鉴权、字段映射、owner 控制、手机号/座机、duplicate、事务、健康检查、失败语义、客户端边界和回归门禁。
+
+Acceptance Criteria: 独立 Integration Bearer Token；官网浏览器只调用 `/api/contact`；XYY-WEB 保留现有 body/content-type/rate-limit/honeypot/privacy/phone/email 校验并以有限超时失败关闭；XYY-xiansuo 正确映射并服务端控制 owner/created_by，duplicate 不重复插入且不返回 500；Directus CMS health 与 Xiansuo contact health 分离；不泄露 Secret，不修改 Oracle/SQLite Schema，不双写。
+
+Tests:
+
+- `/home/yj/xiansuo/server`：`npm run build` 通过；`npm test` 通过，178 tests passed、0 failed。
+- `/home/yj/XYY-GEO/website`：`npm run verify` 通过，46 test files、305 tests passed；typecheck、lint、maintainability、assets、Astro build 均通过。
+- XYY-WEB 临时 Playwright 配置位于 `/tmp/xyy-luna-playwright.config.ts`，使用绝对 `testDir`、仓库 `webServer`（显式 cwd）和 `/usr/bin/google-chrome`；E2E `39 passed / 7 skipped`。桌面与移动项目均实际执行；跳过项为仓库既有移动项目配置的明确 skip。
+- XYY-WEB formal 临时配置 `/tmp/xyy-luna-formal.config.ts` 使用同一系统 Chrome；formal `3 passed`。
+- 独立 Xiansuo route 注入矩阵覆盖无 Authorization、非 Bearer、错误 Token、员工 JWT、正确 Token、短 Token、缺失/无效 owner、非法/超长/null payload、手机号、座机、字段映射、伪造 owner/created_by、格式变体 duplicate、lead+audit rollback 和员工 GET `/api/leads` JWT 语义；仓库集成测试全部通过。
+- 独立源码/配置检查确认浏览器没有直接调用 `xs.tomatopia.top`；XYY-WEB 仅在服务端 storage 使用 `XIANSUO_API_URL`；health 同时要求 `cmsContent` 与 `contactStorage`；diff 中未发现真实 Secret、Oracle/数据库迁移或双写。
+- `git diff --check`：XYY-WEB 与 XYY-xiansuo 均通过。
+
+Result: FAIL
+
+Expected: Integration API 在非 duplicate 的数据库/审计异常时返回不泄露内部错误细节的稳定 500 包络。
+
+Actual: 直接将 `websiteLeadIntegrationRoutes` 注册到默认 Fastify 实例（未附加应用级错误处理器）后，审计触发器 `RAISE(ABORT, 'SQLITE_CONSTRAINT secret-detail')` 使合法 POST 返回 HTTP 500，响应体为 `{"statusCode":500,"code":"ERR_SQLITE_ERROR","error":"Internal Server Error","message":"SQLITE_CONSTRAINT secret-detail"}`，泄露 SQLite 错误详情。
+
+Reproduction: 在隔离临时 SQLite 中建立 `audit_logs` 的 `BEFORE INSERT` 触发器，调用带正确随机 Integration Token 的合法 `/api/integrations/website-leads` 请求；未修改仓库测试或业务代码。当前 `src/index.ts` 的完整 `buildApp()` 确有统一 `setErrorHandler`，生产组装路径返回 generic `{code:1,msg:'服务器内部错误',data:null}`，但 route 本身在默认 Fastify 注册方式下仍可泄露，属于接口局部安全缺口。
+
+Evidence: 临时 probe 输出 `status=500`、`leaksSecret=true`、`leaksSqlite=true`；相关实现为 `server/src/routes/website-leads.ts` 的事务 catch 在非 duplicate 异常处 `throw error`，完整应用级 handler 位于 `server/src/index.ts`。
+
+Likely affected area: XYY-xiansuo Integration API 的非唯一数据库异常、审计写入异常或未来任何未预期异常；官网端会将下游 500 转为通用失败，但直接 API 调用方可看到内部错误。
+
+Severity: HIGH（客户线索 Integration API 的错误响应可能泄露数据库实现细节；当前完整生产组装路径有缓解，但路由缺少局部 fail-closed 保证）。
+
+Regression: 业务功能、Auth、payload、字段/owner/duplicate/事务、员工 JWT、官网 contact 安全校验、CMS fallback、桌面/移动浏览器、formal、health contract 和两仓库 build/verify 均通过；FAIL 仅来自上述独立错误泄露 probe。
+
+Remaining risks: Terra 需在原 Task ID 下修复 Integration route 的非 duplicate 异常响应并补充断言；随后 Luna 必须重新执行相关 Xiansuo tests、XYY-WEB verify、错误语义 probe 和必要浏览器回归。未执行部署、生产环境修改、CMS 写入、数据库迁移、push 或 merge。
+
+Handoff: 返回 Sol；`XYY-20260824-01` 保持 FAIL，按 `Luna → Sol → Terra → Sol → Luna Re-test` 闭环，不进入 Nova Review。
+
+#### Re-test after Integration error-envelope fix
+
+Status: PASS
+
+Test Target: Terra 对 XYY-xiansuo `server/src/routes/website-leads.ts` 非 UNIQUE 异常 catch 的固定 500 响应，以及同一 Task 的 duplicate、事务回滚和官网回归门禁。
+
+Tests performed:
+
+- Diff 核对：XYY-xiansuo 本次实现变更仅为 Integration route 的 rollback 后固定返回和对应测试断言；官网业务实现文件未在此次返工中改变，Sol 另行修正了一处 README 历史说明。用户 `.codex/config.toml` 与其他已有改动保留。
+- 独立复现原失败：在临时 SQLite `audit_logs` trigger 中执行 `RAISE(ABORT, 'SQLITE_CONSTRAINT secret-detail')`，直接注册 `websiteLeadIntegrationRoutes` 的默认 Fastify 实例调用合法请求，得到 HTTP 500，响应体严格为 `{"code":1,"msg":"线索接收失败","data":null}`。
+- 敏感响应检查：响应不含 `error`、`message`、`stack`、`SQLITE`、`secret-detail`、Integration Token、手机号或其他客户字段；审计异常后 `leads` 对应手机号计数为 0，确认 rollback。
+- 独立 duplicate 复测：先提交 `13700137000`，再提交格式变体 `137 0013-7000`；两次均为 HTTP 200，第二次为 `{code:0,msg:"线索已存在",data:{duplicate:true}}`，数据库仍只有 1 条。
+- `/home/yj/xiansuo/server`：`npm run build` 通过；`npm test` 178 tests passed、0 failed。
+- 两仓库 `git diff --check`：通过。
+
+Result: PASS
+
+Regression coverage: 原 Luna PASS 中的 XYY-WEB `verify`（46 files / 305 tests）、XYY-WEB E2E（39 passed / 7 skipped，桌面/移动系统 Chrome）、formal（3 passed）、Auth/payload/owner/映射/手机号/座机/duplicate/员工 JWT/health/Secret/Oracle 边界证据仍适用；Xiansuo 全量复测再次通过。官网 contact storage 与浏览器调用边界未在 Terra 返工中改变。
+
+Remaining risks: 本次只完成本地实现与验证；双方生产环境变量、部署和真实端到端联调仍未执行。Integration API 仍应通过完整 `buildApp()` 运行，不能脱离仓库统一 Fastify 错误配置单独暴露；本复测已确认 route 自身也 fail-closed。
+
+Handoff: 返回 Sol；`XYY-20260824-01` 的 Luna 安全阻塞已关闭，结果为 PASS，可进入 Nova Review。未部署、未修改生产环境、未执行 CMS/数据库迁移、未 push/merge。
+
+#### Re-test after Nova Review: production configuration and documentation contract
+
+Status: PASS
+
+Test Target: Nova 指出的生产 Web 环境模板/prepare/deploy 一致性、XYY-xiansuo PM2 环境透传、隔离加载测试，以及历史 `contact_leads` 保留与当前不新写/不迁移文档契约。
+
+Tests performed:
+
+- Web 正式模板 `deploy/production/web/web.env.example`、`deploy/production/web/prepare-web-server.sh`、`scripts/deploy.sh` 一致要求 `DIRECTUS_CONTENT_TOKEN`、HTTPS `XIANSUO_API_URL` 和 `XIANSUO_INGEST_TOKEN`；均不再把 `DIRECTUS_CONTACT_TOKEN` 或 legacy `DIRECTUS_TOKEN` 作为 Web runtime 前置条件。
+- 模板只包含非真实 placeholder；`XIANSUO_INGEST_TOKEN` 为空，未发现真实 Secret。`bash -n deploy/production/web/prepare-web-server.sh`：PASS，未执行脚本、root 操作或部署。
+- `tests/unit/production-web-contact-config.test.ts` 已纳入 Website verify，断言模板、prepare、root deploy 三者契约一致及旧联系令牌/fallback 缺失。
+- Xiansuo `deploy/ecosystem.config.cjs` 显式透传 `WEBSITE_LEAD_INGEST_TOKEN`、`WEBSITE_LEAD_OWNER_ID`，无默认值；`server/test/deploy-ecosystem.test.ts` 使用随机临时 token、隔离 `XIANSUO_SERVER_DIR`，恢复环境变量与 `require.cache`，未调用 PM2。该测试在全量测试中通过。
+- `README.md`、`deploy/production/web/README.md` 和 `docs/CMS_CONTENT_MODEL.md` 明确：历史 Directus `contact_leads` 保留；当前 Web 不新写、不迁移、不双写；新留言走 XYY-xiansuo；health 分离为 `cmsContent` 与 `contactStorage`。Sol 的当前任务措辞修订不改变该客观边界。
+- Website：`npm run verify` 通过，47 test files、306 tests，Astro build/typecheck/lint/maintainability/assets 均通过；`npm run format:check` 通过。
+- Xiansuo：`npm run build && npm test` 通过，179 tests passed、0 failed。
+- 两仓库 `git diff --check`：PASS。
+- 前轮浏览器 runtime 未改变；此前使用系统 Chrome 的 E2E `39 passed / 7 skipped`（桌面/移动）及 formal `3 passed` 证据继续适用，本轮未机械重跑。
+
+Result: PASS
+
+Regression coverage: 覆盖 Nova 指出的三项阻断：生产 Web 三处配置契约、Xiansuo PM2 实际环境透传与隔离恢复、CMS 历史线索保留/当前不写不迁移/health 分离文档；同时覆盖两仓库格式、类型、构建、单元测试和 diff 门禁。未执行 PM2、部署、生产环境、CMS 写入、数据库迁移、push 或 merge。
+
+Remaining risks: 真实生产 token、有效 `WEBSITE_LEAD_OWNER_ID` 和双方运行环境仍需未来经授权配置；本次只验证模板、代码和测试，不代表生产已切换。
+
+Handoff: 返回 Sol；Nova 指出的配置/文档阻断已通过独立复测，`XYY-20260824-01` 的 Luna 结果为 PASS，可进入 Nova Re-review。

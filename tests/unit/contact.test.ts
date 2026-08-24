@@ -1,6 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { randomBytes } from 'node:crypto'
 
 import { POST, __resetContactRateLimitForTests } from '@/pages/api/contact'
+
+const integrationToken = randomBytes(32).toString('base64url')
 
 function request(body: Record<string, unknown>, headers: Record<string, string> = {}) {
   const payload = JSON.stringify(body)
@@ -30,9 +33,8 @@ describe('contact API', () => {
   beforeEach(() => {
     vi.unstubAllEnvs()
     vi.unstubAllGlobals()
-    vi.stubEnv('DIRECTUS_URL', '')
-    vi.stubEnv('DIRECTUS_CONTACT_TOKEN', '')
-    vi.stubEnv('DIRECTUS_TOKEN', '')
+    vi.stubEnv('XIANSUO_API_URL', '')
+    vi.stubEnv('XIANSUO_INGEST_TOKEN', '')
     __resetContactRateLimitForTests()
   })
 
@@ -73,53 +75,9 @@ describe('contact API', () => {
     expect(fetchMock).not.toHaveBeenCalled()
   })
 
-  it('stores valid leads in Directus when configured', async () => {
+  it('fails closed without Xiansuo configuration and never falls back to Directus', async () => {
     vi.stubEnv('DIRECTUS_URL', 'https://directus.test')
-    vi.stubEnv('DIRECTUS_CONTACT_TOKEN', 'contact-token')
-    vi.stubEnv('DIRECTUS_TOKEN', 'legacy-token')
-
-    const fetchMock = vi.fn(
-      async () => new Response(JSON.stringify({ data: { id: 1 } }), { status: 200 })
-    )
-    vi.stubGlobal('fetch', fetchMock)
-
-    const response = await POST({
-      request: request({
-        name: '张三',
-        phone: '13800138000',
-        company: '测试公司',
-        email: 'test@example.com',
-        service: 'cloud-warehouse',
-        message: '想了解仓配一体方案',
-        privacyConsent: 'on',
-        status: 'published',
-        source: 'attacker-controlled',
-        date_created: '2000-01-01T00:00:00.000Z',
-      }),
-    } as any)
-
-    expect(response.status).toBe(200)
-    expect(fetchMock).toHaveBeenCalledWith(
-      'https://directus.test/items/contact_leads',
-      expect.objectContaining({
-        method: 'POST',
-        headers: expect.objectContaining({ Authorization: 'Bearer contact-token' }),
-        body: JSON.stringify({
-          name: '张三',
-          phone: '13800138000',
-          company: '测试公司',
-          email: 'test@example.com',
-          service: 'cloud-warehouse',
-          message: '想了解仓配一体方案',
-        }),
-      })
-    )
-  })
-
-  it('does not use the legacy shared token for contact storage', async () => {
-    vi.stubEnv('DIRECTUS_URL', 'https://directus.test')
-    vi.stubEnv('DIRECTUS_CONTACT_TOKEN', '')
-    vi.stubEnv('DIRECTUS_TOKEN', 'legacy-token')
+    vi.stubEnv('DIRECTUS_CONTACT_TOKEN', 'legacy-contact-token')
     const fetchMock = vi.fn()
     vi.stubGlobal('fetch', fetchMock)
 
@@ -136,10 +94,7 @@ describe('contact API', () => {
     expect(fetchMock).not.toHaveBeenCalled()
   })
 
-  it('rejects valid leads when Directus storage is not configured', async () => {
-    vi.stubEnv('DIRECTUS_URL', '')
-    vi.stubEnv('DIRECTUS_CONTACT_TOKEN', '')
-    vi.stubEnv('DIRECTUS_TOKEN', '')
+  it('rejects valid leads when Xiansuo storage is not configured', async () => {
     const fetchMock = vi.fn()
     vi.stubGlobal('fetch', fetchMock)
 
@@ -160,11 +115,16 @@ describe('contact API', () => {
   })
 
   it('rate limits repeated submissions from the same IP', async () => {
-    vi.stubEnv('DIRECTUS_URL', 'https://directus.test')
-    vi.stubEnv('DIRECTUS_CONTACT_TOKEN', 'contact-token')
+    vi.stubEnv('XIANSUO_API_URL', 'https://xs.test')
+    vi.stubEnv('XIANSUO_INGEST_TOKEN', integrationToken)
     vi.stubGlobal(
       'fetch',
-      vi.fn(async () => new Response(JSON.stringify({ data: { id: 1 } }), { status: 200 }))
+      vi.fn(
+        async () =>
+          new Response(JSON.stringify({ code: 0, data: { id: 1, duplicate: false } }), {
+            status: 200,
+          })
+      )
     )
     const body = { name: '张三', phone: '13800138000', message: '咨询', privacyConsent: 'on' }
     let lastResponse = new Response(null)
@@ -187,11 +147,16 @@ describe('contact API', () => {
   })
 
   it('does not let spoofed X-Forwarded-For prefixes evade rate limiting', async () => {
-    vi.stubEnv('DIRECTUS_URL', 'https://directus.test')
-    vi.stubEnv('DIRECTUS_CONTACT_TOKEN', 'contact-token')
+    vi.stubEnv('XIANSUO_API_URL', 'https://xs.test')
+    vi.stubEnv('XIANSUO_INGEST_TOKEN', integrationToken)
     vi.stubGlobal(
       'fetch',
-      vi.fn(async () => new Response(JSON.stringify({ data: { id: 1 } }), { status: 200 }))
+      vi.fn(
+        async () =>
+          new Response(JSON.stringify({ code: 0, data: { id: 1, duplicate: false } }), {
+            status: 200,
+          })
+      )
     )
     const body = { name: '张三', phone: '13800138000', message: '咨询', privacyConsent: 'on' }
     let lastResponse = new Response(null)

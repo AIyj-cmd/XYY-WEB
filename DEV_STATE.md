@@ -680,3 +680,10 @@
 - 两次发布前失败均在服务器上传或切换前安全停止：一次为浏览器并发资源超时，一次为手工注入 Release ID 影响本地部署契约 fixture；最终使用 `CI=1` 和脚本生成 Release ID 完成全部门禁与发布，没有回滚或遗留半发布状态。
 - 本节工作账与状态收口会形成一个不改变运行代码的纯文档提交，因此 GitHub 仓库 HEAD 可领先测试站应用 SHA；应用内容以 `539bfd44c05d81b5b7a1246cb009beec4c58f4c1` 为三方共同基线，无需为纯文档重复部署。
 - 本任务仅部署测试环境；未部署正式主站，未写入 CMS 或数据库，未修改 DNS、TLS、Nginx、生产环境变量或手工 PM2 配置。
+
+## 官网线索接入本地实现候选（XYY-20260824-01）
+
+- XYY-WEB 与 XYY-xiansuo 已在本地完成官网线索 Server-to-Server Integration 实现和验收：浏览器继续只调用 `/api/contact`，官网服务端使用独立 Bearer Token、单次有限超时和 HTTPS JSON 契约调用 XYY-xiansuo 专用接口；XYY-xiansuo 服务端控制 active owner、字段映射、电话规范化、duplicate 语义及 lead/audit 原子事务。
+- Directus 继续承担官网 CMS 内容职责，健康检查已在代码中区分 `cmsContent` 与 Xiansuo `contactStorage`。历史 Directus / Oracle `contact_leads` 保留，未迁移、删除、清空或双写；XYY-xiansuo SQLite Schema 与生产数据均未修改。
+- 本地质量门禁最终通过：Luna `PASS`，Nova Re-review `APPROVED`；XYY-WEB verify 为 47 files / 306 tests，桌面与移动 E2E 39 passed / 7 configured skips、formal 3 passed；XYY-xiansuo build 与 179 tests 通过，两仓 `git diff --check` 通过。
+- 当前状态仅为 implementation ready，不代表 production active。两仓改动尚未提交、推送、合并或部署；双方真实 Token、XYY-xiansuo active owner、生产环境变量、HTTPS 联调和切换均未执行，正式环境仍维持任务开始前的联系写入路径。

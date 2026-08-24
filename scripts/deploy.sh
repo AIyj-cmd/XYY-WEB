@@ -52,10 +52,8 @@ DIRECTUS_URL="$BUILD_DIRECTUS_URL" \
 "${ssh_cmd[@]}" "$DEPLOY_HOST" "set -euo pipefail
 test -f '$REMOTE_DIR/.env'
 grep -Eq '^DIRECTUS_URL=.+' '$REMOTE_DIR/.env'
-if ! { grep -Eq '^DIRECTUS_CONTENT_TOKEN=.+' '$REMOTE_DIR/.env' && \
-  grep -Eq '^DIRECTUS_CONTACT_TOKEN=.+' '$REMOTE_DIR/.env'; } && \
-  ! grep -Eq '^DIRECTUS_TOKEN=.+' '$REMOTE_DIR/.env'; then
-  echo '[error] Directus runtime tokens are missing' >&2
+if ! grep -Eq '^DIRECTUS_CONTENT_TOKEN=.+' '$REMOTE_DIR/.env' || ! grep -Eq '^XIANSUO_API_URL=https://.+' '$REMOTE_DIR/.env' || ! grep -Eq '^XIANSUO_INGEST_TOKEN=.+' '$REMOTE_DIR/.env'; then
+  echo '[error] required CMS content or Xiansuo contact integration settings are missing' >&2
   exit 1
 fi
 mkdir -p '$RELEASES_DIR'
@@ -135,7 +133,8 @@ if ! PATH='$NODE_BIN':\$PATH pm2 start \"\$current_link/ecosystem.config.cjs\" -
 fi
 healthy=0
 for _ in {1..30}; do
-  if curl -fsS http://127.0.0.1:$WEB_PORT/healthz | grep -q '\"contactStorage\":\"ok\"'; then
+  health_payload=\"\$(curl -fsS http://127.0.0.1:$WEB_PORT/healthz || true)\"
+  if [[ \"\$health_payload\" == *'\"cmsContent\":\"ok\"'* && \"\$health_payload\" == *'\"contactStorage\":\"ok\"'* ]]; then
     healthy=1
     break
   fi

@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test'
 import { spawn, type ChildProcess } from 'node:child_process'
+import { randomBytes } from 'node:crypto'
 import { createServer, type Server } from 'node:http'
 import type { AddressInfo } from 'node:net'
 import { getClaimText } from '../../src/lib/claims'
@@ -110,7 +111,7 @@ test('health endpoint fails closed when configured CMS is unreachable', async ({
   expect(response.status()).toBe(503)
   await expect(response.json()).resolves.toEqual({
     status: 'degraded',
-    dependencies: { contactStorage: 'unreachable' },
+    dependencies: { cmsContent: 'unreachable', contactStorage: 'unreachable' },
   })
   const version = await request.get('/version')
   expect(version.status()).toBe(503)
@@ -160,7 +161,8 @@ test('case detail returns HTTP 404 when the available CMS has no published slug'
       ...process.env,
       DIRECTUS_URL: `http://127.0.0.1:${directusPort}`,
       DIRECTUS_CONTENT_TOKEN: 'cms-empty-contract-token',
-      DIRECTUS_CONTACT_TOKEN: 'cms-empty-contact-token',
+      XIANSUO_API_URL: 'https://xiansuo-integration.test',
+      XIANSUO_INGEST_TOKEN: randomBytes(32).toString('base64url'),
       PUBLIC_DIRECTUS_URL: `http://127.0.0.1:${directusPort}`,
       PUBLIC_SITE_URL: origin,
       ENABLE_DOMAIN_REDIRECTS: 'false',
