@@ -1,6 +1,6 @@
 # DEV_STATE
 
-更新时间：2026-08-24
+更新时间：2026-08-25
 
 ## 协作记录约定
 
@@ -18,20 +18,21 @@
 
 ## 当前版本与环境
 
-- 仓库最新提交以 `git log -1` 为准；当前 staging 应用发布基线为 `4c1f31346ebe19664bccfec13d69841bd31a5e4e`，其后的纯文档状态提交不代表新的应用 Release。
-- 验收站当前运行提交以 `/version` 返回的 `gitSha` 为准，不能仅根据仓库 HEAD 推断；当前为 `4c1f31346ebe19664bccfec13d69841bd31a5e4e`。
+- 仓库最新提交以 `git log -1` 为准；当前 staging 应用发布基线为 `2c75bcd0d3878f4877afac1cc07c4dfa18913360`，其后的纯文档状态提交不代表新的应用 Release。
+- 验收站当前运行提交以 `/version` 返回的 `gitSha` 为准，不能仅根据仓库 HEAD 推断；当前为 `2c75bcd0d3878f4877afac1cc07c4dfa18913360`。
 - 验收站：`https://wz.tomatopia.top`。
-- 验收站当前 Release 为 `20260824T090653Z-4c1f313`，环境为 `staging`，CMS Schema 为 `2026-08-cms-hardening`；仍以 `/version` 的实时响应为准。
+- 验收站当前 Release 为 `20260825T054116Z-2c75bcd`，环境为 `staging`，CMS Schema 为 `2026-08-cms-hardening`；仍以 `/version` 的实时响应为准。
 - 正式主站已运行；本次只通过公开 HTTP 对主页和 robots 做发布前后哈希比对并确认内容未变化，未连接主站服务器、未修改主站环境，也未提交主站联系表单。
 - 运行状态：PM2 中 `xyy-web` 在线，Web 端口为 `50031`。
 - 健康状态：`/healthz` 返回200，`cmsContent=ok`、`contactStorage=ok`；首页、产品、案例、关于、新闻、期刊、联系、服务专题和真实404均已完成发布后 smoke test。
 - CMS 状态：19个集合严格 Verify 为0 failure；Active 身份与 claimKey 迁移完成；运行权限审计通过；第二次迁移 dry-run 为0项内容变更、0项 Schema 变更。
 - 数据库延续现有已上线状态（历史记录为 PostgreSQL 16）；PostgreSQL → Oracle 19c 已退出当前工作范围，不再作为待执行计划，也不得因历史材料自动恢复。
 
-## 官网线索 Integration 发布状态（2026-08-24）
+## 官网线索 Integration 发布状态（2026-08-25 更新）
 
 - XYY-xiansuo Integration 已在 `https://xs.tomatopia.top` 激活，运行代码 SHA 为 `3c3eb1baa82a942c4a5f867a50d3e640b8497a5c`；独立机器 Token 已配置，owner ID 2 已确认 active。真实 Token 不记录在仓库或本文档。
-- XYY-WEB staging 已在 `https://wz.tomatopia.top` 激活并验证官网线索 Integration；当前 Release 为 `20260824T090653Z-4c1f313`，浏览器仍只请求 staging `/api/contact`，再由 Web Server 通过 HTTPS 调用 XYY-xiansuo。
+- XYY-WEB staging 已在 `https://wz.tomatopia.top` 激活并验证官网线索 Integration；当前 Release 为 `20260825T054116Z-2c75bcd`，浏览器仍只请求 staging `/api/contact`，再由 Web Server 通过 HTTPS 调用 XYY-xiansuo。上一 Release `20260824T090653Z-4c1f313` 已作为原子回滚目标保留。
+- XYY-xiansuo 本地、GitHub 与运行服务继续一致为 `3c3eb1baa82a942c4a5f867a50d3e640b8497a5c`；本次没有新代码或配置需要发布，systemd 服务未重启且 `NRestarts=0`。
 - `https://56xyy.com` 未在本次发布中部署或改配，主站页面与 robots 内容哈希均与发布前一致；Main-site Integration 当前为 `NOT ACTIVE`。
 - 受控 direct smoke lead ID 8 与 website E2E lead ID 9 已创建并保留，均标记 `TEST ONLY / DO NOT FOLLOW`。两次相同 website phone 提交后 XYY-xiansuo 仍只有一条记录、一条 create audit、零条 follow-up。
 - staging Directus 通过强制只读事务确认本次 website E2E phone 在 `contact_leads` 中计数为 0，XYY-xiansuo 中计数为 1；当前链路不存在 Directus 双写。
@@ -84,7 +85,7 @@
 - 生产构建：通过。
 - `npm run verify:release`：完整通过。
 - XYY-xiansuo：构建与 179 项测试通过；发布后 Integration health、鉴权、direct create / duplicate 与真实 website E2E 均通过。
-- GitHub CI：应用提交 `1c7b657` 与状态文档提交 `0578cd0` 均通过。
+- GitHub CI：最新 staging 同步提交 `2c75bcd` 的 Run `32788366421` 已通过；此前应用提交 `1c7b657` 与状态文档提交 `0578cd0` 也均通过。
 - 验收站：`/version`、`/healthz`、CMS Verify、运行权限审计和核心页面 smoke test 均通过。
 - 测试日志中的 Directus `fetch failed` 来自刻意使用不可达 CMS 验证回退和健康失败关闭，不是发布故障。
 

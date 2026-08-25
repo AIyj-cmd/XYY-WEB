@@ -29,6 +29,8 @@ XYY-WEB 已运行于正式环境，当前处于稳定维护阶段。仓库根目
 
 | Task | Risk | Owner | Status |
 | --- | --- | --- | --- |
+| XYY-20260824-04 | HIGH | Sol | CLOSED |
+| XYY-20260824-03 | LOW | Sol | CLOSED |
 | XYY-20260824-02 | HIGH | Sol | CLOSED |
 | XYY-20260824-01 | HIGH | Sol | CLOSED |
 | XYY-20260822-01 | HIGH | Sol | CLOSED |
@@ -277,3 +279,23 @@ Decision: 使用不会与现有线索重复的测试座机 `010-00000003`，仅�
 Validation: 页面显示提交成功；网络记录恰好一次 `POST https://wz.tomatopia.top/api/contact` 且为 HTTP 200，控制台无错误。只读查询确认新线索 ID 10 唯一存在，联系人为 `Codex路径测试-请勿跟进`、来源为 `官网留言`、状态为 `新线索`，需求完整包含 `[XYY PATH TEST]`。Luna 独立结果为 PASS。
 
 Result: CLOSED。路径测试 PASS；无业务代码、部署、配置或数据库修改，`56xyy.com` 与 Oracle 均未触碰。
+
+### XYY-20260824-04
+
+Status: CLOSED
+
+Risk: HIGH
+
+Task: 将已验收的 Codex 多代理配置与路径验证工作账同步到 XYY-WEB GitHub、本地 `main` 和功能分支，并使用既有原子发布流程更新 `wz.tomatopia.top`；核对无待发布变更的 XYY-xiansuo 三方状态。
+
+Scope: 只提交 `.codex/config.toml`、`docs/SOL.md`、`docs/LUNA.md` 的既有确认改动；快进推送 XYY-WEB feature 与 `main`；只发布 staging。XYY-xiansuo 仅只读核对，不重启；`56xyy.com`、Oracle、Directus 数据、DNS、TLS、Nginx 和业务代码均排除。
+
+Acceptance Criteria: Web 本地与 GitHub 两分支一致且工作区干净；本地完整发布门禁与 GitHub CI 通过；staging `/version` 精确匹配目标 SHA/Release，`cmsContent` 与 `contactStorage` 均正常；原子回滚目标存在；Xiansuo 本地、GitHub、运行服务一致且未重启；Luna `PASS`、Nova `APPROVED`。
+
+Decision: 没有业务实现，因此不机械调度 Terra；将有效的 Codex 配置和 Task 03 工作账拆成两个可审计提交。Xiansuo 已处于目标版本，无意义的重复部署和服务重启均不执行。
+
+Changes: 创建 `6d3c3b3`（Codex 多代理配置）与 `2c75bcd`（路径验证工作账），功能分支和 `main` 均以 fast-forward 推送；GitHub CI Run `32788366421` 成功。Web staging 原子发布为 `20260825T054116Z-2c75bcd`，上一 Release `20260824T090653Z-4c1f313` 保留为回滚目标。
+
+Validation: 本地 `CI=1 npm run verify:release` 与部署脚本内完整门禁均通过，覆盖 306 项单测、39 项 E2E（7 项按配置跳过）、3 项正式域名契约和生产构建。发布后版本身份、双依赖健康、核心路由、真实 404、PM2、manifest 和回滚元数据均正常。Xiansuo 三方保持 `3c3eb1b`，systemd `active/running`、`NRestarts=0`。Luna 最终 `PASS`，Nova 最终 `APPROVED`。
+
+Result: CLOSED。XYY-WEB 应用状态已同步到 GitHub、本地与 staging；XYY-xiansuo 已确认本地、GitHub、运行服务同步，无需重复发布。正式主站与 Oracle 未触碰。

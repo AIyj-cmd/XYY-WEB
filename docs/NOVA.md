@@ -221,3 +221,25 @@ Result:
 Remaining Risks:
 
 Handoff:
+
+### XYY-20260824-04
+
+Status: APPROVED
+
+Review Scope: XYY-WEB Git 同步、CI、staging 版本/manifest/进程/回滚一致性，以及 XYY-xiansuo 三方一致且未重启的 HIGH 风险只读发布 Review。
+
+Architecture: Web 本地和 GitHub main/feature 均为 `2c75bcd0d3878f4877afac1cc07c4dfa18913360`，从 `c831f84` 线性快进；staging current、外部 `/version`、manifest 与进程 cwd 一致为 `20260825T054116Z-2c75bcd`，previous target 有效。Xiansuo 本地、GitHub 与 runtime 均为 `3c3eb1baa82a942c4a5f867a50d3e640b8497a5c`。
+
+Security: 目标增量无敏感凭据模式命中，不含 `.env`、备份或运行配置；未读取 Token。同步增量只涉及 Codex 配置和工作账，不进入 staging 应用发布 allowlist。
+
+Maintainability: 没有业务实现、依赖或部署脚本变更；staging 运行代码与已验收祖先业务实现等价。两仓工作区干净，无本地/远端漂移；Xiansuo systemd 启动时间早于本次 Web Release，证明未重复部署或重启。
+
+Contract Risks: Web 双依赖健康、核心路由与真实 404 均正常；Xiansuo health 正常、systemd active/running、`NRestarts=0`。未涉及 claims、CMS/Directus contract、数据库或 Oracle。
+
+Test Coverage Review: GitHub CI Run `32788366421` 成功；Luna PASS 覆盖版本、健康、核心路由、回滚、PM2/systemd、Xiansuo 三方一致与 Secret Scope；Nova 独立复核 Git ancestry、GitHub refs、live manifest/symlink/process 和运行状态，证据一致。
+
+Result: APPROVED
+
+Remaining Risks: `/version` 标识包含工作账与 Agent 配置的同步提交，实际业务运行代码与祖先 `4c1f313` 等价；这是预期的发布审计语义。按 Scope 未访问 `56xyy.com`，不对正式主站实时状态新增断言。
+
+Handoff: 返回 Sol 最终验收；无需 Terra 返工、重复部署或重启 Xiansuo。

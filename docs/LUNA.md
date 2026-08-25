@@ -352,3 +352,23 @@ Regression: 本任务只验证指定路径，未重新提交表单，未访问 `
 Risks: 无阻断；证据来自 Sol 本次真实浏览器会话和 Luna 的独立只读远端复核。
 
 Handoff: 返回 Sol；路径验证 PASS，可最终关闭 `XYY-20260824-03`。
+
+### XYY-20260824-04
+
+Status: PASS
+
+Test Target: XYY-WEB 本地/GitHub/staging 发布一致性、原子回滚资料，以及 XYY-xiansuo 本地/GitHub/runtime 无变更一致性。
+
+Acceptance Criteria: Web refs 与目标提交一致、CI 成功、staging 版本和双健康正常、核心路由可用、回滚目标有效；Xiansuo 三方 SHA 一致且服务未重启；无 Secret、主站、Oracle 或数据库越界。
+
+Tests: 独立只读核对 Git refs、GitHub CI、staging `/version` 与 `/healthz`、8 个核心路由和真实 404、远端 current/previous Release、PM2 运行目标；核对 Xiansuo Git/runtime SHA、公开 health、systemd 状态与重启计数；扫描目标增量的 Secret 和 Scope。
+
+Result: PASS
+
+Evidence: Web 本地/GitHub main 与 feature 均为 `2c75bcd0d3878f4877afac1cc07c4dfa18913360`，CI Run `32788366421` 成功；staging Release 为 `20260825T054116Z-2c75bcd`，`cmsContent=ok`、`contactStorage=ok`，PM2 online，上一 Release 存在。Xiansuo 三方均为 `3c3eb1baa82a942c4a5f867a50d3e640b8497a5c`，systemd active/running、`NRestarts=0`。
+
+Regression: 覆盖发布身份、健康、核心路由、真实 404、回滚、进程状态、Xiansuo 无重启及 Secret/Scope 边界；未提交表单，未访问正式主站，未读取 Token 或操作数据库。
+
+Risks: 无阻断；staging `/healthz` 已验证联系存储依赖，无需读取 Integration Token。
+
+Handoff: 返回 Sol；发布后独立 QA PASS，可进入 Nova Review 与最终验收。
