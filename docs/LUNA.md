@@ -411,3 +411,29 @@ Regression coverage: 集成测试及全量服务端测试覆盖 Bearer 鉴权、
 Remaining risks: 未来新增服务码仍按原值保存，需另行确认中文标签；本次未部署、未写生产 CMS/数据库、未修改 Web 业务代码。
 
 Handoff: 返回 Sol；Nova REJECTED 项已完成返工后的独立 QA Re-test，`XYY-20260825-01` PASS，可继续 Nova Review/最终验收。
+
+### XYY-20260825-02
+
+Task ID: XYY-20260825-02
+
+Result: PASS
+
+Tests performed:
+
+- 独立核对 XYY-xiansuo 本地 `main` 与 feature、GitHub `main` 与 feature 均指向完整 SHA `a5f82b96b271e266af58ca14b505ad026f050244`；目标 commit 仅改动 `server/src/routes/website-leads.ts` 与对应集成测试。XYY-WEB commit `17dd56d201ea6666a3e972488e914a97e6484778` 仅改动治理/工作账文档，GitHub CI Run `32818079729` 成功。
+- 只读核对生产 systemd：`xiansuo-api.service` 为 `active/running`、`NRestarts=0`，`ExecStart` 与 `/opt/xiansuo-releases/a5f82b96b271e266af58ca14b505ad026f050244/RELEASE_SHA` 一致，环境文件仍为 `/etc/xiansuo/xiansuo-api.env`；旧 release `3c3eb1b...` 与 `/var/backups/xiansuo/XYY-20260825-02/xiansuo-api.service.pre` 均存在。
+- `https://xs.tomatopia.top/api/health` HTTP 200；Nginx 记录重启瞬间 14:45:17 一次 502，14:45:19 恢复 200，无回滚启动迹象。release journal 自 14:45 起无 error-like 服务日志或凭据泄露；token 关键词仅出现在迁移描述文本。
+- 独立检查 Sol 提供的真实 Playwright trace 与截图：恰有 `POST https://wz.tomatopia.top/api/contact`、HTTP 200，截图显示“提交成功”；未见浏览器直连 Xiansuo。远端 SQLite 只读查询确认规范化手机号 `01000000025` 精确一行、预期 lead ID 12，联系人“XYY标签发布测试-请勿跟进”，来源“官网留言”、状态“新线索”；`source_note` 含 `咨询服务：鞋服云仓` 且不含 `cloud-warehouse`，需求标记 `[XYY-20260825-02 LABEL TEST]` 存在，create audit=1、follow-up=0。
+- Xiansuo `website-leads-integration.test.ts` 聚焦测试 8/8 通过；未写生产数据、未读 Integration Token、未修改应用/配置/服务/Git。
+
+Regression coverage:
+
+- 覆盖 release 三方身份、systemd 健康与重启计数、环境路径、回滚资料、短暂 502 后恢复、真实浏览器成功页/网络边界、lead 字段映射、服务标签中文化、唯一记录、audit 与无 follow-up，以及 Secret/Schema/迁移/Directus/Oracle/正式主站范围检查。
+- GitHub Xiansuo CI Run `32818086795` 的唯一失败为未改动的 `phase45-pilot-readiness.test.ts` 在 Node 22 下调用不存在的 `db.serialize`（179/180）；baseline `3c3eb1b...` CI 也为 failure，且本次目标集成测试 8/8、生产标签 E2E 均通过。该既有全局 CI 问题对本次标签发布非阻断，未修改相关测试或 workflow。
+
+Remaining risks:
+
+- Xiansuo 全局 GitHub CI 仍有与本任务无关的 Node 22/SQLite API 兼容性失败，后续应由独立维护任务处理；本任务不扩大范围。
+- 测试线索 ID 12 为 `TEST ONLY / DO NOT FOLLOW`，应按既定审计策略保留；本次未执行删除。
+
+Handoff: 返回 Sol；XYY-20260825-02 发布后独立 QA PASS，可进入最终验收。

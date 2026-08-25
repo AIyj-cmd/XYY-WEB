@@ -285,3 +285,27 @@ Result: APPROVED
 Remaining Risks: 未来 Web 新增稳定服务码时，Xiansuo 会安全保留原值，仍需另行确认并同步中文标签。本次是本地代码与契约验收，不代表已部署或验证生产运行环境。
 
 Handoff: Re-review `APPROVED`，原 Nova REJECTED 阻断已关闭；返回 Sol 做同一 Task 的最终验收与状态收口。无需进一步业务返工，Nova 未部署、push、commit 或操作生产 CMS/数据库。
+
+### XYY-20260825-02
+
+Status: APPROVED
+
+Task ID: XYY-20260825-02
+
+Review Scope: 对 XYY-xiansuo 服务标签本地化提交 `a5f82b96b271e266af58ca14b505ad026f050244` 的两文件实际 diff、GitHub / 本地 / 生产 release 身份、systemd 与环境文件边界、旧 release 和部署前 unit 回滚资产、重启健康、真实 staging 浏览器 E2E、生产 SQLite 只读数据证据、Secret / Schema / CMS / Oracle / 主站 Scope 以及 Xiansuo 红色 CI 进行最终 HIGH 风险发布 Review。Nova 只执行源码、Git、GitHub、HTTP、SSH 服务状态、日志和 SQLite read-only 核对；未部署、push、commit、修改配置或写生产数据。
+
+Architecture: 目标 commit 相对 `3c3eb1b` 只修改 `server/src/routes/website-leads.ts` 与对应 Integration 测试；五项 Web 稳定码仍只在 Xiansuo `source_note` 写入/显示边界经安全 `Map` 转换，浏览器继续只调用 Web staging `/api/contact`，没有新存储路径、CMS / claims 绕行、Schema 或跨层重构。生产 `ExecStart`、`WorkingDirectory`、`RELEASE_SHA`、本地和 GitHub `main` / feature 均精确对应 `a5f82b9...`；release 中源码及编译 JS 哈希与本地目标产物一致。运行 DB 仍为原 `/var/lib/xiansuo/7bb238.../app.db`，Web staging 仍运行 `2c75bcd`，符合仅文档同步而不重复发布 Web 应用的边界。
+
+Security: Integration 无 Authorization 实时返回 401，目标 diff 未改变 Bearer 定时比较、至少 32-byte 配置要求、strict payload、服务端 owner / created_by 控制、事务或固定错误包络。生产环境文件仍为 `/etc/xiansuo/xiansuo-api.env`、`600 root:root`，mtime 为前一日，unit 继续只引用该路径；Nova 未读取 Token 值。两目标提交的敏感值模式扫描无命中，日志核对未发现凭据值或业务 Secret。数据库目录为 700、DB/WAL/SHM 为 600；没有权限扩大、客户端 Token、环境编辑、Schema / migration、Oracle、Directus 或 `56xyy.com` 变更证据。
+
+Maintainability: 改动保持最小，两文件、无依赖、无复制存储和无不必要抽象；Web 表单与 CMS choices 的五项稳定码/中文标签和 Xiansuo 映射一致，未知、自定义及对象原型键继续可靠 passthrough。systemd 当前 `active/running`、`NRestarts=0`；旧不可变 release `3c3eb1b...` 与 `/var/backups/xiansuo/XYY-20260825-02/xiansuo-api.service.pre` 同时保留，备份 unit 精确指回旧 release 并复用同一环境文件，回滚身份明确。环境文件未随本次发布改写。
+
+Contract Risks: 生产 read-only 查询确认手机号 `01000000025` 仅一条 lead（ID 12），`source_note` 为 `咨询服务：鞋服云仓\n邮箱：test@example.com` 且不含稳定码，需求含 `[XYY-20260825-02 LABEL TEST]`，create audit 恰一条、follow-up 为零。Playwright trace 恰一条 `POST https://wz.tomatopia.top/api/contact` 返回 200、无浏览器直连 Xiansuo，截图显示成功 UI。重启窗口 14:45:17 的一次 health 502 与同秒 upstream connection refused 对应，14:45:19 已恢复 200；当前公网 health 200、服务无重启或回滚迹象，因此该瞬时 502 不构成持续发布故障。
+
+Test Coverage Review: Luna 发布后独立 QA 为 PASS；预部署证据为 Xiansuo build、180/180、H5 build，以及 Web `npm run verify` 306/306。Nova 独立复跑目标 Integration 8/8 和 TypeScript `--noEmit` 均通过，并核对目标 GitHub CI 中该 Integration 新测试通过。Xiansuo Run `32818086795` 的 179/180 红灯由未改的 `phase45-pilot-readiness.test.ts:118` 在 workflow 固定 Node 22 下调用不存在的 `DatabaseSync.serialize()` 导致；基线 `3c3eb1b` Run `32711350101` 在同一位置、同一错误下为 178/179，且本次 diff 对失败测试和 workflow 均为零。该 API 只在测试中用于只读性断言，不在发布运行路径；生产虽然同为 Node 22，但当前 runtime health 和真实写入路径已验证。因此这是已继承、与本 Scope 无因果关系的 CI / Node 兼容治理风险，记录为非阻断，不在本发布 Task 中扩展修复。
+
+Result: APPROVED
+
+Remaining Risks: Xiansuo `main` 的全局 CI 仍为红色，并因 server test 提前失败而跳过后续 CI job steps；虽然本次没有依赖、Gateway、H5 或 workflow 变更，且对应本地门禁与生产 E2E 已覆盖实际增量风险，这仍削弱后续分支保护和发布信号可信度。应由独立维护 Task 统一 Node 22/24 测试契约并恢复全绿，不能把当前 APPROVED 解读为永久豁免。测试线索 ID 12 按审计约定保留为 `TEST ONLY / DO NOT FOLLOW`。
+
+Handoff: 最终发布 Review `APPROVED`，返回 Sol 对照 Acceptance Criteria 完成验收与状态收口。无需 Terra 返工、重复部署或回滚；本结论不授权部署 Web staging / `56xyy.com`、生产配置编辑、CMS / Oracle / 数据库写入，也不关闭独立 CI 兼容治理风险。

@@ -24,11 +24,13 @@ XYY-WEB 已运行于正式环境，当前处于稳定维护阶段。仓库根目
 - Sol / Terra / Luna / Nova 多代理体系已启用；所有调度、失败和返工回到 Sol。
 - 仓库根目录已作为 Obsidian Vault 正常加载；`docs/SOL.md` 是项目管理入口。
 - 官网线索 Integration 已在 XYY-xiansuo 正式服务与 XYY-WEB staging 激活并通过真实 E2E；`56xyy.com` 主站未切换，仍保持原运行版本。
+- XYY-xiansuo 已发布服务码中文显示版本 `a5f82b9`；staging 真实表单验证确认“来源细分”写入“鞋服云仓”，不再显示 `cloud-warehouse`。
 
 ## Current Tasks
 
 | Task | Risk | Owner | Status |
 | --- | --- | --- | --- |
+| XYY-20260825-02 | HIGH | Sol | CLOSED |
 | XYY-20260825-01 | MEDIUM | Sol | CLOSED |
 | XYY-20260824-04 | HIGH | Sol | CLOSED |
 | XYY-20260824-03 | LOW | Sol | CLOSED |
@@ -87,6 +89,7 @@ Sol 的角色是 Product Manager / Orchestrator / Task Planner / Scope Controlle
 
 ## Decisions
 
+- `XYY-20260825-02` 仅发布已在上一 Task 验收的 XYY-xiansuo 两文件服务标签修复，并从既有 XYY-WEB staging 做真实表单 E2E；Web 应用无需重复发布，`56xyy.com`、Oracle、Directus、生产环境变量和数据库结构均不变。生产使用可审计的不可变 release，保留旧 release 与 unit 备份作为回滚目标。
 - `XYY-20260825-01` 保持 XYY-WEB 传输稳定服务代码，在 XYY-xiansuo website lead Integration 构造 `source_note` 时转换为中文标签；未知或自定义值必须原样保留，不修改数据库、历史线索或官网表单契约。本次只完成本地实现与验收，未部署。
 - `XYY-20260824-02` 仅将已验收 Integration 发布到 `xs.tomatopia.top` 与 XYY-WEB 测试站 `wz.tomatopia.top`，严格按 Xiansuo → 基础验证与直接 smoke → Web staging → 浏览器 E2E 顺序执行；`56xyy.com`、Oracle、Directus Schema 和历史 `contact_leads` 不在发布范围。真实 Token 只在受控运行环境中生成和传递，不进入 Git、Markdown、日志或 Agent 报告。
 - `XYY-20260824-01` 将官网联系留言的唯一新登记目标从 Directus `contact_leads` 切换为 XYY-xiansuo 专用 Server-to-Server Integration API；历史 Directus / Oracle 数据保留且不迁移、不删除、不双写。浏览器继续只调用 `/api/contact`；机器身份使用独立 Bearer Token，负责人由 XYY-xiansuo 服务端配置并校验。Directus 继续承担 CMS 内容职责，健康检查必须区分 CMS 内容依赖与 Xiansuo contact storage。
@@ -102,6 +105,13 @@ Sol 的角色是 Product Manager / Orchestrator / Task Planner / Scope Controlle
 - 共享 Vault 配置进入 Git，设备窗口布局、移动端布局和缓存留在本地。
 
 ## Dispatch Log
+
+### XYY-20260825-02
+
+- Risk: HIGH；涉及 XYY-xiansuo 正式服务发布、GitHub 同步、受控生产测试线索和真实跨系统 E2E。
+- 上一 Task 的业务实现已经 Luna Re-test `PASS`、Nova Re-review `APPROVED`，本任务没有代码返工，因此未机械调度 Terra；Sol 负责精确提交、推送、不可变 release 发布、回滚准备和真实浏览器提交。
+- Luna 发布后独立验证 `PASS`：生产 release 身份、健康、浏览器网络边界、中文来源细分、唯一测试线索与 audit 均符合契约；Nova 最终发布 Review `APPROVED`。
+- Xiansuo GitHub CI 的唯一失败是基线即存在的 Node 22 `DatabaseSync.serialize()` 测试兼容问题，与本次两文件 diff 无关；按 Scope 记录为非阻断剩余风险，不在本 Task 顺手修改测试或 workflow。
 
 ### XYY-20260825-01
 
@@ -156,6 +166,26 @@ Sol 的角色是 Product Manager / Orchestrator / Task Planner / Scope Controlle
 - 该烟雾测试不构成角色工作交付，因此不在三本子代理工作账中伪造 Implementation、QA 或 Review 记录；工作账从首次真实职责任务开始记录。
 
 ## Work Log
+
+### XYY-20260825-02
+
+Status: CLOSED
+
+Risk: HIGH
+
+Task: 将 `XYY-20260825-01` 已验收的官网线索服务标签中文化修复提交并推送到 GitHub，发布到 `xs.tomatopia.top`，再从既有 `wz.tomatopia.top` 联系表单执行真实 E2E，确认 XYY-xiansuo “来源细分”显示中文。
+
+Scope: 只发布 XYY-xiansuo 已验收的 Integration 两文件改动并同步两仓工作账；允许创建一条明确标记的测试线索。禁止部署 XYY-WEB staging 应用或 `56xyy.com`，禁止修改 Token、Oracle、Directus、Schema、Nginx、DNS、TLS、PM2 或其他业务功能。
+
+Acceptance Criteria: Xiansuo 本地、GitHub 与生产 release 指向同一验收 SHA；服务健康且回滚资料有效；真实 staging 表单提交成功并只请求 `/api/contact`；新 lead 的来源为“官网留言”、状态为“新线索”、需求含 Task 标记、`source_note` 含“咨询服务：鞋服云仓”且不含 `cloud-warehouse`；Luna `PASS`、Nova `APPROVED`。
+
+Decision: 使用当前 hardened systemd 不可变 release 机制激活精确 Git SHA，复用既有受限环境文件与业务数据库，不编辑配置；保留旧 release 和部署前 unit。Web staging 已包含既有 Integration 链路，因此只做真实 E2E，不为 Xiansuo 局部展示修复重复发布 Web 应用。
+
+Changes: XYY-xiansuo 提交并发布 `a5f82b96b271e266af58ca14b505ad026f050244`，本地 `main`、功能分支、GitHub `main` 和功能分支均同步到该 SHA；生产 release 位于 `/opt/xiansuo-releases/a5f82b96b271e266af58ca14b505ad026f050244`。XYY-WEB 仅同步 Agent 工作账和客观状态文档；staging 应用继续运行既有 Release `20260825T054116Z-2c75bcd`。
+
+Validation: 发布前 Xiansuo build、180/180 server tests、H5 build 与 Web `npm run verify` 通过。发布后 systemd `active/running`、`NRestarts=0`，公网 health 200；重启窗口出现一次瞬时 502，并在两秒内恢复，无持续错误或回滚。真实 Chromium 从 staging 提交成功，浏览器只有 `POST /api/contact` 200；生产只读查询确认测试 lead ID 12 精确一条，来源“官网留言”、状态“新线索”、`source_note` 为 `咨询服务：鞋服云仓` 加测试邮箱、需求含 `[XYY-20260825-02 LABEL TEST]`、create audit=1、follow-up=0。Luna `PASS`，Nova `APPROVED`。
+
+Result: CLOSED。中文来源细分已在 XYY-xiansuo 生产生效并经真实 `wz.tomatopia.top → /api/contact → xs.tomatopia.top → leads` 链路验证。测试线索 ID 12 保留并标记 `TEST ONLY / DO NOT FOLLOW`。Xiansuo GitHub CI 仍因基线已有的 Node 22 测试兼容问题为 179/180，需独立维护 Task 处理；该问题不影响本次增量测试、真实运行路径或发布验收。
 
 ### XYY-20260825-01
 

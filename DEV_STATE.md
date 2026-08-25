@@ -30,14 +30,15 @@
 
 ## 官网线索 Integration 发布状态（2026-08-25 更新）
 
-- `XYY-20260825-01` 已在本地完成服务码中文显示优化并通过 Luna Re-test 与 Nova Re-review：Xiansuo 将五项现有稳定码在 `source_note` 写入边界转换为中文，未知/自定义值安全保留。本次改动尚未提交、推送或部署；当前 `xs.tomatopia.top` 运行 SHA 仍为下述 `3c3eb1b`，线上既有线索与运行行为未被本任务修改。
-- XYY-xiansuo Integration 已在 `https://xs.tomatopia.top` 激活，运行代码 SHA 为 `3c3eb1baa82a942c4a5f867a50d3e640b8497a5c`；独立机器 Token 已配置，owner ID 2 已确认 active。真实 Token 不记录在仓库或本文档。
+- `XYY-20260825-02` 已将上一 Task 验收的服务码中文显示优化发布到 XYY-xiansuo：五项现有稳定码在 `source_note` 写入边界转换为中文，未知/自定义值安全保留。生产运行代码 SHA 为 `a5f82b96b271e266af58ca14b505ad026f050244`。
+- XYY-xiansuo Integration 已在 `https://xs.tomatopia.top` 激活；独立机器 Token 和 active owner ID 2 继续使用既有受限环境配置，本次未读取、修改或重新保存 Secret。真实 Token 不记录在仓库或本文档。
 - XYY-WEB staging 已在 `https://wz.tomatopia.top` 激活并验证官网线索 Integration；当前 Release 为 `20260825T054116Z-2c75bcd`，浏览器仍只请求 staging `/api/contact`，再由 Web Server 通过 HTTPS 调用 XYY-xiansuo。上一 Release `20260824T090653Z-4c1f313` 已作为原子回滚目标保留。
-- XYY-xiansuo 本地、GitHub 与运行服务继续一致为 `3c3eb1baa82a942c4a5f867a50d3e640b8497a5c`；本次没有新代码或配置需要发布，systemd 服务未重启且 `NRestarts=0`。
+- XYY-xiansuo 本地、GitHub 与运行服务一致为 `a5f82b96b271e266af58ca14b505ad026f050244`；systemd 当前 `active/running`、`NRestarts=0`。发布重启窗口出现一次瞬时 502，并在两秒内恢复，当前 health 为 200 且无持续错误。
 - `https://56xyy.com` 未在本次发布中部署或改配，主站页面与 robots 内容哈希均与发布前一致；Main-site Integration 当前为 `NOT ACTIVE`。
-- 受控 direct smoke lead ID 8 与 website E2E lead ID 9 已创建并保留，均标记 `TEST ONLY / DO NOT FOLLOW`。两次相同 website phone 提交后 XYY-xiansuo 仍只有一条记录、一条 create audit、零条 follow-up。
+- 受控 direct smoke lead ID 8、website E2E lead ID 9 和本次中文标签 E2E lead ID 12 已创建并保留，均标记 `TEST ONLY / DO NOT FOLLOW`。ID 12 精确一条，来源为“官网留言”、状态为“新线索”、来源细分为“咨询服务：鞋服云仓”且不含 `cloud-warehouse`，需求含本 Task 标记，并有一条 create audit、零条 follow-up。
 - staging Directus 通过强制只读事务确认本次 website E2E phone 在 `contact_leads` 中计数为 0，XYY-xiansuo 中计数为 1；当前链路不存在 Directus 双写。
-- Xiansuo 保留旧不可变 Release 与部署前数据库、unit、env 备份；Web staging Release 保存 `.previous_target` 并继续使用既有原子 rollback。两仓库本地、GitHub `main` 与已发布应用 SHA 已完成核对。
+- Xiansuo 保留旧不可变 Release `3c3eb1baa82a942c4a5f867a50d3e640b8497a5c` 与部署前 unit 备份；Web staging Release 保存 `.previous_target` 并继续使用既有原子 rollback。两仓库本地、GitHub 与已发布应用身份已完成核对。
+- Xiansuo GitHub CI 的本次 Run 为 179/180；唯一失败是基线即存在的 Node 22 `DatabaseSync.serialize()` 测试兼容问题，目标 Integration 测试和真实生产链路均通过。该全局 CI 风险不在本次两文件发布 Scope，后续需以独立维护 Task 恢复全绿。
 - 本次未执行 Oracle 命令、Schema 修改、历史迁移、Directus Schema 写入或正式主站发布。若切换 `56xyy.com`，必须建立新的独立 HIGH Risk Task。
 
 ## 已完成
