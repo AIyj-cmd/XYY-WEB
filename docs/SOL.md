@@ -30,6 +30,7 @@ XYY-WEB 已运行于正式环境，当前处于稳定维护阶段。仓库根目
 
 | Task | Risk | Owner | Status |
 | --- | --- | --- | --- |
+| XYY-20260825-03 | LOW | Sol | CLOSED |
 | XYY-20260825-02 | HIGH | Sol | CLOSED |
 | XYY-20260825-01 | MEDIUM | Sol | CLOSED |
 | XYY-20260824-04 | HIGH | Sol | CLOSED |
@@ -106,6 +107,11 @@ Sol 的角色是 Product Manager / Orchestrator / Task Planner / Scope Controlle
 
 ## Dispatch Log
 
+### XYY-20260825-03
+
+- Risk: LOW；仅清理已完整合并的 Git 分支，不修改业务代码或运行环境。
+- Sol 只读确认两个仓库的 `codex/website-lead-integration-20260824` 均为 `main` 的祖先后，直接完成本地与 GitHub 分支删除；未调用 Terra、Luna 或 Nova。
+
 ### XYY-20260825-02
 
 - Risk: HIGH；涉及 XYY-xiansuo 正式服务发布、GitHub 同步、受控生产测试线索和真实跨系统 E2E。
@@ -166,6 +172,22 @@ Sol 的角色是 Product Manager / Orchestrator / Task Planner / Scope Controlle
 - 该烟雾测试不构成角色工作交付，因此不在三本子代理工作账中伪造 Implementation、QA 或 Review 记录；工作账从首次真实职责任务开始记录。
 
 ## Work Log
+
+### XYY-20260825-03
+
+Status: CLOSED
+
+Risk: LOW
+
+Task: 确认官网线索 Integration 功能分支已经合并到两个仓库的 `main`，随后删除本地和 GitHub 功能分支。
+
+Decision: 只处理 `codex/website-lead-integration-20260824`；不删除其他历史或并行工作分支。删除前必须用 Git ancestry 验证本地与远端分支均已包含于 `main`。
+
+Changes: XYY-WEB 与 XYY-xiansuo 均切换并保持在 `main`；两仓本地及 GitHub 的 `codex/website-lead-integration-20260824` 已删除，残留 remote-tracking ref 已清理。
+
+Validation: XYY-WEB `main` 与 `origin/main` 均为 `90cac20f492e141d834fb36b5293c74766162a59`；XYY-xiansuo `main` 与 `origin/main` 均为 `a5f82b96b271e266af58ca14b505ad026f050244`。两个功能分支在本地 branch list 与 GitHub ref API 中均不存在，工作树无业务修改。
+
+Result: CLOSED。Integration 开发分支已完成合并后清理；Agent Dispatch: Sol only。
 
 ### XYY-20260825-02
 

@@ -34,6 +34,7 @@
 - XYY-xiansuo Integration 已在 `https://xs.tomatopia.top` 激活；独立机器 Token 和 active owner ID 2 继续使用既有受限环境配置，本次未读取、修改或重新保存 Secret。真实 Token 不记录在仓库或本文档。
 - XYY-WEB staging 已在 `https://wz.tomatopia.top` 激活并验证官网线索 Integration；当前 Release 为 `20260825T054116Z-2c75bcd`，浏览器仍只请求 staging `/api/contact`，再由 Web Server 通过 HTTPS 调用 XYY-xiansuo。上一 Release `20260824T090653Z-4c1f313` 已作为原子回滚目标保留。
 - XYY-xiansuo 本地、GitHub 与运行服务一致为 `a5f82b96b271e266af58ca14b505ad026f050244`；systemd 当前 `active/running`、`NRestarts=0`。发布重启窗口出现一次瞬时 502，并在两秒内恢复，当前 health 为 200 且无持续错误。
+- `XYY-20260825-03` 已确认 XYY-WEB 与 XYY-xiansuo 的 `codex/website-lead-integration-20260824` 完整并入各自 `main`，随后删除两仓本地与 GitHub 功能分支；其他历史或并行分支未处理。
 - `https://56xyy.com` 未在本次发布中部署或改配，主站页面与 robots 内容哈希均与发布前一致；Main-site Integration 当前为 `NOT ACTIVE`。
 - 受控 direct smoke lead ID 8、website E2E lead ID 9 和本次中文标签 E2E lead ID 12 已创建并保留，均标记 `TEST ONLY / DO NOT FOLLOW`。ID 12 精确一条，来源为“官网留言”、状态为“新线索”、来源细分为“咨询服务：鞋服云仓”且不含 `cloud-warehouse`，需求含本 Task 标记，并有一条 create audit、零条 follow-up。
 - staging Directus 通过强制只读事务确认本次 website E2E phone 在 `contact_leads` 中计数为 0，XYY-xiansuo 中计数为 1；当前链路不存在 Directus 双写。
