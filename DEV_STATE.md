@@ -30,6 +30,7 @@
 
 ## 官网线索 Integration 发布状态（2026-08-25 更新）
 
+- `XYY-20260825-01` 已在本地完成服务码中文显示优化并通过 Luna Re-test 与 Nova Re-review：Xiansuo 将五项现有稳定码在 `source_note` 写入边界转换为中文，未知/自定义值安全保留。本次改动尚未提交、推送或部署；当前 `xs.tomatopia.top` 运行 SHA 仍为下述 `3c3eb1b`，线上既有线索与运行行为未被本任务修改。
 - XYY-xiansuo Integration 已在 `https://xs.tomatopia.top` 激活，运行代码 SHA 为 `3c3eb1baa82a942c4a5f867a50d3e640b8497a5c`；独立机器 Token 已配置，owner ID 2 已确认 active。真实 Token 不记录在仓库或本文档。
 - XYY-WEB staging 已在 `https://wz.tomatopia.top` 激活并验证官网线索 Integration；当前 Release 为 `20260825T054116Z-2c75bcd`，浏览器仍只请求 staging `/api/contact`，再由 Web Server 通过 HTTPS 调用 XYY-xiansuo。上一 Release `20260824T090653Z-4c1f313` 已作为原子回滚目标保留。
 - XYY-xiansuo 本地、GitHub 与运行服务继续一致为 `3c3eb1baa82a942c4a5f867a50d3e640b8497a5c`；本次没有新代码或配置需要发布，systemd 服务未重启且 `NRestarts=0`。

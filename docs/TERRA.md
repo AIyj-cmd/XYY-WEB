@@ -166,6 +166,41 @@ Risks:
 
 Handoff: 请 Luna 独立验证两端 Auth/payload/owner/duplicate/手机号与座机/审计映射、官网保留 honeypot/限流/隐私与失败语义、HTTPS-only 与 Secret 不进入客户端；检查 `/healthz` 必须同时要求 `cmsContent` 和 `contactStorage`，且本 Task 没有 Oracle/Directus 写入、Schema 改动、双写或生产操作。
 
+### XYY-20260825-01
+
+Status: DONE
+
+Task: 将官网线索 Integration 的服务稳定码转换为中文显示名称。
+
+Scope: 仅修改 XYY-xiansuo website lead Integration 的 `source_note` 构造和对应集成测试；不改官网业务代码、数据库/Schema、既有线索或运行配置。
+
+Implementation:
+
+- 在 XYY-xiansuo 的 Integration 边界增加五项精确服务码映射：`cloud-warehouse`、`quality-inspection`、`logistics-cloud`、`all`、`other` 分别写入既定中文标签。
+- 已有中文或自定义服务值、未知服务值按原值写入；`service` 为 null 时仍只按现有逻辑处理 email，email-only 继续写为单行邮箱说明。
+
+Changed Files:
+
+- XYY-xiansuo：`server/src/routes/website-leads.ts`、`server/test/website-leads-integration.test.ts`
+- XYY-WEB：`docs/TERRA.md`
+
+Validation:
+
+- `cd /home/yj/xiansuo/server && npx tsx --test test/website-leads-integration.test.ts`：8 项通过，覆盖五项稳定码、中文自定义值、null 与 email-only 行为。
+- `cd /home/yj/xiansuo/server && npm run build`：通过。
+- `cd /home/yj/xiansuo/server && npm test`：180 项通过。
+- `git -C /home/yj/xiansuo diff --check`：通过。
+
+Rework (Nova):
+
+- 服务码查表已由继承 `Object.prototype` 的普通对象改为 `Map`，确保 `toString`、`constructor`、`__proto__` 等未知服务值按原字符串写入；集成测试已补充三项原型键回归覆盖。
+
+Risks:
+
+- 映射只匹配当前已确认的五个稳定码；未来新增官网服务码会按原值保留，直至另行确认中文显示标签。
+
+Handoff: 请 Luna 独立复核五个稳定码写入中文、中文/自定义/未知值不变、null 与 email-only `source_note` 兼容，且鉴权、校验、重复、owner 与审计语义未回归。
+
 ### XYY-YYYYMMDD-NN
 
 Status:

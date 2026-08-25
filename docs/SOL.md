@@ -29,6 +29,7 @@ XYY-WEB 已运行于正式环境，当前处于稳定维护阶段。仓库根目
 
 | Task | Risk | Owner | Status |
 | --- | --- | --- | --- |
+| XYY-20260825-01 | MEDIUM | Sol | CLOSED |
 | XYY-20260824-04 | HIGH | Sol | CLOSED |
 | XYY-20260824-03 | LOW | Sol | CLOSED |
 | XYY-20260824-02 | HIGH | Sol | CLOSED |
@@ -86,6 +87,7 @@ Sol 的角色是 Product Manager / Orchestrator / Task Planner / Scope Controlle
 
 ## Decisions
 
+- `XYY-20260825-01` 保持 XYY-WEB 传输稳定服务代码，在 XYY-xiansuo website lead Integration 构造 `source_note` 时转换为中文标签；未知或自定义值必须原样保留，不修改数据库、历史线索或官网表单契约。本次只完成本地实现与验收，未部署。
 - `XYY-20260824-02` 仅将已验收 Integration 发布到 `xs.tomatopia.top` 与 XYY-WEB 测试站 `wz.tomatopia.top`，严格按 Xiansuo → 基础验证与直接 smoke → Web staging → 浏览器 E2E 顺序执行；`56xyy.com`、Oracle、Directus Schema 和历史 `contact_leads` 不在发布范围。真实 Token 只在受控运行环境中生成和传递，不进入 Git、Markdown、日志或 Agent 报告。
 - `XYY-20260824-01` 将官网联系留言的唯一新登记目标从 Directus `contact_leads` 切换为 XYY-xiansuo 专用 Server-to-Server Integration API；历史 Directus / Oracle 数据保留且不迁移、不删除、不双写。浏览器继续只调用 `/api/contact`；机器身份使用独立 Bearer Token，负责人由 XYY-xiansuo 服务端配置并校验。Directus 继续承担 CMS 内容职责，健康检查必须区分 CMS 内容依赖与 Xiansuo contact storage。
 - `XYY-20260822-01` 获得用户明确授权，将当前已验收的 Agent/Obsidian 治理配置与多页面 CTA 改动提交并推送到 GitHub，并通过现有原子发布脚本部署到测试站；正式主站、CMS 写入、数据库和生产配置不在 Scope。当前位于默认分支，按 GitHub 工作流先使用功能分支管理提交，通过门禁后再无冲突快进同步 `main`。
@@ -100,6 +102,13 @@ Sol 的角色是 Product Manager / Orchestrator / Task Planner / Scope Controlle
 - 共享 Vault 配置进入 Git，设备窗口布局、移动端布局和缓存留在本地。
 
 ## Dispatch Log
+
+### XYY-20260825-01
+
+- Risk: MEDIUM；修改 XYY-xiansuo Integration 写入的业务展示字段，但不涉及 Schema、历史数据或生产配置。
+- Terra 在 Xiansuo `source_note` 写入边界完成五项稳定码中文映射并补充持久化测试；XYY-WEB 继续传输稳定代码。
+- Luna 首轮独立验证 `PASS`；Nova 首轮发现普通对象映射会让 `toString`、`constructor`、`__proto__` 等合法未知值误命中对象原型并 `REJECTED`。
+- Sol 沿用原 Task ID 返回 Terra，以 `Map.get()` 做最小返工并增加原型键落库回归；Luna Re-test `PASS`，Nova Re-review `APPROVED`。
 
 ### XYY-20260824-02
 
@@ -147,6 +156,26 @@ Sol 的角色是 Product Manager / Orchestrator / Task Planner / Scope Controlle
 - 该烟雾测试不构成角色工作交付，因此不在三本子代理工作账中伪造 Implementation、QA 或 Review 记录；工作账从首次真实职责任务开始记录。
 
 ## Work Log
+
+### XYY-20260825-01
+
+Status: CLOSED
+
+Risk: MEDIUM
+
+Task: 修复官网线索进入 XYY-xiansuo 后“来源细分”直接显示 `cloud-warehouse` 等英文稳定码的问题，使既定服务显示中文名称。
+
+Scope: 仅修改 XYY-xiansuo website lead Integration 的服务标签映射与对应集成测试；不修改 XYY-WEB 业务代码、联系表单、数据库 Schema、历史线索、生产配置或运行环境。
+
+Acceptance Criteria: `cloud-warehouse`、`quality-inspection`、`logistics-cloud`、`all`、`other` 分别写入 `鞋服云仓`、`后整质检修复`、`物流云`、`全链路解决方案`、`其他`；中文、自定义和未知值原样保留；null、email-only、鉴权、owner、duplicate、audit 与电话行为不回归；Luna `PASS`、Nova `APPROVED`。
+
+Decision: 保持跨系统传输码稳定，只在 XYY-xiansuo Integration 的 `source_note` 写入/显示边界本地化。使用 `Map` 做显式安全查表，避免对象原型键影响未知值 passthrough；不迁移或重写已有线索。
+
+Changes: XYY-xiansuo 新增五项服务码中文映射，来源细分将写为 `咨询服务：<中文标签>`；测试覆盖五项映射、中文/普通未知值、`toString`、`constructor`、`__proto__`、null 与 email-only。XYY-WEB 仅更新 Agent 工作账，无业务实现变化。
+
+Validation: Luna 最终 Re-test `PASS`：Xiansuo targeted 8/8、build、full 180/180 和两仓 `git diff --check` 均通过；Web contact 聚焦契约 3 files / 21 tests 通过。Nova 首轮 `REJECTED` 的原型键数据完整性问题已返工，Re-review 最终 `APPROVED`。
+
+Result: CLOSED。本地实现满足 Acceptance Criteria；未提交、推送或部署，现有生产线索和运行服务未改变。
 
 ### XYY-20260824-02
 

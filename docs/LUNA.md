@@ -372,3 +372,42 @@ Regression: 覆盖发布身份、健康、核心路由、真实 404、回滚、�
 Risks: 无阻断；staging `/healthz` 已验证联系存储依赖，无需读取 Integration Token。
 
 Handoff: 返回 Sol；发布后独立 QA PASS，可进入 Nova Review 与最终验收。
+
+### XYY-20260825-01
+
+Result: PASS
+
+Tests performed:
+
+- 独立检查 `/home/yj/xiansuo` 实际 diff：仅 `server/src/routes/website-leads.ts` 与 `server/test/website-leads-integration.test.ts`；无 Schema/迁移、生产配置、既有线索或 Secret 改动。`git diff --check`：PASS。
+- `cd /home/yj/xiansuo/server && npx tsx --test test/website-leads-integration.test.ts`：8/8 通过；五个稳定码分别写入 `鞋服云仓`、`后整质检修复`、`物流云`、`全链路解决方案`、`其他`，中文/自定义/未知服务保持原值，`service=null` 与 email-only `source_note` 行为正确。
+- `cd /home/yj/xiansuo/server && npm run build`：PASS。
+- `cd /home/yj/xiansuo/server && npm test`：180/180 通过、0 failed。
+- XYY-WEB 聚焦合约：`npx vitest run tests/unit/contact-service-cms.test.ts tests/unit/contact-integration.test.ts tests/unit/contact.test.ts`：3 files、21 tests 通过；只读核对 `ContactInquiryFields.astro` 与 CMS/test 合约的五个 code/label 完全一致。
+- XYY-WEB `git diff --check`：PASS；当前 Web 工作树仅有 Terra 的 `docs/TERRA.md` 日志变更，无 Web 业务实现 diff。
+
+Regression coverage: 全量 Xiansuo tests 覆盖 Integration 鉴权、严格 payload、duplicate/idempotency、owner 控制、audit、事务回滚、员工 JWT、手机号/座机规范化；聚焦 Web contact tests 覆盖服务字段、服务端白名单 payload、duplicate 成功语义、失败关闭、honeypot、限流、body/email 校验、HTTPS 与短 Token 配置。未执行无关浏览器/E2E 矩阵，符合本任务范围。
+
+Remaining risks: 未来新增官网服务码会继续按原值写入，需另行确认中文标签；本次未部署、未写生产 CMS/数据库、未修改 Web 业务代码，未验证生产运行环境。
+
+Handoff: 返回 Sol；`XYY-20260825-01` 独立 QA PASS，可进入 Nova Review 与最终验收。
+
+#### Re-test after Nova REJECTED
+
+Task ID: XYY-20260825-01
+
+Result: PASS
+
+Tests performed:
+
+- 独立检查 Terra 最终 diff：Xiansuo 仅修改 `server/src/routes/website-leads.ts` 与 `server/test/website-leads-integration.test.ts`；实现使用 `Map.get()`，新增 `toString`、`constructor`、`__proto__` 原型键未知值回归，Web 业务代码未修改。
+- `cd /home/yj/xiansuo/server && npx tsx --test test/website-leads-integration.test.ts`：8/8 通过；五个稳定码映射正确，普通未知/中文自定义值及三个原型键未知值均持久化原值，`service=null` 与 email-only 正确。
+- `cd /home/yj/xiansuo/server && npm run build`：通过。
+- `cd /home/yj/xiansuo/server && npm test`：180/180 通过、0 failed。
+- `/home/yj/xiansuo` 与 XYY-WEB `git diff --check`：均通过。
+
+Regression coverage: 集成测试及全量服务端测试覆盖 Bearer 鉴权、严格 payload、owner/active owner、duplicate 与手机号格式化、audit source、事务回滚、员工 JWT；本次新增持久化原型键未知值覆盖，确认不存在对象原型属性误映射。
+
+Remaining risks: 未来新增服务码仍按原值保存，需另行确认中文标签；本次未部署、未写生产 CMS/数据库、未修改 Web 业务代码。
+
+Handoff: 返回 Sol；Nova REJECTED 项已完成返工后的独立 QA Re-test，`XYY-20260825-01` PASS，可继续 Nova Review/最终验收。

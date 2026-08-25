@@ -243,3 +243,45 @@ Result: APPROVED
 Remaining Risks: `/version` 标识包含工作账与 Agent 配置的同步提交，实际业务运行代码与祖先 `4c1f313` 等价；这是预期的发布审计语义。按 Scope 未访问 `56xyy.com`，不对正式主站实时状态新增断言。
 
 Handoff: 返回 Sol 最终验收；无需 Terra 返工、重复部署或重启 Xiansuo。
+
+### XYY-20260825-01
+
+Status: REJECTED
+
+Review Scope: Review XYY-xiansuo `server/src/routes/website-leads.ts` 与 `server/test/website-leads-integration.test.ts` 的实际 diff、Terra 交付、Luna PASS、XYY-WEB `ContactInquiryFields.astro`、CMS `contact_leads.service` choices、Web 校验与服务端传输边界。审查未修改业务实现，未部署、push、commit，未连接或写入生产 CMS / SQLite / 数据库，也未执行 Schema、迁移、配置或既有数据操作。
+
+Architecture: 将五个 Web 稳定服务码在 Xiansuo `sourceNote()` 写入/显示边界转换为中文，位置和职责总体合理；Web 仍传输稳定码，浏览器、Web API、Xiansuo Integration、lead/audit 事务和唯一存储路径均未改写，也未绕过 Directus 内容边界或 `src/lib/claims/`。但当前普通对象下标映射没有把任意未知字符串与对象原型键隔离，破坏了该边界承诺的 passthrough 语义。
+
+Security: diff 未改变 Bearer 鉴权、Token 比较、strict payload、owner/created_by 服务端控制、duplicate、事务回滚或固定错误响应；未发现 Secret、日志泄露、权限扩大、客户端凭据、生产配置或生产操作。原型键碰撞不会导致代码执行或对象写入型 prototype pollution，但会让公开输入生成错误的持久化 `source_note`，属于数据完整性问题。
+
+Maintainability: 业务改动局部且没有新增依赖、Schema、抽象或重复写入路径；五项映射与 Web 表单及 CMS choices 精确一致。不过 `Record<string, string>` 的类型声明掩盖了普通对象继承属性仍可被索引命中的运行时事实，当前 fallback 表达式不能保证未知值原样保留。
+
+Contract Risks: **阻断 — 未知/自定义服务值并非全部原样保留。** `WEBSITE_SERVICE_LABELS[lead.service] ?? lead.service` 对 `toString`、`constructor`、`__proto__` 等允许通过两端 80 字符字符串校验的值会读取 `Object.prototype`，分别写成原生函数文本或 `[object Object]`，而不是输入值。Nova 最小复现确认 `future-service-code` 正常，但上述三值均发生替换；Web 服务端目前也不把 service 限制为五个枚举，因此该路径可由公开请求到达。五个已知 code/label、null、email-only、message/source/status/owner/duplicate/auth 等其余契约未发现漂移。
+
+Test Coverage Review: Luna 的 targeted 8/8、Xiansuo build、full 180/180 和 Web contact contract 21/21 证据有效；Nova 复跑 Xiansuo targeted 仍为 8/8。新增循环生成 `13500138000` 至 `13500138004`，均满足中国大陆手机号正则且与本文件其他测试号码唯一；测试通过响应 ID 查询 SQLite `leads.source_note`，确实证明持久化结果，而非只断言响应或 helper。现有测试覆盖五个稳定码、中文自定义、普通未知值、null 与 email-only，但只使用 `future-service-code` 代表未知值，未覆盖对象原型键碰撞，因此全绿没有证明“所有未知/自定义值保持原值”。
+
+Result: REJECTED
+
+Remaining Risks: 阻断关闭后仍有一项非阻断演进风险：未来 Web 新增稳定服务码时，Xiansuo 会按原值保存，需在同一契约中确认中文标签。本 Task 尚未部署或验证生产运行环境，符合当前生产边界。
+
+Handoff: 返回 Sol。当前实现未完全满足 unknown/custom passthrough Acceptance Criteria；由 Sol 决定最小返工与回归调度。Nova 不直接指挥 Terra，不执行部署或生产数据操作。
+
+#### Re-review after unknown service passthrough remediation
+
+Review Scope: Re-review 同一 Task 的最终完整 diff、Terra `Map` 返工、Luna Re-test PASS，以及原型键、五项稳定码、中文/普通未知值、null、email-only 和既有 Integration 回归。最终业务 diff 仍仅为 XYY-xiansuo `server/src/routes/website-leads.ts` 与 `server/test/website-leads-integration.test.ts`；Web 工作树只有 Terra、Luna、Nova 日志，无业务代码变化。
+
+Architecture: 服务标签仍只在 Xiansuo `sourceNote()` Integration 写入/显示边界转换，Web 继续传输稳定码，未新增第二存储路径、共享状态、Schema 或跨层抽象。普通对象已替换为 `Map<string, string>`，`.get()` 只命中五项显式键，所有其他合法字符串可靠走原值 fallback，原 REJECTED 的对象原型边界已关闭。
+
+Security: `Map` 返工不改变 Bearer 鉴权、strict payload、owner/created_by、duplicate、lead/audit transaction、错误脱敏或员工 JWT；原型键不会触发继承属性读取，也不存在 prototype pollution 写入。最终 diff 无 Secret、生产配置、权限、数据库/迁移、CMS、部署或运行环境操作。
+
+Maintainability: 最小返工复用语言内建 `Map`，没有新增依赖、helper、通用字典层或不必要重构。五项 code/label 与 `ContactInquiryFields.astro`、CMS `contact_leads.service` choices 继续精确一致；未来新增稳定码仍按明确契约演进，不会静默猜测标签。
+
+Contract Risks: 原阻断已关闭。`toString`、`constructor`、`__proto__` 与普通未知值、中文自定义值均按原字符串写入；五项稳定码转换为既定中文；null 与 email-only 行为保持。message、source、status、intent、owner、created_by、duplicate、audit 与鉴权路径没有业务 diff。未发现剩余阻断性 API/CMS 或数据边界风险。
+
+Test Coverage Review: Luna Re-test 为 targeted 8/8、Xiansuo build、full 180/180、两仓 diff check PASS；Nova 独立复跑 targeted 8/8 并复核两仓 diff check PASS。原型键测试使用合法且唯一的 `13500138990` 至 `13500138992`，通过响应 ID 查询 SQLite `leads.source_note` 并逐项断言原值；五项映射测试的 `13500138000` 至 `13500138004` 同样合法唯一且验证持久化结果。全量测试继续覆盖 Auth、payload、active owner、duplicate/phone normalize、audit/rollback、错误脱敏和员工 JWT，测试范围与实际风险匹配。
+
+Result: APPROVED
+
+Remaining Risks: 未来 Web 新增稳定服务码时，Xiansuo 会安全保留原值，仍需另行确认并同步中文标签。本次是本地代码与契约验收，不代表已部署或验证生产运行环境。
+
+Handoff: Re-review `APPROVED`，原 Nova REJECTED 阻断已关闭；返回 Sol 做同一 Task 的最终验收与状态收口。无需进一步业务返工，Nova 未部署、push、commit 或操作生产 CMS/数据库。
