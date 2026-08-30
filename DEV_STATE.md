@@ -55,7 +55,7 @@
 - 实现提交 `82c01eda9984353ab7767cd4c79d7903bf938749` 已进入 GitHub `main`，Terra 完成实现、Luna 最终 `PASS`、Nova 最终 `APPROVED`。完整发布门禁通过：316 项单测、39 项 E2E（7 项按配置跳过）、3 项正式域名契约和生产构建。
 - staging 已原子发布 Release `20260830T100940Z-82c01ed`；`/healthz` 为 `cmsContent=ok`、`contactStorage=ok`。staging CMS dry-run 为 0 项变更，备份权限为 `0600`；公开回读确认 9 页均为 6 项能力内容并使用 9 个期望图片 URL。
 - 正式主站 `56xyy.com` 的 CMS 定向修复尚未执行。现有本机 `.env.production` 管理 Token 对正式 CMS 返回 `Invalid user credentials`，命令在首次只读 GET 阶段失败，未执行 PATCH、Schema、数据库或 Oracle 操作；当前 Chrome 也没有可复用的正式后台登录会话。
-- 因正式 CMS 尚未 apply，主站现有 9 页缺失能力内容和 6 页旧图片引用仍可能继续存在。主站应用无需为这次内容修复重新部署；有权限人员必须使用提交 `82c01ed` 的工具，先 dry-run 并保存备份，确认仅 9 条记录与三个字段后再 `--apply`，最后重复 dry-run 为 0 并公开回读验证。
+- 因正式 CMS 尚未 apply，最新公开回读确认主站 9 页仍均为 0 项能力内容，其中 6 页仍未引用目标新图片 URL。主站应用无需为这次内容修复重新部署；有权限人员必须使用提交 `82c01ed` 的工具，先 dry-run 并保存备份，确认仅 9 条记录与三个字段后再 `--apply`，最后重复 dry-run 为 0 并公开回读验证。
 
 ## 已完成
 

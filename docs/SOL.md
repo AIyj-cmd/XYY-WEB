@@ -203,7 +203,7 @@ Acceptance Criteria: 9 条 Seed 与源码一致（每页 4 stats、6 features、
 
 Changes: 实现提交 `82c01eda9984353ab7767cd4c79d7903bf938749` 已推送功能分支与 GitHub `main`；staging 原子发布 Release `20260830T100940Z-82c01ed`。Seed 生成器已纳入 `stats` / `features`；新增 `cms:repair-service-page-structure`，只处理 9 条目标记录与三个结构字段。
 
-Validation: Terra 与 Nova 聚焦测试均为 24/24；Luna `npm run verify` 为 48 files / 316 tests，Sol 发布前 `verify:release` 为 316 单测、39 E2E（7 项按配置跳过）、3 formal、构建通过。staging `/version` 与目标 SHA 一致，`/healthz` 为 `cmsContent=ok` / `contactStorage=ok`；staging CMS dry-run 为 0，备份 `0600`；公开回读 9 页均为 6 个 feature 且 9 个期望 hero URL 全部命中。
+Validation: Terra 与 Nova 聚焦测试均为 24/24；Luna `npm run verify` 为 48 files / 316 tests，Sol 发布前 `verify:release` 为 316 单测、39 E2E（7 项按配置跳过）、3 formal、构建通过。staging `/version` 与目标 SHA 一致，`/healthz` 为 `cmsContent=ok` / `contactStorage=ok`；staging CMS dry-run 为 0，备份 `0600`；公开回读 9 页均为 6 个 feature 且 9 个期望 hero URL 全部命中。正式主站复核仍为 9 页 0 feature、6 页未命中目标新 hero URL，证明生产内容尚未改变。
 
 Result: GitHub 和 staging 部分完成并验证。正式主站 CMS 未修复：现有本地 `.env.production` 管理 Token 对 `https://56xyy.com/cms` 返回 `Invalid user credentials`，命令在首次 GET 阶段失败，未执行任何 PATCH；Chrome 当前也无可复用的正式后台登录会话。任务保持 `BLOCKED`，同一 Task ID 后续只需由有权限人员先 dry-run、核对备份和 9 条三字段计划，再 `--apply` 并回读零差异。主站应用无需为本次内容修复重新部署。
 
