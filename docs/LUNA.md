@@ -437,3 +437,26 @@ Remaining risks:
 - 测试线索 ID 12 为 `TEST ONLY / DO NOT FOLLOW`，应按既定审计策略保留；本次未执行删除。
 
 Handoff: 返回 Sol；XYY-20260825-02 发布后独立 QA PASS，可进入最终验收。
+
+### XYY-20260830-01
+
+Task ID: XYY-20260830-01
+
+Result: PASS
+
+Tests performed:
+
+- `npm run cms:generate-content-seeds` 连续执行两次均通过；生成结果均为 10 个 service pages、14 个 publications、6 个 case details，生成文件 SHA-256 前后及两次执行后保持一致，确认生成器幂等且保留 `stats`/`features`。
+- `npx vitest run tests/unit/service-page-seed-structure.test.ts tests/unit/cms-setup.test.ts tests/unit/cms-sync.test.ts`：3 个文件、24 项测试通过。覆盖 9 条 `SPECIALTY_LINKS` 目标、每页 4 个完整 stats/6 个完整 features 且与源页面 props 一致、精确 `img_src` 映射、`sort=slug`、只改三个结构字段、dry-run 无 CMS 请求、缺失/重复记录、不完整 Seed、已配置 `hero_image`、非 published 的 fail-closed。
+- `npm run verify`：48 个测试文件、316 项测试通过；typecheck（373 files/0 diagnostics）、lint、maintainability、assets、生产构建均通过。
+- `npm run format:check`：通过；`git diff --check`：通过。
+- 隔离临时目录调用 `createCmsSyncRuntime.writeBackup(..., { includeDryRun: true })`：备份文件权限为 `0600`；仓库 `output/cms-sync/` 命中 `.gitignore:8 output/`。未连接真实 Directus，未执行真实环境 repair 或任何 CMS PATCH。
+- 使用隔离临时目录和 mock Directus fetch 执行 repair CLI 默认路径：仅发出 1 次 `GET /items/service_pages?limit=-1&sort=slug`，规划 9 次 PATCH、实际 PATCH 次数为 0，生成 1 个权限 `0600` 的备份；确认默认模式为 dry-run 且不写 CMS。
+- 只读 HTTP 矩阵核对 9 条目标页：`https://wz.tomatopia.top` 全部 HTTP 200、每页 6 个 feature 项且使用期望 hero URL；主站 `https://56xyy.com` 当前 9 页均为 0 个 feature 项、6 页未使用期望新 hero URL，作为本次修复前的已知生产缺陷基线，不作为未部署代码的失败。
+- `src/lib/directus-content-queries.ts` 及运行时 CMS authority/fallback 路径无 diff；本次无业务实现、数据库/Schema、生产配置或部署变更。
+
+Regression coverage: 覆盖 Seed 生成、9 条目标页结构完整性、图片缓存规避映射、CMS 修复 CLI 的计划/字段范围/安全前置条件、备份与忽略规则，以及全站 type/lint/test/build/资源门禁和 staging/main 只读页面证据。
+
+Remaining risks: 本次验证未使用真实管理员 Token，未执行生产 CMS dry-run/apply；生产修复仍需由获授权人员先备份，再执行默认 dry-run，确认 9 条记录均满足 published、无 `hero_image` 且计划仅涉及 `stats`/`features`/`img_src` 后再 apply，并完成回读验证。9 次 PATCH 不具备事务语义，中断时必须依据备份和零差异复核处理。主站当前缺失内容和旧图片仍待该受控 CMS 修复流程解决。
+
+Handoff: 返回 Sol；`XYY-20260830-01` 独立 QA PASS，可进入 Nova Review。未部署、未推送、未写 CMS、未修改 Oracle/数据库。

@@ -12,6 +12,7 @@
     "preview": "astro preview",
     "start": "node server.mjs",
     "cms:sync-approved": "node scripts/sync-approved-cms-content.mjs",
+    "cms:repair-service-page-structure": "node scripts/repair-service-page-structure.mjs",
     "cms:generate-faq-seeds": "node scripts/generate-faq-seeds.mjs",
     "cms:generate-content-seeds": "node scripts/generate-cms-content-seeds.mjs",
     "cms:migrate-unified-cases": "node scripts/migrate-unified-cases.mjs",

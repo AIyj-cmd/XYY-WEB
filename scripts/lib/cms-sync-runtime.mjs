@@ -43,8 +43,8 @@ export function createCmsSyncRuntime({ directus, apply }) {
     return directus.request('PATCH', `/items/warehouses/${draft.id}`, { status: 'published' })
   }
 
-  async function writeBackup(snapshot) {
-    if (!apply) return
+  async function writeBackup(snapshot, { includeDryRun = false } = {}) {
+    if (!apply && !includeDryRun) return
 
     const backupDir = join(process.cwd(), 'output', 'cms-sync')
     const safeHost = directus.endpointLabel.replace(/[^a-zA-Z0-9.-]+/g, '_')

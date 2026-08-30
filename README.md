@@ -206,7 +206,19 @@ npm run cms:sync-approved
 
 # 执行同步
 npm run cms:sync-approved -- --apply
+
+# 仅规划修复 9 个仓配下拉专题页的 stats、features 与 img_src（不写 CMS）
+npm run cms:repair-service-page-structure
+
+# 备份后执行定向修复，并对结果回读验证
+npm run cms:repair-service-page-structure -- --apply
 ```
+
+服务专题结构修复只处理仓配下拉菜单对应的 9 条 `service_pages`，不会新建记录或改动
+其他字段。它会在 dry-run 和 apply 前将当前 `service_pages` 快照写入 Git 忽略的
+`output/cms-sync/`，并在发现重复或缺失 slug、非 published 记录、已上传的 `hero_image`
+或不完整的审核 Seed 时失败关闭。Directus 的 9 次 PATCH 不是事务：若中断，先保留备份，
+重新执行 dry-run 确认计划，再以 `--apply` 幂等补齐并要求回读验证为零差异。
 
 Directus 字段职责、FAQ 页面标识和维护规则见
 [`docs/CMS_CONTENT_MODEL.md`](docs/CMS_CONTENT_MODEL.md)；正式域名发布与回滚步骤见

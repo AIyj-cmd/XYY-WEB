@@ -106,6 +106,8 @@ const servicePageSeeds = servicePages.map((page) => ({
   img_alt: page.img_alt,
   content_desc: page.content_desc,
   features_label: page.features_label,
+  stats: page.stats,
+  features: page.features,
 }))
 const exports = {
   APPROVED_UNIFIED_CASE_SEEDS: unifiedCaseSeeds,

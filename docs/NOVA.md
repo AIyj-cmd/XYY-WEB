@@ -309,3 +309,27 @@ Result: APPROVED
 Remaining Risks: Xiansuo `main` 的全局 CI 仍为红色，并因 server test 提前失败而跳过后续 CI job steps；虽然本次没有依赖、Gateway、H5 或 workflow 变更，且对应本地门禁与生产 E2E 已覆盖实际增量风险，这仍削弱后续分支保护和发布信号可信度。应由独立维护 Task 统一 Node 22/24 测试契约并恢复全绿，不能把当前 APPROVED 解读为永久豁免。测试线索 ID 12 按审计约定保留为 `TEST ONLY / DO NOT FOLLOW`。
 
 Handoff: 最终发布 Review `APPROVED`，返回 Sol 对照 Acceptance Criteria 完成验收与状态收口。无需 Terra 返工、重复部署或回滚；本结论不授权部署 Web staging / `56xyy.com`、生产配置编辑、CMS / Oracle / 数据库写入，也不关闭独立 CI 兼容治理风险。
+
+### XYY-20260830-01
+
+Status: APPROVED
+
+Task ID: XYY-20260830-01
+
+Review Scope: 对服务专题页 Seed 生成缺失 `stats` / `features`、9 条仓配下拉专题页 `stats` / `features` / `img_src` 定向修复工具、共用 CMS 同步运行时的 dry-run 备份扩展、生成输出、README、package script、Terra diff 和 Luna PASS 做 HIGH 风险最终 Review。Nova 读取了任务合同、相关 CMS Schema / runtime authority、Seed 来源与测试，只执行只读检查、聚焦测试和格式检查；除本日志外未修改业务实现，未连接真实 Directus，未部署、push、提交、写 CMS、操作数据库或执行 Oracle 工作。
+
+Architecture: `generate-cms-content-seeds.mjs` 继续以 10 个审核源码专题页为单一 Seed 来源，并仅补齐原先遗漏的 `page.stats` 与 `page.features`；生成 diff 除 10 页结构数组外没有其他内容漂移。定向模块将目标固定为与 `SPECIALTY_LINKS` 精确一致的 9 个 slug，读取使用 `GET /items/service_pages?limit=-1&sort=slug`，没有错误依赖不存在的 `sort` 字段。`planServicePageStructureRepair()` 先对全部 Seed 执行 4 stats、6 features、子字段非空和 `img_src` 非空校验，再对全部当前记录执行唯一 slug、空 `hero_image`、`published` 门禁；只有完整 `map()` 成功返回后才进入 PATCH 循环，因此不存在预检到一半即开始写入。运行时 `getServicePageContent()`、Directus authority / fallback 和 `hero_image` 优先级没有 diff；工具通过拒绝已配置 `hero_image` 避免修复一个运行时不会生效的 `img_src`。
+
+Security: CLI 只从环境读取 `DIRECTUS_URL` / `DIRECTUS_TOKEN`，日志仅输出经过 `URL.host` 和安全字符过滤的 endpoint label、记录 ID 与变更字段名，不输出 Authorization、Token 或响应正文。dry-run 与 apply 都把读取到的 `service_pages` 快照写入 Git 忽略的 `output/cms-sync/`，新文件显式使用 `0600`；文件名 host 已去除路径、凭据和非安全字符。PATCH payload 由模块内固定三字段白名单 `stats`、`features`、`img_src` 构造，不包含 status、slug、hero、标题或其他 CMS 字段。diff 不含 Secret、运行环境、权限、Schema、迁移、数据库、Oracle、部署或主站应用发布变更。
+
+Maintainability: 改动复用既有 `createDirectusAdminClient`、`createCmsSyncRuntime`、`findUniqueRecord`、`buildPatch` 和生成器，没有复制 HTTP、鉴权或通用同步实现；`writeBackup(snapshot, { includeDryRun })` 的默认值保持原同步命令只在 apply 备份的兼容行为。修复工具按任务域独立成小模块和薄 CLI，无依赖升级或不必要重构。用户预存未提交的 `DEV_STATE.md` / `docs/SOL.md` 变更保持原样，Terra 实现范围没有覆盖或重写它们。
+
+Contract Risks: Seed 的 9 个目标结构与对应源码 props 精确相等，缓存规避后的 9 个 `img_src` 映射与任务合同一致；修复不创建、删除、发布、归档或清空记录。apply 后重新读取完整集合，并同时复核三字段零差异及唯一、published、空 `hero_image` 门禁；重复执行时已一致字段生成空 patch，支持幂等补齐。Directus 的 9 次 PATCH 不是事务，脚本会在任一请求或最终回读失败时非零退出，但不会自动回滚已成功 PATCH；README 已如实要求保留原始备份、重跑 dry-run、幂等补齐并完成零差异验证，没有伪装成原子操作。未发现 CMS/API 契约、数据 authority 或职责边界漂移。
+
+Test Coverage Review: Luna 独立结果为 PASS：生成器连续两次 SHA 稳定；聚焦 3 files / 24 tests、全量 `npm run verify` 48 files / 316 tests、typecheck、lint、maintainability、assets、build、format 和 diff check 全部通过；隔离 mock CLI dry-run 只有一次显式 `sort=slug` GET、计划 9 个 PATCH、实际 0 PATCH，并生成 `0600` 备份；staging / main 的 9 页只读矩阵建立了修复前后目标基线。Nova 独立复跑同一聚焦套件为 24/24 PASS，并复核完整格式检查与 `git diff --check` 通过。测试覆盖目标集合、源 Seed 相等、图片映射、三字段白名单、dry-run、缺失 / 重复 slug、不完整 Seed、hero 门禁和非 published 门禁；apply 后回读和中途失败恢复主要由小型 CLI 控制流、共用 runtime 与人工运行手册覆盖，未在本任务连接真实 Directus。
+
+Result: APPROVED
+
+Remaining Risks: 本结论只批准代码与受控工具合同，不代表生产缺陷已经修复。生产仍需用户明确授权并由获授权操作方使用短期管理 Token：先执行默认 dry-run、人工确认 endpoint、9 条目标与三字段计划及备份，再执行 `--apply` 并保存最终零差异输出。9 次 PATCH 的非事务窗口、并发 CMS 编辑以及网络在 PATCH 后但回读前中断仍可能形成“已部分或全部写入但命令失败”的状态；此时不得盲目回滚或重置 CMS，应依据首次备份和新的 dry-run 幂等续跑。当前测试没有对真实 Directus 执行 apply，也没有自动化注入第 N 次 PATCH 失败或并发运营编辑；这些是生产变更窗口的剩余操作风险，不是当前实现阻断。
+
+Handoff: 最终 Review `APPROVED`，返回 Sol 对照 Acceptance Criteria 做最终验收并决定是否向用户申请生产 CMS dry-run / apply 的独立明确授权。无需 Terra 返工；Nova 不授权也不执行部署、生产 CMS 写入、CMS reset、Schema / 数据库 / Oracle 操作，且不修改主站运行时 CMS authority / fallback。

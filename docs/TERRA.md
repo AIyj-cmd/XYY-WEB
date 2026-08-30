@@ -201,6 +201,46 @@ Risks:
 
 Handoff: 请 Luna 独立复核五个稳定码写入中文、中文/自定义/未知值不变、null 与 email-only `source_note` 兼容，且鉴权、校验、重复、owner 与审计语义未回归。
 
+### XYY-20260830-01
+
+Status: DONE
+
+Task: 修复服务专题页 CMS Seed 漏掉 `stats`、`features` 的生成缺陷，并提供仅覆盖 9 条仓配下拉服务页结构字段的受控修复命令。
+
+Scope: 更新服务页 Seed 生成、生成输出、定向结构修复 CLI 与回归测试；不改变运行时 CMS 回退语义，不部署、不写生产 CMS、不改数据库/Schema。
+
+Implementation:
+
+- `generate-cms-content-seeds.mjs` 现在将页面源中的 `stats` 与 `features` 写入 `APPROVED_SERVICE_PAGE_SEEDS`，重新生成的 Seed 保留所有服务页的完整结构。
+- 新增默认 dry-run 的 `cms:repair-service-page-structure`：只定位仓配菜单的 9 条 slug，只计划/修复 `stats`、`features`、`img_src`；逐条唯一匹配、审核数组完整性、`published` 状态和未设置 `hero_image` 均为前置条件。
+- CLI 在 dry-run 与 apply 前均通过既有同步运行时保存 Git 忽略的 `output/cms-sync/` 快照；apply 后按 `slug` 回读并验证。9 次 PATCH 不具备事务语义，README 已明确中断后的备份、dry-run、幂等重跑与零差异复核流程。
+- 没有改动 `src/lib/directus-content-queries.ts`；CMS 成功返回内容仍保持权威，不会由静态回退覆盖。
+
+Changed Files:
+
+- `scripts/generate-cms-content-seeds.mjs`
+- `scripts/data/approved-cms-page-seeds.mjs`
+- `scripts/lib/cms-sync-runtime.mjs`
+- `scripts/lib/service-page-structure-sync.mjs`
+- `scripts/repair-service-page-structure.mjs`
+- `package.json`、`README.md`
+- `tests/unit/service-page-seed-structure.test.ts`
+- `docs/TERRA.md`
+
+Validation:
+
+- `npm run cms:generate-content-seeds`：通过；重复生成无额外差异。
+- `npx vitest run tests/unit/service-page-seed-structure.test.ts tests/unit/cms-setup.test.ts tests/unit/cms-sync.test.ts`：通过（3 files、24 tests）。
+- `npm run typecheck`（373 files，0 diagnostics）、`npm run lint`、`npm run check:maintainability`：通过。
+- 新增/修改代码与测试文件 Prettier 检查、`git diff --check`：通过；README 保留了本任务前已存在的一处 Markdown 表格空格差异，避免产生无关 diff。Sol/Luna 仍需在最终完整 diff 上独立复核。
+
+Risks:
+
+- CLI 故意在发现 `hero_image`、未发布记录、缺失/重复 slug 或不完整审核数组时失败关闭；需由授权的 CMS 操作人员先处理这些显式阻塞项，脚本不会清空上传图片或改变发布状态。
+- 本实现不执行 CMS 命令或生产写入；实际 apply 前必须使用正确环境的短期管理 Token，并先检查 dry-run 与本地备份。
+
+Handoff: 请 Luna 独立验证生成 Seed 中 9 条目标页均为 4 个 stats、6 个 features 且与源码一致；验证 CLI 只使用 `sort=slug` 读取 `service_pages`、dry-run 不发 CMS PATCH、`--apply` 仅含三个字段且回读验证；覆盖 hero image、非 published、缺失/重复 slug 的失败关闭路径。确认无运行时回退、生产 CMS、数据库或部署操作。
+
 ### XYY-YYYYMMDD-NN
 
 Status:
