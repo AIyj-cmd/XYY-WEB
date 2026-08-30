@@ -25,11 +25,14 @@ XYY-WEB 已运行于正式环境，当前处于稳定维护阶段。仓库根目
 - 仓库根目录已作为 Obsidian Vault 正常加载；`docs/SOL.md` 是项目管理入口。
 - 官网线索 Integration 已在 XYY-xiansuo 正式服务与 XYY-WEB staging 激活并通过真实 E2E；`56xyy.com` 主站未切换，仍保持原运行版本。
 - XYY-xiansuo 已发布服务码中文显示版本 `a5f82b9`；staging 真实表单验证确认“来源细分”写入“鞋服云仓”，不再显示 `cloud-warehouse`。
+- 服务专题页 Seed 结构修复已进入 GitHub `main`，staging Release `20260830T100940Z-82c01ed` 已验证 9 页结构和图片；正式主站 CMS 因当前无有效管理凭据尚未定向 apply，不能视为已修复。
 
 ## Current Tasks
 
 | Task | Risk | Owner | Status |
 | --- | --- | --- | --- |
+| XYY-20260830-01 | HIGH | Sol | BLOCKED |
+| XYY-20260825-04 | HIGH | Sol | CLOSED |
 | XYY-20260825-03 | LOW | Sol | CLOSED |
 | XYY-20260825-02 | HIGH | Sol | CLOSED |
 | XYY-20260825-01 | MEDIUM | Sol | CLOSED |
@@ -90,6 +93,7 @@ Sol 的角色是 Product Manager / Orchestrator / Task Planner / Scope Controlle
 
 ## Decisions
 
+- `XYY-20260830-01` 修复 CMS Seed 生成器遗漏 `stats` / `features` 的根因，并用独立 dry-run-first 工具只处理仓配下拉菜单的 9 条 `service_pages`、只允许 `stats` / `features` / `img_src` 三字段。测试站先发布和零差异验证；正式主站不部署前端、不重置 CMS，只在有效管理入口可用时备份后定向 apply。当前正式 Token 校验失败，因此任务保持 `BLOCKED`，不冒充生产内容已修复。
 - `XYY-20260825-02` 仅发布已在上一 Task 验收的 XYY-xiansuo 两文件服务标签修复，并从既有 XYY-WEB staging 做真实表单 E2E；Web 应用无需重复发布，`56xyy.com`、Oracle、Directus、生产环境变量和数据库结构均不变。生产使用可审计的不可变 release，保留旧 release 与 unit 备份作为回滚目标。
 - `XYY-20260825-01` 保持 XYY-WEB 传输稳定服务代码，在 XYY-xiansuo website lead Integration 构造 `source_note` 时转换为中文标签；未知或自定义值必须原样保留，不修改数据库、历史线索或官网表单契约。本次只完成本地实现与验收，未部署。
 - `XYY-20260824-02` 仅将已验收 Integration 发布到 `xs.tomatopia.top` 与 XYY-WEB 测试站 `wz.tomatopia.top`，严格按 Xiansuo → 基础验证与直接 smoke → Web staging → 浏览器 E2E 顺序执行；`56xyy.com`、Oracle、Directus Schema 和历史 `contact_leads` 不在发布范围。真实 Token 只在受控运行环境中生成和传递，不进入 Git、Markdown、日志或 Agent 报告。
@@ -106,6 +110,18 @@ Sol 的角色是 Product Manager / Orchestrator / Task Planner / Scope Controlle
 - 共享 Vault 配置进入 Git，设备窗口布局、移动端布局和缓存留在本地。
 
 ## Dispatch Log
+
+### XYY-20260830-01
+
+- Risk: HIGH；涉及 CMS Seed/reset 根因、正式内容三字段修复和 9 次非事务 Directus PATCH，但不涉及 Schema、数据库、Oracle、主站应用部署或 CMS 重置。
+- Terra 完成 Seed 生成与定向 repair CLI；Luna 独立验证 `PASS`（316 项单测、发布门禁、staging/main 页面矩阵）；Nova 最终 Review `APPROVED`。
+- Sol 将实现提交 `82c01ed` 推送到功能分支和 GitHub `main`，使用既有原子流程发布 staging Release `20260830T100940Z-82c01ed`；staging CMS dry-run 为 0 项变更。正式 CMS dry-run 因现有本地管理 Token 无效而在 GET 前置鉴权失败，无写入；按 fail-closed 保持阻塞。
+
+### XYY-20260825-04
+
+- Risk: HIGH；安全扫描任务，但范围仅限本地代码、无业务实现、无生产目标和无修复，因此未机械调度 Terra、Luna 或 Nova。
+- Sol 直接运行 Strix 1.5.3 `quick` 全仓扫描并核对最终 `run.json` 与 SARIF；模型兼容预检失败的尝试均发生在首个有效模型响应前且费用为零，有效运行固定为 `website_c9b1`。
+- 扫描达到约 3 美元预算后以 `stopped` 结束，在已覆盖范围内为 0 个已验证可利用漏洞；按预算受限扫描记录，不提升为完整安全认证。
 
 ### XYY-20260825-03
 
@@ -172,6 +188,40 @@ Sol 的角色是 Product Manager / Orchestrator / Task Planner / Scope Controlle
 - 该烟雾测试不构成角色工作交付，因此不在三本子代理工作账中伪造 Implementation、QA 或 Review 记录；工作账从首次真实职责任务开始记录。
 
 ## Work Log
+
+### XYY-20260830-01
+
+Status: BLOCKED
+
+Risk: HIGH
+
+Task: 修复服务专题页 CMS Seed/reset 后缺少 `stats` / `features` 且部分页面继续引用旧图片路径的问题，使仓配下拉菜单的 9 个页面能按审核数据恢复为与 staging 一致的完整结构和新资源 URL。
+
+Scope: 修复 Seed 生成、增加仅覆盖 9 个 slug 和 `stats` / `features` / `img_src` 的定向 repair 工具、验证并发布 staging、在有效管理入口可用时备份并定向修复正式 CMS。禁止修改运行时 CMS authority/fallback、CMS Schema、Oracle/数据库、DNS/TLS/Nginx/PM2，禁止重置 CMS 或部署主站应用。
+
+Acceptance Criteria: 9 条 Seed 与源码一致（每页 4 stats、6 features、期望 `img_src`）；CLI 默认 dry-run、全量预检、0600 备份、三字段白名单、apply 后回读；Terra DONE、Luna PASS、Nova APPROVED；GitHub 与 staging 同步；正式 CMS apply 后 9 页均显示 6 项内容和新资源 URL。
+
+Changes: 实现提交 `82c01eda9984353ab7767cd4c79d7903bf938749` 已推送功能分支与 GitHub `main`；staging 原子发布 Release `20260830T100940Z-82c01ed`。Seed 生成器已纳入 `stats` / `features`；新增 `cms:repair-service-page-structure`，只处理 9 条目标记录与三个结构字段。
+
+Validation: Terra 与 Nova 聚焦测试均为 24/24；Luna `npm run verify` 为 48 files / 316 tests，Sol 发布前 `verify:release` 为 316 单测、39 E2E（7 项按配置跳过）、3 formal、构建通过。staging `/version` 与目标 SHA 一致，`/healthz` 为 `cmsContent=ok` / `contactStorage=ok`；staging CMS dry-run 为 0，备份 `0600`；公开回读 9 页均为 6 个 feature 且 9 个期望 hero URL 全部命中。
+
+Result: GitHub 和 staging 部分完成并验证。正式主站 CMS 未修复：现有本地 `.env.production` 管理 Token 对 `https://56xyy.com/cms` 返回 `Invalid user credentials`，命令在首次 GET 阶段失败，未执行任何 PATCH；Chrome 当前也无可复用的正式后台登录会话。任务保持 `BLOCKED`，同一 Task ID 后续只需由有权限人员先 dry-run、核对备份和 9 条三字段计划，再 `--apply` 并回读零差异。主站应用无需为本次内容修复重新部署。
+
+### XYY-20260825-04
+
+Status: CLOSED
+
+Risk: HIGH
+
+Task: 使用已部署的 Strix 对 XYY-WEB 本地仓库执行快速全仓安全扫描，并保留可复核的结构化结果。
+
+Scope: 仅扫描 `/home/yj/XYY-GEO/website` 的本地代码；禁止访问或修改正式站、验收站、CMS、数据库、生产配置、DNS、TLS、Nginx、PM2，禁止修改业务代码、提交、推送或部署。
+
+Acceptance Criteria: Strix 有效运行建立；扫描目标与全仓范围明确；记录最终状态、请求量、token、费用和漏洞数；核对 SARIF；如因预算停止，必须明确限制，不能宣称完整安全。
+
+Validation: 有效运行 `/home/yj/XYY-GEO/strix_runs/website_c9b1`，`run.json.status=stopped`，136 次请求、4,905,742 total tokens、费用 3.0178596 美元；`findings.sarif` 为有效 SARIF 2.1.0 且 `results=[]`；目标仓库扫描后无业务代码改动。
+
+Result: CLOSED。预算受限的 `quick` 全仓扫描未验证到可利用漏洞；结论仅适用于本次覆盖范围。未运行 standard/deep，未进行生产黑盒测试，未生成修复任务。
 
 ### XYY-20260825-03
 

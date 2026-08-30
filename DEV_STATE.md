@@ -1,6 +1,6 @@
 # DEV_STATE
 
-更新时间：2026-08-25
+更新时间：2026-08-30
 
 ## 协作记录约定
 
@@ -18,10 +18,10 @@
 
 ## 当前版本与环境
 
-- 仓库最新提交以 `git log -1` 为准；当前 staging 应用发布基线为 `2c75bcd0d3878f4877afac1cc07c4dfa18913360`，其后的纯文档状态提交不代表新的应用 Release。
-- 验收站当前运行提交以 `/version` 返回的 `gitSha` 为准，不能仅根据仓库 HEAD 推断；当前为 `2c75bcd0d3878f4877afac1cc07c4dfa18913360`。
+- 仓库最新提交以 `git log -1` 为准；当前 staging 应用发布基线为 `82c01eda9984353ab7767cd4c79d7903bf938749`，其后的纯文档状态提交不代表新的应用 Release。
+- 验收站当前运行提交以 `/version` 返回的 `gitSha` 为准，不能仅根据仓库 HEAD 推断；当前为 `82c01eda9984353ab7767cd4c79d7903bf938749`。
 - 验收站：`https://wz.tomatopia.top`。
-- 验收站当前 Release 为 `20260825T054116Z-2c75bcd`，环境为 `staging`，CMS Schema 为 `2026-08-cms-hardening`；仍以 `/version` 的实时响应为准。
+- 验收站当前 Release 为 `20260830T100940Z-82c01ed`，环境为 `staging`，CMS Schema 为 `2026-08-cms-hardening`；仍以 `/version` 的实时响应为准。
 - 正式主站已运行；本次只通过公开 HTTP 对主页和 robots 做发布前后哈希比对并确认内容未变化，未连接主站服务器、未修改主站环境，也未提交主站联系表单。
 - 运行状态：PM2 中 `xyy-web` 在线，Web 端口为 `50031`。
 - 健康状态：`/healthz` 返回200，`cmsContent=ok`、`contactStorage=ok`；首页、产品、案例、关于、新闻、期刊、联系、服务专题和真实404均已完成发布后 smoke test。
@@ -41,6 +41,21 @@
 - Xiansuo 保留旧不可变 Release `3c3eb1baa82a942c4a5f867a50d3e640b8497a5c` 与部署前 unit 备份；Web staging Release 保存 `.previous_target` 并继续使用既有原子 rollback。两仓库本地、GitHub 与已发布应用身份已完成核对。
 - Xiansuo GitHub CI 的本次 Run 为 179/180；唯一失败是基线即存在的 Node 22 `DatabaseSync.serialize()` 测试兼容问题，目标 Integration 测试和真实生产链路均通过。该全局 CI 风险不在本次两文件发布 Scope，后续需以独立维护 Task 恢复全绿。
 - 本次未执行 Oracle 命令、Schema 修改、历史迁移、Directus Schema 写入或正式主站发布。若切换 `56xyy.com`，必须建立新的独立 HIGH Risk Task。
+
+## 本地安全扫描状态（2026-08-25）
+
+- `XYY-20260825-04` 使用 Strix 1.5.3 对 `/home/yj/XYY-GEO/website` 执行 `quick`、全仓、非交互本地代码扫描；未访问正式站、验收站、CMS、数据库或其他生产系统，也未修改业务代码。
+- 有效运行 `website_c9b1` 共执行 136 次模型请求，记录 4,905,742 tokens（其中 4,742,272 cached）与约 3.02 美元费用；达到 3 美元预算后状态为 `stopped`，不是自然完成的深度扫描。
+- 本次已覆盖范围内未验证到可利用漏洞；SARIF `results` 为空。该结论只代表预算受限的快速扫描结果，不构成“项目绝对安全”或完整渗透测试证明。
+- 扫描产物保存在仓库外的 `/home/yj/XYY-GEO/strix_runs/website_c9b1/`；业务源码无改动，仅按项目规范更新状态文档。若需要更高置信度，必须以新的授权和预算执行 standard/deep 扫描，并单独评估生产黑盒测试范围。
+
+## 服务专题页 CMS 结构修复状态（2026-08-30）
+
+- `XYY-20260830-01` 已修复 `generate-cms-content-seeds.mjs` 漏写服务页 `stats` / `features` 的根因，并新增默认 dry-run 的定向修复命令；目标严格限定仓配下拉菜单 9 条 `service_pages`，字段严格限定 `stats`、`features`、`img_src`。
+- 实现提交 `82c01eda9984353ab7767cd4c79d7903bf938749` 已进入 GitHub `main`，Terra 完成实现、Luna 最终 `PASS`、Nova 最终 `APPROVED`。完整发布门禁通过：316 项单测、39 项 E2E（7 项按配置跳过）、3 项正式域名契约和生产构建。
+- staging 已原子发布 Release `20260830T100940Z-82c01ed`；`/healthz` 为 `cmsContent=ok`、`contactStorage=ok`。staging CMS dry-run 为 0 项变更，备份权限为 `0600`；公开回读确认 9 页均为 6 项能力内容并使用 9 个期望图片 URL。
+- 正式主站 `56xyy.com` 的 CMS 定向修复尚未执行。现有本机 `.env.production` 管理 Token 对正式 CMS 返回 `Invalid user credentials`，命令在首次只读 GET 阶段失败，未执行 PATCH、Schema、数据库或 Oracle 操作；当前 Chrome 也没有可复用的正式后台登录会话。
+- 因正式 CMS 尚未 apply，主站现有 9 页缺失能力内容和 6 页旧图片引用仍可能继续存在。主站应用无需为这次内容修复重新部署；有权限人员必须使用提交 `82c01ed` 的工具，先 dry-run 并保存备份，确认仅 9 条记录与三个字段后再 `--apply`，最后重复 dry-run 为 0 并公开回读验证。
 
 ## 已完成
 
