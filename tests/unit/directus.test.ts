@@ -46,7 +46,7 @@ describe('Directus helpers', () => {
     expect(formatDate('not-a-date')).toBe('')
   })
 
-  it('returns published news from Directus', async () => {
+  it('returns published news from Directus after application-side publication-time filtering', async () => {
     const article = {
       id: 1,
       title: '测试文章',
@@ -65,10 +65,9 @@ describe('Directus helpers', () => {
       expect.objectContaining({
         filter: {
           status: { _eq: 'published' },
-          published_at: { _nnull: true, _lte: '$NOW' },
+          published_at: { _nnull: true },
         },
-        limit: 1,
-        offset: 0,
+        limit: -1,
       })
     )
   })
@@ -84,10 +83,10 @@ describe('Directus helpers', () => {
         filter: {
           category: { _eq: '行业资讯' },
           status: { _eq: 'published' },
-          published_at: { _nnull: true, _lte: '$NOW' },
+          published_at: { _nnull: true },
         },
         fields: expect.arrayContaining(['cover_image']),
-        limit: 6,
+        limit: -1,
       })
     )
   })

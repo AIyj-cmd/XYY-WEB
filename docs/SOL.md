@@ -31,6 +31,7 @@ XYY-WEB 已运行于正式环境，当前处于稳定维护阶段。仓库根目
 
 | Task | Risk | Owner | Status |
 | --- | --- | --- | --- |
+| XYY-20260831-02 | HIGH | Sol | CLOSED |
 | XYY-20260830-01 | HIGH | Sol | BLOCKED |
 | XYY-20260825-04 | HIGH | Sol | CLOSED |
 | XYY-20260825-03 | LOW | Sol | CLOSED |
@@ -93,6 +94,7 @@ Sol 的角色是 Product Manager / Orchestrator / Task Planner / Scope Controlle
 
 ## Decisions
 
+- `XYY-20260831-02` 将 News 公开可见性从数据库适配层的 `$NOW` 比较改为应用侧统一时间解析：无时区 Directus 时间按 `Asia/Shanghai` 解释，带 offset 时间按绝对时刻解释，先过滤未来文章再排序分页。批量发布只开放固定的服务端 `POST /api/integrations/news/batch`，由独立调用 Token 鉴权并使用独立 Directus News 写 Token；三个运行 Token 必须完整、足够长且两两不同。当前只完成本地代码验收，未创建 Secret/权限、未写 CMS、未部署，不能视为生产接口已启用。
 - `XYY-20260830-01` 修复 CMS Seed 生成器遗漏 `stats` / `features` 的根因，并用独立 dry-run-first 工具只处理仓配下拉菜单的 9 条 `service_pages`、只允许 `stats` / `features` / `img_src` 三字段。测试站先发布和零差异验证；正式主站不部署前端、不重置 CMS，只在有效管理入口可用时备份后定向 apply。当前正式 Token 校验失败，因此任务保持 `BLOCKED`，不冒充生产内容已修复。
 - `XYY-20260825-02` 仅发布已在上一 Task 验收的 XYY-xiansuo 两文件服务标签修复，并从既有 XYY-WEB staging 做真实表单 E2E；Web 应用无需重复发布，`56xyy.com`、Oracle、Directus、生产环境变量和数据库结构均不变。生产使用可审计的不可变 release，保留旧 release 与 unit 备份作为回滚目标。
 - `XYY-20260825-01` 保持 XYY-WEB 传输稳定服务代码，在 XYY-xiansuo website lead Integration 构造 `source_note` 时转换为中文标签；未知或自定义值必须原样保留，不修改数据库、历史线索或官网表单契约。本次只完成本地实现与验收，未部署。
@@ -110,6 +112,13 @@ Sol 的角色是 Product Manager / Orchestrator / Task Planner / Scope Controlle
 - 共享 Vault 配置进入 Git，设备窗口布局、移动端布局和缓存留在本地。
 
 ## Dispatch Log
+
+### XYY-20260831-02
+
+- Risk: HIGH；涉及 News 公开时间契约、新增服务端写入 API、机器身份鉴权和 Directus 内容写入边界，但不包含生产配置、CMS 数据写入、Schema、部署或 Git 操作。
+- Terra 完成时区可见性与批量发布实现；Luna 首轮发现非法日期归一化、三 Token 隔离不完整和无效 Directus ID false success 并 `FAIL`，Sol 沿用原 Task ID 返回 Terra 修复，Luna Re-test `PASS`。
+- Nova 首轮发现非回环明文 HTTP 可能发送 Directus 写 Token 并 `REJECTED`；Terra 最小收紧为远端仅 HTTPS、HTTP 仅明确 loopback，Luna 再次 Re-test `PASS`，Nova Re-review 最终 `APPROVED`。
+- 最终验证为聚焦 5 files / 90 tests、完整 `npm run verify` 51 files / 384 tests、format 与 `git diff --check` 通过；客户端构建产物无 Secret。没有部署、生产环境、CMS、数据库、Oracle、提交、推送或合并动作。
 
 ### XYY-20260830-01
 
@@ -188,6 +197,24 @@ Sol 的角色是 Product Manager / Orchestrator / Task Planner / Scope Controlle
 - 该烟雾测试不构成角色工作交付，因此不在三本子代理工作账中伪造 Implementation、QA 或 Review 记录；工作账从首次真实职责任务开始记录。
 
 ## Work Log
+
+### XYY-20260831-02
+
+Status: CLOSED
+
+Risk: HIGH
+
+Task: 修复 Directus News 在 UTC 运行环境中把上海当前发布时间错误判为未来的问题，并提供受保护的服务端批量文章发布 API。
+
+Scope: News 列表、分类、详情的统一发布时间解析与过滤后分页；`POST /api/integrations/news/batch` 的机器鉴权、严格 payload、Directus 批量创建、超时与稳定错误语义；环境变量模板、README、测试和 Agent 工作账。排除页面 UI、图片/CMS 9 页修复、CMS Schema/数据、Oracle、联系表单、部署、生产配置和 Git 发布。
+
+Acceptance Criteria: 上海当前时间发布立即可见、未来文章仍隐藏，带 offset/无时区/非法日期语义一致；API 只接受 1–20 篇白名单文章，服务端固定 published 状态，三 Token 完整且两两隔离，远端写入只走 HTTPS，所有错误失败关闭且不泄露 Secret；Terra DONE、Luna PASS、Nova APPROVED，完整门禁通过。
+
+Changes: 新增统一 News 时间 parser 和过滤后分页；新增服务端批量发布路由及 auth/http/validation/storage 模块；新增 `NEWS_PUBLISH_API_TOKEN` 与 `DIRECTUS_NEWS_WRITE_TOKEN` 配置契约；补充严格日历/offset、Token、字段、body、批量、Directus ID、重复、下游错误和安全 URL 测试。README 与环境模板仅含空值/placeholder。
+
+Validation: Terra 最终全量 51 files / 384 tests；Luna 最终聚焦 5 files / 90 tests，`npm run verify`、format、diff-check 与 client Secret scan 通过；Nova 独立聚焦 5 files / 90 tests、format、diff-check 通过并最终 `APPROVED`。所有返工沿用原 Task ID，未跳过 Luna Re-test。
+
+Result: 本地实现与代码质量验收完成。批量发布 API 当前 `IMPLEMENTATION READY / PRODUCTION INACTIVE`；正式启用仍需独立授权配置两枚新的高熵服务端 Token，并为 Directus 写 Token 配置最小 `news` 创建权限后执行受控 smoke。未提交、推送、部署、写 CMS、修改生产环境或操作 Oracle/数据库。
 
 ### XYY-20260830-01
 

@@ -1,6 +1,11 @@
 import { getDirectusAssetUrl, requestItems, requestSingleton } from './directus-client'
 import { fallbackForUnavailable, invalidDirectusData } from './directus/request-state'
 import { interpolateClaims } from './directus-interpolation'
+import {
+  isPublishedAtOrBeforeNow,
+  paginateNews,
+  parseNewsPublicationTime,
+} from './news-publication-time'
 import { resolveHomepageClaimStat } from './claims/cms'
 import type {
   Case,
@@ -164,17 +169,8 @@ export async function getCases(fallback: readonly Case[] = []): Promise<Case[]> 
 
 export async function getPublishedNews(limit = 10, page = 1): Promise<NewsArticle[]> {
   try {
-    const items = await requestItems<NewsArticle[]>('news', {
-      filter: {
-        status: { _eq: 'published' },
-        published_at: { _nnull: true, _lte: '$NOW' },
-      },
-      sort: ['-published_at'],
-      limit,
-      offset: (page - 1) * limit,
-      fields: ['id', 'title', 'slug', 'summary', 'category', 'published_at', 'cover_image'],
-    })
-    return items.filter(isPublicNewsArticle)
+    const items = await getVisibleNews()
+    return paginateNews(items, limit, page)
   } catch (error) {
     return fallbackForUnavailable(error, [])
   }
@@ -187,7 +183,7 @@ export async function getNewsArticle(slug: string): Promise<NewsArticle | null> 
       filter: {
         slug: { _eq: slug },
         status: { _eq: 'published' },
-        published_at: { _nnull: true, _lte: '$NOW' },
+        published_at: { _nnull: true },
       },
       limit: 1,
     })
@@ -199,17 +195,8 @@ export async function getNewsArticle(slug: string): Promise<NewsArticle | null> 
 
 export async function getNewsByCategory(category: string, limit = 6): Promise<NewsArticle[]> {
   try {
-    const items = await requestItems<NewsArticle[]>('news', {
-      filter: {
-        category: { _eq: category },
-        status: { _eq: 'published' },
-        published_at: { _nnull: true, _lte: '$NOW' },
-      },
-      sort: ['-published_at'],
-      limit,
-      fields: ['id', 'title', 'slug', 'summary', 'category', 'published_at', 'cover_image'],
-    })
-    return items.filter(isPublicNewsArticle)
+    const items = await getVisibleNews(category)
+    return paginateNews(items, limit, 1)
   } catch (error) {
     return fallbackForUnavailable(error, [])
   }
@@ -225,18 +212,46 @@ function isPublicNewsArticle(article: NewsArticle) {
   return (
     isCanonicalSlug(article.slug) &&
     Boolean(article.published_at) &&
-    !Number.isNaN(Date.parse(article.published_at))
+    isPublishedAtOrBeforeNow(article.published_at)
   )
 }
 
+const NEWS_LIST_FIELDS = [
+  'id',
+  'title',
+  'slug',
+  'summary',
+  'category',
+  'published_at',
+  'cover_image',
+]
+async function getVisibleNews(category?: string) {
+  const items = await requestItems<NewsArticle[]>('news', {
+    filter: {
+      ...(category ? { category: { _eq: category } } : {}),
+      status: { _eq: 'published' },
+      published_at: { _nnull: true },
+    },
+    sort: ['-published_at'],
+    limit: -1,
+    fields: NEWS_LIST_FIELDS,
+  })
+  return items.filter(isPublicNewsArticle).sort((left, right) => {
+    const leftTime = parseNewsPublicationTime(left.published_at) ?? 0
+    const rightTime = parseNewsPublicationTime(right.published_at) ?? 0
+    return rightTime - leftTime
+  })
+}
+
 export function formatDate(dateStr: string | null | undefined): string {
-  if (!dateStr) return ''
-  const date = new Date(dateStr)
-  if (Number.isNaN(date.getTime())) return ''
+  const timestamp = parseNewsPublicationTime(dateStr)
+  if (timestamp === null) return ''
+  const date = new Date(timestamp)
   return date.toLocaleDateString('zh-CN', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
+    timeZone: 'Asia/Shanghai',
   })
 }
 

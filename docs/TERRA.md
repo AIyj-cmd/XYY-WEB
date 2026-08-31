@@ -241,6 +241,55 @@ Risks:
 
 Handoff: 请 Luna 独立验证生成 Seed 中 9 条目标页均为 4 个 stats、6 个 features 且与源码一致；验证 CLI 只使用 `sort=slug` 读取 `service_pages`、dry-run 不发 CMS PATCH、`--apply` 仅含三个字段且回读验证；覆盖 hero image、非 published、缺失/重复 slug 的失败关闭路径。确认无运行时回退、生产 CMS、数据库或部署操作。
 
+### XYY-20260831-02
+
+Status: DONE
+
+Task: 修复 News 当天发布时间因 Directus 无时区时间比较而被隐藏的问题，并新增受保护的服务端批量发布接口。
+
+Scope: News 列表、分类和详情的发布时间判定；`POST /api/integrations/news/batch`；相关运行变量、文档和测试。未修改页面 UI、CMS Schema/数据、图片修复工具、Oracle、联系表单、部署或生产环境。
+
+Implementation:
+
+- 公开 News 不再将 `$NOW` 交给数据库适配层比较。带 `Z` 或 UTC offset 的发布时间按绝对时刻解析；Directus 返回的无时区日期时间统一按 `Asia/Shanghai` 后台编辑时间解析。列表和分类先取得已发布且有发布时间的候选，在应用侧过滤未来文章、按真实时刻排序后再分页；详情页同样检查，保留定时发布语义。
+- 新增只允许服务器调用的 `POST /api/integrations/news/batch`。请求仅接收 `articles` 白名单字段、JSON、1 MiB body 和最多 20 篇；服务端固定 `status=published`，默认填入当前 ISO 发布时间，不提供更新、删除、文件上传、任意集合或系统字段写入。
+- 调用方使用 `NEWS_PUBLISH_API_TOKEN` Bearer 认证（至少 32 UTF-8 bytes，SHA-256 digest 后恒时比较）；Directus 写入使用独立 `DIRECTUS_NEWS_WRITE_TOKEN`。三个凭据均须存在、达到长度要求且两两不同；任一缺失、短 Token 或复用均失败关闭，不记录或返回 Secret、Directus URL 或下游错误详情。
+- Directus 采用单次批量写入、10 秒超时、无重试；唯一约束映射为稳定 409，其余下游失败映射为非敏感 502。环境模板和 README 只记录空配置与最小权限契约。
+
+Rework (Luna FAIL):
+
+- 时间解析改为同一严格 parser：无时区值仍按 Shanghai 编辑时间解释，带 offset 的 API 值与运行时读取共享日期、闰年、小时和 ISO 8601 最大 `±14:00` 校验；非法日历日期和 `+14:01`/`+23:00` 被拒绝，不再依赖 `Date.parse()` 的自动归一化。
+- 路由在任何下游 fetch 前要求 `NEWS_PUBLISH_API_TOKEN`、`DIRECTUS_NEWS_WRITE_TOKEN`、`DIRECTUS_CONTENT_TOKEN` 都至少 32 bytes 且两两不同；storage 层保留写入/内容凭据的独立防线。
+- Directus 成功响应 ID 现在仅接受正安全整数，或可严格转换为正安全整数的十进制字符串；空、0、负数、小数、非数字和越界值均视作下游契约失败。
+
+Rework (Nova REJECTED):
+
+- Directus 写入地址现在只允许远端 `https:`；`http:` 仅允许 URL 真实 hostname 为 `localhost`、`127.0.0.1` 或 `[::1]`，并同时要求原始 URL 明确使用这三个字面量，拒绝数值别名、尾缀 lookalike、userinfo、query、hash 与其他协议。既有 `/cms` 路径继续安全追加 `/items/news`。
+- 新增 HTTPS、三个 loopback HTTP 与拒绝性 URL 契约测试；所有拒绝均发生在 fetch 前，不会将 Directus 写 Token 明文发送到非回环 HTTP 目标。
+
+Changed Files:
+
+- `src/lib/directus-queries.ts`、`src/lib/news-publication-time.ts`、`src/lib/directus.ts`
+- `src/lib/directus-client.ts`、`src/lib/news-publishing/*`、`src/pages/api/integrations/news/batch.ts`
+- `.env.example`、`deploy/production/web/web.env.example`、`README.md`
+- `tests/unit/directus.test.ts`、`tests/unit/news-publication-time.test.ts`、`tests/unit/news-publishing-api.test.ts`、`tests/unit/news-publishing-errors.test.ts`
+- `docs/TERRA.md`
+
+Validation:
+
+- 首轮定向 Vitest：5 files、47 tests 通过，覆盖 Shanghai 无时区时间、UTC/offset、当前边界、未来隐藏、列表/分类/详情、分页，以及 API 鉴权、字段白名单、批量/大小限制、凭据隔离、Directus 成功/重复/错误/网络/超时与非泄露响应。
+- Luna 返工后定向 Vitest：3 files、56 tests 通过，补充非法日历时间、ISO `±14:00` 边界、三项凭据缺失/过短/复用和无效 Directus ID。
+- Nova 返工后定向 Vitest：3 files、68 tests 通过，补充 HTTPS、三个回环 HTTP 与不安全 Directus 写入 URL 的 fetch 前拒绝。
+- 最终全量 `npm run test`：51 files、384 tests 通过。
+- `npm run typecheck`、`npm run lint`、`npm run check:maintainability`、`npm run build`、`npm run format:check`、`git diff --check` 均通过。
+
+Risks:
+
+- 批量发布 API 代码已就绪，但在生产启用前必须由授权人员创建两个彼此不同的高熵服务端 Token，并创建只具 `news` 新建所需权限的 Directus 写入 Token；本 Task 未创建 Token、权限策略或 CMS 数据。
+- 公开 News 查询现在为保证时区一致性读取全部已发布候选后再在应用侧分页；当前 News 数据量很小。若将来文章量显著增长，应另建任务设计数据库侧时区规范化或有界查询方案。
+
+Handoff: 请 Luna 独立验证无时区 Shanghai、UTC/offset 与未来发布时间的可见性和分页；验证 API 不接受非 JSON/未知字段/系统字段、三种 Token 不可复用、短或缺失配置失败关闭、批量 Directus request 仅写允许字段并有超时、下游所有错误均不泄露 Secret 或内部信息。确认无 CMS/Oracle/生产/部署操作。
+
 ### XYY-YYYYMMDD-NN
 
 Status:

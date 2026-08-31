@@ -118,18 +118,20 @@ Directus 成功返回空数据时页面保持为空；只有网络失败、超�
 
 ## 环境变量
 
-| 变量                      | 说明                                                        |
-| ------------------------- | ----------------------------------------------------------- |
-| `DIRECTUS_URL`            | 服务端 Directus 地址；服务器建议 `http://127.0.0.1:8055`    |
-| `DIRECTUS_CONTENT_TOKEN`  | 仅可读取官网内容集合及文件元数据的运行令牌                  |
-| `XIANSUO_API_URL`         | XYY-xiansuo 服务端 HTTPS 根地址                              |
-| `XIANSUO_INGEST_TOKEN`    | 仅用于官网服务端提交联系线索的 Integration Bearer Token     |
-| `DIRECTUS_TOKEN`          | 仅供建模、迁移和权限维护脚本临时使用，不得作为 Web 运行凭据 |
-| `PUBLIC_SITE_URL`         | 当前构建与 canonical 使用的站点地址                         |
-| `PUBLIC_DIRECTUS_URL`     | 浏览器可访问的 CMS 地址                                     |
-| `ENABLE_DOMAIN_REDIRECTS` | 正式域名切换完成后才可设为 `true`                           |
-| `LEGACY_DOMAINS`          | 正式切换后需要 301 的旧域名列表                             |
-| `DEPLOY_ENVIRONMENT`      | 部署时显式指定 `staging` 或 `production`                    |
+| 变量                        | 说明                                                                           |
+| --------------------------- | ------------------------------------------------------------------------------ |
+| `DIRECTUS_URL`              | 服务端 Directus 地址；服务器建议 `http://127.0.0.1:8055`                       |
+| `DIRECTUS_CONTENT_TOKEN`    | 仅可读取官网内容集合及文件元数据的运行令牌                                     |
+| `DIRECTUS_NEWS_WRITE_TOKEN` | 仅可写入 `news` 的独立 Directus 服务端令牌，不得复用内容读取令牌               |
+| `NEWS_PUBLISH_API_TOKEN`    | 仅允许受信任服务端调用批量 News 发布接口的 Bearer Token（至少 32 UTF-8 bytes） |
+| `XIANSUO_API_URL`           | XYY-xiansuo 服务端 HTTPS 根地址                                                |
+| `XIANSUO_INGEST_TOKEN`      | 仅用于官网服务端提交联系线索的 Integration Bearer Token                        |
+| `DIRECTUS_TOKEN`            | 仅供建模、迁移和权限维护脚本临时使用，不得作为 Web 运行凭据                    |
+| `PUBLIC_SITE_URL`           | 当前构建与 canonical 使用的站点地址                                            |
+| `PUBLIC_DIRECTUS_URL`       | 浏览器可访问的 CMS 地址                                                        |
+| `ENABLE_DOMAIN_REDIRECTS`   | 正式域名切换完成后才可设为 `true`                                              |
+| `LEGACY_DOMAINS`            | 正式切换后需要 301 的旧域名列表                                                |
+| `DEPLOY_ENVIRONMENT`        | 部署时显式指定 `staging` 或 `production`                                       |
 
 `.env`、`.env.production` 仅保存在本地和服务器，不提交 GitHub，也不由部署脚本上传。
 建模脚本使用的短期管理令牌不能写入 Web 运行环境。官网内容读取不会回退使用
@@ -140,6 +142,14 @@ Directus 12 Community 不提供自定义项目过滤和字段级权限时，内�
 历史 `contact_leads` 集合继续保留，但 Web 运行时不再向其写入新留言；官网查询仍统一附加
 `status=published`，联系接口仍在服务端只接收表单白名单字段，文件代理仍只放行已发布内容的引用。具备相应 Directus 授权时，可设置
 `DIRECTUS_CUSTOM_PERMISSION_RULES=true`，由权限同步脚本进一步下沉已发布内容过滤。
+
+### 批量发布 News（服务端集成）
+
+`POST /api/integrations/news/batch` 只接受受信任服务端的 `Authorization: Bearer <NEWS_PUBLISH_API_TOKEN>` 请求，不提供浏览器 CORS、文件上传、更新或删除能力。调用方令牌、`DIRECTUS_NEWS_WRITE_TOKEN` 和 `DIRECTUS_CONTENT_TOKEN` 均须至少 32 UTF-8 bytes 且三者独立保存；写入令牌应只拥有 `news` 新建所需的最小 Directus 权限。运行时发现缺失、过短或任意凭据复用会拒绝请求。
+
+请求 JSON 只能包含 `articles`；每次 1–20 篇。每篇只允许 `title`、小写连字符 `slug`、四个既定 `category` 之一、`summary`、`content`、可选现有 Directus 文件 UUID `cover_image`，以及可选且带时区的 ISO `published_at`。接口服务端固定 `status=published`，未提供 `published_at` 时使用当前 UTC ISO 时间；`id`、`status`、`date_created`、`date_updated` 和其他系统字段会被拒绝。重复 slug 返回 `409`，下游异常不会泄露 Directus 地址、Token 或错误详情。
+
+新闻公开读取会将带偏移的时间按其真实时刻比较；Directus 返回无时区时间时，统一按 `Asia/Shanghai` 的后台编辑时间解释。因此“发布”且发布时间不晚于当前时刻的文章会立即显示，未来发布时间仍保持隐藏。
 
 ## 部署
 

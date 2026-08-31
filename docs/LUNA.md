@@ -460,3 +460,98 @@ Regression coverage: 覆盖 Seed 生成、9 条目标页结构完整性、图片
 Remaining risks: 本次验证未使用真实管理员 Token，未执行生产 CMS dry-run/apply；生产修复仍需由获授权人员先备份，再执行默认 dry-run，确认 9 条记录均满足 published、无 `hero_image` 且计划仅涉及 `stats`/`features`/`img_src` 后再 apply，并完成回读验证。9 次 PATCH 不具备事务语义，中断时必须依据备份和零差异复核处理。主站当前缺失内容和旧图片仍待该受控 CMS 修复流程解决。
 
 Handoff: 返回 Sol；`XYY-20260830-01` 独立 QA PASS，可进入 Nova Review。未部署、未推送、未写 CMS、未修改 Oracle/数据库。
+
+### XYY-20260831-02
+
+Status: FAIL
+
+Test Target: News 发布时间可见性与 `POST /api/integrations/news/batch` 批量发布接口的独立 QA；同时覆盖既有 News、Directus 读取、联系线索 Integration 和仓库门禁回归。
+
+Acceptance Criteria: 无时区 Directus 时间按 Asia/Shanghai 解释；带 `Z`/offset 的时间按绝对时刻解释且 malformed timestamp 被拒绝；未来文章不显示并在过滤后分页；批量发布接口必须严格 Bearer 鉴权、三类 Token 独立且配置缺失/过短/复用时 fail-closed；Directus success response 无效时不得 false success；现有功能与安全边界不回归。
+
+Tests performed:
+
+- 独立运行 `npx vitest run tests/unit/news-publication-time.test.ts tests/unit/news-publishing-api.test.ts tests/unit/news-publishing-errors.test.ts tests/unit/directus.test.ts tests/unit/contact-integration.test.ts`：5 files、54 tests 通过。
+- `npm run verify`：typecheck 382 files/0 diagnostics、lint、maintainability、assets、51 files/348 tests、Astro build 全部通过。
+- `git diff --check`：通过。
+- 构建产物检查：`dist/client` 未发现 `NEWS_PUBLISH_API_TOKEN`、`DIRECTUS_NEWS_WRITE_TOKEN`、`XIANSUO_INGEST_TOKEN` 或 Bearer 内容；新增 Secret 仅在服务端 chunk 中以运行时环境变量名存在。
+- 独立 Node 边界检查：`parseNewsPublicationTime('2026-02-30T14:00:00Z')` 返回有效时间戳 `1772460000000`，确认无效日历日期未被拒绝；`2026-08-31T25:00:00+08:00` 与非法 offset 能被拒绝。
+- 源码契约检查：`batch.ts` 仅阻止 caller token 与 write token 相同；`storage.ts` 仅在 content token 非空时阻止 write/content 复用，且未要求 content token 存在/达到最小长度；caller/content 复用未被拒绝。`createdArticles()` 将空字符串 ID 转为 `0` 并可能接受为成功响应。
+
+Result: FAIL
+
+Expected:
+
+- 所有格式错误或无效日历日期的带 offset 时间均拒绝，不得进入公开可见性判断或发布写入。
+- `NEWS_PUBLISH_API_TOKEN`、`DIRECTUS_NEWS_WRITE_TOKEN`、`DIRECTUS_CONTENT_TOKEN` 三者均存在、满足长度要求且两两不同；任意缺失、过短或复用均在 fetch 前 fail-closed。
+- Directus 返回的每条创建记录必须有有效、非空的 ID；无效响应应返回稳定失败，不得报告发布成功。
+
+Actual:
+
+- `2026-02-30T14:00:00Z` 被 `Date.parse` 归一化并接受；对应 `validation.ts` 也会接受该值。
+- caller 与 content token 相同的配置不会被 route 拦截；content token 为空或过短时仍可能调用 Directus；只有 write/content 复用且 content 非空才被拦截。
+- `id: ''` 经过 `Number('')` 变为 `0`，`createdArticles()` 认为响应有效。
+
+Reproduction:
+
+1. 在仓库根目录执行 `node --experimental-strip-types --input-type=module`，导入 `src/lib/news-publication-time.ts`，调用 `parseNewsPublicationTime('2026-02-30T14:00:00Z')`，得到 `1772460000000` 而非 `null`。
+2. 阅读 `src/pages/api/integrations/news/batch.ts:17-20` 与 `src/lib/news-publishing/storage.ts:65-74`：未见 caller/content 两两隔离及 content token 完整配置校验。
+3. 阅读 `src/lib/news-publishing/storage.ts:43-62`：`typeof id === 'string'` 后直接 `Number(id)`，空字符串得到 `0`。
+
+Evidence: `src/lib/news-publication-time.ts:14-16`、`src/lib/news-publishing/validation.ts:40-44`、`src/pages/api/integrations/news/batch.ts:17-20`、`src/lib/news-publishing/storage.ts:65-74,43-62`；命令证据为上述 Vitest/verify 通过及 Node 边界输出。
+
+Likely affected area: News 公开发布时间解析、批量发布接口的凭据隔离与 Directus 响应校验。
+
+Severity: HIGH（无效时间可能错误发布/显示内容；Token 配置隔离不完整；无效下游响应可能造成 false success）。
+
+Regression: 现有 News 查询、分页、分类/详情、联系 Integration、完整类型/lint/maintainability/assets/test/build 均通过；未执行生产/staging 请求、CMS 写入、数据库、部署、Git push/merge 或 Oracle 操作。
+
+Remaining risks: Terra 需在原 Task ID 下补齐严格的带 offset 日期组件校验、三类 Token 两两独立且完整 fail-closed 校验和严格 Directus ID 响应校验；之后 Luna 需复测聚焦用例、完整 `npm run verify` 及上述安全边界。
+
+Handoff: 返回 Sol；`XYY-20260831-02` 保持 FAIL，按 `Luna → Sol → Terra → Sol → Luna Re-test` 闭环，不进入 Nova Review。
+
+#### Re-test after Terra strict validation fixes
+
+Task ID: XYY-20260831-02
+
+Result: PASS
+
+Tests performed:
+
+- 独立核对 Terra 最新 diff：时间解析、News 查询、批量发布接口、环境模板、README 与对应测试均属于本 Task；未发现业务代码外的无关改动。未执行部署、生产请求、CMS/数据库写入、Oracle 操作或 Git push/merge。
+- 独立运行 `npx vitest run tests/unit/news-publication-time.test.ts tests/unit/news-publishing-api.test.ts tests/unit/news-publishing-errors.test.ts tests/unit/directus.test.ts tests/unit/contact-integration.test.ts`：5 files、78 tests 通过。新增边界覆盖无效日历日期、`+14:00`/`+14:01`、三类 Token 缺失/过短/复用，以及 Directus ID 空值、0、负数、小数、非数字和越界值。
+- `npm run verify`：typecheck 382 files/0 diagnostics、lint、maintainability、assets、51 files/372 tests、Astro build 全部通过。
+- `npm run format:check`：通过；`git diff --check`：通过。
+- 独立 Node 边界检查确认 `2026-02-30T14:00:00Z`、`24:00:00`、`+14:01`、`+23:00` 均返回 `null`；Shanghai 无时区时间和合法 `+14:00`/`-14:00` 能正确解析。
+- 独立构建产物检查：`dist/client` 未出现 `NEWS_PUBLISH_API_TOKEN`、`DIRECTUS_NEWS_WRITE_TOKEN`、`DIRECTUS_CONTENT_TOKEN`、`XIANSUO_INGEST_TOKEN` 或 Bearer 字符串；Secret 只作为服务端运行时环境变量读取。
+- 源码/范围检查确认 API 在 fetch 前要求 caller/write/content 三个 Token 均存在、至少 32 UTF-8 bytes 且两两不同；Directus 成功响应 ID 只接受正安全整数；没有 CORS、公开 Token、更新/删除/文件上传/任意集合端点；修改路径均限于 News 时间、批量发布、配置/文档/测试和本工作账。
+
+Regression coverage: 覆盖 Directus News 列表、分类、详情的 Shanghai 无时区/UTC offset/当前边界/未来隐藏/过滤后排序分页/非法 slug 与日期；覆盖批量发布鉴权、非 JSON、body 限制、字段白名单、系统字段阻断、类别/slug/UUID/ISO 校验、批量限制、固定 published 状态、默认发布时间、单次 timeout 请求、duplicate 和所有下游错误语义；同时复核既有联系线索 Integration 和完整 XYY-WEB verify 门禁。
+
+Remaining risks: News 公开查询为保证跨环境时间一致性读取全部已发布候选后在应用侧过滤；当前数据量小，未来文章量显著增长时需另建任务设计有界查询或数据库时区规范化。批量发布接口代码已就绪，但生产启用仍需授权人员创建彼此不同的高熵调用/写入 Token，并为 Directus 写入 Token 配置最小 `news` 创建权限；本次未创建 Secret、未配置生产环境、未写 CMS。
+
+Handoff: 返回 Sol；`XYY-20260831-02` Re-test PASS，首轮三个 FAIL 点均已关闭，可进入 Nova Review。`docs/LUNA.md` 为本次唯一工作账变更。
+
+#### Re-test after Nova URL-safety rejection
+
+Task ID: XYY-20260831-02
+
+Result: PASS
+
+Tests performed:
+
+- 独立运行 `npx vitest run tests/unit/news-publication-time.test.ts tests/unit/news-publishing-api.test.ts tests/unit/news-publishing-errors.test.ts tests/unit/directus.test.ts tests/unit/contact-integration.test.ts`：5 files、90 tests 通过。
+- URL 正例验证：远端 `https://directus.example.test/cms`、`http://localhost:8055/cms`、`http://127.0.0.1:8055/cms`、`http://[::1]:8055/cms` 均调用正确的 `/cms/items/news`；回环 HTTP 仅发送到字面量回环地址。
+- URL 反例验证：非回环 HTTP、`localhost.evil.test`、`127.0.0.1.evil.test`、数值 IP 别名、`ftp`、userinfo、query、hash 均在 fetch 前返回稳定失败；未向不安全目标发送 Directus write token。
+- 独立源码检查确认 URL 校验先于 `fetch` 与 Authorization header 构造，远端只允许 `https:`；HTTP 仅允许真实 `localhost`、`127.0.0.1`、`[::1]`，且保留 `/cms` 路径安全追加 `/items/news`。
+- 原首轮边界复测：无效日历时间、`24:00:00`、offset 超过 `+14:00`、Shanghai 无时区时间、合法 offset、三类 Token 缺失/过短/复用、Directus 无效 ID 均由新增测试覆盖并通过。
+- `npm run verify`：typecheck 382 files/0 diagnostics、lint、maintainability、assets、51 files/384 tests、Astro build 全部通过。
+- `npm run format:check`：通过；`git diff --check`：通过。
+- 构建产物检查：`dist/client` 未出现 `NEWS_PUBLISH_API_TOKEN`、`DIRECTUS_NEWS_WRITE_TOKEN`、`DIRECTUS_CONTENT_TOKEN`、`XIANSUO_INGEST_TOKEN` 或 Bearer 字符串。
+- 范围检查：本轮未修改业务代码，仅追加本工作账；未执行生产/staging 请求、CMS/数据库写入、Oracle 操作、部署或 Git push/merge。
+
+Regression coverage: 覆盖 URL 协议、主机、路径、userinfo/query/hash 和 fetch 前 secret 发送边界；同时覆盖 News 时间可见性、批量发布鉴权/Token 隔离、payload 白名单与限制、Directus response/duplicate/error 语义、既有联系 Integration 及完整 Web 门禁。
+
+Remaining risks: 批量发布 API 生产启用仍需授权人员配置彼此不同的高熵调用/写入 Token 和 Directus 最小 `news` 创建权限；News 查询当前读取全部已发布候选后应用侧过滤，未来数据量显著增长时需另建性能/时区规范化任务。本次未配置生产环境或写 CMS。
+
+Handoff: 返回 Sol；Nova REJECTED 的 Directus URL 安全问题已通过独立 Re-test，可继续 Nova Re-review。`docs/LUNA.md` 为本轮唯一工作账变更。

@@ -57,6 +57,14 @@
 - 正式主站 `56xyy.com` 的 CMS 定向修复尚未执行。现有本机 `.env.production` 管理 Token 对正式 CMS 返回 `Invalid user credentials`，命令在首次只读 GET 阶段失败，未执行 PATCH、Schema、数据库或 Oracle 操作；当前 Chrome 也没有可复用的正式后台登录会话。
 - 因正式 CMS 尚未 apply，最新公开回读确认主站 9 页仍均为 0 项能力内容，其中 6 页仍未引用目标新图片 URL。主站应用无需为这次内容修复重新部署；有权限人员必须使用提交 `82c01ed` 的工具，先 dry-run 并保存备份，确认仅 9 条记录与三个字段后再 `--apply`，最后重复 dry-run 为 0 并公开回读验证。
 
+## News 发布时间与批量发布 API 状态（2026-08-31）
+
+- `XYY-20260831-02` 已在本地完成并验收 News 发布时间修复：Directus 返回无时区时间时按 `Asia/Shanghai` 编辑时间解释，带 offset 时间按绝对时刻解释；公开查询在过滤未来文章后再排序分页，当前时间发布可立即显示，未来定时发布继续隐藏。
+- 已新增只供受信任服务端调用的 `POST /api/integrations/news/batch` 代码合同：每批 1–20 篇、严格字段白名单、服务端固定 `status=published`、有限 body 与 10 秒 Directus timeout、重复 slug 稳定 409、其他下游错误非敏感失败关闭。
+- API 要求 `NEWS_PUBLISH_API_TOKEN`、`DIRECTUS_NEWS_WRITE_TOKEN`、`DIRECTUS_CONTENT_TOKEN` 均至少 32 UTF-8 bytes 且两两不同；远端 Directus 写入只允许 HTTPS，HTTP 只允许明确的 localhost / IPv4 / IPv6 loopback。Secret 不进入客户端、Git、Markdown 或响应。
+- Terra 完成实现；Luna 首轮 `FAIL` 的非法日期、Token 隔离与无效 ID 问题均已返工关闭，最终 `PASS`；Nova 首轮 `REJECTED` 的非回环明文 HTTP 问题已返工关闭，最终 `APPROVED`。最终门禁为 51 个测试文件、384 项测试通过，完整 `npm run verify`、format 与 diff-check 通过。
+- 当前状态仅为 `IMPLEMENTATION READY / PRODUCTION INACTIVE`。本次未配置真实 Secret、Directus 写权限或生产环境，未写 CMS、未部署、未提交或推送，也未操作数据库或 Oracle；正式启用必须另行授权并执行最小权限配置与受控 smoke。
+
 ## 已完成
 
 - 首页、产品、关于、案例、新闻、期刊及仓配专题页的响应式和动效问题已修复。

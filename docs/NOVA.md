@@ -333,3 +333,47 @@ Result: APPROVED
 Remaining Risks: 本结论只批准代码与受控工具合同，不代表生产缺陷已经修复。生产仍需用户明确授权并由获授权操作方使用短期管理 Token：先执行默认 dry-run、人工确认 endpoint、9 条目标与三字段计划及备份，再执行 `--apply` 并保存最终零差异输出。9 次 PATCH 的非事务窗口、并发 CMS 编辑以及网络在 PATCH 后但回读前中断仍可能形成“已部分或全部写入但命令失败”的状态；此时不得盲目回滚或重置 CMS，应依据首次备份和新的 dry-run 幂等续跑。当前测试没有对真实 Directus 执行 apply，也没有自动化注入第 N 次 PATCH 失败或并发运营编辑；这些是生产变更窗口的剩余操作风险，不是当前实现阻断。
 
 Handoff: 最终 Review `APPROVED`，返回 Sol 对照 Acceptance Criteria 做最终验收并决定是否向用户申请生产 CMS dry-run / apply 的独立明确授权。无需 Terra 返工；Nova 不授权也不执行部署、生产 CMS 写入、CMS reset、Schema / 数据库 / Oracle 操作，且不修改主站运行时 CMS authority / fallback。
+
+### XYY-20260831-02
+
+Status: REJECTED
+
+Task ID: XYY-20260831-02
+
+Review Scope: 对 News 无时区发布时间修复、`POST /api/integrations/news/batch` 服务端批量发布接口、三项 Token 隔离、Directus 写入适配、环境模板、README、Terra 最终 diff 和 Luna Re-test PASS 进行 HIGH 风险 Review。Nova 读取任务合同、相关 News 查询/渲染清洗链路与全部新增测试，只执行源码、Git diff、官方 Directus 批量写入契约核对和聚焦测试；除本日志外未改写业务实现，未部署、push、提交、写 CMS、修改环境、操作数据库或执行 Oracle 工作。
+
+Architecture: News 公开读取已把数据库 `$NOW` 比较替换为应用侧统一解析：Directus 无 offset 时间按 Asia/Shanghai 编辑时间解释，带 `Z` / offset 时间按绝对时刻解释；列表和分类在未来时间过滤后排序、分页，详情使用相同可见性判断，显示日期固定为 Asia/Shanghai。`limit: -1` 会随 News 数据增长扩大单次读取，但当前集合很小，且实现如实记录了未来采用有界查询或数据库时区规范化的触发条件，当前可接受。发布接口限定为一个固定 News batch create 路径，没有引入 UI、任意集合、文件上传、更新、删除、Schema、图片/CMS 修复或第二数据源。
+
+Security: Bearer 调用凭据使用 SHA-256 digest 后恒时比较；`NEWS_PUBLISH_API_TOKEN`、`DIRECTUS_NEWS_WRITE_TOKEN`、`DIRECTUS_CONTENT_TOKEN` 均要求至少 32 UTF-8 bytes、三者存在且两两不同，并在任何 fetch 前失败关闭。请求、响应、日志和 client bundle 未暴露 Token；接口没有 CORS/browser exposure。文章 HTML 继续只在既有 `sanitizeRichText()` 后进入 `set:html`。但 Directus 写入 URL 存在阻断性传输安全缺口：`src/lib/news-publishing/storage.ts:16-24` 只拒绝 URL credentials、query 和 hash，不限制 protocol/host，因此 `DIRECTUS_URL=http://非回环主机` 仍会在 `storage.ts:84-88` 通过明文 HTTP 发送高权限写入 Bearer Token。环境变量虽由运维控制，配置错误仍会直接泄露服务端 Secret；HIGH 风险写入口必须 fail closed，而不能仅依赖 README 推荐使用 `127.0.0.1`。
+
+Maintainability: 时间 parser 对日历、闰年、小时、毫秒、ISO separator 和最大 `±14:00` offset 使用单一实现；校验、鉴权、HTTP、storage 与 route 职责分离，没有新增依赖或复制 Directus 通用读取逻辑。批量 create 为单次有限 10 秒请求且无重试；官方 Directus `createMany` 契约为同一事务内顺序创建，因此未发现部分成功被伪装为整体失败的具体问题。新增模块和测试均通过维护性预算。阻断修复应保持局部：Directus URL 只允许 HTTPS，或仅对明确 loopback 主机放行 HTTP，避免引入通用网络抽象。
+
+Contract Risks: 请求严格限定顶层 `articles` 和每篇七个字段，1 MiB、1–20 篇、字段类型/长度、四个 category、canonical slug、文件 UUID、带时区 ISO 时间及批内重复 slug 均受校验；`status=published` 与默认当前时间由服务端控制。Directus 成功结果只接受数量匹配且 ID 为正安全整数，唯一冲突稳定映射 409，其他下游异常统一为非敏感 502。当前唯一阻断是非回环明文 HTTP 可发送写 Token。生产启用仍需另行授权创建最小 `news` create 权限 Token，并以真实 Directus smoke 确认该权限可返回所需 ID；本 Task 没有执行此生产动作。
+
+Test Coverage Review: Luna 首轮 FAIL 准确发现并关闭无效日期归一化、三 Token 隔离不完整和无效 ID false success；最终 Re-test 为聚焦 5 files / 78 tests、完整 `npm run verify` 51 files / 372 tests、format、diff check 和 client Secret scan 全部 PASS。Nova 独立复跑同一聚焦 5 files / 78 tests并复核 `git diff --check`、Secret 扫描通过。测试覆盖时间边界、列表/分类/详情、鉴权、字段白名单、大小/批量、Token 缺失/短值/复用、严格 payload、timeout、duplicate、下游错误与 ID 契约；但没有覆盖 `DIRECTUS_URL` 的 protocol/host 传输安全边界，因此全绿未证明写 Token 不会走非回环明文 HTTP。
+
+Result: REJECTED
+
+Remaining Risks: 除上述阻断外，`limit: -1` 是当前小数据量下已接受的扩展性风险；批量发布代码尚未配置真实 Secret、Directus 权限或生产环境，不能视为 API 已激活。正式启用前还需对 Oracle-backed Directus 执行受控 smoke，核对 offset 写入后的发布时间 round-trip 与 ID 响应，但不得在本次代码 Review 中自行写生产 CMS。
+
+Handoff: 返回 Sol。由 Sol 决定在原 Task ID 下派发最小返工：仅允许 HTTPS Directus URL，或仅为明确 loopback 放行 HTTP；补充非回环 HTTP、非 HTTP scheme 在 fetch 前失败关闭，以及合法 HTTPS/loopback 路径测试。修复后须按既有闭环重新经 Luna Re-test，再交 Nova Re-review。Nova 不直接指挥 Terra，也不执行部署、生产环境、CMS、数据库、Oracle 或 Git 操作。
+
+#### Re-review after Directus write URL transport remediation
+
+Review Scope: 复审同一 Task 的最终完整 diff、Terra 对 Nova 唯一 URL 传输安全阻断的局部返工、Luna 第二轮 Re-test PASS，以及 News 时间、Token、payload、Directus response、范围与生产边界。Nova 未改写业务实现，只执行源码/diff 检查、聚焦 5 files / 90 tests、格式和 diff check；未部署、push、提交、配置环境、写 CMS、操作数据库或执行 Oracle 工作。
+
+Architecture: 原有 News 可见性与 batch create 架构没有被返工扩大。`directusNewsUrl()` 继续保留已有 Directus base path 并只追加固定 `/items/news`；远端地址只允许 `https:`，HTTP 只允许 URL 解析结果和原始文本同时明确为 `localhost`、`127.0.0.1` 或 `[::1]`。该双重检查拒绝数值 IP 别名、尾缀 lookalike、解析归一化绕过和其他 scheme，没有引入 DNS、网络探测或通用 URL 抽象。
+
+Security: 原 REJECTED 已关闭。非回环 HTTP、`localhost.evil.test`、`127.0.0.1.evil.test`、整数形式 IPv4、FTP、userinfo、query 和 hash 均在构造 Authorization header 和执行 fetch 前失败关闭；合法远端 HTTPS及三个明确 loopback HTTP 地址可用。三项至少 32-byte 且两两独立的服务端 Token、Bearer 恒时比较、无 CORS/client exposure、无日志/响应 Secret 和最小权限写入契约保持不变。未发现新的 SSRF 输入面：Directus URL 只来自受控服务器环境，不来自请求 payload。
+
+Maintainability: 修复只在 storage URL builder 增加一个小型 loopback allowlist 和一条可审计正则；没有修改通用 Directus 读取、联系 Integration、页面或 CMS Schema。实现覆盖 IPv4、IPv6、hostname 与 base path，复杂度与 HIGH 风险 Secret 传输边界相称。`limit: -1` 的既有小数据量扩展性风险仍被如实记录，不由本轮返工扩大。
+
+Contract Risks: News 时间解析、严格 article whitelist、1 MiB / 20 篇限制、server-controlled `published`、带 offset ISO、UUID、slug/category、10 秒单次批量事务写入、409 duplicate、正安全整数 ID 和非敏感错误语义均保持。合法 URL 测试确认 `/cms` base path 精确生成 `/cms/items/news`；拒绝性测试确认不安全地址不会收到 Directus write Token。未发现剩余阻断性 API/CMS 合同风险。
+
+Test Coverage Review: Luna 第二轮 Re-test 为聚焦 5 files / 90 tests、完整 `npm run verify` 51 files / 384 tests、format、diff、client Secret 与 Scope 检查全部 PASS。Nova 独立复跑聚焦 5 files / 90 tests、`npm run format:check` 和 `git diff --check` 全部通过。新增 URL 矩阵覆盖远端 HTTPS、三个回环 HTTP、base path、非回环/伪回环 HTTP、数值别名、其他 scheme、userinfo、query、hash及 fetch-before-secret 边界，和原阻断风险精确对应。
+
+Result: APPROVED
+
+Remaining Risks: 公开 News 仍会读取全部已发布候选再在应用侧过滤；当前数据量小，文章规模显著增长时才触发独立性能/时区规范化任务。API 仍只是本地实现就绪：生产启用必须另获授权，创建不同的高熵调用/写入 Token、最小 `news` create 权限，并以真实 Directus smoke 验证 ID 与发布时间 round-trip；当前未配置或写入生产 CMS。
+
+Handoff: Re-review `APPROVED`，Nova 唯一 REJECTED 阻断已关闭；返回 Sol 对照 Acceptance Criteria 完成最终验收与日志收口。无需进一步 Terra 返工；本结论不授权部署、push、生产环境编辑、CMS/数据库/Oracle 操作，也不代表批量发布 API 已在生产激活。

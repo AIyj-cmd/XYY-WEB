@@ -51,6 +51,14 @@ export function getDirectusContentToken() {
   return serverEnv('DIRECTUS_CONTENT_TOKEN') || ''
 }
 
+/**
+ * This token is deliberately separate from the website's read-only content
+ * token. It is only consumed by the server-side News publishing integration.
+ */
+export function getDirectusNewsWriteToken() {
+  return serverEnv('DIRECTUS_NEWS_WRITE_TOKEN') || ''
+}
+
 type DirectusRequester = (
   collection: DirectusCollection,
   query: Record<string, unknown>
