@@ -1,6 +1,6 @@
 # DEV_STATE
 
-更新时间：2026-08-30
+更新时间：2026-08-31
 
 ## 协作记录约定
 
@@ -18,10 +18,10 @@
 
 ## 当前版本与环境
 
-- 仓库最新提交以 `git log -1` 为准；当前 staging 应用发布基线为 `82c01eda9984353ab7767cd4c79d7903bf938749`，其后的纯文档状态提交不代表新的应用 Release。
-- 验收站当前运行提交以 `/version` 返回的 `gitSha` 为准，不能仅根据仓库 HEAD 推断；当前为 `82c01eda9984353ab7767cd4c79d7903bf938749`。
+- 仓库最新提交以 `git log -1` 为准；当前 staging 应用发布基线为 `b91a7b20d96adf086cc2ec50aea1a8dd77ecd199`，其后的纯文档状态提交不代表新的应用 Release。
+- 验收站当前运行提交以 `/version` 返回的 `gitSha` 为准，不能仅根据仓库 HEAD 推断；当前为 `b91a7b20d96adf086cc2ec50aea1a8dd77ecd199`。
 - 验收站：`https://wz.tomatopia.top`。
-- 验收站当前 Release 为 `20260830T100940Z-82c01ed`，环境为 `staging`，CMS Schema 为 `2026-08-cms-hardening`；仍以 `/version` 的实时响应为准。
+- 验收站当前 Release 为 `20260831T081814Z-b91a7b2`，环境为 `staging`，CMS Schema 为 `2026-08-cms-hardening`；仍以 `/version` 的实时响应为准。
 - 正式主站已运行；本次只通过公开 HTTP 对主页和 robots 做发布前后哈希比对并确认内容未变化，未连接主站服务器、未修改主站环境，也未提交主站联系表单。
 - 运行状态：PM2 中 `xyy-web` 在线，Web 端口为 `50031`。
 - 健康状态：`/healthz` 返回200，`cmsContent=ok`、`contactStorage=ok`；首页、产品、案例、关于、新闻、期刊、联系、服务专题和真实404均已完成发布后 smoke test。
@@ -59,11 +59,14 @@
 
 ## News 发布时间与批量发布 API 状态（2026-08-31）
 
-- `XYY-20260831-02` 已在本地完成并验收 News 发布时间修复：Directus 返回无时区时间时按 `Asia/Shanghai` 编辑时间解释，带 offset 时间按绝对时刻解释；公开查询在过滤未来文章后再排序分页，当前时间发布可立即显示，未来定时发布继续隐藏。
+- `XYY-20260831-02` 已完成并验收 News 发布时间修复：Directus 返回无时区时间时按 `Asia/Shanghai` 编辑时间解释，带 offset 时间按绝对时刻解释；公开查询在过滤未来文章后再排序分页，当前时间发布可立即显示，未来定时发布继续隐藏。
 - 已新增只供受信任服务端调用的 `POST /api/integrations/news/batch` 代码合同：每批 1–20 篇、严格字段白名单、服务端固定 `status=published`、有限 body 与 10 秒 Directus timeout、重复 slug 稳定 409、其他下游错误非敏感失败关闭。
 - API 要求 `NEWS_PUBLISH_API_TOKEN`、`DIRECTUS_NEWS_WRITE_TOKEN`、`DIRECTUS_CONTENT_TOKEN` 均至少 32 UTF-8 bytes 且两两不同；远端 Directus 写入只允许 HTTPS，HTTP 只允许明确的 localhost / IPv4 / IPv6 loopback。Secret 不进入客户端、Git、Markdown 或响应。
 - Terra 完成实现；Luna 首轮 `FAIL` 的非法日期、Token 隔离与无效 ID 问题均已返工关闭，最终 `PASS`；Nova 首轮 `REJECTED` 的非回环明文 HTTP 问题已返工关闭，最终 `APPROVED`。最终门禁为 51 个测试文件、384 项测试通过，完整 `npm run verify`、format 与 diff-check 通过。
-- 当前状态仅为 `IMPLEMENTATION READY / PRODUCTION INACTIVE`。本次未配置真实 Secret、Directus 写权限或生产环境，未写 CMS、未部署、未提交或推送，也未操作数据库或 Oracle；正式启用必须另行授权并执行最小权限配置与受控 smoke。
+- `XYY-20260831-03` 已将应用提交 `b91a7b20d96adf086cc2ec50aea1a8dd77ecd199` 推送到 GitHub `main`，GitHub CI Run `33371936252` 成功；完全合并的本地/远端临时分支已清理，最终只保留 `main`。staging 已原子发布 Release `20260831T081814Z-b91a7b2`，上一 Release `20260830T100940Z-82c01ed` 保留为回滚目标。
+- 发布后 `/version` 精确匹配目标 SHA/Release，`/healthz` 为 `cmsContent=ok`、`contactStorage=ok`；Luna 独立桌面/移动验证 `PASS`，Nova 发布 Review `APPROVED`。
+- staging 尚未配置 `NEWS_PUBLISH_API_TOKEN` 和 `DIRECTUS_NEWS_WRITE_TOKEN`，因此 `POST /api/integrations/news/batch` 当前为 `INACTIVE / FAIL-CLOSED`，返回通用 503 且未触发 CMS 写入。News 读取与发布时间修复已生效，但批量发布能力仍需独立授权完成最小权限和 Secret 配置后再受控启用。
+- 本次未部署或修改 `56xyy.com`，未写 CMS、修改 Directus Schema、数据库或 Oracle，也未创建或泄露真实 Secret。
 
 ## 已完成
 

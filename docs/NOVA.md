@@ -377,3 +377,27 @@ Result: APPROVED
 Remaining Risks: 公开 News 仍会读取全部已发布候选再在应用侧过滤；当前数据量小，文章规模显著增长时才触发独立性能/时区规范化任务。API 仍只是本地实现就绪：生产启用必须另获授权，创建不同的高熵调用/写入 Token、最小 `news` create 权限，并以真实 Directus smoke 验证 ID 与发布时间 round-trip；当前未配置或写入生产 CMS。
 
 Handoff: Re-review `APPROVED`，Nova 唯一 REJECTED 阻断已关闭；返回 Sol 对照 Acceptance Criteria 完成最终验收与日志收口。无需进一步 Terra 返工；本结论不授权部署、push、生产环境编辑、CMS/数据库/Oracle 操作，也不代表批量发布 API 已在生产激活。
+
+### XYY-20260831-03
+
+Status: APPROVED
+
+Task ID: XYY-20260831-03
+
+Review Scope: 对已验收应用提交 `b91a7b20d96adf086cc2ec50aea1a8dd77ecd199` 的 GitHub `main` / CI、分支清理、staging 原子 Release `20260831T081814Z-b91a7b2`、公开版本与双依赖健康、News 桌面/移动发布后证据、批量发布 API 未配置时的失败关闭、回滚目标和生产边界执行 HIGH 风险发布 Review。Nova 仅执行源码、Git、GitHub、公开 HTTP 与 staging 文件路径的只读核对；除本日志外未修改业务实现，未部署、改配、写 CMS、操作数据库或执行 Oracle 工作。
+
+Architecture: 本地 `main`、`origin/main`、GitHub 唯一远端分支和 staging `/version` 均精确对应应用提交 `b91a7b2...`；运行 Release 为 `20260831T081814Z-b91a7b2`，`environment=staging`、CMS Schema 为 `2026-08-cms-hardening`。`/healthz` 同时确认 `cmsContent=ok` 与 `contactStorage=ok`，没有把 CMS 内容依赖和联系线索存储依赖混为一体。News 页面继续从既有 Directus 读取路径获取已发布内容并由统一 Shanghai 时间边界过滤；新增 API 仍是固定 `/api/integrations/news/batch` 服务端写入入口，没有产生浏览器写入、第二数据源、任意集合或部署时 CMS 写入。
+
+Security: staging 未配置 `NEWS_PUBLISH_API_TOKEN` 与 `DIRECTUS_NEWS_WRITE_TOKEN`；无认证请求实时返回 HTTP 503 和通用 `{"error":"发布服务暂不可用"}`，证明配置检查在鉴权和 Directus fetch 前失败关闭，未泄露 Token、内部 URL、stack 或下游响应。提交中的环境模板只保留空值或非真实占位符；Luna 的 client bundle 检查未发现三项服务端 Token、Xiansuo Token 或 Bearer 内容。目标实现继续要求 caller / write / content 三 Token 均至少 32 UTF-8 bytes 且两两不同，远端 Directus 写 Token 只可走 HTTPS、HTTP 仅限明确 loopback。发布未编辑主站、生产 CMS、数据库、Oracle、DNS、TLS、Nginx 或主站 PM2。
+
+Maintainability: 发布提交严格对应已完成 Luna PASS / Nova APPROVED 的 `XYY-20260831-02` 实现，没有部署期热修、ad-hoc 启动方式、依赖或额外架构。GitHub CI Run `33371936252` 为 `completed/success` 且 `headSha` 精确匹配目标提交；合并后的临时和历史已合并分支已清理，本地与远端均只保留 `main`。部署沿用既有 Release 目录、原子 symlink 和 manifest 身份校验，未发明新的发布机制。
+
+Contract Risks: staging `/news` 实时 HTTP 200，Luna 独立桌面/移动 Chromium 检查均为 3 篇已发布文章、控制台 0 error / 0 warning，联系页仍只提交 `/api/contact`，代表性页面均 200。批量发布能力代码已部署但因写入凭据未配置而明确处于 `INACTIVE / FAIL-CLOSED`；因此本次没有验证真实 batch create、Directus 最小 create 权限、duplicate 或发布时间 round-trip，也不能把 staging 发布描述为“批量发布 API 已启用”。这与用户本次仅推送、分支清理和 staging 部署的 Scope 一致，不构成发布阻断。
+
+Test Coverage Review: 实现提交发布前及部署脚本内的 `npm run verify:release` 均通过，最终门禁为 51 个测试文件、384 项单测、39 项 E2E（7 项按配置跳过）、3 项正式域名契约及生产构建；GitHub CI 同 SHA 成功。Luna 发布后独立 PASS 覆盖精确版本/Release、双依赖健康、News 桌面/移动与控制台、联系边界、代表性页面、API 通用 503、GitHub/main/分支清理和生产边界。Nova 复核实时 `/version`、`/healthz`、`/news`、503 响应、GitHub CI / refs 以及 current symlink；当前 Release 的 `.previous_target` 精确为存在的 `/var/www/xyy-web/releases/20260830T100940Z-82c01ed`，回滚身份明确。
+
+Result: APPROVED
+
+Remaining Risks: staging 批量发布 API 尚未激活；若未来启用，必须另建获授权任务配置彼此不同的高熵调用/写入 Token、Directus 最小 `news` create 权限，并执行受控 CMS smoke、duplicate 与时间 round-trip 验证。GitHub CI 仅有 Actions 运行时 Node 20 强制迁移到 Node 24 的平台弃用提示，当前不影响成功结论，但 workflow action 版本未来需在独立维护任务中升级。正式主站服务专题页的既有 CMS 内容/图片缺失仍是独立的 `XYY-20260830-01` 生产 CMS apply 阻塞，不由本 staging 应用发布修复。
+
+Handoff: 最终发布 Review `APPROVED`，返回 Sol 对照 Acceptance Criteria 完成 `XYY-20260831-03` 验收、状态文档收口和工作账提交。无需 Terra 返工或回滚；本结论不授权启用 batch CMS 写入、不代表 `56xyy.com` 已部署，也不改变生产 CMS / 数据库 / Oracle 边界。

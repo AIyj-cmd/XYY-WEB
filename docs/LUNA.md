@@ -555,3 +555,28 @@ Regression coverage: 覆盖 URL 协议、主机、路径、userinfo/query/hash �
 Remaining risks: 批量发布 API 生产启用仍需授权人员配置彼此不同的高熵调用/写入 Token 和 Directus 最小 `news` 创建权限；News 查询当前读取全部已发布候选后应用侧过滤，未来数据量显著增长时需另建性能/时区规范化任务。本次未配置生产环境或写 CMS。
 
 Handoff: 返回 Sol；Nova REJECTED 的 Directus URL 安全问题已通过独立 Re-test，可继续 Nova Re-review。`docs/LUNA.md` 为本轮唯一工作账变更。
+
+### XYY-20260831-03
+
+Task ID: XYY-20260831-03
+
+Result: PASS
+
+Test Target: XYY-WEB staging Release `20260831T081814Z-b91a7b2` 发布后的独立 QA，覆盖 News 页面、批量发布 API 的未启用 fail-closed 行为、基础页面回归、GitHub 同步与生产边界。
+
+Tests performed:
+
+- 只读 HTTP `/version`：HTTP 200，`gitSha=b91a7b20d96adf086cc2ec50aea1a8dd77ecd199`、`releaseId=20260831T081814Z-b91a7b2`、`environment=staging`、`cmsSchemaVersion=2026-08-cms-hardening` 完全匹配目标发布。
+- 只读 HTTP `/healthz`：HTTP 200，`status=ok`，`cmsContent=ok`、`contactStorage=ok`。
+- 真实 Chromium 桌面视口打开 `https://wz.tomatopia.top/news`：页面标题正确，3 篇已发布文章、分类入口、FAQ、统一转化 CTA 和联系入口均可见；控制台 0 条消息（Errors 0、Warnings 0）。
+- 真实 Chromium 移动视口 `390x844` 打开同一新闻页：移动导航、文章列表、FAQ、统一转化 CTA 和页脚均可访问；已保存移动截图，控制台 Errors 0、Warnings 0。
+- 只读 HTTP `/contact`：HTTP 200；页面源码仍包含表单向 `/api/contact` 的 POST，未发现浏览器直连 XYY-xiansuo 的实现路径。首页、`/product`、`/cases`、`/senlinqikan`、`/contact` 均 HTTP 200。
+- 只读 POST `https://wz.tomatopia.top/api/integrations/news/batch`（无 Secret、空文章列表）：HTTP 503，响应为通用 `{"error":"发布服务暂不可用"}`；未配置发布 Token 时正确 fail-closed，未泄露内部错误或触发 CMS 写入。
+- GitHub CI Run `33371936252`：`status=completed`、`conclusion=success`，`headSha` 精确匹配目标 SHA；本地与 `origin/main` 均在 `main`，没有额外本地/远程分支。
+- 发布记录显示 staging 原子发布已保留上一 Release 作为 rollback target；本轮未执行回滚。未访问或修改 `56xyy.com`、生产 CMS、数据库或 Oracle。
+
+Regression coverage: 覆盖 staging 发布身份、双依赖健康检查、News 桌面/移动渲染与控制台错误、联系页 `/api/contact` 边界、代表性基础页面、发布 API 未配置时的非敏感 503、GitHub CI/main/分支清理和 staging 原子回滚证据；未执行 CMS 写入、数据库操作或正式主站表单提交。
+
+Remaining risks: `NEWS_PUBLISH_API_TOKEN` 与 `DIRECTUS_NEWS_WRITE_TOKEN` 在 staging 尚未配置，因此本轮只证明批量发布接口安全关闭，未验证真实批量写 CMS；启用该能力需另行配置并执行受控 CMS 验证。没有新增阻塞性回归。
+
+Handoff: 返回 Sol；`XYY-20260831-03` 发布后独立 QA PASS，可进入 Nova Release Review。`docs/LUNA.md` 为本轮唯一修改文件；未修改业务代码、未部署或改配生产环境。

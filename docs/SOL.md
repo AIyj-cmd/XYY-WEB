@@ -26,11 +26,13 @@ XYY-WEB 已运行于正式环境，当前处于稳定维护阶段。仓库根目
 - 官网线索 Integration 已在 XYY-xiansuo 正式服务与 XYY-WEB staging 激活并通过真实 E2E；`56xyy.com` 主站未切换，仍保持原运行版本。
 - XYY-xiansuo 已发布服务码中文显示版本 `a5f82b9`；staging 真实表单验证确认“来源细分”写入“鞋服云仓”，不再显示 `cloud-warehouse`。
 - 服务专题页 Seed 结构修复已进入 GitHub `main`，staging Release `20260830T100940Z-82c01ed` 已验证 9 页结构和图片；正式主站 CMS 因当前无有效管理凭据尚未定向 apply，不能视为已修复。
+- News 发布时间修复与批量发布 API 代码已进入 GitHub `main`，staging 当前运行 Release `20260831T081814Z-b91a7b2`；批量发布所需的两枚新 Token 尚未配置，因此接口保持安全关闭，未写 CMS。
 
 ## Current Tasks
 
 | Task | Risk | Owner | Status |
 | --- | --- | --- | --- |
+| XYY-20260831-03 | HIGH | Sol | CLOSED |
 | XYY-20260831-02 | HIGH | Sol | CLOSED |
 | XYY-20260830-01 | HIGH | Sol | BLOCKED |
 | XYY-20260825-04 | HIGH | Sol | CLOSED |
@@ -94,6 +96,7 @@ Sol 的角色是 Product Manager / Orchestrator / Task Planner / Scope Controlle
 
 ## Decisions
 
+- `XYY-20260831-03` 只发布上一 Task 已验收的应用代码：先同步 GitHub `main` 并等待 CI，再清理完全合并的临时分支，最后使用既有原子流程发布 staging。未配置的 News 发布 Token 不临时补造，接口必须以通用 503 fail-closed；`56xyy.com`、CMS 数据、数据库和 Oracle 均不在发布范围。
 - `XYY-20260831-02` 将 News 公开可见性从数据库适配层的 `$NOW` 比较改为应用侧统一时间解析：无时区 Directus 时间按 `Asia/Shanghai` 解释，带 offset 时间按绝对时刻解释，先过滤未来文章再排序分页。批量发布只开放固定的服务端 `POST /api/integrations/news/batch`，由独立调用 Token 鉴权并使用独立 Directus News 写 Token；三个运行 Token 必须完整、足够长且两两不同。当前只完成本地代码验收，未创建 Secret/权限、未写 CMS、未部署，不能视为生产接口已启用。
 - `XYY-20260830-01` 修复 CMS Seed 生成器遗漏 `stats` / `features` 的根因，并用独立 dry-run-first 工具只处理仓配下拉菜单的 9 条 `service_pages`、只允许 `stats` / `features` / `img_src` 三字段。测试站先发布和零差异验证；正式主站不部署前端、不重置 CMS，只在有效管理入口可用时备份后定向 apply。当前正式 Token 校验失败，因此任务保持 `BLOCKED`，不冒充生产内容已修复。
 - `XYY-20260825-02` 仅发布已在上一 Task 验收的 XYY-xiansuo 两文件服务标签修复，并从既有 XYY-WEB staging 做真实表单 E2E；Web 应用无需重复发布，`56xyy.com`、Oracle、Directus、生产环境变量和数据库结构均不变。生产使用可审计的不可变 release，保留旧 release 与 unit 备份作为回滚目标。
@@ -112,6 +115,13 @@ Sol 的角色是 Product Manager / Orchestrator / Task Planner / Scope Controlle
 - 共享 Vault 配置进入 Git，设备窗口布局、移动端布局和缓存留在本地。
 
 ## Dispatch Log
+
+### XYY-20260831-03
+
+- Risk: HIGH；涉及向 GitHub `main` 推送已验收代码、清理合并分支和 staging 应用发布，但不授权主站、CMS 写入、Secret 创建、数据库或 Oracle 操作。
+- Sol 完成发布门禁、精确提交与无 force push 的 GitHub 同步，GitHub CI Run `33371936252` 成功；本地和远端完全合并的临时分支已删除，最终均只保留 `main`。
+- Sol 使用既有原子发布流程将应用提交 `b91a7b20d96adf086cc2ec50aea1a8dd77ecd199` 发布为 staging Release `20260831T081814Z-b91a7b2`，保留上一 Release 作为回滚目标。
+- Luna 发布后独立验证 `PASS`；Nova 最终发布 Review `APPROVED`。未调用 Terra，因为发布未暴露代码问题；所有生产与数据边界保持不变。
 
 ### XYY-20260831-02
 
@@ -197,6 +207,24 @@ Sol 的角色是 Product Manager / Orchestrator / Task Planner / Scope Controlle
 - 该烟雾测试不构成角色工作交付，因此不在三本子代理工作账中伪造 Implementation、QA 或 Review 记录；工作账从首次真实职责任务开始记录。
 
 ## Work Log
+
+### XYY-20260831-03
+
+Status: CLOSED
+
+Risk: HIGH
+
+Task: 将 `XYY-20260831-02` 已验收的 News 发布时间修复与安全批量发布 API 代码同步到 GitHub，清理完全合并的多余分支，并部署到 XYY-WEB staging。
+
+Scope: 运行完整发布门禁；提交和推送已验收文件；等待 GitHub CI；只删除已完整合并的本地/远程临时分支；使用既有原子流程发布 `https://wz.tomatopia.top`；核对版本、健康、页面、API fail-closed 和回滚。排除 `56xyy.com`、CMS 写入/权限、Secret 创建、数据库、Oracle、DNS/TLS/Nginx/PM2 手工改配。
+
+Acceptance Criteria: 本地与 GitHub `main` 同步且无多余分支；CI 成功；staging `/version` 精确匹配应用 SHA 与 Release，`/healthz` 双依赖正常；News 桌面/移动无阻塞；未配置发布 Token 时 API 安全关闭；Luna PASS、Nova APPROVED；主站和数据系统未触碰。
+
+Changes: 应用提交 `b91a7b20d96adf086cc2ec50aea1a8dd77ecd199` 已推送 GitHub `main`；完全合并的 `agent/homepage-release`、`codex/unified-cta-governance-20260822`、`codex/news-publishing-20260831` 已按实际本地/远端存在范围清理；staging 原子发布 Release `20260831T081814Z-b91a7b2`。
+
+Validation: 发布前与部署内两轮 `npm run verify:release` 均通过；目标提交为 51 files / 384 tests、39 项 E2E 通过（7 项配置跳过）、3 项正式契约和构建通过；GitHub CI Run `33371936252` 成功。发布后 `/version`、`/healthz`、`/news`、`/contact` 正常，Luna 真实 Chromium 桌面/移动验证控制台 0 error/0 warning，未配置 API 返回通用 503；Nova `APPROVED`。
+
+Result: CLOSED。staging 当前运行应用 SHA `b91a7b20d96adf086cc2ec50aea1a8dd77ecd199`，回滚目标为 `20260830T100940Z-82c01ed`。News 时间修复在 staging 生效；批量发布 API 代码已部署但因新 Token 未配置而保持 `INACTIVE / FAIL-CLOSED`。未部署或修改 `56xyy.com`，未写 CMS、修改数据库/Oracle 或创建 Secret；Terra 未参与本发布任务。
 
 ### XYY-20260831-02
 
