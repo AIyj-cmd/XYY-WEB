@@ -23,6 +23,9 @@ echo "[prepare] bootstrapping Directus system tables in Oracle"
 cd "${TARGET_CMS_DIR}"
 "${NODE_BIN}/npm" exec directus -- bootstrap
 
+echo "[prepare] verifying Directus revision capacity gate"
+"${NODE_BIN}/node" "${SCRIPT_DIR}/verify-revision-capacity.mjs" --cms-dir "${TARGET_CMS_DIR}"
+
 stamp=$(date -u +%Y%m%dT%H%M%SZ)
 snapshot="/var/backups/xyy-directus/schema-${stamp}.yaml"
 echo "[prepare] snapshotting current PostgreSQL-backed Directus schema"
