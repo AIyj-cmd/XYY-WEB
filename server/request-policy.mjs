@@ -1,11 +1,45 @@
 const LEGACY_PATH_REDIRECTS = new Map([
   ['/index.html', '/'],
   ['/about.html', '/about'],
+  ['/senlinqikan', '/supply-chain-whitepapers/'],
+  ['/senlinqikan/', '/supply-chain-whitepapers/'],
+])
+const WHITEPAPER_ISSUES = new Set([
+  '1',
+  '2',
+  '3',
+  '4',
+  '5',
+  '6',
+  '7',
+  '8',
+  '9',
+  '10',
+  '11',
+  '12',
+  '13',
+  '14',
 ])
 
 function normalizeOriginRelativePath(path) {
   const pathWithoutLeadingSeparators = path.replace(/^[\\/]+/, '')
-  const originRelativePath = `/${pathWithoutLeadingSeparators}`
+  return `/${pathWithoutLeadingSeparators}`
+}
+
+function normalizeCanonicalPath(originRelativePath) {
+  const numericIssueRoute = /^\/supply-chain-whitepapers\/(\d+)\/?$/.exec(originRelativePath)
+  if (numericIssueRoute) {
+    return WHITEPAPER_ISSUES.has(numericIssueRoute[1])
+      ? `/supply-chain-whitepapers/${numericIssueRoute[1]}/`
+      : originRelativePath
+  }
+
+  if (
+    originRelativePath === '/supply-chain-whitepapers' ||
+    originRelativePath === '/supply-chain-whitepapers/'
+  ) {
+    return '/supply-chain-whitepapers/'
+  }
 
   return originRelativePath !== '/' && originRelativePath.endsWith('/')
     ? originRelativePath.slice(0, -1)
@@ -22,8 +56,9 @@ export function createCanonicalRedirect(config) {
     const query = req.originalUrl.includes('?')
       ? req.originalUrl.slice(req.originalUrl.indexOf('?'))
       : ''
-    const mappedPath = LEGACY_PATH_REDIRECTS.get(req.path) || req.path
-    const normalizedPath = normalizeOriginRelativePath(mappedPath)
+    const originRelativePath = normalizeOriginRelativePath(req.path)
+    const mappedPath = LEGACY_PATH_REDIRECTS.get(originRelativePath) || originRelativePath
+    const normalizedPath = normalizeCanonicalPath(mappedPath)
 
     const isFormalHost =
       requestHost === config.formalHost || requestHost === `www.${config.formalHost}`

@@ -13,7 +13,7 @@ const conversionCtaRoutes = [
   '/b2b-mendian-cangpei',
   '/cases',
   '/news',
-  '/senlinqikan',
+  '/supply-chain-whitepapers/',
 ]
 
 test.setTimeout(60_000)

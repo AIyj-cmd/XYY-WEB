@@ -4,7 +4,17 @@ import { getClaimText } from '../../src/lib/claims'
 const formalOrigin = 'https://56xyy.com'
 
 test('formal-domain build publishes indexable canonical pages', async ({ page }) => {
-  for (const path of ['/', '/product', '/cases', '/about', '/contact']) {
+  const paths = [
+    '/',
+    '/product',
+    '/cases',
+    '/about',
+    '/contact',
+    '/supply-chain-whitepapers/',
+    ...Array.from({ length: 14 }, (_, index) => `/supply-chain-whitepapers/${index + 1}/`),
+  ]
+
+  for (const path of paths) {
     const response = await page.goto(path)
     expect(response?.status()).toBe(200)
     expect(response?.headers()['x-robots-tag']).toBeUndefined()
@@ -36,6 +46,7 @@ test('formal discovery files use the production origin without a global crawl bl
   expect(sitemap.headers()['content-type']).toContain('application/xml')
   const sitemapBody = await sitemap.text()
   expect(sitemapBody).toContain(`<loc>${formalOrigin}/product</loc>`)
+  expect(sitemapBody).toContain(`<loc>${formalOrigin}/supply-chain-whitepapers/14/</loc>`)
   expect(sitemapBody).not.toContain('127.0.0.1')
   expect(sitemapBody).not.toContain('wz.tomatopia.top')
 
@@ -74,4 +85,17 @@ test('formal server normalizes www, legacy domains and legacy paths', async ({ r
   })
   expect(legacyPath.status()).toBe(301)
   expect(legacyPath.headers().location).toBe('/?source=old')
+})
+
+test('formal whitepaper routes preserve query redirects and reject unknown issues', async ({
+  request,
+}) => {
+  const query = await request.get('/supply-chain-whitepapers/14?qa=1', { maxRedirects: 0 })
+  expect(query.status()).toBe(301)
+  expect(query.headers().location).toBe('/supply-chain-whitepapers/14/?qa=1')
+
+  for (const path of ['/supply-chain-whitepapers/014/', '/supply-chain-whitepapers/15/']) {
+    const response = await request.get(path)
+    expect(response.status(), path).toBe(404)
+  }
 })

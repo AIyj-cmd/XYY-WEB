@@ -1,0 +1,124 @@
+---
+import type { WhitepaperArticle as Article } from '@/data/whitepapers/types'
+import { getArticleReadingNotice, getFigurePresentation } from '@/data/whitepapers/presentation'
+import '@/styles/whitepapers.css'
+
+interface Props {
+  article: Article
+}
+
+const { article } = Astro.props
+const readingNotice = getArticleReadingNotice(article)
+---
+
+<article class="whitepaper-article">
+  <header class="whitepaper-article__hero">
+    <div class="whitepaper-article__container">
+      <a class="whitepaper-article__back" href="/supply-chain-whitepapers/">← 返回供应链白皮书</a>
+      <p class="whitepaper-article__eyebrow">供应链白皮书</p>
+      <h1>{article.title}</h1>
+      <p class="whitepaper-article__description">{article.description}</p>
+      <p class="whitepaper-article__source">
+        来源：{article.originalTitle} · {article.sourcePublishedLabel}
+      </p>
+      <a
+        class="whitepaper-article__download"
+        href={article.sourcePdf}
+        target="_blank"
+        rel="noopener">下载 PDF 原版</a
+      >
+    </div>
+  </header>
+
+  <div class="whitepaper-article__container whitepaper-article__body">
+    {readingNotice && <aside class="whitepaper-article__notice">{readingNotice}</aside>}
+    {
+      article.sections.length >= 4 && (
+        <nav class="whitepaper-article__toc" aria-label="本期目录">
+          <h2>本期目录</h2>
+          <ol>
+            {article.sections.map((section, index) => (
+              <li>
+                <a href={`#section-${index + 1}`}>{section.title}</a>
+              </li>
+            ))}
+          </ol>
+        </nav>
+      )
+    }
+
+    {
+      article.sections.map((section, index) => {
+        return (
+          <section id={`section-${index + 1}`} class="whitepaper-article__section">
+            <h2>{section.title}</h2>
+            {section.blocks.map((block) => {
+              if (block.type === 'subheading') return <h3>{block.text}</h3>
+              if (block.type === 'list' && block.text)
+                return (
+                  <ul>
+                    {block.text.split('\n').map((item) => (
+                      <li>{item}</li>
+                    ))}
+                  </ul>
+                )
+              if (block.type === 'quote') return <blockquote>{block.text}</blockquote>
+              if (block.type === 'figure' && block.src) {
+                const figure = getFigurePresentation(block)
+                return (
+                  <figure
+                    class={`whitepaper-article__figure whitepaper-article__figure--${figure.kind}`}
+                    style={`--whitepaper-figure-display-width: ${figure.displayWidth}px`}
+                  >
+                    <img
+                      src={figure.src}
+                      alt={figure.alt}
+                      width={figure.width}
+                      height={figure.height}
+                      loading="lazy"
+                    />
+                    <figcaption>{figure.caption}</figcaption>
+                    {figure.largeViewHref && (
+                      <a
+                        class="whitepaper-article__figure-link"
+                        href={figure.largeViewHref}
+                        target="_blank"
+                        rel="noopener"
+                      >
+                        查看大图
+                      </a>
+                    )}
+                  </figure>
+                )
+              }
+              if (block.type === 'table')
+                return (
+                  <div class="whitepaper-article__table">
+                    <table>
+                      <caption>{block.caption}</caption>
+                      <tbody>
+                        {block.text?.split('\n').map((row) => (
+                          <tr>
+                            {row.split('|').map((cell) => (
+                              <td>{cell}</td>
+                            ))}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )
+              if (block.type === 'review-note') return null
+              return <p>{block.text}</p>
+            })}
+          </section>
+        )
+      })
+    }
+
+    <footer class="whitepaper-article__footer">
+      <a href={article.sourcePdf} target="_blank" rel="noopener">下载 PDF 原版</a>
+      <a href="/supply-chain-whitepapers/">返回供应链白皮书</a>
+    </footer>
+  </div>
+</article>

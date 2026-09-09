@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro'
 
 import { CASE_FALLBACKS } from '@/data/cases'
+import { getWhitepapers } from '@/data/whitepapers'
 import { getClaimText } from '@/lib/claims'
 import { getCases } from '@/lib/directus'
 import { absoluteUrl } from '@/lib/seo'
@@ -16,6 +17,12 @@ export const GET: APIRoute = async () => {
     .map(
       (item) =>
         `- [${singleLine(item.name || item.label)}合作案例](${page(`/cases/${item.slug}`)}): ${singleLine(item.category)}；${singleLine(item.metrics)}。`
+    )
+    .join('\n')
+  const whitepaperLinks = getWhitepapers()
+    .map(
+      (article) =>
+        `- [${singleLine(article.title)}](${page(`/supply-chain-whitepapers/${article.issue}/`)}): ${singleLine(article.description)}`
     )
     .join('\n')
   const content = `# 新亦源供应链
@@ -53,10 +60,14 @@ export const GET: APIRoute = async () => {
 
 ${caseLinks}
 
+## 供应链白皮书
+
+${whitepaperLinks}
+
 ## Optional
 
 - [行业动态](${page('/news')}): 鞋服物流、云仓、质检和供应链行业内容。
-- [森林期刊](${page('/senlinqikan')}): 新亦源发布的鞋服供应链知识内容。
+- [供应链白皮书](${page('/supply-chain-whitepapers/')}): 新亦源发布的鞋服供应链知识内容。
 - [个人信息保护说明](${page('/privacy')}): 官网咨询表单的个人信息收集、使用和权利说明。
 `
 

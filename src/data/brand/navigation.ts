@@ -4,7 +4,7 @@ export const NAV_LINKS = [
   { href: '/about', label: '关于我们' },
   { href: '/cases', label: '合作案例' },
   { href: '/news', label: '行业动态' },
-  { href: '/senlinqikan', label: '森林期刊' },
+  { href: '/supply-chain-whitepapers/', label: '供应链白皮书' },
   { href: '/contact', label: '联系我们' },
 ] as const
 

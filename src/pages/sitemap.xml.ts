@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro'
 import { BRAND } from '@/lib/brand'
 import { CASE_FALLBACKS } from '@/data/cases'
+import { getWhitepapers } from '@/data/whitepapers'
 import { getCases, getPublishedNews } from '@/lib/directus'
 
 const STATIC_PAGES = [
@@ -20,7 +21,7 @@ const STATIC_PAGES = [
   { url: '/about', priority: '0.8', changefreq: 'monthly' },
   { url: '/cases', priority: '0.8', changefreq: 'monthly' },
   { url: '/news', priority: '0.6', changefreq: 'monthly' },
-  { url: '/senlinqikan', priority: '0.75', changefreq: 'monthly' },
+  { url: '/supply-chain-whitepapers/', priority: '0.75', changefreq: 'monthly' },
   { url: '/contact', priority: '0.7', changefreq: 'monthly' },
   { url: '/privacy', priority: '0.3', changefreq: 'yearly' },
 ]
@@ -61,12 +62,22 @@ export const GET: APIRoute = async () => {
   </url>`
     )
     .join('\n')
+  const whitepaperEntries = getWhitepapers()
+    .map(
+      (article) => `  <url>
+    <loc>${BRAND.url}/supply-chain-whitepapers/${encodeURIComponent(article.issue)}/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>`
+    )
+    .join('\n')
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${staticEntries}
 ${caseEntries}
 ${newsEntries}
+${whitepaperEntries}
 </urlset>`
 
   return new Response(xml, {

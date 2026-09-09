@@ -1,0 +1,479 @@
+{
+  "issue": "1",
+  "originalTitle": "《新亦源森林双月刊》第1期",
+  "title": "仓库六大守则与团队管理实践",
+  "description": "本期记录仓库六大守则、人机复位、会议制度、员工培训与团队活动等内部管理实践，依据《新亦源森林双月刊》第1期整理。",
+  "sourcePdf": "/senlinqikan/pdf/1.pdf",
+  "sourceSha256": "01fa9fd6f5e7a68f93e36816ba6b3b1110820909cf73fc57b9dc44479bc39776",
+  "sourcePublishedLabel": "2022年第1期（封面标注）",
+  "readingNotice": "本阅读版依据《新亦源森林双月刊》第1期的图像原刊与已缓存 OCR 整理。原文中的时间、人物、活动和数据保留其历史语境，不构成新亦源当前服务承诺；低可信图文请回到 PDF 原版核对。",
+  "sections": [
+    {
+      "title": "卷首语",
+      "source": {
+        "pdfPage": 1,
+        "printedPage": null,
+        "side": "full"
+      },
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "带着对新亦源战略目标的向往，以及对2022年“客户至上，降本增效”的年度主题的深入领会，带着新亦源里的温暖，以展示员工精神风貌、信息共享、共建健康、和谐、富而有爱为目的《新亦源森林》诞生了！",
+          "source": {
+            "pdfPage": 1,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              250,
+              1600,
+              1420,
+              2225
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "《新亦源森林》设有“森林公约、技能装备、筑巢引凤、森林活动、森林播台等”栏目，以简洁的语言、精彩的图片，通过微信分享、邮件发送、公众号推送等方式，为员工提供一个信息交流、展示自我的平台。",
+          "source": {
+            "pdfPage": 1,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              250,
+              1600,
+              1420,
+              2225
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "创刊之初，《新亦源森林》尚有诸多未完善之处，欢迎广大员工提出改善建议，同时欢迎各中心、事业部承办《新亦源森林》。",
+          "source": {
+            "pdfPage": 1,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              250,
+              1600,
+              1420,
+              2225
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "让我们一起，坚持不懈地努力，使大家爱上《新亦源森林》。",
+          "source": {
+            "pdfPage": 1,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              250,
+              1600,
+              1420,
+              2225
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "仓库六大守则",
+      "source": {
+        "pdfPage": 2,
+        "printedPage": null,
+        "side": "full"
+      },
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "2022年3月3日、3月11日，总部人事行政中心组织分别到东莞及肇庆各仓库进行了走访，对仓库六大守则执行工作进行了现场巡检，明确新亦源仓库将进行标准化管理的统一，有力地推动服务创新和管理融合，与2022年“客户至上，降本增效”战略主题相呼应。",
+          "source": {
+            "pdfPage": 2,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              210,
+              890,
+              1450,
+              1510
+            ]
+          }
+        },
+        {
+          "type": "figure",
+          "src": "/images/supply-chain-whitepapers/1/warehouse-six-principles.png",
+          "alt": "仓库六大守则现场照片（原刊物理第2页局部）",
+          "caption": "仓库六大守则现场照片（原刊物理第2页局部）",
+          "width": 610,
+          "height": 280,
+          "source": {
+            "pdfPage": 2,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              210,
+              1230,
+              820,
+              1510
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "人机复位管理",
+      "source": {
+        "pdfPage": 2,
+        "printedPage": null,
+        "side": "full"
+      },
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "为合理利用公司资源，提高各部门对会议室的使用效率，保障会议室的正常使用状态，给公司同事创造一个良好的工作环境，2022年3月2日起对会议室启用人机复位管理。",
+          "source": {
+            "pdfPage": 2,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              210,
+              1660,
+              1450,
+              2200
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "会议室预约制度",
+      "source": {
+        "pdfPage": 3,
+        "printedPage": null,
+        "side": "full"
+      },
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "为充分利用会议室的功能，使会议室的管理和使用更加规范化、合理化，以确保公司各类会议的正常召开。3月30日，正式启用会议室预约管理。",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              200,
+              180,
+              1450,
+              880
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "周／例会统一模板及条例",
+      "source": {
+        "pdfPage": 3,
+        "printedPage": null,
+        "side": "full"
+      },
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "为保证企业周、月例会的顺利进行，提高会议效率，通过月例会对各部门月度工作完成情况进行检查和监督，协调解决部门之间的工作，推进公司经营目标的实现，统一企业周／例会汇报模板。同时参会要求原则上各组织负责人出席参会，如因事不能参加会议的，需向会议召集人请假并在请假通过后委派本组织代表参加会议并完成汇报。",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              200,
+              930,
+              1450,
+              1500
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "我爱学习系列之如何有效地开晨会",
+      "source": {
+        "pdfPage": 4,
+        "printedPage": null,
+        "side": "full"
+      },
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "新亦源晨会群于3月1日正式开始启动，由全国各班／组长、主管在群上进行晨会汇报。总部人事行政中心不定期推送晨会培训课程，3月已推4个业务环节及1个视频涉及晨会全流程，以便提升班／组长、主管晨会管理技能。同时，进行晨会管理排行榜公告，让基层管理养成良好的工作习惯。",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              200,
+              1260,
+              1450,
+              1510
+            ]
+          }
+        },
+        {
+          "type": "figure",
+          "src": "/images/supply-chain-whitepapers/1/daily-training-roster.png",
+          "alt": "日常培训剪影的培训列表（原刊物理第4页局部）",
+          "caption": "日常培训剪影的培训列表（原刊物理第4页局部）",
+          "width": 1270,
+          "height": 500,
+          "source": {
+            "pdfPage": 4,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              180,
+              1690,
+              1450,
+              2190
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "日常培训剪影",
+      "source": {
+        "pdfPage": 4,
+        "printedPage": null,
+        "side": "full"
+      },
+      "blocks": [
+        {
+          "type": "review-note",
+          "text": "原刊物理第4页“日常培训剪影”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              200,
+              1660,
+              1450,
+              2210
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "人事行政工作检查",
+      "source": {
+        "pdfPage": 5,
+        "printedPage": null,
+        "side": "full"
+      },
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "本月开展对员工花名册、员工资料保密性和完整性管理检查工作，对仓库现场企业文化墙建设检查工作。",
+          "source": {
+            "pdfPage": 5,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              1600,
+              780,
+              2050
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "招聘动态追踪",
+      "source": {
+        "pdfPage": 5,
+        "printedPage": null,
+        "side": "full"
+      },
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "3月招聘渠道贡献来源于员工内荐、招聘会、BOSS平台等，筛选简历2000多份，成功入职84人。同时，开展BOSS平台直播招聘一场，观看人数200人。",
+          "source": {
+            "pdfPage": 5,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              2060,
+              1450,
+              2240
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "3月员工关怀",
+      "source": {
+        "pdfPage": 6,
+        "printedPage": null,
+        "side": "full"
+      },
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "菜系， 对宿舍卫生加强了现场管理。",
+          "source": {
+            "pdfPage": 6,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              253,
+              460,
+              690,
+              500
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "离职员工回访",
+      "source": {
+        "pdfPage": 6,
+        "printedPage": null,
+        "side": "full"
+      },
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "总部人事行政中心通过电话的方式对 6 名离职员工进行回访，及时了解企业的不足并将离职员工反馈的问题落实到各仓",
+          "source": {
+            "pdfPage": 6,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              620,
+              727,
+              1359,
+              821
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "员工技能竞赛",
+      "source": {
+        "pdfPage": 8,
+        "printedPage": null,
+        "side": "full"
+      },
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "新亦源肇庆仓举办2022年第一季度员工技能竞赛，来自肇庆分公司库内拆零组、电商收货组、发货组、库维组、客退组以及后整仓等业务部门分别进行现场技能比拼，本赛季吸引了90名员工参赛。操作技能比赛分别从作业规范标准、手法、产能等几个方面进行考评，现场人员在各物流操作环节上动作规范娴熟，展现了员工们出色的技能，更展现出昂扬向上、奋力拼搏的精神面貌。",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              150,
+              1450,
+              810
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "其中，谢烽胜伙伴以优异的成绩获得上架、拣货两项的技能标兵，获得“双技能王”称谓。",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              150,
+              1450,
+              810
+            ]
+          }
+        },
+        {
+          "type": "figure",
+          "src": "/images/supply-chain-whitepapers/1/skills-competition.png",
+          "alt": "员工技能竞赛合影（原刊物理第8页局部）",
+          "caption": "员工技能竞赛合影（原刊物理第8页局部）",
+          "width": 600,
+          "height": 180,
+          "source": {
+            "pdfPage": 8,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              850,
+              650,
+              1450,
+              830
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "仓库六大守则歌颂比赛",
+      "source": {
+        "pdfPage": 8,
+        "printedPage": null,
+        "side": "full"
+      },
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "3月30日，由人事行政中心、新亦源肇庆物流中心联合主办的“仓库六大守则歌颂比赛”在肇庆仓现场举行。本次活动以全员参与的形式进行，并在新亦源全国进行在线直播。客户至上，降本增效是新亦源2022年的战略主题，为更好地对仓库现场进行管理，由总经办一起商讨制定并颁布了“仓库六大守则”管理条例。最后，客退组荣获“守则先锋”荣誉称号。",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              1280,
+              1450,
+              1550
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "奖励公告",
+      "source": {
+        "pdfPage": 8,
+        "printedPage": null,
+        "side": "full"
+      },
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "东莞电商朗州仓库主管陈昆因春节期间工作表现突出奖励2000元。商务事业部客服组因在2月例会执行中荣获第一名奖励300元。",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              1740,
+              1450,
+              1930
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

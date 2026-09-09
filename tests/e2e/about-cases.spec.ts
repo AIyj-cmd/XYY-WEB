@@ -167,9 +167,49 @@ test('refactored about, cases, publications and Yundao modules preserve their co
   await expect(page.locator('[data-case-orbit-panel]:not([hidden])')).toContainText('UR')
   await expect(page.getByRole('heading', { name: '为什么品牌选择新亦源' })).toBeVisible()
 
-  await page.goto('/senlinqikan')
-  await expect(page.getByRole('heading', { level: 1, name: '森林期刊' })).toBeVisible()
+  await page.goto('/supply-chain-whitepapers/')
+  await expect(page.getByRole('heading', { level: 1, name: '供应链白皮书' })).toBeVisible()
+  await expect(page).toHaveTitle(/供应链白皮书/)
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+    'href',
+    /\/supply-chain-whitepapers\/$/
+  )
+  const desktopWhitepapersLink = page
+    .getByRole('navigation', { name: '主导航' })
+    .getByRole('link', { name: '供应链白皮书', exact: true })
+  await expect(desktopWhitepapersLink).toHaveAttribute('href', '/supply-chain-whitepapers/')
+  await expect(desktopWhitepapersLink).toHaveAttribute('aria-current', 'page')
+  await expect(
+    page.locator('footer').getByRole('link', { name: '供应链白皮书', exact: true })
+  ).toHaveAttribute('href', '/supply-chain-whitepapers/')
   await expect(page.locator('#issues a[href$=".pdf"]')).toHaveCount(14)
+  await expect(page.getByRole('heading', { level: 2, name: '供应链白皮书常见问题' })).toBeVisible()
+  const firstFaqQuestion = '新亦源供应链白皮书是什么？与《森林期刊》有什么关系？'
+  const firstFaqAnswer =
+    '新亦源供应链白皮书是面向鞋服行业的仓配知识资料栏目，目前汇集新亦源出品的《森林期刊》，围绕云仓运营、退货质检、直播仓配与数字化实践提供阅读参考。栏目以业务问题组织阅读入口，原有 PDF 保留刊名和期次；引用具体内容时，应以原刊正文为准。'
+  const firstFaq = page.locator('details').filter({ hasText: firstFaqQuestion })
+  await expect(firstFaq).not.toHaveAttribute('open', '')
+  await firstFaq.locator('summary').click()
+  await expect(firstFaq).toHaveAttribute('open', '')
+  await expect(firstFaq).toContainText(firstFaqAnswer)
+  const structuredData = await page.locator('script[type="application/ld+json"]').allTextContents()
+  expect(structuredData.join('\n')).toContain(firstFaqQuestion)
+  expect(structuredData.join('\n')).toContain(firstFaqAnswer)
+  for (const [from, location] of [
+    ['/senlinqikan?source=legacy', '/supply-chain-whitepapers/?source=legacy'],
+    ['/senlinqikan/?source=legacy-slash', '/supply-chain-whitepapers/?source=legacy-slash'],
+    ['/supply-chain-whitepapers?source=canonical', '/supply-chain-whitepapers/?source=canonical'],
+  ]) {
+    const redirect = await page.request.get(from, { maxRedirects: 0 })
+    expect(redirect.status(), `${from} should permanently redirect`).toBe(301)
+    expect(redirect.headers().location).toBe(location)
+  }
+  expect((await page.request.get('/senlinqikan/pdf/14.pdf')).ok()).toBe(true)
+  expect((await page.request.get('/senlinqikan/covers/14.jpg')).ok()).toBe(true)
+  expect(await (await page.request.get('/sitemap.xml')).text()).toContain(
+    'supply-chain-whitepapers'
+  )
+  expect(await (await page.request.get('/llms.txt')).text()).toContain('供应链白皮书')
 
   await page.goto('/yundao-zhineng-jijian')
   await expect(page.locator('.yd-interface figure')).toHaveCount(3)

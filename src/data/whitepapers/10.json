@@ -1,0 +1,1984 @@
+{
+  "issue": "10",
+  "originalTitle": "《森林期刊》第10期",
+  "title": "服装云仓破局、总部乔迁与供应链发展",
+  "description": "收录轻奢女装直播、服装云仓、开仓乔迁和员工服务效率等内容；封面刊期与电子刊前言存在来源冲突。",
+  "sourcePdf": "/senlinqikan/pdf/10.pdf",
+  "sourceSha256": "fec6e2be8c141ff9d6f2bd5ef9a36901385d5e30006c477d25bab2416fae6013",
+  "sourcePublishedLabel": "封面标注：2024 年秋刊；电子刊前言标注：SUMMER（来源冲突未消解）",
+  "readingNotice": "本阅读版依据原刊 OCR 与版面整理。文中的年份、数字、案例和表述均保留历史语境，不构成当前服务承诺；请以 PDF 原版核验图表、图片文字和待核查区域。",
+  "sections": [
+    {
+      "title": "我们的故事",
+      "source": {
+        "pdfPage": 3,
+        "printedPage": null,
+        "side": "full",
+        "bbox": [
+          70,
+          420,
+          525,
+          795
+        ]
+      },
+      "blocks": [
+        {
+          "type": "figure",
+          "src": "/images/supply-chain-whitepapers/10/source-context-01.png",
+          "alt": "轻奢极简风女装文章页视觉",
+          "caption": "PDF physical page 4 左侧文章区域",
+          "width": 450,
+          "height": 540,
+          "source": {
+            "pdfPage": 4,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              0,
+              0,
+              300,
+              360
+            ]
+          }
+        },
+        {
+          "type": "quote",
+          "text": "◎ 文／尹姜英",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              95,
+              410,
+              300,
+              780
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "回首与新亦源共同成长的七年，往事如电影片段在脑海中闪过，其中有欢笑，有忧愁，更有感动。在此，我想讲述新亦源两次生死攸关的经历。",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              95,
+              410,
+              300,
+              780
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "2017 年，新亦源在争议中创立，5 位创始人怀着“一群人、一条心、干好一件事”的信念开启创业之旅。在王总的引领下，公司定位服装物流赛道，可起初并无服装客户。恰在此时，LX 公开招标，如黑暗中的曙光。经三轮竞标，新亦源拿下广东、广西两省运输标。",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              95,
+              410,
+              300,
+              780
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "公司初创，困难重重。无车队、无成熟运营团队，且中标广东至江苏线路。有三个月试用期，若质量不达标随时可能出局，这将使公司名誉受损。于是，我们与 QF 快递达成合作，借助其干线网络和场地，自建末端配送资源，以广东为试点打造商圈配送网络，半个月后商圈事业部成立。项目启动一周后，问题涌现。干线车辆以 QF 自营货物为主，无法保障货物及时发运，时效无保障；回单寄遗失，数据不能及时反馈客服，信息失控。",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              95,
+              410,
+              300,
+              780
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "各门店投诉不断，客服团队疲于应对。我们带领总部项目客服赶到现场，奋战三个通宵梳理数据。经此，我们意识到配送资源需自己掌控，新亦源广东配送网络形成，首次危机解除。",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              295,
+              410,
+              510,
+              780
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "两个月后，又现危机。竞争对手因我们中山、珠海线路时效问题准备接手 LX 项目。我们连夜商讨方案、整理数据，最终，客户被我们打动，给我们一个月时间。我们不负所望，一周内解决问题，之后与 LX 合作期间每年获评优秀供应商，还凭借口碑接入几十个服装品牌。",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              295,
+              410,
+              510,
+              780
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "至此，新亦源实现从服装商贸物流到服装仓配一体化的转型，拥有 1300 人的团队、全国近 50 万平方米仓储面积和近百个国内外服装品牌入驻。",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              295,
+              410,
+              510,
+              780
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "七年，有惊心动魄，有温暖感人，有失败后的坚持，更有坚守初心的信念。我们感恩客户，感激团队，感谢自己。相信在天时地利人和下，新亦源能走得更远、更高，成为服装行业物流变革的引领者。",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              295,
+              410,
+              510,
+              780
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "《我们的故事》：PDF physical page 3，整页，bbox [70, 420, 525, 795]。PDF physical page 3 下半为原刊印刷页 4/5；保留正文的 source bbox 定位至对应印刷页正文区域（非逐行框）。人物合影和页角装饰未转录；DSLR 段落中有局部小字被图案遮挡，未补写。",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              70,
+              420,
+              525,
+              795
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "单场 GMV 破亿，轻奢极简风女装在直播间爆发",
+      "source": {
+        "pdfPage": 4,
+        "printedPage": null,
+        "side": "full",
+        "bbox": [
+          75,
+          35,
+          525,
+          790
+        ]
+      },
+      "blocks": [
+        {
+          "type": "quote",
+          "text": "◎ 文摘自：公众号-降噪 NoNoise，作者戴菁",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              95,
+              35,
+              300,
+              400
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "女装行业没有秘密。无论是一个流行元素、一个爆款版型，还是一个爆红品牌，信息的流动和拆解永远是即时性的。比如最近一年，一个走轻奢极简风的红人店铺 COCO ZONE 快速成为女装圈的研究对象，以及各类拆解短视频的主角。",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              95,
+              35,
+              300,
+              400
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "圈外人可能听都没听过这个品牌名，圈内人却已经忙着拆解 COCO ZONE 的增长神话。一个名不见经传的主播，动辄四五百元的衣服，单场直播能卖出上亿 GMV、全年销售额高达 50 亿，连续霸榜抖音女装销售额第一——这在消息灵通的女装电商群体中，很难不引起关注。",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              95,
+              35,
+              300,
+              400
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "在亿万服装行业中，女装向来属于空间最大、竞争最激烈的类目。一波时尚潮流，可以捧红一批品牌；一批库存，又可能惩罚另一波误判趋势的商家。而每一波新涌现出来的平台红利，亦有可能重塑整个行业格局。",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              95,
+              35,
+              300,
+              400
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "在这一过程中，什么类型的女装商家能够实现稳定而长久的经营，是行业共同关注的命题。作为业内最大黑马，COCO ZONE 及其所代表的中高端女装商家，能否给行业带来新的启示？这是我们颇感兴趣的地方。",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              95,
+              35,
+              300,
+              400
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "2023 年 2 月，在一件售价 599 元的城市冲锋衣被买成爆品后，抖音女装商家开始纷纷打听，谁是刘一一？COCO ZONE 是什么来头？",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              95,
+              35,
+              300,
+              400
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "这款名为 COCO ZONE 的冲锋衣，出现在腰部达人刘一一的直播间。衣服男女同款，黑白灰三个颜色，设计风格既适合城市通勤，满足户外运动场景需求，兼具极简审美与实用性。",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              95,
+              35,
+              300,
+              400
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "用户群体才是直播间的基本盘，但 COCO ZONE 这个新品牌，自从上线便走高品质、中高价格段路线，而且销量越卖越高，去年 GMV 超过 50 亿元。",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              295,
+              35,
+              510,
+              400
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "关键是这一增长势头延续至今：今年 618 期间，COCO ZONE 的 GMV 达到 4.5 亿；巅峰时刻，刘一一直播间 1 分钟成交 40 万元、1 小时 1600 万元。",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              295,
+              35,
+              510,
+              400
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "仅从粉丝量来看，COCO ZONE 的体量并不在超头部行列，因为后者动辄有五六百万粉丝。而 COCO ZONE 作为与达人 IP 强绑定品牌，作为创始人之一的带货主播刘一一，3 个同名账号矩阵中粉丝量最大的 @刘一一，只有 140 万粉丝；其次是 @刘 11 生活号，92 万；@Bella 刘一一，30 万。",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              295,
+              35,
+              510,
+              400
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "在同行的拆解中，COCO ZONE 的崛起被归因为达人 IP 风格差异化＋货盘＋运营能力。站在品牌运作的视角，多名业内人士评价 COCO ZONE“没有明显短板”。",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              295,
+              405,
+              510,
+              780
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "从直播风格来看，刘一一直播间没有喧嚣的“123 上链接”“姐妹们冲”，她的个人风格更接近小红书博主的慢直播，一个人坐在沙发上，或者蹲在地上，以轻柔的聊天方式介绍货品、材质、穿搭理念，也会跟粉丝分享生活近况和个人感悟。",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              295,
+              405,
+              510,
+              780
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "从服装风格来看，COCO ZONE 走极简风，时装颜色以低饱和度的黑白灰棕为主，既日常百搭，又能突显高级感。款式以女性基础款为主，但又不像被 MUJI 发挥到极致的寡淡性冷淡风，更偏向时尚大牌的设计剪裁，追求一个简约和大方。",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              95,
+              405,
+              300,
+              780
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "当然有个“好观众缘”只是第一步。在直播电商中，真正让达人和品牌拉开差距的，还是后端的货盘和服务能力。电商平台都吃货盘，只是直播电商平台尤甚，但货盘对后端供应链的要求极高。",
+          "source": {
+            "pdfPage": 5,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              95,
+              35,
+              300,
+              400
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "“做这个品牌之前，我们已经就是准备好的状态。”COCO ZONE 创始人之一、负责供应链的“建哥”透露，他本人在广州服装行业积累十多年，此前一直为国内一二线品牌做产品研发设计类供应链服务，并由此积累了大量设计师和工厂资源。",
+          "source": {
+            "pdfPage": 5,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              95,
+              35,
+              300,
+              400
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "不少同行在拆解 COCO ZONE 的货盘数据时，都感慨品牌的上新速度和爆品能力。COCO ZONE 目前共有 6 个直播间，每场直播大概都会有二三十个新款。建哥透露，除了公司内部的设计师团队，品牌还有 4 个外部研发设计小组，大概六十多人，这些人负责源源不断的创意输出，平均每天能提供 30—50 个新品设计方案，供直播间选择。",
+          "source": {
+            "pdfPage": 5,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              95,
+              35,
+              300,
+              400
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "COCO ZONE 用户画像为 30—50 岁的高消费能力女性，如精英白领、中产妈妈。这些人买衣服，不仅要版型好看，对品质也有更高的要求。尤其是高客单价服饰，品质往往决定复购率。而 COCO ZONE 从最初定位就在对标线下大牌，目标是在同等品质的前提下，做到比线下更具“性价比”。",
+          "source": {
+            "pdfPage": 5,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              295,
+              35,
+              510,
+              400
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "为了保证消费者的购物体验，COCO ZONE 全部采用顺丰发货，且每件服装出库前都要进行人工全检，以确保消费者收到的衣服没有线头及其他瑕疵，而目前行业内通行的是人工抽检、机器混检。",
+          "source": {
+            "pdfPage": 5,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              295,
+              35,
+              510,
+              400
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "当前直播电商行业已经进入下半场，平台流量、直播间氛围、消费者购物心理都在微妙变化。什么类型的商家能够脱颖而出、实现更为长久的经营？细究下来，我们认为各行各业还是有最大公约数的——比如好内容和好产品的强强联合。具备这个底层优势的商家，亦有可能跑出下一个 COCO ZONE。",
+          "source": {
+            "pdfPage": 5,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              295,
+              405,
+              510,
+              780
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "《单场 GMV 破亿，轻奢极简风女装在直播间爆发》：PDF physical page 4，整页，bbox [75, 35, 525, 790]。PDF physical page 4—5 为原刊印刷页 6—13；保留正文的 source bbox 定位至对应印刷页正文区域（非逐行框）。直播截图、商品卡和图内小字未转录；保留的段落均逐段对照 600 dpi 本地渲染图。",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              75,
+              35,
+              525,
+              790
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "服装电商倒闭潮来袭：服装云仓或成破局关键",
+      "source": {
+        "pdfPage": 6,
+        "printedPage": null,
+        "side": "full",
+        "bbox": [
+          46.8,
+          36.0,
+          295.2,
+          374.4
+        ]
+      },
+      "blocks": [
+        {
+          "type": "figure",
+          "src": "/images/supply-chain-whitepapers/10/ecommerce-warehouse.png",
+          "alt": "服装云仓货架与周转箱",
+          "caption": "PDF physical page 6 上半电商文章配图",
+          "width": 240,
+          "height": 143,
+          "source": {
+            "pdfPage": 6,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              140,
+              125,
+              300,
+              220
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "2024 年，服装行业风云变幻，令人震惊的是，据不完全统计至今已有超过 40 家服装网店倒闭或停止上新，其中甚至包括粉丝过百万的知名企业。这一现象引发了行业的广泛关注和深思，究竟是什么原因导致了它们的衰落？",
+          "source": {
+            "pdfPage": 6,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              46.8,
+              165.6,
+              295.2,
+              306.0
+            ]
+          }
+        },
+        {
+          "type": "subheading",
+          "text": "原因剖析",
+          "source": {
+            "pdfPage": 6,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              46.8,
+              219.6,
+              180.0,
+              252.0
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "库存管理失控：大量库存占用了企业大量资金，导致资金链断裂；运营成本高涨：仓库租赁、人力成本等不断攀升，压缩了企业利润空间；退换货居高不下：消费者对服装的品质、尺码、款式等要求越来越高，一旦不符合预期会选择退货。",
+          "source": {
+            "pdfPage": 6,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              46.8,
+              219.6,
+              295.2,
+              360.0
+            ]
+          }
+        },
+        {
+          "type": "figure",
+          "src": "/images/supply-chain-whitepapers/10/cloud-warehouse-floor.png",
+          "alt": "服装云仓文章页中的仓内作业场景",
+          "caption": "PDF physical page 6 上半右侧仓内场景",
+          "width": 375,
+          "height": 188,
+          "source": {
+            "pdfPage": 6,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              300,
+              235,
+              550,
+              360
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "《服装电商倒闭潮来袭：服装云仓或成破局关键》：PDF physical page 6，整页，bbox [302.4, 190.8, 543.6, 360.0]。PDF physical page 6 上半为原刊印刷页 14/15；其中仓库照片未转录为正文。",
+          "source": {
+            "pdfPage": 6,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              302.4,
+              190.8,
+              543.6,
+              360.0
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "物流革命：跨境电商如何借力服装云仓",
+      "source": {
+        "pdfPage": 6,
+        "printedPage": null,
+        "side": "full",
+        "bbox": [
+          46.8,
+          385.2,
+          295.2,
+          759.6
+        ]
+      },
+      "blocks": [
+        {
+          "type": "figure",
+          "src": "/images/supply-chain-whitepapers/10/crossborder-workspace.png",
+          "alt": "跨境文章中的仓内货架与打包作业区",
+          "caption": "PDF physical page 6 下半跨境文章配图",
+          "width": 180,
+          "height": 90,
+          "source": {
+            "pdfPage": 6,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              380,
+              410,
+              500,
+              470
+            ]
+          }
+        },
+        {
+          "type": "figure",
+          "src": "/images/supply-chain-whitepapers/10/crossborder-exterior.png",
+          "alt": "跨境文章中的仓库建筑外景",
+          "caption": "PDF physical page 6 下半跨境文章配图",
+          "width": 188,
+          "height": 105,
+          "source": {
+            "pdfPage": 6,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              130,
+              520,
+              255,
+              590
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "在全球化的浪潮中，跨境电商如同一艘艘航船，穿梭于国际市场的波涛之中。而服装云仓服务，便是这些航船上不可或缺的稳定之锚，为品牌企业提供坚实的后勤支持。今天，我们将探讨服装云仓如何为跨境电商提供专业服务，并揭示它们如何成为跨境电商成功的关键因素。",
+          "source": {
+            "pdfPage": 6,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              46.8,
+              424.8,
+              295.2,
+              532.8
+            ]
+          }
+        },
+        {
+          "type": "subheading",
+          "text": "全球布局、无缝对接；智能管理、精准高效",
+          "source": {
+            "pdfPage": 6,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              46.8,
+              536.4,
+              295.2,
+              734.4
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "我们在关键节点城市设立仓储，确保了货物能够快速、高效地流转至世界各个角落。借助先进的仓储管理系统，我们实现了对库存的精准控制和实时更新。无论是复杂的物流需求，还是特殊的存储条件，我们都能提供个性化的解决方案。",
+          "source": {
+            "pdfPage": 6,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              46.8,
+              536.4,
+              295.2,
+              738.0
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "《物流革命：跨境电商如何借力服装云仓》：PDF physical page 6，整页，bbox [302.4, 424.8, 543.6, 738.0]。PDF physical page 6 下半为原刊印刷页 16/17；版内照片和蓝色信息图只作为原图证据，不由 OCR 逐项转写。",
+          "source": {
+            "pdfPage": 6,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              302.4,
+              424.8,
+              543.6,
+              738.0
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "喜报连连：新亦源鞋服云仓花桥仓开仓大吉",
+      "source": {
+        "pdfPage": 7,
+        "printedPage": null,
+        "side": "full",
+        "bbox": [
+          46.8,
+          36.0,
+          295.2,
+          374.4
+        ]
+      },
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "在鞋服云仓行业中持续扩展和创新的我们，又迎来了新的里程碑——昆山花桥新仓开仓！至今已正式运营一段时间了，展现了令人瞩目的运营效率和业务增长潜力。自开业以来，昆山花桥新仓不仅加强了我们在华东地区的物流网络布局，更具体地提升了我们对当地及周边客户的服务能力和响应速度。",
+          "source": {
+            "pdfPage": 7,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              46.8,
+              183.6,
+              295.2,
+              288.0
+            ]
+          }
+        },
+        {
+          "type": "figure",
+          "src": "/images/supply-chain-whitepapers/10/huaqiao-warehouse-scenes.png",
+          "alt": "花桥仓文章页中的货架与仓内场景",
+          "caption": "PDF physical page 7 上半右侧仓内照片",
+          "width": 248,
+          "height": 263,
+          "source": {
+            "pdfPage": 7,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              385,
+              190,
+              550,
+              365
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "《喜报连连：新亦源鞋服云仓花桥仓开仓大吉》：PDF physical page 7，整页，bbox [302.4, 50.4, 543.6, 356.4]。PDF physical page 7 上半为原刊印刷页 18/19。",
+          "source": {
+            "pdfPage": 7,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              302.4,
+              50.4,
+              543.6,
+              356.4
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "合肥开仓势如破竹，首日万鞋入库显神威",
+      "source": {
+        "pdfPage": 7,
+        "printedPage": null,
+        "side": "full",
+        "bbox": [
+          46.8,
+          385.2,
+          295.2,
+          759.6
+        ]
+      },
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "近日，新亦源鞋服云仓合肥仓迎来了它的首日运营。这不仅标志着我们服务能力的进一步扩展，也象征着华东地区物流行业迈入了一个全新的发展阶段。开业当天，仓库就迎来了 10000 双鞋子的入库操作，我们的团队都忙得不亦乐乎，这一成绩是我们团队协作和执行力的一次重要检验。",
+          "source": {
+            "pdfPage": 7,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              46.8,
+              453.6,
+              295.2,
+              720.0
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "《合肥开仓势如破竹，首日万鞋入库显神威》：PDF physical page 7，整页，bbox [46.8, 453.6, 295.2, 720.0]。原刊中的“万鞋”等表述为当期活动报道，未在本阅读版扩展为当前服务能力。",
+          "source": {
+            "pdfPage": 7,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              46.8,
+              453.6,
+              295.2,
+              720.0
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "新起点·新使命·新征程：新亦源总部乔迁之喜",
+      "source": {
+        "pdfPage": 7,
+        "printedPage": null,
+        "side": "full",
+        "bbox": [
+          302.4,
+          385.2,
+          543.6,
+          759.6
+        ]
+      },
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "在这绚烂的夏日里，我们带着满腔的热情和无限的憧憬，迎来了一个重要消息：新亦源总部正式搬迁到了一个新的地点啦！这不仅是一次简单的搬迁，更是我们企业发展历程中的一个重要里程碑，它标志着我们即将踏在新的舞台上，书写更加辉煌的篇章。",
+          "source": {
+            "pdfPage": 7,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              302.4,
+              417.6,
+              543.6,
+              727.2
+            ]
+          }
+        },
+        {
+          "type": "subheading",
+          "text": "03 新的根据地",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              75,
+              35,
+              290,
+              390
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "新的起点，新的环境，新的可能性。我们的新总部位于黄埔区果园一路 2 号。在这里，我们拥有更加宽敞的办公空间以及更加舒适的工作环境，为我们的团队提供了一个更好的创造和发展的平台。",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              75,
+              35,
+              290,
+              390
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "在此，我们诚挚欢迎您，来我们的“新家”做客。期待在新的征程中，与您一起前行！",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              75,
+              35,
+              290,
+              390
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "《新起点·新使命·新征程：新亦源总部乔迁之喜》：PDF physical page 8，整页，bbox [75, 35, 290, 390]。PDF physical page 8 左上为总部乔迁文章的印刷第 22 页续文；仪式照片和装饰诗句未转录。",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              75,
+              35,
+              290,
+              390
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "“饮”领夏日，关怀满载：新亦源夏日消暑行动",
+      "source": {
+        "pdfPage": 8,
+        "printedPage": null,
+        "side": "full",
+        "bbox": [
+          300,
+          35,
+          520,
+          390
+        ]
+      },
+      "blocks": [
+        {
+          "type": "quote",
+          "text": "◎ 文／陈燕",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              300,
+              35,
+              520,
+              390
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "随着夏日的热浪席卷而来，高温仿佛在每一个角落蔓延。为了缓解炎热给员工带来的不适，公司特别准备了一系列的消暑饮品，让每一位在仓库中辛勤工作的员工都能感受到来自大家庭的关怀与凉爽。",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              300,
+              35,
+              520,
+              390
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "在这个夏天，我们不仅仅是在传递货物，更是在传递一份温馨的关爱。从冰镇西瓜到清凉绿豆糖水，从甜蜜的小冰棍到解渴的冰可乐，每一款饮品都是我们对员工辛勤劳动的深深敬意和贴心呵护。",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              75,
+              405,
+              290,
+              780
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "一直坚持“以人为本”的企业文化，我们深知，员工是公司最宝贵的财富。在酷暑中，我们希望这些小小的举措能为员工带去一丝丝凉意，让他们在辛勤工作之余，也能感受到公司如家一般的温暖。",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              75,
+              405,
+              290,
+              780
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "《“饮”领夏日，关怀满载：新亦源夏日消暑行动》：PDF physical page 8，整页，bbox [75, 405, 290, 780]。PDF physical page 8 右上、左下为夏日消暑文章的印刷第 23–24 页；仓内活动照片未转录。",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              75,
+              405,
+              290,
+              780
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "618特辑：时尚背后的力量 服装云仓揭秘",
+      "source": {
+        "pdfPage": 8,
+        "printedPage": null,
+        "side": "full",
+        "bbox": [
+          300,
+          405,
+          520,
+          780
+        ]
+      },
+      "blocks": [
+        {
+          "type": "quote",
+          "text": "◎ 文／陈燕",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              300,
+              405,
+              520,
+              780
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "每年的 618 电商大促，都是一场消费者的购物盛宴。在这长达一个月的购物狂欢背后，是无数商家和服务提供者的辛勤付出和精心策划。其中，我们公司作为一家专业的服装云仓，为这场电商盛宴提供了强有力的后勤支持。",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              300,
+              405,
+              520,
+              780
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "在这个特殊的时期，我们为了确保每一件商品都能安全、准时地送达消费者手中，无论是在商品入库、存储、出库，还是在物流配送、退货处理等环节，我们都更为严格把控，力求做到最好。",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              300,
+              405,
+              520,
+              780
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "其中我们的退货质检服务是我们的一大亮点。对于消费者退回的退货，我们会进行严格的质检，确保退回的商品符合要求后完成二次上架。这样既能保障消费者的权益，也能为商家节省大量的成本和时间。",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              300,
+              405,
+              520,
+              780
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "（详细介绍见上一期期刊：把专业做到极致：新亦源鞋服云仓质检服务介绍）",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              300,
+              405,
+              520,
+              780
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "今年的 618 电商大促活动虽然战线拉长，但我们新亦源服装云仓始终坚守在后勤一线，为各大服装品牌提供全方位的支持，让他们能够更加专注于商品的销售和推广，为消费者带来更好的购物体验。",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              300,
+              405,
+              520,
+              780
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "在未来的日子里，我们将继续努力，为时尚行业的发展贡献自己的力量！",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              300,
+              405,
+              520,
+              780
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "《618特辑：时尚背后的力量 服装云仓揭秘》：PDF physical page 8，整页，bbox [300, 405, 520, 780]。PDF physical page 8 右下为 618 特辑的印刷第 25 页；仓内照片未转录。",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              300,
+              405,
+              520,
+              780
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "人效通升级：全面实现面试登记无纸化",
+      "source": {
+        "pdfPage": 9,
+        "printedPage": null,
+        "side": "full",
+        "bbox": [
+          95,
+          35,
+          300,
+          400
+        ]
+      },
+      "blocks": [
+        {
+          "type": "quote",
+          "text": "◎ 文／陈燕",
+          "source": {
+            "pdfPage": 9,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              95,
+              35,
+              300,
+              400
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "新亦源一直是追求高效率和坚守环保理念的公司，近日，我司对自主研发的人效通系统——员工管理系统，进行进一步的优化与升级，引入了面试二维码扫码登记功能。这一创新举措允许面试者通过简单扫描二维码即可完成信息登记，不仅简化了面试流程，还实现了面试登记的无纸化，为求职者提供了更加便捷的面试体验。",
+          "source": {
+            "pdfPage": 9,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              95,
+              35,
+              300,
+              400
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "人效通自 2022 年研发以来，一直致力于引领和推动企业数字化浪潮的发展。",
+          "source": {
+            "pdfPage": 9,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              95,
+              35,
+              300,
+              400
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "这项技术的应用，标志着我公司在人力资源管理方面迈出了重要一步。过去，面试者需要手动填写纸质面试表格，耗时且效率低。现在，通过一次扫码，面试者的信息便可被系统自动记录，未来入职时也无需重复填写，大大节省了时间和资源。",
+          "source": {
+            "pdfPage": 9,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              95,
+              35,
+              300,
+              400
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "人效通的升级不仅提升了面试效率，同时也是我司对环境保护的承诺。无纸化操作减少了纸张的使用，有助于减轻对环境的压力。同时，这也体现了公司对于科技运用的前瞻性思维，以及对提升员工和潜在员工体验的重视。",
+          "source": {
+            "pdfPage": 9,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              95,
+              35,
+              300,
+              400
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "我司将持续探索和实施新技术，不断完善员工管理和招聘流程，致力于打造一个高效、环保、且员工友好的工作环境。",
+          "source": {
+            "pdfPage": 9,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              95,
+              35,
+              300,
+              400
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "员工之声：打工人，你的上下班安全谁来守护？",
+      "source": {
+        "pdfPage": 9,
+        "printedPage": null,
+        "side": "full",
+        "bbox": [
+          295,
+          35,
+          510,
+          400
+        ]
+      },
+      "blocks": [
+        {
+          "type": "quote",
+          "text": "◎ 文／陈燕",
+          "source": {
+            "pdfPage": 9,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              295,
+              35,
+              510,
+              400
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "最近，或因天气原因，各地接二连三地发生安全事故。目前，大连一父亲送女儿上班双双溺亡事件已过去一周，却依然让人心有余悸。",
+          "source": {
+            "pdfPage": 9,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              295,
+              35,
+              510,
+              400
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "作为社会的辛勤工作者，我们每天都要经历上下班的路程，而这看似平常的过程却隐藏着各种风险。那么，我们该如何提高自己的安全意识，确保每一次出行都能平安顺利呢？",
+          "source": {
+            "pdfPage": 9,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              295,
+              35,
+              510,
+              400
+            ]
+          }
+        },
+        {
+          "type": "subheading",
+          "text": "01 选择合适的交通工具",
+          "source": {
+            "pdfPage": 9,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              295,
+              35,
+              510,
+              400
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "根据路线和交通状况选择最安全的出行方式。避免在极端天气或者身体状况不佳时驾驶。",
+          "source": {
+            "pdfPage": 9,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              295,
+              35,
+              510,
+              400
+            ]
+          }
+        },
+        {
+          "type": "subheading",
+          "text": "02 遵守交通规则",
+          "source": {
+            "pdfPage": 9,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              295,
+              35,
+              510,
+              400
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "无论是步行、骑行还是开车，都要严格遵守交通规则。不闯红灯、不逆行、不疲劳驾驶，稳定情绪，保持清醒的判断力。",
+          "source": {
+            "pdfPage": 9,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              295,
+              35,
+              510,
+              400
+            ]
+          }
+        },
+        {
+          "type": "subheading",
+          "text": "03 规划时间充足",
+          "source": {
+            "pdfPage": 9,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              295,
+              35,
+              510,
+              400
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "预留出足够的时间出门，避免因为赶时间而导致的超速驾驶或者疏忽大意。",
+          "source": {
+            "pdfPage": 9,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              295,
+              35,
+              510,
+              400
+            ]
+          }
+        },
+        {
+          "type": "subheading",
+          "text": "04 了解天气情况",
+          "source": {
+            "pdfPage": 9,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              295,
+              35,
+              510,
+              400
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "出行前关注天气预报，遇到恶劣天气时要格外小心谨慎，必要时选择推迟出行。",
+          "source": {
+            "pdfPage": 9,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              295,
+              35,
+              510,
+              400
+            ]
+          }
+        },
+        {
+          "type": "subheading",
+          "text": "05 学习自救知识",
+          "source": {
+            "pdfPage": 9,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              295,
+              35,
+              510,
+              400
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "掌握一些基本的自救和急救知识，能够在面对突发情况时保持冷静，采取正确的自救方法。",
+          "source": {
+            "pdfPage": 9,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              295,
+              35,
+              510,
+              400
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "专业专注·质敬客户：服务效率提升背后的举措与成果",
+      "source": {
+        "pdfPage": 9,
+        "printedPage": null,
+        "side": "full",
+        "bbox": [
+          95,
+          405,
+          300,
+          780
+        ]
+      },
+      "blocks": [
+        {
+          "type": "quote",
+          "text": "◎ 文／温俊衡",
+          "source": {
+            "pdfPage": 9,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              95,
+              405,
+              300,
+              780
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "今年，我们将“质敬客户”作为行动指南，深入梳理和评估仓库各环节人员的效能目标。根据客户、品类以及项目类型的差异，精心制定了与之对应的效率目标，全力满足客户与市场的需求，至今已实施近半年。此刻，让我们通过具体举措和成效来回顾这一过程，为后续的培训提升提供有力依据。",
+          "source": {
+            "pdfPage": 9,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              95,
+              405,
+              300,
+              780
+            ]
+          }
+        },
+        {
+          "type": "subheading",
+          "text": "重庆仓",
+          "source": {
+            "pdfPage": 9,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              95,
+              405,
+              300,
+              780
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "入库模块（收货、上架、拣货）：通过优化操作流程、加强员工培训以及合理调配资源等措施，实际产能相比目标产能有了显著提升，员工操作更加熟练，工作效率提高明显。",
+          "source": {
+            "pdfPage": 9,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              95,
+              405,
+              300,
+              780
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "出库模块（发货、覆盖 B2C、B2B、JITX）：在优化发货流程、提高设备利用率以及加强团队协作等方面发力，实际产能接近目标产能且略有超出，各环节协同配合更加顺畅，有效保障了出库效率。",
+          "source": {
+            "pdfPage": 9,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              95,
+              405,
+              300,
+              780
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "客退模块：采取了改进客退处理流程、加强与客户沟通以及提升员工处理问题的能力等手段，实际产能超出目标产能一定幅度，客退处理更加高效，客户满意度得到提升。",
+          "source": {
+            "pdfPage": 9,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              95,
+              405,
+              300,
+              780
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "质检模块：由于客户需求的变化，内部持续调整操作流程，但仍面临一些挑战，实际产能距离目标产能尚有差距。后续将进一步优化流程，加强员工培训，以提高质检效率。",
+          "source": {
+            "pdfPage": 9,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              95,
+              405,
+              300,
+              780
+            ]
+          }
+        },
+        {
+          "type": "subheading",
+          "text": "湖北仓",
+          "source": {
+            "pdfPage": 9,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              295,
+              405,
+              510,
+              780
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "入库模块（装卸、上架、退货）：通过合理安排人员分工、优化装卸设备的使用以及加强退货管理等措施，实际产能超出目标产能，取得了较好的效果。",
+          "source": {
+            "pdfPage": 9,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              295,
+              405,
+              510,
+              780
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "出库模块（拣货、车标、核单以及发货）：在优化拣货路径、提高车标准确性、加强核单效率以及提升发货速度等方面进行改进，实际产能略高于目标产能。",
+          "source": {
+            "pdfPage": 9,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              295,
+              405,
+              510,
+              780
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "质检模块：通过加强质检标准的培训、优化质检流程以及提高质检设备的精度等措施，实际产能接近目标产能且稍有超出。",
+          "source": {
+            "pdfPage": 9,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              295,
+              405,
+              510,
+              780
+            ]
+          }
+        },
+        {
+          "type": "subheading",
+          "text": "东莞电商仓",
+          "source": {
+            "pdfPage": 10,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              95,
+              35,
+              300,
+              400
+            ]
+          }
+        },
+        {
+          "type": "subheading",
+          "text": "一、桥头、朗州仓",
+          "source": {
+            "pdfPage": 10,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              95,
+              35,
+              300,
+              400
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "入库模块（收货、上架、拣货）：通过引入先进的收货设备、优化上架流程以及提高拣货准确性等措施，实际产能接近目标产能。",
+          "source": {
+            "pdfPage": 10,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              95,
+              35,
+              300,
+              400
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "出库模块（B2C、B2B 发货）：采取优化订单处理流程、增加发货通道以及加强物流管理等手段，实际产能超出目标产能较多。",
+          "source": {
+            "pdfPage": 10,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              95,
+              35,
+              300,
+              400
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "质检模块（新品、退货拆包质检）：通过加强质检人员培训、完善质检标准以及改进质检设备等措施，实际产能接近目标产能且稍有超出。",
+          "source": {
+            "pdfPage": 10,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              95,
+              35,
+              300,
+              400
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "东莞桥头、朗州仓整体目标产能的达成率与预期目标没有显著差异，各模块环节的达成率幅度存在偏差。",
+          "source": {
+            "pdfPage": 10,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              95,
+              35,
+              300,
+              400
+            ]
+          }
+        },
+        {
+          "type": "subheading",
+          "text": "番禺仓",
+          "source": {
+            "pdfPage": 10,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              95,
+              35,
+              300,
+              400
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "入库模块（收货、上架、拣货）：通过优化收货流程、合理安排上架时间以及提高拣货效率等措施，实际产能超出目标产能一定比例。",
+          "source": {
+            "pdfPage": 10,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              95,
+              35,
+              300,
+              400
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "《专业专注·质敬客户：服务效率提升背后的举措与成果》：PDF physical page 10，整页，bbox [95, 35, 300, 400]。PDF physical page 10 左上为服务效率文章的东莞电商仓续页；图形背景覆盖处未逐字转录。",
+          "source": {
+            "pdfPage": 10,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              95,
+              35,
+              300,
+              400
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "内推大作战：抓住创“薪”机会",
+      "source": {
+        "pdfPage": 10,
+        "printedPage": null,
+        "side": "full",
+        "bbox": [
+          295,
+          35,
+          510,
+          400
+        ]
+      },
+      "blocks": [
+        {
+          "type": "quote",
+          "text": "◎ 文／陈燕",
+          "source": {
+            "pdfPage": 10,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              295,
+              35,
+              510,
+              400
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "2024 年已过大半，在这个充满机遇与挑战的季节，我们番禺仓的内推活动重磅来袭！",
+          "source": {
+            "pdfPage": 10,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              295,
+              35,
+              510,
+              400
+            ]
+          }
+        },
+        {
+          "type": "subheading",
+          "text": "01 为什么参加内推",
+          "source": {
+            "pdfPage": 10,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              295,
+              35,
+              510,
+              400
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "在这里，你不仅能为朋友、前同事牵线搭桥，找到一个理想的职业发展平台，还能为公司注入新的活力和智慧。更重要的是，还有丰厚的奖励等你来拿！",
+          "source": {
+            "pdfPage": 10,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              295,
+              35,
+              510,
+              400
+            ]
+          }
+        },
+        {
+          "type": "subheading",
+          "text": "02 内推奖励方案",
+          "source": {
+            "pdfPage": 10,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              295,
+              35,
+              510,
+              400
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "凡介绍对象经过面试合格被录用，通过试用期且在公司工作满 3 个月以上的（期间请假不得超过 10 天），公司给予介绍人按人头 500 元／人的奖励。",
+          "source": {
+            "pdfPage": 10,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              295,
+              35,
+              510,
+              400
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "奖励发放形式：在职满 1 个月，在次月薪资中发放 100 元；在职满 2 个月，在次月薪资中发放 150 元；在职满 3 个月，在次月薪资中发放 250 元。",
+          "source": {
+            "pdfPage": 10,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              295,
+              35,
+              510,
+              400
+            ]
+          }
+        },
+        {
+          "type": "subheading",
+          "text": "03 内推流程＆方式",
+          "source": {
+            "pdfPage": 10,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              95,
+              405,
+              300,
+              780
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "①介绍人扫码内推专页登记内推信息；②HR 安排面试；③应聘者面试通过；④应聘者办理入职手续；⑤定期核发内推奖金。",
+          "source": {
+            "pdfPage": 10,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              95,
+              405,
+              300,
+              780
+            ]
+          }
+        },
+        {
+          "type": "subheading",
+          "text": "04 当前热招职位",
+          "source": {
+            "pdfPage": 10,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              95,
+              405,
+              300,
+              780
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "我们是一家专业的鞋服云仓公司。在当下竞争激烈的市场环境中，我们公司始终保持着蓬勃的发展势头，与众多知名企业建立了长期稳定的合作关系。赶紧行动起来，把身边的优秀人才推荐给我们吧！让我们一起携手共进，共创美好未来！",
+          "source": {
+            "pdfPage": 10,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              95,
+              405,
+              300,
+              780
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "《内推大作战：抓住创“薪”机会》：PDF physical page 10，整页，bbox [95, 405, 300, 780]。PDF physical page 10 右上、左下为内推文章的可读正文；二维码、职位卡片和刊末联系方式未转录。",
+          "source": {
+            "pdfPage": 10,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              95,
+              405,
+              300,
+              780
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,319 @@
+{
+  "catalogVersion": 1,
+  "taskId": "XYY-20260908-05",
+  "purpose": "OCR 预处理的原稿主题与章节边界索引；只为后续人工转换提供定位，不是网页数据或正文。",
+  "sourceRule": "所有页码均为 PDF physicalPage。横向期刊的目录在 side=right；A4 微信打印件可能同时出现浏览器打印页、嵌入刊物页与 PDF physicalPage，不能相互替代。",
+  "issues": [
+    {
+      "issue": 1,
+      "titleProposal": "《森林期刊》2022年第1期",
+      "originalTitle": "新亦源森林双月刊",
+      "seoTitleProposal": "仓库管理规范、员工培训与组织发展",
+      "descriptionProposal": "本期可审阅主题包括森林公约、仓库六大守则、人机复位管理、会议室预约、例会规范、技能培训及员工活动。",
+      "source": {
+        "pdf": "/senlinqikan/pdf/1.pdf",
+        "sha256": "01fa9fd6f5e7a68f93e36816ba6b3b1110820909cf73fc57b9dc44479bc39776"
+      },
+      "boundaryEvidence": [
+        {
+          "physicalPage": 1,
+          "side": "full",
+          "anchors": [
+            "森林公约",
+            "仓库六大守则",
+            "人机复位管理",
+            "会议室预约",
+            "周/月例会统一模版及条例",
+            "员工技能竞赛"
+          ]
+        }
+      ],
+      "reviewNote": "物理页 1 同时含微信打印头、嵌入刊物页码和目录；仅以 physicalPage+bbox 定位，不能写入推断的印刷页。"
+    },
+    {
+      "issue": 2,
+      "titleProposal": "《森林期刊》2022年第2期",
+      "originalTitle": "新亦源森林双月刊",
+      "seoTitleProposal": "物流运营、团队发展与五周年专题",
+      "descriptionProposal": "本期以新亦源五周年为主题，包含公司与团队、物流运营、技能培训及森林活动分享。",
+      "source": {
+        "pdf": "/senlinqikan/pdf/2.pdf",
+        "sha256": "bd38fe91e2b5e17a0fd8e7989aeeacb60de7d35ab59442e1b4c046fe4cf48dee"
+      },
+      "boundaryEvidence": [
+        {
+          "physicalPage": 1,
+          "side": "full",
+          "anchors": ["新亦源五周年司庆现场", "企业规模上新台阶", "即将突破600人"]
+        },
+        { "physicalPage": 3, "side": "full", "anchors": ["内部责任事故通报", "上海地区伙伴"] }
+      ],
+      "reviewNote": "封面和内页图片中的细小文字、照片纹理与名单均需保留为局部图或人工核对，不能由 OCR 置信度替代。"
+    },
+    {
+      "issue": 3,
+      "titleProposal": "《森林期刊》2022年第3期",
+      "originalTitle": "新亦源森林双月刊",
+      "seoTitleProposal": "物流资产运营与连锁企业全场景解决方案",
+      "descriptionProposal": "本期涉及五周年与公司介绍、上半年物流资产投资运营分析，以及连锁企业全场景解决方案。",
+      "source": {
+        "pdf": "/senlinqikan/pdf/3.pdf",
+        "sha256": "df2c5103fd38b2976e6ead8244300406057e2cb5257322bd090df383b19bfe71"
+      },
+      "boundaryEvidence": [
+        {
+          "physicalPage": 1,
+          "side": "full",
+          "anchors": ["PART ONE", "PART FOUR", "PART FIVE", "PART SIX", "PART SEVEN"]
+        },
+        { "physicalPage": 2, "side": "full", "anchors": ["上半年物流资产投资运营情况浅析"] }
+      ],
+      "reviewNote": "现有 PDF 可见浏览器打印页脚序号未覆盖 9/9；这不能推断原刊缺文章，目录分段和最终文章边界须以物理页区域复核。"
+    },
+    {
+      "issue": 4,
+      "titleProposal": "《森林期刊》2022年第4期",
+      "originalTitle": "新亦源森林双月刊",
+      "seoTitleProposal": "云仓服务方案、标杆客户与连锁寄件解决方案",
+      "descriptionProposal": "本期涵盖季度签约与标杆客户、物流服务方案，以及连锁企业全场景寄件解决方案。",
+      "source": {
+        "pdf": "/senlinqikan/pdf/4.pdf",
+        "sha256": "9d0126c2bf488d969158d5d6b17f1342f0d92956c3ea41a10b71ef545870743b"
+      },
+      "boundaryEvidence": [
+        {
+          "physicalPage": 2,
+          "side": "full",
+          "anchors": [
+            "第三季度签约喜讯",
+            "服装标杆客户选择了新亦源云仓",
+            "连锁企业全场景寄件解决方案"
+          ]
+        }
+      ],
+      "reviewNote": "方案图文字应保留局部图或标为待核查；不能把 OCR 误读的 SaaS/图表标签写入正文。"
+    },
+    {
+      "issue": 5,
+      "titleProposal": "《森林期刊》2023年第5期",
+      "originalTitle": "新亦源森林双月刊",
+      "seoTitleProposal": "服装零售行业研究、物流发展与企业成长",
+      "descriptionProposal": "本期以《2023年服装零售行业研究报告》、物流时光、员工与企业发展为主要可审阅主题。",
+      "source": {
+        "pdf": "/senlinqikan/pdf/5.pdf",
+        "sha256": "13ba9d5144b595d61e0fe0f46a0681676f51b1387646a77cb036a587a44ecfbb"
+      },
+      "boundaryEvidence": [
+        {
+          "physicalPage": 2,
+          "side": "full",
+          "anchors": [
+            "2023年服装零售行业研究报告",
+            "用热爱去拥抱物流时光岁月",
+            "商业模式和技术发展"
+          ]
+        }
+      ],
+      "reviewNote": "现有 PDF 可见浏览器打印页脚序号未覆盖 9/9；这不能推断原刊缺文章。研究图表和摘录出处不得根据 OCR 复写或更新为当前数据。"
+    },
+    {
+      "issue": 6,
+      "titleProposal": "《森林期刊》2023年夏刊（总第06期）",
+      "originalTitle": "新亦源森林期刊",
+      "seoTitleProposal": "AI虚拟试穿、服装品牌增长与云仓运营管理",
+      "descriptionProposal": "本期包含管理意识、纺织服装行业资讯、鞋服 QC 技能认证、信息化升级与培训活动。",
+      "source": {
+        "pdf": "/senlinqikan/pdf/6.pdf",
+        "sha256": "bdf6805aff119935f5e2edc02dd3a06b08184829f1975ac189495cdd55e731f8"
+      },
+      "boundaryEvidence": [
+        {
+          "physicalPage": 2,
+          "side": "right",
+          "anchors": [
+            "每个企业管理者都应具备总指挥意识",
+            "纺织服装行业数据跟踪",
+            "鞋服QC技能认证培训班成功举办",
+            "新亦源信息化升级"
+          ]
+        }
+      ],
+      "reviewNote": "无原生文字层；目录与正文均为图像，后续章节须按左页后右页的 OCR 区域审阅。"
+    },
+    {
+      "issue": 7,
+      "titleProposal": "《森林期刊》2023年秋刊（总第07期）",
+      "originalTitle": "新亦源森林期刊",
+      "seoTitleProposal": "服装供应链、零库存印花与云仓服务之道",
+      "descriptionProposal": "本期聚焦物流服务与行业资讯、服装供应链发展、团队活动及技能装备。",
+      "source": {
+        "pdf": "/senlinqikan/pdf/7.pdf",
+        "sha256": "98282c20ff7010dd27733488c34e51eb22461d243051c74cf0bbddc2ab509b46"
+      },
+      "boundaryEvidence": [
+        {
+          "physicalPage": 2,
+          "side": "right",
+          "anchors": [
+            "新亦源服务之道",
+            "纺织制造柳暗花明",
+            "AI风又吹到万亿服装产业",
+            "揭秘0库存印花T恤供应链",
+            "佛山办事处开业大吉"
+          ]
+        }
+      ],
+      "reviewNote": "无原生文字层；标题中的数字、英文缩写和跨栏文章起止位置需要对照 PDF 视觉版式复核。"
+    },
+    {
+      "issue": 8,
+      "titleProposal": "《森林期刊》2023年冬刊（总第08期）",
+      "originalTitle": "新亦源森林期刊",
+      "seoTitleProposal": "服装供应链数字化、零库存与物流创新",
+      "descriptionProposal": "本期包含供应链与行业资讯、数字化与业务发展、公司喜讯、技能与人才主题。",
+      "source": {
+        "pdf": "/senlinqikan/pdf/8.pdf",
+        "sha256": "67ded53fb5e60d2c7ee44ae292655f766756b7cabb7c897ec5e1160befaafdc1"
+      },
+      "boundaryEvidence": [
+        {
+          "physicalPage": 2,
+          "side": "right",
+          "anchors": [
+            "新年新启程",
+            "羽绒服",
+            "数字化优秀解决方案奖",
+            "零库存服装供应链",
+            "合同物流全国前十强",
+            "物流突破创新奖"
+          ]
+        }
+      ],
+      "reviewNote": "无原生文字层；奖项名称和图标周边文字不得仅凭 OCR 确定。"
+    },
+    {
+      "issue": 9,
+      "titleProposal": "《森林期刊》2024年春刊（总第09期）",
+      "originalTitle": "新亦源森林期刊",
+      "seoTitleProposal": "ESG服务模式、服装行业经济与鞋服云仓质检",
+      "descriptionProposal": "本期包含服务模式与 ESG、服装行业经济、开工与业务发展、鞋服云仓质检及七周年活动。",
+      "source": {
+        "pdf": "/senlinqikan/pdf/9.pdf",
+        "sha256": "0d5d45e9295fd7ffb01b43209fb01dfb63ae11c7a344d12259c735d91875f68e"
+      },
+      "boundaryEvidence": [
+        {
+          "physicalPage": 2,
+          "side": "right",
+          "anchors": [
+            "创新服务模式与ESG理念的完美融合",
+            "2024年一季度中国服装行业经济",
+            "2024新亦源开工大吉",
+            "鞋服云仓质检服务",
+            "7周年生日快乐"
+          ]
+        }
+      ],
+      "reviewNote": "无原生文字层；不要把封面上的地址、网址、活动页或图中数字混入正文。"
+    },
+    {
+      "issue": 10,
+      "titleProposal": "《森林期刊》第10期（封面标注：2024年秋刊）",
+      "originalTitle": "新亦源森林期刊",
+      "seoTitleProposal": "服装云仓破局、总部乔迁与供应链发展",
+      "descriptionProposal": "封面列出服装电商倒闭潮与服装云仓、总部乔迁两项主标题；本期还包含行业研究、数字化与部门发展内容。",
+      "source": {
+        "pdf": "/senlinqikan/pdf/10.pdf",
+        "sha256": "fec6e2be8c141ff9d6f2bd5ef9a36901385d5e30006c477d25bab2416fae6013"
+      },
+      "boundaryEvidence": [
+        {
+          "physicalPage": 2,
+          "side": "full",
+          "anchors": [
+            "服装电商倒闭潮来袭：服装云仓或成破局关键 / P14",
+            "新起点·新使命·新征程：新亦源总部乔迁之喜 / P21",
+            "2024年秋刊"
+          ]
+        }
+      ],
+      "reviewNote": "physicalPage 2 封面标注 2024 年秋刊，physicalPage 1 电子刊前言写 SUMMER，属于待保留的来源冲突；微信打印头 2026/7/7 不是刊期。现有 PDF 可见浏览器打印页脚序号未覆盖 11/11，不能推断原刊缺文章。"
+    },
+    {
+      "issue": 11,
+      "titleProposal": "《森林期刊》2025年春刊（总第11期）",
+      "originalTitle": "新亦源森林期刊",
+      "seoTitleProposal": "纺织服装市场、国际物流数字化与品质管理",
+      "descriptionProposal": "本期可审阅主题包括年度成长与质效、纺织服装市场、国际物流数字化、品质风险管理与 2025 战略落地。",
+      "source": {
+        "pdf": "/senlinqikan/pdf/11.pdf",
+        "sha256": "689ebaa0683574a759acc2e0adb59a2d67ae429242cf6c5daf421fffb8444f21"
+      },
+      "boundaryEvidence": [
+        {
+          "physicalPage": 2,
+          "side": "right",
+          "anchors": [
+            "2024成长2025质敬",
+            "2024年纺织服装专业市场",
+            "国际物流数字化生存报告",
+            "守护品质，智赢未来",
+            "2025战略落地会议"
+          ]
+        }
+      ],
+      "reviewNote": "无原生文字层；目录中的 AI 和英文报告标题需按局部原图核对拼写与断行。"
+    },
+    {
+      "issue": 12,
+      "titleProposal": "《森林期刊》第12期",
+      "originalTitle": "新亦源森林期刊",
+      "seoTitleProposal": "服装品牌、云仓降本增效与物流运行分析",
+      "descriptionProposal": "本期包含服装品牌、纺织服装出口与行业经济、云仓方案、物流运行分析及用户通知等主题。",
+      "source": {
+        "pdf": "/senlinqikan/pdf/12.pdf",
+        "sha256": "dc5ccb52c536e4a53b2ce34316e8b0df5c2e9b49c88626a900fb3f5a1bf81daf"
+      },
+      "boundaryEvidence": [
+        {
+          "physicalPage": 2,
+          "side": "right",
+          "anchors": [
+            "服装品牌的长寿法则",
+            "5月纺织服装出口分化加剧",
+            "2025年一季度中国服装行业经济运行",
+            "中大型服装企业为何更适合新亦源云仓",
+            "2025年1-5月中国物流运行分析",
+            "公众号升级迁移的重要通知"
+          ]
+        }
+      ],
+      "reviewNote": "目录未在本次 OCR 中可靠读出刊期年份；不补写日期。所有内容无原生文字层。"
+    },
+    {
+      "issue": 13,
+      "titleProposal": "《森林期刊》2025年秋刊（总第13期）",
+      "originalTitle": "新亦源森林期刊",
+      "seoTitleProposal": "服装大促仓储风控、智能云仓与战略合作",
+      "descriptionProposal": "本期涵盖服饰行业破局、服装大促仓储风控与智能云仓、战略合作、团队活动及人才主题。",
+      "source": {
+        "pdf": "/senlinqikan/pdf/13.pdf",
+        "sha256": "fa452dc8058e6ecd3937b9dd1bea61c6e4089f74918a61b7c22d2b09e2976bcf"
+      },
+      "boundaryEvidence": [
+        {
+          "physicalPage": 2,
+          "side": "right",
+          "anchors": [
+            "从大阅兵到冠军仓",
+            "服饰混战白热化",
+            "智能云仓时代下服装品牌大促仓储核心风控与战略升级",
+            "邦宝&新亦源云仓战略合作开仓仪式",
+            "新亦源与卓越商学战略合作项目"
+          ]
+        }
+      ],
+      "reviewNote": "无原生文字层；目录中被截断的长标题及合作主体名称需在转换时结合原图区域复核。"
+    }
+  ]
+}

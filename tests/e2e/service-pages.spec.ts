@@ -64,6 +64,16 @@ test('mobile navigation and honors dialog support Escape', async ({ page }) => {
   await page.keyboard.press('Escape')
   await expect(explorer).toBeHidden()
 
+  await page.goto('/supply-chain-whitepapers/')
+  await menuButton.click()
+  const mobileWhitepapersLink = page
+    .getByRole('navigation', { name: '移动端导航' })
+    .getByRole('link', { name: '供应链白皮书', exact: true })
+  await expect(mobileWhitepapersLink).toHaveAttribute('href', '/supply-chain-whitepapers/')
+  await expect(mobileWhitepapersLink).toHaveClass(/bg-white\/15/)
+  await mobileWhitepapersLink.click()
+  await expect(page).toHaveURL(/\/supply-chain-whitepapers\/$/)
+
   await page.goto('/cases')
   await expect(page.locator('#cases-grid .case-card')).toHaveCount(6)
   const mobileCasesWidth = await page.evaluate(() => ({
@@ -80,9 +90,13 @@ test('news page keeps category filters in content and supports CMS publishing', 
 
   await expect(page.getByRole('heading', { name: '鞋服物流知识库' })).toBeVisible()
   await expect(page.getByRole('group', { name: '文章分类筛选' })).toBeVisible()
-  await expect(page.locator('main a[href="/senlinqikan"]').first()).toBeVisible()
+  const whitepapersLink = page.locator('main a[href="/supply-chain-whitepapers/"]').first()
+  await expect(whitepapersLink).toBeVisible()
   await expect(page.getByRole('heading', { name: '当前暂无已发布文章' })).toBeVisible()
   await expect(page.getByText('审核通过的文章会在这里自动发布')).toBeVisible()
   await expect(page.getByRole('heading', { name: '行业内容使用与更新说明' })).toBeVisible()
   await expect(page.locator('article')).toHaveCount(0)
+  await whitepapersLink.click()
+  await expect(page).toHaveURL(/\/supply-chain-whitepapers\/$/)
+  await expect(page.getByRole('heading', { level: 1, name: '供应链白皮书' })).toBeVisible()
 })

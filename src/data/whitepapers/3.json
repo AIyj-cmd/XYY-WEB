@@ -1,0 +1,541 @@
+{
+  "issue": "3",
+  "originalTitle": "《新亦源森林双月刊》第3期",
+  "title": "供应链观察与团队发展记录",
+  "description": "本期收录供应链行业观察、团队发展、年度会议、仓储实践与员工活动等内容，依据《新亦源森林双月刊》第3期整理。",
+  "sourcePdf": "/senlinqikan/pdf/3.pdf",
+  "sourceSha256": "df2c5103fd38b2976e6ead8244300406057e2cb5257322bd090df383b19bfe71",
+  "sourcePublishedLabel": "2022年第3期（封面标注）",
+  "readingNotice": "本期目前为部分恢复稿，主要提供已核对的章节与少量可读原文，正文尚未完整转换；本阅读版依据《新亦源森林双月刊》第3期的图像原刊与已缓存 OCR 整理。原文中的时间、人物、活动和数据保留其历史语境，不构成新亦源当前服务承诺；低可信图文请回到 PDF 原版核对。",
+  "sections": [
+    {
+      "title": "感恩五年一路风雨",
+      "source": {
+        "pdfPage": 2,
+        "printedPage": null,
+        "side": "full"
+      },
+      "blocks": [
+        {
+          "type": "review-note",
+          "text": "原刊物理第2页“感恩五年一路风雨”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
+          "source": {
+            "pdfPage": 2,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              150,
+              780,
+              800
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "公司简介",
+      "source": {
+        "pdfPage": 2,
+        "printedPage": null,
+        "side": "full"
+      },
+      "blocks": [
+        {
+          "type": "review-note",
+          "text": "原刊物理第2页“公司简介”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
+          "source": {
+            "pdfPage": 2,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              850,
+              150,
+              1450,
+              800
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "新闻快讯",
+      "source": {
+        "pdfPage": 2,
+        "printedPage": null,
+        "side": "full"
+      },
+      "blocks": [
+        {
+          "type": "review-note",
+          "text": "原刊物理第2页“新闻快讯”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
+          "source": {
+            "pdfPage": 2,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              850,
+              780,
+              1560
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "2022上半年物流资产投资运营情况浅析",
+      "source": {
+        "pdfPage": 2,
+        "printedPage": null,
+        "side": "full"
+      },
+      "blocks": [
+        {
+          "type": "review-note",
+          "text": "原刊物理第2页“2022上半年物流资产投资运营情况浅析”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
+          "source": {
+            "pdfPage": 2,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              850,
+              850,
+              1450,
+              1560
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "2022年供应链及物流合同物流发展研究报告——服装赛道",
+      "source": {
+        "pdfPage": 3,
+        "printedPage": null,
+        "side": "full"
+      },
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "物流发展研究报告 - 服装宣道",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              262,
+              205,
+              748,
+              292
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "原刊物理第3页“2022年供应链及物流合同物流发展研究报告——服装赛道”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              180,
+              800,
+              940
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "湖北新仓＋30000㎡",
+      "source": {
+        "pdfPage": 3,
+        "printedPage": null,
+        "side": "full"
+      },
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": ",总库存可达 200 万 (羽绒服为主 ) 工厂生产一件代发IT 等主营业务的新型模式 , 打破传统电商模式 , 降低售、 发货效率更加快捷 ; 现湖北仓主要合作商家 :有",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              1064,
+              1146,
+              1422,
+              1215
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "原刊物理第3页“湖北新仓＋30000㎡”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              850,
+              940,
+              1450,
+              1660
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "优秀员工栏",
+      "source": {
+        "pdfPage": 4,
+        "printedPage": null,
+        "side": "full"
+      },
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "走出自己的舒适区商国事业部项目经理朱海伦",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              1169,
+              271,
+              1417,
+              341
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "保持向上的心态， 做最好的自己",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              400,
+              366,
+              766,
+              411
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "原刊物理第4页“优秀员工栏”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              180,
+              1450,
+              860
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "给你零库存服装供应链",
+      "source": {
+        "pdfPage": 4,
+        "printedPage": null,
+        "side": "full"
+      },
+      "blocks": [
+        {
+          "type": "review-note",
+          "text": "原刊物理第4页“给你零库存服装供应链”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              930,
+              800,
+              1800
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "产地仓模式",
+      "source": {
+        "pdfPage": 4,
+        "printedPage": null,
+        "side": "full"
+      },
+      "blocks": [
+        {
+          "type": "review-note",
+          "text": "原刊物理第4页“产地仓模式”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              850,
+              930,
+              1450,
+              1800
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "人效通系统开启阿米巴管理功能",
+      "source": {
+        "pdfPage": 5,
+        "printedPage": null,
+        "side": "full"
+      },
+      "blocks": [
+        {
+          "type": "figure",
+          "src": "/images/supply-chain-whitepapers/3/team-activity.png",
+          "alt": "团队活动照片（原刊物理第5页局部）",
+          "caption": "团队活动照片（原刊物理第5页局部）",
+          "width": 600,
+          "height": 580,
+          "source": {
+            "pdfPage": 5,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              850,
+              1160,
+              1450,
+              1740
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "原刊物理第5页“人效通系统开启阿米巴管理功能”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
+          "source": {
+            "pdfPage": 5,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              150,
+              1450,
+              800
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "“提供服务 保增效 共进步”年中会议",
+      "source": {
+        "pdfPage": 5,
+        "printedPage": null,
+        "side": "full"
+      },
+      "blocks": [
+        {
+          "type": "review-note",
+          "text": "原刊物理第5页““提供服务 保增效 共进步”年中会议”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
+          "source": {
+            "pdfPage": 5,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              850,
+              1450,
+              1800
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "启明星课堂",
+      "source": {
+        "pdfPage": 6,
+        "printedPage": null,
+        "side": "full"
+      },
+      "blocks": [
+        {
+          "type": "review-note",
+          "text": "原刊物理第6页“启明星课堂”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
+          "source": {
+            "pdfPage": 6,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              150,
+              1450,
+              800
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "全国智通算法快递平台",
+      "source": {
+        "pdfPage": 6,
+        "printedPage": null,
+        "side": "full"
+      },
+      "blocks": [
+        {
+          "type": "review-note",
+          "text": "原刊物理第6页“全国智通算法快递平台”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
+          "source": {
+            "pdfPage": 6,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              850,
+              1450,
+              1800
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "大规模批量培养人才的16字诀",
+      "source": {
+        "pdfPage": 7,
+        "printedPage": null,
+        "side": "full"
+      },
+      "blocks": [
+        {
+          "type": "review-note",
+          "text": "原刊物理第7页“大规模批量培养人才的16字诀”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
+          "source": {
+            "pdfPage": 7,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              150,
+              1450,
+              800
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "千帆竞发勇者胜，百舸争流奋楫先",
+      "source": {
+        "pdfPage": 7,
+        "printedPage": null,
+        "side": "full"
+      },
+      "blocks": [
+        {
+          "type": "review-note",
+          "text": "原刊物理第7页“千帆竞发勇者胜，百舸争流奋楫先”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
+          "source": {
+            "pdfPage": 7,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              850,
+              1450,
+              1800
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "英德抗洪物资援助活动",
+      "source": {
+        "pdfPage": 8,
+        "printedPage": null,
+        "side": "full"
+      },
+      "blocks": [
+        {
+          "type": "review-note",
+          "text": "原刊物理第8页“英德抗洪物资援助活动”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              150,
+              800,
+              800
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "身逐大漠星辰，心守物流信念",
+      "source": {
+        "pdfPage": 8,
+        "printedPage": null,
+        "side": "full"
+      },
+      "blocks": [
+        {
+          "type": "review-note",
+          "text": "原刊物理第8页“身逐大漠星辰，心守物流信念”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              850,
+              150,
+              1450,
+              800
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "阿米巴模式下迸发出新力量",
+      "source": {
+        "pdfPage": 8,
+        "printedPage": null,
+        "side": "full"
+      },
+      "blocks": [
+        {
+          "type": "review-note",
+          "text": "原刊物理第8页“阿米巴模式下迸发出新力量”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              850,
+              1450,
+              1800
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

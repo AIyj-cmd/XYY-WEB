@@ -1,0 +1,366 @@
+{
+  "issue": "4",
+  "originalTitle": "《新亦源森林双月刊》第4期",
+  "title": "客户签约、仓储管理与团队活动",
+  "description": "本期收录客户签约、企业寄件方案、鞋服云仓6S管理、培训、自由行与团建等内容，依据《新亦源森林双月刊》第4期整理。",
+  "sourcePdf": "/senlinqikan/pdf/4.pdf",
+  "sourceSha256": "9d0126c2bf488d969158d5d6b17f1342f0d92956c3ea41a10b71ef545870743b",
+  "sourcePublishedLabel": "2022年第4期（封面标注）",
+  "readingNotice": "本期目前为部分恢复稿，主要提供已核对的章节与少量可读原文，正文尚未完整转换；本阅读版依据《新亦源森林双月刊》第4期的图像原刊与已缓存 OCR 整理。原文中的时间、人物、活动和数据保留其历史语境，不构成新亦源当前服务承诺；低可信图文请回到 PDF 原版核对。",
+  "sections": [
+    {
+      "title": "第三季度签约喜讯：又一批服装标杆客户选择了新亦源云仓",
+      "source": {
+        "pdfPage": 2,
+        "printedPage": null,
+        "side": "full"
+      },
+      "blocks": [
+        {
+          "type": "review-note",
+          "text": "原刊物理第2页“第三季度签约喜讯：又一批服装标杆客户选择了新亦源云仓”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
+          "source": {
+            "pdfPage": 2,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              860,
+              160,
+              1450,
+              900
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "连锁企业全场景寄件解决方案：SAAS｜企业快递管理平台",
+      "source": {
+        "pdfPage": 2,
+        "printedPage": null,
+        "side": "full"
+      },
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "连锁企业全场景寄件解决方案",
+          "source": {
+            "pdfPage": 2,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              233,
+              1092,
+              581,
+              1140
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "原刊物理第2页“连锁企业全场景寄件解决方案：SAAS｜企业快递管理平台”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
+          "source": {
+            "pdfPage": 2,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              1020,
+              800,
+              1800
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "秋天里的第一场生日会",
+      "source": {
+        "pdfPage": 3,
+        "printedPage": null,
+        "side": "full"
+      },
+      "blocks": [
+        {
+          "type": "review-note",
+          "text": "原刊物理第3页“秋天里的第一场生日会”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              150,
+              1450,
+              1750
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "遇见物流人：浅谈鞋服云仓6S管理",
+      "source": {
+        "pdfPage": 4,
+        "printedPage": null,
+        "side": "full"
+      },
+      "blocks": [
+        {
+          "type": "review-note",
+          "text": "原刊物理第4页“遇见物流人：浅谈鞋服云仓6S管理”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              160,
+              1450,
+              1150
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "谁说菜鸟不会数据分析",
+      "source": {
+        "pdfPage": 4,
+        "printedPage": null,
+        "side": "full"
+      },
+      "blocks": [
+        {
+          "type": "review-note",
+          "text": "原刊物理第4页“谁说菜鸟不会数据分析”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              1180,
+              800,
+              1800
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "启明星课堂：7月、8月培训回顾及9—10月份课程安排",
+      "source": {
+        "pdfPage": 5,
+        "printedPage": null,
+        "side": "full"
+      },
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "7 月、8 月培训回顾及9-10 月份课程安排 °",
+          "source": {
+            "pdfPage": 5,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              238,
+              206,
+              548,
+              278
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "原刊物理第5页“启明星课堂：7月、8月培训回顾及9—10月份课程安排”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
+          "source": {
+            "pdfPage": 5,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              160,
+              800,
+              1750
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "技能装备：培训现场",
+      "source": {
+        "pdfPage": 6,
+        "printedPage": null,
+        "side": "full"
+      },
+      "blocks": [
+        {
+          "type": "figure",
+          "src": "/images/supply-chain-whitepapers/4/training-session.png",
+          "alt": "培训现场照片（原刊物理第6页局部）",
+          "caption": "培训现场照片（原刊物理第6页局部）",
+          "width": 280,
+          "height": 210,
+          "source": {
+            "pdfPage": 6,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              320,
+              300,
+              600,
+              510
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "原刊物理第6页“技能装备：培训现场”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
+          "source": {
+            "pdfPage": 6,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              150,
+              1450,
+              1800
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "商图物流，行走中国——2022新亦源半年度之星自由行",
+      "source": {
+        "pdfPage": 7,
+        "printedPage": null,
+        "side": "full"
+      },
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "商圈物流， 行走中国一一 2022 新亦源半年度之星自由行",
+          "source": {
+            "pdfPage": 7,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              237,
+              1096,
+              647,
+              1174
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "原刊物理第7页“商图物流，行走中国——2022新亦源半年度之星自由行”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
+          "source": {
+            "pdfPage": 7,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              1050,
+              800,
+              1800
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "旅途特别节目——森林的悄悄话",
+      "source": {
+        "pdfPage": 8,
+        "printedPage": null,
+        "side": "full"
+      },
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "旅途特别节目一一森林的悄悄话",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              891,
+              362,
+              1115,
+              390
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "原刊物理第8页“旅途特别节目——森林的悄悄话”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              860,
+              300,
+              1450,
+              850
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "清远古龙峡漂流团建活动",
+      "source": {
+        "pdfPage": 8,
+        "printedPage": null,
+        "side": "full"
+      },
+      "blocks": [
+        {
+          "type": "review-note",
+          "text": "原刊物理第8页“清远古龙峡漂流团建活动”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              1050,
+              800,
+              1800
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "新亦源：一个在一米宽一万米深的领域里深耕的故事",
+      "source": {
+        "pdfPage": 9,
+        "printedPage": null,
+        "side": "full"
+      },
+      "blocks": [
+        {
+          "type": "review-note",
+          "text": "原刊物理第9页“新亦源：一个在一米宽一万米深的领域里深耕的故事”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
+          "source": {
+            "pdfPage": 9,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              150,
+              1450,
+              1800
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

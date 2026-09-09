@@ -6,6 +6,10 @@ node_modules/
 dist/
 dist.bak*/
 output/
+scripts/whitepapers/**/__pycache__/
+tests/whitepapers/**/__pycache__/
+scripts/whitepapers/**/*.pyc
+tests/whitepapers/**/*.pyc
 
 # Environment — never commit real secrets
 .env

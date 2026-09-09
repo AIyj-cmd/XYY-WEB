@@ -1,0 +1,2871 @@
+{
+  "issue": "9",
+  "originalTitle": "《森林期刊》第9期",
+  "title": "ESG服务模式、服装行业经济与鞋服云仓质检",
+  "description": "收录鞋服云仓 ESG 服务模式、服装行业经济运行、质检服务和周年活动报道。",
+  "sourcePdf": "/senlinqikan/pdf/9.pdf",
+  "sourceSha256": "0d5d45e9295fd7ffb01b43209fb01dfb63ae11c7a344d12259c735d91875f68e",
+  "sourcePublishedLabel": "2024 年春刊（总第 09 期）",
+  "readingNotice": "本阅读版依据原刊 OCR 与版面整理。文中的年份、数字、案例和表述均保留历史语境，不构成当前服务承诺；请以 PDF 原版核验图表、图片文字和待核查区域。",
+  "sections": [
+    {
+      "title": "鞋服云仓：创新服务模式与 ESG 理念的完美融合",
+      "source": {
+        "pdfPage": 3,
+        "printedPage": 2,
+        "side": "left",
+        "bbox": [
+          65.9,
+          107.6,
+          195.8,
+          171.4
+        ]
+      },
+      "blocks": [
+        {
+          "type": "figure",
+          "src": "/images/supply-chain-whitepapers/9/hla-storefront.png",
+          "alt": "HLA 服装门店与店内陈列",
+          "caption": "原刊印刷第 3 页服装门店配图",
+          "width": 803,
+          "height": 480,
+          "source": {
+            "pdfPage": 3,
+            "printedPage": 3,
+            "side": "right",
+            "bbox": [
+              660,
+              180,
+              1195,
+              500
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "《鞋服云仓：创新服务模式与 ESG 理念的完美融合》：PDF physical page 3，左侧，bbox [65.9, 107.6, 195.8, 171.4]。该处为跨栏、图文叠加、表格或断行造成的不可可靠 OCR 片段，未作为正文发布；请核对该原 PDF 区域。",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": 2,
+            "side": "left",
+            "bbox": [
+              65.9,
+              107.6,
+              195.8,
+              171.4
+            ]
+          }
+        },
+        {
+          "type": "quote",
+          "text": "O 文 / 陈燕",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": 2,
+            "side": "left",
+            "bbox": [
+              66.6,
+              176.8,
+              127.1,
+              187.9
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "在快速变化的时尚鞋服市场中，品牌商们面临着诸多挑战，其中最为迫切的便是如何在保证产品质量与顾客满意度的同时，提高库存周转效率。而鞋服云仓的兴起，正为行业带来了颠覆性的解决方案，同时秉承环境、社会和治理（ESG）原则，展现了其作为行业领导者的责任感和前瞻性思维。",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": 2,
+            "side": "left",
+            "bbox": [
+              65.5,
+              296.3,
+              210.6,
+              442.4
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "首先， 鞋服云仓通过集中化的仓库管理和智能化的物流系统， 实现了对鞋服产品高效、 精准的存储与配送。 这种一站式的仓储解决方案， 不仅降低了品牌的运营成本，还缩短了产品从仓库到消费者手中的时间， 显著提升了库存周转率。",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": 2,
+            "side": "left",
+            "bbox": [
+              65.5,
+              444.6,
+              210.6,
+              557.6
+            ]
+          }
+        },
+        {
+          "type": "figure",
+          "src": "/images/supply-chain-whitepapers/9/esg-historical-data-panel.png",
+          "alt": "鞋服云仓 ESG 文章的历史数据说明框，包含全国专业服装仓面积超 50 万 m²等原刊信息",
+          "caption": "原刊印刷第 2 页蓝色历史数据说明框（图内数据请核 PDF 原版）",
+          "width": 728,
+          "height": 248,
+          "source": {
+            "pdfPage": 3,
+            "printedPage": 2,
+            "side": "left",
+            "bbox": [
+              65,
+              585,
+              550,
+              750
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "《鞋服云仓：创新服务模式与 ESG 理念的完美融合》：PDF physical page 3，左侧，bbox [65, 585, 550, 750]。PDF physical page 3 左侧蓝色数据说明框以局部原图保留；OCR 曾将“超 50 万 m²”误读为“超 50 万只”，不作为正文发布。",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": 2,
+            "side": "left",
+            "bbox": [
+              65,
+              585,
+              550,
+              750
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "《鞋服云仓：创新服务模式与 ESG 理念的完美融合》：PDF physical page 3，左侧，bbox [186.1, 109.1, 351.7, 131.0]。该处为跨栏、图文叠加、表格或断行造成的不可可靠 OCR 片段，未作为正文发布；请核对该原 PDF 区域。",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": 2,
+            "side": "left",
+            "bbox": [
+              186.1,
+              109.1,
+              351.7,
+              131.0
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "完美融合",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": 2,
+            "side": "left",
+            "bbox": [
+              197.6,
+              141.8,
+              291.2,
+              163.8
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "更为重要的是， 鞋服云仓能够提供全链路的后整服务， 包括新货质检、 退货质检、 瑕疣修复等， 确保每一件产品都能以最佳状态呈现给消费者。",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": 2,
+            "side": "left",
+            "bbox": [
+              233.6,
+              296.3,
+              379.8,
+              376.2
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "《鞋服云仓：创新服务模式与 ESG 理念的完美融合》：PDF physical page 3，左侧，bbox [233.6, 378.7, 378.7, 557.6]。该处为跨栏、图文叠加、表格或断行造成的不可可靠 OCR 片段，未作为正文发布；请核对该原 PDF 区域。",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": 2,
+            "side": "left",
+            "bbox": [
+              233.6,
+              378.7,
+              378.7,
+              557.6
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "然而， 鞋服云仓的优势不仅仅",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": 2,
+            "side": "left",
+            "bbox": [
+              421.6,
+              296.3,
+              546.8,
+              310.3
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "体现在提升运营效率上。 在当今社会， 企业的环境责任、 社会责任和良好的治理结构已成为评价其可持续发展能力的重要标准。 鞋服云仓在这方面的表现同样值得称道， 它严格遵守 ESG 原则， 致力于减少物流过程中的碳足迹， 通过优化运输路线、 使用环保包装材料等措施，减轻对环境的影响。",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": 2,
+            "side": "left",
+            "bbox": [
+              401.8,
+              312.5,
+              547.9,
+              458.6
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "相信在未来， 鞋服云仓将继续以其创新的服务模式和坚定的ESG 承诺， 引领鞋服行业向更加绿色、 高效和可持续的方向发展。",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": 2,
+            "side": "left",
+            "bbox": [
+              401.8,
+              460.8,
+              546.8,
+              524.5
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "质量提升 :",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": 3,
+            "side": "right",
+            "bbox": [
+              661.0,
+              437.8,
+              711.1,
+              447.8
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "1 .库存准确率 99.999% ， 发货准确率 99.99%",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": 3,
+            "side": "right",
+            "bbox": [
+              681.5,
+              455.0,
+              869.8,
+              470.9
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "2. 发货准时率， 当天 18 点前订单当天 24 点前全部出库。",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": 3,
+            "side": "right",
+            "bbox": [
+              661.4,
+              475.2,
+              890.0,
+              504.7
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "3. 当日 16 点前到货， 当天 24 点前全部入库上架",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": 3,
+            "side": "right",
+            "bbox": [
+              680.8,
+              508.0,
+              871.6,
+              520.9
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "4. 新品严格按照品牌方 AQL 质检标准进行抽检， 降低次品率",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": 3,
+            "side": "right",
+            "bbox": [
+              660.7,
+              524.5,
+              890.0,
+              551.2
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "成本优化 :1. 仓库存储坪效提升至 80 - 100 件 /m2. 仓库 B2C 发货综合人效提升至 60 - 80 单 /人 /H3 .综合损耗下降 20%4 .耗材管理节约耗材 10%5 .快递资源优化， 快递成本降低6. 没有系统使用费",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": 3,
+            "side": "right",
+            "bbox": [
+              661.0,
+              579.2,
+              875.9,
+              700.2
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "库存优化 :目前多数品牌都在推行小单快反的模式， 尽最大限",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": 3,
+            "side": "right",
+            "bbox": [
+              661.0,
+              720.4,
+              890.0,
+              752.0
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "度通过供应链管理降低整体库存量， 降低每个 SKU 的在库存， 加之直播等全渠道模式需求， 上新速度又不断在加快。 即意味着 SKU 越来越宽但越来越浅， 但很多品牌在退货环节， 由于环节多， 流程长， 复杂度高， 甚至多部门协同等问题， 导致退货二次上架的时效较长， 严重影响了库存周转， 甚至出现有货找不到， 有货发不出等超卖情况， 严重影响货品的二次销售。",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": 3,
+            "side": "right",
+            "bbox": [
+              913.0,
+              435.6,
+              1143.4,
+              547.2
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "1.1080P 高清监控拆包， 清晰查看快递单号及商品信息， 随时举证异常 ;",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": 3,
+            "side": "right",
+            "bbox": [
+              913.4,
+              550.8,
+              1142.3,
+              581.4
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "2 .经广检集团授权及培训的专业质检团队对货品进行细致全检，",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": 3,
+            "side": "right",
+            "bbox": [
+              913.0,
+              583.9,
+              1142.0,
+              614.2
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "3 .污渍清理， 车改标， 补钻补扣， 补打吊牌， 更换包装等修复工作 ;",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": 3,
+            "side": "right",
+            "bbox": [
+              913.0,
+              616.7,
+              1143.8,
+              647.3
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "4. 所有快递退货到仓，48 小时完成二次上架操作，部分加急产品配合实现 24 小时内， 以此加速退货货品的二次上架速度， 增加货品二次售卖几率， 加速库存周",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": 3,
+            "side": "right",
+            "bbox": [
+              913.0,
+              649.4,
+              1142.7,
+              696.2
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "转。",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": 3,
+            "side": "right",
+            "bbox": [
+              913.0,
+              699.8,
+              927.8,
+              712.8
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "《鞋服云仓：创新服务模式与 ESG 理念的完美融合》：PDF physical page 3，左侧，bbox [65.9, 107.6, 195.8, 171.4]。本期由无可靠文字层的原稿 OCR 整理；图表、照片内文字、名单及跨栏或低置信区域须以 PDF 原版复核。",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": 2,
+            "side": "left",
+            "bbox": [
+              65.9,
+              107.6,
+              195.8,
+              171.4
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "潮流趋势新热潮——丁达尔风",
+      "source": {
+        "pdfPage": 4,
+        "printedPage": 4,
+        "side": "left",
+        "bbox": [
+          131.4,
+          139.0,
+          305.6,
+          162.4
+        ]
+      },
+      "blocks": [
+        {
+          "type": "figure",
+          "src": "/images/supply-chain-whitepapers/9/fashion-market-charts.png",
+          "alt": "服饰行业市场与指数折线图组",
+          "caption": "原刊印刷第 4 页行业市场图组",
+          "width": 735,
+          "height": 586,
+          "source": {
+            "pdfPage": 4,
+            "printedPage": 4,
+            "side": "left",
+            "bbox": [
+              60,
+              245,
+              550,
+              635
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "《潮流趋势新热潮——丁达尔风》：PDF physical page 4，左侧，bbox [131.4, 139.0, 305.6, 162.4]。该处为跨栏、图文叠加、表格或断行造成的不可可靠 OCR 片段，未作为正文发布；请核对该原 PDF 区域。",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": 4,
+            "side": "left",
+            "bbox": [
+              131.4,
+              139.0,
+              305.6,
+              162.4
+            ]
+          }
+        },
+        {
+          "type": "quote",
+          "text": "◎ 文摘自 :",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": 4,
+            "side": "left",
+            "bbox": [
+              67.0,
+              144.7,
+              122.4,
+              160.9
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "2024 春夏正当时， 从国际时装舞台到国内的各大潮流时尚盛典， 尤其是上海时装周的举办， 诸多趋势关键词成为了社交媒体的热点，“ 今年春夏穿什么 ”也势不可挡的成为大众格外关注的话题。",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": 4,
+            "side": "left",
+            "bbox": [
+              65.5,
+              196.2,
+              210.6,
+              292.7
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "纵观时尚趋势的轮回与变迁，流行趋势总是随着季节的变化而流动。 从夏天明艳活泼的 “多巴胺 ”穿搭， 到秋天舒适温暖的 “ 美拉德 ” 热潮， 再到冬天燃烧绚烂的“狩猎焰 ” 热浪， 在风格趋势的流转中， 显露出悄然演变的用户需求， 也帮助服饰商家前置打开春夏生意场。",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": 4,
+            "side": "left",
+            "bbox": [
+              65.5,
+              294.8,
+              210.6,
+              441.0
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "手绘图案手作新中式宽恰大衬衫",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": 4,
+            "side": "left",
+            "bbox": [
+              159.8,
+              517.0,
+              212.0,
+              535.3
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "同色系层次搭配纯色与印花的碰撞",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": 4,
+            "side": "left",
+            "bbox": [
+              147.2,
+              710.6,
+              220.3,
+              733.7
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "《潮流趋势新热潮——丁达尔风》：PDF physical page 4，左侧，bbox [233.6, 216.4, 380.2, 446.4]。该处为跨栏、图文叠加、表格或断行造成的不可可靠 OCR 片段，未作为正文发布；请核对该原 PDF 区域。",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": 4,
+            "side": "left",
+            "bbox": [
+              233.6,
+              216.4,
+              380.2,
+              446.4
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "原创 LOGO 刺绣衬衫修身衬衣女",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": 4,
+            "side": "left",
+            "bbox": [
+              338.4,
+              508.3,
+              381.6,
+              523.4
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "三治愈色系 Kies长绒渐变大毛衣",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": 4,
+            "side": "left",
+            "bbox": [
+              319.7,
+              679.3,
+              383.4,
+              697.7
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "《潮流趋势新热潮——丁达尔风》：PDF physical page 4，左侧，bbox [401.8, 195.5, 546.8, 275.4]。该处为跨栏、图文叠加、表格或断行造成的不可可靠 OCR 片段，未作为正文发布；请核对该原 PDF 区域。",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": 4,
+            "side": "left",
+            "bbox": [
+              401.8,
+              195.5,
+              546.8,
+              275.4
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "《潮流趋势新热潮——丁达尔风》：PDF physical page 4，左侧，bbox [401.8, 280.1, 546.8, 324.7]。该处为跨栏、图文叠加、表格或断行造成的不可可靠 OCR 片段，未作为正文发布；请核对该原 PDF 区域。",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": 4,
+            "side": "left",
+            "bbox": [
+              401.8,
+              280.1,
+              546.8,
+              324.7
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "抵达更多自我的可能性。",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": 4,
+            "side": "left",
+            "bbox": [
+              401.8,
+              344.5,
+              500.4,
+              358.6
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "02 引领时尚消费， 助推商家生意破图增长",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": 4,
+            "side": "left",
+            "bbox": [
+              402.1,
+              362.2,
+              546.5,
+              393.8
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "当 「 丁达尔上风席卷全网， 成为用户的时尚穿拱新灵感， 相关风格好物也呈现出爆发式消费需求，",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": 4,
+            "side": "left",
+            "bbox": [
+              401.8,
+              401.0,
+              546.8,
+              444.2
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "《潮流趋势新热潮——丁达尔风》：PDF physical page 4，左侧，bbox [410.4, 512.6, 540.4, 559.4]。该处为跨栏、图文叠加、表格或断行造成的不可可靠 OCR 片段，未作为正文发布；请核对该原 PDF 区域。",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": 4,
+            "side": "left",
+            "bbox": [
+              410.4,
+              512.6,
+              540.4,
+              559.4
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "都市浪漫立领全棉落府廊形中长超短款风衣外套",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": 4,
+            "side": "left",
+            "bbox": [
+              428.4,
+              682.2,
+              493.6,
+              697.7
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "促动了诸多商家生意的新一轮增长。",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": 5,
+            "side": "right",
+            "bbox": [
+              660.7,
+              81.4,
+              805.4,
+              111.2
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "《潮流趋势新热潮——丁达尔风》：PDF physical page 4，右侧，bbox [660.7, 114.1, 805.7, 308.9]。该处为跨栏、图文叠加、表格或断行造成的不可可靠 OCR 片段，未作为正文发布；请核对该原 PDF 区域。",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": 5,
+            "side": "right",
+            "bbox": [
+              660.7,
+              114.1,
+              805.7,
+              308.9
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "《潮流趋势新热潮——丁达尔风》：PDF physical page 4，右侧，bbox [660.7, 312.1, 807.5, 490.3]。该处为跨栏、图文叠加、表格或断行造成的不可可靠 OCR 片段，未作为正文发布；请核对该原 PDF 区域。",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": 5,
+            "side": "right",
+            "bbox": [
+              660.7,
+              312.1,
+              807.5,
+              490.3
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "视频带橱窗实现商品卡续销， 趋势货品日均搜索 GMV 增长 221.2%，达人商品卡 GMV 占比增长 49%。其中， 设计师品牌 @ 瑞妮 Renee 在活动期间发布了多条相关话题短视频进行预热， 并打造专场直播， 实现商品卡 GMV 增长 38% 。",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": 5,
+            "side": "right",
+            "bbox": [
+              828.8,
+              81.4,
+              974.9,
+              193.0
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "《潮流趋势新热潮——丁达尔风》：PDF physical page 4，右侧，bbox [828.8, 196.6, 973.9, 456.5]。该处为跨栏、图文叠加、表格或断行造成的不可可靠 OCR 片段，未作为正文发布；请核对该原 PDF 区域。",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": 5,
+            "side": "right",
+            "bbox": [
+              828.8,
+              196.6,
+              973.9,
+              456.5
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "OS 风格好物在抖音，",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": 5,
+            "side": "right",
+            "bbox": [
+              848.9,
+              461.9,
+              966.7,
+              478.4
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "《潮流趋势新热潮——丁达尔风》：PDF physical page 4，右侧，bbox [1001.9, 82.8, 1142.0, 93.6]。该处为跨栏、图文叠加、表格或断行造成的不可可靠 OCR 片段，未作为正文发布；请核对该原 PDF 区域。",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": 5,
+            "side": "right",
+            "bbox": [
+              1001.9,
+              82.8,
+              1142.0,
+              93.6
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "《潮流趋势新热潮——丁达尔风》：PDF physical page 4，右侧，bbox [997.3, 101.9, 1142.0, 151.6]。该处为跨栏、图文叠加、表格或断行造成的不可可靠 OCR 片段，未作为正文发布；请核对该原 PDF 区域。",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": 5,
+            "side": "right",
+            "bbox": [
+              997.3,
+              101.9,
+              1142.0,
+              151.6
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "IP 活动自 1 月上线以来， 凭借对时尚趋势的敏锐洞察与全域助推， 成功掀起了多轮时尚热潮， 抖音电商也全然已成为时尚策源地与好物聚集地， 帮助用户及时感知流行趋势风格， 掌握前沿时尚内容， 亦助力商家成为用户追赶潮流 “首选 ”，实现了生意的增长与爆发。",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": 5,
+            "side": "right",
+            "bbox": [
+              996.2,
+              153.4,
+              1142.3,
+              283.3
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "《潮流趋势新热潮——丁达尔风》：PDF physical page 4，右侧，bbox [997.3, 285.5, 1142.3, 476.6]。该处为跨栏、图文叠加、表格或断行造成的不可可靠 OCR 片段，未作为正文发布；请核对该原 PDF 区域。",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": 5,
+            "side": "right",
+            "bbox": [
+              997.3,
+              285.5,
+              1142.3,
+              476.6
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "2024 年一季度中国服装行业经济运行分析",
+      "source": {
+        "pdfPage": 5,
+        "printedPage": 6,
+        "side": "left",
+        "bbox": [
+          65.9,
+          107.6,
+          511.2,
+          139.7
+        ]
+      },
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "O MHA: 微信公众号 /中",
+          "source": {
+            "pdfPage": 5,
+            "printedPage": 6,
+            "side": "left",
+            "bbox": [
+              67.0,
+              175.3,
+              208.4,
+              191.5
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "观组合政策实施力度不断加大， 我国服装行业经济运行延续稳中向好的发展态势， 生产、 销售、 效益等主要指标均保持恢复性增长， 市场活力和经营信心稳步提升， 实现了行业经济平稳开局。 展望全年， 全球经济和贸易正呈现回暖趋稳迹象， 国内宏观经济总体回升向好，积极因素不断累积增多， 尤其是国家出台的 《推动大规模设备更新和消费品以旧换新行动方案 》 等政策落地显效， 均会有力拉动服装产业的发展。 但是， 行业企业仍需努力化解国际经济环境的复杂性和不确定性、 国内外市场终端消费需求偏弱以及行业整体供需失衡所造成的不利影响， 加快产业转型升级， 积极培育发展新质生产力， 巩固和增强行业经济回升向好态势， 持续推动行业经济实现高质量发展。",
+          "source": {
+            "pdfPage": 5,
+            "printedPage": 6,
+            "side": "left",
+            "bbox": [
+              65.5,
+              242.3,
+              211.7,
+              569.9
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "一、 服装行业经济运行情况",
+          "source": {
+            "pdfPage": 5,
+            "printedPage": 6,
+            "side": "left",
+            "bbox": [
+              65.5,
+              587.5,
+              203.4,
+              604.4
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "1、 服装生产平稳回升",
+          "source": {
+            "pdfPage": 5,
+            "printedPage": 6,
+            "side": "left",
+            "bbox": [
+              85.7,
+              603.7,
+              175.3,
+              620.6
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "《2024 年一季度中国服装行业经济运行分析》：PDF physical page 5，左侧，bbox [65.5, 619.2, 210.6, 718.6]。该处为跨栏、图文叠加、表格或断行造成的不可可靠 OCR 片段，未作为正文发布；请核对该原 PDF 区域。",
+          "source": {
+            "pdfPage": 5,
+            "printedPage": 6,
+            "side": "left",
+            "bbox": [
+              65.5,
+              619.2,
+              210.6,
+              718.6
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "根据国家统计局数据，1-3",
+          "source": {
+            "pdfPage": 5,
+            "printedPage": 6,
+            "side": "left",
+            "bbox": [
+              85.3,
+              717.1,
+              210.2,
+              734.0
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "月， 服装行业规模以上企业工业增",
+          "source": {
+            "pdfPage": 5,
+            "printedPage": 6,
+            "side": "left",
+            "bbox": [
+              65.9,
+              735.1,
+              210.2,
+              748.1
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "《2024 年一季度中国服装行业经济运行分析》：PDF physical page 5，左侧，bbox [233.6, 227.5, 380.5, 421.6]。该处为跨栏、图文叠加、表格或断行造成的不可可靠 OCR 片段，未作为正文发布；请核对该原 PDF 区域。",
+          "source": {
+            "pdfPage": 5,
+            "printedPage": 6,
+            "side": "left",
+            "bbox": [
+              233.6,
+              227.5,
+              380.5,
+              421.6
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "数据来源 : 国家统计局2、 内销市场平稳增长一季度， 在居民收入稳定增长、 以线上线下融合为特征的新型消费模式迅速发展、 春节假期集中消费等因素推动下， 我国服装消费需求不断释放， 内销市场实现平稳增长。根据国家统计局数据，1-3月， 我国限额以上单位服装商品零售额累计 2732.3 亿元， 同比增长2.2%， 增速比 2023 年全年放缓13.2 个百分点。 其中，3 月当月限额以上单位服装类商品零售额同比",
+          "source": {
+            "pdfPage": 5,
+            "printedPage": 6,
+            "side": "left",
+            "bbox": [
+              233.6,
+              518.8,
+              380.2,
+              743.8
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "增长 3.6%， 增速比 1-2 月加快 2 个百分点。 直播带货、 即时零售等电商新模式对线上消费增长的拉动作用明显，1-3 月， 穿类商品网上零售额累计同比增长 12.1%， 增速比2023 年全年加快 1.3 个百分点。",
+          "source": {
+            "pdfPage": 5,
+            "printedPage": 6,
+            "side": "left",
+            "bbox": [
+              401.8,
+              226.1,
+              547.9,
+              322.2
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "数据来源 : 国家统计局",
+          "source": {
+            "pdfPage": 5,
+            "printedPage": 6,
+            "side": "left",
+            "bbox": [
+              474.5,
+              427.0,
+              547.2,
+              437.8
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "3、 企业效益逐步恢复",
+          "source": {
+            "pdfPage": 5,
+            "printedPage": 6,
+            "side": "left",
+            "bbox": [
+              421.9,
+              446.4,
+              511.9,
+              460.4
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "《2024 年一季度中国服装行业经济运行分析》：PDF physical page 5，左侧，bbox [401.8, 461.9, 547.9, 706.0]。该处为跨栏、图文叠加、表格或断行造成的不可可靠 OCR 片段，未作为正文发布；请核对该原 PDF 区域。",
+          "source": {
+            "pdfPage": 5,
+            "printedPage": 6,
+            "side": "left",
+            "bbox": [
+              401.8,
+              461.9,
+              547.9,
+              706.0
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "行业亏损面收窗， 运行效率平稳恢复。1-3 月， 服装行业规模以上企业亏损面达 33.13%， 比",
+          "source": {
+            "pdfPage": 5,
+            "printedPage": 6,
+            "side": "left",
+            "bbox": [
+              401.8,
+              708.1,
+              548.3,
+              755.3
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "《2024 年一季度中国服装行业经济运行分析》：PDF physical page 5，右侧，bbox [660.7, 81.0, 807.2, 177.1]。该处为跨栏、图文叠加、表格或断行造成的不可可靠 OCR 片段，未作为正文发布；请核对该原 PDF 区域。",
+          "source": {
+            "pdfPage": 5,
+            "printedPage": 7,
+            "side": "right",
+            "bbox": [
+              660.7,
+              81.0,
+              807.2,
+              177.1
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "分别下降 0.33% 和 0.02%。",
+          "source": {
+            "pdfPage": 5,
+            "printedPage": 7,
+            "side": "right",
+            "bbox": [
+              661.0,
+              180.4,
+              770.5,
+              193.7
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "数据来源 :国家统计局二、 一季度服装行业发展特",
+          "source": {
+            "pdfPage": 5,
+            "printedPage": 7,
+            "side": "right",
+            "bbox": [
+              661.0,
+              288.7,
+              806.1,
+              327.6
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "点及影响因素",
+          "source": {
+            "pdfPage": 5,
+            "printedPage": 7,
+            "side": "right",
+            "bbox": [
+              661.0,
+              332.6,
+              729.1,
+              342.7
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "1、 政策推动服装新型消费模式加快发展， 服装内销市场实现平稳增长",
+          "source": {
+            "pdfPage": 5,
+            "printedPage": 7,
+            "side": "right",
+            "bbox": [
+              660.7,
+              349.2,
+              805.7,
+              392.0
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "《2024 年一季度中国服装行业经济运行分析》：PDF physical page 5，右侧，bbox [660.7, 397.4, 807.2, 757.8]。该处为跨栏、图文叠加、表格或断行造成的不可可靠 OCR 片段，未作为正文发布；请核对该原 PDF 区域。",
+          "source": {
+            "pdfPage": 5,
+            "printedPage": 7,
+            "side": "right",
+            "bbox": [
+              660.7,
+              397.4,
+              807.2,
+              757.8
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "境趋好的背景下， 服装企业抓住消费新潮流兴起的机遇， 创新消费场景， 发展直播电商等新业态新模式， 在生产、 销售等各个环节进行创新， 实现线上线下协同发展。",
+          "source": {
+            "pdfPage": 5,
+            "printedPage": 7,
+            "side": "right",
+            "bbox": [
+              829.1,
+              81.4,
+              973.9,
+              161.6
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "2、 国风服饰融合传统元素与现代设计， 逐步成为品牌发展新潮流",
+          "source": {
+            "pdfPage": 5,
+            "printedPage": 7,
+            "side": "right",
+            "bbox": [
+              829.1,
+              162.7,
+              973.9,
+              205.6
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "国风服饰将中华传统文化元素与现代审美潮流元素相结合， 伴随着文化自信的持续提升， 借助微博、 小红书等新流量平台， 主流媒体报道、 自媒体推荐、 品牌及设计师的自我营销等渠道获得了大批消费者的认同与喜爱， 正成为我国服装行业发展的重要力量。 曹县作为我国新汉服重要的产业基地， 顺应当下趋势， 凭借不断优化的新汉服产业链、 创意链和价值链， 发展起了一批具有一定影响力的新汉服制造品牌、 电商品牌， 据曹县电子商务服务中心数据显示， 曹县新汉服产业春节期间销售额已超 3 亿元。同时， 广州白马服装市场马面裙等国风服饰销售量自 1 月以来环比增长了近 5 倍， 新中式服装占比大幅提升。 国风服饰的持续流行既为传统服饰文化的传播打开了新窗口，也为中国品牌的发展提供了新思路。",
+          "source": {
+            "pdfPage": 5,
+            "printedPage": 7,
+            "side": "right",
+            "bbox": [
+              828.8,
+              211.3,
+              975.3,
+              571.3
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "3、 服装企业依托跨境电商加速出海步伐， 持续拓宽国际市场",
+          "source": {
+            "pdfPage": 5,
+            "printedPage": 7,
+            "side": "right",
+            "bbox": [
+              829.1,
+              572.8,
+              973.5,
+              603.4
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "作为发展速度最快、 潜力最大、 带动作用最强的外贸新业态，跨境电商与服装产业双向赋能， 念加焕发新的发展动力。 例如，TEMU 平台通过 “全托管 ”“ 半托管 ” 服务模式， 简化企业出海流程， 降低外贸门槛， 拓宽企业销售渠道 ; SHEIN 平台自去年 9 月份推出 “500 城产业带计划 ” 以来， 加",
+          "source": {
+            "pdfPage": 5,
+            "printedPage": 7,
+            "side": "right",
+            "bbox": [
+              828.8,
+              604.8,
+              975.3,
+              750.6
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "速吸引国内产业带卖家入驻， 目前通过 SHEIN 平台出海的卖家已覆盖了全国 300 多个不同城市产业带。服装企业一方面借助跨境电商平台积极把握海外市场节奏， 开拓更多销售渠道， 带动我国服装优质供应链直接面向国际消费者， 打开新的国际市场， 促进产业升级。 同时，按需生产的柔性供应链模式帮助服装产业通过数字化转型升级， 不断提升市场需求和供应之间的匹配，增强市场竞争力， 优化产业结构。",
+          "source": {
+            "pdfPage": 5,
+            "printedPage": 7,
+            "side": "right",
+            "bbox": [
+              997.3,
+              81.4,
+              1142.3,
+              276.8
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "三、2024 年服装行业发展",
+          "source": {
+            "pdfPage": 5,
+            "printedPage": 7,
+            "side": "right",
+            "bbox": [
+              997.6,
+              294.8,
+              1143.1,
+              311.0
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "趋势展望",
+          "source": {
+            "pdfPage": 5,
+            "printedPage": 7,
+            "side": "right",
+            "bbox": [
+              997.3,
+              315.0,
+              1042.3,
+              331.2
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "一季度， 我国服装行业经济平稳开局， 为全年实现稳中向好的发展目标黄定良好基础。 展望全年，全球经济呈现回暖迹象， 经合组织近期将 2024 年世界经济增长预期上调至 3.1%， 同时我国宏观经济平稳发展， 各项促消费政策措施红利持续释放， 服装消费场景全面恢复， 线上线下多场景、 融合式消费模式不断更新， 支撑服装行业经济运行稳中向好的积极因素持续累积增多。 但也要看到， 外部环境更趋错综复杂， 我国服装出口将面临外需恢复势头尚未企稳、 国际贸易保护主义加剧、 地区政治局势紧张以及国际航运物流不畅等诸多压力和风险， 经济运行持续向好的基础仍需加固。 在产业变革、 技术变革的大趋势下， 服装企业需把握住国内外市场恢复机遇期， 通过技术改造、 数字化赋能、 绿色化升级， 推动行业智能制造以及数字经济与实体经济的融合创新， 助力产业高端化、 智能化、 绿色化转型， 加快培育新质生产力， 推进服装现代化产业体系建设。",
+          "source": {
+            "pdfPage": 5,
+            "printedPage": 7,
+            "side": "right",
+            "bbox": [
+              997.3,
+              332.6,
+              1143.4,
+              758.9
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "把专业做到极致：新亦源鞋服云仓质检服务介绍",
+      "source": {
+        "pdfPage": 6,
+        "printedPage": 9,
+        "side": "right",
+        "bbox": [
+          661.4,
+          107.3,
+          971.0,
+          172.1
+        ]
+      },
+      "blocks": [
+        {
+          "type": "quote",
+          "text": "O 文 / 陈燕",
+          "source": {
+            "pdfPage": 6,
+            "printedPage": 9,
+            "side": "right",
+            "bbox": [
+              662.1,
+              177.1,
+              722.2,
+              187.9
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "鞋服行业的质检是确保产品质量、 保护消费者权益、 提升品牌形象和市场竞争力的关键步骤。 鉴于此， 鞋服类质检涉及多个细分范畴， 且要求专业的技术能力以支撑其严格而细致的检测流程。以下为新亦源鞋服云仓各类质检服务介绍",
+          "source": {
+            "pdfPage": 6,
+            "printedPage": 9,
+            "side": "right",
+            "bbox": [
+              660.7,
+              209.5,
+              1142.0,
+              256.7
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "第一步 : 闻气味一一闻衣服领口、 袖第二步 : 核对三号一一核对吊牌与衣服口、 腋下等位置是否有异味。 款式、 尺码、 颜色、 成分是否一致。",
+          "source": {
+            "pdfPage": 6,
+            "printedPage": 9,
+            "side": "right",
+            "bbox": [
+              732.3,
+              383.8,
+              1103.1,
+              414.4
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "BOS: 翻里一一翻出衣服内部， 按第五步 : 折灵包装一一按照标准折灵步",
+          "source": {
+            "pdfPage": 6,
+            "printedPage": 9,
+            "side": "right",
+            "bbox": [
+              732.3,
+              725.8,
+              1101.3,
+              739.8
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "照前面的检查步骤检查是否有异常。 骤将衣服折姓整齐， 装进防尘袋中。 )",
+          "source": {
+            "pdfPage": 6,
+            "printedPage": 9,
+            "side": "right",
+            "bbox": [
+              732.3,
+              737.6,
+              1153.9,
+              766.4
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "第一步 : 闻气味一一闻裤子腰头、 浪第二步 : 核对三号一一核对吊牌与衣服底等位置是否有异味。 款式、 尺码、 颜色、 成分是否一致",
+          "source": {
+            "pdfPage": 7,
+            "printedPage": 10,
+            "side": "left",
+            "bbox": [
+              97.9,
+              267.8,
+              527.8,
+              298.4
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "第三步 : 检验一一检查口袋是否有异物， 接着依次检查腰头、 前浪拉链是否对中、裤脚压线是否顺直、 裤脚大小是否一致， 是否有开线、污渍等情况。 同步以上步骤检查背面。",
+          "source": {
+            "pdfPage": 7,
+            "printedPage": 10,
+            "side": "left",
+            "bbox": [
+              426.2,
+              437.4,
+              546.8,
+              546.1
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "第四步 : 翻里一一翻出裤子内部， 按第五步 : 折灵包装一一按照标准折灵步照前面的检查步骤检查是否有异常。 骤将裤子折妓整齐， 装进防尘袋中。",
+          "source": {
+            "pdfPage": 7,
+            "printedPage": 10,
+            "side": "left",
+            "bbox": [
+              99.7,
+              713.9,
+              522.4,
+              744.5
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "二鞋合止含格证信息一致",
+          "source": {
+            "pdfPage": 7,
+            "printedPage": 11,
+            "side": "right",
+            "bbox": [
+              976.7,
+              356.8,
+              1057.0,
+              367.6
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "1) 第一步 : 鞋盒外观检查一一确定鞋盒第二步 : 核对一一打开鞋盒取出鞋是否完好无脏污、 有无条码， 条码是子， 核对款号尺码是否与鞋盒上合格否破损。 证信息一致。",
+          "source": {
+            "pdfPage": 7,
+            "printedPage": 11,
+            "side": "right",
+            "bbox": [
+              704.2,
+              399.2,
+              1098.4,
+              446.8
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "第三步 : 检验一一外观检 SOS: 细检一一依次检查鞋第五步 : 包装一一将鞋子重验。 子各部位的是否存在异常。 新包装好。",
+          "source": {
+            "pdfPage": 7,
+            "printedPage": 11,
+            "side": "right",
+            "bbox": [
+              693.1,
+              713.9,
+              1143.1,
+              740.2
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "第一步 : 准备工具一一准备清洁剂、 擦胶块、 布块、 剪刀、 箭头标识贴",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": 12,
+            "side": "left",
+            "bbox": [
+              99.4,
+              240.8,
+              285.8,
+              271.4
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "内里还有一个小的包包要提出内里检章",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": 12,
+            "side": "left",
+            "bbox": [
+              372.6,
+              360.0,
+              501.5,
+              372.2
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "第二步 : 检查外表一一确认每个部位每个零件无异常， 有则当场清理。",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": 12,
+            "side": "left",
+            "bbox": [
+              99.4,
+              399.2,
+              285.8,
+              429.8
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "第三步 : 检查内里一一确认内里是否有蜡物， 有则当场清理 ; 若为子母包还需检查子包外表及内里， 破损异常贴上标注。",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": 12,
+            "side": "left",
+            "bbox": [
+              360.0,
+              539.6,
+              546.8,
+              587.2
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "然， 除此之外还有更细致化的质检服务， 比如上衣分别有 T 作卫、 棉衣羽绒服类、 针织类等， 所以鞋服行业的质量把控不仅要求类产品的特定标准和消费者需求有深入理解， 还要求实施精细化十和审查， 以确保每一类产品都能满足既定的质量要求。",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": 12,
+            "side": "left",
+            "bbox": [
+              234.7,
+              641.9,
+              507.6,
+              706.0
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "新亦源专业鞋服云仓， 欢迎您前来咨询 ~",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": 12,
+            "side": "left",
+            "bbox": [
+              234.7,
+              707.8,
+              400.7,
+              722.2
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "祝新亦源 7 周年生日快乐",
+      "source": {
+        "pdfPage": 8,
+        "printedPage": 13,
+        "side": "right",
+        "bbox": [
+          661.4,
+          106.2,
+          1132.6,
+          138.2
+        ]
+      },
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "不期而预 ,不负 7 望 : 祝新亦源 7 周年生日快乐",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": 13,
+            "side": "right",
+            "bbox": [
+              661.4,
+              106.2,
+              1132.6,
+              138.2
+            ]
+          }
+        },
+        {
+          "type": "quote",
+          "text": "© 文 / 陈茂",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": 13,
+            "side": "right",
+            "bbox": [
+              662.1,
+              146.2,
+              722.2,
+              157.3
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "在春意盘然的五月， 新亦源迎来了其成立第七个年头的纪念日。5 月 6 日， 这个对于新亦源而言特殊的日子， 被赋予了更为深厚的意义。 在这样一个里程碑时刻， 公司组织了主题为 “不期而 “ 预 ”， 不负 7 望 ”的团建活动。",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": 13,
+            "side": "right",
+            "bbox": [
+              661.0,
+              201.6,
+              1142.0,
+              232.2
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "f 痘高望远走进大自然 or",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": 13,
+            "side": "right",
+            "bbox": [
+              660.7,
+              274.7,
+              801.1,
+              298.4
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "清晨的莲花山， 空气里弥漫着青草的芬芳和泥土的气息。 我们一行人， 肩并肩， 踏上了登山的路。 阳光透过树叶的缝隙， 洒在我们身上， 仿佛是大自然对我们到来的欢迎仪式。",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": 13,
+            "side": "right",
+            "bbox": [
+              660.7,
+              311.8,
+              860.5,
+              375.5
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "每一步攀登， 都是对自我的挑战， 也是对团队默契的考验。 山上的风景， 是对坚持的最好回报， 我们在那绿意响然的山中， 分享着彼此的喜悦与成就。",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": 13,
+            "side": "right",
+            "bbox": [
+              660.7,
+              377.6,
+              862.3,
+              441.4
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "午后， 我们转战到了疯狂号吉 “' 密室闯关，这里没有山川的辽阔， 却有着智慧的火花。 一间间密室， 一道道迷题， 我们需要团结协作， 发挥各自的聪明才智。",
+          "source": {
+            "pdfPage": 9,
+            "printedPage": 14,
+            "side": "left",
+            "bbox": [
+              342.0,
+              497.9,
+              546.8,
+              561.6
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "时间在紧张的气氛中流转， 每一次成功的闻关， 都让我们的团队更加紧密。 这不仅仅是游戏， 更是一次团队合作与沟通能力的实战演练。",
+          "source": {
+            "pdfPage": 9,
+            "printedPage": 14,
+            "side": "left",
+            "bbox": [
+              342.0,
+              563.8,
+              546.8,
+              610.9
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "随着活动的圆满结束， 所有参与者都在这一天收获了难忘的记忆和宝贵的经历， 我们将继续携手旗下所有员工， 以卓越的创新能力和强大的团队精神， 迎接更多的挑战， 开创更加辉煌的明天。 让我们共同期待着公司的美好未来。",
+          "source": {
+            "pdfPage": 9,
+            "printedPage": 14,
+            "side": "left",
+            "bbox": [
+              342.0,
+              613.4,
+              546.8,
+              693.4
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "2024 年度会议成功举办",
+      "source": {
+        "pdfPage": 9,
+        "printedPage": 15,
+        "side": "right",
+        "bbox": [
+          662.1,
+          411.8,
+          722.2,
+          423.0
+        ]
+      },
+      "blocks": [
+        {
+          "type": "quote",
+          "text": "© 文 / 陈燕",
+          "source": {
+            "pdfPage": 9,
+            "printedPage": 15,
+            "side": "right",
+            "bbox": [
+              662.1,
+              411.8,
+              722.2,
+              423.0
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "2024 年 2 月 25-26 日， 广州新亦源供应链管理有限公司在广州增城百花山庄成功召开了 2023 年度总结及2024 年计划会议。 在这次企业年会上， 公司不仅回顾了过去一年的成就与挑战， 同时也展望了来年的发展蓝图。",
+          "source": {
+            "pdfPage": 9,
+            "printedPage": 15,
+            "side": "right",
+            "bbox": [
+              670.7,
+              480.2,
+              901.1,
+              560.2
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "会议伊始， 新亦源总经理王伟先生对过去一年公司整体表现进行了全面回顾， 肯定了企业的发展， 同时也对企业面临的机会和挑战提出了战略举措。",
+          "source": {
+            "pdfPage": 9,
+            "printedPage": 15,
+            "side": "right",
+            "bbox": [
+              672.2,
+              650.2,
+              902.6,
+              693.0
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "他强调作为行业的标杆企业， 质量是我们的生命，我们将永远把客户、 服务放到第一位。",
+          "source": {
+            "pdfPage": 9,
+            "printedPage": 15,
+            "side": "right",
+            "bbox": [
+              672.2,
+              699.5,
+              895.4,
+              730.1
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "会议期间， 各中心就 23 年总结 24 年计划进行了工作汇报。",
+          "source": {
+            "pdfPage": 10,
+            "printedPage": 16,
+            "side": "left",
+            "bbox": [
+              85.3,
+              81.4,
+              319.3,
+              95.8
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "对于 2024 年的计划， 新亦源将聚焦核心竞争力的提升， 着重客户服务的提升， 扩大市场影响力。 此外， 公司还将注重人才培养和团队建设， 确保可持续发展战略的顺利实施。",
+          "source": {
+            "pdfPage": 10,
+            "printedPage": 16,
+            "side": "left",
+            "bbox": [
+              65.9,
+              502.6,
+              467.6,
+              533.5
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "为进一步落实明年各项战略目标， 各中心、 各区域负责人正式签署了 《目标责任状 》。 这一重要举措标志着公司对明年业绩承诺和责任担当的高度重视， 也展现了新亦源全面推进业务发展和组织效能提升的决心。",
+          "source": {
+            "pdfPage": 10,
+            "printedPage": 17,
+            "side": "right",
+            "bbox": [
+              661.0,
+              283.3,
+              890.0,
+              347.0
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "此次培训内容涵盖了管理执行力、 决策制定、 团队激励、 团队管理等多个方面， 旨在帮助管理者提高个人效能， 激发团队潜力， 构建高效执行力的组织文化。",
+          "source": {
+            "pdfPage": 10,
+            "printedPage": 17,
+            "side": "right",
+            "bbox": [
+              661.0,
+              664.9,
+              1142.3,
+              695.5
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "新亦源 2023 年度总结及 2024 年计划的圆满落幕， 为公司未来一年的发展商定了坚实基础。 我们将继续秉承“专业专注、 质敬客户 ”的理念， 不断提升服务品质， 与客户携手共创辉煌。",
+          "source": {
+            "pdfPage": 10,
+            "printedPage": 17,
+            "side": "right",
+            "bbox": [
+              665.7,
+              725.8,
+              1142.0,
+              756.7
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "植新绿·寓希望：2024 植树节活动",
+      "source": {
+        "pdfPage": 11,
+        "printedPage": 18,
+        "side": "left",
+        "bbox": [
+          65.9,
+          107.3,
+          510.1,
+          139.7
+        ]
+      },
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "植新绿 ' Be: 新亦源 2024 植树节活动",
+          "source": {
+            "pdfPage": 11,
+            "printedPage": 18,
+            "side": "left",
+            "bbox": [
+              65.9,
+              107.3,
+              510.1,
+              139.7
+            ]
+          }
+        },
+        {
+          "type": "quote",
+          "text": "@ 文 / 陈燕",
+          "source": {
+            "pdfPage": 11,
+            "printedPage": 18,
+            "side": "left",
+            "bbox": [
+              67.0,
+              146.2,
+              127.1,
+              157.3
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "坚守绿色发展初心， 推动生态文明建设，3 月 12 日我司总部高管层开展了 “ 植新绿， 寓希望 ”植树主题活动。",
+          "source": {
+            "pdfPage": 11,
+            "printedPage": 18,
+            "side": "left",
+            "bbox": [
+              85.3,
+              216.0,
+              532.1,
+              230.4
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "同心聚力种植树苗阳光明媚， 微风不燥， 一场意义非凡的植树",
+          "source": {
+            "pdfPage": 11,
+            "printedPage": 18,
+            "side": "left",
+            "bbox": [
+              105.1,
+              471.2,
+              306.0,
+              505.4
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "活动在此展开。活动现场， 大家齐心协力， 种下了一棵棵树苗。 每一棵小树苗都承载着我们的希望与梦想。",
+          "source": {
+            "pdfPage": 11,
+            "printedPage": 18,
+            "side": "left",
+            "bbox": [
+              104.4,
+              506.5,
+              306.0,
+              553.7
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "在这片肥沃的土地上， 我们种下了不仅是树苗， 更种下了对未来的承诺。 树苗的成长需要时间， 需要耐心， 正如我们公司的发展需要大家持续地努力和不懈地追求。 我们相信， 随着时间的流逝， 这些树苗将结出累累硕果， 我们也将收获丰硕的成绩。",
+          "source": {
+            "pdfPage": 11,
+            "printedPage": 19,
+            "side": "right",
+            "bbox": [
+              713.9,
+              497.2,
+              1090.1,
+              544.0
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "星光筑梦·游历古今：年度表彰之旅",
+      "source": {
+        "pdfPage": 12,
+        "printedPage": 20,
+        "side": "left",
+        "bbox": [
+          65.9,
+          260.6,
+          280.4,
+          324.4
+        ]
+      },
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "星光筑梦新亦源年度表彰之旅",
+          "source": {
+            "pdfPage": 12,
+            "printedPage": 20,
+            "side": "left",
+            "bbox": [
+              65.9,
+              260.6,
+              280.4,
+              324.4
+            ]
+          }
+        },
+        {
+          "type": "quote",
+          "text": "O 文 / 陈燕",
+          "source": {
+            "pdfPage": 12,
+            "printedPage": 20,
+            "side": "left",
+            "bbox": [
+              67.0,
+              326.2,
+              127.1,
+              343.1
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "为了表彰过去一年中表现卓越的同事们， 公司特别安排了一次旅游团建， 以嘉奖在工作中展现出色才华和敬业精神的杰出员工。 这次旅游不仅是对个人成就的肯定， 更是一次团队凝聚力和企业文化的升华之旅。",
+          "source": {
+            "pdfPage": 12,
+            "printedPage": 20,
+            "side": "left",
+            "bbox": [
+              65.5,
+              360.4,
+              546.8,
+              391.0
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "南海影视城",
+          "source": {
+            "pdfPage": 12,
+            "printedPage": 20,
+            "side": "left",
+            "bbox": [
+              65.9,
+              404.3,
+              122.4,
+              414.4
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "行程的第一站我们来到南海影视城， 这里不仅 ANON是电影电视剧的拍摄基地， 更是一处集历史文化、建筑艺术于一体的旅游景区。 我们穿梭于仿古的建筑群中， 体验古代宫廷的生活， 感受历史的厚重。",
+          "source": {
+            "pdfPage": 12,
+            "printedPage": 20,
+            "side": "left",
+            "bbox": [
+              65.5,
+              421.6,
+              454.3,
+              485.3
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "这里的每一砖一瓦、 一草一木都透露着浓厚的文化气息， 让人不禁陶醇其中。 漫步其中， 仿佛能听到历史的回响。",
+          "source": {
+            "pdfPage": 12,
+            "printedPage": 20,
+            "side": "left",
+            "bbox": [
+              65.5,
+              487.4,
+              276.5,
+              534.6
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "晚间， 我们在星光下秉烛夜谈， 畅聊人生理想， 分享彼此的故事与梦想。最好的生活是和一群志同道合的人， 一起奔跑在理想的路上， 回头有一路的故事， 低头有坚定的",
+          "source": {
+            "pdfPage": 12,
+            "printedPage": 20,
+            "side": "left",
+            "bbox": [
+              65.5,
+              676.1,
+              276.8,
+              738.4
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "广东干古情",
+          "source": {
+            "pdfPage": 12,
+            "printedPage": 21,
+            "side": "right",
+            "bbox": [
+              661.0,
+              318.2,
+              718.6,
+              334.8
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "行程的第二天， 我们来到今年春节刚开园的广东王古情景区， 观赏了一部珠三角的文化传奇， 一场直击心灵的RAS! 一眼万年， 身临其境， 演绎一部广东的 “ 活历史 ”。 这已经不仅仅是一场演出， 更是一场穿越时空的视",
+          "source": {
+            "pdfPage": 12,
+            "printedPage": 21,
+            "side": "right",
+            "bbox": [
+              660.7,
+              337.3,
+              901.9,
+              400.7
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "上一秒， 我们还漫步在这座悠悠古城， 抚摸着历史的痕迹， 感受到广东干年的文化脉搏。 这一刻， 却似乎误入南国秘境， 杀逅了一段神奇的百越传奇， 仿佛置身于一个古老的传说之中。",
+          "source": {
+            "pdfPage": 12,
+            "printedPage": 21,
+            "side": "right",
+            "bbox": [
+              660.7,
+              419.4,
+              901.9,
+              483.1
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "期望与寄语",
+          "source": {
+            "pdfPage": 12,
+            "printedPage": 21,
+            "side": "right",
+            "bbox": [
+              744.2,
+              505.8,
+              800.7,
+              522.0
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "公司的发展离不开每一位员工的辛勤付出和不懈努力。 公司希大家能在这次轻松愉快的氛围中尽情放松， 充电再出发， 以更加饱满的热情投入到未来的工作中， 也希望更多优秀的大家加入到我们当中。",
+          "source": {
+            "pdfPage": 12,
+            "printedPage": 21,
+            "side": "right",
+            "bbox": [
+              744.2,
+              524.5,
+              1142.0,
+              571.7
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "启明星课堂：第一季度培训回顾及第二季度课程安排",
+      "source": {
+        "pdfPage": 13,
+        "printedPage": 22,
+        "side": "left",
+        "bbox": [
+          65.9,
+          107.6,
+          487.1,
+          164.2
+        ]
+      },
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "启明星课堂 : 2024 年第一季度培训回顾及第二季度课程安排",
+          "source": {
+            "pdfPage": 13,
+            "printedPage": 22,
+            "side": "left",
+            "bbox": [
+              65.9,
+              107.6,
+              487.1,
+              164.2
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "截目 3 语 31 已",
+          "source": {
+            "pdfPage": 13,
+            "printedPage": 22,
+            "side": "left",
+            "bbox": [
+              487.1,
+              223.6,
+              548.3,
+              238.7
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "培训讲师 :",
+          "source": {
+            "pdfPage": 13,
+            "printedPage": 22,
+            "side": "left",
+            "bbox": [
+              75.2,
+              352.1,
+              116.3,
+              360.4
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "培训地点 : SAS",
+          "source": {
+            "pdfPage": 13,
+            "printedPage": 22,
+            "side": "left",
+            "bbox": [
+              75.6,
+              513.0,
+              150.1,
+              526.7
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "培训主题 : 【 启明星课堂-积极心态正能量",
+          "source": {
+            "pdfPage": 13,
+            "printedPage": 22,
+            "side": "left",
+            "bbox": [
+              75.2,
+              529.6,
+              196.6,
+              560.2
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "培训讲师 : 耿涛老师",
+          "source": {
+            "pdfPage": 13,
+            "printedPage": 22,
+            "side": "left",
+            "bbox": [
+              75.2,
+              562.7,
+              160.9,
+              576.7
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "《佛山仓套模不规范案例分享 》",
+          "source": {
+            "pdfPage": 13,
+            "printedPage": 23,
+            "side": "right",
+            "bbox": [
+              1009.1,
+              451.8,
+              1134.1,
+              460.4
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "《启明星课堂：第一季度培训回顾及第二季度课程安排》：PDF physical page 14，左侧，bbox [75.2, 204.1, 544.3, 218.5]。该处为跨栏、图文叠加、表格或断行造成的不可可靠 OCR 片段，未作为正文发布；请核对该原 PDF 区域。",
+          "source": {
+            "pdfPage": 14,
+            "printedPage": 24,
+            "side": "left",
+            "bbox": [
+              75.2,
+              204.1,
+              544.3,
+              218.5
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "《启明星课堂：第一季度培训回顾及第二季度课程安排》：PDF physical page 14，左侧，bbox [79.2, 351.7, 543.2, 364.3]。该处为跨栏、图文叠加、表格或断行造成的不可可靠 OCR 片段，未作为正文发布；请核对该原 PDF 区域。",
+          "source": {
+            "pdfPage": 14,
+            "printedPage": 24,
+            "side": "left",
+            "bbox": [
+              79.2,
+              351.7,
+              543.2,
+              364.3
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "4 月培训计划",
+          "source": {
+            "pdfPage": 14,
+            "printedPage": 24,
+            "side": "left",
+            "bbox": [
+              274.3,
+              390.6,
+              338.0,
+              406.8
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "东莞电商东莞电商森林装备 6S Vv 周兵",
+          "source": {
+            "pdfPage": 14,
+            "printedPage": 24,
+            "side": "left",
+            "bbox": [
+              82.4,
+              487.1,
+              515.2,
+              498.6
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "东莞电商东莞电商森林装备客退收货事项 Vv 蒋昌平",
+          "source": {
+            "pdfPage": 14,
+            "printedPage": 24,
+            "side": "left",
+            "bbox": [
+              82.4,
+              499.0,
+              517.3,
+              510.5
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "东莞电商东莞电商森林装备操作区调整依据培训 Vv E佛山佛山希音仓森林装备仓内安全防范 Vv佛山佛山希音仓森林装备岗前培训 Vv佛山佛山希音森林装备入门课 -针织服装的工艺基础 Vv佛山佛山希音森林装备泳衣质检指引 Vv佛山佛山希音仓森林装备内衣质检指引 Vv佛山佛山希音仓森林装备入门课 -面料基础知识 Vv",
+          "source": {
+            "pdfPage": 14,
+            "printedPage": 24,
+            "side": "left",
+            "bbox": [
+              82.4,
+              510.1,
+              501.8,
+              591.8
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "《启明星课堂：第一季度培训回顾及第二季度课程安排》：PDF physical page 14，左侧，bbox [51.8, 743.0, 446.0, 764.6]。该处为跨栏、图文叠加、表格或断行造成的不可可靠 OCR 片段，未作为正文发布；请核对该原 PDF 区域。",
+          "source": {
+            "pdfPage": 14,
+            "printedPage": 24,
+            "side": "left",
+            "bbox": [
+              51.8,
+              743.0,
+              446.0,
+              764.6
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "5 月培训计划",
+          "source": {
+            "pdfPage": 14,
+            "printedPage": 25,
+            "side": "right",
+            "bbox": [
+              870.2,
+              80.6,
+              933.5,
+              96.8
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "所在区域拟定讲师",
+          "source": {
+            "pdfPage": 14,
+            "printedPage": 25,
+            "side": "right",
+            "bbox": [
+              679.0,
+              101.9,
+              1112.5,
+              107.6
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "《启明星课堂：第一季度培训回顾及第二季度课程安排》：PDF physical page 13，左侧，bbox [65.9, 107.6, 487.1, 164.2]。课程表格的仓库、讲师与课程单元混排，拉丁/符号碎片已移除；表格请核 PDF 原版。",
+          "source": {
+            "pdfPage": 13,
+            "printedPage": 22,
+            "side": "left",
+            "bbox": [
+              65.9,
+              107.6,
+              487.1,
+              164.2
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "致敬：每一位努力奋斗、步履不停的你",
+      "source": {
+        "pdfPage": 15,
+        "printedPage": 26,
+        "side": "left",
+        "bbox": [
+          65.5,
+          452.2,
+          294.5,
+          484.9
+        ]
+      },
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "在今天这个特殊的日子里， 我们要向那些在仓库里默默付出、 守护每一件物品安全的守护者们致敬。",
+          "source": {
+            "pdfPage": 15,
+            "printedPage": 26,
+            "side": "left",
+            "bbox": [
+              65.5,
+              452.2,
+              294.5,
+              484.9
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "在新亦源这个大家庭中 , 有一群默默无闻的劳动者， 他们每天与货架、 商品为伴， 用汗水和努力确保每一个物品的能准时并安全送到客户手中。 他们是我们的同事， 也是我们的朋友， 更是我们的英雄。",
+          "source": {
+            "pdfPage": 15,
+            "printedPage": 26,
+            "side": "left",
+            "bbox": [
+              65.5,
+              485.3,
+              294.5,
+              550.8
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "仓库工作虽然看似平凡， 但却至关重要。 每一件物",
+          "source": {
+            "pdfPage": 15,
+            "printedPage": 26,
+            "side": "left",
+            "bbox": [
+              85.3,
+              551.2,
+              294.1,
+              567.4
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "品的入库、 出库， 每一次的盘点、 整理， 都需要他们的精心操作和管理。 他们不仅需要保证物品的数量准确，还要确保物品的质量安全。 这是一项繁重而细致的工，",
+          "source": {
+            "pdfPage": 15,
+            "printedPage": 26,
+            "side": "left",
+            "bbox": [
+              317.5,
+              452.5,
+              551.9,
+              501.5
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "作 ; 需要耐心、 细心和责任心 =",
+          "source": {
+            "pdfPage": 15,
+            "printedPage": 26,
+            "side": "left",
+            "bbox": [
+              317.5,
+              500.4,
+              447.5,
+              519.8
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "在这个动人的五一劳动节， 让我们一起向仓库的守护者们致敬 !",
+          "source": {
+            "pdfPage": 15,
+            "printedPage": 26,
+            "side": "left",
+            "bbox": [
+              317.5,
+              520.9,
+              546.8,
+              551.5
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "五年同行·感恩有您：赞颂坚守初心的力量",
+      "source": {
+        "pdfPage": 15,
+        "printedPage": 27,
+        "side": "right",
+        "bbox": [
+          661.4,
+          106.9,
+          1115.7,
+          137.9
+        ]
+      },
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "五年同行感恩有您 : 赞颂坚守初心的力量",
+          "source": {
+            "pdfPage": 15,
+            "printedPage": 27,
+            "side": "right",
+            "bbox": [
+              661.4,
+              106.9,
+              1115.7,
+              137.9
+            ]
+          }
+        },
+        {
+          "type": "quote",
+          "text": "O 文 / 陈燕",
+          "source": {
+            "pdfPage": 15,
+            "printedPage": 27,
+            "side": "right",
+            "bbox": [
+              662.1,
+              146.2,
+              722.2,
+              157.3
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "在公司成长的道路上， 有一群默默无闻的守护五周年贡献奖 ”字样， 则是对个人贡献的肯定。 这者， 他们见证了公司的风风雨雨， 也成为了我们前不仅是对过去成绩的祝贺， 更是对未来的祝愿。",
+          "source": {
+            "pdfPage": 15,
+            "printedPage": 27,
+            "side": "right",
+            "bbox": [
+              674.7,
+              325.1,
+              1127.9,
+              356.0
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "进的动力。 为了表彰他们过去五年的辛勤付出与努获得此份荣誉的伙伴们来自全国各地， 他们见力， 公司特别精心定制了银币作为对他们不懈努力证了公司的每一次成功， 也经历了公司的每一次挑的认可和感谢。 战。 他们的坚韧不拔， 使我们在困难面前不屈不",
+          "source": {
+            "pdfPage": 15,
+            "printedPage": 27,
+            "side": "right",
+            "bbox": [
+              674.7,
+              358.2,
+              1128.3,
+              405.7
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "这是一枚银币也是一枚徽章， 是光荣与责任的挠 ;他们的创新思维， 使我们在竞争中始终保持领象征， 正面雕刻着公司的标志， 寓意着员工与公司先。 他们是公司的宝贵财富， 是我们前进道路上的坚守初心的信念 ; 圆环边上刻有的 “新亦源供应链明灯。",
+          "source": {
+            "pdfPage": 15,
+            "printedPage": 27,
+            "side": "right",
+            "bbox": [
+              674.7,
+              407.9,
+              1127.9,
+              455.0
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "在此， 我们由衷地对这些老员工的付出表示感激， 并向他们致以最高的敬意。我们希望这次特别的表彰能够鼓舞所有员工， 激发大家继续为公司的繁荣而努力。",
+          "source": {
+            "pdfPage": 16,
+            "printedPage": 28,
+            "side": "left",
+            "bbox": [
+              100.1,
+              538.6,
+              274.0,
+              602.3
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "展望未来， 我们期待与各位新老员工携手并进， 共创更多辉煌。 让我们一路同行， 共创美好未来。",
+          "source": {
+            "pdfPage": 16,
+            "printedPage": 28,
+            "side": "left",
+            "bbox": [
+              100.1,
+              604.8,
+              274.0,
+              651.6
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "2024 春季管培生座谈会暨拜师仪式",
+      "source": {
+        "pdfPage": 16,
+        "printedPage": 29,
+        "side": "right",
+        "bbox": [
+          661.4,
+          96.5,
+          1058.1,
+          161.6
+        ]
+      },
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "师徒结对， 共筑未来一一新亦源 2024春季管培生座谈会暨拜师仪式圆满完",
+          "source": {
+            "pdfPage": 16,
+            "printedPage": 29,
+            "side": "right",
+            "bbox": [
+              661.4,
+              96.5,
+              1058.1,
+              161.6
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "近日， 我司东莞电商仓举行了新亦源 2024 春季管培生座谈会。 此次会议旨在为新入职的管培生提供一个相互了解、 交流学习的平台， 并为他们提供入职关怀和答疑宣讲的活动。座谈会",
+          "source": {
+            "pdfPage": 16,
+            "printedPage": 29,
+            "side": "right",
+            "bbox": [
+              660.7,
+              232.2,
+              890.0,
+              316.1
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "来的精英种子选手们宣讲了我司的企业文化并详细地介绍了我司的管培生培养计划和发展通道， 明确了管培生的选拔标准、 培养机制以及未来的职业发展路径。座谈会中还开展了答疑宣讲环节， 就管培生们关心的问题进行了详细解答， 帮助他们更好地了解公司文化、 业务和发展方向。 管培生们纷纷表示， 通过此次座",
+          "source": {
+            "pdfPage": 16,
+            "printedPage": 29,
+            "side": "right",
+            "bbox": [
+              913.0,
+              213.1,
+              1142.3,
+              309.6
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "新亦源总部人事行政中心的培训经理喜害锐作为本该会， 他们对公司的未来充消了信心和郑待",
+          "source": {
+            "pdfPage": 16,
+            "printedPage": 29,
+            "side": "right",
+            "bbox": [
+              680.5,
+              312.1,
+              1097.3,
+              334.4
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "届管培生的班主任组织开展了本场座谈会， 为数十名未",
+          "source": {
+            "pdfPage": 16,
+            "printedPage": 29,
+            "side": "right",
+            "bbox": [
+              660.7,
+              334.8,
+              889.6,
+              348.8
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "拜师仪式",
+          "source": {
+            "pdfPage": 16,
+            "printedPage": 29,
+            "side": "right",
+            "bbox": [
+              661.0,
+              497.2,
+              706.0,
+              513.7
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "为了让新入职的管培生更好地融入公司文化， 我们还特别安排了一带一的师带徒计划。 每位管培生都将有一位经验丰富的老员工作为师传， 帮助他们快速适应新的工作环境， 解答他们在工作中遇到的疑问。",
+          "source": {
+            "pdfPage": 16,
+            "printedPage": 29,
+            "side": "right",
+            "bbox": [
+              660.7,
+              515.9,
+              896.1,
+              579.6
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "在拜师环节中， 管培生们纷纷向自己的师传鞠躬行礼， 表达了对师传的敬意和感激之情。 师傅们也表示将不遗余力地传授自己的经验和技能， 帮助管培生们快速成长。",
+          "source": {
+            "pdfPage": 16,
+            "printedPage": 29,
+            "side": "right",
+            "bbox": [
+              660.7,
+              582.1,
+              896.1,
+              645.5
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "结语我司将始终坚持 “人才梯队建设 ”战略， 为管培生们提供广阔的发展空间和良好的职业发展机会。",
+          "source": {
+            "pdfPage": 16,
+            "printedPage": 29,
+            "side": "right",
+            "bbox": [
+              713.2,
+              665.3,
+              1089.4,
+              713.5
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "相信在公司领导的大力支持下， 管培生们一定能够在未来的工作中取得更加优异的成绩， 为公司的发展贡献自己的力量。",
+          "source": {
+            "pdfPage": 16,
+            "printedPage": 29,
+            "side": "right",
+            "bbox": [
+              713.6,
+              715.7,
+              1089.4,
+              746.6
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,250 @@
+{
+  "/images/supply-chain-whitepapers/12/quality-defect-table.png": {
+    "src": "/images/supply-chain-whitepapers/12/reading/quality-defect-table.webp",
+    "width": 1860,
+    "height": 588,
+    "displayWidth": 698,
+    "quality": "enhanced",
+    "kind": "diagram"
+  },
+  "/images/supply-chain-whitepapers/14/awards-6s.png": {
+    "src": "/images/supply-chain-whitepapers/14/reading/awards-6s.webp",
+    "width": 1960,
+    "height": 720,
+    "displayWidth": 768,
+    "quality": "enhanced",
+    "kind": "diagram"
+  },
+  "/images/supply-chain-whitepapers/14/awards-efficiency.png": {
+    "src": "/images/supply-chain-whitepapers/14/reading/awards-efficiency.webp",
+    "width": 1768,
+    "height": 680,
+    "displayWidth": 768,
+    "quality": "enhanced",
+    "kind": "diagram"
+  },
+  "/images/supply-chain-whitepapers/14/awards-employee.png": {
+    "src": "/images/supply-chain-whitepapers/14/reading/awards-employee.webp",
+    "width": 1768,
+    "height": 640,
+    "displayWidth": 768,
+    "quality": "enhanced",
+    "kind": "diagram"
+  },
+  "/images/supply-chain-whitepapers/14/awards-management.png": {
+    "src": "/images/supply-chain-whitepapers/14/reading/awards-management.webp",
+    "width": 760,
+    "height": 1240,
+    "displayWidth": 380,
+    "quality": "enhanced",
+    "kind": "diagram"
+  },
+  "/images/supply-chain-whitepapers/14/awards-quality.png": {
+    "src": "/images/supply-chain-whitepapers/14/reading/awards-quality.webp",
+    "width": 1768,
+    "height": 616,
+    "displayWidth": 768,
+    "quality": "enhanced",
+    "kind": "diagram"
+  },
+  "/images/supply-chain-whitepapers/14/awards-service.png": {
+    "src": "/images/supply-chain-whitepapers/14/reading/awards-service.webp",
+    "width": 1140,
+    "height": 620,
+    "displayWidth": 570,
+    "quality": "enhanced",
+    "kind": "diagram"
+  },
+  "/images/supply-chain-whitepapers/14/awards-stability.png": {
+    "src": "/images/supply-chain-whitepapers/14/reading/awards-stability.webp",
+    "width": 1140,
+    "height": 580,
+    "displayWidth": 570,
+    "quality": "enhanced",
+    "kind": "diagram"
+  },
+  "/images/supply-chain-whitepapers/14/cross-border-cases.png": {
+    "src": "/images/supply-chain-whitepapers/14/reading/cross-border-cases.webp",
+    "width": 1928,
+    "height": 840,
+    "displayWidth": 768,
+    "quality": "enhanced",
+    "kind": "diagram"
+  },
+  "/images/supply-chain-whitepapers/14/cross-border-challenges.png": {
+    "src": "/images/supply-chain-whitepapers/14/reading/cross-border-challenges.webp",
+    "width": 1928,
+    "height": 692,
+    "displayWidth": 768,
+    "quality": "enhanced",
+    "kind": "diagram"
+  },
+  "/images/supply-chain-whitepapers/14/cross-border-fulfillment.png": {
+    "src": "/images/supply-chain-whitepapers/14/reading/cross-border-fulfillment.webp",
+    "width": 1928,
+    "height": 576,
+    "displayWidth": 768,
+    "quality": "enhanced",
+    "kind": "diagram"
+  },
+  "/images/supply-chain-whitepapers/14/cross-border-network.png": {
+    "src": "/images/supply-chain-whitepapers/14/reading/cross-border-network.webp",
+    "width": 1928,
+    "height": 176,
+    "displayWidth": 768,
+    "quality": "enhanced",
+    "kind": "diagram"
+  },
+  "/images/supply-chain-whitepapers/14/cross-border-order-system.png": {
+    "src": "/images/supply-chain-whitepapers/14/reading/cross-border-order-system.webp",
+    "width": 1928,
+    "height": 816,
+    "displayWidth": 768,
+    "quality": "enhanced",
+    "kind": "diagram"
+  },
+  "/images/supply-chain-whitepapers/14/cross-border-outlook.png": {
+    "src": "/images/supply-chain-whitepapers/14/reading/cross-border-outlook.webp",
+    "width": 1928,
+    "height": 540,
+    "displayWidth": 768,
+    "quality": "enhanced",
+    "kind": "diagram"
+  },
+  "/images/supply-chain-whitepapers/14/cross-border-reasons.png": {
+    "src": "/images/supply-chain-whitepapers/14/reading/cross-border-reasons.webp",
+    "width": 1928,
+    "height": 760,
+    "displayWidth": 768,
+    "quality": "enhanced",
+    "kind": "diagram"
+  },
+  "/images/supply-chain-whitepapers/14/cross-border-reverse-logistics.png": {
+    "src": "/images/supply-chain-whitepapers/14/reading/cross-border-reverse-logistics.webp",
+    "width": 1928,
+    "height": 812,
+    "displayWidth": 768,
+    "quality": "enhanced",
+    "kind": "diagram"
+  },
+  "/images/supply-chain-whitepapers/14/product-growth-core-insights.png": {
+    "src": "/images/supply-chain-whitepapers/14/reading/product-growth-core-insights.webp",
+    "width": 1928,
+    "height": 1088,
+    "displayWidth": 768,
+    "quality": "enhanced",
+    "kind": "diagram"
+  },
+  "/images/supply-chain-whitepapers/14/product-growth-decision-map.png": {
+    "src": "/images/supply-chain-whitepapers/14/reading/product-growth-decision-map.webp",
+    "width": 1922,
+    "height": 1081,
+    "displayWidth": 768,
+    "quality": "enhanced",
+    "kind": "diagram"
+  },
+  "/images/supply-chain-whitepapers/14/product-growth-feedback.png": {
+    "src": "/images/supply-chain-whitepapers/14/reading/product-growth-feedback.webp",
+    "width": 1928,
+    "height": 1080,
+    "displayWidth": 768,
+    "quality": "enhanced",
+    "kind": "diagram"
+  },
+  "/images/supply-chain-whitepapers/14/product-growth-growth-loop.png": {
+    "src": "/images/supply-chain-whitepapers/14/reading/product-growth-growth-loop.webp",
+    "width": 1928,
+    "height": 1084,
+    "displayWidth": 768,
+    "quality": "enhanced",
+    "kind": "diagram"
+  },
+  "/images/supply-chain-whitepapers/14/product-growth-trends.png": {
+    "src": "/images/supply-chain-whitepapers/14/reading/product-growth-trends.webp",
+    "width": 1922,
+    "height": 1080,
+    "displayWidth": 768,
+    "quality": "enhanced",
+    "kind": "diagram"
+  },
+  "/images/supply-chain-whitepapers/14/product-growth-value-insights.png": {
+    "src": "/images/supply-chain-whitepapers/14/reading/product-growth-value-insights.webp",
+    "width": 1928,
+    "height": 1060,
+    "displayWidth": 768,
+    "quality": "enhanced",
+    "kind": "diagram"
+  },
+  "/images/supply-chain-whitepapers/14/rising-star-roster.png": {
+    "src": "/images/supply-chain-whitepapers/14/reading/rising-star-roster.webp",
+    "width": 1972,
+    "height": 1020,
+    "displayWidth": 768,
+    "quality": "enhanced",
+    "kind": "diagram"
+  },
+  "/images/supply-chain-whitepapers/14/shanghai-cloud-warehouse-model.png": {
+    "src": "/images/supply-chain-whitepapers/14/reading/shanghai-cloud-warehouse-model.webp",
+    "width": 1928,
+    "height": 920,
+    "displayWidth": 768,
+    "quality": "enhanced",
+    "kind": "diagram"
+  },
+  "/images/supply-chain-whitepapers/14/shanghai-customer-witness.png": {
+    "src": "/images/supply-chain-whitepapers/14/reading/shanghai-customer-witness.webp",
+    "width": 1928,
+    "height": 892,
+    "displayWidth": 768,
+    "quality": "enhanced",
+    "kind": "diagram"
+  },
+  "/images/supply-chain-whitepapers/14/shanghai-service-scenes.png": {
+    "src": "/images/supply-chain-whitepapers/14/reading/shanghai-service-scenes.webp",
+    "width": 1928,
+    "height": 524,
+    "displayWidth": 768,
+    "quality": "enhanced",
+    "kind": "diagram"
+  },
+  "/images/supply-chain-whitepapers/14/shanghai-specialist-capability.png": {
+    "src": "/images/supply-chain-whitepapers/14/reading/shanghai-specialist-capability.webp",
+    "width": 952,
+    "height": 644,
+    "displayWidth": 476,
+    "quality": "enhanced",
+    "kind": "diagram"
+  },
+  "/images/supply-chain-whitepapers/14/shanghai-traditional-challenges.png": {
+    "src": "/images/supply-chain-whitepapers/14/reading/shanghai-traditional-challenges.webp",
+    "width": 1928,
+    "height": 608,
+    "displayWidth": 768,
+    "quality": "enhanced",
+    "kind": "diagram"
+  },
+  "/images/supply-chain-whitepapers/14/textile-export-bar-chart.png": {
+    "src": "/images/supply-chain-whitepapers/14/reading/textile-export-bar-chart.webp",
+    "width": 318,
+    "height": 178,
+    "displayWidth": 318,
+    "quality": "source-limited",
+    "kind": "diagram"
+  },
+  "/images/supply-chain-whitepapers/14/textile-export-share-chart.png": {
+    "src": "/images/supply-chain-whitepapers/14/reading/textile-export-share-chart.webp",
+    "width": 316,
+    "height": 185,
+    "displayWidth": 316,
+    "quality": "source-limited",
+    "kind": "diagram"
+  },
+  "/images/supply-chain-whitepapers/14/textile-export-trend-chart.png": {
+    "src": "/images/supply-chain-whitepapers/14/reading/textile-export-trend-chart.webp",
+    "width": 315,
+    "height": 241,
+    "displayWidth": 315,
+    "quality": "source-limited",
+    "kind": "diagram"
+  }
+}

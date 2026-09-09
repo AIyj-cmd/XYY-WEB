@@ -1,0 +1,726 @@
+{
+  "issue": "2",
+  "originalTitle": "《新亦源森林双月刊》第2期",
+  "title": "五周年团队建设与仓储运营记录",
+  "description": "本期收录五周年特刊、仓储运营应对、员工学习、内部推荐与团队关怀等内容，依据《新亦源森林双月刊》第2期整理。",
+  "sourcePdf": "/senlinqikan/pdf/2.pdf",
+  "sourceSha256": "bd38fe91e2b5e17a0fd8e7989aeeacb60de7d35ab59442e1b4c046fe4cf48dee",
+  "sourcePublishedLabel": "2022年第2期（封面标注）",
+  "readingNotice": "本阅读版依据《新亦源森林双月刊》第2期的图像原刊与已缓存 OCR 整理。原文中的时间、人物、活动和数据保留其历史语境，不构成新亦源当前服务承诺；低可信图文请回到 PDF 原版核对。",
+  "sections": [
+    {
+      "title": "新亦源五周年特刊",
+      "source": {
+        "pdfPage": 2,
+        "printedPage": null,
+        "side": "full"
+      },
+      "blocks": [
+        {
+          "type": "subheading",
+          "text": "亲爱的物流，亲爱的新亦源",
+          "source": {
+            "pdfPage": 2,
+            "printedPage": null,
+            "side": "full"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "感谢支持信任新亦源的客户因为你们的溪流河水",
+          "source": {
+            "pdfPage": 2,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              525,
+              1093,
+              678,
+              1145
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "我们收获着责任与希望",
+          "source": {
+            "pdfPage": 2,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              264,
+              1257,
+              391,
+              1281
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "助力我们成为商图物流的超级高铁",
+          "source": {
+            "pdfPage": 2,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              525,
+              1271,
+              718,
+              1296
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "新亦源践行着物流变革的实践",
+          "source": {
+            "pdfPage": 2,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              244,
+              1462,
+              411,
+              1474
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "新亦源就是辽贱的草原",
+          "source": {
+            "pdfPage": 2,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              525,
+              1495,
+              653,
+              1523
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "我们爱新亦源为能助数百人就业挺立行业感到使命和担当",
+          "source": {
+            "pdfPage": 2,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              251,
+              1634,
+              405,
+              1709
+            ]
+          }
+        },
+        {
+          "type": "figure",
+          "src": "/images/supply-chain-whitepapers/2/fifth-anniversary-group.png",
+          "alt": "五周年员工合影（原刊物理第2页局部）",
+          "caption": "五周年员工合影（原刊物理第2页局部）",
+          "width": 605,
+          "height": 330,
+          "source": {
+            "pdfPage": 2,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              825,
+              970,
+              1430,
+              1300
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "原刊物理第2页“新亦源五周年特刊”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
+          "source": {
+            "pdfPage": 2,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              210,
+              1030,
+              780,
+              1835
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "服务与责任事故管理",
+      "source": {
+        "pdfPage": 3,
+        "printedPage": null,
+        "side": "full"
+      },
+      "blocks": [
+        {
+          "type": "subheading",
+          "text": "高喊“客户至上”的同时，服务也要跟上",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": null,
+            "side": "full"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "4月18日起内部24小时异常通报",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              210,
+              150,
+              780,
+              540
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "关于责任事故24小时内通报的通知\n\n为认真切实强化日常工作管理，坚决遏制事故多发势头，现要求，对因工作不力造成事故发生的相关单位和人员要加大问责力度，并在24小时内落实责任人及处罚，同时进行内部通报批评。\n\n各组织要举一反三，强化责任，紧盯重点项目，加强内部管理隐患排查整治力度，以扎实过硬的工作保障企业生产经营。",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              210,
+              150,
+              780,
+              540
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "上海仓运营应对",
+      "source": {
+        "pdfPage": 3,
+        "printedPage": null,
+        "side": "full"
+      },
+      "blocks": [
+        {
+          "type": "subheading",
+          "text": "上海疫情突袭，仓库发不出货怎么办？",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": null,
+            "side": "full"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "上海疫情突装， 仓库发不出货",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              1216,
+              213,
+              1393,
+              241
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "原刊物理第3页“上海仓运营应对”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              860,
+              150,
+              1450,
+              760
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "新念上海，亦与您同源",
+      "source": {
+        "pdfPage": 3,
+        "printedPage": null,
+        "side": "full"
+      },
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "亲爱的上海地区的伙伴们：\n\n这段非常时期大家辛苦了。3月以来，上海正面临着常态化疫情防控以来最严峻的考验，给大家的生活及工作带来了极大挑战。疫情消息时刻牵动着新亦源全体家人们的心，我们一直在关心、关注着大家。",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              200,
+              1220,
+              800,
+              1580
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "上海此时已被按下了暂停键，褪去了往日的繁华。我们的仓库还无法正常发货，客户与我们同样面临困难，亦是艰巨无比。但越是艰难，越要保持定力，越要有攻坚克难的勇气。我们依旧坚信没有一个冬天不可逾越，没有一个春天不会来临。",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              200,
+              1220,
+              800,
+              1580
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "此时此刻，请一定坚信，新亦源全体家人们与你们同在，始终是你们最坚强的后盾。因各区防控疫情程度不同，物流时效及投放时间不定，在此公司决定向新亦源上海地区的伙伴们每人发放300元生活物资采购金。",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              200,
+              1220,
+              800,
+              1580
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "人心齐，泰山移。希望你们坚定信心，继续落实各项防疫措施，加强自我防护，确保人身健康和家庭安全。让我们携手抗疫，同舟共济，相信上海一定能够打赢这场没有硝烟的疫情防控阻击战。",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              200,
+              1220,
+              800,
+              1580
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "启明星课堂学习平台",
+      "source": {
+        "pdfPage": 3,
+        "printedPage": null,
+        "side": "full"
+      },
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "新亦源线上启明星课堂学习平台上线",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              1096,
+              1234,
+              1440,
+              1269
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "原刊物理第3页“启明星课堂学习平台”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              870,
+              1180,
+              1450,
+              1600
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "我爱学习系列课程",
+      "source": {
+        "pdfPage": 4,
+        "printedPage": null,
+        "side": "full"
+      },
+      "blocks": [
+        {
+          "type": "subheading",
+          "text": "4—5月学习与考核",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": null,
+            "side": "full"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "2022年3月以来，针对现场管理人员组织开展“我爱学习系列课程”，4-5月主推课程内容为《班组长晨会管理视频学习》《仓库8S管理》两门课程。4月28日，总部人事行政中心主导了《班组长晨会管理视频学习》线上考核，并在考核结束后颁发“学习标兵奖”，本期的“学习标兵”花落谁家？",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              200,
+              160,
+              800,
+              900
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "不要小瞧心态的改变，那会让你重获新生。\n\n跳出原有的格局，用积极的心态，去学习新的思维方式，许多困难都能迎刃而解。\n\n——摘录《人民日报》",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              200,
+              160,
+              800,
+              900
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "员工内部推荐奖励公告",
+      "source": {
+        "pdfPage": 5,
+        "printedPage": null,
+        "side": "full"
+      },
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "2022年4-5月新入职人数：广州2人、肇庆39人、东莞64人、上海0人，合计105人。",
+          "source": {
+            "pdfPage": 5,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              200,
+              150,
+              800,
+              820
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "新的企业规模将赋予新亦源更多的责任，感谢新亦源家人们的陪伴，将与家人们一起见证企业的发展壮大。\n\n感恩有你，感恩一路相伴。",
+          "source": {
+            "pdfPage": 5,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              200,
+              150,
+              800,
+              820
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "五周年纪念",
+      "source": {
+        "pdfPage": 5,
+        "printedPage": null,
+        "side": "full"
+      },
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "2022年5月6日是新亦源五周年的纪念日。回顾过去5年，风雨同舟，相濡以沫，5年的征程，我们突破了一次次艰难险阻，我们经历了一次次生存磨难，过去我们一无所有，因为相信梦想，我们坚定地前进，我们奋力拼搏，在物流江湖中，我们百战疆场，同心筑梦。过去五年，我们敢于和任何对手亮剑，敢于挑战任何不可能，创造了无数的服务成果。",
+          "source": {
+            "pdfPage": 5,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              200,
+              1420,
+              800,
+              1610
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "商图物流深耕五载，鞋服仓配巨匠百年。",
+          "source": {
+            "pdfPage": 5,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              200,
+              1420,
+              800,
+              1610
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "人效通系统正式启用",
+      "source": {
+        "pdfPage": 6,
+        "printedPage": null,
+        "side": "full"
+      },
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "信息中心在 2022 年 4-5 月已在东人美、 秘庆上线了人效通系统 1.0 版本。 系统的上线意味着新亦源内部管理效率加速提升， 内都经营数据可更直观的呈现出来， 为企业降本增效提供了可实施化路径， 万众泥目的 2.0 版本将在什么时候上线呢 ? 让我们一起期待吧。",
+          "source": {
+            "pdfPage": 6,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              244,
+              305,
+              770,
+              380
+            ]
+          }
+        },
+        {
+          "type": "figure",
+          "src": "/images/supply-chain-whitepapers/2/care-fund-visit.png",
+          "alt": "员工关怀活动照片（原刊物理第6页局部）",
+          "caption": "员工关怀活动照片（原刊物理第6页局部）",
+          "width": 720,
+          "height": 500,
+          "source": {
+            "pdfPage": 6,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              180,
+              1050,
+              900,
+              1550
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "原刊物理第6页“人效通系统正式启用”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
+          "source": {
+            "pdfPage": 6,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              200,
+              150,
+              800,
+              450
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "员工关怀与爱心基金",
+      "source": {
+        "pdfPage": 6,
+        "printedPage": null,
+        "side": "full"
+      },
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "刘林祥， 男，2019 年 7 月入职新亦源秘庆仓， 并担任后整仓后整发货组长一职。工作期间他爱岗敬业， 认真对待每一件事情， 出色地完成每一项工作任务， 深受员工2022 年 5 月， 刘林祥母亲不幸确诊为癌症， 住院治疗及后期长期化疗对于一个普通家庭来说是个巨大的负担和难题。人间有情大爱无圣， 守望相互共渡难关。 当公司得知此事并了解到刘林祥的情况后， 为了帮助他滚过难关， 立即在公司内部启动了募捐活动， 总经理王总得知此事后， 承诺公司将按募捐总额 1:1 比例额外申请爱心基金， 并委托总部人事行政中心及秘庆区域总监等人将爱心基金送到刘林祥及家人手中。",
+          "source": {
+            "pdfPage": 6,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              221,
+              1581,
+              793,
+              1816
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "原刊物理第6页“员工关怀与爱心基金”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
+          "source": {
+            "pdfPage": 6,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              200,
+              1560,
+              800,
+              1820
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "员工健康与端午关怀",
+      "source": {
+        "pdfPage": 7,
+        "printedPage": null,
+        "side": "full"
+      },
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "最新很火的“毽子操”组合大家都听说了嘛？不怕死的我们又来了！朋友圈快要被刘畊宏刷爆屏了。快看，这一次我们要把他搬到公司来。此后，每周一、三、五，让我们跳起来吧，身上肥油蹭蹭掉，人鱼线马甲线我想要！！",
+          "source": {
+            "pdfPage": 7,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              860,
+              130,
+              1450,
+              1660
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "端午将至，新亦源给全体家人们定制了一份礼品。祝愿新亦源家人们端午安康。",
+          "source": {
+            "pdfPage": 7,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              860,
+              130,
+              1450,
+              1660
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "员工周年纪念与优秀员工",
+      "source": {
+        "pdfPage": 8,
+        "printedPage": null,
+        "side": "full"
+      },
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "自2022年以来，每月都有优秀的员工涌现出来。什么是优秀员工？在职场中，有的公司看重创新能力，有的公司看重专业能力，有的公司看重态度能力，无论从哪个方面定义优秀，都没有对与错之分，只是相对差异化而已。但是，所谓的优秀员工，至少都需要具备一些基本的素质。这些基本素质分别是：担当、责任、思考、行动。",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              200,
+              1180,
+              1450,
+              1760
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "真正的优秀不是一句话，而是勇于担当、敢于担责、勤于思考、善于行动的践行。\n\n暂时性平庸不可怕，可怕的是他看不到自己的平庸；可怕的是他有一点小成绩还在沾沾自喜；可怕的是他还在半山腰的时候，就开始说“一览众山小”。\n\n优秀是一个长期探索的过程，结果没有最好，只有更好，每日精进才有可能从平庸走向优秀。",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              200,
+              1180,
+              1450,
+              1760
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "努力的人闪闪发光。你的付出终究会得到应有的回报。旗开得胜，再接再厉，再创佳绩！\n\n世上没有无缘无故的成功，每向前迈一步都是通过科学的方法和强有力的行动，让梦想走进现实。",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              200,
+              1180,
+              1450,
+              1760
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "新亦源企业宣传片2022首发",
+      "source": {
+        "pdfPage": 9,
+        "printedPage": null,
+        "side": "full"
+      },
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "这是由新亦源全体员工笑脸组成的图片， 献给新亦源五周年司庆",
+          "source": {
+            "pdfPage": 9,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              209,
+              694,
+              569,
+              718
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "原刊物理第9页“新亦源企业宣传片2022首发”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
+          "source": {
+            "pdfPage": 9,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              620,
+              800,
+              920
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

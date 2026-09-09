@@ -1,0 +1,39 @@
+---
+import WhitepaperArticle from '@/components/publications/WhitepaperArticle.astro'
+import { getWhitepaper } from '@/data/whitepapers'
+import { BRAND } from '@/lib/brand'
+import Layout from '@/layouts/Layout.astro'
+
+const article = getWhitepaper(Astro.params.issue)
+if (!article) return new Response(null, { status: 404 })
+
+const articlePath = `/supply-chain-whitepapers/${article.issue}/`
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: '首页', item: BRAND.url },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: '供应链白皮书',
+      item: `${BRAND.url}/supply-chain-whitepapers/`,
+    },
+    {
+      '@type': 'ListItem',
+      position: 3,
+      name: article.originalTitle,
+      item: `${BRAND.url}${articlePath}`,
+    },
+  ],
+}
+---
+
+<Layout
+  title={`${article.title}｜供应链白皮书｜新亦源`}
+  description={article.description}
+  canonical={`${BRAND.url}${articlePath}`}
+  jsonLd={breadcrumbSchema}
+>
+  <WhitepaperArticle {article} />
+</Layout>

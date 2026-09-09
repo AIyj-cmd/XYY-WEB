@@ -1,0 +1,100 @@
+---
+import Layout from '@/layouts/Layout.astro'
+import PageFAQ from '@/components/PageFAQ.astro'
+import PublicationsHero from '@/components/publications/PublicationsHero.astro'
+import PublicationsDirectory from '@/components/publications/PublicationsDirectory.astro'
+import ConversionCTA from '@/components/conversion/ConversionCTA.astro'
+import { PUBLICATION_FAQS, PUBLICATION_ISSUES, PUBLICATION_STATS } from '@/data/publications'
+import { getWhitepaperDirectory } from '@/data/whitepapers'
+import { BRAND } from '@/lib/brand'
+import { getFaqs, getPublications } from '@/lib/directus'
+import { createFaqSchema } from '@/lib/seo'
+
+if (Astro.url.pathname === '/supply-chain-whitepapers') {
+  return Astro.redirect(`/supply-chain-whitepapers/${Astro.url.search}`, 301)
+}
+
+const faqs = await getFaqs('senlinqikan', PUBLICATION_FAQS)
+const cmsIssues = await getPublications(PUBLICATION_ISSUES)
+const { whitepapers, pdfOnlyIssues } = getWhitepaperDirectory(cmsIssues)
+const latest = whitepapers[0]
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: '首页', item: BRAND.url },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: '供应链白皮书',
+      item: `${BRAND.url}/supply-chain-whitepapers/`,
+    },
+  ],
+}
+
+const collectionSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: '新亦源供应链白皮书资料目录',
+  description:
+    '新亦源供应链白皮书资料目录，目前收录《森林期刊》各期公开资料，内容涵盖云仓运营、退货质检、直播仓配与数字化实践。',
+  numberOfItems: whitepapers.length,
+  itemListElement: whitepapers.map((issue, index) => ({
+    '@type': 'ListItem',
+    position: index + 1,
+    name: issue.title,
+    url: `${BRAND.url}/supply-chain-whitepapers/${issue.issue}/`,
+  })),
+}
+const faqSchema = createFaqSchema(faqs)
+---
+
+<Layout
+  title="供应链白皮书｜鞋服云仓、退货质检与仓配实践 - 新亦源"
+  description="新亦源供应链白皮书汇集《森林期刊》中的鞋服云仓、退货质检、直播仓配与数字化实践，提供 HTML 阅读与 PDF 下载入口和应用问答，帮助品牌、电商及供应链团队梳理仓配选型、流程协同与运营改进问题。"
+  canonical={`${BRAND.url}/supply-chain-whitepapers/`}
+  jsonLd={[breadcrumbSchema, collectionSchema, faqSchema]}
+>
+  <PublicationsHero
+    latest={latest && {
+      cover: latest.cover,
+      pdf: latest.sourcePdf,
+      readingHref: `/supply-chain-whitepapers/${latest.issue}/`,
+    }}
+  />
+
+  <section class="py-12 bg-white border-b border-gray-100" aria-label="森林期刊出版概况">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-8 text-center">
+        {
+          PUBLICATION_STATS.map(({ num, label }) => (
+            <div>
+              <>
+                <div class="text-3xl font-black text-navy-800 mb-1">{num}</div>
+                <div class="text-xs text-gray-400 font-medium">{label}</div>
+              </>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <PublicationsDirectory {whitepapers} {pdfOnlyIssues} />
+  <PageFAQ heading="供应链白皮书常见问题" items={faqs} />
+
+  <ConversionCTA
+    headingId="publications-conversion-cta-heading"
+    eyebrow="START A CONVERSATION"
+    headingLines={['想合作 · 想投稿', '想收到期刊？']}
+    description="森林期刊面向合作品牌与行业读者分享仓配实践。如需纸质版、了解合作方式或提交选题，欢迎联系我们。"
+    actionLabel="立即联系"
+    preparationTitle="沟通前可准备这 3 类信息"
+    preparationItems={[
+      { label: '联系目的', detail: '合作 · 投稿 · 纸质期刊申请' },
+      { label: '品牌与身份', detail: '所属品牌 · 所在行业 · 联系方式' },
+      { label: '关注内容', detail: '感兴趣的专题 · 希望探讨的方向' },
+    ]}
+  />
+</Layout>

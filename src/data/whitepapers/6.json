@@ -1,0 +1,3378 @@
+{
+  "issue": "6",
+  "originalTitle": "《森林期刊》第6期",
+  "title": "AI虚拟试穿、服装品牌增长与云仓运营管理",
+  "description": "收录管理者的总指挥意识、谷歌虚拟试穿、纺织服装行业数据、视频号运营，以及新亦源 QC、信息化和团队活动报道。",
+  "sourcePdf": "/senlinqikan/pdf/6.pdf",
+  "sourceSha256": "bdf6805aff119935f5e2edc02dd3a06b08184829f1975ac189495cdd55e731f8",
+  "sourcePublishedLabel": "2023 年夏刊（总第 06 期）",
+  "readingNotice": "本阅读版依据原刊 OCR 与版面整理。文中的年份、数字、案例和表述均保留历史语境，不构成当前服务承诺；请以 PDF 原版核验图表、图片文字和待核查区域。",
+  "sections": [
+    {
+      "title": "每个企业管理者都应具备总指挥意识",
+      "source": {
+        "pdfPage": 3,
+        "printedPage": 2,
+        "side": "left",
+        "bbox": [
+          119.5,
+          134.3,
+          310.0,
+          196.6
+        ]
+      },
+      "blocks": [
+        {
+          "type": "figure",
+          "src": "/images/supply-chain-whitepapers/6/source-context-01.png",
+          "alt": "“总指挥意识”文章页的插画",
+          "caption": "原刊印刷第 2 页文章页眉插画",
+          "width": 435,
+          "height": 300,
+          "source": {
+            "pdfPage": 3,
+            "printedPage": 2,
+            "side": "left",
+            "bbox": [
+              310,
+              70,
+              600,
+              270
+            ]
+          }
+        },
+        {
+          "type": "quote",
+          "text": "Q@ 文 / 涂建国",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": 2,
+            "side": "left",
+            "bbox": [
+              118.8,
+              225.0,
+              191.2,
+              242.6
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "总指挥意识作为企业文化中的一个重要指标， 代表的不仅是企业的领导力， 更是缔造和传承企业文化的核心。 在一家成熟的企业里， 每个管理者都应具备总指挥意识， 那么总指挥意识是什么 ?",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": 2,
+            "side": "left",
+            "bbox": [
+              106.2,
+              312.5,
+              506.2,
+              362.9
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "总指挥需要具备畏惧的心态， 这种心态并不是害怕， 而是对企业的敬畏之心。 他需要明白企业的重要性， 以及自己在企业中的责任和使命。 这种心态可以让他更加谨慎地做出决策， 避免因为个人情绪或偏见而做出错误的决策。",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": 2,
+            "side": "left",
+            "bbox": [
+              106.2,
+              362.2,
+              506.2,
+              412.6
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "总指挥需要具备果断的决策能力。 在企业中， 时间就是金钱， 每一秒钟的耽搁都可能导致企业的损失。 因此， 总指挥需要在面对问题时， 能够快速做出决策， 不犹豫不拖延， 以便及时解决问题。",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": 2,
+            "side": "left",
+            "bbox": [
+              106.2,
+              411.5,
+              507.2,
+              462.2
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "总指挥需要是梯队建设者。 企业的发展需要有一支强大的团队来支撑， 而这个团队的建设需要总指挥的带领和推动。 他需要物色、 培养、 锻炼人才， 让每个人都能够发挥自己的潜力， 为企业的发展贡献力量。",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": 2,
+            "side": "left",
+            "bbox": [
+              105.8,
+              460.8,
+              506.2,
+              511.6
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "总指挥需要是规则建设者。 企业需要一套完整的规则体系来保证企业的正常运转， 而这个规则体系的建立需要总指挥的推动和监督。 他需要用一段时间， 流程， 标准， 哪怕汇报， 审批规则建立， 让企业的各项工作都能够按照规则进行， 避免出现混乱和错误。",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": 2,
+            "side": "left",
+            "bbox": [
+              106.2,
+              510.5,
+              506.2,
+              560.9
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "总指挥需要是陪伴者。 在企业的发展过程中， 总会遇到各种各样的问题和困难， 而这时候总指挥需要深入现场， 及时发现漏洞， 并陪伴着团队一起解决问题。 他需要带领团队一起分享经验和教训， 让大家共同成长。",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": 2,
+            "side": "left",
+            "bbox": [
+              105.8,
+              559.8,
+              506.2,
+              610.6
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "总指挥意识是企业文化中的重要角色， 只要管理者具备总指挥意识， 企业才能够在激烈的市场竞争中立于不败之地， 实现可持续发展。",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": 2,
+            "side": "left",
+            "bbox": [
+              106.2,
+              609.1,
+              506.2,
+              643.0
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "《每个企业管理者都应具备总指挥意识》：PDF physical page 3，左侧，bbox [119.5, 134.3, 310.0, 196.6]。本期由无可靠文字层的原稿 OCR 整理；图表、照片内文字、名单及跨栏或低置信区域须以 PDF 原版复核。",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": 2,
+            "side": "left",
+            "bbox": [
+              119.5,
+              134.3,
+              310.0,
+              196.6
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "谷歌在线购物引入生成式 AI，虚拟试穿成最新潮流",
+      "source": {
+        "pdfPage": 3,
+        "printedPage": 3,
+        "side": "right",
+        "bbox": [
+          661.4,
+          107.3,
+          949.7,
+          139.7
+        ]
+      },
+      "blocks": [
+        {
+          "type": "quote",
+          "text": "◎ 文／摘录自邦阅网、UEESHOP",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": 3,
+            "side": "right",
+            "bbox": [
+              662.1,
+              176.8,
+              853.6,
+              187.9
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "近日， 谷歌宣布在其在线购物工具中加入了生成式AI 技术， 为的是能够给消费者提供更加便捷和个性化的购物体验。 而这其中最引人瞩目的是， 谷歌与多个时尚品牌合作， 推出了虚拟试穿功能。",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": 3,
+            "side": "right",
+            "bbox": [
+              660.7,
+              405.7,
+              890.0,
+              469.4
+            ]
+          }
+        },
+        {
+          "type": "subheading",
+          "text": "谷歌虚拟试穿功能",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": 3,
+            "side": "right",
+            "bbox": [
+              680.8,
+              473.0,
+              772.3,
+              490.0
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "对于消费者而言， 线上购买服装， 与线下实体店最大的区别就在于无法体验产品， 无法判断产品到底适不适合自己。 这就导致服装品类， 一直维持着较高的退货率。 谷歌推出的虚拟试穿功能， 实际上就是针对这一问题的， 因为只有当消费者获得良好的购物体验， 消费者才会继续在谷歌上购物。",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": 3,
+            "side": "right",
+            "bbox": [
+              660.7,
+              490.3,
+              890.0,
+              540.0
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "通过该功能， 消费者只需要输入内容， 就可以快速生成高质量的图像， 从而看到衣服穿在不同体型、 不同肤色、 不同发型的模特身上的效果图。 此外消费者还能根据自己的喜好或习惯， 来对模特的姿势、 表情、 背景等进行调整。",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": 3,
+            "side": "right",
+            "bbox": [
+              660.7,
+              590.8,
+              890.7,
+              671.0
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "对于消费者而言， 这能够更加精准的判断出产品与自己的适配性， 同时拥有较强的实际体验感， 减少退货， 提升购物体验。",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": 3,
+            "side": "right",
+            "bbox": [
+              661.0,
+              673.2,
+              890.0,
+              720.4
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "而对于卖家来说， 虚拟试穿功能， 不仅能够大大降低退货率， 节约退货成本， 还能使消费者与产品建立更为紧密的联系， 从而提升转化率。",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": 3,
+            "side": "right",
+            "bbox": [
+              660.7,
+              722.5,
+              890.0,
+              753.5
+            ]
+          }
+        },
+        {
+          "type": "subheading",
+          "text": "AR 技术的广泛应用",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": 3,
+            "side": "right",
+            "bbox": [
+              932.8,
+              441.7,
+              1031.1,
+              451.4
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "谷歌方面从生成式 AI 方面发力， 而此前Facebook 则是将 AR 技术应用到了 Facebook Feed、Instagram Feed 和 Instagram 广告中。Facebook 方面表示，AR 技术推广后，18 岁至 24 岁用户的广告回忆率提高了 87%。 由此可见，AR 技术除了能够降低退货率以外， 还能增加广告在消费者心中的印象， 很显然这对于品牌塑造也是很有帮助的。 此外，Snapchat 虽然在规模和知名度上不如谷歌和 Facebook， 但其在AR 技术的运用上， 却可以说是领军平台。Snapchat 很早就推出了 AR 滤镜和 AR 体验广告， 这也成为其吸引普通用户和广告商的王牌利器。 如今， 各大社交媒体平台， 都在研究如何将 AR 技术、 生成式 AI 技术， 应用到自己的平台上， 以便能够提升用户体验， 从而抢占更多的用户和广告市场。 对于独立站卖家来说， 这同样是一个非常好的机会， 如果能够用得好的话， 是能够带来销量增长的。 因此卖家需要持续关注各大社交媒体平台的最新动态， 并根据自己的实际情况， 来试水各种新功能。",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": 3,
+            "side": "right",
+            "bbox": [
+              913.0,
+              458.3,
+              1143.4,
+              735.8
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "纺织服装行业数据跟踪",
+      "source": {
+        "pdfPage": 4,
+        "printedPage": 4,
+        "side": "left",
+        "bbox": [
+          66.2,
+          108.7,
+          304.2,
+          164.2
+        ]
+      },
+      "blocks": [
+        {
+          "type": "figure",
+          "src": "/images/supply-chain-whitepapers/6/fig5-6.png",
+          "alt": "棕榈油与 LDPE 价格趋势图",
+          "caption": "原刊印刷第 4 页图 5 至图 6",
+          "width": 495,
+          "height": 180,
+          "source": {
+            "pdfPage": 4,
+            "printedPage": 4,
+            "side": "left",
+            "bbox": [
+              220,
+              520,
+              550,
+              640
+            ]
+          }
+        },
+        {
+          "type": "figure",
+          "src": "/images/supply-chain-whitepapers/6/fig3-4.png",
+          "alt": "粘胶短纤与涤纶长丝价格趋势图",
+          "caption": "原刊印刷第 4 页图 3 至图 4",
+          "width": 495,
+          "height": 203,
+          "source": {
+            "pdfPage": 4,
+            "printedPage": 4,
+            "side": "left",
+            "bbox": [
+              220,
+              385,
+              550,
+              520
+            ]
+          }
+        },
+        {
+          "type": "figure",
+          "src": "/images/supply-chain-whitepapers/6/fig1-2.png",
+          "alt": "国内 328 棉指价格与 Cotlook A 价格指数趋势图",
+          "caption": "原刊印刷第 4 页图 1 至图 2",
+          "width": 495,
+          "height": 196,
+          "source": {
+            "pdfPage": 4,
+            "printedPage": 4,
+            "side": "left",
+            "bbox": [
+              220,
+              255,
+              550,
+              385
+            ]
+          }
+        },
+        {
+          "type": "quote",
+          "text": "◎ 文／摘录自信达证券、汲肖飞",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": 4,
+            "side": "left",
+            "bbox": [
+              65,
+              112,
+              270,
+              135
+            ]
+          }
+        },
+        {
+          "type": "subheading",
+          "text": "上游数据跟踪：商业库存下滑、减产预期之下，国内棉价震荡上行",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": 4,
+            "side": "left",
+            "bbox": [
+              62,
+              250,
+              240,
+              340
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "从原材料价格来看，截至 2023 年 7 月 7 日，中国 328 级棉价为 17419 元／吨，周涨幅为 0.66%，Cotlook A 价格指数市场价为 91.75 美分／磅，周涨幅为 3.21%。截至 2023 年 6 月 30 日，粘胶短纤市场价、涤纶长丝市场价分别为 12900 元／吨、7340 元／吨，周涨幅为 -1.53%、-1.87%，较年初增幅分别为 0.78%、-1.48%。",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": 4,
+            "side": "left",
+            "bbox": [
+              65,
+              340,
+              235,
+              700
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "国内棉价方面，近期下游纺企采购需求偏弱，但商业库存持续下滑叠加棉花减产预期，国内棉价震荡上行。国际棉价方面，美国棉花实播面积同比减少，供应端偏紧支撑美棉价格；但下半年美联储两次加息预期令美元指数整体延续偏强走势，预计未来将对美棉价格形成一定压力。",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": 4,
+            "side": "left",
+            "bbox": [
+              65,
+              470,
+              235,
+              700
+            ]
+          }
+        },
+        {
+          "type": "subheading",
+          "text": "下游数据跟踪：5 月服装零售温和增长",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": 5,
+            "side": "right",
+            "bbox": [
+              650,
+              105,
+              1120,
+              135
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "2023 年 5 月国内服饰鞋帽针纺织品零售额为 1076 亿元，同比增长 12.26%，两年平均复合增速为 -2.41%；1—4 月零售额为 4653 亿元，同比增长 13.95%，实物商品网上零售额穿类增长 13.50%。2023 年 1 月由于大规模群体阳性后，居民多居家休息、减少外出，消费需求受到短暂影响。3—4 月以来出行及户外活动恢复，服装等可选消费在低基数背景下实现强劲反弹，4 月增幅持续扩大，复苏势头强劲。5 月份消费需求进入稳健复苏阶段，呈现温和向好态势，但相对于 21 年同期仍有小幅下降。",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": 5,
+            "side": "right",
+            "bbox": [
+              650,
+              150,
+              890,
+              570
+            ]
+          }
+        },
+        {
+          "type": "subheading",
+          "text": "越南数据跟踪：纺织品鞋类出口降幅放缓",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": 5,
+            "side": "right",
+            "bbox": [
+              650,
+              600,
+              885,
+              680
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "短期受到全球主要经济体需求疲软影响，越南纺服及鞋类出口企业订单同比下滑。2023 年 6 月越南纺织品、鞋类出口金额为 31.0 亿美元、19.5 亿美元，同比下降 15.07%、22.00%，较上月降幅大幅收窄。长期来看，越南制造企业将持续推进可持续发展战略、深度嵌入全球供应链。",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": 5,
+            "side": "right",
+            "bbox": [
+              650,
+              680,
+              1120,
+              770
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "《纺织服装行业数据跟踪》：PDF physical page 4，左侧，bbox [230, 205, 540, 710]。PDF physical page 4 的图 1 至图 14 为小尺寸图表；此前 OCR 把图例和曲线误识别为正文，现已移除，仅保留局部图和可读叙述。",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": 4,
+            "side": "left",
+            "bbox": [
+              230,
+              205,
+              540,
+              710
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "视频号如何助力服装品牌快速增长",
+      "source": {
+        "pdfPage": 5,
+        "printedPage": 6,
+        "side": "left",
+        "bbox": [
+          66.2,
+          107.3,
+          303.5,
+          139.3
+        ]
+      },
+      "blocks": [
+        {
+          "type": "quote",
+          "text": "◎ 图文／转载自@三里屯信息流原创",
+          "source": {
+            "pdfPage": 5,
+            "printedPage": 6,
+            "side": "left",
+            "bbox": [
+              65,
+              115,
+              320,
+              138
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "内卷成红海的直播间，2023 年还值得新人投入吗？经常有商家埋怨，觉得开直播没人来看，浪费时间，哪怕花重金请来的运营，也解决不了问题。",
+          "source": {
+            "pdfPage": 5,
+            "printedPage": 6,
+            "side": "left",
+            "bbox": [
+              65,
+              210,
+              280,
+              350
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "但另一边，今年不打烊的直播间也越来越多了，尤其在节假日，很多商家根本没得休息，订单多得忙到脚不离地。实际上，用好了工具，找对方向，每个营销节点都是引流、卖货的机会，直播新人也有广阔的玩法空间。",
+          "source": {
+            "pdfPage": 5,
+            "printedPage": 6,
+            "side": "left",
+            "bbox": [
+              65,
+              350,
+              280,
+              450
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "我发现，很多品牌不容错过的，就是正在狂飙的视频号。再加上腾讯对短视频和直播的大力扶持，2023 年品牌如果想大力拓展私域流量，最需要抓住的趋势，可以说就是视频号。",
+          "source": {
+            "pdfPage": 5,
+            "printedPage": 6,
+            "side": "left",
+            "bbox": [
+              65,
+              390,
+              280,
+              500
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "视频号作为被微信提升到核心地位的内容生态，可以连接国人常用的企业微信、公众号、小程序等，让品牌既能从公域流量中获取新客，又能从私域流量中挖掘用户价值。",
+          "source": {
+            "pdfPage": 5,
+            "printedPage": 6,
+            "side": "left",
+            "bbox": [
+              65,
+              500,
+              280,
+              560
+            ]
+          }
+        },
+        {
+          "type": "subheading",
+          "text": "服装品牌视频号直播间，都暗藏什么“玄机”？",
+          "source": {
+            "pdfPage": 5,
+            "printedPage": 7,
+            "side": "right",
+            "bbox": [
+              330,
+              210,
+              570,
+              280
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "不同服装品牌的视频号直播间，有几种类型：前期短视频立人设，带动直播病毒式传播；有重点投入直播矩阵的，如歌莉娅、影儿和报喜鸟等，会结合公私域运营，开播主推单品；还有一种利用视频号裂变，以粉丝预约直播，实现直播预约人数的裂变增长。",
+          "source": {
+            "pdfPage": 5,
+            "printedPage": 7,
+            "side": "right",
+            "bbox": [
+              330,
+              280,
+              570,
+              560
+            ]
+          }
+        },
+        {
+          "type": "figure",
+          "src": "/images/supply-chain-whitepapers/6/video-channel-live-examples.png",
+          "alt": "视频号服装直播案例截图",
+          "caption": "原刊印刷第 6 页的直播案例截图（截图内文字未转录）",
+          "width": 690,
+          "height": 360,
+          "source": {
+            "pdfPage": 5,
+            "printedPage": 6,
+            "side": "left",
+            "bbox": [
+              65,
+              560,
+              525,
+              800
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "《视频号如何助力服装品牌快速增长》：PDF physical page 5，左侧，bbox [65, 560, 525, 800]。PDF physical page 5 底部为直播截图；其中账号数据、商品价格和屏幕内文字未由 OCR 转录。",
+          "source": {
+            "pdfPage": 5,
+            "printedPage": 6,
+            "side": "left",
+            "bbox": [
+              65,
+              560,
+              525,
+              800
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "广检集团与新亦源第一期鞋服 QC 技能认证培训班成功举办",
+      "source": {
+        "pdfPage": 6,
+        "printedPage": 9,
+        "side": "right",
+        "bbox": [
+          661.4,
+          107.3,
+          1009.5,
+          172.1
+        ]
+      },
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "广检集团 & 新亦源第一期鞋服 QC技能认证培训班成功举办",
+          "source": {
+            "pdfPage": 6,
+            "printedPage": 9,
+            "side": "right",
+            "bbox": [
+              661.4,
+              107.3,
+              1009.5,
+              172.1
+            ]
+          }
+        },
+        {
+          "type": "quote",
+          "text": "文 / 陈燕",
+          "source": {
+            "pdfPage": 6,
+            "printedPage": 9,
+            "side": "right",
+            "bbox": [
+              689.1,
+              175.7,
+              736.3,
+              191.5
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "2023 年 7 月 1 日， 广检集团联合新亦源开设的第一期鞋服 QC 技能认证培训班于广检集团总部正式开班授课。",
+          "source": {
+            "pdfPage": 6,
+            "printedPage": 9,
+            "side": "right",
+            "bbox": [
+              773.0,
+              525.2,
+              1142.0,
+              551.9
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "该培训为期两天， 授课内容围绕服装类和鞋类的验货标准、 流程及方法而开展， 其中还包括实际操作和使用工具方面的教学， 旨在提高鞋服企业的质量管理水平， 提升产品质量和市场竞争力。",
+          "source": {
+            "pdfPage": 6,
+            "printedPage": 9,
+            "side": "right",
+            "bbox": [
+              773.3,
+              558.4,
+              1142.3,
+              605.5
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "该培训班的授课专家是来自广检集团的质量管理专家， 他们为学员们提供专业的鞋服质量管理知识和指导， 帮助鞋服企业建立和完善质量管理系统， 提高产品质量和可靠性， 增强市场竞争力。",
+          "source": {
+            "pdfPage": 7,
+            "printedPage": 10,
+            "side": "left",
+            "bbox": [
+              97.6,
+              511.9,
+              283.7,
+              592.2
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "广检集团郭子山主持了本次开班仪式，广检集团高级业务顾问伍伟新和新亦源联合创始人项目总监尹姜英分别发表了开班至辞， 尹总表示新亦源作为鞋服行业深耕者，很荣幸能协办这次培训， 希望大家能通过这次培训掌握更多的专业知识和技能， 从而提高自己的质检人能力和工作效率。",
+          "source": {
+            "pdfPage": 7,
+            "printedPage": 10,
+            "side": "left",
+            "bbox": [
+              328.7,
+              192.2,
+              514.4,
+              305.3
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "此外， 该培训班还将开展检测实操及讲解课程， 帮助学员更近距离了解鞋服质检的重点要点， 帮助企业调整质量管理策略。",
+          "source": {
+            "pdfPage": 7,
+            "printedPage": 11,
+            "side": "right",
+            "bbox": [
+              660.7,
+              99.4,
+              741.3,
+              210.6
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "经过了为期 1 天半的学习，7 月 2 日下午，理论考试和实操考试如约而至， 学员们全力以赴， 给自己交上一份满意的答卷。",
+          "source": {
+            "pdfPage": 7,
+            "printedPage": 11,
+            "side": "right",
+            "bbox": [
+              947.6,
+              392.8,
+              1142.0,
+              439.9
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "最后， 学员们如愿拿到结业证书， 预示着为期两天的培训也完美地落下了帷幕。",
+          "source": {
+            "pdfPage": 7,
+            "printedPage": 11,
+            "side": "right",
+            "bbox": [
+              787.7,
+              673.9,
+              1090.5,
+              704.9
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "我们相信， 这次培训班的成功举办将为鞋服企业的质检发展前景带来积极的影响。",
+          "source": {
+            "pdfPage": 7,
+            "printedPage": 11,
+            "side": "right",
+            "bbox": [
+              787.7,
+              707.0,
+              1090.1,
+              737.6
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "新亦源信息化升级｜薪资系统正式上线",
+      "source": {
+        "pdfPage": 8,
+        "printedPage": 12,
+        "side": "left",
+        "bbox": [
+          65.9,
+          105.8,
+          469.1,
+          139.3
+        ]
+      },
+      "blocks": [
+        {
+          "type": "review-note",
+          "text": "《新亦源信息化升级｜薪资系统正式上线》：PDF physical page 8，左侧，bbox [65.9, 105.8, 469.1, 139.3]。该处为跨栏、图文叠加、表格或断行造成的不可可靠 OCR 片段，未作为正文发布；请核对该原 PDF 区域。",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": 12,
+            "side": "left",
+            "bbox": [
+              65.9,
+              105.8,
+              469.1,
+              139.3
+            ]
+          }
+        },
+        {
+          "type": "quote",
+          "text": "© 文 / 陈燕",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": 12,
+            "side": "left",
+            "bbox": [
+              67.0,
+              146.5,
+              127.1,
+              157.7
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "为帮助企业提高效率、 降低成本、 提升客户满意度， 我司一直勇于探索和创新， 力求在企业信息化的路上不断升级。",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": 12,
+            "side": "left",
+            "bbox": [
+              65.5,
+              188.3,
+              294.5,
+              235.4
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "按照信息化建设的年度工作计划， 今年 3 月上旬我司启动了薪资平台系统开发工作，5 月 10 日已完成正式测试环节。",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": 12,
+            "side": "left",
+            "bbox": [
+              65.5,
+              238.0,
+              294.5,
+              285.1
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "近日， 我司就 “信息化升级一一薪资系统 ”正式上线开展培训工作。 本次培训由各区域人事行政部门负责， 对系统相关数据支撑维护进行了宣讲并就日常管理",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": 12,
+            "side": "left",
+            "bbox": [
+              65.5,
+              287.3,
+              295.6,
+              334.4
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "操作流程 (如考勤管理、 员工入转调离等 ) 向全体员工进行了现场培训。",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": 12,
+            "side": "left",
+            "bbox": [
+              317.5,
+              188.3,
+              546.8,
+              219.2
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "自 2022 年 4 月我司自主研发的人效通管理系统上线以来， 新亦源内部管理效率正在加速提升， 内部经营据可更直观地呈现出来， 为企业降本增效提供了可实施化路径。 而如今随着薪资数据的融合， 则意味着在越来越多的运用环节中， 我们有更多的数据模型支持企业内部精细化管理， 也标志着新亦源信息化建设开启发展新",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": 12,
+            "side": "left",
+            "bbox": [
+              317.5,
+              221.4,
+              548.3,
+              317.9
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "篇章。",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": 12,
+            "side": "left",
+            "bbox": [
+              317.9,
+              320.4,
+              341.3,
+              334.4
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "每一个新的高度都是一个新的起点每一个挑战都是下一次探索的新开始更伟大的事业还在前方",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": 13,
+            "side": "right",
+            "bbox": [
+              972.8,
+              543.2,
+              1123.6,
+              590.0
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "我们的征途是星辰大海 !",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": 13,
+            "side": "right",
+            "bbox": [
+              972.8,
+              592.6,
+              1070.3,
+              606.6
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "新亦源， 加油 !",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": 13,
+            "side": "right",
+            "bbox": [
+              972.8,
+              609.1,
+              1034.0,
+              623.2
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "六载砥砺，向新而行｜2023 年第 1 季度经营会议暨 6 周年司庆",
+      "source": {
+        "pdfPage": 9,
+        "printedPage": 14,
+        "side": "left",
+        "bbox": [
+          65.9,
+          140.4,
+          469.4,
+          172.1
+        ]
+      },
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "2023 年第 1 季度经营会议置 6 周年司庆",
+          "source": {
+            "pdfPage": 9,
+            "printedPage": 14,
+            "side": "left",
+            "bbox": [
+              65.9,
+              140.4,
+              469.4,
+              172.1
+            ]
+          }
+        },
+        {
+          "type": "quote",
+          "text": "@ 文 / 曾静、 陈燕",
+          "source": {
+            "pdfPage": 9,
+            "printedPage": 14,
+            "side": "left",
+            "bbox": [
+              67.0,
+              175.3,
+              166.0,
+              191.5
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "春华秋实第六载， 研硕奋进续新篇。征途虽在星辰大海间， 仍需回望过往奋斗路。源于共同的理想， 共同的事业， 我们是同路人， 也是同行者， 蓝图已绘就， 奋斗正当时。",
+          "source": {
+            "pdfPage": 9,
+            "printedPage": 14,
+            "side": "left",
+            "bbox": [
+              85.3,
+              218.9,
+              450.0,
+              266.0
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "2023 第一季度经营会议",
+          "source": {
+            "pdfPage": 9,
+            "printedPage": 14,
+            "side": "left",
+            "bbox": [
+              85.3,
+              276.5,
+              208.8,
+              293.4
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "2023 年 5 月 6 日 -5 月 7 日， 六载丰硕， 向新而行一一2023 第一季度经营会议轻 6 周年司庆活动在东莞华阳湖楚啡酒店顺利召开。 新亦源总经理王伟先生， 副总经理涂建国先生及各中心负责人、 各区域总监、 骨干员工参加本次会议。",
+          "source": {
+            "pdfPage": 9,
+            "printedPage": 14,
+            "side": "left",
+            "bbox": [
+              65.5,
+              295.6,
+              304.9,
+              375.1
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "新亦源总经理王伟先生发表了重要讲话。 王总表示 :时代在不停地变化， 每个新亦源人必须要接受改变， 改变自己的行为、 习惯、 感受、 性格等以适应我们所在的时代的 “森林法则 ”。 同时， 服务和管理永远是新亦源的核心， 我们需要用心服务客户， 用脑为客户赋能， 用力做好精益管理。 在一米宽， 一万米深的赛道中要时刻保持坚定的个人信念， 唯有这样才能突破重围， 稳健发展。",
+          "source": {
+            "pdfPage": 9,
+            "printedPage": 14,
+            "side": "left",
+            "bbox": [
+              65.5,
+              377.6,
+              304.9,
+              491.0
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "接着， 各中心、 组织进行了第一季度工作总结及第三季度工作计划， 回顾过去， 展望未来 ,立足今日， 点燃新希望。",
+          "source": {
+            "pdfPage": 9,
+            "printedPage": 14,
+            "side": "left",
+            "bbox": [
+              65.5,
+              493.2,
+              304.2,
+              540.4
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "拓展团建进行中",
+          "source": {
+            "pdfPage": 9,
+            "printedPage": 14,
+            "side": "left",
+            "bbox": [
+              85.3,
+              558.0,
+              166.7,
+              574.9
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "尾意的午后， 为庆祝 6 周年， 我们团队一行人进行了户外拓展团建活动。 我们本次的团建活动营地定在风景宜人的华阳湖国家湿地公园。",
+          "source": {
+            "pdfPage": 9,
+            "printedPage": 14,
+            "side": "left",
+            "bbox": [
+              65.5,
+              575.3,
+              313.2,
+              619.6
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "和展现团队意识力的同时， 也感受司庆 6 周年的活动魅",
+          "source": {
+            "pdfPage": 9,
+            "printedPage": 14,
+            "side": "left",
+            "bbox": [
+              63.0,
+              627.5,
+              315.0,
+              657.0
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "力。 mw每张愉悦的笑脸都让我们看到了伙伴们对新亦的",
+          "source": {
+            "pdfPage": 9,
+            "printedPage": 14,
+            "side": "left",
+            "bbox": [
+              65.5,
+              657.4,
+              329.4,
+              689.0
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "和 “祝福 ”。 经过一番挑战， 大家都成功完成了任务， 带着",
+          "source": {
+            "pdfPage": 9,
+            "printedPage": 14,
+            "side": "left",
+            "bbox": [
+              65.5,
+              691.9,
+              314.3,
+              706.3
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "i i 来到最后一关一一群策群力， 共绘蓝图。伙伴们 “热爱 ” 灌满画笔， 为我们的吉祥物增色添彩。",
+          "source": {
+            "pdfPage": 9,
+            "printedPage": 14,
+            "side": "left",
+            "bbox": [
+              66.2,
+              708.5,
+              308.5,
+              739.4
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "oo 一次成长， 迎接我们的将是充满希望的未来 !",
+          "source": {
+            "pdfPage": 9,
+            "printedPage": 14,
+            "side": "left",
+            "bbox": [
+              51.8,
+              741.6,
+              295.9,
+              764.6
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "“荐”者有礼｜新亦源运到智能寄件平台活动",
+      "source": {
+        "pdfPage": 10,
+        "printedPage": 16,
+        "side": "left",
+        "bbox": [
+          135.0,
+          100.1,
+          157.7,
+          448.6
+        ]
+      },
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "荐者有和新运到号寄",
+          "source": {
+            "pdfPage": 10,
+            "printedPage": 16,
+            "side": "left",
+            "bbox": [
+              135.0,
+              100.1,
+              157.7,
+              448.6
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "【活动时间】5 月 19 日至 5 月 31 日",
+          "source": {
+            "pdfPage": 10,
+            "printedPage": 16,
+            "side": "left",
+            "bbox": [
+              124.9,
+              673.9,
+              162.0,
+              689.8
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "【全己方法 ]向好友推荐运到平台",
+          "source": {
+            "pdfPage": 10,
+            "printedPage": 16,
+            "side": "left",
+            "bbox": [
+              123.5,
+              691.6,
+              162.7,
+              706.3
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "推荐好点用运到 . Rene oo送兰落防晒需正装 !",
+          "source": {
+            "pdfPage": 10,
+            "printedPage": 16,
+            "side": "left",
+            "bbox": [
+              340.9,
+              131.8,
+              521.6,
+              150.8
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "520 荐者有礼活动",
+          "source": {
+            "pdfPage": 10,
+            "printedPage": 16,
+            "side": "left",
+            "bbox": [
+              344.2,
+              304.2,
+              436.0,
+              320.8
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "《“荐”者有礼｜新亦源运到智能寄件平台活动》：PDF physical page 10，左侧，bbox [267.8, 330.8, 516.2, 427.7]。该处为跨栏、图文叠加、表格或断行造成的不可可靠 OCR 片段，未作为正文发布；请核对该原 PDF 区域。",
+          "source": {
+            "pdfPage": 10,
+            "printedPage": 16,
+            "side": "left",
+            "bbox": [
+              267.8,
+              330.8,
+              516.2,
+              427.7
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "“ 运到 ”是新亦源自主研发商圈寄件平台， 是对基于零售端正向、 逆向的网络发货平台， 运输场景实现可视化跟踪、 订单智能化分配。",
+          "source": {
+            "pdfPage": 10,
+            "printedPage": 16,
+            "side": "left",
+            "bbox": [
+              231.8,
+              510.1,
+              547.6,
+              541.1
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "对接十多家主流物流公司， 实现系统智能比价智能派单， 全国区域任意寄件， 提供高效管家式服务。",
+          "source": {
+            "pdfPage": 10,
+            "printedPage": 16,
+            "side": "left",
+            "bbox": [
+              231.5,
+              543.2,
+              546.8,
+              573.8
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "寄件用运到， 省钱又省心 !",
+          "source": {
+            "pdfPage": 10,
+            "printedPage": 16,
+            "side": "left",
+            "bbox": [
+              251.3,
+              576.4,
+              358.6,
+              590.4
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "提供一站式寄件服务平台功能与服务优势",
+          "source": {
+            "pdfPage": 10,
+            "printedPage": 16,
+            "side": "left",
+            "bbox": [
+              363.2,
+              604.4,
+              529.2,
+              616.7
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "人了办",
+          "source": {
+            "pdfPage": 10,
+            "printedPage": 16,
+            "side": "left",
+            "bbox": [
+              370.4,
+              653.8,
+              408.2,
+              656.6
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "时尚行业峰会新鲜速报｜新亦源在线为鞋服云仓行业赋能",
+      "source": {
+        "pdfPage": 10,
+        "printedPage": 17,
+        "side": "right",
+        "bbox": [
+          837.4,
+          140.0,
+          894.7,
+          155.2
+        ]
+      },
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "新纪元新生命",
+          "source": {
+            "pdfPage": 10,
+            "printedPage": 17,
+            "side": "right",
+            "bbox": [
+              837.4,
+              140.0,
+              894.7,
+              155.2
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "时尚行业峰会新鲜速报",
+          "source": {
+            "pdfPage": 10,
+            "printedPage": 17,
+            "side": "right",
+            "bbox": [
+              662.5,
+              267.5,
+              899.7,
+              299.5
+            ]
+          }
+        },
+        {
+          "type": "quote",
+          "text": "O 文 / 陈燕",
+          "source": {
+            "pdfPage": 10,
+            "printedPage": 17,
+            "side": "right",
+            "bbox": [
+              662.1,
+              337.3,
+              722.2,
+              348.1
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "在会议中， 来自时尚界的大咖们分享了自己的经验",
+          "source": {
+            "pdfPage": 10,
+            "printedPage": 17,
+            "side": "right",
+            "bbox": [
+              683.0,
+              478.1,
+              890.0,
+              492.1
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "和看法， 引起了与会者的共鸣和热议。 此外， 一些新兴技术和概念也引起了关注， 如虚拟现实、 人工智能等。这些技术的应用， 不仅可以提高时尚产业的效率和品质， 还可以带来更多的商业机会和创新思路。",
+          "source": {
+            "pdfPage": 10,
+            "printedPage": 17,
+            "side": "right",
+            "bbox": [
+              913.0,
+              378.7,
+              1142.0,
+              442.8
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "本次峰会论坛为时尚圈的发展指明了新的方向和思路， 也为行业的未来带来了更多的希望和机遇。",
+          "source": {
+            "pdfPage": 10,
+            "printedPage": 17,
+            "side": "right",
+            "bbox": [
+              913.0,
+              445.0,
+              1142.0,
+              475.6
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "和- 淮硬高 si He",
+          "source": {
+            "pdfPage": 10,
+            "printedPage": 17,
+            "side": "right",
+            "bbox": [
+              986.5,
+              564.1,
+              1064.2,
+              601.9
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "新亦源 ' 鞋服专业云仓",
+          "source": {
+            "pdfPage": 10,
+            "printedPage": 17,
+            "side": "right",
+            "bbox": [
+              996.5,
+              623.2,
+              1123.3,
+              640.8
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "全国超 50 万平米仓库全部实现效果系统传统仓效率提升 30%24 小时完成退货质检处理能力单仓产能 50 万单",
+          "source": {
+            "pdfPage": 10,
+            "printedPage": 17,
+            "side": "right",
+            "bbox": [
+              997.3,
+              654.1,
+              1120.7,
+              729.7
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "端午“粽”动员｜员工福利系列活动",
+      "source": {
+        "pdfPage": 11,
+        "printedPage": 18,
+        "side": "left",
+        "bbox": [
+          67.0,
+          177.1,
+          127.1,
+          187.9
+        ]
+      },
+      "blocks": [
+        {
+          "type": "quote",
+          "text": "@ 文 / 陈燕",
+          "source": {
+            "pdfPage": 11,
+            "printedPage": 18,
+            "side": "left",
+            "bbox": [
+              67.0,
+              177.1,
+              127.1,
+              187.9
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "迎新茶话会",
+          "source": {
+            "pdfPage": 11,
+            "printedPage": 18,
+            "side": "left",
+            "bbox": [
+              110.9,
+              253.4,
+              167.4,
+              263.5
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "迎新一直是我们新亦源的伟统， 新亦源是一个大家庭， 为了让新员工尽快融入我们的团队，我们每个季度都会联合生日会一起举办。",
+          "source": {
+            "pdfPage": 11,
+            "printedPage": 18,
+            "side": "left",
+            "bbox": [
+              90.7,
+              269.3,
+              230.8,
+              346.7
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "欢迎我们的 “新 ”上人的加入 -=",
+          "source": {
+            "pdfPage": 11,
+            "printedPage": 18,
+            "side": "left",
+            "bbox": [
+              91.1,
+              351.4,
+              230.4,
+              380.9
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "员工生日会",
+          "source": {
+            "pdfPage": 11,
+            "printedPage": 18,
+            "side": "left",
+            "bbox": [
+              169.9,
+              492.1,
+              226.1,
+              502.2
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "连雨不知春去， 一晴方觉夏至， 成长不期而遇， 生日如期而至， 在这美好的日子里， 我们迎来了第二季度员工生日会， 祝愿寿星们， 生活上年年岁岁平安祥和， 事业上一帆风上顺蒸蒸量上 !",
+          "source": {
+            "pdfPage": 11,
+            "printedPage": 18,
+            "side": "left",
+            "bbox": [
+              149.8,
+              509.4,
+              463.3,
+              556.2
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "《端午“粽”动员｜员工福利系列活动》：PDF physical page 11，右侧，bbox [746.7, 114.1, 1068.5, 148.3]。该处为跨栏、图文叠加、表格或断行造成的不可可靠 OCR 片段，未作为正文发布；请核对该原 PDF 区域。",
+          "source": {
+            "pdfPage": 11,
+            "printedPage": 19,
+            "side": "right",
+            "bbox": [
+              746.7,
+              114.1,
+              1068.5,
+              148.3
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "全国各仓端午盛况",
+          "source": {
+            "pdfPage": 11,
+            "printedPage": 19,
+            "side": "right",
+            "bbox": [
+              661.0,
+              428.0,
+              752.5,
+              444.6
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "启明星课堂开课啦｜2023 开启学习计划",
+      "source": {
+        "pdfPage": 12,
+        "printedPage": 20,
+        "side": "left",
+        "bbox": [
+          211.7,
+          113.4,
+          401.8,
+          144.7
+        ]
+      },
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "启明星课堂开课啦",
+          "source": {
+            "pdfPage": 12,
+            "printedPage": 20,
+            "side": "left",
+            "bbox": [
+              211.7,
+              113.4,
+              401.8,
+              144.7
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "2023 开启学习计划",
+          "source": {
+            "pdfPage": 12,
+            "printedPage": 20,
+            "side": "left",
+            "bbox": [
+              240.1,
+              144.0,
+              374.0,
+              166.3
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "亲爱的伙伴们 :",
+          "source": {
+            "pdfPage": 12,
+            "printedPage": 20,
+            "side": "left",
+            "bbox": [
+              79.6,
+              297.4,
+              140.8,
+              311.4
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "在启明星课堂成立一周年 (2022.03.31-2023.03.31 ) 纪念日即将来临之际，23 年的培训计划也随之出",
+          "source": {
+            "pdfPage": 12,
+            "printedPage": 20,
+            "side": "left",
+            "bbox": [
+              99.4,
+              313.6,
+              532.1,
+              327.6
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "为更好的进行课程划分且与森林期刊形成统一标识， 我们将原划分课程名称分别变更为森林种子、 森林装备、 森林守则及森林星光。 让我们一起深耕自己， 在所热爱的世界里， 努力发光吧。",
+          "source": {
+            "pdfPage": 12,
+            "printedPage": 20,
+            "side": "left",
+            "bbox": [
+              79.6,
+              346.7,
+              532.8,
+              377.3
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "课程划分课程名称对象",
+          "source": {
+            "pdfPage": 12,
+            "printedPage": 20,
+            "side": "left",
+            "bbox": [
+              120.6,
+              428.8,
+              331.6,
+              442.4
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "《启明星课堂开课啦｜2023 开启学习计划》：PDF physical page 12，左侧，bbox [51.8, 724.0, 546.8, 757.1]。该处为跨栏、图文叠加、表格或断行造成的不可可靠 OCR 片段，未作为正文发布；请核对该原 PDF 区域。",
+          "source": {
+            "pdfPage": 12,
+            "printedPage": 20,
+            "side": "left",
+            "bbox": [
+              51.8,
+              724.0,
+              546.8,
+              757.1
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "所在区域课程名称拟定讲师",
+          "source": {
+            "pdfPage": 12,
+            "printedPage": 21,
+            "side": "right",
+            "bbox": [
+              664.6,
+              189.7,
+              882.1,
+              203.8
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "上海青赵仓上海青赵仓上海客服部上海鹤祥仓",
+          "source": {
+            "pdfPage": 12,
+            "printedPage": 21,
+            "side": "right",
+            "bbox": [
+              662.8,
+              489.6,
+              703.9,
+              551.2
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "上海汇金仓",
+          "source": {
+            "pdfPage": 12,
+            "printedPage": 21,
+            "side": "right",
+            "bbox": [
+              662.8,
+              562.3,
+              702.8,
+              570.6
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "《启明星课堂开课啦｜2023 开启学习计划》：PDF physical page 12，右侧，bbox [662.8, 586.1, 702.8, 704.9]。该处为跨栏、图文叠加、表格或断行造成的不可可靠 OCR 片段，未作为正文发布；请核对该原 PDF 区域。",
+          "source": {
+            "pdfPage": 12,
+            "printedPage": 21,
+            "side": "right",
+            "bbox": [
+              662.8,
+              586.1,
+              702.8,
+              704.9
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "森林装备由各区域根据业务需求， 在日常工作中国绕岗位职责的、 技能、",
+          "source": {
+            "pdfPage": 12,
+            "printedPage": 21,
+            "side": "right",
+            "bbox": [
+              680.8,
+              724.3,
+              983.6,
+              738.7
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": ".外 “森林装备",
+          "source": {
+            "pdfPage": 12,
+            "printedPage": 21,
+            "side": "right",
+            "bbox": [
+              828.1,
+              114.8,
+              914.5,
+              139.3
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "Ab 补充装备， 让其变成工作中的番四",
+          "source": {
+            "pdfPage": 12,
+            "printedPage": 21,
+            "side": "right",
+            "bbox": [
+              803.9,
+              136.4,
+              1001.9,
+              156.6
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "陈郁太黄宗义郭谦松郭谦松刘强彩彭伟明郭灵耿涛吴考华范荣健范荣健李芳 / 梁国聚",
+          "source": {
+            "pdfPage": 12,
+            "printedPage": 21,
+            "side": "right",
+            "bbox": [
+              839.6,
+              207.0,
+              887.8,
+              405.0
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "园区物业朱业伟顾红震",
+          "source": {
+            "pdfPage": 12,
+            "printedPage": 21,
+            "side": "right",
+            "bbox": [
+              845.7,
+              475.6,
+              882.1,
+              531.4
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "所在区域课程名称 ET",
+          "source": {
+            "pdfPage": 12,
+            "printedPage": 21,
+            "side": "right",
+            "bbox": [
+              916.6,
+              189.7,
+              1134.4,
+              215.3
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "《启明星课堂开课啦｜2023 开启学习计划》：PDF physical page 12，右侧，bbox [915.9, 207.0, 969.9, 598.7]。该处为跨栏、图文叠加、表格或断行造成的不可可靠 OCR 片段，未作为正文发布；请核对该原 PDF 区域。",
+          "source": {
+            "pdfPage": 12,
+            "printedPage": 21,
+            "side": "right",
+            "bbox": [
+              915.9,
+              207.0,
+              969.9,
+              598.7
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "市场营销中心",
+          "source": {
+            "pdfPage": 12,
+            "printedPage": 21,
+            "side": "right",
+            "bbox": [
+              915.9,
+              608.0,
+              955.1,
+              622.4
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "市场营销中心商圈客服商圈客服人事行政中心人事行政中心",
+          "source": {
+            "pdfPage": 12,
+            "printedPage": 21,
+            "side": "right",
+            "bbox": [
+              915.9,
+              631.8,
+              955.1,
+              709.2
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "在服务云仓客户过程中通常发生的问题及应对处理方法",
+          "source": {
+            "pdfPage": 12,
+            "printedPage": 21,
+            "side": "right",
+            "bbox": [
+              966.7,
+              604.4,
+              1079.7,
+              623.2
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "新客户入库流程及准备工作图片、 视频剪辑函数、 图表等办公软件应用人事法律专业知识提升新媒体时代下招聘渠道开拓",
+          "source": {
+            "pdfPage": 12,
+            "printedPage": 21,
+            "side": "right",
+            "bbox": [
+              966.7,
+              631.8,
+              1079.7,
+              708.5
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "专业技能及工作效率。 同时， 森林装备也是启明星课堂中培训讲师输出的培育平台。",
+          "source": {
+            "pdfPage": 12,
+            "printedPage": 21,
+            "side": "right",
+            "bbox": [
+              660.7,
+              740.9,
+              1006.3,
+              755.3
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "杨兴根李向梅杨兴根杨兴根唐先林唐先林杨兴根蒋昌平漆周陈联会江记松江记松江记松江记松陈郁太",
+          "source": {
+            "pdfPage": 12,
+            "printedPage": 21,
+            "side": "right",
+            "bbox": [
+              1102.0,
+              254.2,
+              1131.5,
+              499.7
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "陈郁太",
+          "source": {
+            "pdfPage": 12,
+            "printedPage": 21,
+            "side": "right",
+            "bbox": [
+              1102.7,
+              537.1,
+              1130.5,
+              551.2
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "流程开展的培训课程， 旨在提升员工",
+          "source": {
+            "pdfPage": 12,
+            "printedPage": 21,
+            "side": "right",
+            "bbox": [
+              989.0,
+              724.3,
+              1142.0,
+              738.7
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "S 森林守则。 。 物况天择适者生存Pie 拟定讲师全国公司制度学习培训 ( 即时 ) 人事行政中心",
+          "source": {
+            "pdfPage": 13,
+            "printedPage": 22,
+            "side": "left",
+            "bbox": [
+              125.6,
+              111.2,
+              491.0,
+              201.6
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "森林守则由原启明星课堂之 “我爱学习系列 ”进行变更， 将固定类学习课程调整为企业制度类学习培训， 通过线上学习 + 考试的方式确保全体员工理解制度， 并将制度真正贯彻落实到工作中。",
+          "source": {
+            "pdfPage": 13,
+            "printedPage": 22,
+            "side": "left",
+            "bbox": [
+              65.5,
+              211.0,
+              548.3,
+              241.9
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "森林星光在保留原定向培训的基础上， 拓展线上碎片学习 + 外聘讲师集训的模式， 多角度提升管理者的管理水平及技能， 培育人才阶梯， 打造一批高水平的管理团队。",
+          "source": {
+            "pdfPage": 13,
+            "printedPage": 22,
+            "side": "left",
+            "bbox": [
+              65.5,
+              500.0,
+              546.8,
+              530.6
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "精品课程除此以外，23 年启明星课堂计划通过 TTT 培训打造内部精品课程， 预计在今年 8 月与大家见面。 敬请期待吧 !",
+          "source": {
+            "pdfPage": 13,
+            "printedPage": 22,
+            "side": "left",
+            "bbox": [
+              65.5,
+              556.2,
+              322.2,
+              605.2
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "《启明星课堂开课啦｜2023 开启学习计划》：PDF physical page 13，左侧，bbox [199.1, 633.6, 339.8, 679.7]。该处为跨栏、图文叠加、表格或断行造成的不可可靠 OCR 片段，未作为正文发布；请核对该原 PDF 区域。",
+          "source": {
+            "pdfPage": 13,
+            "printedPage": 22,
+            "side": "left",
+            "bbox": [
+              199.1,
+              633.6,
+              339.8,
+              679.7
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "学习是最美的姿态， 培训是最大的遇见， 成长是最美的风景。勤学， 如春起之苗， 向下扎根， 向上生长。 愿我们在启明星课堂中东壮成长。",
+          "source": {
+            "pdfPage": 13,
+            "printedPage": 22,
+            "side": "left",
+            "bbox": [
+              85.3,
+              723.6,
+              402.5,
+              754.2
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "运到智能寄件平台的应用价值",
+      "source": {
+        "pdfPage": 13,
+        "printedPage": 23,
+        "side": "right",
+        "bbox": [
+          661.4,
+          107.3,
+          971.7,
+          139.7
+        ]
+      },
+      "blocks": [
+        {
+          "type": "quote",
+          "text": "@ 文 / 罗锦添",
+          "source": {
+            "pdfPage": 13,
+            "printedPage": 23,
+            "side": "right",
+            "bbox": [
+              662.1,
+              146.5,
+              734.8,
+              157.7
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "有广泛的兼容性",
+          "source": {
+            "pdfPage": 13,
+            "printedPage": 23,
+            "side": "right",
+            "bbox": [
+              756.8,
+              195.1,
+              838.1,
+              211.7
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "大多连锁企业都存在多组织、 多品牌、 多渠道、 多区域、 多事业部等复杂的管理模式或管理架构， 导致快递合作供应商不统一， 合作价格不统一， 快递收发管理乱、 易出错， 费用统计周期不一致、 对帐难， 无统一物流数据， 不能做数据分析， 从而无法优化寄件方案和成本。",
+          "source": {
+            "pdfPage": 13,
+            "printedPage": 23,
+            "side": "right",
+            "bbox": [
+              675.8,
+              232.6,
+              1128.7,
+              279.7
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "支持全场景寄件",
+          "source": {
+            "pdfPage": 13,
+            "printedPage": 23,
+            "side": "right",
+            "bbox": [
+              756.8,
+              473.8,
+              838.1,
+              490.3
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "全渠道的业务模式成功把直营、 联营、 加盟门店进行线上线下一体化打通， 实现库存共享， 全品牌一盘货， 能大大提升货品的周转率， 降低库存积压。 货品的快速流通必须依赖高效的物流服务， 门店寄件涉及到快递、 快运、 重货、 零担等寄件场景， 传统单一的物流承运商已经无法满足需求。 物流费用分挫也非常复杂， 缺乏清晰的物流数据支撑。",
+          "source": {
+            "pdfPage": 13,
+            "printedPage": 23,
+            "side": "right",
+            "bbox": [
+              675.8,
+              510.8,
+              1127.9,
+              574.6
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "个 aeeeee 加站让下",
+          "source": {
+            "pdfPage": 13,
+            "printedPage": 23,
+            "side": "right",
+            "bbox": [
+              718.6,
+              610.2,
+              936.4,
+              637.2
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "门店调拨寄件",
+          "source": {
+            "pdfPage": 13,
+            "printedPage": 23,
+            "side": "right",
+            "bbox": [
+              896.5,
+              639.4,
+              924.2,
+              643.7
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "020 订单门店发货",
+          "source": {
+            "pdfPage": 13,
+            "printedPage": 23,
+            "side": "right",
+            "bbox": [
+              807.9,
+              735.1,
+              846.4,
+              739.4
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "支持免解密发货",
+          "source": {
+            "pdfPage": 14,
+            "printedPage": 24,
+            "side": "left",
+            "bbox": [
+              161.3,
+              88.2,
+              242.3,
+              104.0
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "全渠道的业务体系让线下门店成为零售企业订单履约的重要支点， 但线下门店对 O2O 订单履约效率低、总部难管控， 主要原因是由于线上订单信息解密难、 线下门店没有一体化的寡收方案， 因此， 急需一个在系统能力、 服务质量、 寄送时效、 快递成本四者平衡的可覆盖全国的快递解决方案。",
+          "source": {
+            "pdfPage": 14,
+            "printedPage": 24,
+            "side": "left",
+            "bbox": [
+              80.3,
+              114.5,
+              531.7,
+              162.0
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "如何赋能门店节省快递成本",
+          "source": {
+            "pdfPage": 14,
+            "printedPage": 24,
+            "side": "left",
+            "bbox": [
+              403.2,
+              280.4,
+              470.2,
+              290.5
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "《运到智能寄件平台的应用价值》：PDF physical page 14，左侧，bbox [227.2, 276.1, 287.3, 286.2]。该处为跨栏、图文叠加、表格或断行造成的不可可靠 OCR 片段，未作为正文发布；请核对该原 PDF 区域。",
+          "source": {
+            "pdfPage": 14,
+            "printedPage": 24,
+            "side": "left",
+            "bbox": [
+              227.2,
+              276.1,
+              287.3,
+              286.2
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "最优连锁门店寄件解决方案",
+          "source": {
+            "pdfPage": 14,
+            "printedPage": 24,
+            "side": "left",
+            "bbox": [
+              161.3,
+              324.4,
+              299.2,
+              340.9
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "运到智能寄件平台受到众多连锁企业的认可， 成为目前市面上最优的连锁门店寄件解决方案。",
+          "source": {
+            "pdfPage": 14,
+            "printedPage": 24,
+            "side": "left",
+            "bbox": [
+              100.4,
+              352.1,
+              483.8,
+              365.4
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "《运到智能寄件平台的应用价值》：PDF physical page 14，左侧，bbox [413.6, 396.0, 505.8, 420.1]。该处为跨栏、图文叠加、表格或断行造成的不可可靠 OCR 片段，未作为正文发布；请核对该原 PDF 区域。",
+          "source": {
+            "pdfPage": 14,
+            "printedPage": 24,
+            "side": "left",
+            "bbox": [
+              413.6,
+              396.0,
+              505.8,
+              420.1
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "1 * 机大件小作一站式全可间",
+          "source": {
+            "pdfPage": 14,
+            "printedPage": 24,
+            "side": "left",
+            "bbox": [
+              285.1,
+              413.6,
+              470.5,
+              419.4
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "职场成长路上的必备技能——总结",
+      "source": {
+        "pdfPage": 14,
+        "printedPage": 25,
+        "side": "right",
+        "bbox": [
+          828.4,
+          118.8,
+          984.7,
+          175.3
+        ]
+      },
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "只场成长路上的必备技能",
+          "source": {
+            "pdfPage": 14,
+            "printedPage": 25,
+            "side": "right",
+            "bbox": [
+              828.4,
+              118.8,
+              984.7,
+              175.3
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "从下棋的人听过一句话 “ 走一步， 看三步。” 其实， 写总结也是一样， 看发展、 看变化、 看准备 ; 那么在工作上， 我们也可以用这样的方式去做、 去写总结。",
+          "source": {
+            "pdfPage": 14,
+            "printedPage": 25,
+            "side": "right",
+            "bbox": [
+              660.7,
+              445.3,
+              890.0,
+              492.1
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "第一节， 工作回顾也可以叫工作概述， 指一段时间内所做的工作， 从多方位去罗列、 提取总结时间段内所涉及的工作 /项目， 这里不要怕繁珊， 不要觉得小的事件就屏弃掉， 能收集起来的都收集起来， 归类整理， 把突出的业绩着重点出， 把失败的问题再次反思， 得出结论 ; 如果自己无法梳理出结论， 不妨带着问题疑惑去跟别人聊聊， 看看别人的看法， 毕竟三个臭皮匠赛过诸葛亮， 再者也可以采用鱼骨图或是思维导图的方法去追踪原因， 这些就是整体工作概述 ; 把整理好的内容进行匹配工作计划， 简洁清晰的表达出来， 工作概述类不需要太多的数据支撑， 主要把完成的项目， 得到的改善 / 收益简要的说明即可。",
+          "source": {
+            "pdfPage": 14,
+            "printedPage": 25,
+            "side": "right",
+            "bbox": [
+              660.7,
+              494.3,
+              891.1,
+              686.2
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "第二节， 就是常说的工作完成情况或者是业绩成果， 前面收集整理的工作 /项目就可以用上了 ,， 这里有个细节， 可以分为两类， 第一类是突出的工作 /项目，第二类是重点工作完成情况 ; 业务现场可以用数据支撑",
+          "source": {
+            "pdfPage": 14,
+            "printedPage": 25,
+            "side": "right",
+            "bbox": [
+              660.7,
+              692.3,
+              890.0,
+              755.6
+            ]
+          }
+        },
+        {
+          "type": "quote",
+          "text": "@ 文 / 温俊衡",
+          "source": {
+            "pdfPage": 14,
+            "printedPage": 25,
+            "side": "right",
+            "bbox": [
+              865.9,
+              263.5,
+              938.6,
+              274.7
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "4 oe 来体现， 最好采用时间轴的方",
+          "source": {
+            "pdfPage": 14,
+            "printedPage": 25,
+            "side": "right",
+            "bbox": [
+              906.2,
+              181.8,
+              1142.0,
+              203.4
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "= 式进行说明， 可以用数据表格及图表的方式呈现， 数据是最直观的汇报， 图表可以直观的看出工作 /项目的趋势走向， 项目型的可以使用甘特图的方式呈现， 或者直接用表格的方式呈现， 工作完成情况可以分维度进行汇报， 并不需要把所有的内容都挤在一页， 这样每一页的 PPT 给人的感觉都很简洁，要是把所有的内容都挤在一页反而会使人看的眼花引乱， 抓不住你想汇报的重点。",
+          "source": {
+            "pdfPage": 14,
+            "printedPage": 25,
+            "side": "right",
+            "bbox": [
+              927.4,
+              198.4,
+              1143.8,
+              405.7
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "第三节， 不足反思或是得失都可以， 主要的是回顾自身不管是工作 /项目， 还是个人能力等方向的不足，进行总结反思 ; 包括别人的点评、 自己直观的都写出来， 这里是最考验人的地方， 直观的面对自己的不足，虚心接收别人的点评， 看到过很多人写的总结， 倒是很多人都在这个环节只写好的， 失败的、 不足的都一句带过， 要知道， 但凡是需要写总结的时候， 不单单只是写， 而是要汇报的， 其实上级心里很清楚这段时间内你的工作怎么样， 如果在这里都藏藏掖掖的， 这就使你的上级很被动， 哪怕知道你整体的情况是怎么样的， 但是从你的藏藏掖掖的汇报里面， 也无从下手去帮你纠正纠偏。",
+          "source": {
+            "pdfPage": 14,
+            "printedPage": 25,
+            "side": "right",
+            "bbox": [
+              913.0,
+              412.6,
+              1142.3,
+              608.0
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "最后一节， 工作计划， 很多人都会在这里进行概括性、 虚夸的去写想怎么样怎么样， 这里也是很多新手会犯的错误， 以为工作计划就是画饼， 其实不是， 工作计划就像是 PDCA 循环， 承接以往做的不好的， 去改善去进步 ; 反观前面提起的 “看发展、 看变化、 看准备 ”，这些就是计划， 现在的发展趋势如何， 从趋势的变化里去着手做准备， 一句话， 计划是要承上启下的。",
+          "source": {
+            "pdfPage": 14,
+            "printedPage": 25,
+            "side": "right",
+            "bbox": [
+              913.0,
+              610.2,
+              1142.3,
+              723.6
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "以上， 和希望对每个在职场上的你有所启发。",
+          "source": {
+            "pdfPage": 14,
+            "printedPage": 25,
+            "side": "right",
+            "bbox": [
+              933.2,
+              725.8,
+              1107.4,
+              739.8
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "一条心，一起拼｜技能标兵旅游奖励",
+      "source": {
+        "pdfPage": 15,
+        "printedPage": 26,
+        "side": "left",
+        "bbox": [
+          66.2,
+          105.8,
+          443.9,
+          139.3
+        ]
+      },
+      "blocks": [
+        {
+          "type": "review-note",
+          "text": "《一条心，一起拼｜技能标兵旅游奖励》：PDF physical page 15，左侧，bbox [66.2, 105.8, 443.9, 139.3]。该处为跨栏、图文叠加、表格或断行造成的不可可靠 OCR 片段，未作为正文发布；请核对该原 PDF 区域。",
+          "source": {
+            "pdfPage": 15,
+            "printedPage": 26,
+            "side": "left",
+            "bbox": [
+              66.2,
+              105.8,
+              443.9,
+              139.3
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "5 月， 新亦源东莞电商仓举办 2023 年第一季度员工技能竞赛， 东莞分公司朗洲仓、 智谷仓、 樟木头仓以及桥头仓等业务部门分别进行现场技能比拼， 本赛季吸引了请百名员工参赛。 操作技能比赛分别从作业规范标准、 手法、 产能等几个方面进行考评， 现场人员在各物流操作环节上动作规范娴熟， 展现了员工们出色的技能， 更展现出昂扬向上、 和奋力拼搏的精神面狐。",
+          "source": {
+            "pdfPage": 15,
+            "printedPage": 26,
+            "side": "left",
+            "bbox": [
+              65.5,
+              188.3,
+              294.5,
+              301.3
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "本次技能竞赛结果最终名列前茅者将获得 “技能标兵 ” 称号以及东莞隐贤山庄带薪一日游。",
+          "source": {
+            "pdfPage": 15,
+            "printedPage": 26,
+            "side": "left",
+            "bbox": [
+              65.5,
+              303.5,
+              294.5,
+              334.4
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "6 月 30 号新亦源东莞电商 2023 年第一季度优秀员工团建活动如期进行。",
+          "source": {
+            "pdfPage": 15,
+            "printedPage": 26,
+            "side": "left",
+            "bbox": [
+              65.9,
+              336.6,
+              294.5,
+              363.2
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "园 ”的生活风范， 在华夏春秋长廊， 感受到历史文化气息， 置身于华夏文明的海洋之中。",
+          "source": {
+            "pdfPage": 15,
+            "printedPage": 26,
+            "side": "left",
+            "bbox": [
+              65.5,
+              385.9,
+              294.5,
+              416.9
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "活动项目精彩多样， 大家体验了玻璃桥上喂老虎，",
+          "source": {
+            "pdfPage": 15,
+            "printedPage": 26,
+            "side": "left",
+            "bbox": [
+              85.3,
+              419.0,
+              288.7,
+              433.4
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "在手臂上喂养小鸟， 与孔雀零距离拍照等十多个与动物亲亲体验的互动， 还观看了精彩的海狮表演， 海狮将上演水中芭蕾霹雳舞、 水中套圈、 空中飞跃、 倒立特技等精彩表演。",
+          "source": {
+            "pdfPage": 15,
+            "printedPage": 26,
+            "side": "left",
+            "bbox": [
+              317.9,
+              188.3,
+              546.8,
+              247.7
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "在恐龙餐厅享用美味午餐后， 大家似乎还没尽兴。",
+          "source": {
+            "pdfPage": 15,
+            "printedPage": 26,
+            "side": "left",
+            "bbox": [
+              337.7,
+              254.5,
+              540.7,
+              268.6
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "于是团队分组活动， 自行选择体验动感机动游乐区项目、 游玩水上乐园、 观看剧场表演。",
+          "source": {
+            "pdfPage": 15,
+            "printedPage": 26,
+            "side": "left",
+            "bbox": [
+              317.5,
+              270.7,
+              546.5,
+              301.7
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "在这次活动当中， 大家没有了部门、 身份之别， 尴众和隔头也消失了。 我们心无旁警、 无所顾忌的玩乐在一起， 让大家在紧张的工作之余身心充分放松， 彻底缓解工作压力， 促进并加深了员工之间的相互了解， 增进彼此之间的交流和沟通， 更重要的是营造了员工团结凝聚、 活跃、 奋进的氛围。",
+          "source": {
+            "pdfPage": 15,
+            "printedPage": 26,
+            "side": "left",
+            "bbox": [
+              317.9,
+              303.8,
+              546.8,
+              400.3
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "“技能标兵 ”之旅虽然结束， 但前进的脚步不能停下。 让我们携手同进， 一路向前， 以更好的状态， 更饱满的精力， 迎接更大的挑战， 创造更多的价值。",
+          "source": {
+            "pdfPage": 15,
+            "printedPage": 26,
+            "side": "left",
+            "bbox": [
+              317.9,
+              402.5,
+              546.8,
+              450.0
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "“为企业谋发展， 为客户谋价值 ”。 我们也期待更多的员工加入到优秀员工队伍中， 一起加油 !",
+          "source": {
+            "pdfPage": 15,
+            "printedPage": 26,
+            "side": "left",
+            "bbox": [
+              317.9,
+              451.8,
+              546.8,
+              482.8
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "BAMA——逐梦远方｜2023 新亦源校园招聘补录",
+      "source": {
+        "pdfPage": 15,
+        "printedPage": 27,
+        "side": "right",
+        "bbox": [
+          661.4,
+          107.3,
+          1034.3,
+          172.8
+        ]
+      },
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "青春敢间 ' 逐梦远方2023 新亦源校园招聘补录机会来啦",
+          "source": {
+            "pdfPage": 15,
+            "printedPage": 27,
+            "side": "right",
+            "bbox": [
+              661.4,
+              107.3,
+              1034.3,
+              172.8
+            ]
+          }
+        },
+        {
+          "type": "quote",
+          "text": "O 文 / 陈燕",
+          "source": {
+            "pdfPage": 15,
+            "printedPage": 27,
+            "side": "right",
+            "bbox": [
+              662.1,
+              177.1,
+              722.2,
+              187.9
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "新亦源于 2023 年 6 月 7 日上午和 6 月13 日上午， 分别出席参加了由广州华南商贸职业学院 (白云校区 ) 举办的 “第十六届 (2023 年 ) 实习与就业供需见面会 ”和广州市工贸技师学院举办的 “质量就业职 ' 引未来 ”大型校园招聘会。",
+          "source": {
+            "pdfPage": 15,
+            "printedPage": 27,
+            "side": "right",
+            "bbox": [
+              660.7,
+              218.9,
+              832.0,
+              315.4
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "两场校园招聘活动都吸引了众多优秀的求职者前来参加。",
+          "source": {
+            "pdfPage": 15,
+            "printedPage": 27,
+            "side": "right",
+            "bbox": [
+              661.0,
+              317.9,
+              830.6,
+              344.2
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "在校招会上， 新亦源展现出我们大好的发展前景和卓越的企业实力， 因此也赢得了众多应届生的青睐和认可。",
+          "source": {
+            "pdfPage": 15,
+            "printedPage": 27,
+            "side": "right",
+            "bbox": [
+              660.7,
+              350.6,
+              832.0,
+              397.8
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "补录机会来啦 !",
+          "source": {
+            "pdfPage": 16,
+            "printedPage": 28,
+            "side": "left",
+            "bbox": [
+              85.3,
+              216.4,
+              158.4,
+              226.4
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "还没来得及现场了解的同学如果有兴趣还能通过文未联系方式找到我们哦 !",
+          "source": {
+            "pdfPage": 16,
+            "printedPage": 28,
+            "side": "left",
+            "bbox": [
+              65.5,
+              232.2,
+              350.6,
+              260.3
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "我们需要像你这样的人才",
+          "source": {
+            "pdfPage": 16,
+            "printedPage": 28,
+            "side": "left",
+            "bbox": [
+              85.3,
+              264.6,
+              188.6,
+              281.5
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "具有开拓创新和强烈发展意愿的你",
+          "source": {
+            "pdfPage": 16,
+            "printedPage": 28,
+            "side": "left",
+            "bbox": [
+              85.3,
+              279.7,
+              226.8,
+              298.8
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "保持事业负责和勇于奉献精神的你运营管培生",
+          "source": {
+            "pdfPage": 16,
+            "printedPage": 28,
+            "side": "left",
+            "bbox": [
+              85.3,
+              299.5,
+              226.8,
+              332.3
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "《BAMA——逐梦远方｜2023 新亦源校园招聘补录》：PDF physical page 16，左侧，bbox [85.3, 337.0, 528.8, 415.1]。该处为跨栏、图文叠加、表格或断行造成的不可可靠 OCR 片段，未作为正文发布；请核对该原 PDF 区域。",
+          "source": {
+            "pdfPage": 16,
+            "printedPage": 28,
+            "side": "left",
+            "bbox": [
+              85.3,
+              337.0,
+              528.8,
+              415.1
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "4、 各类商品跟踪及差异处理工作 ; 也",
+          "source": {
+            "pdfPage": 16,
+            "printedPage": 28,
+            "side": "left",
+            "bbox": [
+              85.3,
+              436.7,
+              456.8,
+              446.0
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "5、 协调物流园内相关工作 ; — — 作 <",
+          "source": {
+            "pdfPage": 16,
+            "printedPage": 28,
+            "side": "left",
+            "bbox": [
+              85.3,
+              444.2,
+              533.5,
+              467.3
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "6、 完成上级交给的其它事务性工作。",
+          "source": {
+            "pdfPage": 16,
+            "printedPage": 28,
+            "side": "left",
+            "bbox": [
+              85.3,
+              468.0,
+              236.9,
+              481.7
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "岗位要求 : 季度生日会文娱活动工龄奖",
+          "source": {
+            "pdfPage": 16,
+            "printedPage": 28,
+            "side": "left",
+            "bbox": [
+              85.7,
+              479.5,
+              526.3,
+              494.6
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "1、 全日制大学专科及以上学历， 专业不限 ;",
+          "source": {
+            "pdfPage": 16,
+            "printedPage": 28,
+            "side": "left",
+            "bbox": [
+              86.0,
+              501.1,
+              264.6,
+              514.4
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "2、 思维敏捷， 沟通能力强， 具备商品运营、 市场拓展、 物流等方向发展的潜力 ; ¥ —",
+          "source": {
+            "pdfPage": 16,
+            "printedPage": 28,
+            "side": "left",
+            "bbox": [
+              65.5,
+              517.3,
+              520.2,
+              547.6
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "3、 熟练使用 office 办公软件， 具有一定的统计及数据分析能力 ; < -< 4",
+          "source": {
+            "pdfPage": 16,
+            "printedPage": 28,
+            "side": "left",
+            "bbox": [
+              85.3,
+              536.4,
+              533.5,
+              564.1
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "4、 担任过班干部、 社团组织负责人或具有社会实践经验者优先 ;",
+          "source": {
+            "pdfPage": 16,
+            "printedPage": 28,
+            "side": "left",
+            "bbox": [
+              85.3,
+              567.0,
+              348.5,
+              580.3
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "5、 认同公司文化， 务实、 自驱力强 ;",
+          "source": {
+            "pdfPage": 16,
+            "printedPage": 28,
+            "side": "left",
+            "bbox": [
+              85.3,
+              583.2,
+              237.2,
+              596.9
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "6、 不限专业 (电子商务、 物流专业优先 )。",
+          "source": {
+            "pdfPage": 16,
+            "printedPage": 28,
+            "side": "left",
+            "bbox": [
+              85.3,
+              599.8,
+              252.0,
+              613.4
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "加班补贴餐补包吃住",
+          "source": {
+            "pdfPage": 16,
+            "printedPage": 28,
+            "side": "left",
+            "bbox": [
+              377.3,
+              577.1,
+              526.3,
+              589.3
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "“直播带岗 一起益企”新亦源在线直招",
+      "source": {
+        "pdfPage": 16,
+        "printedPage": 29,
+        "side": "right",
+        "bbox": [
+          677.6,
+          106.9,
+          931.4,
+          172.4
+        ]
+      },
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "直播带岗一起益企、新亦源在线直招 200+ 人",
+          "source": {
+            "pdfPage": 16,
+            "printedPage": 29,
+            "side": "right",
+            "bbox": [
+              677.6,
+              106.9,
+              931.4,
+              172.4
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "7 月 7 日， 新亦源作为实力企业出席参加了广东省直播带岗助 ”六稳 “ 佛山专场招聘活动， 该活动于佛山国家火炬创新创意园成功举办， 活动以直播带岗、 线上招聘的形式， 架起企业与求职者之间的就业云桥。",
+          "source": {
+            "pdfPage": 16,
+            "printedPage": 29,
+            "side": "right",
+            "bbox": [
+              677.2,
+              256.0,
+              1143.1,
+              286.9
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "直播带岗活动让求职者 “ 身临其境、 实时互动 ”， 带领求职者 “沉浸式 ” 探岗。 本次招聘直播， 新亦源招聘需求超 200 人， 欢迎广大求职者咨询选择、 投出简历。",
+          "source": {
+            "pdfPage": 16,
+            "printedPage": 29,
+            "side": "right",
+            "bbox": [
+              677.2,
+              289.1,
+              1141.6,
+              320.0
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "关于我们",
+          "source": {
+            "pdfPage": 16,
+            "printedPage": 29,
+            "side": "right",
+            "bbox": [
+              697.0,
+              323.6,
+              743.5,
+              340.2
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "“新亦源 ” 总部位于广州， 诞生于与联网时代的新物流， 是国内细分行业物流变革领导者， 从创业开始，万家门店， 上亿消费者， 实现了全国 6000+ 多城市覆盖。",
+          "source": {
+            "pdfPage": 16,
+            "printedPage": 29,
+            "side": "right",
+            "bbox": [
+              677.2,
+              342.4,
+              1136.2,
+              389.5
+            ]
+          }
+        },
+        {
+          "type": "review-note",
+          "text": "《“直播带岗 一起益企”新亦源在线直招》：PDF physical page 16，右侧，bbox [697.0, 392.8, 797.5, 410.4]。该处为跨栏、图文叠加、表格或断行造成的不可可靠 OCR 片段，未作为正文发布；请核对该原 PDF 区域。",
+          "source": {
+            "pdfPage": 16,
+            "printedPage": 29,
+            "side": "right",
+            "bbox": [
+              697.0,
+              392.8,
+              797.5,
+              410.4
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "质检组长 10 名",
+          "source": {
+            "pdfPage": 16,
+            "printedPage": 29,
+            "side": "right",
+            "bbox": [
+              697.0,
+              412.2,
+              756.4,
+              425.9
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "要求有较强的服装品控能力和丰富的现场质检团队管理经验， 熟悉掌握质检流程及标准 ; 具备较强品质意识， 对服装生产工艺质量要求有较强的分析判断处理能力。",
+          "source": {
+            "pdfPage": 16,
+            "printedPage": 29,
+            "side": "right",
+            "bbox": [
+              677.2,
+              428.4,
+              1143.1,
+              459.0
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "QC 员工若干",
+          "source": {
+            "pdfPage": 16,
+            "printedPage": 29,
+            "side": "right",
+            "bbox": [
+              697.0,
+              463.0,
+              752.1,
+              472.3
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "对来货服装进行抽检， 根据类型不同抽取相应比例 ; 针对回货产品进行抽检， 从工艺、 尺寸、 外观、 包装、 法规等方面判断订单品质是否合格， 提报检测合格率进行反馈， 上传检测结果， 熟练掌握 office 办公软件及基础电脑操作。",
+          "source": {
+            "pdfPage": 16,
+            "printedPage": 29,
+            "side": "right",
+            "bbox": [
+              677.2,
+              478.1,
+              1142.3,
+              520.9
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "工作地点 : 佛山市三水区大塘镇宏盛嘉业",
+          "source": {
+            "pdfPage": 16,
+            "printedPage": 29,
+            "side": "right",
+            "bbox": [
+              697.0,
+              527.4,
+              866.9,
+              541.4
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
