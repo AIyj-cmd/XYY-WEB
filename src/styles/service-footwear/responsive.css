@@ -1,0 +1,105 @@
+@media (max-width: 960px) {
+  .footwear-hero__inner,
+  .footwear-returns,
+  .footwear-assurance,
+  .footwear-faq {
+    grid-template-columns: 1fr;
+  }
+  .footwear-network__heading {
+    grid-template-columns: 1fr;
+  }
+  .footwear-hero h1 {
+    max-width: none;
+  }
+  .footwear-fulfillment__body[data-enhanced='true'] {
+    grid-template-columns: 1fr;
+  }
+  .footwear-fulfillment__body[data-enhanced='true'] .footwear-fulfillment__tabs [role='tablist'] {
+    display: flex;
+    overflow-x: visible;
+    padding-bottom: 0;
+  }
+  .footwear-fulfillment__tabs button {
+    width: auto;
+    min-width: 0;
+    flex: 1 1 0;
+    white-space: nowrap;
+  }
+  .footwear-faq {
+    gap: 2.5rem;
+  }
+  .footwear-faq > div {
+    max-width: 48rem;
+  }
+}
+@media (max-width: 760px) {
+  .footwear-section {
+    width: min(100% - 2rem, 82rem);
+    padding: 4.5rem 0;
+  }
+  .footwear-hero__inner {
+    width: min(100% - 2rem, 82rem);
+    padding: 6rem 0 4.5rem;
+  }
+  .footwear-hero h1 {
+    font-size: clamp(2.5rem, 11vw, 4.2rem);
+  }
+  .footwear-hero h1 .footwear-hero__service {
+    font-size: clamp(1.4rem, 6vw, 1.6rem);
+  }
+  .footwear-hero h1 .footwear-hero__statement {
+    font-size: clamp(2.25rem, 10vw, 2.6rem);
+  }
+  .footwear-goods__grid,
+  .footwear-network__channels,
+  .footwear-network__system,
+  .footwear-assurance__blocks,
+  .footwear-supplement {
+    grid-template-columns: 1fr;
+  }
+  .footwear-goods__visual {
+    order: -1;
+    min-height: 22rem;
+  }
+  .footwear-network,
+  .footwear-assurance,
+  .footwear-faq {
+    padding-right: 1rem;
+    padding-left: 1rem;
+  }
+  .footwear-network__channels article:nth-child(2),
+  .footwear-network__channels article:nth-child(3),
+  .footwear-returns__links a:last-child {
+    margin: 0;
+  }
+  .footwear-fulfillment__stages article {
+    grid-template-columns: 1fr;
+  }
+  .footwear-assurance__blocks article:last-child {
+    margin-top: 0;
+  }
+  .footwear-faq {
+    padding-top: 4.5rem;
+    padding-bottom: 4.5rem;
+  }
+}
+@media (max-width: 400px) {
+  .footwear-page h2 {
+    font-size: clamp(2rem, 10vw, 2.7rem);
+  }
+  .footwear-goods__visual {
+    min-height: 19rem;
+  }
+  .footwear-hero__video,
+  .footwear-fulfillment video {
+    border-radius: 1.5rem;
+  }
+  .footwear-fulfillment__tabs [role='tablist'] {
+    gap: 0.4rem;
+  }
+  .footwear-fulfillment__tabs button {
+    gap: 0.25rem;
+    padding: 0.5rem 0.35rem;
+    font-size: 0.82rem;
+  }
+}

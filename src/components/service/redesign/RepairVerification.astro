@@ -1,0 +1,55 @@
+---
+import type { StatItem } from '@/data/service'
+
+interface Props {
+  contentDesc: string
+  stats: readonly StatItem[]
+}
+
+const { contentDesc, stats } = Astro.props
+const successStats = stats.filter(({ label }) => label.includes('修复成功率'))
+const supportingStats = stats.filter(({ label }) => !label.includes('修复成功率'))
+---
+
+<section class="repair-verification repair-section" aria-labelledby="repair-verification-heading">
+  <div class="redesign-shell">
+    <header class="repair-section__heading">
+      <p class="redesign-kicker">数据与依据</p>
+      <h2 id="repair-verification-heading">修复结果，有明确的统计口径。</h2>
+    </header>
+    <div class="repair-verification__layout">
+      {
+        successStats.length > 0 && (
+          <div class="repair-verification__success">
+            {successStats.map(({ stat, label, sub }) => (
+              <>
+                <strong>{stat}</strong>
+                <span>{label}</span>
+                <p>
+                  {sub}
+                  。指进入修复流程的商品中，经处理和二次质检后达到品牌约定上架等级的比例，不作为每批货保证。
+                </p>
+              </>
+            ))}
+          </div>
+        )
+      }
+      {
+        supportingStats.length > 0 && (
+          <dl class="repair-verification__supporting">
+            {supportingStats.map(({ stat, label, sub }) => (
+              <div>
+                <dt>{stat}</dt>
+                <dd>
+                  <strong>{label}</strong>
+                  <span>{sub}</span>
+                </dd>
+              </div>
+            ))}
+          </dl>
+        )
+      }
+    </div>
+    {contentDesc && <p class="repair-verification__description">{contentDesc}</p>}
+  </div>
+</section>

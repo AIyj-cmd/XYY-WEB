@@ -71,13 +71,16 @@
 }
 .assurance-mechanisms__list {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
   gap: 1.5rem;
 }
 .assurance-mechanisms__list article {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 1rem;
+  min-width: 0;
+}
+.assurance-mechanisms__list article > div {
   min-width: 0;
 }
 .assurance-mechanism__icon {
@@ -102,5 +105,6 @@
   color: var(--body);
   font-size: 0.85rem;
   line-height: 1.5;
-  white-space: nowrap;
+  overflow-wrap: break-word;
+  white-space: normal;
 }

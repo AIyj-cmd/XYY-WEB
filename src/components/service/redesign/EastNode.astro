@@ -1,0 +1,73 @@
+---
+import type { EastFeatureGroups, EastStatGroups } from './east-content'
+
+interface Props {
+  groups: EastFeatureGroups
+  stats: EastStatGroups
+}
+const { groups, stats } = Astro.props
+---
+
+<section class="east-node east-section" aria-labelledby="east-node-heading">
+  <div class="redesign-shell">
+    <header>
+      <p class="redesign-kicker">实际节点与合作核验</p><h2 id="east-node-heading">
+        上海青浦，作为项目评估的一处节点
+      </h2>
+    </header>
+    <div class="east-node__grid">
+      <div>
+        <p class="east-node__label">上海青浦核心节点之一</p>{
+          groups.network.map(({ title, desc }) => (
+            <p data-redesign-feature>
+              <>
+                <b data-feature-title>{title}</b>
+                <span data-feature-description>{desc}</span>
+              </>
+            </p>
+          ))
+        }{
+          groups.support.map(({ title, desc }) => (
+            <p data-redesign-feature>
+              <>
+                <b data-feature-title>{title}</b>
+                <span data-feature-description>{desc}</span>
+              </>
+            </p>
+          ))
+        }
+      </div>
+      <aside>
+        <p>
+          项目启动前，确认实际启用仓点、仓容与作业范围。本地商务BD可就近沟通订单地区、SKU和补货频率。
+        </p>{
+          stats.network.concat(stats.fees).map(({ stat, label, sub }) => (
+            <p class="east-stat">
+              <>
+                <b>{stat}</b>
+                <span>
+                  {label} · {sub}
+                </span>
+              </>
+            </p>
+          ))
+        }
+      </aside>
+    </div>
+    {
+      (stats.warehouse.length > 0 || stats.other.length > 0) && (
+        <div class="east-cutoff">
+          <p>仓内时间与运输参考分别确认。</p>
+          {stats.warehouse.concat(stats.other).map(({ stat, label, sub }) => (
+            <p class="east-stat">
+              <b>{stat}</b>
+              <span>
+                {label} · {sub}
+              </span>
+            </p>
+          ))}
+        </div>
+      )
+    }
+  </div>
+</section>

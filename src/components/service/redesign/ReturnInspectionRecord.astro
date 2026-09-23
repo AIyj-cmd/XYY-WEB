@@ -1,0 +1,39 @@
+---
+interface Props {
+  context: string
+}
+
+const { context } = Astro.props
+
+const fields = [
+  ['商品信息', '款号、颜色、尺码与退件来源'],
+  ['检查项目', '外观、配件、标识与专项检查'],
+  ['异常照片', '用于核对与后续举证的记录位置'],
+  ['等级判定', '按品牌确认规则写入处理结果'],
+  ['处置记录', '上架、修复、隔离或其他确认去向'],
+]
+---
+
+<section class="returns-section returns-record" aria-labelledby="returns-record-heading">
+  <div class="returns-shell">
+    <header class="returns-section__heading">
+      <p class="returns-kicker">检验记录</p>
+      <h2 id="returns-record-heading">一份记录，把检查和处置连起来</h2>
+      {context && <p>{context}</p>}
+    </header>
+    <div class="returns-record__sheet" aria-label="质检记录字段示意">
+      <div class="returns-record__caption">字段示意</div>
+      {
+        fields.map(([label, description]) => (
+          <article>
+            <>
+              <strong>{label}</strong>
+              <span>{description}</span>
+            </>
+          </article>
+        ))
+      }
+    </div>
+    <p class="returns-record__note">记录内容与判定口径按品牌要求确认。</p>
+  </div>
+</section>

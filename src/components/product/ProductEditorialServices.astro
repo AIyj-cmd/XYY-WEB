@@ -1,0 +1,63 @@
+---
+import { EDITORIAL_NEEDS, EDITORIAL_SERVICE_SERIES } from '@/data/product/editorial'
+---
+
+<section id="service-series" class="product-editorial__series" aria-labelledby="series-heading">
+  <div class="product-editorial__container product-editorial__series-layout">
+    <h2 id="series-heading" data-reveal="copy" data-reveal-self>我们提供的<br />核心服务</h2>
+    <div class="product-editorial__series-list" data-reveal="copy">
+      {
+        EDITORIAL_SERVICE_SERIES.map(({ id, number, title, description, href }) => (
+          <article id={id}>
+            <span>{number}</span>
+            <h3>{title}</h3>
+            <p>{description}</p>
+            <a href={href}>
+              了解更多 <span aria-hidden="true">→</span>
+            </a>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<section
+  id="service-directory"
+  class="product-editorial__directory"
+  aria-labelledby="directory-heading"
+>
+  <div class="product-editorial__container product-editorial__directory-layout">
+    <div
+      class="product-editorial__placeholder product-editorial__directory-placeholder"
+      data-product-visual
+      data-reveal="copy"
+      data-reveal-self
+    >
+      <img
+        src="/images/product/directory-objects-20260911.png"
+        alt="入库、库存与退货处理物品组合概念示意图"
+        width="1536"
+        height="1024"
+        loading="lazy"
+        decoding="async"
+      />
+    </div>
+    <div>
+      <h2 id="directory-heading" data-reveal="copy" data-reveal-self>
+        你现在需要<br />解决什么问题？
+      </h2>
+      <div class="product-editorial__needs" data-reveal="copy">
+        {
+          EDITORIAL_NEEDS.map(([number, title, description]) => (
+            <article>
+              <span>{number}</span>
+              <h3>{title}</h3>
+              <p>{description}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>

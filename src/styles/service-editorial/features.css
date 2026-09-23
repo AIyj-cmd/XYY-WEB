@@ -1,0 +1,89 @@
+.service-editorial .service-detail__features {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 0;
+  border: 0;
+  gap: 1rem;
+}
+
+.service-editorial .service-detail__features li {
+  display: block;
+  min-height: 13rem;
+  padding: 1.5rem;
+  border: 0;
+  background: #f6f7f5;
+}
+
+.service-editorial .service-detail__index {
+  display: block;
+  padding: 0;
+  margin-bottom: 2.8rem;
+}
+
+.service-editorial .service-detail__marker {
+  display: none;
+}
+
+.service-editorial .service-detail__features h3 {
+  color: var(--editorial-ink);
+  font-size: 1.05rem;
+}
+
+.service-editorial--journey .service-detail__features {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.service-editorial--south-network .service-detail__features,
+.service-editorial--east-radius .service-detail__features,
+.service-editorial--global-tower .service-detail__features,
+.service-editorial--store-rhythm .service-detail__features,
+.service-editorial--repair-workshop .service-detail__features {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.service-editorial--evidence-lab .service-detail__features {
+  grid-template-columns: 1fr;
+  gap: 0;
+}
+
+.service-editorial--evidence-lab .service-detail__features li {
+  display: grid;
+  grid-template-columns: 5rem minmax(0, 1fr);
+  min-height: 0;
+  padding-block: 1.5rem;
+  border-top: 1px solid var(--editorial-line);
+  background: transparent;
+}
+
+.service-editorial--evidence-lab .service-detail__features li:last-child {
+  border-bottom: 1px solid var(--editorial-line);
+}
+
+.service-editorial--evidence-lab .service-detail__index {
+  margin: 0;
+}
+
+@media (max-width: 900px) {
+  .service-editorial .service-detail__features,
+  .service-editorial--journey .service-detail__features {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .service-editorial .service-detail__features {
+    grid-template-columns: 1fr;
+  }
+
+  .service-editorial .service-detail__features li {
+    min-height: 0;
+  }
+
+  .service-editorial--evidence-lab .service-detail__features li {
+    grid-template-columns: 3.25rem minmax(0, 1fr);
+  }
+
+  .service-editorial .service-detail__index {
+    margin-bottom: 1.75rem;
+  }
+}

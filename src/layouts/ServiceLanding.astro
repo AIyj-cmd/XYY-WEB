@@ -2,36 +2,32 @@
 import ServiceSignature from '@/components/service/ServiceSignature.astro'
 import ServiceLandingHero from '@/components/service/ServiceLandingHero.astro'
 import ServiceExperience from '@/components/service/ServiceExperience.astro'
+import ServiceEditorialBody from '@/components/service/ServiceEditorialBody.astro'
+import FootwearPage from '@/components/service/footwear/FootwearPage.astro'
+import RedesignServicePage from '@/components/service/redesign/RedesignServicePage.astro'
+import {
+  isRedesignPresentation,
+  type RedesignPresentation,
+} from '@/components/service/redesign/presentation'
 import Layout from '@/layouts/Layout.astro'
 import { SPECIALTY_LINKS } from '@/data/navigation'
-import {
-  absoluteUrl,
-  createBreadcrumbSchema,
-  createFaqSchema,
-  createServiceSchema,
-} from '@/lib/seo'
-import { type FaqItem, type FeatureItem, type ServiceVariant, type StatItem } from '@/data/service'
+import { getServiceHeroMedia } from '@/data/service-hero-media'
+import * as seo from '@/lib/seo'
+import { type FaqItem, type ServiceVariant, type StatItem } from '@/data/service'
 import { getFaqs, getServicePageContent } from '@/lib/directus'
-
-interface Props {
+import type { ServicePageContent } from '@/lib/directus-content-queries'
+import { toEastPublicCopy } from '@/components/service/redesign/east-public-copy'
+import { toLivePublicCopy } from '@/components/service/redesign/live-public-copy'
+import { toSouthPublicCopy } from '@/components/service/redesign/south-public-copy'
+import { toB2bPublicCopy } from '@/components/service/redesign/b2b-public-copy'
+import { toFootwearPublicCopy } from '@/components/service/footwear/public-copy'
+interface Props extends ServicePageContent {
   variant: ServiceVariant
-  title: string
-  description: string
   slug: string
-  breadcrumbLabel: string
-  eyebrow: string
-  h1: string
-  h1sub: string
-  heroDesc: string
-  imgSrc: string
-  imgAlt: string
   stats: [StatItem, StatItem, StatItem, StatItem]
-  contentDesc: string
-  featuresLabel: string
-  features: FeatureItem[]
   faqs: FaqItem[]
+  presentation?: 'classic' | 'editorial' | 'footwear' | RedesignPresentation
 }
-
 const {
   variant,
   title,
@@ -49,9 +45,10 @@ const {
   featuresLabel,
   features,
   faqs,
+  presentation = 'classic',
 } = Astro.props
 
-const pageUrl = absoluteUrl(`/${slug}`)
+const pageUrl = seo.absoluteUrl(`/${slug}`)
 const content = await getServicePageContent(slug, {
   title,
   description,
@@ -67,65 +64,114 @@ const content = await getServicePageContent(slug, {
   featuresLabel,
   features,
 })
-const breadcrumbSchema = createBreadcrumbSchema([
+const displayFaqs = await getFaqs(slug, faqs)
+const publicCopy =
+  slug === 'huanan-xiefu-yuncang' && presentation === 'south'
+    ? toSouthPublicCopy(content, displayFaqs)
+    : slug === 'huadong-xiefu-yuncang' && presentation === 'east'
+      ? toEastPublicCopy(content, displayFaqs)
+      : slug === 'zhibo-cangpei' && presentation === 'live'
+        ? toLivePublicCopy(content, displayFaqs)
+        : slug === 'b2b-mendian-cangpei' && presentation === 'b2b'
+          ? toB2bPublicCopy(content, displayFaqs)
+          : slug === 'xiefu-yuncang' && presentation === 'footwear'
+            ? toFootwearPublicCopy(content, displayFaqs)
+            : undefined
+const displayContent = publicCopy?.content ?? content
+const publicFaqs = publicCopy?.faqs ?? displayFaqs
+const breadcrumbSchema = seo.createBreadcrumbSchema([
   { name: '首页', path: '/' },
   { name: '产品服务', path: '/product' },
-  { name: content.breadcrumbLabel, path: `/${slug}` },
+  { name: displayContent.breadcrumbLabel, path: `/${slug}` },
 ])
-const serviceSchema = createServiceSchema({
-  name: content.h1,
-  description: content.description,
+const serviceSchema = seo.createServiceSchema({
+  name: displayContent.h1,
+  description: displayContent.description,
   path: `/${slug}`,
 })
-const displayFaqs = await getFaqs(slug, faqs)
-const faqSchema = createFaqSchema(displayFaqs)
-const useConversionCta = SPECIALTY_LINKS.some(({ href }) => href === `/${slug}`)
+const faqSchema = seo.createFaqSchema(publicFaqs)
+const heroMedia = getServiceHeroMedia(slug)
 ---
 
 <Layout
-  title={content.title}
-  description={content.description}
+  title={displayContent.title}
+  description={displayContent.description}
   canonical={pageUrl}
   jsonLd={[breadcrumbSchema, serviceSchema, faqSchema]}
 >
-  <!-- Hero：所有服务页统一保留 -->
-  <ServiceLandingHero
-    eyebrow={content.eyebrow}
-    h1={content.h1}
-    h1sub={content.h1sub}
-    heroDesc={content.heroDesc}
-    imgSrc={content.imgSrc}
-    imgAlt={content.imgAlt}
-  />
-
-  <ServiceSignature
-    variant={variant}
-    h1={content.h1}
-    contentDesc={content.contentDesc}
-    stats={content.stats}
-    features={content.features}
-  />
-
-  <div class:list={['service-unique', `service-unique--${variant}`]} data-service-reveal="visual">
-    <slot name="unique" />
-  </div>
-
-  <ServiceExperience
-    variant={variant}
-    h1={content.h1}
-    breadcrumbLabel={content.breadcrumbLabel}
-    contentDesc={content.contentDesc}
-    featuresLabel={content.featuresLabel}
-    features={content.features}
-    faqs={displayFaqs}
-    {useConversionCta}
-  />
+  {
+    slug === 'xiefu-yuncang' && presentation === 'footwear' ? (
+      <FootwearPage content={displayContent} faqs={publicFaqs} />
+    ) : isRedesignPresentation(presentation) ? (
+      <RedesignServicePage
+        {presentation}
+        content={displayContent}
+        faqs={publicFaqs}
+        videoSrc={heroMedia?.src ?? ''}
+        poster={heroMedia?.poster ?? content.imgSrc}
+      />
+    ) : presentation === 'editorial' && heroMedia ? (
+      <ServiceEditorialBody
+        {variant}
+        h1={content.h1}
+        eyebrow={content.eyebrow}
+        h1sub={content.h1sub}
+        heroDesc={content.heroDesc}
+        poster={heroMedia.poster}
+        videoSrc={heroMedia.src}
+        contentDesc={content.contentDesc}
+        breadcrumbLabel={content.breadcrumbLabel}
+        featuresLabel={content.featuresLabel}
+        stats={content.stats}
+        features={content.features}
+        faqs={displayFaqs}
+        useConversionCta={SPECIALTY_LINKS.some(({ href }) => href === `/${slug}`)}
+      >
+        <slot name="unique" />
+      </ServiceEditorialBody>
+    ) : (
+      <>
+        <ServiceLandingHero
+          eyebrow={content.eyebrow}
+          h1={content.h1}
+          h1sub={content.h1sub}
+          heroDesc={content.heroDesc}
+          imgSrc={content.imgSrc}
+          imgAlt={content.imgAlt}
+          videoSrc={heroMedia?.src}
+          poster={heroMedia?.poster}
+        />
+        <ServiceSignature
+          variant={variant}
+          h1={content.h1}
+          contentDesc={content.contentDesc}
+          stats={content.stats}
+          features={content.features}
+        />
+        <div
+          class:list={['service-unique', `service-unique--${variant}`]}
+          data-service-reveal="visual"
+        >
+          <slot name="unique" />
+        </div>
+        <ServiceExperience
+          variant={variant}
+          h1={content.h1}
+          breadcrumbLabel={content.breadcrumbLabel}
+          contentDesc={content.contentDesc}
+          featuresLabel={content.featuresLabel}
+          features={content.features}
+          faqs={displayFaqs}
+          useConversionCta={SPECIALTY_LINKS.some(({ href }) => href === `/${slug}`)}
+        />
+      </>
+    )
+  }
 </Layout>
 
 <script>
   import '@/scripts/service-page'
 </script>
-
 <style>
   .service-unique:empty {
     display: none;

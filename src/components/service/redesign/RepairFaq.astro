@@ -1,0 +1,50 @@
+---
+import type { FaqItem } from '@/data/service'
+import ConversionCTA from '@/components/conversion/ConversionCTA.astro'
+
+interface Props {
+  faqs: FaqItem[]
+}
+
+const { faqs } = Astro.props
+---
+
+<section class="repair-faq" aria-labelledby="repair-faq-heading">
+  <div class="redesign-shell">
+    <header class="repair-faq__heading">
+      <p class="redesign-kicker">FAQ 与咨询</p>
+      <h2 id="repair-faq-heading">评估之前，先把这些信息准备好。</h2>
+    </header>
+    <div class="repair-faq__layout">
+      <div class="repair-faq__questions">
+        {
+          faqs.map(({ q, a }) => (
+            <details data-redesign-faq>
+              <summary>{q}</summary>
+              <p>{a}</p>
+            </details>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>
+<ConversionCTA
+  className="repair-cta"
+  headingId="repair-contact-heading"
+  eyebrow="修复评估"
+  headingLines={['从一件商品的材质和瑕疵，', '开始评估']}
+  actionLabel="评估修复需求"
+  preparationItems={[
+    { label: '商品材质', detail: '面料、材质与商品品类' },
+    { label: '瑕疵照片', detail: '异常位置与细节图片' },
+    { label: '配件情况', detail: '配件缺损与补配需求' },
+    { label: '品牌验收规则', detail: '整理要求与验收标准' },
+  ]}
+  secondaryLinks={[
+    { href: '/tuihuo-zhijian', label: '了解退货质检' },
+    { href: '/cases', label: '查看合作案例' },
+    { href: '/product', label: '查看全部仓配服务' },
+  ]}
+  reveal="service"
+/>

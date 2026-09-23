@@ -1,0 +1,44 @@
+---
+interface Props {
+  eyebrow: string
+  h1: string
+  h1sub: string
+  heroDesc: string
+  videoSrc: string
+  poster: string
+}
+
+const { eyebrow, h1, h1sub, heroDesc, videoSrc, poster } = Astro.props
+---
+
+<section class="service-editorial-hero" aria-labelledby="lp-h1" data-service-motion-root>
+  <div class="service-editorial-hero__inner">
+    <div class="service-editorial-hero__copy" data-service-hero-copy>
+      <p class="service-editorial-hero__eyebrow">{eyebrow}</p>
+      <h1 id="lp-h1">{h1}</h1>
+      <p class="service-editorial-hero__subheading">{h1sub}</p>
+      <p class="service-editorial-hero__description">{heroDesc}</p>
+      <div class="service-editorial-hero__actions">
+        <a class="service-editorial-hero__primary-action" href="/contact">免费获取方案</a>
+        <a class="service-editorial-hero__secondary-action" href="/product">查看全部产品</a>
+      </div>
+    </div>
+    <figure class="service-editorial-hero__media">
+      <video
+        class="service-editorial-hero__video"
+        data-service-hero-media
+        autoplay
+        loop
+        muted
+        playsinline
+        preload="auto"
+        width="1280"
+        height="720"
+        poster={poster}
+        aria-label={`${h1}服务视频`}
+      >
+        <source src={videoSrc} type="video/mp4" />
+      </video>
+    </figure>
+  </div>
+</section>

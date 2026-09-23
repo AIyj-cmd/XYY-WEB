@@ -6,9 +6,11 @@ interface Props {
   heroDesc: string
   imgSrc: string
   imgAlt: string
+  videoSrc?: string
+  poster?: string
 }
 
-const { eyebrow, h1, h1sub, heroDesc, imgSrc, imgAlt } = Astro.props
+const { eyebrow, h1, h1sub, heroDesc, imgSrc, imgAlt, videoSrc, poster } = Astro.props
 ---
 
 <section
@@ -16,13 +18,33 @@ const { eyebrow, h1, h1sub, heroDesc, imgSrc, imgAlt } = Astro.props
   aria-labelledby="lp-h1"
   data-service-motion-root
 >
-  <img
-    src={imgSrc}
-    alt={imgAlt}
-    class="absolute inset-0 w-full h-full object-cover"
-    fetchpriority="high"
-    data-service-hero-media
-  />
+  {
+    videoSrc ? (
+      <video
+        class="absolute inset-0 w-full h-full object-cover"
+        autoplay
+        loop
+        muted
+        playsinline
+        preload="auto"
+        width="1280"
+        height="720"
+        poster={poster}
+        aria-label={`${h1}服务视频`}
+        data-service-hero-media
+      >
+        <source src={videoSrc} type="video/mp4" />
+      </video>
+    ) : (
+      <img
+        src={imgSrc}
+        alt={imgAlt}
+        class="absolute inset-0 w-full h-full object-cover"
+        fetchpriority="high"
+        data-service-hero-media
+      />
+    )
+  }
   <div
     class="absolute inset-0"
     style="background:linear-gradient(105deg,rgba(8,20,42,.95) 0%,rgba(8,20,42,.80) 40%,rgba(8,20,42,.50) 70%,rgba(8,20,42,.25) 100%);"

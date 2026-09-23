@@ -1,0 +1,39 @@
+---
+import { EDITORIAL_PROCESS } from '@/data/product/editorial'
+---
+
+<section id="service-process" class="product-editorial__process" aria-labelledby="process-heading">
+  <div class="product-editorial__container product-editorial__process-layout">
+    <div>
+      <h2 id="process-heading" data-reveal="copy" data-reveal-self>
+        从入仓到交付，<br />每一步都有结果。
+      </h2>
+      <ol data-reveal="copy">
+        {
+          EDITORIAL_PROCESS.map(([number, title, description]) => (
+            <li>
+              <span>{number}</span>
+              <h3>{title}</h3>
+              <p>{description}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+    <div
+      class="product-editorial__placeholder product-editorial__process-placeholder"
+      data-product-visual
+      data-reveal="copy"
+      data-reveal-self
+    >
+      <img
+        src="/images/product/process-objects-20260911.png"
+        alt="验收、扫码、打包与交付物品组合概念示意图"
+        width="1536"
+        height="1024"
+        loading="lazy"
+        decoding="async"
+      />
+    </div>
+  </div>
+</section>

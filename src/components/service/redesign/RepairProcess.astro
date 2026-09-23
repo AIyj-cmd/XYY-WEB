@@ -1,0 +1,33 @@
+---
+import { REPAIR_WORK_ORDER_FLOW } from '@/data/service/repair-workshop'
+---
+
+<section class="repair-process repair-section" aria-labelledby="repair-process-heading">
+  <div class="redesign-shell">
+    <header class="repair-section__heading">
+      <p class="redesign-kicker">从评估到交付</p>
+      <h2 id="repair-process-heading">修复完成之后，还要通过品牌标准。</h2>
+    </header>
+    <ol class="repair-process__steps">
+      {
+        REPAIR_WORK_ORDER_FLOW.map(({ num, title, desc }) => (
+          <li>
+            <p>{num}</p>
+            <h3>{title}</h3>
+            <span>{desc}</span>
+          </li>
+        ))
+      }
+    </ol>
+    <div class="repair-process__outcomes" aria-label="二次质检后的两种处理结果">
+      <div>
+        <strong>达到品牌确认标准</strong>
+        <p>进入约定的上架或后续授权流程。</p>
+      </div>
+      <div>
+        <strong>未达到确认标准</strong>
+        <p>按约定继续处理或分流。</p>
+      </div>
+    </div>
+  </div>
+</section>

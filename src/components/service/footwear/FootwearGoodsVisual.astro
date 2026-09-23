@@ -1,0 +1,171 @@
+---
+const visualLabel =
+  '款式、颜色和尺码的商品信息示意图；其中颜色和尺码仅为示意，不代表实际库存或业务数据。'
+---
+
+<article class="footwear-goods-visual" role="img" aria-label={visualLabel}>
+  <header class="footwear-goods-visual__header">
+    <span>商品档案</span>
+    <span>信息示意</span>
+  </header>
+  <div class="footwear-goods-visual__body">
+    <div class="footwear-goods-visual__garment" aria-hidden="true">
+      <svg viewBox="0 0 156 170" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="m54 28 24 16 24-16 30 21-17 33-16-8v72H57V74l-16 8-17-33 30-21Z"
+          fill="#F5F4F0"
+          stroke="#1D1D1B"
+          stroke-linejoin="round"
+          stroke-width="4"></path>
+        <path d="M64 35c2 12 26 12 28 0" stroke="#1D1D1B" stroke-linecap="round" stroke-width="4"
+        ></path>
+        <path d="M57 111h42" stroke="#D45B1C" stroke-linecap="round" stroke-width="5"></path>
+      </svg>
+    </div>
+    <div class="footwear-goods-visual__details">
+      <section class="footwear-goods-visual__group">
+        <span class="footwear-goods-visual__label">款式</span>
+        <strong>版型示意</strong>
+      </section>
+      <section class="footwear-goods-visual__group">
+        <span class="footwear-goods-visual__label">颜色</span>
+        <span class="footwear-goods-visual__swatches" aria-hidden="true">
+          <i></i><i></i><i></i>
+        </span>
+      </section>
+      <section class="footwear-goods-visual__group footwear-goods-visual__group--size">
+        <span class="footwear-goods-visual__label">尺码</span>
+        <span class="footwear-goods-visual__sizes" aria-hidden="true"><b>S</b><b>M</b><b>L</b></span
+        >
+      </section>
+    </div>
+  </div>
+</article>
+
+<style>
+  .footwear-goods-visual {
+    width: min(100%, 24rem);
+    box-sizing: border-box;
+    min-height: 23.5rem;
+    margin: auto;
+    padding: clamp(1rem, 3vw, 1.5rem);
+    border: 1px solid #e7e4dd;
+    border-radius: 1.75rem;
+    background: #fff;
+    box-shadow: 0 1.25rem 3rem rgb(29 29 27 / 8%);
+  }
+  .footwear-goods-visual__header,
+  .footwear-goods-visual__group,
+  .footwear-goods-visual__swatches,
+  .footwear-goods-visual__sizes {
+    display: flex;
+    align-items: center;
+  }
+  .footwear-goods-visual__header {
+    justify-content: space-between;
+    margin-bottom: 0;
+    color: #1d1d1b;
+    font-size: 0.8rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+  }
+  .footwear-goods-visual__header span:last-child,
+  .footwear-goods-visual__label {
+    color: #77756f;
+  }
+  .footwear-goods-visual__body {
+    display: grid;
+    grid-template-columns: minmax(6rem, 0.9fr) minmax(0, 1.1fr);
+    gap: 1rem;
+    align-items: center;
+    margin-top: 1rem;
+  }
+  .footwear-goods-visual__garment {
+    display: grid;
+    place-items: center;
+    min-height: 14rem;
+    border-radius: 1.2rem;
+    background: #f5f4f0;
+  }
+  .footwear-goods-visual__garment svg {
+    width: 7.4rem;
+    max-width: 100%;
+    height: auto;
+  }
+  .footwear-goods-visual__details {
+    display: grid;
+    gap: 0.6rem;
+  }
+  .footwear-goods-visual__group {
+    flex-wrap: wrap;
+    gap: 0.45rem 0.55rem;
+    min-height: 3.45rem;
+    padding: 0.65rem 0.7rem;
+    border-radius: 0.9rem;
+    background: #f8f8f6;
+  }
+  .footwear-goods-visual__label {
+    width: 100%;
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+  .footwear-goods-visual__group strong {
+    color: #1d1d1b;
+    font-size: 0.94rem;
+    line-height: 1;
+  }
+  .footwear-goods-visual__swatches,
+  .footwear-goods-visual__sizes {
+    gap: 0.35rem;
+  }
+  .footwear-goods-visual__swatches i {
+    width: 0.9rem;
+    aspect-ratio: 1;
+    border: 1px solid rgb(29 29 27 / 15%);
+    border-radius: 50%;
+    background: #1d1d1b;
+  }
+  .footwear-goods-visual__swatches i:nth-child(2) {
+    background: #d45b1c;
+  }
+  .footwear-goods-visual__swatches i:nth-child(3) {
+    background: #dedbd3;
+  }
+  .footwear-goods-visual__sizes b {
+    display: grid;
+    width: 1.35rem;
+    aspect-ratio: 1;
+    place-items: center;
+    border-radius: 0.35rem;
+    background: #fff;
+    color: #1d1d1b;
+    font-size: 0.7rem;
+  }
+  @media (max-width: 760px) {
+    .footwear-goods-visual {
+      min-height: 20rem;
+    }
+  }
+  @media (max-width: 400px) {
+    .footwear-goods-visual {
+      width: min(100%, 21rem);
+      min-height: 18rem;
+      padding: 0.85rem;
+      border-radius: 1.35rem;
+    }
+    .footwear-goods-visual__body {
+      gap: 0.7rem;
+      margin-top: 0.7rem;
+    }
+    .footwear-goods-visual__garment {
+      min-height: 10.5rem;
+    }
+    .footwear-goods-visual__garment svg {
+      width: 6rem;
+    }
+    .footwear-goods-visual__group {
+      min-height: 2.75rem;
+      padding: 0.5rem 0.55rem;
+    }
+  }
+</style>

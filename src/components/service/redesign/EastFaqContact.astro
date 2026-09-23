@@ -1,0 +1,50 @@
+---
+import type { FaqItem } from '@/data/service'
+import ConversionCTA from '@/components/conversion/ConversionCTA.astro'
+import type { EastFeatureGroups } from './east-content'
+
+interface Props {
+  faqs: FaqItem[]
+  groups: EastFeatureGroups
+}
+const { faqs, groups } = Astro.props
+---
+
+{
+  faqs.length > 0 && (
+    <section class="east-faq east-section" aria-labelledby="east-faq-heading">
+      <div class="redesign-shell">
+        {faqs.length > 0 && (
+          <div>
+            <h2 id="east-faq-heading">关于华东仓配，你可能还想了解</h2>
+            {faqs.map(({ q, a }) => (
+              <details data-redesign-faq>
+                <summary>{q}</summary>
+                <p>{a}</p>
+              </details>
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
+  )
+}
+<ConversionCTA
+  className="east-contact east-section"
+  headingId="east-contact-heading"
+  eyebrow="咨询华东仓配"
+  headingLines={['聊聊你的华东', '仓配需求']}
+  description="告诉我们货品类型、订单去向和补货节奏，一起安排合适的仓库与服务。"
+  actionLabel="咨询华东仓配"
+  preparationItems={[
+    { label: '货品类型', detail: '商品品类与规格特点' },
+    { label: '订单去向', detail: '主要收货地区与渠道' },
+    { label: '补货节奏', detail: '门店补货与订单安排' },
+    ...groups.support.map(({ title, desc }) => ({ label: title, detail: desc, isFeature: true })),
+  ]}
+  secondaryLinks={[
+    { href: '/cases', label: '查看合作案例' },
+    { href: '/product', label: '查看全部仓配服务' },
+  ]}
+  reveal="service"
+/>

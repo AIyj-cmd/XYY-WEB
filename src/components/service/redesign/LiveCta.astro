@@ -1,0 +1,22 @@
+---
+import ConversionCTA from '@/components/conversion/ConversionCTA.astro'
+---
+
+<ConversionCTA
+  className="live-cta live-section"
+  headingId="live-cta-heading"
+  eyebrow="提前准备"
+  headingLines={['下一场直播，', '提前把仓配安排好']}
+  description="告诉我们开播时间、预计订单、商品种类和平台，一起安排备货与发货。"
+  actionLabel="咨询直播仓配"
+  preparationItems={[
+    { label: '开播时间', detail: '场次日期与备货节奏' },
+    { label: '预计订单', detail: '日常订单与活动预估' },
+    { label: '商品种类与平台', detail: '商品种类与销售平台' },
+  ]}
+  secondaryLinks={[
+    { href: '/cases', label: '查看合作案例' },
+    { href: '/product', label: '查看全部仓配服务' },
+  ]}
+  reveal="service"
+/>

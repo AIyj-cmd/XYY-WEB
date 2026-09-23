@@ -1,0 +1,88 @@
+---
+import type { ServicePageContent } from '@/lib/directus-content-queries'
+import type { StatItem } from '@/data/service'
+
+interface Props {
+  content: ServicePageContent
+  partners: readonly StatItem[]
+  pillars: string[]
+  showActions: boolean
+  showVideo: boolean
+  videoSrc: string
+  poster: string
+  available: boolean
+}
+
+const { content, pillars, showActions, showVideo, videoSrc, poster, available } = Astro.props
+const heading = content.h1 || content.breadcrumbLabel
+const description = content.heroDesc || content.description
+const isDefaultStatement = content.h1sub === '款色码管清楚，多渠道发得顺。'
+---
+
+<section class="footwear-hero" aria-labelledby="lp-h1">
+  <div class="footwear-hero__inner">
+    <div class="footwear-hero__copy">
+      <p class="footwear-hero__crumb">仓配服务 / {content.breadcrumbLabel}</p>
+      <h1 id="lp-h1">
+        {
+          available ? (
+            <>
+              <span class="footwear-hero__service">{heading}</span>
+              {content.h1sub &&
+                (isDefaultStatement ? (
+                  <span class="footwear-hero__statement footwear-hero__statement--default">
+                    <span>款色码管清楚，</span>
+                    <span>多渠道发得顺。</span>
+                  </span>
+                ) : (
+                  <span class="footwear-hero__statement">{content.h1sub}</span>
+                ))}
+            </>
+          ) : (
+            '服务内容暂不可用'
+          )
+        }
+      </h1>
+      {available && description && <p>{description}</p>}
+      {
+        pillars.length > 0 && (
+          <div class="footwear-hero__pills" aria-label="鞋服仓配重点">
+            {pillars.map((pillar) => (
+              <span>{pillar}</span>
+            ))}
+          </div>
+        )
+      }
+      {
+        available && showActions && (
+          <div class="footwear-actions">
+            <a class="footwear-button" href="/contact">
+              咨询仓配方案
+            </a>
+            <a class="footwear-text-link" href="#footwear-fulfillment">
+              看看仓内作业
+            </a>
+          </div>
+        )
+      }
+    </div>
+    {
+      available && showVideo && (
+        <video
+          class="footwear-hero__video"
+          autoplay
+          loop
+          muted
+          playsinline
+          preload="auto"
+          width="1280"
+          height="720"
+          poster={poster}
+          aria-label={`${content.breadcrumbLabel}服务视频`}
+        >
+          <source src={videoSrc} type="video/mp4" />
+        </video>
+      )
+    }
+  </div>
+</section>

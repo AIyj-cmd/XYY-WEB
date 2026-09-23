@@ -1,0 +1,51 @@
+---
+import type { StatItem } from '@/data/service'
+interface Props {
+  partners: StatItem[]
+  cities: StatItem[]
+  fees: StatItem[]
+}
+const { partners, cities, fees } = Astro.props
+---
+
+<section class="b2b-preparation b2b-section" aria-labelledby="b2b-preparation-heading">
+  <div class="redesign-shell b2b-preparation__grid">
+    <div>
+      <p class="redesign-kicker">合作准备与服务费用</p><h2 id="b2b-preparation-heading">
+        先对齐门店要求，再安排补货。
+      </h2><ul>
+        <li>门店资料</li><li>SKU 与补货清单</li><li>标签模板</li><li>补货节奏及收货要求</li>
+      </ul>
+    </div>
+    <div class="b2b-preparation__fee">
+      {
+        fees.map(({ stat, label, sub }) => (
+          <p class="b2b-fee">
+            <>
+              <b>
+                {stat}
+                {label}
+              </b>
+              <span>{sub}</span>
+            </>
+          </p>
+        ))
+      }<p>具体门店与线路安排需要结合实际需求确认。</p>
+    </div>
+    {
+      (partners.length > 0 || cities.length > 0) && (
+        <div class="b2b-preparation__base">
+          <p>新亦源整体服务基础</p>
+          {partners.concat(cities).map(({ stat, label, sub }) => (
+            <p class="b2b-stat">
+              <b>{stat}</b>
+              <span>
+                {label} · {sub}
+              </span>
+            </p>
+          ))}
+        </div>
+      )
+    }
+  </div>
+</section>

@@ -1,0 +1,36 @@
+---
+import type { FeatureItem } from '@/data/service'
+interface Props {
+  features: FeatureItem[]
+}
+
+const { features } = Astro.props
+---
+
+{
+  features.length > 0 && (
+    <section class="repair-directory repair-section" aria-labelledby="repair-directory-heading">
+      <div class="redesign-shell">
+        <header class="repair-section__heading">
+          <p class="redesign-kicker">异常目录</p>
+          <h2 id="repair-directory-heading">这批商品，需要处理哪些问题？</h2>
+          <p>处理方式需结合商品材质、品牌要求和复检规则确认。</p>
+        </header>
+        <div class="repair-directory__items">
+          {features.map(({ title, desc }, index) => (
+            <article data-redesign-feature>
+              <p class="repair-directory__number" aria-hidden="true">
+                {String(index + 1).padStart(2, '0')}
+              </p>
+              <h3 data-feature-title>{title}</h3>
+              <p data-feature-description>{desc}</p>
+            </article>
+          ))}
+        </div>
+        <a class="repair-directory__anchor" href="#repair-workshop-heading">
+          查看实际工位
+        </a>
+      </div>
+    </section>
+  )
+}

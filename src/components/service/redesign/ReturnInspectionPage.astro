@@ -1,0 +1,64 @@
+---
+import type { FaqItem } from '@/data/service'
+import type { ServicePageContent } from '@/lib/directus-content-queries'
+import { groupReturnFeatures, hasReturnContent } from './returns-content'
+import ReturnGradeFlow from './ReturnGradeFlow.astro'
+import ReturnInspectionDetails from './ReturnInspectionDetails.astro'
+import ReturnInspectionFaq from './ReturnInspectionFaq.astro'
+import ReturnInspectionHero from './ReturnInspectionHero.astro'
+import ReturnInspectionRecord from './ReturnInspectionRecord.astro'
+import '@/styles/service-redesign.css'
+
+interface Props {
+  content: ServicePageContent
+  faqs: FaqItem[]
+  videoSrc: string
+  poster: string
+}
+
+const { content, faqs, videoSrc, poster } = Astro.props
+const available = hasReturnContent(content, faqs.length)
+const features = groupReturnFeatures(content.features)
+const hasChecks = features.apparel.length || features.footwear.length || features.rules.length
+const hasEvidence =
+  features.evidence.length ||
+  features.repair.length ||
+  features.other.length ||
+  content.stats.length
+---
+
+<article class:list={['returns-page', { 'returns-page--empty': !available }]}>
+  {
+    available ? (
+      <>
+        <ReturnInspectionHero
+          serviceName={content.h1 || content.breadcrumbLabel}
+          valueTitle="退回来的商品，下一步有依据"
+          subheading={content.h1sub}
+          description={content.heroDesc}
+          hasGrades={features.grade.length > 0}
+          {videoSrc}
+          {poster}
+        />
+        {content.contentDesc && <ReturnInspectionRecord context={content.contentDesc} />}
+        {features.grade.length > 0 && <ReturnGradeFlow features={features.grade} />}
+        {(hasChecks || hasEvidence) && (
+          <ReturnInspectionDetails
+            apparel={features.apparel}
+            footwear={features.footwear}
+            rules={features.rules}
+            evidence={features.evidence}
+            repair={features.repair}
+            other={features.other}
+            stats={content.stats}
+          />
+        )}
+        <ReturnInspectionFaq {faqs} />
+      </>
+    ) : (
+      <section class="returns-empty">
+        <h1 id="lp-h1">服务内容暂不可用</h1>
+      </section>
+    )
+  }
+</article>

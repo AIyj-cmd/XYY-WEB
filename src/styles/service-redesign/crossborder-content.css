@@ -1,0 +1,105 @@
+.crossborder-documents__grid {
+  display: grid;
+  grid-template-columns: 0.8fr 1.3fr 1fr;
+  gap: 1rem;
+}
+
+.crossborder-documents__grid > article {
+  min-height: 15rem;
+  padding: 1.25rem;
+  border: 1px solid #d9d4cc;
+}
+.crossborder-documents__packaging {
+  margin-top: 3.5rem;
+}
+.crossborder-documents__quality {
+  border-top: 3px solid #c74412 !important;
+}
+
+.crossborder-documents dl {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1fr);
+  gap: 0.45rem 0.75rem;
+  margin: 1.3rem 0;
+  font-size: 0.94rem;
+  line-height: 1.5;
+}
+
+.crossborder-documents dt {
+  color: #6b655e;
+}
+.crossborder-documents dd {
+  margin: 0;
+  font-weight: 700;
+}
+
+.crossborder-documents p,
+.crossborder-return p,
+.crossborder-support p {
+  line-height: 1.75;
+}
+
+.crossborder-return > .redesign-shell {
+  display: grid;
+  grid-template-columns: 1.35fr 0.65fr;
+  gap: clamp(2rem, 8vw, 8rem);
+}
+
+.crossborder-return aside {
+  align-self: start;
+  border-left: 3px solid #c74412;
+  padding-left: 1.25rem;
+}
+.crossborder-return aside > strong {
+  display: block;
+  font-size: clamp(1.6rem, 3vw, 3rem);
+}
+
+.crossborder-stat b {
+  display: block;
+  color: #c74412;
+  font-size: 1.25rem;
+}
+.crossborder-stat span {
+  display: block;
+}
+
+.crossborder-support > .redesign-shell {
+  max-width: 66rem;
+}
+.crossborder-faq > .redesign-shell > div {
+  max-width: 54rem;
+}
+.crossborder-faq details {
+  border-top: 1px solid #d9d4cc;
+  padding: 1rem 0;
+}
+.crossborder-faq summary {
+  cursor: pointer;
+  font-weight: 800;
+}
+.crossborder-faq details p,
+.crossborder-faq footer p {
+  line-height: 1.75;
+}
+.crossborder-faq footer {
+  max-width: 43rem;
+  margin-top: 8rem;
+}
+.crossborder-faq footer p:last-child {
+  display: flex;
+  gap: 1.25rem;
+}
+.crossborder-faq a:not(.redesign-button) {
+  color: #171717;
+}
+
+@media (max-width: 700px) {
+  .crossborder-documents__grid,
+  .crossborder-return > .redesign-shell {
+    grid-template-columns: 1fr;
+  }
+  .crossborder-documents__packaging {
+    margin-top: 0;
+  }
+}

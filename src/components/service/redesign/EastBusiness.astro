@@ -1,0 +1,49 @@
+---
+import type { EastFeatureGroups, EastStatGroups } from './east-content'
+
+interface Props {
+  groups: EastFeatureGroups
+  stats: EastStatGroups
+}
+const { groups, stats } = Astro.props
+const services = [
+  { features: groups.b2c, stats: stats.channels, primary: true },
+  { features: groups.b2b, stats: [] },
+  { features: groups.returns, stats: [] },
+].filter(({ features, stats }) => features.length > 0 || stats.length > 0)
+---
+
+<section class="east-business east-section" aria-labelledby="east-business-heading">
+  <div class="redesign-shell">
+    <header>
+      <p class="redesign-kicker">一份库存，多种订单</p><h2 id="east-business-heading">
+        一份库存，服务不同订单
+      </h2>
+    </header>
+    <div class="east-business__grid">
+      {
+        services.map(({ features, stats: serviceStats, primary }, index) => (
+          <article
+            class:list={['east-business__service', { 'east-business__service--primary': primary }]}
+          >
+            <span>{String(index + 1).padStart(2, '0')}</span>
+            {features.map(({ title, desc }) => (
+              <div class="east-business__feature" data-redesign-feature>
+                <h3 data-feature-title>{title}</h3>
+                <p data-feature-description>{desc}</p>
+              </div>
+            ))}
+            {serviceStats.map(({ stat, label, sub }) => (
+              <p class="east-stat">
+                <b>{stat}</b>
+                <span>
+                  {label} · {sub}
+                </span>
+              </p>
+            ))}
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>

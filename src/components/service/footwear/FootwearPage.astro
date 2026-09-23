@@ -1,0 +1,103 @@
+---
+import type { FaqItem } from '@/data/service'
+import type { ServicePageContent } from '@/lib/directus-content-queries'
+import { groupFootwearFeatures, groupFootwearStats } from './content'
+import FootwearAssurance from './FootwearAssurance.astro'
+import FootwearFitFaq from './FootwearFitFaq.astro'
+import FootwearFulfillment from './FootwearFulfillment.astro'
+import FootwearGoods from './FootwearGoods.astro'
+import FootwearHero from './FootwearHero.astro'
+import FootwearNetwork from './FootwearNetwork.astro'
+import FootwearReturns from './FootwearReturns.astro'
+import FootwearCta from './FootwearCta.astro'
+import FootwearSupplement from './FootwearSupplement.astro'
+import '@/styles/service-footwear.css'
+
+interface Props {
+  content: ServicePageContent
+  faqs: FaqItem[]
+}
+
+const { content, faqs } = Astro.props
+const available = Boolean(
+  content.description ||
+  content.h1 ||
+  content.h1sub ||
+  content.heroDesc ||
+  content.contentDesc ||
+  content.features.length ||
+  content.stats.length ||
+  faqs.length
+)
+const features = groupFootwearFeatures(content.features)
+const stats = groupFootwearStats(content.stats)
+const overviewVideo = '/videos/service-detail-heroes-clean-20260913/xiefu-yuncang.mp4'
+const overviewPoster = '/videos/service-detail-heroes-clean-20260913/xiefu-yuncang.jpg'
+const hasHero = Boolean(
+  content.h1 || content.h1sub || content.heroDesc || content.description || stats.partner.length
+)
+const standardFeatureTitles = new Set(
+  [...features.goods, ...features.channels, ...features.daily].map(({ title }) => title)
+)
+const hasStandardBusiness = standardFeatureTitles.size === 6
+const hasCta = hasStandardBusiness
+const pills = [
+  hasStandardBusiness && '款色码管理',
+  hasStandardBusiness && '全渠道发货',
+  hasStandardBusiness && '退货回库',
+].filter(Boolean) as string[]
+---
+
+<article class:list={['footwear-page', { 'footwear-page--empty': !available }]}>
+  {
+    hasHero && (
+      <FootwearHero
+        {content}
+        partners={stats.partner}
+        pillars={pills}
+        showActions={hasStandardBusiness}
+        showVideo={Boolean(content.h1 || content.heroDesc)}
+        videoSrc={overviewVideo}
+        poster={overviewPoster}
+        {available}
+      />
+    )
+  }
+  {
+    available && (
+      <>
+        {features.goods.length > 0 && <FootwearGoods features={features.goods} />}
+        {features.channels.length > 0 && (
+          <FootwearNetwork features={features.channels} full={hasStandardBusiness} />
+        )}
+        {hasStandardBusiness && <FootwearFulfillment />}
+        {(features.daily.length > 0 || stats.daily.length > 0) && (
+          <FootwearAssurance stats={stats.daily} features={features.daily} />
+        )}
+        {hasStandardBusiness && <FootwearReturns />}
+        {(features.unknown.length > 0 ||
+          stats.unknown.length > 0 ||
+          (content.contentDesc && !hasCta)) && (
+          <FootwearSupplement
+            features={features.unknown}
+            stats={stats.unknown}
+            contentDesc={hasCta ? '' : content.contentDesc}
+          />
+        )}
+        {faqs.length > 0 && <FootwearFitFaq {faqs} />}
+        {hasCta && <FootwearCta contentDesc={content.contentDesc} />}
+      </>
+    )
+  }
+  {
+    !available && (
+      <section class="footwear-empty">
+        <h1 id="lp-h1">服务内容暂不可用</h1>
+      </section>
+    )
+  }
+</article>
+
+<script>
+  import '@/scripts/footwear-page'
+</script>

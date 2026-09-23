@@ -1,0 +1,22 @@
+---
+import ConversionCTA from '@/components/conversion/ConversionCTA.astro'
+---
+
+<ConversionCTA
+  className="b2b-cta b2b-section"
+  headingId="b2b-cta-heading"
+  eyebrow="门店仓配"
+  headingLines={['把下一次门店补货，', '提前安排好。']}
+  description="告诉我们门店分布和补货安排，一起梳理分货与发运需求。"
+  actionLabel="咨询门店仓配"
+  preparationItems={[
+    { label: '门店分布', detail: '门店位置与收货要求' },
+    { label: '补货安排', detail: '补货时间与每店需求' },
+    { label: '分货与发运需求', detail: '分货方式与发运安排' },
+  ]}
+  secondaryLinks={[
+    { href: '/cases', label: '查看合作案例' },
+    { href: '/product', label: '查看全部仓配服务' },
+  ]}
+  reveal="service"
+/>

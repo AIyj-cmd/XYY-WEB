@@ -1,6 +1,17 @@
-<section class="digital-proof" aria-label="物流数字化能力说明">
-  <div class="digital-shell">
-    <p>系统对接方式、数据字段、权限范围及实施节奏，均以实际业务流程与项目方案为准。</p>
-    <a href="/contact">提交系统对接需求 <span aria-hidden="true">→</span></a>
-  </div>
-</section>
+---
+import ConversionCTA from '@/components/conversion/ConversionCTA.astro'
+---
+
+<ConversionCTA
+  headingId="digital-conversion-cta-heading"
+  eyebrow="物流数字化"
+  headingLines={['提交系统', '对接需求']}
+  description="系统对接方式、数据字段、权限范围及实施节奏，均以实际业务流程与项目方案为准。"
+  actionLabel="提交系统对接需求"
+  preparationItems={[
+    { label: '系统对接方式', detail: '现有系统与接口安排' },
+    { label: '数据字段', detail: '需要对接的数据内容' },
+    { label: '权限范围及实施节奏', detail: '权限要求与项目安排' },
+  ]}
+  reveal="service"
+/>

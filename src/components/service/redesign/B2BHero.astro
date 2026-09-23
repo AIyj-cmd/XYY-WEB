@@ -1,0 +1,46 @@
+---
+interface Props {
+  h1: string
+  h1sub: string
+  heroDesc: string
+  videoSrc: string
+  poster: string
+}
+const { h1, h1sub, heroDesc, videoSrc, poster } = Astro.props
+---
+
+<header class="b2b-hero">
+  <div class="redesign-shell b2b-hero__grid">
+    <div class="b2b-hero__copy">
+      <h1 id="lp-h1"><span>{h1}</span>{h1sub && <strong>{h1sub}</strong>}</h1>
+      {heroDesc && <p>{heroDesc}</p>}
+      {
+        h1sub && (
+          <p class="b2b-hero__scenarios">
+            <>
+              <span>连锁补货</span>
+              <span>批发铺货</span>
+              <span>加盟配送</span>
+            </>
+          </p>
+        )
+      }
+      <a class="redesign-button" href="/contact">咨询门店仓配</a>
+    </div>
+    <video
+      class="b2b-hero__video"
+      data-service-hero-media
+      autoplay
+      loop
+      muted
+      playsinline
+      preload="auto"
+      width="1280"
+      height="720"
+      poster={poster}
+      aria-label={`${h1}服务视频`}
+    >
+      <source src={videoSrc} type="video/mp4" />
+    </video>
+  </div>
+</header>

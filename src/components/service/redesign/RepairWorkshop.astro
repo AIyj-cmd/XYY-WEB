@@ -1,0 +1,71 @@
+---
+import { REPAIR_WORKSHOP_PHOTOS, REPAIR_ZONES } from '@/data/service/repair-workshop'
+
+const workshopNotes = [
+  '根据面料特点控制工艺，结果以二次质检为准。',
+  '线色与工艺要求，需要在处理前确认。',
+  '完成后的状态，仍按品牌确认标准复检。',
+] as const
+---
+
+<section class="repair-workshop repair-section" aria-labelledby="repair-workshop-heading">
+  <div class="redesign-shell">
+    <header class="repair-section__heading">
+      <p class="redesign-kicker">专业工位</p>
+      <h2 id="repair-workshop-heading">在对应工位，完成具体处理。</h2>
+      <p>从清污、缝补到熨烫，按面料特点和品牌标准安排处理。</p>
+    </header>
+    <div class="repair-workshop__layout" data-repair-workshop>
+      <div class="repair-workshop__controls" data-repair-workshop-controls hidden>
+        {
+          REPAIR_WORKSHOP_PHOTOS.map((photo, index) => (
+            <button type="button" data-repair-workshop-tab={String(index)}>
+              <img src={photo.src} alt="" width="96" height="64" loading="lazy" decoding="async" />
+              <span>
+                <b>{photo.label}</b>
+                <small data-repair-workshop-status={photo.code} />
+              </span>
+            </button>
+          ))
+        }
+      </div>
+      <div class="repair-workshop__panels">
+        {
+          REPAIR_WORKSHOP_PHOTOS.map((photo, index) => (
+            <figure data-repair-workshop-panel={String(index)}>
+              <div class="repair-workshop__image">
+                <img
+                  src={photo.src}
+                  alt={photo.alt}
+                  loading="lazy"
+                  decoding="async"
+                  width={index === 0 ? '1707' : index === 1 ? '1000' : '1512'}
+                  height={index === 0 ? '1280' : index === 1 ? '667' : '747'}
+                />
+              </div>
+              <figcaption>
+                <p class="redesign-kicker">{photo.code}</p>
+                <h3>{photo.label}</h3>
+                <p>{workshopNotes[index]}</p>
+              </figcaption>
+            </figure>
+          ))
+        }
+      </div>
+    </div>
+    <div class="repair-workshop__zones" aria-label="九个专业修复专区">
+      {
+        REPAIR_ZONES.map((zone, index) => (
+          <span>
+            <b>{String(index + 1).padStart(2, '0')}</b>
+            {zone}
+          </span>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<script>
+  import '@/scripts/repair-workshop'
+</script>

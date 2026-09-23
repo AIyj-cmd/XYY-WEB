@@ -1,13 +1,6 @@
 ---
 import Layout from '@/layouts/Layout.astro'
-import ProductServiceDirectory from '@/components/product/ProductServiceDirectory.astro'
-import ProductServiceSeries from '@/components/product/ProductServiceSeries.astro'
-import ProductCare from '@/components/product/ProductCare.astro'
-import ProductServiceProcess from '@/components/product/ProductServiceProcess.astro'
-import ProductAssurance from '@/components/product/ProductAssurance.astro'
-import ConversionCTA from '@/components/conversion/ConversionCTA.astro'
-import '@/styles/product.css'
-import { DIRECTORY_NEEDS } from '@/data/product'
+import ProductVideoSequence from '@/components/product/ProductVideoSequence.astro'
 import { BRAND } from '@/lib/brand'
 
 const serviceSchemas = [
@@ -54,76 +47,8 @@ const breadcrumbSchema = {
   title="仓配服务｜鞋服仓储、退货处理、商品整理与增值处理｜新亦源"
   description="新亦源为鞋服品牌提供基础仓配、退货与逆向处理、商品整理与增值处理、轻微瑕疵处理等覆盖商品全生命周期的仓配服务。"
   jsonLd={[breadcrumbSchema, ...serviceSchemas]}
+  showFooter={false}
+  showFloatingContact={false}
 >
-  <div class="warehouse-services-page">
-    <section class="warehouse-hero" aria-labelledby="warehouse-hero-heading">
-      <figure class="warehouse-hero__visual">
-        <picture>
-          <source
-            media="(min-width: 768px)"
-            srcset="/images/services/warehouse-product-1800.webp 1800w"
-            sizes="100vw"
-          />
-          <img
-            src="/images/services/warehouse-product-1800.webp"
-            srcset="/images/services/warehouse-product-1800.webp 1800w"
-            sizes="100vw"
-            alt="新亦源鞋服挂装商品仓储现场"
-            width="1800"
-            height="1350"
-            loading="eager"
-            fetchpriority="high"
-          />
-        </picture>
-        <figcaption>鞋服商品仓内管理现场</figcaption>
-      </figure>
-      <div class="warehouse-shell">
-        <header class="warehouse-hero__copy">
-          <p class="kicker">WAREHOUSING SERVICES</p>
-          <h1 id="warehouse-hero-heading">仓配服务</h1>
-          <h2>不只是<span>存储和发货</span>。</h2>
-          <p>
-            新亦源围绕鞋服商品的入库、仓储、履约、退货和整理，提供从基础仓配到精细化商品处理的一体化服务。
-          </p>
-          <div class="warehouse-hero__actions">
-            <a class="primary-link" href="#service-series"
-              >浏览全部服务 <span aria-hidden="true">→</span></a
-            >
-            <a class="secondary-link" href="/contact"
-              >咨询仓配方案 <span aria-hidden="true">↗</span></a
-            >
-          </div>
-        </header>
-      </div>
-    </section>
-
-    <ProductServiceSeries />
-
-    <ProductServiceDirectory needs={DIRECTORY_NEEDS} />
-
-    <ProductCare />
-
-    <ProductServiceProcess />
-
-    <ProductAssurance />
-
-    <ConversionCTA
-      headingId="warehouse-cta-heading"
-      eyebrow="START A CONVERSATION"
-      headingLines={['需要的不只是', '一个仓库？']}
-      description="告诉我们你的商品类型、订单规模和当前问题，新亦源将根据实际业务提供仓配建议。"
-      actionLabel="提交仓配需求"
-      preparationTitle="沟通前可准备这 3 类信息"
-      preparationItems={[
-        { label: '商品与渠道', detail: '商品类型 · 主要销售平台' },
-        { label: '业务规模', detail: '日均单量 · SKU 与库存规模' },
-        { label: '处理需求', detail: '退货处理 · 增值服务' },
-      ]}
-      reveal="product"
-    />
-  </div>
+  <ProductVideoSequence />
 </Layout>
-
-<script>
-  import '@/scripts/product-loader'
-</script>

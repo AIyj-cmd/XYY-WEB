@@ -1,0 +1,112 @@
+---
+import { PRODUCT_VIDEO_SECTIONS } from '@/data/product/video-sections'
+import ProductAssurance from './ProductAssurance.astro'
+import '@/styles/product/video-sequence.css'
+import '@/styles/product/video-assurance.css'
+---
+
+<section class="product-video-sequence" data-product-video-sequence>
+  <div
+    id="product-video-scroll"
+    class="product-video-sequence__scroll"
+    data-product-video-scroll
+    aria-labelledby="01-overview-heading"
+    tabindex="0"
+  >
+    {
+      PRODUCT_VIDEO_SECTIONS.map(
+        ({ id, label, heading, description, highlights, href, link, src, poster }, index) => {
+          const commaIndex = heading.indexOf('，')
+          const headingPrefix = heading.slice(0, commaIndex + 1)
+          const headingValue = heading.slice(commaIndex + 1)
+
+          return (
+            <section
+              class="product-video-sequence__slide"
+              data-product-video-slide
+              aria-labelledby={`${id}-heading`}
+            >
+              <div class="product-video-sequence__copy" data-product-video-copy>
+                {index === 0 ? (
+                  <h1 id={`${id}-heading`}>
+                    <span class="product-video-sequence__heading-prefix">{headingPrefix}</span>
+                    <span class="product-video-sequence__heading-value">{headingValue}</span>
+                  </h1>
+                ) : (
+                  <h2 id={`${id}-heading`}>
+                    <span class="product-video-sequence__heading-prefix">{headingPrefix}</span>
+                    <span class="product-video-sequence__heading-value">{headingValue}</span>
+                  </h2>
+                )}
+                <p>{description}</p>
+                <ul class="product-video-sequence__highlights" data-product-video-highlights>
+                  {highlights.map((highlight) => (
+                    <li>{highlight}</li>
+                  ))}
+                </ul>
+                <a href={href}>{link}</a>
+              </div>
+              <video
+                id={id}
+                data-product-video
+                aria-label={label}
+                autoplay
+                loop
+                muted
+                playsinline
+                preload="auto"
+                width="854"
+                height="480"
+                poster={poster}
+              >
+                <source src={src} type="video/mp4" />
+              </video>
+            </section>
+          )
+        }
+      )
+    }
+    <div
+      class="product-video-sequence__assurance-slide"
+      data-product-video-slide
+      aria-labelledby="assurance-heading"
+    >
+      <ProductAssurance />
+    </div>
+  </div>
+
+  <nav class="product-video-sequence__navigation" aria-label="页面分区导航">
+    <button
+      type="button"
+      class="product-video-sequence__control"
+      data-product-video-previous
+      aria-controls="product-video-scroll"
+      aria-label="上一个区域"
+      disabled
+    >
+      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
+        <path d="m6 14 6-6 6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+        ></path>
+      </svg>
+    </button>
+    <output class="product-video-sequence__status" data-product-video-status aria-live="polite"
+      >01 / {String(PRODUCT_VIDEO_SECTIONS.length + 1).padStart(2, '0')}</output
+    >
+    <button
+      type="button"
+      class="product-video-sequence__control"
+      data-product-video-next
+      aria-controls="product-video-scroll"
+      aria-label="下一个区域"
+    >
+      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
+        <path d="m6 10 6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+        ></path>
+      </svg>
+    </button>
+  </nav>
+</section>
+
+<script>
+  import '@/scripts/product-video-navigation'
+</script>

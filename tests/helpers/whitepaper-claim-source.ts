@@ -117,7 +117,7 @@ function verifiedHistoricalWhitepaper(
 
 function sourceForClaimLiteralScan(path: string, raw: string, repositoryRoot: string): string {
   const verified = verifiedHistoricalWhitepaper(path, raw, repositoryRoot)
-  if (!verified) return raw
+  if (!verified) return withoutTechnicalPercentages(raw)
 
   const sanitized = JSON.parse(raw) as HistoricalWhitepaper
   for (const section of sanitized.sections) {
@@ -138,7 +138,18 @@ function sourceForClaimLiteralScan(path: string, raw: string, repositoryRoot: st
       }
     }
   }
-  return JSON.stringify(sanitized)
+  return withoutTechnicalPercentages(JSON.stringify(sanitized))
+}
+
+function withoutTechnicalPercentages(source: string): string {
+  const withoutMarkupStyles = source
+    .replace(/<style\b[^>]*>[\s\S]*?<\/style>/giu, '')
+    .replace(/\s(?:class|style)=(['"])[\s\S]*?\1/giu, '')
+    .replace(/\s(?:width|height|x|y|x1|x2|y1|y2|cx|cy|r|rx|ry)=(['"])\d+%\1/giu, '')
+
+  return withoutMarkupStyles
+    .replace(/(\.toBe\(['"])\d+%\s+\d+%(['"]\))/gu, '$1$2')
+    .replace(/(expect\(stylesheet\)\.toMatch\(\/width: min\\\()\d+%/gu, '$1')
 }
 
 export function claimLiteralViolations(

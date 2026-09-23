@@ -1,0 +1,126 @@
+.repair-section {
+  padding: clamp(4.5rem, 8vw, 7rem) 0;
+}
+.repair-section h2,
+.repair-faq h2 {
+  margin: 0.65rem 0 1rem;
+  color: #151515;
+  font-size: clamp(2.5rem, 3.5vw, 3.25rem);
+  font-weight: 900;
+  letter-spacing: -0.055em;
+  line-height: 1.08;
+}
+.repair-hero h1 {
+  color: #151515;
+  font-size: clamp(4rem, 5.4vw, 5rem);
+  font-weight: 900;
+  letter-spacing: -0.055em;
+  line-height: 1.08;
+  margin: 0.65rem 0 1rem;
+  max-inline-size: 8em;
+  text-wrap: balance;
+}
+.repair-section h2,
+.repair-faq h2 {
+  text-wrap: balance;
+}
+.repair-faq h2 {
+  text-wrap: balance;
+}
+.repair-section p,
+.repair-directory article,
+.repair-faq p,
+.repair-faq summary {
+  font-size: 1rem;
+  line-height: 1.75;
+}
+.repair-hero {
+  padding: max(7rem, 12vh) 0 clamp(4.5rem, 8vw, 7rem);
+}
+.repair-hero__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(16rem, 1fr);
+  gap: clamp(2rem, 5vw, 6rem);
+  align-items: end;
+}
+.repair-hero__video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  background: #191919;
+  margin-top: clamp(2.5rem, 5vw, 4.5rem);
+}
+.repair-hero__subheading {
+  font-weight: 800;
+}
+.repair-hero__copy .redesign-button {
+  margin-top: 1.5rem;
+}
+.repair-directory__items {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-top: 1px solid #d9d4cc;
+}
+.repair-directory article {
+  border-bottom: 1px solid #d9d4cc;
+  padding: 1.5rem clamp(1rem, 3vw, 3rem) 1.75rem 0;
+}
+.repair-directory article:nth-child(even) {
+  border-left: 1px solid #d9d4cc;
+  padding-left: clamp(1rem, 3vw, 3rem);
+  padding-right: 0;
+}
+.repair-directory__number {
+  color: #c74412;
+  font:
+    700 0.75rem/1 ui-monospace,
+    SFMono-Regular,
+    monospace;
+  letter-spacing: 0.1em;
+  margin: 0 0 1rem;
+}
+.repair-directory h3 {
+  margin: 0;
+  font-size: clamp(1.3rem, 2vw, 1.6rem);
+}
+.repair-directory article p {
+  margin: 0.6rem 0 0;
+}
+.repair-directory__anchor {
+  color: #171717;
+  display: inline-flex;
+  font-weight: 800;
+  margin-top: 1.75rem;
+}
+.repair-page [id] {
+  scroll-margin-top: 7rem;
+}
+@media (max-width: 800px) {
+  .repair-hero__grid {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 640px) {
+  .repair-hero {
+    padding-top: 7rem;
+  }
+  .repair-section h2,
+  .repair-faq h2 {
+    font-size: clamp(1.75rem, 8vw, 2.125rem);
+  }
+  .repair-hero h1 {
+    font-size: clamp(2.25rem, 10vw, 2.625rem);
+    max-inline-size: 6.25em;
+    text-wrap: pretty;
+  }
+  .repair-directory__items {
+    grid-template-columns: 1fr;
+  }
+  .repair-directory article,
+  .repair-directory article:nth-child(even) {
+    border-left: 0;
+    padding-left: 0;
+    padding-right: 0;
+  }
+}

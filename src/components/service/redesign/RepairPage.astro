@@ -1,0 +1,52 @@
+---
+import type { FaqItem } from '@/data/service'
+import type { ServicePageContent } from '@/lib/directus-content-queries'
+import '@/styles/service-redesign.css'
+import { hasRedesignContent } from './content-presence'
+import RepairDirectory from './RepairDirectory.astro'
+import RepairFaq from './RepairFaq.astro'
+import RepairHero from './RepairHero.astro'
+import RepairProcess from './RepairProcess.astro'
+import RepairVerification from './RepairVerification.astro'
+import RepairWorkshop from './RepairWorkshop.astro'
+import { repairFeaturesInSourceOrder } from './repair-content'
+
+interface Props {
+  content: ServicePageContent
+  faqs: FaqItem[]
+  videoSrc: string
+  poster: string
+}
+
+const { content, faqs, videoSrc, poster } = Astro.props
+const available = hasRedesignContent(content, faqs.length)
+const hasProcess = Boolean(content.features.length || content.contentDesc || content.stats.length)
+const repairFeatures = repairFeaturesInSourceOrder(content.features)
+---
+
+<article class:list={['repair-page', { 'repair-page--empty': !available }]}>
+  {
+    available ? (
+      <>
+        <RepairHero
+          serviceName={content.h1 || content.breadcrumbLabel}
+          subheading={content.h1sub}
+          description={content.heroDesc}
+          {videoSrc}
+          {poster}
+        />
+        <RepairDirectory features={repairFeatures} />
+        {repairFeatures.length > 0 && <RepairWorkshop />}
+        {hasProcess && <RepairProcess />}
+        {(content.contentDesc || content.stats.length > 0) && (
+          <RepairVerification contentDesc={content.contentDesc} stats={content.stats} />
+        )}
+        <RepairFaq {faqs} />
+      </>
+    ) : (
+      <section class="redesign-empty">
+        <h1 id="lp-h1">服务内容暂不可用</h1>
+      </section>
+    )
+  }
+</article>

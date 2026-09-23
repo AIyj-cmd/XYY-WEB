@@ -1,0 +1,68 @@
+.repair-faq {
+  background: #fff;
+  padding: clamp(4.5rem, 8vw, 7rem) 0;
+}
+.repair-faq__heading {
+  max-width: 46rem;
+  margin-bottom: clamp(2rem, 4vw, 3rem);
+}
+.repair-faq__layout {
+  display: grid;
+  gap: clamp(2.5rem, 6vw, 6rem);
+  grid-template-columns: minmax(0, 1.4fr) minmax(16rem, 0.9fr);
+}
+.repair-faq details {
+  border-top: 1px solid #d9d4cc;
+  padding: 1rem 0;
+}
+.repair-faq details:last-child {
+  border-bottom: 1px solid #d9d4cc;
+}
+.repair-faq summary {
+  cursor: pointer;
+  font-weight: 800;
+}
+.repair-faq details p {
+  margin: 0.8rem 0 0;
+}
+.repair-faq__footer {
+  align-self: start;
+  border-top: 2px solid #171717;
+  padding-top: 1rem;
+}
+.repair-faq__footer h3 {
+  font-size: clamp(1.35rem, 2vw, 1.75rem);
+  margin: 0;
+  text-wrap: balance;
+}
+.repair-faq__footer ul {
+  list-style: none;
+  margin: 1rem 0 0;
+  padding: 0;
+}
+.repair-faq__footer li {
+  border-top: 1px solid #d9d4cc;
+  font-size: 1rem;
+  line-height: 1.5;
+  padding: 0.55rem 0;
+}
+.repair-faq__footer li:last-child {
+  border-bottom: 1px solid #d9d4cc;
+}
+.repair-faq__footer .redesign-button {
+  margin-top: 1.25rem;
+}
+.repair-faq__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem 1.25rem;
+  margin-top: 1.5rem !important;
+}
+.repair-faq__links a {
+  color: #171717;
+}
+@media (max-width: 1024px) {
+  .repair-faq__layout {
+    grid-template-columns: 1fr;
+  }
+}

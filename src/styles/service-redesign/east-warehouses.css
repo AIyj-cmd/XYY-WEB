@@ -1,0 +1,61 @@
+.east-warehouses {
+  background: #fff;
+}
+.east-section__header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 2rem;
+  align-items: end;
+}
+.east-section__header > div {
+  max-width: 48rem;
+}
+.east-warehouses__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.25rem;
+  margin-top: 2.5rem;
+}
+.east-warehouses__grid article {
+  min-width: 0;
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+  border-radius: 1.25rem;
+  background: #f0eeea;
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
+}
+.east-warehouses__grid article:hover {
+  background: #e9e5dd;
+  transform: translateY(-2px);
+}
+.east-warehouses__grid p {
+  margin: 0;
+  color: #c74412;
+  font-size: 0.875rem;
+  font-weight: 800;
+}
+.east-warehouses__grid h3 {
+  margin: 0.6rem 0 1.5rem;
+  font-size: clamp(1.65rem, 2.6vw, 2.25rem);
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+}
+.east-warehouses__grid address {
+  color: #625b54;
+  font-size: 0.95rem;
+  font-style: normal;
+  line-height: 1.75;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 900px) {
+  .east-warehouses__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 600px) {
+  .east-section__header,
+  .east-warehouses__grid {
+    grid-template-columns: 1fr;
+  }
+}

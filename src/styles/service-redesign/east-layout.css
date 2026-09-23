@@ -1,0 +1,167 @@
+.east-page {
+  overflow: clip;
+  color: #171717;
+  background: #fff;
+}
+.east-section {
+  padding: clamp(4.5rem, 8vw, 8rem) 0;
+}
+.east-page h1,
+.east-page h2 {
+  margin: 0.55rem 0 1rem;
+  font-weight: 900;
+  letter-spacing: -0.055em;
+  line-height: 1.08;
+  text-wrap: balance;
+}
+.east-page h2 {
+  font-size: clamp(2.25rem, 4.5vw, 4.5rem);
+}
+.east-page p {
+  line-height: 1.8;
+}
+.east-hero {
+  padding: max(7rem, 12vh) 0 clamp(4.5rem, 8vw, 8rem);
+  background: #f8f8f6;
+}
+.east-hero__copy {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(15rem, 0.45fr);
+  gap: 2rem 5vw;
+  align-items: end;
+  margin-bottom: clamp(2.5rem, 5vw, 4rem);
+}
+.east-hero h1 {
+  margin-bottom: 0;
+}
+.east-hero h1 > span {
+  display: block;
+}
+.east-hero__service {
+  font-size: clamp(2rem, 2.7vw, 2.5rem);
+}
+.east-hero__claim {
+  margin-top: 0.25em;
+  color: #c74412;
+  font-size: clamp(4rem, 5.5vw, 5rem);
+}
+.east-hero__claim em {
+  display: block;
+  font-style: normal;
+}
+.east-hero__sub {
+  margin: 1rem 0 0;
+  color: #484c4a;
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+.east-hero__description {
+  max-width: 42rem;
+  margin: 0.5rem 0 0;
+  color: #626660;
+}
+.east-hero__cities {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin: 1.25rem 0 0;
+}
+.east-hero__cities span {
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  background: #edede8;
+  font-size: 0.875rem;
+}
+.east-hero__intro {
+  max-width: 28rem;
+}
+.east-hero__actions {
+  display: grid;
+  gap: 1rem;
+  justify-items: start;
+  margin-top: 1.5rem;
+}
+.east-hero__actions > a:not(.redesign-button) {
+  color: #171717;
+  font-weight: 700;
+}
+.east-hero__video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 2rem;
+  background: #171717;
+  object-fit: cover;
+}
+.east-faq {
+  background: #f8f8f6;
+}
+.east-faq > .redesign-shell > div {
+  max-width: 58rem;
+}
+.east-contact {
+  text-align: center;
+  background: #fff;
+}
+.east-contact > .redesign-shell > div {
+  max-width: 48rem;
+  margin: 0 auto;
+}
+.east-contact .east-feature {
+  margin-inline: auto;
+}
+.east-contact .redesign-button {
+  margin-top: 1.5rem;
+}
+.east-contact > .redesign-shell > div > p:last-child {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.east-faq details {
+  margin-top: 0.75rem;
+  padding: 1.1rem 1.25rem;
+  border-radius: 1rem;
+  background: #fff;
+}
+.east-faq summary {
+  cursor: pointer;
+  font-weight: 800;
+}
+.east-faq details p {
+  margin: 0.8rem 0 0;
+}
+.east-faq a:not(.redesign-button),
+.east-contact a:not(.redesign-button) {
+  color: #171717;
+}
+@media (max-width: 760px) {
+  .east-section {
+    padding: 4rem 0;
+  }
+  .east-page h2 {
+    font-size: clamp(2rem, 9vw, 3rem);
+  }
+  .east-hero {
+    padding-top: 7rem;
+  }
+  .east-hero__claim {
+    font-size: clamp(2.25rem, 11vw, 2.75rem);
+  }
+  .east-hero__copy {
+    grid-template-columns: 1fr;
+  }
+  .east-hero__actions {
+    justify-items: start;
+  }
+  .east-hero__video {
+    border-radius: 1.5rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .east-page * {
+    scroll-behavior: auto;
+    transition-duration: 0.01ms !important;
+  }
+}

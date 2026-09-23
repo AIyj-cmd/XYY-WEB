@@ -1,0 +1,149 @@
+.repair-workshop {
+  background: #f4f1ec;
+}
+.repair-workshop__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(17rem, 0.9fr);
+  gap: clamp(1.5rem, 4vw, 4rem);
+}
+.repair-workshop__controls {
+  display: grid;
+  align-content: start;
+  gap: 0.25rem;
+  order: 2;
+}
+.repair-workshop__controls[hidden] {
+  display: none;
+}
+.repair-workshop__controls button {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-left: 3px solid transparent;
+  color: #171717;
+  cursor: pointer;
+  display: flex;
+  gap: 0.85rem;
+  min-height: 4.5rem;
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+.repair-workshop__controls button[aria-selected='true'] {
+  border-left-color: #c74412;
+}
+.repair-workshop__controls button:focus-visible {
+  outline: 2px solid #171717;
+  outline-offset: 2px;
+}
+.repair-workshop__controls img {
+  display: block;
+  height: 3.5rem;
+  object-fit: cover;
+  width: 5.25rem;
+}
+.repair-workshop__controls span,
+.repair-workshop__controls small {
+  display: block;
+}
+.repair-workshop__controls b {
+  font-size: 1.125rem;
+}
+.repair-workshop__controls small {
+  color: #766f65;
+  font:
+    700 0.7rem/1.4 ui-monospace,
+    SFMono-Regular,
+    monospace;
+  letter-spacing: 0.08em;
+  margin-top: 0.2rem;
+}
+.repair-workshop__controls small::before {
+  content: attr(data-repair-workshop-status);
+}
+.repair-workshop__controls button[aria-selected='true'] small {
+  color: #c74412;
+}
+.repair-workshop__controls button[aria-selected='true'] small::before {
+  content: '当前工位';
+}
+.repair-workshop__panels {
+  min-width: 0;
+}
+.repair-workshop__panels figure {
+  margin: 0;
+}
+.repair-workshop__image {
+  aspect-ratio: 16 / 10;
+  background: #e9e5de;
+}
+.repair-workshop__image img {
+  display: block;
+  height: 100%;
+  object-fit: contain;
+  width: 100%;
+}
+.repair-workshop__panels figcaption {
+  min-height: 8rem;
+  padding: 1rem 0 0;
+}
+.repair-workshop__panels figcaption p {
+  margin: 0.35rem 0 0;
+}
+.repair-workshop__panels figcaption .redesign-kicker {
+  margin: 0;
+}
+.repair-workshop__panels h3 {
+  font-size: clamp(1.3rem, 2.2vw, 1.75rem);
+  margin: 0.45rem 0 0;
+}
+.repair-workshop__zones {
+  border-top: 1px solid #d1c9bf;
+  display: grid;
+  gap: 0.75rem 2rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: clamp(2.5rem, 5vw, 4.5rem);
+  padding-top: 1.25rem;
+}
+.repair-workshop__zones span {
+  display: flex;
+  font-size: 1rem;
+  gap: 0.75rem;
+  line-height: 1.5;
+}
+.repair-workshop__zones b {
+  color: #c74412;
+  font:
+    800 0.75rem/1.8 ui-monospace,
+    SFMono-Regular,
+    monospace;
+}
+@media (max-width: 1024px) {
+  .repair-workshop__layout {
+    grid-template-columns: 1fr;
+  }
+  .repair-workshop__controls {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    order: initial;
+  }
+  .repair-workshop__panels {
+    order: 2;
+  }
+}
+@media (max-width: 640px) {
+  .repair-workshop__panels figcaption {
+    min-height: 9rem;
+  }
+  .repair-workshop__controls {
+    grid-template-columns: 1fr;
+  }
+  .repair-workshop__zones {
+    gap: 0.8rem 1rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .repair-workshop__controls button,
+  .repair-workshop__panels figure {
+    transition: none;
+  }
+}

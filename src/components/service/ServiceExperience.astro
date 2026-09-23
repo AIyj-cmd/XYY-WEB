@@ -115,28 +115,18 @@ const copy = SERVICE_EXPERIENCE_COPY[variant]
       reveal="service"
     />
   ) : (
-    <section
-      class:list={['service-cta', `service-cta--${variant}`]}
-      aria-labelledby="lp-cta-heading"
-    >
-      <div class="service-cta__inner">
-        <div class="service-cta__number" aria-hidden="true">
-          {String(Object.keys(SERVICE_EXPERIENCE_COPY).indexOf(variant) + 1).padStart(2, '0')}
-        </div>
-        <div class="service-cta__copy" data-service-reveal="copy">
-          <p>NEXT STEP · {copy.detailCode}</p>
-          <h2 id="lp-cta-heading">把{h1}变成可执行方案</h2>
-          <span>{copy.ctaPrompt}</span>
-        </div>
-        <div class="service-cta__actions" data-service-reveal="copy">
-          <a href="/contact">
-            免费获取方案 <span aria-hidden="true">↗</span>
-          </a>
-          <a href="/cases">
-            查看合作案例 <span aria-hidden="true">→</span>
-          </a>
-        </div>
-      </div>
-    </section>
+    <ConversionCTA
+      headingId="lp-cta-heading"
+      eyebrow={`NEXT STEP · ${copy.detailCode}`}
+      headingLines={[`把${h1}变成`, '可执行方案']}
+      description={copy.ctaPrompt}
+      actionLabel="免费获取方案"
+      preparationTitle="服务重点"
+      preparationItems={features
+        .slice(0, 3)
+        .map(({ title, desc }) => ({ label: title, detail: desc }))}
+      secondaryLinks={[{ href: '/cases', label: '查看合作案例' }]}
+      reveal="service"
+    />
   )
 }

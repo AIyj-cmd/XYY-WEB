@@ -1,0 +1,98 @@
+export const PRODUCT_VIDEO_SECTIONS = [
+  {
+    id: '01-overview',
+    label: '鞋服云仓',
+    heading: '鞋服云仓，让多渠道共用一盘货',
+    description:
+      '面向款式、颜色、尺码繁多的鞋服商品，统一管理库存与订单。从电商发货到门店补货，衔接入库、存储、拣货与出库，让线上线下的货品流转更有序。',
+    highlights: ['款色码管理', '库存协同', '全渠道发货'],
+    href: '/xiefu-yuncang',
+    link: '了解鞋服云仓服务',
+    src: '/videos/warehouse-sections-20260911/01-overview-clean-20260921.mp4',
+    poster: '/videos/warehouse-sections-20260911/01-overview-clean-20260921.jpg',
+  },
+  {
+    id: '02-returns',
+    label: '退货质检',
+    heading: '退货质检，让每件商品去向清楚',
+    description:
+      '退回的商品，哪些可以上架，哪些需要整理或修复？通过拆包核对、状态检查与质检分级，按品牌确认的标准安排后续处理，并保留可追溯的作业记录。',
+    highlights: ['拆包核对', '质检分级', '处置分流'],
+    href: '/tuihuo-zhijian',
+    link: '了解退货质检服务',
+    src: '/videos/warehouse-sections-20260911/04-inspection.mp4',
+    poster: '/videos/warehouse-sections-20260911/04-inspection.jpg',
+  },
+  {
+    id: '03-refurbishment',
+    label: '后整修复',
+    heading: '后整修复，让可修复商品重新流转',
+    description:
+      '针对污渍、缝线、配饰及标识等已确认问题，结合商品材质安排清洁、修复与整理。处理完成后再次质检，符合客户标准的商品进入后续上架流程。',
+    highlights: ['清洁整理', '瑕疵修复', '二次质检'],
+    href: '/houzheng-xiufu',
+    link: '了解后整修复服务',
+    src: '/videos/warehouse-sections-20260911/05-refurbishment.mp4',
+    poster: '/videos/warehouse-sections-20260911/05-refurbishment.jpg',
+  },
+  {
+    id: '04-cross-border',
+    label: '跨境云仓',
+    heading: '跨境云仓，衔接国内备货与出运',
+    description:
+      '为跨境鞋服项目提供国内端仓储、项目质检、换标换包装及退货整理。按确认的商品与包装要求完成仓内作业，再依项目方案交接物流资源。',
+    highlights: ['国内备货', '项目质检', '换标换包装'],
+    href: '/kuajing-yuncang',
+    link: '了解跨境云仓服务',
+    src: '/videos/warehouse-services-20260913/outbound-loading.mp4',
+    poster: '/videos/warehouse-services-20260913/outbound-loading.jpg',
+  },
+  {
+    id: '05-south-china',
+    label: '华南鞋服云仓',
+    heading: '华南鞋服云仓，协同珠三角仓配',
+    description:
+      '面向广州及珠三角鞋服品牌，衔接工厂入仓、电商发货、门店补货与退货处理。结合项目需求组织区域库存和仓内作业，支持华南业务开展。',
+    highlights: ['工厂入仓', '区域仓配', '退货处理'],
+    href: '/huanan-xiefu-yuncang',
+    link: '了解华南鞋服云仓服务',
+    src: '/videos/warehouse-sections-20260911/02-storage.mp4',
+    poster: '/videos/warehouse-sections-20260911/02-storage.jpg',
+  },
+  {
+    id: '06-east-china',
+    label: '华东鞋服云仓',
+    heading: '华东鞋服云仓，承接区域订单与补货',
+    description:
+      '面向长三角及华东市场的库存布局需求，提供电商发货、门店补货与退货质检。可按项目与华南仓网协同库存，安排区域订单履约和退货回流。',
+    highlights: ['区域履约', '门店补货', '多仓协同'],
+    href: '/huadong-xiefu-yuncang',
+    link: '了解华东鞋服云仓服务',
+    src: '/videos/warehouse-sections-20260911/03-picking.mp4',
+    poster: '/videos/warehouse-sections-20260911/03-picking.jpg',
+  },
+  {
+    id: '07-live-commerce',
+    label: '直播电商仓配',
+    heading: '直播电商仓配，应对集中出单与退货',
+    description:
+      '面向品牌自播和代播团队，围绕场次计划提前组织备货与作业安排。通过多平台订单协同、波次拣货和弹性产能，衔接集中发货与播后退货处理。',
+    highlights: ['场次备货', '弹性产能', '退货处理'],
+    href: '/zhibo-cangpei',
+    link: '了解直播电商仓配服务',
+    src: '/videos/warehouse-sections-20260911/06-packing.mp4',
+    poster: '/videos/warehouse-sections-20260911/06-packing.jpg',
+  },
+  {
+    id: '08-b2b-stores',
+    label: 'B2B门店仓配',
+    heading: 'B2B门店仓配，让分货与补货有序衔接',
+    description:
+      '面向连锁品牌、批发商与加盟体系，按门店及款色码组织分货、复核和出库。配合标签、分货明细与 ERP 协同，承接换季铺货和日常补货需求。',
+    highlights: ['按店分货', '标签明细', 'ERP协同'],
+    href: '/b2b-mendian-cangpei',
+    link: '了解B2B门店仓配服务',
+    src: '/videos/warehouse-services-20260913/order-distribution.mp4',
+    poster: '/videos/warehouse-services-20260913/order-distribution.jpg',
+  },
+] as const

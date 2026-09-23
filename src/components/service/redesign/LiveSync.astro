@@ -1,0 +1,74 @@
+---
+import type { LiveFeatureGroups, LiveStatGroups } from './live-content'
+
+interface Props {
+  groups: LiveFeatureGroups
+  stats: LiveStatGroups
+  contentDesc: string
+}
+const { groups, stats, contentDesc } = Astro.props
+const publicContentDesc = '连接订单、库存与发货状态，减少多平台卖货时的信息差。'
+const hasSync = groups.sync.length > 0 || stats.sync.length > 0
+---
+
+{
+  hasSync ? (
+    <section class="live-sync live-section" aria-labelledby="live-sync-heading">
+      <div class="redesign-shell">
+        <div class="live-sync__grid">
+          <header class="live-section-heading">
+            <>
+              <p class="redesign-kicker">库存同步</p>
+              <h2 id="live-sync-heading">多平台出单，库存也要跟上</h2>
+              <p>{publicContentDesc}</p>
+            </>
+          </header>
+          <div class="live-sync__blocks">
+            <article class="live-sync__orders">
+              <>
+                <b>订单接入</b>
+                <p>根据项目确认订单、库存、发货与退货数据的衔接范围。</p>
+              </>
+            </article>
+            <article class="live-sync__inventory">
+              <b>库存同步</b>
+              {groups.sync.map(({ title, desc }) => (
+                <p data-redesign-feature>
+                  <>
+                    <b data-feature-title>{title}</b>
+                    <span data-feature-description>{desc}</span>
+                  </>
+                </p>
+              ))}
+              {stats.sync.map(({ stat, label, sub }) => (
+                <p class="live-stat">
+                  <>
+                    <b>{stat}</b>
+                    <span>
+                      {label} · {sub}
+                    </span>
+                  </>
+                </p>
+              ))}
+            </article>
+            <article class="live-sync__shipping">
+              <>
+                <b>发货回传</b>
+                <p>仓内完成校验、波次、复核与出库后，按项目约定回传状态。</p>
+              </>
+            </article>
+          </div>
+        </div>
+        {contentDesc && contentDesc !== publicContentDesc && (
+          <p class="live-sync__context">{contentDesc}</p>
+        )}
+      </div>
+    </section>
+  ) : contentDesc ? (
+    <section class="live-context-section live-section">
+      <div class="redesign-shell">
+        <p class="live-sync__context">{contentDesc}</p>
+      </div>
+    </section>
+  ) : null
+}

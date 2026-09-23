@@ -1,0 +1,158 @@
+.south-warehouses {
+  border: 0;
+}
+
+.south-warehouses .redesign-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 2rem clamp(2rem, 6vw, 7rem);
+  align-items: end;
+}
+
+.south-warehouses .south-section__heading {
+  max-width: 52rem;
+}
+
+.south-warehouses .redesign-kicker {
+  line-height: 1.75;
+}
+
+.south-warehouses .south-section__heading h2 {
+  margin: 0.55rem 0 0;
+  text-wrap: balance;
+}
+
+.south-warehouses .south-section__heading > p:last-child {
+  line-height: 1.75;
+  text-wrap: pretty;
+}
+
+.south-network-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(8rem, 1fr));
+  gap: 1rem 2rem;
+  margin: 0;
+}
+
+.south-warehouses .south-network-stats .south-stat {
+  min-width: 0;
+  margin: 0;
+  line-height: 1.75;
+}
+
+.south-warehouses .south-network-stats .south-stat b {
+  display: block;
+  color: #c74412;
+  font-size: 1.2rem;
+  line-height: 1.75;
+}
+
+.south-warehouses .south-network-stats .south-stat span {
+  display: block;
+  line-height: 1.75;
+}
+
+.south-warehouse-list {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1rem, 2vw, 1.5rem);
+  margin-top: clamp(0.5rem, 2vw, 1.5rem);
+  border: 0;
+}
+
+.south-warehouse-city {
+  min-width: 0;
+  border: 0;
+  border-radius: 1.125rem;
+  padding: clamp(1.5rem, 3vw, 2rem);
+  background: #f4f1ec;
+  box-shadow: none;
+}
+
+.south-warehouse-city h3 {
+  margin: 0;
+  color: #171717;
+  font-size: clamp(2.25rem, 2.7vw, 2.5rem);
+  font-weight: 900;
+  letter-spacing: -0.055em;
+  line-height: 1;
+}
+
+.south-warehouse-city__content {
+  min-width: 0;
+  margin-top: clamp(1.5rem, 2.5vw, 2rem);
+}
+
+.south-warehouse-city ul {
+  display: grid;
+  gap: 1.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.south-warehouse-city li {
+  display: grid;
+  grid-template-columns: minmax(11rem, 0.43fr) minmax(0, 1fr);
+  gap: 0.5rem 1.25rem;
+  min-width: 0;
+  border: 0;
+  padding: 0;
+}
+
+.south-warehouse-city li b,
+.south-warehouse-city li span,
+.south-city-service b,
+.south-city-service span {
+  display: block;
+}
+
+.south-warehouse-city li b {
+  color: #171717;
+  font-size: 1.1rem;
+  line-height: 1.45;
+}
+
+.south-warehouse-city li span {
+  color: #625b54;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+
+.south-warehouses .south-city-service[data-redesign-feature] {
+  margin: 1.75rem 0 0;
+  border: 0;
+  padding: 0;
+  color: #625b54;
+  line-height: 1.7;
+}
+
+.south-warehouses .south-city-service[data-redesign-feature] [data-feature-title] {
+  margin-bottom: 0;
+}
+
+.south-city-service span {
+  margin-top: 0.3rem;
+  line-height: 1.65;
+}
+
+@media (max-width: 760px) {
+  .south-warehouses .redesign-shell {
+    display: block;
+  }
+
+  .south-network-stats {
+    margin-top: 2rem;
+  }
+
+  .south-warehouse-list {
+    grid-template-columns: 1fr;
+    margin-top: 2rem;
+  }
+
+  .south-warehouse-city li {
+    grid-template-columns: 1fr;
+    gap: 0.3rem;
+  }
+}

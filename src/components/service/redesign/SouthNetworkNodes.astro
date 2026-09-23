@@ -1,0 +1,59 @@
+---
+import { SOUTH_WAREHOUSE_CITIES } from '@/data/service/south-network'
+import type { SouthFeatureGroups, SouthStatGroups } from './south-content'
+
+interface Props {
+  groups: SouthFeatureGroups
+  stats: SouthStatGroups
+}
+const { groups, stats } = Astro.props
+---
+
+<section class="south-warehouses south-section" aria-labelledby="south-warehouses-heading">
+  <div class="redesign-shell">
+    <header class="south-section__heading">
+      <p class="redesign-kicker">仓库分布</p>
+      <h2 id="south-warehouses-heading">华南仓库分布</h2>
+      <p>广州、东莞、佛山、肇庆多仓布局，支持就近入仓、订单发货与退货质检。</p>
+    </header>
+    {
+      stats.network.length > 0 && (
+        <div class="south-network-stats" aria-label="华南仓储服务">
+          {stats.network.map(({ stat, label, sub }) => (
+            <p class="south-stat">
+              <b>{stat}</b>
+              <span>
+                {label} · {sub}
+              </span>
+            </p>
+          ))}
+        </div>
+      )
+    }
+    <div class="south-warehouse-list">
+      {
+        SOUTH_WAREHOUSE_CITIES.map(({ city, warehouses }) => (
+          <section class="south-warehouse-city" aria-labelledby={`south-warehouse-${city}`}>
+            <h3 id={`south-warehouse-${city}`}>{city}</h3>
+            <div class="south-warehouse-city__content">
+              <ul>
+                {warehouses.map(({ name, address }) => (
+                  <li>
+                    <b>{name}</b>
+                    <span>{address}</span>
+                  </li>
+                ))}
+              </ul>
+              {groups.cities[city].map(({ title, desc }) => (
+                <p class="south-city-service" data-redesign-feature>
+                  <b data-feature-title>{title}</b>
+                  <span data-feature-description>{desc}</span>
+                </p>
+              ))}
+            </div>
+          </section>
+        ))
+      }
+    </div>
+  </div>
+</section>

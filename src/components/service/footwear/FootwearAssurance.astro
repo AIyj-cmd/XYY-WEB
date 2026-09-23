@@ -1,0 +1,66 @@
+---
+import type { FeatureItem, StatItem } from '@/data/service'
+
+interface Props {
+  stats: readonly StatItem[]
+  features: FeatureItem[]
+}
+
+const { stats, features } = Astro.props
+const dailyStats = stats.filter(({ label }) => label === '发货准确率' || label === '截单时间')
+const peakStats = stats.filter(({ label }) => label === '单仓峰值')
+const dailyFeatures = features.filter(({ title }) => title === '全程监控追溯')
+const peakFeatures = features.filter(({ title }) => title === '弹性产能机制')
+const hasDaily = Boolean(dailyStats.length || dailyFeatures.length)
+const hasPeak = Boolean(peakStats.length || peakFeatures.length)
+---
+
+<section class="footwear-section footwear-assurance" aria-labelledby="footwear-assurance-heading">
+  <header class="footwear-assurance__heading">
+    <p class="footwear-section__label">保障</p>
+    <h2 id="footwear-assurance-heading">日常发得准，旺季有安排。</h2>
+  </header>
+  <div class="footwear-assurance__blocks">
+    {
+      hasDaily && (
+        <article>
+          <p class="footwear-assurance__eyebrow">日常作业</p>
+          <h3>扫码复核与发货安排</h3>
+          {dailyStats.map(({ stat, label, sub }) => (
+            <p>
+              <strong>{stat}</strong>
+              {label}，{sub}
+            </p>
+          ))}
+          {dailyFeatures.map(({ title, desc }) => (
+            <>
+              <h3>{title}</h3>
+              <p>{desc}</p>
+            </>
+          ))}
+          <p>时效受项目方案、仓容、承运商线路和双方确认的服务范围影响。</p>
+        </article>
+      )
+    }
+    {
+      hasPeak && (
+        <article>
+          <p class="footwear-assurance__eyebrow">旺季准备</p>
+          <h3>货量、人力和包材提前安排</h3>
+          {peakStats.map(({ stat, label, sub }) => (
+            <p>
+              <strong>{stat}</strong>
+              {label}，{sub}
+            </p>
+          ))}
+          {peakFeatures.map(({ title, desc }) => (
+            <>
+              <h3>{title}</h3>
+              <p>{desc}</p>
+            </>
+          ))}
+        </article>
+      )
+    }
+  </div>
+</section>

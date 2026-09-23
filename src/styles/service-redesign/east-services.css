@@ -1,0 +1,12 @@
+.east-faq footer .east-feature {
+  margin: 1.5rem 0;
+}
+.east-faq footer .redesign-button {
+  margin-top: 1.5rem;
+}
+.east-faq footer a:focus-visible,
+.east-hero__actions a:focus-visible,
+.east-faq summary:focus-visible {
+  outline: 2px solid #c74412;
+  outline-offset: 0.25rem;
+}

@@ -18,7 +18,7 @@ export const SERVICE_FLOW = [
 
 export const ASSURANCE_POINTS = [
   {
-    value: `${SERVICE_FACTS.inventoryAccuracy}+`,
+    value: SERVICE_FACTS.inventoryAccuracy,
     label: '库存准确率',
     note: '数据准，货位与状态持续管理',
   },

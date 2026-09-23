@@ -1,0 +1,98 @@
+.service-editorial {
+  --editorial-ink: #202224;
+  --editorial-body: #596066;
+  --editorial-line: #e4e6e3;
+  --editorial-accent: #e85d26;
+  color: var(--editorial-ink);
+  background: #fff;
+}
+
+.service-editorial .signature,
+.service-editorial .service-detail,
+.service-editorial .service-faq,
+.service-editorial .service-cta {
+  --ink: var(--editorial-ink);
+  --line: var(--editorial-line);
+  --signal: var(--editorial-accent);
+  color: var(--editorial-ink);
+  background: #fff;
+}
+
+.service-editorial .signature {
+  padding-top: clamp(4.5rem, 8vw, 8rem);
+}
+
+.service-editorial .signature__header,
+.service-editorial .service-detail__header {
+  grid-template-columns: minmax(0, 0.65fr) minmax(0, 1.35fr);
+  border-bottom: 0;
+}
+
+.service-editorial .signature__heading-wrap h2,
+.service-editorial .service-detail__header h2,
+.service-editorial .service-faq__header h2 {
+  color: var(--editorial-ink);
+}
+
+.service-editorial .signature__heading-wrap p,
+.service-editorial .service-detail__brief > p,
+.service-editorial .service-detail__features p,
+.service-editorial .service-faq__list dd {
+  color: var(--editorial-body);
+}
+
+.service-editorial .service-unique {
+  background: #fff;
+}
+
+.service-editorial .service-detail {
+  padding-top: clamp(5rem, 9vw, 9rem);
+}
+
+.service-editorial .service-detail__layout {
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
+}
+
+.service-editorial .service-detail__brief {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(16rem, 0.85fr);
+  align-items: start;
+  gap: clamp(2rem, 6vw, 6rem);
+}
+
+.service-editorial .service-detail__brief nav {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0;
+  border: 0;
+  gap: 0.55rem 1.25rem;
+}
+
+.service-editorial .service-detail__brief nav span,
+.service-editorial .service-detail__brief nav a {
+  padding: 0;
+  border: 0;
+}
+
+.service-editorial .service-detail__brief nav span {
+  flex-basis: 100%;
+}
+
+.service-editorial .service-faq {
+  background: #fafaf9;
+}
+
+@media (max-width: 900px) {
+  .service-editorial .service-detail__brief {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .service-editorial .signature__header,
+  .service-editorial .service-detail__header {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+}

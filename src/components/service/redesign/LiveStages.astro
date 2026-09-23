@@ -1,0 +1,104 @@
+---
+import type { LiveFeatureGroups, LiveStatGroups } from './live-content'
+
+interface Props {
+  groups: LiveFeatureGroups
+  stats: LiveStatGroups
+}
+const { groups, stats } = Astro.props
+const stages = [
+  {
+    label: '开播前',
+    title: '货、包材与人手，提前安排',
+    lead: '根据场次计划核对预计订单、SKU 与库存，安排包材与人员。',
+    features: groups.before,
+    stageStats: stats.peak,
+  },
+  {
+    label: '集中出单',
+    title: '订单集中来，仓内有序做',
+    lead: '订单校验后，按波次组织拣货与出库复核。',
+    features: groups.peak,
+    stageStats: [],
+  },
+  {
+    label: '发货跟进',
+    title: '按约定发货，异常及时跟进',
+    lead: '安排截单、打包出库、异常跟进与状态回传。',
+    features: groups.after,
+    stageStats: stats.after,
+  },
+].filter(({ features, stageStats }) => features.length > 0 || stageStats.length > 0)
+---
+
+{
+  stages.length > 0 && (
+    <section class="live-stages live-section" aria-labelledby="live-stages-heading">
+      <div class="redesign-shell">
+        <header class="live-section-heading">
+          <p class="redesign-kicker">场次安排</p>
+          <h2 id="live-stages-heading">开播前准备好，出单后跟得上</h2>
+        </header>
+        <div class="live-stages__tabs" data-live-stages>
+          <div role="tablist" aria-label="直播仓配阶段" aria-orientation="vertical">
+            {stages.map(({ label }, index) => (
+              <button
+                type="button"
+                role="tab"
+                id={`live-stage-tab-${index}`}
+                aria-controls={`live-stage-panel-${index}`}
+                aria-selected={index === 0 ? 'true' : 'false'}
+                tabindex={index === 0 ? 0 : -1}
+                data-live-stage-tab={index}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+          <div class="live-stages__list">
+            {stages.map(({ label, title, lead, features, stageStats }, index) => (
+              <article
+                role="tabpanel"
+                id={`live-stage-panel-${index}`}
+                aria-labelledby={`live-stage-tab-${index}`}
+                data-live-stage-panel={index}
+              >
+                <p class="redesign-kicker">{label}</p>
+                <div>
+                  <h3>{title}</h3>
+                  <p>{lead}</p>
+                  {features.map(({ title: featureTitle, desc }) => (
+                    <p data-redesign-feature>
+                      {featureTitle === desc ? (
+                        <b data-feature-title data-feature-description>
+                          {featureTitle}
+                        </b>
+                      ) : (
+                        <>
+                          <b data-feature-title>{featureTitle}</b>
+                          <span data-feature-description>{desc}</span>
+                        </>
+                      )}
+                    </p>
+                  ))}
+                  {stageStats.map(({ stat, label: statLabel, sub }) => (
+                    <p class="live-stat">
+                      <b>{stat}</b>
+                      <span>
+                        {statLabel} · {sub}
+                      </span>
+                    </p>
+                  ))}
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<script>
+  import '@/scripts/service-redesign/live-stages'
+</script>

@@ -1,10 +1,10 @@
 ---
 import ServiceLanding from '@/layouts/ServiceLanding.astro'
 import { CLAIM_TEXT } from '@/lib/claims'
-import ReturnGradeSection from '@/components/service/unique/ReturnGradeSection.astro'
 ---
 
 <ServiceLanding
+  presentation="returns"
   title={`服装退货质检｜${CLAIM_TEXT.recognizableAnomalies}异常识别，${CLAIM_TEXT.returnTurnaround}二次上架｜新亦源`}
   description={`新亦源服装退货质检可识别7大类${CLAIM_TEXT.recognizableAnomalies}异常，按品牌确认规则进行A/B+/B-/C分级，退货质检与二次上架${CLAIM_TEXT.returnTurnaround}完成。`}
   slug="tuihuo-zhijian"
@@ -77,6 +77,4 @@ import ReturnGradeSection from '@/components/service/unique/ReturnGradeSection.a
       a: `可以。新亦源可按品牌要求提供新货入库全检或抽检、洗水测试、色牢度检验、缩率测试和对样比对等服务。全年新货质检量${CLAIM_TEXT.newGoodsInspectionAnnual}；具体项目需分别确认验货比例、判定标准和处理时效。`,
     },
   ]}
->
-  <ReturnGradeSection slot="unique" />
-</ServiceLanding>
+/>

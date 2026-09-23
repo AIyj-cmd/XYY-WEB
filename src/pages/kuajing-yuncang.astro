@@ -1,10 +1,10 @@
 ---
 import ServiceLanding from '@/layouts/ServiceLanding.astro'
-import CrossBorderFlowSection from '@/components/service/unique/CrossBorderFlowSection.astro'
 import { CLAIM_TEXT } from '@/lib/claims'
 ---
 
 <ServiceLanding
+  presentation="crossborder"
   title="跨境出海仓配服务｜国内仓储、质检与换标包装｜新亦源"
   description="新亦源为跨境出海项目提供国内端仓储、按项目标准质检、换标换包装和退货整理，并可协同EMS及跨境专线资源；运输与清关责任以合同约定为准。"
   slug="kuajing-yuncang"
@@ -77,9 +77,7 @@ import { CLAIM_TEXT } from '@/lib/claims'
       a: 'Urbanic（跨境快时尚，面向印度/英国市场）是新亦源公开的跨境服务案例。案例范围覆盖B2B+B2C仓储、质检、包装、上架、库存管理及发货打包；公开数据为年发货1800–2300万件、年质检800–1400万件、年包装1500–2000万件，具体统计口径以案例资料为准。',
     },
   ]}
->
-  <CrossBorderFlowSection slot="unique" />
-</ServiceLanding>
+/>
 
 <style>
   :global([data-service-motion-root] [data-service-hero-media]) {

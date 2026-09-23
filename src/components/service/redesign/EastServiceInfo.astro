@@ -1,0 +1,51 @@
+---
+import type { EastStatGroups } from './east-content'
+
+interface Props {
+  stats: EastStatGroups
+  contentDesc: string
+}
+const { stats, contentDesc } = Astro.props
+const sections = [
+  {
+    title: '什么时候发',
+    stats: stats.warehouse.concat(stats.other),
+    desc: '符合条件的订单按约定安排发出。华东主要城市可参考次日达，实际送达时间结合收货地址和承运线路确认。',
+  },
+  {
+    title: '费用怎么计',
+    stats: stats.fees,
+    desc: '仓储和作业费用结合货品、库存、订单及所需服务报价；接口实施、定制和增值服务费用另行说明。',
+  },
+].filter(({ stats }) => stats.length > 0)
+---
+
+<section class="east-service-info east-section" aria-labelledby="east-service-info-heading">
+  <div class="redesign-shell">
+    <header>
+      <p class="redesign-kicker">服务安排</p><h2 id="east-service-info-heading">
+        发货时间清楚，费用提前说明
+      </h2>{contentDesc && <p>{contentDesc}</p>}
+    </header>
+    {
+      sections.length > 0 && (
+        <div class="east-service-info__grid">
+          {sections.map(({ title, stats: sectionStats, desc }) => (
+            <article>
+              <h3>{title}</h3>
+              {sectionStats.map(({ stat, label, sub }) => (
+                <p class="east-stat">
+                  <b>{stat}</b>
+                  <span>
+                    {label} · {sub}
+                  </span>
+                </p>
+              ))}
+              <p>{desc}</p>
+            </article>
+          ))}
+        </div>
+      )
+    }
+  </div>
+</section>

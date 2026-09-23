@@ -1,0 +1,132 @@
+---
+import type { FaqItem } from '@/data/service'
+import type { ServicePageContent } from '@/lib/directus-content-queries'
+import ConversionCTA from '@/components/conversion/ConversionCTA.astro'
+import '@/styles/service-redesign.css'
+import CrossborderBoundary from './CrossborderBoundary.astro'
+import { hasRedesignContent } from './content-presence'
+import { groupCrossborderFeatures, groupCrossborderStats } from './crossborder-content'
+import CrossborderDocuments from './CrossborderDocuments.astro'
+import CrossborderReturn from './CrossborderReturn.astro'
+
+interface Props {
+  content: ServicePageContent
+  faqs: FaqItem[]
+  videoSrc: string
+  poster: string
+}
+
+const { content, faqs, videoSrc, poster } = Astro.props
+const available = hasRedesignContent(content, faqs.length)
+const features = groupCrossborderFeatures(content.features)
+const stats = groupCrossborderStats(content.stats)
+---
+
+<article class:list={['crossborder-page', { 'crossborder-page--empty': !available }]}>
+  {
+    available ? (
+      <>
+        <header class="crossborder-hero">
+          <div class="redesign-shell">
+            <p class="redesign-kicker">{content.h1 || content.breadcrumbLabel}</p>
+            <h1 id="lp-h1">
+              <>
+                <span>把出海前的</span>
+                <span>国内仓配准备好</span>
+              </>
+            </h1>
+            {content.h1sub && <p class="crossborder-hero__sub">{content.h1sub}</p>}
+            {content.heroDesc && <p class="crossborder-hero__desc">{content.heroDesc}</p>}
+          </div>
+          <div class="redesign-shell">
+            <video
+              class="crossborder-hero__video"
+              data-service-hero-media
+              autoplay
+              loop
+              muted
+              playsinline
+              preload="auto"
+              width="1280"
+              height="720"
+              poster={poster}
+              aria-label={`${content.h1}服务视频`}
+            >
+              <source src={videoSrc} type="video/mp4" />
+            </video>
+          </div>
+        </header>
+        <CrossborderBoundary {features} {stats} />
+        <CrossborderDocuments {features} {stats} />
+        <CrossborderReturn {features} {stats} />
+        {(features.support.length > 0 ||
+          features.other.length > 0 ||
+          content.contentDesc ||
+          stats.other.length > 0) && (
+          <section class="crossborder-support crossborder-section" aria-label="项目支持说明">
+            <div class="redesign-shell">
+              {features.support.concat(features.other).map(({ title, desc }) => (
+                <p data-redesign-feature>
+                  <b data-feature-title>{title}</b>
+                  <span data-feature-description>{desc}</span>
+                </p>
+              ))}
+              {content.contentDesc && <p>{content.contentDesc}</p>}
+              {stats.other.map(({ stat, label, sub }) => (
+                <p class="crossborder-stat">
+                  <b>{stat}</b>
+                  <span>
+                    {label} · {sub}
+                  </span>
+                </p>
+              ))}
+            </div>
+          </section>
+        )}
+        <section
+          class="crossborder-faq"
+          aria-labelledby={faqs.length ? 'crossborder-faq-heading' : undefined}
+        >
+          <div class="redesign-shell">
+            {faqs.length > 0 && (
+              <div>
+                <p class="redesign-kicker">常见问题</p>
+                <h2 id="crossborder-faq-heading">项目交接前，先确认责任边界</h2>
+                {faqs.map(({ q, a }) => (
+                  <details data-redesign-faq>
+                    <summary>{q}</summary>
+                    <p>{a}</p>
+                  </details>
+                ))}
+              </div>
+            )}
+          </div>
+        </section>
+        <ConversionCTA
+          className="crossborder-contact"
+          headingId="crossborder-contact-heading"
+          eyebrow="沟通方案"
+          headingLines={['梳理你的跨境', '仓内方案']}
+          description="可先准备目标平台、商品规范、标签与包装模板、预计处理量和物流交接要求。"
+          actionLabel="梳理跨境仓内方案"
+          preparationItems={[
+            { label: '目标平台', detail: '主要销售平台与发货方向' },
+            { label: '商品规范', detail: '商品资料与处理要求' },
+            { label: '标签与包装模板', detail: '标签内容与包装样式' },
+            { label: '预计处理量', detail: '日常与活动处理预估' },
+            { label: '物流交接要求', detail: '物流交接方式与时间' },
+          ]}
+          secondaryLinks={[
+            { href: '/cases', label: '查看合作案例' },
+            { href: '/product', label: '查看全部仓配服务' },
+          ]}
+          reveal="service"
+        />
+      </>
+    ) : (
+      <section class="redesign-empty">
+        <h1 id="lp-h1">服务内容暂不可用</h1>
+      </section>
+    )
+  }
+</article>

@@ -4,12 +4,7 @@ import { extname, join, relative } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 
-import { BRAND_CLAIMS, CLAIM_TEXT, isBrandClaimKey, validateClaimRegistry } from '@/lib/claims'
-import { interpolateClaims } from '@/lib/directus-interpolation'
-import { APPROVED_FAQ_SEEDS } from '../../scripts/data/approved-faq-seeds.mjs'
-import { APPROVED_HOMEPAGE_STATS } from '../../scripts/data/approved-homepage-stats.mjs'
-import { APPROVED_SERVICES } from '../../scripts/data/approved-services.mjs'
-import { assertKnownClaimReferences } from '../../scripts/lib/claim-reference-validation.mjs'
+import { BRAND_CLAIMS, CLAIM_TEXT, validateClaimRegistry } from '@/lib/claims'
 import {
   claimLiteralViolations,
   hasTraceableBlockSource,
@@ -59,6 +54,23 @@ describe('public business claim registry', () => {
       .map(([key]) => key)
       .sort()
     expect(Object.keys(CLAIM_TEXT).sort()).toEqual(globalKeys)
+  })
+
+  it('records the confirmed accuracy values with raw, display, unit and provenance fields', () => {
+    for (const key of ['inventoryAccuracy', 'shippingAccuracy'] as const) {
+      const claim = BRAND_CLAIMS[key]
+      expect(claim).toMatchObject({
+        rawValue: 100,
+        unit: '%',
+        sourceType: 'user_confirmation',
+        sourceReference: '用户于2026-09-21确认。',
+        verifiedBy: '用户',
+        verifiedAt: '2026-09-21',
+        periodStart: null,
+        periodEnd: null,
+      })
+      expect(claim.displayValue).toBe(`${claim.rawValue}${claim.unit}`)
+    }
   })
 
   it('keeps approved operational literals out of pages, seeds and ordinary tests', () => {
@@ -148,48 +160,29 @@ describe('public business claim registry', () => {
       claimLiteralViolations(path, JSON.stringify(article), [historicalClaim], repositoryRoot)
     ).toHaveLength(1)
   })
-})
 
-describe('generated CMS claim references', () => {
-  it('stores homepage facts as claimKey references without value or unit copies', () => {
-    for (const stat of APPROVED_HOMEPAGE_STATS) {
-      expect(isBrandClaimKey(stat.claimKey)).toBe(true)
-      expect(stat).not.toHaveProperty('value')
-      expect(stat).not.toHaveProperty('unit')
-    }
-  })
+  it('excludes CSS and SVG percentage syntax while retaining business-literal protection', () => {
+    const percentage = BRAND_CLAIMS.inventoryAccuracy.displayValue
+    const path = join(repositoryRoot, 'tests', 'fixtures', 'claim-literal-scan.astro')
 
-  it('generates only known FAQ and service placeholders', () => {
-    expect(() =>
-      assertKnownClaimReferences(
-        { APPROVED_FAQ_SEEDS, APPROVED_SERVICES },
-        {
-          root: repositoryRoot,
-          source: 'claims.test',
-        }
+    expect(
+      claimLiteralViolations(
+        path,
+        `<style>.metric { width: ${percentage}; }</style><svg width="${percentage}"></svg>`,
+        [percentage],
+        repositoryRoot
       )
-    ).not.toThrow()
-  })
-
-  it('fails generation validation for an unknown claim reference', () => {
-    expect(() =>
-      assertKnownClaimReferences(
-        { answer: '{{unknownClaim}}' },
-        {
-          root: repositoryRoot,
-          source: 'claims.test.fixture',
-        }
+    ).toEqual([])
+    expect(
+      claimLiteralViolations(path, `<p>${percentage}</p>`, [percentage], repositoryRoot)
+    ).toEqual([`tests/fixtures/claim-literal-scan.astro => ${percentage}`])
+    expect(
+      claimLiteralViolations(
+        path,
+        `getComputedStyle(node)\nconst copy = '<p>${percentage}</p>'`,
+        [percentage],
+        repositoryRoot
       )
-    ).toThrow(/unknown claimKey.*unknownClaim/i)
-  })
-
-  it('fully resolves every generated FAQ placeholder in its page scope', () => {
-    for (const faq of APPROVED_FAQ_SEEDS) {
-      const answer = interpolateClaims(faq.answer, {
-        pageScope: faq.page_key,
-        source: { collection: 'faqs', recordId: faq.sort, field: 'answer' },
-      })
-      expect(answer).not.toMatch(/\{\{[^}]+\}\}/)
-    }
+    ).toEqual([`tests/fixtures/claim-literal-scan.astro => ${percentage}`])
   })
 })

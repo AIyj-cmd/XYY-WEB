@@ -1,10 +1,10 @@
 ---
 import ServiceLanding from '@/layouts/ServiceLanding.astro'
 import { CLAIM_TEXT } from '@/lib/claims'
-import LiveCommerceChallengesSection from '@/components/service/unique/LiveCommerceChallengesSection.astro'
 ---
 
 <ServiceLanding
+  presentation="live"
   title="直播电商仓配｜爆单弹性、库存同步与退货处理｜新亦源"
   description={`新亦源直播电商仓配支持多平台订单协同，以弹性产能应对爆单，实际单仓单日峰值${CLAIM_TEXT.singleWarehousePeak}，${CLAIM_TEXT.shippingSla}，并提供退货质检与二次上架。`}
   slug="zhibo-cangpei"
@@ -74,6 +74,4 @@ import LiveCommerceChallengesSection from '@/components/service/unique/LiveComme
       a: '可以。新亦源为MCN机构和代播服务商提供多品牌共仓方案：①各品牌独立分区存储，互不混仓；②系统账号权限隔离，每个品牌只能看自己的库存和订单；③独立出库单和账单，对账清晰；④支持代播机构统一结算，也支持各品牌方分别结算。具体方案根据品牌数量和SKU规模定制。',
     },
   ]}
->
-  <LiveCommerceChallengesSection slot="unique" />
-</ServiceLanding>
+/>

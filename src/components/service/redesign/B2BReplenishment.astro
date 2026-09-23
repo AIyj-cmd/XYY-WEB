@@ -1,0 +1,57 @@
+---
+import type { FeatureItem } from '@/data/service'
+interface Props {
+  replenishment: FeatureItem[]
+  transport: FeatureItem[]
+}
+const { replenishment, transport } = Astro.props
+const lanes = [
+  ['日常门店补货', '按品牌计划组织门店补货，并在开始前确认SKU、分货规则和收货要求。'],
+  ['换季集中铺货', '换季前预排班、安排波次计划，再结合货量和线路确认发运安排。'],
+  ['展会或临时需求', '提前确认目的地、时间和装箱要求，结合实际线路安排交付。'],
+]
+---
+
+<section class="b2b-replenishment b2b-section" aria-labelledby="b2b-lanes-heading">
+  <div class="redesign-shell">
+    <header class="b2b-section-heading">
+      <p class="redesign-kicker">补货与运输</p><h2 id="b2b-lanes-heading">
+        日常补货、换季铺货，都有对应安排。
+      </h2>
+    </header>
+    <div class="b2b-replenishment__scenarios">
+      {
+        lanes.map(([title, desc], index) => (
+          <article>
+            <>
+              <span>0{index + 1}</span>
+              <div>
+                <h3>{title}</h3>
+                {index === 1 ? (
+                  replenishment.map(({ title, desc: featureDesc }) => (
+                    <p data-redesign-feature>
+                      <b>{title}</b>
+                      {featureDesc}
+                    </p>
+                  ))
+                ) : (
+                  <p>{desc}</p>
+                )}
+              </div>
+            </>
+          </article>
+        ))
+      }
+    </div>
+    <div class="b2b-transport">
+      <h3>按收货要求安排发运</h3>{
+        transport.map(({ title, desc }) => (
+          <p data-redesign-feature>
+            <b>{title}</b>
+            {desc}
+          </p>
+        ))
+      }
+    </div>
+  </div>
+</section>

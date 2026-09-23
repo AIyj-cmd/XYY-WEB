@@ -1,0 +1,48 @@
+---
+import type { ServicePageContent } from '@/lib/directus-content-queries'
+
+interface Props {
+  content: ServicePageContent
+  videoSrc: string
+  poster: string
+}
+const { content, videoSrc, poster } = Astro.props
+---
+
+<header class="east-hero">
+  <div class="redesign-shell">
+    <div class="east-hero__copy">
+      <div class="east-hero__title">
+        {content.eyebrow && <p class="redesign-kicker">{content.eyebrow}</p>}
+        <h1 id="lp-h1">
+          <span class="east-hero__service">{content.h1 || '华东鞋服云仓'}</span>
+          <span class="east-hero__claim"><em>让发货，</em><em>更贴近你的市场</em></span>
+        </h1>
+        <p class="east-hero__cities"><span>上海</span><span>昆山</span><span>合肥</span></p>
+      </div>
+      <div class="east-hero__intro">
+        {content.h1sub && <p class="east-hero__sub">{content.h1sub}</p>}
+        {content.heroDesc && <p class="east-hero__description">{content.heroDesc}</p>}
+        <div class="east-hero__actions">
+          <a class="redesign-button" href="/contact">咨询华东仓配</a>
+          <a href="#east-warehouses-heading">查看仓库分布</a>
+        </div>
+      </div>
+    </div>
+    <video
+      class="east-hero__video"
+      data-service-hero-media
+      autoplay
+      loop
+      muted
+      playsinline
+      preload="auto"
+      width="1280"
+      height="720"
+      poster={poster}
+      aria-label={`${content.h1}服务视频`}
+    >
+      <source src={videoSrc} type="video/mp4" />
+    </video>
+  </div>
+</header>

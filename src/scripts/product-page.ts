@@ -6,6 +6,10 @@ import {
 } from '@/scripts/motion/scroll-reveal'
 
 const textTargetsFor = (element: HTMLElement) => {
+  if (element.closest('.product-editorial') && element.hasAttribute('data-reveal-self')) {
+    return [element]
+  }
+
   if (element.matches('.series-spread__copy')) {
     const meta = Array.from(
       element.querySelectorAll<HTMLElement>(':scope > .series-spread__meta > *')

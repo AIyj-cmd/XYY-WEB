@@ -1,0 +1,85 @@
+---
+import ServiceExperience from '@/components/service/ServiceExperience.astro'
+import ServiceSignature from '@/components/service/ServiceSignature.astro'
+import ServiceEditorialHero from '@/components/service/ServiceEditorialHero.astro'
+import type { FaqItem, FeatureItem, ServiceVariant, StatItem } from '@/data/service'
+import '@/styles/service-editorial.css'
+
+interface Props {
+  variant: ServiceVariant
+  h1: string
+  eyebrow: string
+  h1sub: string
+  heroDesc: string
+  poster: string
+  videoSrc: string
+  contentDesc: string
+  breadcrumbLabel: string
+  featuresLabel: string
+  stats: readonly StatItem[]
+  features: FeatureItem[]
+  faqs: FaqItem[]
+  useConversionCta: boolean
+}
+
+const {
+  variant,
+  h1,
+  eyebrow,
+  h1sub,
+  heroDesc,
+  poster,
+  videoSrc,
+  contentDesc,
+  breadcrumbLabel,
+  featuresLabel,
+  stats,
+  features,
+  faqs,
+  useConversionCta,
+} = Astro.props
+
+const uniqueFirst = new Set<ServiceVariant>([
+  'evidence-lab',
+  'global-tower',
+  'live-command',
+  'store-rhythm',
+]).has(variant)
+---
+
+<div class:list={['service-editorial', `service-editorial--${variant}`]}>
+  <ServiceEditorialHero {eyebrow} {h1} {h1sub} {heroDesc} {videoSrc} {poster} />
+  {
+    uniqueFirst ? (
+      <>
+        <div
+          class:list={['service-unique', `service-unique--${variant}`]}
+          data-service-reveal="visual"
+        >
+          <slot />
+        </div>
+        <ServiceSignature {variant} {h1} {contentDesc} {stats} {features} />
+      </>
+    ) : (
+      <>
+        <ServiceSignature {variant} {h1} {contentDesc} {stats} {features} />
+        <div
+          class:list={['service-unique', `service-unique--${variant}`]}
+          data-service-reveal="visual"
+        >
+          <slot />
+        </div>
+      </>
+    )
+  }
+  <ServiceExperience
+    {variant}
+    {h1}
+    {breadcrumbLabel}
+    {contentDesc}
+    {featuresLabel}
+    {features}
+    {faqs}
+    {useConversionCta}
+  />
+</div>

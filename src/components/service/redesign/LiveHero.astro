@@ -1,0 +1,56 @@
+---
+import type { ServicePageContent } from '@/lib/directus-content-queries'
+
+interface Props {
+  content: ServicePageContent
+  videoSrc: string
+  poster: string
+}
+
+const { content, videoSrc, poster } = Astro.props
+const hasCopy = content.h1 || content.h1sub || content.heroDesc
+---
+
+<header class="live-hero">
+  <div class="redesign-shell live-hero__grid">
+    {
+      hasCopy && (
+        <div class="live-hero__copy">
+          {content.h1 && (
+            <h1 id="lp-h1">
+              <span>{content.h1}</span>
+              {content.h1sub && <em>{content.h1sub}</em>}
+            </h1>
+          )}
+          {!content.h1 && content.h1sub && <p class="live-hero__statement">{content.h1sub}</p>}
+          {content.heroDesc && <p class="live-hero__description">{content.heroDesc}</p>}
+          <p class="live-hero__scenes" aria-label="适用场景">
+            <>
+              <span>品牌自播</span>
+              <span>达人带货</span>
+              <span>MCN · 代播</span>
+            </>
+          </p>
+          <a class="redesign-button" href="/contact">
+            咨询直播仓配
+          </a>
+        </div>
+      )
+    }
+    <video
+      class="live-hero__video"
+      data-service-hero-media
+      autoplay
+      loop
+      muted
+      playsinline
+      preload="auto"
+      width="1280"
+      height="720"
+      poster={poster}
+      aria-label={`${content.h1 || content.breadcrumbLabel}服务视频`}
+    >
+      <source src={videoSrc} type="video/mp4" />
+    </video>
+  </div>
+</header>

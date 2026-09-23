@@ -3,18 +3,28 @@ import '@/styles/conversion-cta.css'
 
 interface PreparationItem {
   label: string
-  detail: string
+  detail?: string
+  isFeature?: boolean
+}
+
+interface SecondaryLink {
+  href: string
+  label: string
 }
 
 interface Props {
   headingId: string
   eyebrow: string
   headingLines: string[]
-  description: string
+  description?: string
   actionLabel: string
-  preparationTitle: string
+  actionHref?: string
+  preparationTitle?: string
   preparationItems: PreparationItem[]
+  secondaryLinks?: SecondaryLink[]
+  condition?: string
   reveal?: 'product' | 'service'
+  className?: string
 }
 
 const {
@@ -23,16 +33,20 @@ const {
   headingLines,
   description,
   actionLabel,
+  actionHref = '/contact',
   preparationTitle,
   preparationItems,
+  secondaryLinks = [],
+  condition,
   reveal,
+  className,
 } = Astro.props
 
 const productReveal = reveal === 'product' ? 'copy' : undefined
 const serviceReveal = reveal === 'service' ? 'copy' : undefined
 ---
 
-<section class="conversion-cta" aria-labelledby={headingId} data-conversion-cta>
+<section class:list={['conversion-cta', className]} aria-labelledby={headingId} data-conversion-cta>
   <div class="conversion-cta__inner">
     <div
       class="conversion-cta__message"
@@ -43,29 +57,46 @@ const serviceReveal = reveal === 'service' ? 'copy' : undefined
       <h2 id={headingId}>
         {headingLines.map((line) => <span>{line}</span>)}
       </h2>
-      <p class="conversion-cta__description">{description}</p>
-      <a class="conversion-cta__action" href="/contact">
+      {description && <p class="conversion-cta__description">{description}</p>}
+      <a class="conversion-cta__action" href={actionHref}>
         {actionLabel}
         <span aria-hidden="true">→</span>
       </a>
+      {
+        secondaryLinks.length > 0 && (
+          <p class="conversion-cta__links">
+            {secondaryLinks.map(({ href, label }) => (
+              <a href={href}>{label}</a>
+            ))}
+          </p>
+        )
+      }
     </div>
 
-    <aside
-      aria-label={preparationTitle}
-      data-reveal={productReveal}
-      data-service-reveal={serviceReveal}
-    >
-      <p>{preparationTitle}</p>
-      <ol>
-        {
-          preparationItems.map(({ label, detail }) => (
-            <li>
-              <strong>{label}</strong>
-              <span>{detail}</span>
-            </li>
-          ))
-        }
-      </ol>
-    </aside>
+    <div class="conversion-cta__preparation">
+      <aside
+        aria-label={preparationTitle ?? '咨询前准备信息'}
+        data-reveal={productReveal}
+        data-service-reveal={serviceReveal}
+      >
+        {preparationTitle && <p>{preparationTitle}</p>}
+        <ol>
+          {
+            preparationItems.map(({ label, detail, isFeature }, index) => (
+              <li data-redesign-feature={isFeature ? '' : undefined}>
+                <b aria-hidden="true">{String(index + 1).padStart(2, '0')}</b>
+                <div>
+                  <strong data-feature-title={isFeature ? '' : undefined}>{label}</strong>
+                  {detail && (
+                    <span data-feature-description={isFeature ? '' : undefined}>{detail}</span>
+                  )}
+                </div>
+              </li>
+            ))
+          }
+        </ol>
+      </aside>
+      {condition && <p class="conversion-cta__condition">{condition}</p>}
+    </div>
   </div>
 </section>

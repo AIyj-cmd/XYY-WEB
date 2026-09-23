@@ -1,0 +1,9 @@
+@import './repair-workshop.css';
+@import './repair-process.css';
+@import './repair-verification.css';
+@import './repair-faq.css';
+
+.repair-section__heading {
+  max-width: 48rem;
+  margin-bottom: clamp(2rem, 4vw, 3rem);
+}

@@ -61,43 +61,6 @@ test('cases page exposes only the six current brands', async ({ page }, testInfo
   await expect(page.locator('#cases-grid a[aria-label="查看案例详情 →"]')).toHaveCount(1)
 })
 
-test('product page presents three service series and an accessible six-need directory', async ({
-  page,
-}) => {
-  await page.goto('/product')
-
-  await expect(page.getByRole('heading', { level: 1, name: '仓配服务' })).toBeVisible()
-  await expect(page.locator('#service-series .series-spread')).toHaveCount(3)
-  const selector = page.locator('[data-need-directory]')
-  const tabs = selector.getByRole('tab')
-  const panels = selector.locator('[role="tabpanel"]')
-  const visiblePanel = selector.locator('[role="tabpanel"]:not([hidden])')
-  await expect(tabs).toHaveCount(6)
-  await expect(panels).toHaveCount(6)
-  await expect(visiblePanel).toHaveCount(1)
-  for (const [question, solution] of [
-    ['新品到仓', '入库质检'],
-    ['SKU多', '仓储管理'],
-    ['订单量波动大', '订单履约'],
-    ['退货到仓', '退货接收、质检分流'],
-    ['已确认可售', '外观整理、信息更新、二次上架'],
-    ['商品需要换标', '商品整理与增值处理'],
-  ]) {
-    const tab = selector.getByRole('tab', { name: new RegExp(question) })
-    await tab.click()
-    await expect(tab).toHaveAttribute('aria-selected', 'true')
-    await expect(visiblePanel).toContainText(solution)
-  }
-
-  await tabs.first().focus()
-  await page.keyboard.press('End')
-  await expect(tabs.last()).toBeFocused()
-  await expect(tabs.last()).toHaveAttribute('aria-selected', 'true')
-  await expect(page.locator('#product-care')).toHaveCount(1)
-  await expect(page.locator('#service-process')).toHaveCount(1)
-  await expect(page.locator('#assurance')).toHaveCount(1)
-})
-
 test('product page has no horizontal overflow at 360px', async ({ page }) => {
   const fontRequests: string[] = []
   page.on('request', (request) => {
@@ -105,7 +68,7 @@ test('product page has no horizontal overflow at 360px', async ({ page }) => {
   })
   await page.setViewportSize({ width: 360, height: 800 })
   await page.goto('/product')
-  await expect(page.locator('[data-need-directory]')).toBeVisible()
+  await expect(page.locator('[data-product-video]')).toHaveCount(8)
   const dimensions = await page.evaluate(() => ({
     viewport: document.documentElement.clientWidth,
     content: document.documentElement.scrollWidth,
@@ -132,10 +95,7 @@ test('refactored home and product modules remain intact at desktop widths', asyn
     )
 
     await page.goto('/product')
-    await expect(page.locator('#service-series')).toHaveCount(1)
-    await expect(page.locator('#product-care')).toHaveCount(1)
-    await expect(page.locator('#service-process')).toHaveCount(1)
-    await expect(page.locator('#assurance')).toHaveCount(1)
+    await expect(page.locator('[data-product-video]')).toHaveCount(8)
     dimensions = await page.evaluate(() => ({
       viewport: document.documentElement.clientWidth,
       content: document.documentElement.scrollWidth,

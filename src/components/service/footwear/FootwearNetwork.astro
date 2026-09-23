@@ -1,0 +1,47 @@
+---
+import type { FeatureItem } from '@/data/service'
+
+interface Props {
+  features: FeatureItem[]
+  full: boolean
+}
+
+const { features, full } = Astro.props
+const channels = [
+  { label: 'B2C', title: '电商发货', desc: '多平台订单汇集、库存核对与出库安排。' },
+  { label: 'B2B', title: '门店与批发', desc: '按店补货和批量分货，匹配不同收货安排。' },
+  { label: 'O2O', title: '线上线下协同', desc: '衔接门店库存与线上订单，按项目确认协同范围。' },
+]
+---
+
+<section class="footwear-section footwear-network" aria-labelledby="footwear-network-heading">
+  <header class="footwear-network__heading">
+    <p class="footwear-section__label">一盘货流转</p>
+    <h2 id="footwear-network-heading">线上卖、门店补，同一盘货有序分配。</h2>
+  </header>
+  {
+    full && (
+      <div class="footwear-network__channels">
+        {channels.map(({ label, title, desc }) => (
+          <article>
+            <b>{label}</b>
+            <h3>{title}</h3>
+            <p>{desc}</p>
+          </article>
+        ))}
+      </div>
+    )
+  }
+  <div class="footwear-network__system">
+    {
+      features.map(({ title, desc }) => (
+        <article>
+          <>
+            <h3>{title}</h3>
+            <p>{desc}</p>
+          </>
+        </article>
+      ))
+    }
+  </div>
+</section>

@@ -1,0 +1,64 @@
+---
+import type { FeatureItem, StatItem } from '@/data/service'
+
+interface Props {
+  features: FeatureItem[]
+  stats: StatItem[]
+}
+
+const { features, stats } = Astro.props
+---
+
+{
+  (features.length > 0 || stats.length > 0) && (
+    <section class="live-returns live-section" aria-labelledby="live-returns-heading">
+      <div class="redesign-shell">
+        <header class="live-section-heading">
+          <p class="redesign-kicker">退货处理</p>
+          <h2 id="live-returns-heading">退回来的商品，也有下一步</h2>
+          <p>拆包核对、质检分级后，根据商品状态安排整理与二次上架。</p>
+        </header>
+        <div class="live-returns__directions">
+          <article>
+            <>
+              <b>可售商品</b>
+              <p>按规则完成复核与二次上架。</p>
+            </>
+          </article>
+          <article>
+            <>
+              <b>需要整理的商品</b>
+              <p>根据质检结果安排整理，需修复的另行评估。</p>
+            </>
+          </article>
+          <article>
+            <>
+              <b>异常商品</b>
+              <p>记录问题并确认后续处理方式。</p>
+            </>
+          </article>
+        </div>
+        {features.map(({ title, desc }) => (
+          <p class="live-returns__feature" data-redesign-feature>
+            <b data-feature-title>{title}</b>
+            <span data-feature-description>{desc}</span>
+          </p>
+        ))}
+        {stats.map(({ stat, label, sub }) => (
+          <p class="live-stat">
+            <b>{stat}</b>
+            <span>
+              {label} · {sub}
+            </span>
+          </p>
+        ))}
+        <p class="live-returns__links">
+          <>
+            <a href="/tuihuo-zhijian">了解退货质检</a>
+            <a href="/houzheng-xiufu">了解后整修复</a>
+          </>
+        </p>
+      </div>
+    </section>
+  )
+}

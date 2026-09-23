@@ -1,0 +1,31 @@
+---
+import type { FaqItem } from '@/data/service'
+
+interface Props {
+  faqs: FaqItem[]
+}
+const { faqs } = Astro.props
+---
+
+{
+  faqs.length > 0 && (
+    <section class="live-faq live-section" aria-labelledby="live-faq-heading">
+      <div class="redesign-shell live-faq__grid">
+        <header>
+          <>
+            <p class="redesign-kicker">常见问题</p>
+            <h2 id="live-faq-heading">开始合作前，你可能还想了解</h2>
+          </>
+        </header>
+        <div>
+          {faqs.map(({ q, a }) => (
+            <details data-redesign-faq>
+              <summary>{q}</summary>
+              <p>{a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}

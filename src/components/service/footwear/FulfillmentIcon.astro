@@ -1,0 +1,147 @@
+---
+interface Props {
+  name: 'receive' | 'inspect' | 'rfid' | 'order' | 'pick' | 'pack' | 'dispatch'
+}
+
+const { name } = Astro.props
+---
+
+<svg class="footwear-fulfillment-icon" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+  {
+    name === 'receive' && (
+      <>
+        <path d="M10 18h28v20H10z" stroke="currentColor" stroke-width="2.4" />
+        <path
+          d="m10 18 7-7h14l7 7M24 5v17m0 0-5-5m5 5 5-5"
+          stroke="currentColor"
+          stroke-width="2.4"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </>
+    )
+  }
+  {
+    name === 'inspect' && (
+      <>
+        <path d="M12 10h18v28H12z" stroke="currentColor" stroke-width="2.4" />
+        <path
+          d="m17 24 4 4 10-11M17 16h8"
+          stroke="currentColor"
+          stroke-width="2.4"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <circle cx="35" cy="33" r="6" fill="#D45B1C" />
+      </>
+    )
+  }
+  {
+    name === 'rfid' && (
+      <>
+        <rect
+          x="11"
+          y="12"
+          width="18"
+          height="24"
+          rx="2"
+          stroke="currentColor"
+          stroke-width="2.4"
+        />
+        <path
+          d="M18 18h4v12h-4zM33 17c3 2 3 12 0 14m5-18c5 4 5 18 0 22"
+          stroke="currentColor"
+          stroke-width="2.4"
+          stroke-linecap="round"
+        />
+      </>
+    )
+  }
+  {
+    name === 'order' && (
+      <>
+        <path
+          d="M12 9h19l5 5v25H12z"
+          stroke="currentColor"
+          stroke-width="2.4"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M31 9v6h5M18 22h12M18 29h12"
+          stroke="currentColor"
+          stroke-width="2.4"
+          stroke-linecap="round"
+        />
+        <path
+          d="m17 16 2 2 4-4"
+          stroke="#D45B1C"
+          stroke-width="2.4"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </>
+    )
+  }
+  {
+    name === 'pick' && (
+      <>
+        <path d="M9 14h20v23H9zM9 21h20M16 14v23" stroke="currentColor" stroke-width="2.4" />
+        <path
+          d="m34 29 3 3 6-7"
+          stroke="#D45B1C"
+          stroke-width="2.4"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </>
+    )
+  }
+  {
+    name === 'pack' && (
+      <>
+        <path
+          d="m11 17 13-7 13 7v15l-13 7-13-7z"
+          stroke="currentColor"
+          stroke-width="2.4"
+          stroke-linejoin="round"
+        />
+        <path
+          d="m11 17 13 8 13-8M24 25v14M19 13l13 7"
+          stroke="currentColor"
+          stroke-width="2.4"
+          stroke-linejoin="round"
+        />
+        <path
+          d="m17 29 4 4 7-8"
+          stroke="#D45B1C"
+          stroke-width="2.4"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </>
+    )
+  }
+  {
+    name === 'dispatch' && (
+      <>
+        <path
+          d="M8 16h22v18H8zM30 22h5l5 6v6H30z"
+          stroke="currentColor"
+          stroke-width="2.4"
+          stroke-linejoin="round"
+        />
+        <>
+          <circle cx="16" cy="36" r="3" fill="#D45B1C" />
+          <circle cx="34" cy="36" r="3" fill="#D45B1C" />
+        </>
+        <path
+          d="M14 11h13m-4-4 4 4-4 4"
+          stroke="currentColor"
+          stroke-width="2.4"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </>
+    )
+  }
+</svg>

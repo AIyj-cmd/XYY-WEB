@@ -1,0 +1,61 @@
+---
+import { REPAIR_WORKSHOP_PHOTOS } from '@/data/service/repair-workshop'
+
+const [cleaning, stitching, ironing] = REPAIR_WORKSHOP_PHOTOS
+---
+
+<section class="repair-craft repair-section" aria-labelledby="repair-craft-heading">
+  <div class="redesign-shell">
+    <header class="repair-section__heading">
+      <p class="redesign-kicker">工艺图册</p>
+      <h2 id="repair-craft-heading">围绕面料与瑕疵，安排不同处理</h2>
+    </header>
+    <div class="repair-craft__cleaning-row">
+      <figure class="repair-craft__cleaning">
+        <img
+          src={cleaning.src}
+          alt={cleaning.alt}
+          loading="lazy"
+          decoding="async"
+          width="1707"
+          height="1280"
+        />
+      </figure>
+      <aside>
+        <p class="redesign-kicker">{cleaning.code}</p><strong>{cleaning.label}</strong><p>
+          根据面料特点控制工艺，结果以二次质检为准。
+        </p>
+      </aside>
+    </div>
+    <figure class="repair-craft__stitching">
+      <img
+        src={stitching.src}
+        alt={stitching.alt}
+        loading="lazy"
+        decoding="async"
+        width="1000"
+        height="667"
+      />
+      <figcaption>
+        <strong>{stitching.label} · {stitching.code}</strong><span
+          >线色与工艺要求，需要在处理前确认。</span
+        >
+      </figcaption>
+    </figure>
+    <figure class="repair-craft__ironing">
+      <img
+        src={ironing.src}
+        alt={ironing.alt}
+        loading="lazy"
+        decoding="async"
+        width="1512"
+        height="747"
+      />
+      <figcaption>
+        <strong>{ironing.label} · {ironing.code}</strong><span
+          >完成后的状态，仍按品牌确认标准复检。</span
+        >
+      </figcaption>
+    </figure>
+  </div>
+</section>

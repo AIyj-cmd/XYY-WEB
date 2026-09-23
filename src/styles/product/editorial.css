@@ -1,0 +1,131 @@
+.product-editorial {
+  --product-editorial-ink: #090909;
+  --product-editorial-muted: #69707d;
+  --product-editorial-green: #00e78b;
+  --product-editorial-placeholder: #f3f4f6;
+  background: #fff;
+  color: var(--product-editorial-ink);
+}
+
+.product-editorial__container {
+  width: min(1360px, calc(100% - 5rem));
+  margin-inline: auto;
+}
+
+.product-editorial__hero {
+  padding: 8rem 0 3rem;
+}
+
+.product-editorial__hero-layout,
+.product-editorial__directory-layout,
+.product-editorial__care-layout,
+.product-editorial__process-layout {
+  display: grid;
+  gap: clamp(2rem, 4vw, 5.5rem);
+}
+
+.product-editorial__hero-layout {
+  grid-template-columns: minmax(18rem, 0.35fr) minmax(0, 0.65fr);
+  align-items: center;
+}
+
+.product-editorial h1,
+.product-editorial h2,
+.product-editorial h3,
+.product-editorial p {
+  margin: 0;
+}
+
+.product-editorial__hero h1 {
+  font-size: clamp(3.1rem, 4.8vw, 5rem);
+  font-weight: 900;
+  letter-spacing: -0.09em;
+  line-height: 1.03;
+}
+
+.product-editorial__hero h1 > span,
+.product-editorial__care h2 > span {
+  display: block;
+  width: fit-content;
+}
+
+.product-editorial__highlight,
+.product-editorial__care h2 > span {
+  background: var(--product-editorial-green);
+  border-radius: 0.1em;
+  padding-inline: 0.08em;
+}
+
+.product-editorial__hero-copy > p,
+.product-editorial__care header > p {
+  color: var(--product-editorial-muted);
+  font-size: 1rem;
+  line-height: 1.75;
+  margin-top: 1.25rem;
+  max-width: 32rem;
+}
+
+.product-editorial__hero-action {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  margin-top: 1.35rem;
+}
+
+.product-editorial__hero-action a {
+  background: var(--product-editorial-ink);
+  border-radius: 0.45rem;
+  color: #fff;
+  font-size: 0.92rem;
+  font-weight: 700;
+  padding: 0.75rem 1.4rem;
+  text-decoration: none;
+}
+
+.product-editorial__hero-action > span {
+  color: var(--product-editorial-muted);
+  font-size: 0.88rem;
+}
+
+.product-editorial__placeholder {
+  background: var(--product-editorial-placeholder);
+  border-radius: 0.3rem;
+}
+
+.product-editorial__placeholder[data-product-visual] {
+  background: transparent;
+  overflow: hidden;
+  position: relative;
+}
+
+.product-editorial__placeholder[data-product-visual] img {
+  height: 100%;
+  inset: 0;
+  object-fit: contain;
+  object-position: center;
+  position: absolute;
+  width: 100%;
+}
+
+.product-editorial__hero-placeholder {
+  aspect-ratio: 1.75 / 1;
+}
+
+/* Keep GSAP autoAlpha from removing unfocused editorial links from the Tab sequence. */
+.product-editorial [data-reveal='copy']:not([data-reveal-self]) > *,
+.product-editorial [data-reveal='copy'][data-reveal-self] {
+  visibility: visible !important;
+}
+
+.product-editorial [data-reveal='copy']:not([data-reveal-self]) > *:focus-within,
+.product-editorial [data-reveal='copy'][data-reveal-self]:focus-within {
+  filter: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+.product-editorial a:focus-visible {
+  outline: 3px solid var(--product-editorial-green);
+  outline-offset: 3px;
+}

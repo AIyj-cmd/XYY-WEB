@@ -1,0 +1,26 @@
+.service-editorial .service-unique > section > div > h2,
+.service-editorial .service-unique > section > div > div > h2 {
+  color: var(--editorial-ink);
+  font-size: clamp(1.55rem, 2.5vw, 2.4rem);
+  line-height: 1.18;
+}
+
+.service-editorial .service-unique > section > div > p {
+  color: var(--editorial-body);
+  font-size: 0.9rem;
+  line-height: 1.7;
+}
+
+.service-editorial--evidence-lab .service-unique,
+.service-editorial--global-tower .service-unique,
+.service-editorial--live-command .service-unique,
+.service-editorial--store-rhythm .service-unique {
+  padding-top: clamp(1rem, 3vw, 2.5rem);
+}
+
+@media (max-width: 640px) {
+  .service-editorial .service-unique > section > div > h2,
+  .service-editorial .service-unique > section > div > div > h2 {
+    font-size: clamp(1.45rem, 7vw, 2rem);
+  }
+}

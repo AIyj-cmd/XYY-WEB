@@ -1,0 +1,34 @@
+---
+import type { FeatureItem } from '@/data/service'
+interface Props {
+  inventory: FeatureItem[]
+  erp: FeatureItem[]
+  contentDesc: string
+}
+const { inventory, erp, contentDesc } = Astro.props
+---
+
+<section class="b2b-system b2b-section" aria-labelledby="b2b-system-heading">
+  <div class="redesign-shell">
+    <header class="b2b-section-heading">
+      <p class="redesign-kicker">库存与系统</p><h2 id="b2b-system-heading">
+        线上卖货，线下补货，库存一起管理。
+      </h2>
+    </header>
+    <div class="b2b-system__inventory">
+      <strong>统一库存</strong><span>线上 B2C 订单</span><span>线下 B2B 门店补货</span>
+    </div>
+    <p class="b2b-system__lead">接收补货指令、组织门店出库、回传物流信息。</p>
+    {contentDesc && <p class="b2b-system__description">{contentDesc}</p>}
+    <div class="b2b-system__features">
+      {
+        inventory.concat(erp).map(({ title, desc }) => (
+          <p data-redesign-feature>
+            <b>{title}</b>
+            {desc}
+          </p>
+        ))
+      }
+    </div>
+  </div>
+</section>

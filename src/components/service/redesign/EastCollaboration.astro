@@ -1,0 +1,61 @@
+---
+import type { EastFeatureGroups } from './east-content'
+
+interface Props {
+  groups: EastFeatureGroups
+}
+const { groups } = Astro.props
+const [primary, ...other] = groups.collaboration
+const items = [
+  ['统一看库存', '华东与华南库存统一查看，方便掌握可用货品。'],
+  ['按规则发货', '根据订单地区、库存和约定规则安排发货仓库。'],
+  ['跟进补货与对账', '围绕库存变化、补货节奏和订单状态持续跟进。'],
+] as const
+---
+
+<section class="east-collaboration east-section" aria-labelledby="east-collaboration-heading">
+  <div class="redesign-shell east-collaboration__layout">
+    <header>
+      {
+        primary ? (
+          <div data-redesign-feature>
+            <h2 id="east-collaboration-heading" data-feature-title>
+              {primary.title}
+            </h2>
+            <p data-feature-description>{primary.desc}</p>
+          </div>
+        ) : (
+          <>
+            <>
+              <h2 id="east-collaboration-heading">多仓库存，一起管理</h2>
+              <p>华东与华南库存统一查看，根据订单地区和约定规则安排发货仓库。</p>
+            </>
+          </>
+        )
+      }
+      {
+        other.map(({ title, desc }) => (
+          <p class="east-feature" data-redesign-feature>
+            <>
+              <b data-feature-title>{title}</b>
+              <span data-feature-description>{desc}</span>
+            </>
+          </p>
+        ))
+      }
+    </header>
+    <div class="east-collaboration__items">
+      {
+        items.map(([title, desc], index) => (
+          <article>
+            <>
+              <span>{String(index + 1).padStart(2, '0')}</span>
+              <h3>{title}</h3>
+              <p>{desc}</p>
+            </>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>

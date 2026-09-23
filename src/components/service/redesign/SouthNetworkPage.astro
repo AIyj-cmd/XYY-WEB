@@ -1,0 +1,140 @@
+---
+import type { FaqItem } from '@/data/service'
+import type { ServicePageContent } from '@/lib/directus-content-queries'
+import ConversionCTA from '@/components/conversion/ConversionCTA.astro'
+import '@/styles/service-redesign.css'
+import SouthBusiness from './SouthBusiness.astro'
+import { hasRedesignContent } from './content-presence'
+import { groupSouthFeatures, groupSouthStats, summarizeSouthHeroDescription } from './south-content'
+import SouthNetworkNodes from './SouthNetworkNodes.astro'
+
+interface Props {
+  content: ServicePageContent
+  faqs: FaqItem[]
+  videoSrc: string
+  poster: string
+}
+const { content, faqs, videoSrc, poster } = Astro.props
+const available = hasRedesignContent(content, faqs.length)
+const groups = groupSouthFeatures(content.features)
+const stats = groupSouthStats(content.stats)
+---
+
+<article class:list={['south-page', { 'south-page--empty': !available }]}>
+  {
+    available ? (
+      <>
+        <header class="south-hero">
+          <div class="redesign-shell south-hero__grid">
+            <>
+              <div>
+                <p class="redesign-kicker">{content.h1 || content.breadcrumbLabel}</p>
+                <h1 id="lp-h1">
+                  <>
+                    <span>华南鞋服云仓</span>
+                    <span>把货源与订单放进合适仓库</span>
+                  </>
+                </h1>
+                <p class="south-hero__cities">
+                  <>
+                    <span>广州</span>
+                    <span>东莞</span>
+                    <span>佛山</span>
+                    <span>肇庆</span>
+                  </>
+                </p>
+                {(content.h1sub || content.heroDesc) && (
+                  <div class="south-hero__intro">
+                    {content.h1sub && <p class="south-hero__sub">{content.h1sub}</p>}
+                    {content.heroDesc && <p>{summarizeSouthHeroDescription(content.heroDesc)}</p>}
+                  </div>
+                )}
+              </div>
+              <video
+                class="south-hero__video"
+                data-service-hero-media
+                autoplay
+                loop
+                muted
+                playsinline
+                preload="auto"
+                width="1280"
+                height="720"
+                poster={poster}
+                aria-label={`${content.h1}服务视频`}
+              >
+                <source src={videoSrc} type="video/mp4" />
+              </video>
+            </>
+          </div>
+        </header>
+        <SouthNetworkNodes {groups} {stats} />
+        <SouthBusiness {groups} {stats} />
+        <section class="south-reference south-section" aria-labelledby="south-reference-heading">
+          <div class="redesign-shell">
+            <>
+              <header>
+                <>
+                  <p class="redesign-kicker">发货与配送</p>
+                  <h2 id="south-reference-heading">什么时候发出，多久可以送达</h2>
+                </>
+              </header>
+              <div>
+                {content.contentDesc && <p>{content.contentDesc}</p>}
+                {stats.warehouse.concat(stats.other).map(({ stat, label, sub }) => (
+                  <p class="south-stat">
+                    <b>{stat}</b>
+                    <span>
+                      {label} · {sub}
+                    </span>
+                  </p>
+                ))}
+              </div>
+            </>
+          </div>
+        </section>
+        <section
+          class="south-faq south-section"
+          aria-labelledby={faqs.length ? 'south-faq-heading' : undefined}
+        >
+          <div class="redesign-shell">
+            {faqs.length > 0 && (
+              <div>
+                <p class="redesign-kicker">常见问题</p>
+                <h2 id="south-faq-heading">关于选仓，你可能还想了解</h2>
+                {faqs.map(({ q, a }) => (
+                  <details data-redesign-faq>
+                    <summary>{q}</summary>
+                    <p>{a}</p>
+                  </details>
+                ))}
+              </div>
+            )}
+          </div>
+        </section>
+        <ConversionCTA
+          className="south-contact"
+          headingId="south-contact-heading"
+          eyebrow="咨询仓配服务"
+          headingLines={['选择适合你的', '华南仓库']}
+          description="告诉我们货源位置、主要收货地区和订单需求，我们会为你推荐合适的仓库与服务方案。"
+          actionLabel="咨询华南仓配服务"
+          preparationItems={[
+            { label: '货源位置', detail: '所在城市与入仓安排' },
+            { label: '主要收货地区', detail: '主要收货城市与区域' },
+            { label: '订单需求', detail: '日常订单与配送安排' },
+          ]}
+          secondaryLinks={[
+            { href: '/cases', label: '查看合作案例' },
+            { href: '/product', label: '查看全部仓配服务' },
+          ]}
+          reveal="service"
+        />
+      </>
+    ) : (
+      <section class="redesign-empty">
+        <h1 id="lp-h1">服务内容暂不可用</h1>
+      </section>
+    )
+  }
+</article>

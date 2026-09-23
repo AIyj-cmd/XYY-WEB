@@ -1,10 +1,10 @@
 ---
 import ServiceLanding from '@/layouts/ServiceLanding.astro'
 import { CLAIM_TEXT } from '@/lib/claims'
-import B2BComparisonSection from '@/components/service/unique/B2BComparisonSection.astro'
 ---
 
 <ServiceLanding
+  presentation="b2b"
   title="B2B门店仓配｜连锁补货、分货与全渠道一盘货｜新亦源"
   description={`新亦源B2B门店仓配覆盖${CLAIM_TEXT.coveredCities}城市，为连锁品牌、批发商、加盟商提供门店补货配送、分色分码分货、货架标签、分货明细单及ERP系统对接等全流程服务。`}
   slug="b2b-mendian-cangpei"
@@ -77,6 +77,4 @@ import B2BComparisonSection from '@/components/service/unique/B2BComparisonSecti
       a: '支持完全按品牌要求定制：①货架标签：可包含门店名称、SKU编码、颜色、尺码、价格、条码等；②分货明细单：按门店生成，包含本次补货所有商品明细；③包装箱标：箱号、目的门店、商品汇总。首次合作时，商务团队会收集您的标签格式要求，录入系统模板，后续自动批量生成。',
     },
   ]}
->
-  <B2BComparisonSection slot="unique" />
-</ServiceLanding>
+/>

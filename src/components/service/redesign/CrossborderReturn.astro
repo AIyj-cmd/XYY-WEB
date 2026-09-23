@@ -1,0 +1,65 @@
+---
+import type { CrossborderFeatureGroups, CrossborderStatGroups } from './crossborder-content'
+
+interface Props {
+  features: CrossborderFeatureGroups
+  stats: CrossborderStatGroups
+}
+
+const { features, stats } = Astro.props
+---
+
+<section
+  class="crossborder-return crossborder-section"
+  aria-labelledby="crossborder-return-heading"
+>
+  <div class="redesign-shell">
+    <div>
+      <p class="redesign-kicker">退回国内仓后</p>
+      <h2 id="crossborder-return-heading">从到达国内仓开始处理</h2>
+      <p>拆包入库后核对订单与 SKU 并录入 WMS，再按项目完成质检分级、处置和后续上架。</p>
+      {
+        features.returns.map(({ title, desc }) => (
+          <p data-redesign-feature>
+            <>
+              <b data-feature-title>{title}</b>
+              <span data-feature-description>{desc}</span>
+            </>
+          </p>
+        ))
+      }
+      {
+        stats.warehouse.map(({ stat, label, sub }) => (
+          <p class="crossborder-stat">
+            <>
+              <b>{stat}</b>
+              <span>
+                {label} · {sub}
+              </span>
+            </>
+          </p>
+        ))
+      }
+      <p>
+        <strong>仓内时效：</strong>质检与二次处理仅适用于国内仓内流程；跨境运输、报关和清关不计入。
+      </p>
+    </div>
+    <aside>
+      <p class="redesign-kicker">Urbanic 公开案例</p>
+      <strong>千万件级处理规模</strong>
+      <p>案例覆盖仓储、质检、包装、上架、库存管理及发货打包；统计口径以案例资料为准。</p>
+      {
+        stats.caseStudy.map(({ stat, label, sub }) => (
+          <p class="crossborder-stat">
+            <>
+              <b>{stat}</b>
+              <span>
+                {label} · {sub}
+              </span>
+            </>
+          </p>
+        ))
+      }
+    </aside>
+  </div>
+</section>

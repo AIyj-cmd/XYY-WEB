@@ -1,0 +1,87 @@
+.b2b-page {
+  background: #fff;
+  color: #171717;
+  overflow: clip;
+}
+.b2b-section {
+  padding: clamp(4.5rem, 8vw, 7rem) 0;
+}
+.b2b-page h1,
+.b2b-page h2 {
+  letter-spacing: -0.055em;
+  line-height: 1.08;
+  margin: 0.45rem 0 1rem;
+  text-wrap: balance;
+}
+.b2b-page h2 {
+  font-size: clamp(2.2rem, 4.2vw, 4.4rem);
+  font-weight: 900;
+}
+.b2b-page h3 {
+  font-size: clamp(1.3rem, 2vw, 1.9rem);
+  margin: 0 0 0.7rem;
+}
+.b2b-page p {
+  line-height: 1.8;
+}
+.b2b-page [data-redesign-feature] {
+  line-height: 1.75;
+  margin: 1rem 0 0;
+}
+.b2b-page [data-redesign-feature] b {
+  display: block;
+  margin-bottom: 0.25rem;
+}
+.b2b-hero {
+  background: #f8f8f6;
+  padding: clamp(4rem, 9vw, 7rem) 0;
+}
+.b2b-hero__grid {
+  align-items: center;
+  display: grid;
+  gap: clamp(2rem, 5vw, 5rem);
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+}
+.b2b-hero__video {
+  aspect-ratio: 16 / 9;
+  border-radius: 2rem;
+  display: block;
+  grid-column: 1;
+  grid-row: 1;
+  object-fit: cover;
+  width: 100%;
+}
+.b2b-hero__copy {
+  grid-column: 2;
+  grid-row: 1;
+}
+.b2b-hero h1 span,
+.b2b-hero h1 strong {
+  display: block;
+}
+.b2b-hero h1 span {
+  font-size: clamp(1.65rem, 2.3vw, 2.15rem);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+}
+.b2b-hero h1 strong {
+  font-size: clamp(3rem, 5vw, 5.2rem);
+  font-weight: 900;
+  margin-top: 0.55rem;
+}
+.b2b-hero__scenarios {
+  color: #68655f;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.b2b-hero__scenarios span {
+  background: #efede8;
+  border-radius: 999px;
+  display: inline-block;
+  margin: 0 0.35rem 0.35rem 0;
+  padding: 0.25rem 0.65rem;
+}
+.b2b-hero .redesign-button {
+  margin-top: 1rem;
+}

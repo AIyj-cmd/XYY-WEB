@@ -1,0 +1,40 @@
+---
+import type { FaqItem } from '@/data/service'
+import type { ServicePageContent } from '@/lib/directus-content-queries'
+import RepairPage from './RepairPage.astro'
+import CrossborderPage from './CrossborderPage.astro'
+import ReturnInspectionPage from './ReturnInspectionPage.astro'
+import SouthNetworkPage from './SouthNetworkPage.astro'
+import EastInventoryPage from './EastInventoryPage.astro'
+import LiveCommercePage from './LiveCommercePage.astro'
+import B2BAllocationPage from './B2BAllocationPage.astro'
+import type { RedesignPresentation } from './presentation'
+
+interface Props {
+  presentation: RedesignPresentation
+  content: ServicePageContent
+  faqs: FaqItem[]
+  videoSrc: string
+  poster: string
+}
+
+const { presentation, content, faqs, videoSrc, poster } = Astro.props
+---
+
+{
+  presentation === 'returns' ? (
+    <ReturnInspectionPage {content} {faqs} {videoSrc} {poster} />
+  ) : presentation === 'repair' ? (
+    <RepairPage {content} {faqs} {videoSrc} {poster} />
+  ) : presentation === 'south' ? (
+    <SouthNetworkPage {content} {faqs} {videoSrc} {poster} />
+  ) : presentation === 'east' ? (
+    <EastInventoryPage {content} {faqs} {videoSrc} {poster} />
+  ) : presentation === 'live' ? (
+    <LiveCommercePage {content} {faqs} {videoSrc} {poster} />
+  ) : presentation === 'b2b' ? (
+    <B2BAllocationPage {content} {faqs} {videoSrc} {poster} />
+  ) : (
+    <CrossborderPage {content} {faqs} {videoSrc} {poster} />
+  )
+}

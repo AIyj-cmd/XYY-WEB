@@ -9,8 +9,12 @@ export const NAV_LINKS = [
 ] as const
 
 export const FOOTER_SERVICE_LINKS = [
-  { label: '仓配服务中心', href: '/product' },
-  { label: '基础仓配', href: '/xiefu-yuncang' },
-  { label: '退货与逆向处理', href: '/tuihuo-zhijian' },
-  { label: '商品整理与增值处理', href: '/houzheng-xiufu' },
+  { label: '鞋服云仓', href: '/xiefu-yuncang' },
+  { label: '退货质检', href: '/tuihuo-zhijian' },
+  { label: '后整修复', href: '/houzheng-xiufu' },
+  { label: '跨境云仓', href: '/kuajing-yuncang' },
+  { label: '华南鞋服云仓', href: '/huanan-xiefu-yuncang' },
+  { label: '华东鞋服云仓', href: '/huadong-xiefu-yuncang' },
+  { label: '直播电商仓配', href: '/zhibo-cangpei' },
+  { label: 'B2B门店仓配', href: '/b2b-mendian-cangpei' },
 ] as const

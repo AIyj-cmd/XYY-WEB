@@ -1,0 +1,71 @@
+---
+import { EAST_WAREHOUSES } from '@/data/service/east-network'
+import type { EastFeatureGroups, EastStatGroups } from './east-content'
+
+interface Props {
+  groups: EastFeatureGroups
+  stats: EastStatGroups
+}
+const { groups, stats } = Astro.props
+const [primaryNetwork, ...otherNetwork] = groups.network
+---
+
+<section class="east-warehouses east-section" aria-labelledby="east-warehouses-heading">
+  <div class="redesign-shell">
+    <header class="east-section__header">
+      <div>
+        <p class="redesign-kicker">华东仓配服务</p>
+        {
+          primaryNetwork ? (
+            <div data-redesign-feature>
+              <h2 id="east-warehouses-heading" data-feature-title>
+                {primaryNetwork.title}
+              </h2>
+              <p data-feature-description>{primaryNetwork.desc}</p>
+            </div>
+          ) : (
+            <>
+              <h2 id="east-warehouses-heading">华东仓库分布</h2>
+              <p>上海、昆山、合肥，按你的库存布局与订单需求安排仓配服务。各仓均具备质检能力。</p>
+            </>
+          )
+        }
+      </div>
+      {
+        stats.network.map(({ stat, label, sub }) => (
+          <p class="east-stat">
+            <>
+              <b>{stat}</b>
+              <span>
+                {label} · {sub}
+              </span>
+            </>
+          </p>
+        ))
+      }
+    </header>
+    <div class="east-warehouses__grid">
+      {
+        EAST_WAREHOUSES.map(({ city, name, address }) => (
+          <article>
+            <>
+              <p>{city}</p>
+              <h3>{name}</h3>
+              <address>{address}</address>
+            </>
+          </article>
+        ))
+      }
+    </div>
+    {
+      otherNetwork.map(({ title, desc }) => (
+        <p class="east-feature" data-redesign-feature>
+          <>
+            <b data-feature-title>{title}</b>
+            <span data-feature-description>{desc}</span>
+          </>
+        </p>
+      ))
+    }
+  </div>
+</section>

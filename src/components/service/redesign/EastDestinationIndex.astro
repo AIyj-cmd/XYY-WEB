@@ -1,0 +1,44 @@
+---
+const destinations = [
+  ['上海', '上海', '参考次日达'],
+  ['苏州 / 无锡 / 南京', '江苏', '参考次日达'],
+  ['杭州 / 宁波 / 义乌', '浙江', '参考次日达'],
+  ['合肥 / 芜湖', '安徽', '参考次日达'],
+  ['福州 / 厦门', '福建', '参考次日达'],
+] as const
+---
+
+<section class="east-destinations east-section" aria-labelledby="east-destinations-heading">
+  <div class="redesign-shell">
+    <header>
+      <p class="redesign-kicker">订单目的地索引</p>
+      <h2 id="east-destinations-heading">先看订单去向，再讨论库存安排</h2>
+      <p>配送目的地不等同于实际仓点；启用仓点、承运线路和适用范围均在项目方案中确认。</p>
+    </header>
+    <div class="east-destinations__layout">
+      <ol>
+        {
+          destinations.map(([city, province, timing], index) => (
+            <li>
+              <details open={index === 0}>
+                <summary>
+                  <>
+                    <span>{String(index + 1).padStart(2, '0')}</span>
+                    <strong>{city}</strong>
+                    <b>{province}</b>
+                    <em>
+                      {timing}
+                      <small>具体以线路和合同SLA为准</small>
+                    </em>
+                  </>
+                </summary>
+                <p>承运线路、实际启用仓点和适用范围在项目方案中核验。</p>
+              </details>
+            </li>
+          ))
+        }
+      </ol>
+      <aside><p>结合订单地区、现有库存与承运线路，双方确认分仓和路由策略。</p></aside>
+    </div>
+  </div>
+</section>

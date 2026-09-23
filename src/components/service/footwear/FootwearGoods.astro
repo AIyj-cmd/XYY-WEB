@@ -1,0 +1,54 @@
+---
+import type { FeatureItem } from '@/data/service'
+import FootwearGoodsVisual from './FootwearGoodsVisual.astro'
+
+interface Props {
+  features: FeatureItem[]
+}
+
+const { features } = Astro.props
+---
+
+<section class="footwear-section footwear-goods" aria-labelledby="footwear-goods-heading">
+  <header>
+    <p class="footwear-section__label">货品管理</p>
+    <h2 id="footwear-goods-heading">款、色、码分得清，库存才好用。</h2>
+  </header>
+  <div class="footwear-goods__grid">
+    <div class="footwear-goods__copy footwear-goods__copy--left">
+      {
+        features[0] && (
+          <article>
+            <>
+              <h3>{features[0].title}</h3>
+              <p>{features[0].desc}</p>
+            </>
+          </article>
+        )
+      }
+    </div>
+    <div class="footwear-goods__visual">
+      <FootwearGoodsVisual />
+    </div>
+    <div class="footwear-goods__copy footwear-goods__copy--right">
+      {
+        features[1] && (
+          <article>
+            <>
+              <h3>{features[1].title}</h3>
+              <p>{features[1].desc}</p>
+            </>
+          </article>
+        )
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .footwear-goods__visual {
+    display: grid;
+    place-items: center;
+    padding: 1rem 0;
+  }
+</style>

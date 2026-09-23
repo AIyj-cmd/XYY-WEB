@@ -1,0 +1,112 @@
+.east-page [data-feature-title],
+.east-page [data-feature-description],
+.east-stat b,
+.east-stat span {
+  display: block;
+}
+.east-feature {
+  max-width: 50rem;
+  margin: 1.25rem 0 0;
+}
+.east-feature [data-feature-title] {
+  margin-bottom: 0.3rem;
+  font-weight: 800;
+}
+.east-stat {
+  margin: 0;
+}
+.east-stat b {
+  color: #c74412;
+  font-size: 1.25rem;
+}
+.east-business {
+  background: #fff;
+}
+.east-business__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 0.9fr);
+  gap: 1.25rem;
+  margin-top: 2.5rem;
+}
+.east-business__service {
+  min-width: 0;
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+  border-radius: 1.25rem;
+  background: #f8f8f6;
+}
+.east-business__service--primary {
+  grid-row: span 2;
+  background: #f0eeea;
+}
+.east-business__service > span,
+.east-collaboration__items span {
+  color: #c74412;
+  font-family: ui-monospace, monospace;
+  font-size: 0.75rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+}
+.east-business h3,
+.east-service-info h3,
+.east-collaboration h3,
+.east-warehouses h3 {
+  margin: 0.75rem 0;
+  font-size: clamp(1.45rem, 2.3vw, 2.25rem);
+  font-weight: 700;
+  line-height: 1.1;
+}
+.east-business__service > p {
+  margin: 0;
+}
+.east-business .east-feature {
+  margin-top: 1.5rem;
+}
+.east-business .east-stat {
+  margin-top: 1.5rem;
+}
+.east-collaboration {
+  background: #f8f8f6;
+}
+.east-collaboration__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(17rem, 1fr);
+  gap: clamp(2.5rem, 8vw, 8rem);
+  align-items: start;
+}
+.east-collaboration header > div > p {
+  max-width: 34rem;
+}
+.east-collaboration__items {
+  display: grid;
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+}
+.east-collaboration__items p {
+  margin: 0;
+}
+.east-service-info__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+  margin-top: 2.5rem;
+}
+.east-service-info__grid article {
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+  border-radius: 1.25rem;
+  background: #f0eeea;
+}
+.east-service-info__grid article > p:last-child {
+  margin: 1.25rem 0 0;
+}
+.east-service-info__grid .east-stat + .east-stat {
+  margin-top: 0.8rem;
+}
+@media (max-width: 760px) {
+  .east-business__grid,
+  .east-collaboration__layout,
+  .east-service-info__grid {
+    grid-template-columns: 1fr;
+  }
+  .east-business__service--primary {
+    grid-row: auto;
+  }
+}

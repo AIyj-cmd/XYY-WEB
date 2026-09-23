@@ -1,0 +1,26 @@
+---
+import type { FaqItem } from '@/data/service'
+interface Props {
+  faqs: FaqItem[]
+}
+const { faqs } = Astro.props
+---
+
+<section class="b2b-faq b2b-section" aria-labelledby="b2b-faq-heading">
+  <div class="redesign-shell">
+    <header class="b2b-section-heading">
+      <p class="redesign-kicker">常见问题</p><h2 id="b2b-faq-heading">
+        关于门店仓配，你可能还想了解。
+      </h2>
+    </header>{
+      faqs.map(({ q, a }) => (
+        <details data-redesign-faq>
+          <>
+            <summary>{q}</summary>
+            <p>{a}</p>
+          </>
+        </details>
+      ))
+    }
+  </div>
+</section>

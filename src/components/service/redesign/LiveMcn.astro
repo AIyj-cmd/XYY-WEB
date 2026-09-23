@@ -1,0 +1,73 @@
+---
+import type { LiveFeatureGroups, LiveStatGroups } from './live-content'
+
+interface Props {
+  features: LiveFeatureGroups['mcn']
+  support: LiveFeatureGroups['support']
+  stats: LiveStatGroups['support']
+}
+const { features, support, stats } = Astro.props
+---
+
+{
+  (features.length > 0 || support.length > 0 || stats.length > 0) && (
+    <section class="live-mcn live-section" aria-labelledby="live-mcn-heading">
+      <div class="redesign-shell">
+        <div>
+          <>
+            <p class="redesign-kicker">多品牌管理</p>
+            <h2 id="live-mcn-heading">
+              多品牌一起运营，
+              <br />
+              管理各自清楚
+            </h2>
+            <p>适合 MCN 与代播团队。</p>
+          </>
+        </div>
+        <div>
+          {features.concat(support).map(({ title, desc }) => (
+            <p data-redesign-feature>
+              <b data-feature-title>{title}</b>
+              <span data-feature-description>{desc}</span>
+            </p>
+          ))}
+          <div class="live-mcn__groups">
+            {features.length > 0 && (
+              <>
+                <p>
+                  <b>商品如何分开</b>
+                  <span>按品牌分区管理货品。</span>
+                </p>
+                <p>
+                  <b>账号能看什么</b>
+                  <span>按品牌配置库存和订单查看权限。</span>
+                </p>
+                <p>
+                  <b>出库与对账</b>
+                  <span>品牌独立出库单与报表。</span>
+                </p>
+                <p>
+                  <b>如何结算</b>
+                  <span>可沟通统一结算或各品牌分别结算。</span>
+                </p>
+              </>
+            )}
+          </div>
+          {features.length > 0 && (
+            <p class="live-mcn__settlement">
+              代播机构可统一结算，也可由各品牌分别结算；具体方案按品牌数量与SKU规模确认。
+            </p>
+          )}
+          {stats.map(({ stat, label, sub }) => (
+            <p class="live-stat">
+              <b>{stat}</b>
+              <span>
+                {label} · {sub}
+              </span>
+            </p>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}

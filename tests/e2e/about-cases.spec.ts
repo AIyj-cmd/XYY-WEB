@@ -22,17 +22,9 @@ test('refactored about, cases, publications and Yundao modules preserve their co
     name: '仓配服务',
     exact: true,
   })
-  await productNavigation.hover()
-  const servicePopover = page.locator('.site-header__popover')
-  await expect(servicePopover).toBeVisible()
-  await expect
-    .poll(() =>
-      servicePopover.evaluate((popover) => {
-        const rect = popover.getBoundingClientRect()
-        return rect.height > 0 && rect.bottom > 0 && rect.top < window.innerHeight
-      })
-    )
-    .toBe(true)
+  await expect(productNavigation).toHaveAttribute('href', '/product')
+  await expect(productNavigation).not.toHaveAttribute('aria-haspopup')
+  await expect(page.locator('.site-header__popover')).toHaveCount(0)
   const heroHeight = await page
     .locator('#about-hero')
     .evaluate((element) => Math.round(element.getBoundingClientRect().height))

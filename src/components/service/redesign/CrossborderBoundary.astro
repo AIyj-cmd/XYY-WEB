@@ -1,0 +1,69 @@
+---
+import type { CrossborderFeatureGroups, CrossborderStatGroups } from './crossborder-content'
+
+interface Props {
+  features: CrossborderFeatureGroups
+  stats: CrossborderStatGroups
+}
+
+const { features, stats } = Astro.props
+---
+
+<section
+  class="crossborder-boundary crossborder-section"
+  aria-labelledby="crossborder-boundary-heading"
+>
+  <div class="redesign-shell">
+    <header>
+      <p class="redesign-kicker">国内仓内与外部交接</p>
+      <h2 id="crossborder-boundary-heading">从品牌输入，到按项目交接</h2>
+    </header>
+    <div class="crossborder-boundary__track">
+      <article>
+        <strong>品牌 / 工厂输入</strong>
+        <span>备货生产与项目资料确认</span>
+      </article>
+      <article class="crossborder-boundary__warehouse">
+        <strong>国内仓内作业</strong>
+        <span>仓储、项目质检、换标换包装</span>
+        {
+          features.warehouse.map(({ title, desc }) => (
+            <p data-redesign-feature>
+              <>
+                <b data-feature-title>{title}</b>
+                <span data-feature-description>{desc}</span>
+              </>
+            </p>
+          ))
+        }
+      </article>
+      <article class="crossborder-boundary__external">
+        <strong>按项目交接物流资源</strong>
+        <span>外部物流衔接目标国消费者或海外仓接收方</span>
+        {
+          features.logistics.map(({ title, desc }) => (
+            <p data-redesign-feature>
+              <>
+                <b data-feature-title>{title}</b>
+                <span data-feature-description>{desc}</span>
+              </>
+            </p>
+          ))
+        }
+        {
+          stats.logistics.map(({ stat, label, sub }) => (
+            <p class="crossborder-stat">
+              <>
+                <b>{stat}</b>
+                <span>
+                  {label} · {sub}
+                </span>
+              </>
+            </p>
+          ))
+        }
+        <small>运输、报关和清关责任以合同约定为准。</small>
+      </article>
+    </div>
+  </div>
+</section>

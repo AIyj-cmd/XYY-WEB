@@ -1,0 +1,82 @@
+---
+import type { CrossborderFeatureGroups, CrossborderStatGroups } from './crossborder-content'
+
+interface Props {
+  features: CrossborderFeatureGroups
+  stats: CrossborderStatGroups
+}
+
+const { features, stats } = Astro.props
+---
+
+<section
+  class="crossborder-documents crossborder-section"
+  aria-labelledby="crossborder-documents-heading"
+>
+  <div class="redesign-shell">
+    <header>
+      <p class="redesign-kicker">出仓前的三种结构示意</p>
+      <h2 id="crossborder-documents-heading">标签、包装与质检记录</h2>
+      <p>以下为字段结构示意，不是报关资料或真实条码。</p>
+    </header>
+    <div class="crossborder-documents__grid">
+      <article class="crossborder-documents__label">
+        <strong>标签模板</strong>
+        <dl>
+          <dt>模板确认</dt><dd>品牌确认</dd><dt>目标平台</dt><dd>项目要求</dd><dt>标签项</dt><dd>
+            按模板核对
+          </dd>
+        </dl>
+        {
+          features.labeling.map(({ title, desc }) => (
+            <p data-redesign-feature>
+              <>
+                <b data-feature-title>{title}</b>
+                <span data-feature-description>{desc}</span>
+              </>
+            </p>
+          ))
+        }
+      </article>
+      <article class="crossborder-documents__packaging">
+        <strong>包装要求</strong>
+        <dl>
+          <dt>包材</dt><dd>按项目确认</dd><dt>包装要求</dt><dd>按规范执行</dd><dt>交接要求</dt><dd>
+            出仓前复核
+          </dd>
+        </dl>
+      </article>
+      <article class="crossborder-documents__quality">
+        <strong>质检记录</strong>
+        <dl>
+          <dt>抽检标准</dt><dd>项目约定</dd><dt>结果记录</dt><dd>按项目留存</dd><dt>复核节点</dt><dd
+          >
+            出仓前确认
+          </dd>
+        </dl>
+        {
+          features.quality.map(({ title, desc }) => (
+            <p data-redesign-feature>
+              <>
+                <b data-feature-title>{title}</b>
+                <span data-feature-description>{desc}</span>
+              </>
+            </p>
+          ))
+        }
+        {
+          stats.quality.map(({ stat, label, sub }) => (
+            <p class="crossborder-stat">
+              <>
+                <b>{stat}</b>
+                <span>
+                  {label} · {sub}
+                </span>
+              </>
+            </p>
+          ))
+        }
+      </article>
+    </div>
+  </div>
+</section>

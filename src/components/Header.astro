@@ -1,6 +1,7 @@
 ---
 import { SPECIALTY_LINKS } from '@/data/navigation'
 import '@/styles/header-liquid-glass.css'
+import '@/styles/header-responsive.css'
 import DesktopNavigation from './navigation/DesktopNavigation.astro'
 import MobileNavigation from './navigation/MobileNavigation.astro'
 
@@ -9,15 +10,13 @@ const isProductActive =
   pathname === '/product' || SPECIALTY_LINKS.some(({ href }) => pathname.startsWith(href))
 ---
 
-<header
-  class="site-header fixed top-3 left-3 right-3 z-50 lg:top-5 lg:left-1/2 lg:right-auto lg:w-max lg:-translate-x-1/2"
->
+<header class="site-header fixed z-50">
   <div class="site-header__glass px-2">
-    <div class="flex h-12 items-center justify-between gap-2 lg:justify-start">
+    <div class="site-header__row flex h-12 items-center justify-between gap-2">
       <a
         href="/"
         aria-label="新亦源供应链首页"
-        class="shrink-0 px-2 hover:opacity-85 transition-opacity"
+        class="site-header__logo shrink-0 px-2 hover:opacity-85 transition-opacity"
       >
         <img
           src="/logo.png"
@@ -29,37 +28,9 @@ const isProductActive =
       </a>
 
       <DesktopNavigation pathname={pathname} isProductActive={isProductActive} />
-
-      <button
-        id="mobile-menu-btn"
-        type="button"
-        class="rounded-full p-2 text-white transition-colors hover:bg-white/10 lg:hidden"
-        aria-expanded="false"
-        aria-controls="mobile-menu"
-        aria-label="打开菜单"
-      >
-        <svg
-          class="w-6 h-6"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          aria-hidden="true"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M4 6h16M4 12h16M4 18h16"></path>
-        </svg>
-      </button>
+      <MobileNavigation pathname={pathname} isProductActive={isProductActive} />
     </div>
   </div>
-
-  <MobileNavigation pathname={pathname} isProductActive={isProductActive} />
 </header>
 
 <div class="h-0" aria-hidden="true"></div>
-
-<script>
-  import '@/scripts/header-menu'
-</script>

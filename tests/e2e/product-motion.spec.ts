@@ -1,44 +1,116 @@
 import { expect, test } from '@playwright/test'
 
-test('product page reveals late sections when they enter the viewport', async ({
+test('product page autoplays videos and keeps navigation synced with one scroll container', async ({
   page,
 }, testInfo) => {
   const width = testInfo.project.name === 'mobile' ? 430 : 1440
   await page.setViewportSize({ width, height: 900 })
   await page.goto('/product')
 
-  // Trigger the page motion loader, then emulate a user dragging directly
-  // to sections near the bottom of the page.
-  await page.evaluate(() => window.scrollTo(0, 100))
-  await page.waitForTimeout(700)
+  const videos = page.locator('[data-product-video]')
+  const scrollContainer = page.locator('[data-product-video-scroll]')
+  const previous = page.getByRole('button', { name: '上一个区域' })
+  const next = page.getByRole('button', { name: '下一个区域' })
+  const status = page.locator('[data-product-video-status]')
+  await expect(videos).toHaveCount(8)
+  await expect(scrollContainer).toHaveCount(1)
+  await expect(page.locator('[data-product-video-slide]')).toHaveCount(9)
+  await expect(previous).toBeDisabled()
+  await expect(status).toHaveText('01 / 09')
 
-  const process = page.locator('#service-process')
-  await process.scrollIntoViewIfNeeded()
-  await expect(process).toBeInViewport()
-  await page.waitForTimeout(300)
-  expect(
-    Number(
-      await process
-        .locator('#process-heading')
-        .evaluate((element) => getComputedStyle(element).opacity)
-    ),
-    'the process heading should start revealing as soon as its section enters the viewport'
-  ).toBeGreaterThan(0.05)
-  await expect(process.locator('#process-heading')).toHaveCSS('opacity', '1', { timeout: 2_000 })
+  for (const video of await videos.all()) {
+    await expect(video).toHaveAttribute('autoplay', '')
+    await expect(video).toHaveAttribute('loop', '')
+    await expect(video).toHaveAttribute('muted', '')
+    await expect(video).toHaveAttribute('playsinline', '')
+    await expect(video).toHaveAttribute('preload', 'auto')
+    await expect(video).not.toHaveAttribute('controls')
+    await expect(video).toHaveJSProperty('muted', true)
+  }
 
-  const callToAction = page.locator('[data-conversion-cta]')
-  await callToAction.scrollIntoViewIfNeeded()
-  await expect(callToAction).toBeInViewport()
-  await page.waitForTimeout(300)
-  expect(
-    Number(
-      await callToAction
-        .locator('#warehouse-cta-heading')
-        .evaluate((element) => getComputedStyle(element).opacity)
-    ),
-    'the final CTA should start revealing as soon as it enters the viewport'
-  ).toBeGreaterThan(0.05)
-  await expect(callToAction.locator('#warehouse-cta-heading')).toHaveCSS('opacity', '1', {
-    timeout: 2_000,
+  const firstVideo = videos.first()
+  await expect(firstVideo).toHaveJSProperty('paused', false)
+  await expect
+    .poll(() => firstVideo.evaluate((video) => (video as HTMLVideoElement).currentTime), {
+      timeout: 8_000,
+    })
+    .toBeGreaterThan(0.1)
+
+  await next.focus()
+  await page.keyboard.press('Enter')
+  await expect(status).toHaveText('02 / 09')
+  const secondOffset = await page
+    .locator('[data-product-video-slide]')
+    .nth(1)
+    .evaluate((element) => {
+      return (element as HTMLElement).offsetTop
+    })
+  await expect
+    .poll(
+      () =>
+        scrollContainer.evaluate(
+          (element, offset) => Math.abs(element.scrollTop - offset),
+          secondOffset
+        ),
+      { timeout: 4_000 }
+    )
+    .toBeLessThanOrEqual(1)
+  await expect(previous).toBeEnabled()
+
+  const eighthOffset = await page
+    .locator('[data-product-video-slide]')
+    .nth(7)
+    .evaluate((element) => {
+      return (element as HTMLElement).offsetTop
+    })
+  await scrollContainer.evaluate((element, offset) => {
+    element.scrollTop = offset
+  }, eighthOffset)
+  await expect(status).toHaveText('08 / 09')
+  await next.click()
+  await expect(status).toHaveText('09 / 09')
+  await expect(next).toBeDisabled()
+  const lastMechanism = page.locator('#assurance .assurance-mechanisms__list article').last()
+  await lastMechanism.scrollIntoViewIfNeeded()
+  await expect(lastMechanism).toBeInViewport()
+  await previous.click()
+  await expect(status).toHaveText('08 / 09')
+  await expect
+    .poll(
+      () =>
+        scrollContainer.evaluate(
+          (element, offset) => Math.abs(element.scrollTop - offset),
+          eighthOffset
+        ),
+      { timeout: 4_000 }
+    )
+    .toBeLessThanOrEqual(1)
+  await expect(next).toBeEnabled()
+  await scrollContainer.evaluate((element) => {
+    element.scrollTop = element.scrollHeight - element.clientHeight
   })
+  await expect(status).toHaveText('09 / 09')
+  await expect(next).toBeDisabled()
+})
+
+test('product video navigation uses immediate scrolling when motion is reduced', async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.goto('/product')
+
+  const scrollContainer = page.locator('[data-product-video-scroll]')
+  const secondOffset = await page
+    .locator('[data-product-video-slide]')
+    .nth(1)
+    .evaluate((element) => {
+      return (element as HTMLElement).offsetTop
+    })
+  await expect(scrollContainer).toHaveCSS('scroll-behavior', 'auto')
+  await page.getByRole('button', { name: '下一个区域' }).click()
+
+  await expect(page.locator('[data-product-video-status]')).toHaveText('02 / 09')
+  expect(
+    Math.abs((await scrollContainer.evaluate((element) => element.scrollTop)) - secondOffset)
+  ).toBeLessThanOrEqual(1)
 })

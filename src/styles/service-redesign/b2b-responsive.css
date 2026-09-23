@@ -1,0 +1,50 @@
+@media (max-width: 960px) {
+  .b2b-hero__grid,
+  .b2b-preparation__grid {
+    display: flex;
+    flex-direction: column;
+  }
+  .b2b-hero__copy {
+    order: -1;
+  }
+  .b2b-hero__video {
+    border-radius: 1.5rem;
+  }
+  .b2b-system__features {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 640px) {
+  .b2b-section {
+    padding: 3.75rem 0;
+  }
+  .b2b-page h2 {
+    font-size: clamp(2rem, 9vw, 2.7rem);
+  }
+  .b2b-hero h1 strong {
+    font-size: clamp(2.4rem, 10vw, 3.6rem);
+  }
+  .b2b-distribution__objects,
+  .b2b-replenishment__scenarios,
+  .b2b-system__inventory {
+    display: block;
+  }
+  .b2b-system__inventory strong,
+  .b2b-system__inventory span {
+    display: block;
+    margin: 0.8rem 0;
+  }
+  .b2b-distribution__objects article,
+  .b2b-replenishment__scenarios article {
+    margin-top: 1rem;
+  }
+  .b2b-object--carton {
+    transform: none;
+  }
+  .b2b-preparation ul {
+    grid-template-columns: 1fr;
+  }
+  .b2b-preparation__base .b2b-stat {
+    display: block;
+  }
+}

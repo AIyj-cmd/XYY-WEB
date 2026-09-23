@@ -1,0 +1,23 @@
+---
+import { REPAIR_ZONES } from '@/data/service/repair-workshop'
+---
+
+<section class="repair-zones repair-section" aria-labelledby="repair-zones-heading">
+  <div class="redesign-shell">
+    <header class="repair-section__heading">
+      <p class="redesign-kicker">专业专区</p>
+      <h2 id="repair-zones-heading">六类服务，九个专业专区</h2>
+      <p>服务分类用于理解异常，专区名称用于组织作业；两者不需要一一对应。</p>
+    </header>
+    <div class="repair-zones__index" aria-label="九个专业修复专区">
+      {
+        REPAIR_ZONES.map((zone, index) => (
+          <span>
+            <b>{String(index + 1).padStart(2, '0')}</b>
+            {zone}
+          </span>
+        ))
+      }
+    </div>
+  </div>
+</section>

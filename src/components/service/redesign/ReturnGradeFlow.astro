@@ -1,0 +1,88 @@
+---
+import type { FeatureItem } from '@/data/service'
+import { CLAIM_TEXT } from '@/lib/claims'
+
+interface Props {
+  features: FeatureItem[]
+}
+
+const { features } = Astro.props
+
+const grades = [
+  [
+    'A 级',
+    '良品',
+    '符合品牌确认的良品判定规则',
+    '包装完好 · 无折痕 · 吊牌齐全 · 无污损',
+    '按品牌授权进入可售库存',
+  ],
+  [
+    'B+ 级',
+    '轻微可售',
+    '存在品牌规则允许的轻微异常，需整理或确认',
+    '轻微折痕 · 包装轻损 · 轻微皱褶',
+    '整理后按品牌授权上架或等待确认',
+  ],
+  [
+    'B- 级',
+    '修复可售',
+    '存在需处理的异常，可按品牌规则进入修复流程',
+    '开线 / 缝补 · 油污清洗 · 配件缺失 · 印绣脱落',
+    '流转修复车间，修复后二次质检通过再上架',
+  ],
+  [
+    'C 级',
+    '待处置',
+    '不符合当前可售或修复规则，等待品牌授权处置',
+    '破损严重 · 结构性损坏 · 严重污损 · 异味不可去除',
+    '按品牌方确认方案进行隔离、退回或其他处置',
+  ],
+]
+---
+
+<section class="returns-section returns-grades" aria-labelledby="returns-grade-heading">
+  <div class="returns-shell">
+    <header class="returns-section__heading">
+      <p class="returns-kicker">分流</p><h2 id="returns-grade-heading">四级分流，一眼对照</h2>
+      {
+        features.map(({ title, desc }) => (
+          <p data-redesign-feature>
+            <>
+              <strong data-feature-title>{title}</strong>
+              <span data-feature-description>{desc}</span>
+            </>
+          </p>
+        ))
+      }
+    </header>
+    <p class="returns-grades__rule">以下为处置示例；具体判定条件和处置方式按品牌确认标准执行。</p>
+    <div class="returns-grades__table" role="list" aria-label="四级质检处置示例">
+      {
+        grades.map(([grade, label, definition, cases, action]) => (
+          <article role="listitem">
+            <div>
+              <>
+                <strong>{grade}</strong>
+                <span>{label}</span>
+              </>
+            </div>
+            <>
+              <p>{definition}</p>
+              <p>
+                <b>典型异常</b>
+                {cases}
+              </p>
+            </>
+            <p>
+              <b>处理去向</b>
+              {grade === 'B- 级' ? <a href="/houzheng-xiufu">{action}</a> : action}
+            </p>
+            <small>
+              {grade === 'C 级' ? '按约定通知' : `纳入${CLAIM_TEXT.returnTurnaround}整体流程`}
+            </small>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>

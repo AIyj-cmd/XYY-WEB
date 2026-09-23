@@ -1,0 +1,56 @@
+---
+import type { FaqItem } from '@/data/service'
+import ConversionCTA from '@/components/conversion/ConversionCTA.astro'
+
+interface Props {
+  faqs: FaqItem[]
+}
+
+const { faqs } = Astro.props
+---
+
+<section
+  class="returns-section returns-faq"
+  aria-labelledby={faqs.length > 0 ? 'returns-faq-heading' : undefined}
+>
+  <div class="returns-shell">
+    {
+      faqs.length > 0 && (
+        <>
+          <header class="returns-section__heading">
+            <>
+              <p class="returns-kicker">常见问题</p>
+              <h2 id="returns-faq-heading">标准确认前，先把问题说清楚</h2>
+            </>
+          </header>
+          <div>
+            {faqs.map(({ q, a }) => (
+              <details data-redesign-faq>
+                <summary>{q}</summary>
+                <p>{a}</p>
+              </details>
+            ))}
+          </div>
+        </>
+      )
+    }
+  </div>
+</section>
+<ConversionCTA
+  className="returns-section returns-contact"
+  headingId="returns-contact-heading"
+  eyebrow="沟通方案"
+  headingLines={['把退件和判定规则，', '一起梳理']}
+  description="可先准备商品类型、退件规模和品牌判定规则。"
+  actionLabel="沟通退货质检方案"
+  preparationItems={[
+    { label: '商品类型', detail: '商品品类与退件状态' },
+    { label: '退件规模', detail: '日常数量与集中退件安排' },
+    { label: '品牌判定规则', detail: '判定口径与处理要求' },
+  ]}
+  secondaryLinks={[
+    { href: '/cases', label: '查看合作案例' },
+    { href: '/product', label: '查看全部仓配服务' },
+  ]}
+  reveal="service"
+/>

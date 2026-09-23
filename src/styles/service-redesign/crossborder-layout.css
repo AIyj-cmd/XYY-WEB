@@ -1,0 +1,161 @@
+.crossborder-page {
+  overflow: clip;
+  background: #fff;
+  color: #171717;
+}
+
+.crossborder-section,
+.crossborder-faq {
+  padding: clamp(4.5rem, 9vw, 9rem) 0;
+}
+
+.crossborder-hero {
+  padding: max(7rem, 12vh) 0 clamp(4rem, 8vw, 8rem);
+  text-align: center;
+}
+
+.crossborder-hero h1,
+.crossborder-section h2,
+.crossborder-faq h2 {
+  margin: 0.6rem 0 1rem;
+  font-size: clamp(2.2rem, 5vw, 5.5rem);
+  font-weight: 900;
+  letter-spacing: -0.055em;
+  line-height: 1.08;
+}
+
+.crossborder-section h2,
+.crossborder-faq h2 {
+  text-wrap: balance;
+}
+
+.crossborder-hero h1 span {
+  display: inline;
+}
+
+.crossborder-hero__sub {
+  font-weight: 800;
+}
+.crossborder-hero__desc {
+  max-width: 48rem;
+  margin: 1rem auto 2.5rem;
+  line-height: 1.75;
+}
+
+.crossborder-hero__video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #171717;
+  object-fit: cover;
+}
+
+.crossborder-boundary,
+.crossborder-return,
+.crossborder-faq {
+  background: #faf8f5;
+}
+
+.crossborder-boundary__track {
+  display: grid;
+  grid-template-columns: 0.7fr 1.45fr 0.9fr;
+  gap: 3.25rem;
+  margin-top: 3rem;
+}
+
+.crossborder-boundary__track > article {
+  position: relative;
+  border-top: 2px solid #171717;
+  padding: 1rem 0;
+}
+
+.crossborder-boundary__track > article:not(:last-child)::before {
+  position: absolute;
+  z-index: 1;
+  top: 1rem;
+  right: -1.45rem;
+  color: #c74412;
+  content: '→';
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.crossborder-boundary__track > article:not(:last-child)::after {
+  position: absolute;
+  top: 1.65rem;
+  right: -1rem;
+  width: 1rem;
+  border-top: 1px solid #c74412;
+  content: '';
+}
+
+.crossborder-boundary__warehouse {
+  border-color: #c74412 !important;
+}
+.crossborder-boundary__warehouse::after {
+  border-top-style: dashed !important;
+}
+.crossborder-boundary__external {
+  border-top-style: dashed !important;
+}
+
+.crossborder-boundary strong,
+.crossborder-documents strong,
+.crossborder-return b,
+.crossborder-support b {
+  display: block;
+}
+
+.crossborder-boundary__track > article > strong {
+  font-size: clamp(1.1rem, 1.45vw, 1.4rem);
+}
+
+.crossborder-boundary span,
+.crossborder-boundary p,
+.crossborder-boundary small {
+  display: block;
+  margin: 0.6rem 0;
+  line-height: 1.65;
+}
+
+.crossborder-boundary [data-redesign-feature],
+.crossborder-documents [data-redesign-feature],
+.crossborder-return [data-redesign-feature],
+.crossborder-support [data-redesign-feature] {
+  border-top: 1px solid #d9d4cc;
+  padding-top: 0.8rem;
+}
+
+.crossborder-page [data-redesign-feature] [data-feature-title] {
+  margin-bottom: 0.3rem;
+}
+.crossborder-page [data-redesign-feature] [data-feature-description] {
+  display: block;
+}
+
+@media (max-width: 700px) {
+  .crossborder-boundary__track {
+    grid-template-columns: 1fr;
+  }
+  .crossborder-boundary__track > article:not(:last-child)::before {
+    display: none;
+  }
+  .crossborder-boundary__track > article:not(:last-child)::after {
+    bottom: -1.45rem;
+    top: auto;
+    right: auto;
+    width: auto;
+    border: 0;
+    color: #c74412;
+    content: '↓';
+  }
+  .crossborder-hero h1,
+  .crossborder-section h2,
+  .crossborder-faq h2 {
+    font-size: clamp(2rem, 9vw, 3rem);
+  }
+
+  .crossborder-hero h1 span {
+    display: block;
+  }
+}

@@ -1,0 +1,142 @@
+.b2b-replenishment,
+.b2b-preparation,
+.b2b-faq,
+.b2b-supplement {
+  background: #f8f8f6;
+}
+.b2b-replenishment__scenarios {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1.35fr 1fr;
+  margin: 2.5rem 0;
+}
+.b2b-replenishment__scenarios article {
+  background: #fff;
+  border-radius: 1.35rem;
+  padding: 1.5rem;
+}
+.b2b-replenishment__scenarios article:first-child {
+  grid-row: span 2;
+  padding: clamp(1.5rem, 4vw, 3.5rem);
+}
+.b2b-transport {
+  margin-top: 2rem;
+}
+.b2b-transport [data-redesign-feature] b {
+  background: #efede8;
+  border-radius: 999px;
+  display: inline-block;
+  padding: 0.25rem 0.65rem;
+}
+.b2b-system__inventory {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr 1fr;
+  margin: 2.5rem auto;
+  max-width: 50rem;
+  text-align: center;
+}
+.b2b-system__inventory strong {
+  background: #171717;
+  border-radius: 999px;
+  color: #fff;
+  grid-column: 1 / -1;
+  margin: 0 auto;
+  padding: 0.75rem 1.4rem;
+}
+.b2b-system__inventory span {
+  background: #f8f8f6;
+  border-radius: 1rem;
+  padding: 1.25rem;
+}
+.b2b-system__lead,
+.b2b-system__description {
+  max-width: 48rem;
+}
+.b2b-system__description {
+  border-left: 3px solid #c74412;
+  padding-left: 1rem;
+}
+.b2b-system__features {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.b2b-preparation__grid {
+  background: #eeece7;
+  border-radius: 2rem;
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: 1.2fr 0.8fr;
+  padding: clamp(1.5rem, 4vw, 3.5rem);
+}
+.b2b-preparation h2 {
+  min-width: 14ch;
+  word-break: keep-all;
+}
+.b2b-preparation ul {
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  list-style: none;
+  margin: 2rem 0 0;
+  padding: 0;
+}
+.b2b-preparation li {
+  background: #fff;
+  border-radius: 0.7rem;
+  padding: 0.7rem;
+}
+.b2b-preparation__fee {
+  align-self: end;
+}
+.b2b-fee {
+  margin: 0;
+}
+.b2b-fee b,
+.b2b-fee span {
+  display: block;
+}
+.b2b-fee b {
+  color: #c74412;
+  font-size: clamp(1.7rem, 3.5vw, 3rem);
+  line-height: 1.1;
+}
+.b2b-fee span {
+  margin-top: 0.5rem;
+}
+.b2b-preparation__base {
+  grid-column: 1 / -1;
+}
+.b2b-preparation__base > p {
+  margin-bottom: 0;
+}
+.b2b-preparation__base .b2b-stat {
+  display: inline-block;
+  margin-right: 2rem;
+}
+.b2b-faq .b2b-section-heading,
+.b2b-cta .redesign-shell {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 56rem;
+  text-align: center;
+}
+.b2b-faq details {
+  background: #fff;
+  border-radius: 1rem;
+  margin-top: 0.8rem;
+  padding: 1rem 1.25rem;
+  text-align: left;
+}
+.b2b-faq summary {
+  cursor: pointer;
+  font-weight: 800;
+}
+.b2b-faq details p {
+  margin-bottom: 0.25rem;
+}
+.b2b-cta a:not(.redesign-button) {
+  color: inherit;
+  margin: 0 0.6rem;
+}

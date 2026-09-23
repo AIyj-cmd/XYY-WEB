@@ -1,0 +1,125 @@
+.service-editorial-hero {
+  padding: clamp(7rem, 11vw, 10rem) 0 clamp(4.5rem, 8vw, 8rem);
+  background: #fff;
+}
+
+.service-editorial-hero__inner {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(24rem, 1.05fr);
+  align-items: center;
+  width: min(84rem, calc(100% - 4rem));
+  margin: 0 auto;
+  gap: clamp(3rem, 8vw, 8rem);
+}
+
+.service-editorial-hero__copy {
+  min-width: 0;
+}
+
+.service-editorial-hero__eyebrow {
+  margin: 0 0 1.25rem;
+  color: var(--editorial-accent);
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.service-editorial-hero h1 {
+  max-width: 11ch;
+  margin: 0;
+  color: var(--editorial-ink);
+  font-size: clamp(2.7rem, 5vw, 5.5rem);
+  font-weight: 800;
+  letter-spacing: -0.065em;
+  line-height: 1.04;
+  text-wrap: balance;
+}
+
+.service-editorial-hero__subheading {
+  margin: 1.4rem 0 0;
+  color: var(--editorial-accent);
+  font-size: clamp(1.05rem, 1.5vw, 1.3rem);
+  font-weight: 750;
+  line-height: 1.5;
+}
+
+.service-editorial-hero__description {
+  max-width: 38rem;
+  margin: 1.25rem 0 0;
+  color: var(--editorial-body);
+  font-size: clamp(1rem, 1.25vw, 1.12rem);
+  line-height: 1.9;
+}
+
+.service-editorial-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 2.1rem;
+  gap: 0.8rem;
+}
+
+.service-editorial-hero__actions a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 3rem;
+  padding: 0.8rem 1.3rem;
+  border: 1px solid var(--editorial-line);
+  color: var(--editorial-ink);
+  font-size: 0.9rem;
+  font-weight: 750;
+  text-decoration: none;
+}
+
+.service-editorial-hero__primary-action {
+  border-color: var(--editorial-accent) !important;
+  color: #fff !important;
+  background: var(--editorial-accent);
+}
+
+.service-editorial-hero__video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  background: #e8e9e7;
+}
+
+.service-editorial-hero__media {
+  margin: 0;
+}
+
+@media (max-width: 900px) {
+  .service-editorial-hero__inner {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+
+  .service-editorial-hero h1 {
+    max-width: 13ch;
+  }
+}
+
+@media (max-width: 640px) {
+  .service-editorial-hero {
+    padding: 6.25rem 0 4rem;
+  }
+
+  .service-editorial-hero__inner {
+    width: min(100% - 1.5rem, 84rem);
+    gap: 2rem;
+  }
+
+  .service-editorial-hero h1 {
+    font-size: clamp(2.3rem, 11vw, 3.1rem);
+  }
+
+  .service-editorial-hero__description {
+    font-size: 0.98rem;
+    line-height: 1.78;
+  }
+
+  .service-editorial-hero__actions a {
+    flex: 1 1 auto;
+    justify-content: center;
+  }
+}

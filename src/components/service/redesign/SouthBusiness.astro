@@ -1,0 +1,92 @@
+---
+import { SOUTH_COLLABORATION_BANDS } from '@/data/service/south-network'
+import type { SouthFeatureGroups, SouthStatGroups } from './south-content'
+
+interface Props {
+  groups: SouthFeatureGroups
+  stats: SouthStatGroups
+}
+const { groups, stats } = Astro.props
+---
+
+<section class="south-business south-section" aria-labelledby="south-business-heading">
+  <div class="redesign-shell">
+    <header>
+      <p class="redesign-kicker">围绕你的仓配需求</p><h2 id="south-business-heading">
+        货源、履约与退货，各有入口
+      </h2>
+    </header>
+    <div class="south-business__lanes">
+      <article>
+        <span>01</span><h3>工厂与品牌货源入仓</h3><p>
+          从工厂到仓库，衔接货品入库与库存管理，为后续发货做好准备。
+        </p>{
+          groups.industry.map(({ title, desc }) => (
+            <p data-redesign-feature>
+              <>
+                <b data-feature-title>{title}</b>
+                <span data-feature-description>{desc}</span>
+              </>
+            </p>
+          ))
+        }
+      </article><article>
+        <span>02</span><h3>渠道订单履约</h3><p>支持电商发货与门店补货，按需求安排出库配送。</p>{
+          stats.channels.map(({ stat, label, sub }) => (
+            <p class="south-stat">
+              <>
+                <b>{stat}</b>
+                <span>
+                  {label} · {sub}
+                </span>
+              </>
+            </p>
+          ))
+        }
+      </article><article>
+        <span>03</span><h3>就近退货处理</h3><p>
+          退货就近回仓检查，按商品状态分类，衔接后整修复与重新上架。
+        </p>{
+          groups.returns.map(({ title, desc }) => (
+            <p data-redesign-feature>
+              <>
+                <b data-feature-title>{title}</b>
+                <span data-feature-description>{desc}</span>
+              </>
+            </p>
+          ))
+        }
+      </article>
+    </div>
+    {
+      groups.other.length > 0 && (
+        <div class="south-business__support">
+          {groups.other.map(({ title, desc }) => (
+            <p data-redesign-feature>
+              <b data-feature-title>{title}</b>
+              <span data-feature-description>{desc}</span>
+            </p>
+          ))}
+        </div>
+      )
+    }
+    <div class="south-confirm">
+      <header>
+        <p class="redesign-kicker">配合你的日常经营</p><h2>从入仓到发货，配合你的业务</h2>
+      </header><div class="south-confirm__rows">
+        {
+          SOUTH_COLLABORATION_BANDS.map(({ num, title, desc, signal }) => (
+            <article>
+              <>
+                <span>{num}</span>
+                <h3>{title}</h3>
+                <p>{desc}</p>
+                <small>{signal}</small>
+              </>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>

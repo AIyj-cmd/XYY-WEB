@@ -1,0 +1,106 @@
+---
+import type { FaqItem } from '@/data/service'
+import type { ServicePageContent } from '@/lib/directus-content-queries'
+import '@/styles/service-redesign.css'
+import B2BAllocation from './B2BAllocation.astro'
+import B2BCta from './B2BCta.astro'
+import B2BFaq from './B2BFaq.astro'
+import B2BHero from './B2BHero.astro'
+import B2BPreparation from './B2BPreparation.astro'
+import B2BReplenishment from './B2BReplenishment.astro'
+import B2BSystem from './B2BSystem.astro'
+import { B2B_PUBLIC_CONTENT_DESC } from './b2b-public-copy'
+import { hasRedesignContent } from './content-presence'
+import { groupB2bFeatures, groupB2bStats } from './b2b-content'
+interface Props {
+  content: ServicePageContent
+  faqs: FaqItem[]
+  videoSrc: string
+  poster: string
+}
+const { content, faqs, videoSrc, poster } = Astro.props
+const available = hasRedesignContent(content, faqs.length)
+const groups = groupB2bFeatures(content.features)
+const stats = groupB2bStats(content.stats)
+const hasHero = Boolean(content.h1 || content.h1sub || content.heroDesc)
+const hasDistribution = Boolean(
+  groups.allocation.length || groups.labels.length || stats.accuracy.length
+)
+const hasReplenishment = Boolean(groups.replenishment.length || groups.transport.length)
+const hasSystem = Boolean(groups.inventory.length || groups.erp.length)
+const hasPreparation = Boolean(stats.partners.length || stats.cities.length || stats.fees.length)
+const hasKnownContent = content.contentDesc === B2B_PUBLIC_CONTENT_DESC
+const descInAllocation = hasKnownContent && hasDistribution
+const descInSystem = !descInAllocation && hasSystem
+const descInSupplement = Boolean(content.contentDesc && !descInAllocation && !descInSystem)
+const hasPrimaryContent = Boolean(
+  hasDistribution || hasReplenishment || hasSystem || hasPreparation
+)
+---
+
+<article class:list={['b2b-page', { 'b2b-page--empty': !available }]}>
+  {
+    available ? (
+      <>
+        {hasHero && (
+          <B2BHero
+            h1={content.h1}
+            h1sub={content.h1sub}
+            heroDesc={content.heroDesc}
+            {videoSrc}
+            {poster}
+          />
+        )}
+        {hasDistribution && (
+          <B2BAllocation
+            allocation={groups.allocation}
+            labels={groups.labels}
+            accuracy={stats.accuracy}
+            contentDesc={descInAllocation ? content.contentDesc : ''}
+          />
+        )}
+        {hasReplenishment && (
+          <B2BReplenishment replenishment={groups.replenishment} transport={groups.transport} />
+        )}
+        {hasSystem && (
+          <B2BSystem
+            inventory={groups.inventory}
+            erp={groups.erp}
+            contentDesc={descInSystem ? content.contentDesc : ''}
+          />
+        )}
+        {hasPreparation && (
+          <B2BPreparation partners={stats.partners} cities={stats.cities} fees={stats.fees} />
+        )}
+        {(groups.support.length || stats.support.length || descInSupplement) && (
+          <section class="b2b-supplement b2b-section">
+            <div class="redesign-shell">
+              <p class="redesign-kicker">补充服务说明</p>
+              {descInSupplement && <p>{content.contentDesc}</p>}
+              {groups.support.map(({ title, desc }) => (
+                <p data-redesign-feature>
+                  <b>{title}</b>
+                  {desc}
+                </p>
+              ))}
+              {stats.support.map(({ stat, label, sub }) => (
+                <p class="b2b-stat">
+                  <b>{stat}</b>
+                  <span>
+                    {label} · {sub}
+                  </span>
+                </p>
+              ))}
+            </div>
+          </section>
+        )}
+        {faqs.length > 0 && <B2BFaq {faqs} />}
+        {hasPrimaryContent && <B2BCta />}
+      </>
+    ) : (
+      <section class="redesign-empty">
+        <h1 id="lp-h1">服务内容暂不可用</h1>
+      </section>
+    )
+  }
+</article>

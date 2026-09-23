@@ -1,0 +1,66 @@
+---
+import type { FeatureItem, StatItem } from '@/data/service'
+interface Props {
+  allocation: FeatureItem[]
+  labels: FeatureItem[]
+  accuracy: StatItem[]
+  contentDesc: string
+}
+const { allocation, labels, accuracy, contentDesc } = Astro.props
+---
+
+<section
+  class="b2b-allocation b2b-distribution b2b-section"
+  aria-labelledby="b2b-distribution-heading"
+>
+  <div class="redesign-shell">
+    <header class="b2b-section-heading">
+      <p class="redesign-kicker">分货与收货信息</p>
+      <h2 id="b2b-distribution-heading">货分到店，信息跟着货走。</h2>
+    </header>
+    <div class="b2b-distribution__objects">
+      <article class="b2b-object b2b-object--goods">
+        <span class="b2b-object__number">01</span><i aria-hidden="true"></i><h3>货品分清楚</h3><p>
+          按门店分货，区分款式、颜色、尺码与数量。
+        </p>{
+          allocation.map(({ title, desc }) => (
+            <p data-redesign-feature>
+              <b>{title}</b>
+              {desc}
+            </p>
+          ))
+        }
+      </article>
+      <article class="b2b-object b2b-object--carton">
+        <span class="b2b-object__number">02</span><i aria-hidden="true"></i><h3>外箱认得出</h3><p>
+          目的门店、箱号和装箱信息按品牌要求组织。
+        </p>
+      </article>
+      <article class="b2b-object b2b-object--note">
+        <span class="b2b-object__number">03</span><i aria-hidden="true"></i><h3>明细核得上</h3><p>
+          随箱分货明细便于清点，标签与吊牌按品牌模板加工。
+        </p>{
+          labels.map(({ title, desc }) => (
+            <p data-redesign-feature>
+              <b>{title}</b>
+              {desc}
+            </p>
+          ))
+        }
+      </article>
+    </div>
+    {
+      accuracy.map(({ stat, label, sub }) => (
+        <p class="b2b-stat">
+          <>
+            <b>{stat}</b>
+            <span>
+              {label} · {sub}
+            </span>
+          </>
+        </p>
+      ))
+    }
+    {contentDesc && <p class="b2b-distribution__accuracy">{contentDesc}</p>}
+  </div>
+</section>

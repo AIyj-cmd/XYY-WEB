@@ -1,0 +1,188 @@
+import { describe, expect, it } from 'vitest'
+import { groupB2bFeatures, groupB2bStats } from '@/components/service/redesign/b2b-content'
+import {
+  B2B_PUBLIC_CONTENT_DESC,
+  toB2bPublicCopy,
+} from '@/components/service/redesign/b2b-public-copy'
+import { CLAIM_TEXT } from '@/lib/claims'
+import type { FaqItem, FeatureItem, StatItem } from '@/data/service'
+import type { ServicePageContent } from '@/lib/directus-content-queries'
+
+const legacyContent: ServicePageContent = {
+  title: 'B2B门店仓配｜连锁补货、分货与全渠道一盘货｜新亦源',
+  description: `新亦源B2B门店仓配覆盖${CLAIM_TEXT.coveredCities}城市，为连锁品牌、批发商、加盟商提供门店补货配送、分色分码分货、货架标签、分货明细单及ERP系统对接等全流程服务。`,
+  breadcrumbLabel: 'B2B门店仓配',
+  eyebrow: 'B2B门店仓配 · 连锁补货 + 批发铺货专业服务',
+  h1: 'B2B门店仓配与连锁门店补货',
+  h1sub: '批发铺货、分色分码与全渠道库存协同',
+  heroDesc:
+    '新亦源B2B门店仓配专为鞋服连锁品牌、批发商和加盟体系设计，提供门店补货配送、按门店分货分拣、货架标签制作、ERP系统对接等全流程B2B仓配服务，服务合作品牌遍布全国的门店网络。',
+  imgSrc: '/w-b2b-store-hero.webp',
+  imgAlt: 'B2B门店仓配 — 连锁门店批量补货配送',
+  contentDesc: `适合有连锁门店补货需求的服饰品牌，尤其季节性铺货、按需补货和紧急调货场景。新亦源B2B仓配支持按门店SKU分货、零担/整车/同城快运混合发货，并可与品牌ERP协同处理补货指令，发货准确率${CLAIM_TEXT.shippingAccuracy}。`,
+  featuresLabel: 'B2B仓配核心能力',
+  features: [
+    {
+      title: '门店分货精准分拣',
+      desc: '按门店编号独立分区拣货，分色分码分规格，每箱附分货明细单（门店名称、SKU清单、数量），减少门店收货时的清点差错。',
+    },
+    {
+      title: '货架标签 / 吊牌加工',
+      desc: '根据门店或客户要求制作货架价格标签、商品条码、吊牌，支持不同门店使用不同标签格式，出库前完成贴标，门店收货即可上架。',
+    },
+    {
+      title: 'ERP / 进销存系统对接',
+      desc: '已对接百胜E3、聚水潭、伯俊、吉客云、丽晶、浪潮、恒康等主流ERP，可自动接收补货指令、生成出库单并回传物流信息；不收系统使用费，接口实施和定制费用按方案确认。',
+    },
+    {
+      title: '零担 / 整车 / 快递混合发货',
+      desc: '根据门店距离、货量和交付要求选择零担、整车、同城货运或快递；运输为参考时效，以线路和合同SLA为准。',
+    },
+    {
+      title: 'B2C+B2B一盘货管理',
+      desc: '同一批库存同时支持线上B2C发货和线下门店B2B补货，库存统一管理，系统自动按订单类型选择出库模式，无需分仓备货。',
+    },
+    {
+      title: '季节集中铺货保障',
+      desc: '春夏、秋冬换季集中铺货前提前预排班，并通过动态用工与波次计划保障约定的门店补货节奏。',
+    },
+  ],
+  stats: [
+    { stat: CLAIM_TEXT.partnerBrands, label: '合作品牌', sub: '含多家连锁零售品牌' },
+    { stat: CLAIM_TEXT.coveredCities, label: '覆盖城市', sub: '公司运营统计' },
+    { stat: '分色分码', label: '精准分货', sub: '按门店SKU规格独立分拣' },
+    { stat: '不收', label: '系统使用费', sub: '接口实施和定制费用按方案确认' },
+  ],
+}
+
+const legacyFaqs: FaqItem[] = [
+  {
+    q: '新亦源B2B仓配和B2C仓配有什么区别？',
+    a: 'B2B门店仓配的核心差异在三点：①分货逻辑不同，B2B按门店独立分区拣货，每个门店有独立明细单；②物流方式不同，B2B主要用零担/整车，成本更低；③系统对接不同，B2B需要与ERP/进销存系统打通，自动处理补货指令。新亦源同时支持B2C和B2B两种发货模式，一套库存可同时服务两种渠道。',
+  },
+  {
+    q: '门店数量较多（50家以上），新亦源能处理吗？',
+    a: '完全可以。新亦源已服务多个拥有100家以上门店的连锁品牌，建立了完善的门店分货作业标准：门店档案维护→分货规则配置→批量分拣→逐店打包→物流发运→回传单号，全流程标准化。门店越多越有规模优势，欢迎联系商务团队评估方案。',
+  },
+  {
+    q: '新亦源支持与哪些ERP系统对接？',
+    a: '已对接百胜E3、聚水潭、伯俊、吉客云、丽晶、浪潮、恒康等主流ERP，也支持品牌自研系统通过API接入，可协同接收补货指令、生成出库单并回传物流信息。具体接口方式、字段范围和联调周期由双方确认；不收系统使用费，接口实施和定制费用按方案确认。',
+  },
+  {
+    q: '季节换新集中铺货时，能在多少天内完成全国发货？',
+    a: '参考铺货时效：100家门店约3—5天、500家约7—10天、1000家约14天；具体按SKU数量、分货方式、门店区域和运输线路确认。',
+  },
+  {
+    q: 'B2B发货的货架标签和分货明细单怎么定制？',
+    a: '支持完全按品牌要求定制：①货架标签：可包含门店名称、SKU编码、颜色、尺码、价格、条码等；②分货明细单：按门店生成，包含本次补货所有商品明细；③包装箱标：箱号、目的门店、商品汇总。首次合作时，商务团队会收集您的标签格式要求，录入系统模板，后续自动批量生成。',
+  },
+]
+
+describe('B2B redesign grouping and public copy', () => {
+  it('routes six known features by meaning and retains unknown features once', () => {
+    const input: FeatureItem[] = [
+      ...legacyContent.features,
+      { title: '自定义分货说明', desc: '未知内容保持原样。' },
+    ]
+    const before = structuredClone(input)
+    const groups = groupB2bFeatures(input)
+    expect(groups.allocation).toHaveLength(1)
+    expect(groups.labels).toHaveLength(1)
+    expect(groups.erp).toHaveLength(1)
+    expect(groups.transport).toHaveLength(1)
+    expect(groups.inventory).toHaveLength(1)
+    expect(groups.replenishment).toHaveLength(1)
+    expect(groups.support).toEqual([input[6]])
+    expect(Object.values(groups).flat()).toHaveLength(7)
+    expect(groups.support[0].desc).toBe('未知内容保持原样。')
+    expect(input).toEqual(before)
+  })
+
+  it('routes four known stats by label and retains unknown stats', () => {
+    const input: StatItem[] = [
+      ...legacyContent.stats,
+      { stat: '按需', label: '自定义统计', sub: '项目确认' },
+    ]
+    const groups = groupB2bStats(input)
+    expect(groups.accuracy).toEqual([input[2]])
+    expect(groups.partners).toEqual([input[0]])
+    expect(groups.cities).toEqual([input[1]])
+    expect(groups.fees).toEqual([input[3]])
+    expect(groups.systemFee).toEqual([input[3]])
+    expect(groups.support).toEqual([input[4]])
+    expect(groups.operations).toEqual(input.slice(0, 3).concat(input[4]))
+  })
+
+  it('maps exact legacy fields, all six features, four stats, and five FAQs without mutation', () => {
+    const content = structuredClone(legacyContent)
+    const faqs = structuredClone(legacyFaqs)
+    const contentBefore = structuredClone(content)
+    const faqsBefore = structuredClone(faqs)
+    const output = toB2bPublicCopy(content, faqs)
+
+    expect(output.content.title).toBe('B2B门店仓配｜门店补货、分货与库存协同｜新亦源')
+    expect(output.content.description).toBe(
+      '面向连锁补货、批发铺货与加盟配送，衔接按店分货、标签加工、装箱发运与系统信息。'
+    )
+    expect(output.content.eyebrow).toBe('B2B门店仓配')
+    expect(output.content.h1).toBe('B2B门店仓配')
+    expect(output.content.h1sub).toBe('按店配好货，门店好收货。')
+    expect(output.content.heroDesc).toContain('围绕连锁补货、批发铺货与加盟配送')
+    expect(output.content.contentDesc).toBe(B2B_PUBLIC_CONTENT_DESC)
+    expect(output.content.contentDesc).toContain(CLAIM_TEXT.shippingAccuracy)
+    expect(output.content.features.map(({ title }) => title)).toEqual([
+      '门店分货精准分拣',
+      '货架标签 / 吊牌加工',
+      'ERP / 进销存系统对接',
+      '零担 / 整车 / 快递混合发货',
+      'B2C+B2B一盘货管理',
+      '季节集中铺货保障',
+    ])
+    expect(output.content.features[2].desc).not.toContain('不收系统使用费')
+    expect(output.content.stats).toHaveLength(4)
+    expect(output.content.stats[1].sub).toBe('新亦源整体服务基础。')
+    expect(output.content.stats[3].sub).toBe('接口实施与定制费用按方案确认。')
+    expect(output.faqs).toHaveLength(5)
+    expect(output.faqs[1].q).toBe('门店数量较多时，如何评估门店仓配方案？')
+    expect(output.faqs[2].a).toContain('接口实施与定制费用按方案确认')
+    expect(output.faqs[3].a).not.toMatch(/100家|500家|1000家|3—5天|7—10天|14天/)
+    expect(content).toEqual(contentBefore)
+    expect(faqs).toEqual(faqsBefore)
+  })
+
+  it('preserves custom, empty, near-match, and unknown values exactly', () => {
+    const content: ServicePageContent = {
+      ...legacyContent,
+      title: '',
+      description: '自定义 description',
+      breadcrumbLabel: '自定义 breadcrumb',
+      eyebrow: '自定义 eyebrow',
+      h1: '自定义 H1',
+      h1sub: '自定义 H1 副标题',
+      heroDesc: '自定义 hero',
+      imgSrc: '/custom.webp',
+      imgAlt: '自定义图片',
+      contentDesc: '自定义 contentDesc',
+      featuresLabel: '自定义能力标题',
+      features: [
+        { ...legacyContent.features[0], desc: `${legacyContent.features[0].desc} ` },
+        { title: '自定义分货说明', desc: '未知能力原文。' },
+      ],
+      stats: [
+        { ...legacyContent.stats[0], sub: `${legacyContent.stats[0].sub} ` },
+        { stat: '按需', label: '自定义统计', sub: '未知指标原文。' },
+      ],
+    }
+    const faqs: FaqItem[] = [{ q: '自定义问题？', a: '自定义回答。' }]
+    const contentBefore = structuredClone(content)
+    const faqsBefore = structuredClone(faqs)
+    const output = toB2bPublicCopy(content, faqs)
+
+    expect(output.content).toEqual(content)
+    expect(output.faqs).toEqual(faqs)
+    expect(groupB2bFeatures(output.content.features).support).toEqual([content.features[1]])
+    expect(groupB2bStats(output.content.stats).support).toEqual([content.stats[1]])
+    expect(content).toEqual(contentBefore)
+    expect(faqs).toEqual(faqsBefore)
+  })
+})

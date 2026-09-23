@@ -1,0 +1,36 @@
+---
+import type { FeatureItem, StatItem } from '@/data/service'
+interface Props {
+  features: FeatureItem[]
+  stats: readonly StatItem[]
+  contentDesc: string
+}
+const { features, stats, contentDesc } = Astro.props
+---
+
+<section class="footwear-section footwear-supplement" aria-labelledby="footwear-supplement-heading">
+  <p class="footwear-section__label">补充说明</p>
+  <h2 id="footwear-supplement-heading">更多服务信息</h2>
+  {contentDesc && <p class="footwear-supplement__context">{contentDesc}</p>}
+  {
+    features.map(({ title, desc }) => (
+      <article>
+        <>
+          <h3>{title}</h3>
+          <p>{desc}</p>
+        </>
+      </article>
+    ))
+  }
+  {
+    stats.map(({ stat, label, sub }) => (
+      <article>
+        <>
+          <strong>{stat}</strong>
+          <h3>{label}</h3>
+          <p>{sub}</p>
+        </>
+      </article>
+    ))
+  }
+</section>

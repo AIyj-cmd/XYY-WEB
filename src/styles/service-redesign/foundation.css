@@ -1,0 +1,40 @@
+.repair-page {
+  background: #fff;
+  color: #171717;
+  overflow: clip;
+}
+.redesign-shell {
+  width: min(100% - 3rem, 76rem);
+  margin-inline: auto;
+}
+.redesign-kicker {
+  color: #c74412;
+  font:
+    700 0.75rem/1.2 ui-monospace,
+    SFMono-Regular,
+    monospace;
+  letter-spacing: 0.12em;
+}
+.redesign-button {
+  display: inline-flex;
+  padding: 0.85rem 1.15rem;
+  background: #c74412;
+  color: #fff;
+  font-weight: 800;
+  text-decoration: none;
+}
+.redesign-empty {
+  display: grid;
+  min-height: 70vh;
+  place-items: center;
+  padding: 2rem;
+}
+.redesign-empty h1 {
+  font-size: clamp(2rem, 6vw, 4rem);
+  font-weight: 900;
+}
+@media (max-width: 640px) {
+  .redesign-shell {
+    width: min(100% - 2rem, 76rem);
+  }
+}

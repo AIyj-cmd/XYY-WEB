@@ -1,0 +1,57 @@
+---
+import type { FaqItem } from '@/data/service'
+import type { ServicePageContent } from '@/lib/directus-content-queries'
+import '@/styles/service-redesign.css'
+import { hasRedesignContent } from './content-presence'
+import { groupLiveFeatures, groupLiveStats } from './live-content'
+import LiveCta from './LiveCta.astro'
+import LiveFaq from './LiveFaq.astro'
+import LiveHero from './LiveHero.astro'
+import LiveMcn from './LiveMcn.astro'
+import LiveReturns from './LiveReturns.astro'
+import LiveStages from './LiveStages.astro'
+import LiveSync from './LiveSync.astro'
+
+interface Props {
+  content: ServicePageContent
+  faqs: FaqItem[]
+  videoSrc: string
+  poster: string
+}
+const { content, faqs, videoSrc, poster } = Astro.props
+const available = hasRedesignContent(content, faqs.length)
+const groups = groupLiveFeatures(content.features)
+const stats = groupLiveStats(content.stats)
+const hasHero = Boolean(content.h1 || content.h1sub || content.heroDesc)
+const hasStages = Boolean(
+  groups.before.length ||
+  groups.peak.length ||
+  groups.after.length ||
+  stats.peak.length ||
+  stats.after.length
+)
+const hasSync = Boolean(groups.sync.length || stats.sync.length)
+const hasPrimaryContent = Boolean(hasHero || content.features.length || content.stats.length)
+---
+
+<article class:list={['live-page', { 'live-page--empty': !available }]}>
+  {
+    available ? (
+      <>
+        {hasHero && <LiveHero {content} {videoSrc} {poster} />}
+        {hasStages && <LiveStages {groups} {stats} />}
+        {(hasSync || content.contentDesc) && (
+          <LiveSync {groups} {stats} contentDesc={content.contentDesc} />
+        )}
+        <LiveReturns features={groups.returns} stats={stats.returns} />
+        <LiveMcn features={groups.mcn} support={groups.support} stats={stats.support} />
+        <LiveFaq {faqs} />
+        {hasPrimaryContent && <LiveCta />}
+      </>
+    ) : (
+      <section class="redesign-empty">
+        <h1 id="lp-h1">服务内容暂不可用</h1>
+      </section>
+    )
+  }
+</article>

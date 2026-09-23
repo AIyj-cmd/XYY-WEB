@@ -1,0 +1,42 @@
+---
+interface Props {
+  serviceName: string
+  subheading: string
+  description: string
+  videoSrc: string
+  poster: string
+}
+
+const { serviceName, subheading, description, videoSrc, poster } = Astro.props
+---
+
+<header class="repair-hero">
+  <div class="redesign-shell">
+    <div class="repair-hero__grid">
+      <div class="repair-hero__title">
+        <p class="redesign-kicker">后整修复</p>
+        <h1 id="lp-h1">{serviceName}</h1>
+      </div>
+      <div class="repair-hero__copy">
+        {subheading && <p class="repair-hero__subheading">{subheading}</p>}
+        {description && <p>{description}</p>}
+        <a class="redesign-button" href="/contact">评估修复需求</a>
+      </div>
+    </div>
+    <video
+      class="repair-hero__video"
+      data-service-hero-media
+      autoplay
+      loop
+      muted
+      playsinline
+      preload="auto"
+      width="1280"
+      height="720"
+      poster={poster}
+      aria-label={`${serviceName}服务视频`}
+    >
+      <source src={videoSrc} type="video/mp4" />
+    </video>
+  </div>
+</header>

@@ -1,0 +1,29 @@
+---
+import type { FaqItem } from '@/data/service'
+
+interface Props {
+  faqs: FaqItem[]
+}
+const { faqs } = Astro.props
+---
+
+<section class="footwear-section footwear-faq" aria-labelledby="footwear-faq-heading">
+  <header>
+    <p class="footwear-section__label">常见问题</p><h2 id="footwear-faq-heading">
+      关于鞋服仓配，你可能还想了解。
+    </h2>
+    <p>展开查看平台、旺季、时效和合作安排。</p>
+  </header>
+  <div>
+    {
+      faqs.map(({ q, a }) => (
+        <details>
+          <>
+            <summary>{q}</summary>
+            <p>{a}</p>
+          </>
+        </details>
+      ))
+    }
+  </div>
+</section>

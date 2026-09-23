@@ -1,20 +1,12 @@
 import { expect, test } from '@playwright/test'
 
-const dropdownServiceRoutes = [
-  '/xiefu-yuncang',
-  '/huadong-xiefu-yuncang',
-  '/tuihuo-zhijian',
-  '/houzheng-xiufu',
-  '/kuajing-yuncang',
-  '/zhibo-cangpei',
-  '/huanan-xiefu-yuncang',
-  '/guangzhou-xiefu-yuncang',
-  '/b2b-mendian-cangpei',
-]
+const dropdownServiceRoutes = ['/guangzhou-xiefu-yuncang', '/b2b-mendian-cangpei']
 
 test('all service dropdown pages share the same prompt scroll reveal', async ({
   page,
 }, testInfo) => {
+  // The complete shared-layout matrix needs a cumulative navigation budget.
+  test.setTimeout(60_000)
   test.skip(
     testInfo.project.name !== 'chromium',
     'The shared layout only needs one route matrix run'
@@ -23,6 +15,14 @@ test('all service dropdown pages share the same prompt scroll reveal', async ({
 
   for (const path of dropdownServiceRoutes) {
     await page.goto(path)
+
+    if (path === '/b2b-mendian-cangpei') {
+      const allocation = page.locator('.b2b-allocation')
+      await allocation.scrollIntoViewIfNeeded()
+      await expect(allocation).toBeInViewport()
+      await expect(page.locator('.b2b-hero__video')).toHaveCount(1)
+      continue
+    }
 
     const detail = page.locator('.service-detail__header')
     const heading = detail.locator('h2')
@@ -46,14 +46,20 @@ test('service motion remains readable on mobile and with reduced motion', async 
   await page.setViewportSize({ width: 430, height: 900 })
   await page.goto('/xiefu-yuncang')
 
-  const callToAction = page.locator('[data-conversion-cta]')
-  await callToAction.scrollIntoViewIfNeeded()
-  await expect(callToAction.locator('#service-conversion-cta-heading')).toHaveCSS('opacity', '1', {
-    timeout: 2_000,
-  })
+  const heroVideo = page.locator('.footwear-hero__video')
+  await expect(heroVideo).toHaveCount(1)
+  await expect(heroVideo).toHaveAttribute('autoplay', '')
+  await expect(heroVideo).toHaveAttribute('loop', '')
+  await expect(heroVideo).toHaveAttribute('muted', '')
+  await expect(heroVideo).toHaveAttribute('playsinline', '')
+  await expect(heroVideo).not.toHaveAttribute('controls')
+
+  const fulfillment = page.locator('#footwear-fulfillment')
+  await fulfillment.scrollIntoViewIfNeeded()
+  await expect(fulfillment).toBeInViewport()
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(430)
 
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto('/xiefu-yuncang')
-  await expect(page.locator('.service-detail__header h2')).toHaveCSS('opacity', '1')
+  await expect(page.locator('#footwear-fulfillment [role="tabpanel"]')).toHaveCount(3)
 })

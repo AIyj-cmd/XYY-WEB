@@ -1,0 +1,190 @@
+.footwear-network,
+.footwear-assurance {
+  width: 100%;
+  max-width: none;
+  padding-right: max(3rem, calc((100% - 82rem) / 2));
+  padding-left: max(3rem, calc((100% - 82rem) / 2));
+  background: #f8f8f6;
+}
+.footwear-network__heading {
+  display: grid;
+  grid-template-columns: minmax(8rem, 0.4fr) minmax(0, 1.6fr);
+  align-items: end;
+  gap: 2rem;
+}
+.footwear-network__channels {
+  display: grid;
+  grid-template-columns: 1.2fr 0.85fr 1fr;
+  gap: 1rem;
+  margin-top: 3rem;
+}
+.footwear-network__channels article {
+  min-height: 12rem;
+  padding: clamp(1.35rem, 3vw, 2.25rem);
+  border-radius: 1.5rem;
+  background: #fff;
+}
+.footwear-network__channels article:nth-child(2) {
+  margin-top: 2.4rem;
+  background: #ecece7;
+}
+.footwear-network__channels article:nth-child(3) {
+  margin-top: 0.8rem;
+}
+.footwear-network__channels b {
+  color: var(--orange);
+  font-size: 0.82rem;
+  letter-spacing: 0.1em;
+}
+.footwear-network__channels h3 {
+  margin-top: 1.2rem;
+  font-size: 1.35rem;
+}
+.footwear-network__system {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 2.75rem;
+}
+.footwear-network__system article {
+  padding: clamp(1.35rem, 3vw, 2rem);
+}
+.footwear-fulfillment__heading {
+  margin-bottom: 2.75rem;
+}
+.footwear-fulfillment__body[data-enhanced='true'] {
+  display: grid;
+  grid-template-columns: minmax(12rem, 0.3fr) minmax(0, 0.7fr);
+  gap: clamp(2rem, 6vw, 6rem);
+}
+.footwear-fulfillment__tabs [role='tablist'] {
+  display: none;
+  gap: 0.65rem;
+  align-content: start;
+}
+.footwear-fulfillment__body[data-enhanced='true'] .footwear-fulfillment__tabs [role='tablist'] {
+  display: grid;
+}
+.footwear-fulfillment__tabs button {
+  display: flex;
+  gap: 0.7rem;
+  align-items: center;
+  width: 100%;
+  border: 0;
+  border-radius: 999px;
+  padding: 0.8rem 1rem;
+  background: #f8f8f6;
+  color: var(--ink);
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+.footwear-fulfillment__tabs button span {
+  color: var(--orange);
+  font-size: 0.78rem;
+}
+.footwear-fulfillment__tabs button[aria-selected='true'] {
+  background: #fbe2d6;
+}
+.footwear-fulfillment__stages article {
+  display: grid;
+  gap: 1.5rem;
+}
+.footwear-fulfillment__stages article:not([hidden]) {
+  animation: footwear-fade 0.18s ease both;
+}
+.footwear-fulfillment__stages ol {
+  margin: 1rem 0 0;
+  padding-left: 1.25rem;
+  color: var(--body);
+}
+.footwear-assurance__heading {
+  margin-bottom: 2.75rem;
+}
+.footwear-assurance__blocks {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: 1rem;
+}
+.footwear-assurance__blocks article {
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+  border-radius: 1.5rem;
+  background: #fff;
+}
+.footwear-assurance__blocks article:last-child {
+  margin-top: 2.5rem;
+  background: #ecece7;
+}
+.footwear-assurance__blocks p {
+  margin-bottom: 1rem;
+  color: var(--body);
+}
+.footwear-assurance__blocks p:last-child {
+  margin-bottom: 0;
+}
+.footwear-assurance__eyebrow {
+  color: var(--orange) !important;
+  font-size: 0.82rem !important;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+}
+.footwear-assurance strong {
+  display: inline;
+  margin-right: 0.35rem;
+  color: var(--orange);
+  font-size: 1.5rem;
+  letter-spacing: -0.04em;
+  white-space: nowrap;
+}
+.footwear-assurance b {
+  color: var(--ink);
+}
+.footwear-returns {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(18rem, 1.1fr);
+  gap: clamp(2rem, 7vw, 7rem);
+  align-items: center;
+}
+.footwear-returns > div > p:last-child {
+  max-width: 33rem;
+  margin-bottom: 0;
+  color: var(--body);
+}
+.footwear-returns__links {
+  display: grid;
+  gap: 1rem;
+}
+.footwear-returns__links a {
+  display: grid;
+  gap: 0.65rem;
+  padding: clamp(1.5rem, 3vw, 2.25rem);
+  border-radius: 1.5rem;
+  background: #f8f8f6;
+  color: var(--ink);
+  text-decoration: none;
+}
+.footwear-returns__links a:last-child {
+  margin-left: clamp(0rem, 6vw, 4rem);
+  background: #efefea;
+}
+.footwear-returns__links span {
+  color: var(--orange);
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+.footwear-returns__links b {
+  font-size: 1.15rem;
+}
+@keyframes footwear-fade {
+  from {
+    opacity: 0.25;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .footwear-fulfillment__stages article:not([hidden]) {
+    animation: none;
+  }
+}

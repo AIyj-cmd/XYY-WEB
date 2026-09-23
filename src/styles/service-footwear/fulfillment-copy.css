@@ -1,0 +1,156 @@
+.footwear-fulfillment .footwear-fulfillment__stages article {
+  gap: 0;
+}
+.footwear-fulfillment .footwear-fulfillment__board {
+  overflow: hidden;
+  border: 1px solid #e8e5dd;
+  border-radius: 2rem;
+  background: #f3f2ee;
+  box-shadow: 0 1.25rem 3rem rgb(29 29 27 / 0.06);
+}
+.footwear-fulfillment .footwear-fulfillment__copy {
+  padding: clamp(1.5rem, 4vw, 3.2rem);
+}
+.footwear-fulfillment .footwear-fulfillment__stage {
+  margin: 0 0 0.8rem;
+  color: var(--orange);
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  line-height: 1.25;
+}
+.footwear-fulfillment .footwear-fulfillment__copy h3 {
+  max-width: 20ch;
+  margin: 0;
+  color: var(--ink);
+  font-size: clamp(1.5rem, 2.6vw, 2.25rem);
+  font-weight: 750;
+  line-height: 1.2;
+}
+.footwear-fulfillment .footwear-fulfillment__copy ol {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin: clamp(1.5rem, 4vw, 2.5rem) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.footwear-fulfillment .footwear-fulfillment__copy li {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto 1fr;
+  gap: 0.85rem;
+  min-width: 0;
+  min-height: 12.25rem;
+  padding: 1rem;
+  border: 1px solid #e8e5dd;
+  border-radius: 1.2rem;
+  background: #fff;
+  box-shadow: 0 0.55rem 1.5rem rgb(29 29 27 / 0.04);
+}
+.footwear-fulfillment .footwear-fulfillment__step-number {
+  display: grid;
+  width: 1.65rem;
+  aspect-ratio: 1;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--ink);
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 800;
+  line-height: 1;
+}
+.footwear-fulfillment .footwear-fulfillment-icon {
+  width: 2.25rem;
+  height: 2.25rem;
+  grid-column: 1 / -1;
+  color: var(--ink);
+}
+.footwear-fulfillment .footwear-fulfillment__copy li > div {
+  grid-column: 1 / -1;
+}
+.footwear-fulfillment .footwear-fulfillment__copy strong,
+.footwear-fulfillment .footwear-fulfillment__copy li > div > span {
+  display: block;
+}
+.footwear-fulfillment .footwear-fulfillment__copy strong {
+  color: var(--ink);
+  font-size: 0.98rem;
+  line-height: 1.45;
+}
+.footwear-fulfillment .footwear-fulfillment__copy li > div > span {
+  margin-top: 0.3rem;
+  color: var(--body);
+  font-size: 0.88rem;
+  line-height: 1.65;
+}
+.footwear-fulfillment .footwear-fulfillment__outcome {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.9rem 1.25rem;
+  align-items: center;
+  padding: 1.15rem clamp(1.5rem, 4vw, 3.2rem);
+  background: var(--ink);
+  color: #fff;
+}
+.footwear-fulfillment .footwear-fulfillment__outcome > span {
+  color: #f5a06e;
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  line-height: 1.25;
+}
+.footwear-fulfillment .footwear-fulfillment__outcome p {
+  margin: 0;
+  color: #fff;
+  font-size: 0.94rem;
+  font-weight: 700;
+  line-height: 1.5;
+}
+@media (min-width: 961px) {
+  .footwear-fulfillment .footwear-fulfillment__copy .footwear-fulfillment__steps--two {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 960px) {
+  .footwear-fulfillment .footwear-fulfillment__copy ol {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 760px) {
+  .footwear-fulfillment .footwear-fulfillment__board {
+    border-radius: 1.5rem;
+  }
+  .footwear-fulfillment .footwear-fulfillment__copy ol {
+    grid-template-columns: 1fr;
+  }
+  .footwear-fulfillment .footwear-fulfillment__copy li {
+    grid-template-columns: 2.25rem minmax(0, 1fr);
+    grid-template-rows: auto 1fr;
+    gap: 0.6rem 0.85rem;
+    min-height: 0;
+  }
+  .footwear-fulfillment .footwear-fulfillment__step-number {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .footwear-fulfillment .footwear-fulfillment-icon {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  .footwear-fulfillment .footwear-fulfillment__copy li > div {
+    grid-column: 2;
+    grid-row: 1 / -1;
+    align-self: center;
+  }
+}
+@media (max-width: 400px) {
+  .footwear-fulfillment .footwear-fulfillment__tabs button {
+    font-size: 0.78rem;
+  }
+  .footwear-fulfillment .footwear-fulfillment__outcome {
+    grid-template-columns: 1fr;
+    gap: 0.4rem;
+  }
+}

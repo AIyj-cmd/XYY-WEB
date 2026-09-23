@@ -1,0 +1,40 @@
+---
+import { EDITORIAL_CARE_CATEGORIES } from '@/data/product/editorial'
+---
+
+<section id="product-care" class="product-editorial__care" aria-labelledby="care-heading">
+  <div class="product-editorial__container">
+    <div class="product-editorial__care-layout">
+      <header data-reveal="copy">
+        <h2 id="care-heading"><span>商品不是只有</span><span>可售和报废。</span></h2>
+        <p>根据商品状态与品牌标准，完成分类、整理与轻微修复，让适合的商品重新进入销售流程。</p>
+      </header>
+      <div
+        class="product-editorial__placeholder product-editorial__care-placeholder"
+        data-product-visual
+        data-reveal="copy"
+        data-reveal-self
+      >
+        <img
+          src="/images/product/care-objects-20260911.png"
+          alt="分类、清洁、修复与重新包装物品组合概念示意图"
+          width="2164"
+          height="727"
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
+    </div>
+    <div class="product-editorial__care-list" data-reveal="copy">
+      {
+        EDITORIAL_CARE_CATEGORIES.map(([number, title, description]) => (
+          <article>
+            <span>{number}</span>
+            <h3>{title}</h3>
+            <p>{description}</p>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>

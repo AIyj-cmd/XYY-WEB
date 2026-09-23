@@ -1,0 +1,78 @@
+.b2b-distribution__objects {
+  align-items: stretch;
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: 1fr 1.2fr 1fr;
+  margin-top: 2.5rem;
+}
+.b2b-object {
+  background: #f8f8f6;
+  border-radius: 1.5rem;
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+}
+.b2b-object__number {
+  color: #c74412;
+  font-weight: 900;
+}
+.b2b-object i {
+  display: block;
+  height: 4rem;
+  margin: 1rem 0;
+  position: relative;
+}
+.b2b-object--goods i::before,
+.b2b-object--goods i::after {
+  background: #efc7b7;
+  border-radius: 0.35rem;
+  content: '';
+  height: 2.5rem;
+  position: absolute;
+  width: 2rem;
+}
+.b2b-object--goods i::before {
+  left: 10%;
+  top: 0;
+}
+.b2b-object--goods i::after {
+  left: 43%;
+  top: 1rem;
+}
+.b2b-object--carton {
+  background: #eee9e1;
+  transform: translateY(-1rem);
+}
+.b2b-object--carton i {
+  border: 2px solid #c74412;
+  border-radius: 0.25rem;
+  height: 5rem;
+  margin-left: 10%;
+  width: 70%;
+}
+.b2b-object--carton i::after {
+  background: #c74412;
+  content: '';
+  height: 2px;
+  left: 15%;
+  position: absolute;
+  right: 15%;
+  top: 45%;
+}
+.b2b-object--note i {
+  background: #fff;
+  border-radius: 0.25rem;
+  box-shadow: inset 0 -10px #efc7b7;
+  height: 4.6rem;
+  margin-left: 12%;
+  width: 65%;
+}
+.b2b-stat {
+  margin: 1.5rem 0 0;
+}
+.b2b-stat b,
+.b2b-stat span {
+  display: block;
+}
+.b2b-stat b {
+  color: #c74412;
+  font-size: clamp(1.3rem, 2.4vw, 2rem);
+}

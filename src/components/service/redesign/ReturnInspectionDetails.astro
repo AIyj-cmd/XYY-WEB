@@ -1,0 +1,97 @@
+---
+import type { FeatureItem, StatItem } from '@/data/service'
+
+interface Props {
+  apparel: FeatureItem[]
+  footwear: FeatureItem[]
+  rules: FeatureItem[]
+  evidence: FeatureItem[]
+  repair: FeatureItem[]
+  other: FeatureItem[]
+  stats: readonly StatItem[]
+}
+
+const { apparel, footwear, rules, evidence, repair, other, stats } = Astro.props
+
+const sections: [string, FeatureItem[]][] = [
+  ['服装检查', apparel],
+  ['鞋类检查', footwear],
+  ['规则与判定', rules],
+]
+---
+
+{
+  sections.some(([, features]) => features.length > 0) && (
+    <section class="returns-section returns-checks" aria-labelledby="returns-checks-heading">
+      <div class="returns-shell">
+        <header class="returns-section__heading">
+          <>
+            <p class="returns-kicker">检查重点</p>
+            <h2 id="returns-checks-heading">服装和鞋类，按不同重点检查</h2>
+          </>
+        </header>
+        <div class="returns-checks__grid">
+          {sections
+            .filter(([, features]) => features.length > 0)
+            .map(([heading, features]) => (
+              <article>
+                <h3>{heading}</h3>
+                {features.map(({ title, desc }) => (
+                  <p data-redesign-feature>
+                    <strong data-feature-title>{title}</strong>
+                    <span data-feature-description>{desc}</span>
+                  </p>
+                ))}
+              </article>
+            ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<section class="returns-section returns-evidence" aria-labelledby="returns-evidence-heading">
+  <div class="returns-shell returns-evidence__layout">
+    <div>
+      <p class="returns-kicker">可复核依据</p><h2 id="returns-evidence-heading">
+        留下拆包、检查与判定的依据
+      </h2>
+      {
+        (evidence.length || repair.length || other.length) > 0 && (
+          <ol>
+            <>
+              <li>拆包记录</li>
+              <li>检查照片</li>
+              <li>判定结果</li>
+            </>
+          </ol>
+        )
+      }
+      {
+        [...evidence, ...repair, ...other].map(({ title, desc }) => (
+          <p data-redesign-feature>
+            <>
+              <strong data-feature-title>{title}</strong>
+              <span data-feature-description>{desc}</span>
+            </>
+          </p>
+        ))
+      }
+    </div>
+    {
+      stats.length > 0 && (
+        <dl>
+          {stats.map(({ stat, label, sub }) => (
+            <div>
+              <dt>{stat}</dt>
+              <dd>
+                <strong>{label}</strong>
+                <span>{sub}</span>
+              </dd>
+            </div>
+          ))}
+        </dl>
+      )
+    }
+  </div>
+</section>

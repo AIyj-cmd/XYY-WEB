@@ -1,0 +1,110 @@
+---
+import { CLAIM_TEXT } from '@/lib/claims'
+import FulfillmentIcon from './FulfillmentIcon.astro'
+
+const stages = [
+  {
+    id: 'inbound',
+    label: '入仓建档',
+    title: '收货、质检与RFID上架',
+    outcome: '完成商品建档与定位存储。',
+    steps: [
+      ['receive', '收货入库', '验收商品，核对数量、SKU与规格。'],
+      ['inspect', '入库质检', '按项目约定进行新货抽检或全检，问题及时反馈。'],
+      ['rfid', 'RFID上架', '绑码建档，智能定位存储。'],
+    ],
+  },
+  {
+    id: 'orders',
+    label: '订单作业',
+    title: '订单下发、拣货与复核',
+    outcome: '完成订单同步、拆分与复核。',
+    steps: [
+      ['order', '订单下发', '多平台实时同步，波次智能拆分。'],
+      ['pick', '拣货复核', '电子标签引导，RFID防错复核。'],
+    ],
+  },
+  {
+    id: 'outbound',
+    label: '复核出库',
+    title: '质检打包，发货出库',
+    outcome: '完成打包与发货出库。',
+    steps: [
+      ['pack', '质检打包', '称重验货，按标准包材打包。'],
+      ['dispatch', '发货出库', `${CLAIM_TEXT.shippingSla}。`],
+    ],
+  },
+] as const
+---
+
+<section
+  class="footwear-section footwear-fulfillment"
+  id="footwear-fulfillment"
+  aria-labelledby="footwear-fulfillment-heading"
+>
+  <header class="footwear-fulfillment__heading">
+    <p class="footwear-section__label">履约</p>
+    <h2 id="footwear-fulfillment-heading">货到仓后，看看我们怎么做。</h2>
+  </header>
+  <div class="footwear-fulfillment__body" data-footwear-tabs>
+    <div class="footwear-fulfillment__tabs">
+      <div role="tablist" aria-label="履约阶段">
+        {
+          stages.map(({ id, label }, index) => (
+            <button
+              type="button"
+              role="tab"
+              aria-selected={index === 0 ? 'true' : 'false'}
+              aria-controls={`footwear-stage-${id}`}
+              id={`footwear-tab-${id}`}
+              data-footwear-stage={id}
+              tabindex={index === 0 ? 0 : -1}
+            >
+              <span>{String(index + 1).padStart(2, '0')}</span>
+              {label}
+            </button>
+          ))
+        }
+      </div>
+    </div>
+    <div class="footwear-fulfillment__stages">
+      {
+        stages.map(({ id, title, steps, outcome }, stageIndex) => (
+          <article
+            id={`footwear-stage-${id}`}
+            role="tabpanel"
+            aria-labelledby={`footwear-tab-${id}`}
+            data-footwear-panel={id}
+          >
+            <div class="footwear-fulfillment__board">
+              <div class="footwear-fulfillment__copy">
+                <p class="footwear-fulfillment__stage">
+                  阶段 {String(stageIndex + 1).padStart(2, '0')}
+                </p>
+                <h3>{title}</h3>
+                <ol class:list={{ 'footwear-fulfillment__steps--two': steps.length === 2 }}>
+                  {steps.map(([icon, label, description], stepIndex) => (
+                    <li>
+                      <span class="footwear-fulfillment__step-number" aria-hidden="true">
+                        {String(stepIndex + 1).padStart(2, '0')}
+                      </span>
+                      <FulfillmentIcon name={icon} />
+                      <div>
+                        <strong>{label}：</strong>
+                        <span>{description}</span>
+                      </div>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+              <footer class="footwear-fulfillment__outcome">
+                <span>阶段结果</span>
+                <p>{outcome}</p>
+              </footer>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
