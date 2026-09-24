@@ -50,16 +50,16 @@ import '@/styles/product/video-assurance.css'
                 id={id}
                 data-product-video
                 aria-label={label}
-                autoplay
+                autoplay={index === 0}
                 loop
                 muted
                 playsinline
-                preload="auto"
+                preload={index === 0 ? 'auto' : 'none'}
                 width="854"
                 height="480"
                 poster={poster}
               >
-                <source src={src} type="video/mp4" />
+                <source src={index === 0 ? src : undefined} data-src={src} type="video/mp4" />
               </video>
             </section>
           )
@@ -109,4 +109,5 @@ import '@/styles/product/video-assurance.css'
 
 <script>
   import '@/scripts/product-video-navigation'
+  import '@/scripts/product-video-media'
 </script>

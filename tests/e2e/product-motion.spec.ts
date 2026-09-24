@@ -18,14 +18,16 @@ test('product page autoplays videos and keeps navigation synced with one scroll 
   await expect(previous).toBeDisabled()
   await expect(status).toHaveText('01 / 09')
 
-  for (const video of await videos.all()) {
-    await expect(video).toHaveAttribute('autoplay', '')
+  for (const [index, video] of (await videos.all()).entries()) {
     await expect(video).toHaveAttribute('loop', '')
     await expect(video).toHaveAttribute('muted', '')
     await expect(video).toHaveAttribute('playsinline', '')
-    await expect(video).toHaveAttribute('preload', 'auto')
     await expect(video).not.toHaveAttribute('controls')
     await expect(video).toHaveJSProperty('muted', true)
+    if (index === 0) {
+      await expect(video).toHaveAttribute('autoplay', '')
+      await expect(video).toHaveAttribute('preload', 'auto')
+    }
   }
 
   const firstVideo = videos.first()

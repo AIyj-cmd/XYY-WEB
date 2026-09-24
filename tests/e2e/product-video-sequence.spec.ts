@@ -161,16 +161,19 @@ test('product page presents eight muted videos and a static assurance section in
     ['07-live-commerce', 'warehouse-sections-20260911/06-packing'],
     ['08-b2b-stores', 'warehouse-services-20260913/order-distribution'],
   ]
-  for (const [id, path] of media) {
+  for (const [index, [id, path]] of media.entries()) {
     const video = page.locator(`[data-product-video][id="${id}"]`)
-    await expect(video).toHaveAttribute('autoplay', '')
     await expect(video).toHaveAttribute('loop', '')
     await expect(video).toHaveAttribute('muted', '')
     await expect(video).toHaveAttribute('playsinline', '')
-    await expect(video).toHaveAttribute('preload', 'auto')
     await expect(video).not.toHaveAttribute('controls')
     await expect(video).toHaveAttribute('poster', `/videos/${path}.jpg`)
-    await expect(video.locator('source')).toHaveAttribute('src', `/videos/${path}.mp4`)
+    await expect(video.locator('source')).toHaveAttribute('data-src', `/videos/${path}.mp4`)
+    if (index === 0) {
+      await expect(video).toHaveAttribute('autoplay', '')
+      await expect(video).toHaveAttribute('preload', 'auto')
+      await expect(video.locator('source')).toHaveAttribute('src', `/videos/${path}.mp4`)
+    }
   }
 })
 
