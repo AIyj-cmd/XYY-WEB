@@ -1,0 +1,46 @@
+@media (max-width: 1023px) {
+  .cases-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .cases-logo-wall__grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 639px) {
+  .cases-hero {
+    min-height: 43rem;
+  }
+  .cases-hero__inner {
+    padding-top: 9.5rem;
+  }
+  .cases-grid-section__heading,
+  .cases-logo-wall header {
+    display: block;
+  }
+  .cases-grid-section__heading > p {
+    margin-top: 1rem;
+  }
+  .cases-grid {
+    grid-template-columns: 1fr;
+  }
+  .case-card__body {
+    min-height: 0;
+  }
+  .case-card__stats {
+    margin-top: 1.25rem;
+  }
+  .cases-logo-wall__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .cases-logo-wall__item {
+    min-height: 6rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cases-hero__actions a,
+  .case-card__surface > img {
+    transition: none;
+  }
+}

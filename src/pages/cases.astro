@@ -3,31 +3,26 @@ import Layout from '@/layouts/Layout.astro'
 import PageFAQ from '@/components/PageFAQ.astro'
 import CasesHero from '@/components/cases/CasesHero.astro'
 import CasesGrid from '@/components/cases/CasesGrid.astro'
+import CasesLogoWall from '@/components/cases/CasesLogoWall.astro'
 import CasesValueProps from '@/components/cases/CasesValueProps.astro'
+import { getCasePath } from '@/components/cases/case-display'
 import ConversionCTA from '@/components/conversion/ConversionCTA.astro'
 import { CASE_FAQS, CASE_FALLBACKS } from '@/data/cases'
-import { BRAND, CASE_DETAILS } from '@/lib/brand'
+import { BRAND } from '@/lib/brand'
 import { getClaimText } from '@/lib/claims'
 import { getCases, getFaqs } from '@/lib/directus'
 import { createFaqSchema } from '@/lib/seo'
-import '@/styles/cases-orbit.css'
-import '@/styles/cases-orbit-content.css'
-import '@/styles/cases-orbit-data.css'
-import '@/styles/cases-orbit-responsive.css'
+import '@/styles/cases-overview.css'
 import '@/styles/cases-values.css'
 
-const [displayCases, faqs] = await Promise.all([
+const [displayCases, allFaqs] = await Promise.all([
   getCases(CASE_FALLBACKS),
   getFaqs('cases', CASE_FAQS),
 ])
+const faqs = allFaqs.filter(
+  ({ q }) => q.trim() !== '合作一般需要多长时间才能"跑顺"？上线后要多久看到效果？'
+)
 const partnerBrands = getClaimText('partnerBrands', 'cases')
-const getCasePath = (label: string) => {
-  const slug =
-    displayCases.find((item) => item.label === label)?.slug ??
-    (CASE_DETAILS as Record<string, { slug: string }>)[label]?.slug
-  return slug ? `/cases/${slug}` : null
-}
-
 const breadcrumbSchema = {
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
@@ -48,7 +43,7 @@ const caseListSchema = {
     position: index + 1,
     name: item.label,
     description: item.metrics,
-    url: getCasePath(item.label) ? `${BRAND.url}${getCasePath(item.label)}` : undefined,
+    url: getCasePath(item) ? `${BRAND.url}${getCasePath(item)}` : undefined,
   })),
 }
 const faqSchema = createFaqSchema(faqs)
@@ -61,6 +56,7 @@ const faqSchema = createFaqSchema(faqs)
 >
   <CasesHero />
   <CasesGrid cases={displayCases} />
+  <CasesLogoWall />
   <CasesValueProps />
   <PageFAQ heading="合作案例常见问题" items={faqs} />
 

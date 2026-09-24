@@ -1,38 +1,45 @@
 ---
 import { CASE_LOGO_BRANDS, CASE_LOGO_ROWS } from '@/data/cases'
+
+const logos = CASE_LOGO_ROWS.flat()
+const visibleLogos = logos.slice(0, 12)
+const remainingLogos = logos.slice(12)
 ---
 
-<section
-  class="py-10 bg-[#f8fafc] overflow-hidden border-b border-gray-100"
-  aria-label="部分合作品牌"
->
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center mb-8">
-    <p class="text-xs font-bold tracking-widest uppercase text-brand-orange mb-2">部分合作品牌</p>
-    <h2 class="text-2xl font-black text-navy-800">这些品牌都选择了新亦源</h2>
-  </div>
-  <div class="logos-track-wrap">
-    {
-      CASE_LOGO_ROWS.map((row, rowIndex) => (
-        <div class={`logos-row logos-row--${rowIndex === 0 ? 'fwd' : 'rev'}`}>
-          <div class="logos-track">
-            {[...row, ...row].map((number, index) => (
-              <div class="logo-img-card" aria-hidden={index >= row.length ? 'true' : undefined}>
-                <img
-                  src={`/logos/imgi_${number}_default.png`}
-                  alt={
-                    index < row.length
-                      ? `${CASE_LOGO_BRANDS[number] ?? '新亦源合作品牌'} 合作品牌 logo`
-                      : ''
-                  }
-                  aria-hidden={index >= row.length ? 'true' : undefined}
-                  loading="lazy"
-                  onerror="this.closest('.logo-img-card').style.display='none'"
-                />
-              </div>
-            ))}
+<section class="cases-logo-wall" aria-labelledby="cases-logo-wall-heading">
+  <div class="cases-logo-wall__inner">
+    <header>
+      <p class="cases-kicker">PARTNER BRANDS</p>
+      <h2 id="cases-logo-wall-heading">与品牌一起，把履约做好</h2>
+    </header>
+    <div class="cases-logo-wall__grid">
+      {
+        visibleLogos.map((number) => (
+          <div class="cases-logo-wall__item">
+            <img
+              src={`/logos/imgi_${number}_default.png`}
+              alt={`${CASE_LOGO_BRANDS[number]} 合作品牌 logo`}
+              loading="lazy"
+            />
           </div>
-        </div>
-      ))
-    }
+        ))
+      }
+    </div>
+    <details class="cases-logo-wall__more">
+      <summary>展开更多合作品牌 <span aria-hidden="true">+</span></summary>
+      <div class="cases-logo-wall__grid">
+        {
+          remainingLogos.map((number) => (
+            <div class="cases-logo-wall__item">
+              <img
+                src={`/logos/imgi_${number}_default.png`}
+                alt={`${CASE_LOGO_BRANDS[number]} 合作品牌 logo`}
+                loading="lazy"
+              />
+            </div>
+          ))
+        }
+      </div>
+    </details>
   </div>
 </section>

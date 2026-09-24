@@ -1,0 +1,4 @@
+.case-card h3 {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}

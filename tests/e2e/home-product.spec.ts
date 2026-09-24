@@ -38,27 +38,22 @@ test('homepage case dialogs reuse all six card covers and close with Escape', as
   }
 })
 
-test('cases page exposes only the six current brands', async ({ page }, testInfo) => {
+test('cases page renders the current cases in its static overview', async ({ page }) => {
   await page.goto('/cases')
 
   await expect(page.locator('#cases-grid .case-card')).toHaveCount(6)
-  await expect(page.locator('.case-brand-ring')).toHaveCount(3)
-  await expect(page.locator('.case-orbit__case-image')).toHaveCount(6)
-  const visiblePanel = page.locator('[data-case-orbit-panel]:not([hidden])')
-  await expect(visiblePanel).toContainText('UR')
-  await expect(visiblePanel.locator('.case-orbit__details > div')).toHaveCount(8)
-  if (testInfo.project.name === 'chromium') {
-    await page.locator('.case-orbit__content').hover()
-    await expect(visiblePanel.locator('.case-orbit__summary')).toHaveCSS('opacity', '0')
-    await expect(visiblePanel.locator('.case-orbit__details')).toHaveCSS('opacity', '1')
-  } else {
-    await expect(visiblePanel.locator('.case-orbit__summary')).toHaveCSS('opacity', '1')
-    await expect(visiblePanel.locator('.case-orbit__details')).toHaveCSS('opacity', '0')
-  }
-  await page.getByRole('button', { name: '下一个案例' }).click()
-  await expect(visiblePanel).toContainText('玛克茜妮')
+  await expect(page.locator('.cases-featured')).toHaveCount(0)
+  await expect(page.locator('.cases-hero + .cases-grid-section')).toHaveCount(1)
+  await expect(page.locator('#cases-grid .case-card__stats')).toHaveCount(6)
+  await expect(
+    page.locator('.cases-logo-wall__inner > .cases-logo-wall__grid .cases-logo-wall__item')
+  ).toHaveCount(12)
+  await expect(page.locator('.cases-logo-wall__more .cases-logo-wall__item')).toHaveCount(66)
+  await page.locator('.cases-logo-wall__more summary').click()
+  await expect(page.locator('.cases-logo-wall__more')).toHaveAttribute('open', '')
+  await expect(page.locator('.cases-logo-wall__item')).toHaveCount(78)
   await expect(page.getByText('初语（TOYOUTH）', { exact: true })).toHaveCount(0)
-  await expect(page.locator('#cases-grid a[aria-label="查看案例详情 →"]')).toHaveCount(1)
+  await expect(page.locator('#cases-grid a[href="/cases/ur"]')).toHaveCount(1)
 })
 
 test('product page has no horizontal overflow at 360px', async ({ page }) => {

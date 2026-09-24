@@ -3,6 +3,30 @@
   background: #f8fafc;
 }
 
+.case-values__heading {
+  margin-bottom: clamp(2rem, 4vw, 3.5rem);
+}
+
+.case-values__heading p {
+  margin: 0;
+  color: #e85d26;
+  font:
+    800 0.7rem/1.2 ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    monospace;
+  letter-spacing: 0.18em;
+}
+
+.case-values__heading h2 {
+  margin: 0.8rem 0 0;
+  color: #102747;
+  font-size: clamp(2.1rem, 4.2vw, 4rem);
+  font-weight: 900;
+  letter-spacing: -0.055em;
+  line-height: 1.05;
+}
+
 .case-values__list {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

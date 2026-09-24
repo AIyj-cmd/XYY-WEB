@@ -149,14 +149,19 @@ test('refactored about, cases, publications and Yundao modules preserve their co
   const standardFooter = page.locator('body > footer')
   await expect(standardFooter).toBeVisible()
   await expect(standardFooter).toHaveClass(/bg-slate-50/)
-  await expect(page.locator('.case-brand-ring--1')).toHaveCSS(
-    'animation-name',
-    'brand-orbit-clockwise'
+  await expect(page.getByRole('heading', { name: '鞋服仓配合作案例' })).toBeVisible()
+  await expect(page.getByRole('link', { name: /浏览合作案例/ })).toHaveAttribute(
+    'href',
+    '#cases-grid'
   )
   await expect(page.locator('#cases-grid')).toHaveCount(1)
   await expect(page.locator('#cases-grid .case-card')).toHaveCount(6)
-  await expect(page.locator('.case-brand-ring')).toHaveCount(3)
-  await expect(page.locator('[data-case-orbit-panel]:not([hidden])')).toContainText('UR')
+  await expect(page.getByRole('heading', { name: /UR（Urban Revivo）/ }).first()).toBeVisible()
+  await expect(
+    page.locator('.cases-logo-wall__inner > .cases-logo-wall__grid .cases-logo-wall__item')
+  ).toHaveCount(12)
+  await expect(page.locator('.cases-logo-wall__more .cases-logo-wall__item')).toHaveCount(66)
+  await expect(page.locator('.cases-logo-wall__more')).not.toHaveAttribute('open', '')
   await expect(page.getByRole('heading', { name: '为什么品牌选择新亦源' })).toBeVisible()
 
   await page.goto('/supply-chain-whitepapers/')

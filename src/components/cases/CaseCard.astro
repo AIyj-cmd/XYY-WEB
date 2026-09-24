@@ -1,0 +1,80 @@
+---
+import type { Case } from '@/lib/directus'
+import { getCaseDescription, getCasePath, getCaseStats } from './case-display'
+
+interface Props {
+  item: Case
+  index: number
+}
+
+const { item, index } = Astro.props
+const casePath = getCasePath(item)
+const description = getCaseDescription(item)
+const stats = getCaseStats(item, 3)
+---
+
+<article
+  class:list={['case-card', { 'case-card--static': !casePath }]}
+  data-category={item.category}
+>
+  {
+    casePath ? (
+      <a class="case-card__surface" href={casePath} aria-label={`查看${item.label}案例详情`}>
+        <img src={item.img} alt="" loading="lazy" decoding="async" />
+        <div class="case-card__body">
+          <p class="case-card__meta">
+            <>
+              <span>{String(index + 1).padStart(2, '0')}</span>
+              <span>{item.category}</span>
+            </>
+          </p>
+          <h3>{item.label}</h3>
+          {description && <p class="case-card__description">{description}</p>}
+          {stats.length > 0 && (
+            <dl class="case-card__stats" aria-label={`${item.label}案例数据`}>
+              {stats.map((stat) => (
+                <div>
+                  <dt>{stat.label}</dt>
+                  <dd>
+                    {stat.value}
+                    {stat.unit}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          )}
+          <span class="case-card__action">
+            查看案例 <span aria-hidden="true">→</span>
+          </span>
+        </div>
+      </a>
+    ) : (
+      <div class="case-card__surface">
+        <img src={item.img} alt="" loading="lazy" decoding="async" />
+        <div class="case-card__body">
+          <p class="case-card__meta">
+            <>
+              <span>{String(index + 1).padStart(2, '0')}</span>
+              <span>{item.category}</span>
+            </>
+          </p>
+          <h3>{item.label}</h3>
+          {description && <p class="case-card__description">{description}</p>}
+          {stats.length > 0 && (
+            <dl class="case-card__stats" aria-label={`${item.label}案例数据`}>
+              {stats.map((stat) => (
+                <div>
+                  <dt>{stat.label}</dt>
+                  <dd>
+                    {stat.value}
+                    {stat.unit}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          )}
+        </div>
+      </div>
+    )
+  }
+</article>
