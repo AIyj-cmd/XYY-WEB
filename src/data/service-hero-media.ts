@@ -13,7 +13,6 @@ const mediaNames = [
   'huadong-xiefu-yuncang',
   'zhibo-cangpei',
   'b2b-mendian-cangpei',
-  'guangzhou-xiefu-yuncang',
   'yundao-zhineng-jijian',
 ] as const
 

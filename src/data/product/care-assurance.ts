@@ -1,21 +1,5 @@
 import { SERVICE_FACTS } from '@/lib/brand'
 
-export const CARE_CATEGORIES = [
-  { number: '01', title: '标签处理', description: '换吊牌、洗水标、领标、条码及防伪标签' },
-  { number: '02', title: '外观整理', description: '熨烫、除皱、折叠、除尘和简单清洁' },
-  { number: '03', title: '包装处理', description: '换袋、换盒、重新包装、赠品及物料放入' },
-  { number: '04', title: '轻微修复', description: '剪线头、补扣、简单开线和包装破损处理' },
-] as const
-
-export const SERVICE_FLOW = [
-  ['01', '需求确认', '确认商品类型、处理范围和质量标准。'],
-  ['02', '商品到仓', '完成签收、清点和基础信息登记。'],
-  ['03', '质检分类', '判断商品进入上架、整理、修复、退回或报废流程。'],
-  ['04', '执行处理', '按照品牌标准完成对应操作。'],
-  ['05', '结果复核', '复核数量、质量和处理结果。'],
-  ['06', '数据反馈', '将处理结果回传并完成后续入库、发货或退回。'],
-] as const
-
 export const ASSURANCE_POINTS = [
   {
     value: SERVICE_FACTS.inventoryAccuracy,

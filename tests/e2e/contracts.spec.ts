@@ -64,10 +64,29 @@ test('core pages and discovery endpoints preserve SEO and AEO contracts', async 
   expect(await robots.text()).toContain('Sitemap:')
   const sitemap = await request.get('/sitemap.xml')
   expect(sitemap.ok()).toBe(true)
-  expect(await sitemap.text()).toContain('<loc>http://127.0.0.1:4399/product</loc>')
+  const sitemapBody = await sitemap.text()
+  expect(sitemapBody).toContain('<loc>http://127.0.0.1:4399/product</loc>')
+  expect(sitemapBody).not.toContain('/guangzhou-xiefu-yuncang')
   const llms = await request.get('/llms.txt')
   expect(llms.ok()).toBe(true)
-  expect(await llms.text()).toContain('新亦源供应链')
+  const llmsBody = await llms.text()
+  expect(llmsBody).toContain('新亦源供应链')
+  expect(llmsBody).not.toContain('/guangzhou-xiefu-yuncang')
+
+  const removedServicePath = '/guangzhou-xiefu-yuncang'
+  const canonicalRemovedServicePage = await request.get(removedServicePath, { maxRedirects: 0 })
+  expect(canonicalRemovedServicePage.status()).toBe(404)
+  expect(canonicalRemovedServicePage.headers().location).toBeUndefined()
+
+  const trailingSlashRemovedServicePage = await request.get(`${removedServicePath}/`, {
+    maxRedirects: 0,
+  })
+  expect(trailingSlashRemovedServicePage.status()).toBe(301)
+  expect(trailingSlashRemovedServicePage.headers().location).toBe(removedServicePath)
+
+  const normalizedRemovedServicePage = await request.get(removedServicePath, { maxRedirects: 0 })
+  expect(normalizedRemovedServicePage.status()).toBe(404)
+  expect(normalizedRemovedServicePage.headers().location).toBeUndefined()
 })
 
 test('homepage, SEO, structured data, FAQ and llms share reviewed claims', async ({

@@ -17,12 +17,6 @@ export const SERVICE_SIGNATURE_CONFIG: Record<
     heading: '不同服装，不应被放进同一种仓储逻辑',
     summary: '挂装、叠装、鞋类和特殊面料采用不同空间与作业方式，页面以仓内展厅呈现品类差异。',
   },
-  'guangzhou-hub': {
-    code: 'HUB / GZ',
-    kicker: '广州核心枢纽',
-    heading: '从广州仓点出发，连接珠三角订单与货源',
-    summary: '用本地仓点、订单区域和协同线路组织服务，而不是把广州方案缩写成一组通用能力。',
-  },
   'south-network': {
     code: 'NETWORK / S',
     kicker: '华南多仓协同网络',

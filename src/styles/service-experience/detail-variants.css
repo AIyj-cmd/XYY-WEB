@@ -35,15 +35,8 @@
   padding-left: 2rem;
 }
 
-.service-detail--guangzhou-hub .service-detail__features li,
 .service-detail--south-network .service-detail__features li {
   grid-template-columns: 4rem minmax(0, 1fr) 1.5rem;
-}
-
-.service-detail--guangzhou-hub .service-detail__index::before {
-  margin-right: 0.3rem;
-  color: #8494a8;
-  content: 'GZ';
 }
 
 .service-detail--south-network .service-detail__index::before {

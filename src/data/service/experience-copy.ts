@@ -16,12 +16,6 @@ export const SERVICE_EXPERIENCE_COPY: Record<
     faqCode: 'MATERIAL NOTES',
     ctaPrompt: '带上品类、面料和包装要求，我们一起规划专属仓储空间',
   },
-  'guangzhou-hub': {
-    detailCode: 'LOCAL DOSSIER',
-    detailTitle: '围绕广州仓点拆解本地服务能力',
-    faqCode: 'GUANGZHOU FILE',
-    ctaPrompt: '告诉我们货源与订单分布，一起确认合适的广州仓点',
-  },
   'south-network': {
     detailCode: 'REGIONAL RESOURCES',
     detailTitle: '四类资源如何支撑华南多仓协同',

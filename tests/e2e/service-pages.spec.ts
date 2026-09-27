@@ -2,12 +2,11 @@ import { expect, test } from '@playwright/test'
 import { REDESIGN_ROUTE_EXPECTATIONS } from './service-redesign-routes'
 
 test('shared service landing layout renders every visual variant', async ({ page }) => {
-  // The complete ten-route matrix needs a cumulative navigation budget.
+  // The complete nine-route matrix needs a cumulative navigation budget.
   test.setTimeout(90_000)
   const serviceRoutes = [
     '/xiefu-yuncang',
     '/tuihuo-zhijian',
-    '/guangzhou-xiefu-yuncang',
     '/huanan-xiefu-yuncang',
     '/huadong-xiefu-yuncang',
     '/b2b-mendian-cangpei',
@@ -28,7 +27,6 @@ test('shared service landing layout renders every visual variant', async ({ page
     ['/huadong-xiefu-yuncang', 'huadong-xiefu-yuncang'],
     ['/zhibo-cangpei', 'zhibo-cangpei'],
     ['/b2b-mendian-cangpei', 'b2b-mendian-cangpei'],
-    ['/guangzhou-xiefu-yuncang', 'guangzhou-xiefu-yuncang'],
     ['/yundao-zhineng-jijian', 'yundao-zhineng-jijian'],
   ])
 

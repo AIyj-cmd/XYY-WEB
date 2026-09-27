@@ -51,7 +51,6 @@ export const GET: APIRoute = async () => {
 
 - [华东鞋服云仓](${page('/huadong-xiefu-yuncang')}): 面向长三角与华东区域的鞋服仓配服务。
 - [华南鞋服云仓](${page('/huanan-xiefu-yuncang')}): 面向广州、东莞、肇庆等华南仓网的鞋服仓配服务。
-- [广州鞋服云仓](${page('/guangzhou-xiefu-yuncang')}): 广州区域鞋服仓储、订单履约和退货处理服务。
 - [B2B门店仓配](${page('/b2b-mendian-cangpei')}): 连锁门店补货、批发铺货、分货与标签处理服务。
 - [直播电商仓配](${page('/zhibo-cangpei')}): 面向直播电商订单波峰与多平台履约的仓配服务。
 - [跨境云仓](${page('/kuajing-yuncang')}): 跨境备货、质检、换标换包装和退货逆向处理。

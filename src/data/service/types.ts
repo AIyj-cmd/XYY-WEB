@@ -1,7 +1,6 @@
 export type ServiceVariant =
   | 'journey'
   | 'showroom'
-  | 'guangzhou-hub'
   | 'south-network'
   | 'east-radius'
   | 'store-rhythm'

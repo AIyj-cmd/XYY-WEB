@@ -20,7 +20,6 @@ const sources = [
   ['zhibo-cangpei', 'src/pages/zhibo-cangpei.astro'],
   ['b2b-mendian-cangpei', 'src/pages/b2b-mendian-cangpei.astro'],
   ['huadong-xiefu-yuncang', 'src/pages/huadong-xiefu-yuncang.astro'],
-  ['guangzhou-xiefu-yuncang', 'src/pages/guangzhou-xiefu-yuncang.astro'],
   ['tuihuo-zhijian', 'src/pages/tuihuo-zhijian.astro'],
   ['xiefu-yuncang', 'src/pages/xiefu-yuncang.astro'],
   ['yundao-zhineng-jijian', 'src/pages/yundao-zhineng-jijian.astro', 'FAQS'],

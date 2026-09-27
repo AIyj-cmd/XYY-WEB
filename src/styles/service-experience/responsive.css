@@ -51,7 +51,6 @@
   }
 
   .service-detail__features li,
-  .service-detail--guangzhou-hub .service-detail__features li,
   .service-detail--south-network .service-detail__features li,
   .service-detail--evidence-lab .service-detail__features li {
     grid-template-columns: 2rem minmax(0, 1fr);

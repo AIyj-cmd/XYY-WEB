@@ -5,20 +5,17 @@ import {
   type ServiceVariant,
   type StatItem,
 } from '@/data/service'
-import ServiceSignatureWarehouse from './ServiceSignatureWarehouse.astro'
-import ServiceSignatureDigital from './ServiceSignatureDigital.astro'
-import ServiceSignatureQuality from './ServiceSignatureQuality.astro'
+import DeliveryDeskSignature from './signature/DeliveryDeskSignature.astro'
 import '@/styles/service-signature.css'
 
 interface Props {
   variant: ServiceVariant
-  h1: string
   contentDesc: string
   stats: readonly StatItem[]
   features: FeatureItem[]
 }
 
-const { variant, h1, contentDesc, stats, features } = Astro.props
+const { variant, contentDesc, stats, features } = Astro.props
 
 const config = SERVICE_SIGNATURE_CONFIG[variant]
 ---
@@ -40,25 +37,7 @@ const config = SERVICE_SIGNATURE_CONFIG[variant]
     </header>
 
     <div class="signature__body" data-service-reveal="visual">
-      <ServiceSignatureWarehouse
-        variant={variant}
-        h1={h1}
-        contentDesc={contentDesc}
-        stats={stats}
-        features={features}
-      />
-      <ServiceSignatureDigital
-        variant={variant}
-        contentDesc={contentDesc}
-        stats={stats}
-        features={features}
-      />
-      <ServiceSignatureQuality
-        variant={variant}
-        contentDesc={contentDesc}
-        stats={stats}
-        features={features}
-      />
+      {variant === 'delivery-desk' && <DeliveryDeskSignature {contentDesc} {stats} {features} />}
     </div>
   </div>
 </section>

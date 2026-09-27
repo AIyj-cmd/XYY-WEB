@@ -9,7 +9,6 @@ export const SPECIALTY_SERVICE_PAGE_SLUGS = [
   'kuajing-yuncang',
   'zhibo-cangpei',
   'huanan-xiefu-yuncang',
-  'guangzhou-xiefu-yuncang',
   'b2b-mendian-cangpei',
 ]
 export const SERVICE_PAGE_COLLECTION_PATH = '/items/service_pages?limit=-1&sort=slug'

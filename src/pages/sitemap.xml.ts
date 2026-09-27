@@ -16,7 +16,6 @@ const STATIC_PAGES = [
   { url: '/kuajing-yuncang', priority: '0.85', changefreq: 'monthly' },
   { url: '/zhibo-cangpei', priority: '0.85', changefreq: 'monthly' },
   { url: '/huanan-xiefu-yuncang', priority: '0.85', changefreq: 'monthly' },
-  { url: '/guangzhou-xiefu-yuncang', priority: '0.85', changefreq: 'monthly' },
   { url: '/b2b-mendian-cangpei', priority: '0.85', changefreq: 'monthly' },
   { url: '/about', priority: '0.8', changefreq: 'monthly' },
   { url: '/cases', priority: '0.8', changefreq: 'monthly' },

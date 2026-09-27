@@ -1,5 +1,6 @@
 ---
 import '@/styles/home-faq.css'
+import '@/styles/home-conversion-cta.css'
 import ConversionCTA from '@/components/conversion/ConversionCTA.astro'
 
 interface FaqItem {
@@ -13,8 +14,7 @@ interface Props {
   phone: string
 }
 
-const { items, phone } = Astro.props
-const phoneHref = phone.replace(/-/g, '')
+const { items } = Astro.props
 ---
 
 <section id="s-faq" class="s-faq" aria-labelledby="faq-heading">
@@ -51,15 +51,27 @@ const phoneHref = phone.replace(/-/g, '')
 <ConversionCTA
   headingId="home-conversion-cta-heading"
   eyebrow="咨询仓配"
-  headingLines={['获取仓配', '方案']}
+  headingLines={['让仓配方案', '贴合你的业务']}
+  description="无论是新业务入仓、现有仓配调整，还是退货处理优化，都可以从你的货品、订单和渠道需求开始沟通。"
   actionLabel="获取仓配方案"
+  preparationTitle="我们可以一起梳理"
   preparationItems={[
-    { label: '服务范围', detail: '当前需要了解的服务内容' },
-    { label: '履约能力', detail: '关注的仓配与发货安排' },
-    { label: '合作方式', detail: '现阶段的合作问题' },
+    {
+      label: '仓储与订单履约',
+      detail: '结合 SKU 规模、日均订单与大促波峰，沟通库存管理、拣货复核和发货安排。',
+    },
+    {
+      label: '销售渠道与仓网配置',
+      detail: '从电商发货、门店补货到跨境业务，结合销售渠道与发货区域讨论仓配需求。',
+    },
+    {
+      label: '退货处理与配套服务',
+      detail: '按业务流程梳理退货质检、后整修复、二次上架及系统对接需求。',
+    },
   ]}
-  secondaryLinks={[{ href: `tel:${phoneHref}`, label: `咨询热线：${phone}` }]}
+  condition="已有大致需求即可开始沟通，具体服务内容与费用结合项目情况确认。"
   reveal="product"
+  className="home-conversion-cta"
 />
 
 <script>

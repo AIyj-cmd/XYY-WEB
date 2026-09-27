@@ -1,0 +1,72 @@
+section.conversion-cta.home-conversion-cta {
+  padding-block: clamp(3.75rem, 6vw, 5.5rem);
+}
+
+.home-conversion-cta .conversion-cta__inner {
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: clamp(2.5rem, 5vw, 4.75rem);
+  justify-content: normal;
+  width: min(84rem, 100%);
+}
+
+.home-conversion-cta .conversion-cta__message {
+  max-width: 32rem;
+}
+
+.home-conversion-cta .conversion-cta__description {
+  max-width: 31rem;
+  text-wrap: pretty;
+}
+
+.home-conversion-cta .conversion-cta__preparation {
+  width: 100%;
+  max-width: 38rem;
+}
+
+.home-conversion-cta aside {
+  padding: clamp(1.65rem, 3vw, 2.5rem);
+}
+
+.home-conversion-cta ol {
+  gap: clamp(1.15rem, 2vw, 1.45rem);
+}
+
+.home-conversion-cta li {
+  gap: 0.9rem;
+}
+
+.home-conversion-cta li strong {
+  text-wrap: pretty;
+}
+
+.home-conversion-cta li span,
+.home-conversion-cta .conversion-cta__condition {
+  text-wrap: pretty;
+}
+
+.home-conversion-cta .conversion-cta__condition {
+  max-width: 37rem;
+  margin-top: 1.1rem;
+}
+
+@media (max-width: 960px) {
+  .home-conversion-cta .conversion-cta__inner {
+    grid-template-columns: 1fr;
+    gap: 2.35rem;
+  }
+}
+
+@media (max-width: 760px) {
+  .home-conversion-cta .conversion-cta__message,
+  .home-conversion-cta .conversion-cta__description {
+    max-width: none;
+  }
+
+  .home-conversion-cta .conversion-cta__links {
+    gap: 0.8rem 1rem;
+  }
+
+  .home-conversion-cta .conversion-cta__preparation {
+    max-width: none;
+  }
+}

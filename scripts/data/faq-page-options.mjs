@@ -10,7 +10,6 @@ export const FAQ_PAGE_OPTIONS = [
   { text: '直播仓配', value: 'zhibo-cangpei' },
   { text: 'B2B 门店仓配', value: 'b2b-mendian-cangpei' },
   { text: '华东鞋服云仓', value: 'huadong-xiefu-yuncang' },
-  { text: '广州鞋服云仓', value: 'guangzhou-xiefu-yuncang' },
   { text: '退货质检', value: 'tuihuo-zhijian' },
   { text: '鞋服云仓', value: 'xiefu-yuncang' },
   { text: '运到智能寄件', value: 'yundao-zhineng-jijian' },

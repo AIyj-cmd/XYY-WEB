@@ -33,7 +33,7 @@ describe('specialty service-page structure seeds', () => {
 
   it('preserves the exact dropdown-page stats and features from source pages', () => {
     expect(SPECIALTY_SERVICE_PAGE_SLUGS).toEqual(specialtySlugs)
-    expect(approvedTargetSeeds).toHaveLength(9)
+    expect(approvedTargetSeeds).toHaveLength(8)
 
     for (const seed of approvedTargetSeeds) {
       const source = parseServiceProps(read(`src/pages/${seed.slug}.astro`), `${seed.slug}.astro`)
@@ -56,7 +56,6 @@ describe('specialty service-page structure seeds', () => {
       'b2b-mendian-cangpei': '/w-b2b-store-hero.webp',
       'huadong-xiefu-yuncang': '/w-hq.webp',
       'huanan-xiefu-yuncang': '/w-hanging1.webp',
-      'guangzhou-xiefu-yuncang': '/index.webp',
     })
   })
 
@@ -82,10 +81,10 @@ describe('specialty service-page structure seeds', () => {
       runtime,
     })
 
-    expect(runtime.patchRecord).toHaveBeenCalledTimes(9)
+    expect(runtime.patchRecord).toHaveBeenCalledTimes(8)
     expect(runtime.patchRecord).toHaveBeenCalledWith(
       'service_pages',
-      expect.objectContaining({ id: 9 }),
+      expect.objectContaining({ id: 8 }),
       expect.objectContaining({ slug: 'xiefu-yuncang' }),
       STRUCTURE_FIELDS
     )
@@ -110,7 +109,7 @@ describe('specialty service-page structure seeds', () => {
     })
 
     expect(directus.request).not.toHaveBeenCalled()
-    expect(runtime.getChangeCount()).toBe(9)
+    expect(runtime.getChangeCount()).toBe(8)
   })
 
   it.each([

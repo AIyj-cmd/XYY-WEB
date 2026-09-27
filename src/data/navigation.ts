@@ -16,7 +16,6 @@ export const SPECIALTY_LINKS = [
   { href: '/kuajing-yuncang', label: '跨境云仓', sub: '国内端仓储+项目质检' },
   { href: '/zhibo-cangpei', label: '直播电商仓配', sub: '抖音/快手/淘宝直播' },
   { href: '/huanan-xiefu-yuncang', label: '华南鞋服云仓', sub: '广州+东莞+佛山+肇庆' },
-  { href: '/guangzhou-xiefu-yuncang', label: '广州鞋服云仓', sub: '服务广州及珠三角' },
   { href: '/b2b-mendian-cangpei', label: 'B2B门店仓配', sub: '连锁补货·批发铺货' },
 ] as const
 

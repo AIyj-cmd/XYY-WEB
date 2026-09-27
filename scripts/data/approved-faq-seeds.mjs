@@ -701,55 +701,6 @@ export const APPROVED_FAQ_SEEDS = [
   },
   {
     status: 'published',
-    content_key: 'faq-guangzhou-xiefu-yuncang-01',
-    faqPageKey: 'guangzhou-xiefu-yuncang',
-    page_key: 'guangzhou-xiefu-yuncang',
-    sort: 1,
-    question: '新亦源广州仓位置在哪里，交通方便吗？',
-    answer:
-      '广州现有黄埔、兴泰、新塘3个仓点。黄埔仓地址为广东省广州市黄埔区果园一路2号；其他仓点的实际启用地址、仓容和车辆要求在项目启动前确认。',
-  },
-  {
-    status: 'published',
-    content_key: 'faq-guangzhou-xiefu-yuncang-02',
-    faqPageKey: 'guangzhou-xiefu-yuncang',
-    page_key: 'guangzhou-xiefu-yuncang',
-    sort: 2,
-    question: '广州仓的发货和运输时效如何确认？',
-    answer: '{{shippingSla}}。广州同城最快4小时，全国主要城市参考次日至三日达；具体以线路SLA为准。',
-  },
-  {
-    status: 'published',
-    content_key: 'faq-guangzhou-xiefu-yuncang-03',
-    faqPageKey: 'guangzhou-xiefu-yuncang',
-    page_key: 'guangzhou-xiefu-yuncang',
-    sort: 3,
-    question: '广州仓适合什么类型的鞋服品牌？',
-    answer:
-      '特别适合：①广州本地品牌/工厂，减少货物入库运输成本；②主要消费市场在华南的品牌，利用广州仓的时效优势；③有大量唯品会运营的品牌，广州仓联动肇庆唯品会园区仓运营；④O2O运营有广州门店需求的品牌；⑤跨境出海品牌，利用广州港/白云机场的国际物流优势。',
-  },
-  {
-    status: 'published',
-    content_key: 'faq-guangzhou-xiefu-yuncang-04',
-    faqPageKey: 'guangzhou-xiefu-yuncang',
-    page_key: 'guangzhou-xiefu-yuncang',
-    sort: 4,
-    question: '广州仓的规模是多少？能支持大促爆单吗？',
-    answer:
-      '广州现有黄埔、兴泰、新塘3个仓点，其中黄埔仓与兴泰仓合计1.8万㎡。公司华南地区运营峰值为{{regionalPeak}}，具体项目保障方案在大促前根据预测货量确认。',
-  },
-  {
-    status: 'published',
-    content_key: 'faq-guangzhou-xiefu-yuncang-05',
-    faqPageKey: 'guangzhou-xiefu-yuncang',
-    page_key: 'guangzhou-xiefu-yuncang',
-    sort: 5,
-    question: '新亦源广州仓收费模式是什么？',
-    answer:
-      '费用通常由仓储、入出库操作以及退货质检或修复等增值服务组成。不收系统使用费；实施、联调周期和费用按项目确认。',
-  },
-  {
-    status: 'published',
     content_key: 'faq-tuihuo-zhijian-01',
     faqPageKey: 'tuihuo-zhijian',
     page_key: 'tuihuo-zhijian',

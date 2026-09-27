@@ -1,10 +1,3 @@
-import { CLAIM_TEXT, getClaimPresentation } from '@/lib/claims'
-
-const aboutPresentation = (key: Parameters<typeof getClaimPresentation>[0]) => {
-  const { value, unit } = getClaimPresentation(key, 'about')
-  return { value, unit }
-}
-
 export const DIGITAL_PRODUCTS = [
   {
     id: 'yundao-platform',
@@ -20,47 +13,5 @@ export const DIGITAL_PRODUCTS = [
       '专属客服+在线工单，智能报表+数据保密',
     ],
     href: '/yundao-zhineng-jijian',
-  },
-] as const
-
-export const ABOUT_STATS = [
-  {
-    value: aboutPresentation('newGoodsInspectionAnnual').value,
-    unit: '件/年',
-    label: '新货质检',
-  },
-  { value: aboutPresentation('returnInspectionAnnual').value, unit: '件/年', label: '退货质检' },
-  { ...aboutPresentation('inventoryAccuracy'), label: '库存准确率' },
-  { ...aboutPresentation('recognizableAnomalies'), label: '缺陷识别' },
-  { ...aboutPresentation('returnTurnaround'), label: '退货二次上架' },
-  { ...aboutPresentation('repairSuccessRate'), label: '瑕疵修复成功率' },
-  { value: '40', unit: '%↑', label: 'RFID拣货提效' },
-  { value: '30', unit: '%↑', label: '人效提升' },
-] as const
-
-export const CAPABILITIES = [
-  {
-    title: `${CLAIM_TEXT.shippingAccuracy} 发货准确率`,
-    desc: `${CLAIM_TEXT.shippingSla}，发货全流程扫码复核`,
-  },
-  {
-    title: '三级仓网协同',
-    desc: 'CDC中心仓 / RDC区域仓 / FDC产地仓按项目配置',
-  },
-  {
-    title: 'RFID 智能仓',
-    desc: '三代智能仓结合RFID、电子标签与自动化分拣',
-  },
-  {
-    title: '全渠道一盘货',
-    desc: 'B2C+B2B+O2O库存实时同步，支持唯品会JIT/JITX',
-  },
-  {
-    title: '弹性产能保大促',
-    desc: `动态人力池+小时级调配，地区单日峰值${CLAIM_TEXT.regionalPeak}`,
-  },
-  {
-    title: '全流程监控可追溯',
-    desc: '1080P拆包监控+操作台高低位双摄，按订单调取录像',
   },
 ] as const

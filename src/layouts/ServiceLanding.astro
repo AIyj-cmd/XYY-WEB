@@ -2,7 +2,6 @@
 import ServiceSignature from '@/components/service/ServiceSignature.astro'
 import ServiceLandingHero from '@/components/service/ServiceLandingHero.astro'
 import ServiceExperience from '@/components/service/ServiceExperience.astro'
-import ServiceEditorialBody from '@/components/service/ServiceEditorialBody.astro'
 import FootwearPage from '@/components/service/footwear/FootwearPage.astro'
 import RedesignServicePage from '@/components/service/redesign/RedesignServicePage.astro'
 import {
@@ -26,7 +25,7 @@ interface Props extends ServicePageContent {
   slug: string
   stats: [StatItem, StatItem, StatItem, StatItem]
   faqs: FaqItem[]
-  presentation?: 'classic' | 'editorial' | 'footwear' | RedesignPresentation
+  presentation?: 'classic' | 'footwear' | RedesignPresentation
 }
 const {
   variant,
@@ -110,25 +109,6 @@ const heroMedia = getServiceHeroMedia(slug)
         videoSrc={heroMedia?.src ?? ''}
         poster={heroMedia?.poster ?? content.imgSrc}
       />
-    ) : presentation === 'editorial' && heroMedia ? (
-      <ServiceEditorialBody
-        {variant}
-        h1={content.h1}
-        eyebrow={content.eyebrow}
-        h1sub={content.h1sub}
-        heroDesc={content.heroDesc}
-        poster={heroMedia.poster}
-        videoSrc={heroMedia.src}
-        contentDesc={content.contentDesc}
-        breadcrumbLabel={content.breadcrumbLabel}
-        featuresLabel={content.featuresLabel}
-        stats={content.stats}
-        features={content.features}
-        faqs={displayFaqs}
-        useConversionCta={SPECIALTY_LINKS.some(({ href }) => href === `/${slug}`)}
-      >
-        <slot name="unique" />
-      </ServiceEditorialBody>
     ) : (
       <>
         <ServiceLandingHero
@@ -143,7 +123,6 @@ const heroMedia = getServiceHeroMedia(slug)
         />
         <ServiceSignature
           variant={variant}
-          h1={content.h1}
           contentDesc={content.contentDesc}
           stats={content.stats}
           features={content.features}

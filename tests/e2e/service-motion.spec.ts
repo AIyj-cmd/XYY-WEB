@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-const dropdownServiceRoutes = ['/guangzhou-xiefu-yuncang', '/b2b-mendian-cangpei']
+const dropdownServiceRoutes = ['/yundao-zhineng-jijian', '/b2b-mendian-cangpei']
 
 test('all service dropdown pages share the same prompt scroll reveal', async ({
   page,

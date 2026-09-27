@@ -31,11 +31,6 @@ const conversionCtaContracts = {
     actionLabel: '咨询华南仓配服务',
     preparationLabels: ['货源位置', '主要收货地区', '订单需求'],
   },
-  '/guangzhou-xiefu-yuncang': {
-    headingId: 'service-conversion-cta-heading',
-    actionLabel: '获取专属方案',
-    preparationLabels: ['业务现状', '商品与订单', '目标与节奏'],
-  },
   '/b2b-mendian-cangpei': {
     headingId: 'b2b-cta-heading',
     actionLabel: '咨询门店仓配',

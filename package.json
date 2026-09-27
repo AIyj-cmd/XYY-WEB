@@ -43,7 +43,6 @@
   },
   "dependencies": {
     "@astrojs/node": "^11.1.4",
-    "@astrojs/sitemap": "^3.7.3",
     "@directus/sdk": "^23.0.0",
     "astro": "^7.2.8",
     "compression": "^1.8.1",
