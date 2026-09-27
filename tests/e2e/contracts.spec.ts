@@ -65,7 +65,8 @@ test('core pages and discovery endpoints preserve SEO and AEO contracts', async 
   const sitemap = await request.get('/sitemap.xml')
   expect(sitemap.ok()).toBe(true)
   const sitemapBody = await sitemap.text()
-  expect(sitemapBody).toContain('<loc>http://127.0.0.1:4399/product</loc>')
+  const productUrl = new URL('/product', testInfo.project.use.baseURL!).href
+  expect(sitemapBody).toContain(`<loc>${productUrl}</loc>`)
   expect(sitemapBody).not.toContain('/guangzhou-xiefu-yuncang')
   const llms = await request.get('/llms.txt')
   expect(llms.ok()).toBe(true)
