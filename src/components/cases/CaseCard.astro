@@ -50,7 +50,7 @@ const stats = getCaseStats(item, 3)
                   <dt>{stat.label}</dt>
                   <dd>
                     {stat.value}
-                    {stat.unit}
+                    {locale === 'en' && stat.unit ? ` ${stat.unit}` : stat.unit}
                   </dd>
                 </div>
               ))}
@@ -80,7 +80,7 @@ const stats = getCaseStats(item, 3)
                   <dt>{stat.label}</dt>
                   <dd>
                     {stat.value}
-                    {stat.unit}
+                    {locale === 'en' && stat.unit ? ` ${stat.unit}` : stat.unit}
                   </dd>
                 </div>
               ))}
