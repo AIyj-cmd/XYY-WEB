@@ -2,6 +2,7 @@
 import HomeCaseModal from './HomeCaseModal.astro'
 import '../../styles/home-cases.css'
 import { homeUi } from '@/i18n/home-ui'
+import { localizedCasePath } from '@/i18n/case-routes'
 import type { SiteLocale } from '@/i18n/routes'
 
 interface CaseItem {
@@ -55,7 +56,11 @@ const displayGallery = locale === 'en' ? displayCases.length > 0 : true
         {displayCases.map(({ item, card }, index) => {
           const cardKey = locale === 'en' ? item.slug : item.label
           const href =
-            locale === 'en' ? '/en/contact' : card?.slug ? `/cases/${card.slug}` : '/cases'
+            locale === 'en'
+              ? localizedCasePath(item, locale) || '/en/cases'
+              : card?.slug
+                ? `/cases/${card.slug}`
+                : '/cases'
           return (
             <a class="case-card cg-panel" data-case={cardKey} href={href}>
               <img

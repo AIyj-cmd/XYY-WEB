@@ -2,6 +2,7 @@
 import { BRAND } from '@/lib/brand'
 import { serializeJsonForScript } from '@/lib/safe-json'
 import { ENGLISH_ROUTES, type SiteLocale } from '@/i18n/routes'
+import type { LocalePair } from '@/i18n/case-routes'
 
 interface Props {
   title: string
@@ -11,6 +12,7 @@ interface Props {
   jsonLd?: Record<string, unknown> | Record<string, unknown>[]
   noIndex?: boolean
   locale?: SiteLocale
+  localePair?: LocalePair
 }
 
 const {
@@ -21,6 +23,7 @@ const {
   jsonLd,
   noIndex = false,
   locale = 'zh-CN',
+  localePair,
 } = Astro.props
 const fullTitle =
   locale === 'en'
@@ -30,7 +33,10 @@ const fullTitle =
       : `${title} - ${BRAND.name}`
 const schemas = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : []
 const pathname = new URL(canonical).pathname.replace(/\/$/, '') || '/'
-const routePair = ENGLISH_ROUTES.find(([zh, en]) => (locale === 'en' ? en : zh) === pathname)
+const routePair =
+  localePair && (locale === 'en' ? localePair[1] : localePair[0]) === pathname
+    ? localePair
+    : ENGLISH_ROUTES.find(([zh, en]) => (locale === 'en' ? en : zh) === pathname)
 const alternate = routePair && (locale === 'en' ? routePair[0] : routePair[1])
 ---
 

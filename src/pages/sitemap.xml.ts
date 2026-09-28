@@ -3,6 +3,8 @@ import { BRAND } from '@/lib/brand'
 import { CASE_FALLBACKS } from '@/data/cases'
 import { getWhitepapers } from '@/data/whitepapers'
 import { getCases, getPublishedNews } from '@/lib/directus'
+import { translateCases } from '@/i18n/cases'
+import { localizedCasePath } from '@/i18n/case-routes'
 
 const STATIC_PAGES = [
   { url: '/', priority: '1.0', changefreq: 'weekly' },
@@ -67,6 +69,20 @@ export const GET: APIRoute = async () => {
   </url>`
     )
     .join('\n')
+  const englishCaseEntries = translateCases(cases, 'cases')
+    .flatMap((item) => {
+      const path = localizedCasePath(item, 'en')
+      return path
+        ? [
+            `  <url>
+    <loc>${BRAND.url}${path}</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>`,
+          ]
+        : []
+    })
+    .join('\n')
 
   const newsEntries = news
     .map(
@@ -92,6 +108,7 @@ export const GET: APIRoute = async () => {
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${staticEntries}
 ${caseEntries}
+${englishCaseEntries}
 ${newsEntries}
 ${whitepaperEntries}
 </urlset>`

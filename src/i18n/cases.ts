@@ -3,8 +3,9 @@ import type { CaseDetail } from '@/data/brand/case-details'
 import { CASE_FAQS } from '@/data/cases/faqs'
 import type { Case, FaqItem } from '@/lib/directus'
 
+import type { CaseClaimPageScope } from '@/lib/claims/cases'
 import { PUBLISHED_CASE_SOURCE_DIGESTS, reviewedCaseSourceDigest } from './case-sources'
-import { ENGLISH_CASE_COPY, ENGLISH_CASE_FAQS } from './cases-copy'
+import { ENGLISH_CASE_COPY, ENGLISH_CASE_FAQS, resolveEnglishCaseStats } from './cases-copy'
 
 export type EnglishCaseDiagnostic = {
   readonly slug: string | undefined
@@ -37,7 +38,7 @@ function reportCaseOmission({ slug, reason }: EnglishCaseDiagnostic) {
 }
 
 /** Returns only records whose reviewed Chinese source snapshot still matches the CMS value. */
-export function translateCases(items: Case[]): Case[] {
+export function translateCases(items: Case[], pageScope: CaseClaimPageScope = 'cases'): Case[] {
   return items.flatMap((item) => {
     const diagnostic = caseDiagnostic(item)
     if (diagnostic) {
@@ -52,11 +53,11 @@ export function translateCases(items: Case[]): Case[] {
         name: copy.name,
         full_name: copy.fullName,
         category: copy.category,
-        case_description: copy.description,
-        stats: [],
-        metrics: '',
-        details: copy.description,
-        tags: [...copy.tags],
+        case_description: copy.description(pageScope),
+        stats: resolveEnglishCaseStats(copy.stats, pageScope),
+        metrics: copy.metrics(pageScope),
+        details: copy.description(pageScope),
+        tags: [...copy.tags(pageScope)],
       },
     ]
   })

@@ -1,17 +1,21 @@
 ---
 import type { CaseDetail } from '@/data/brand/case-details'
+import type { SiteLocale } from '@/i18n/routes'
 
 interface Props {
   detail: CaseDetail
+  locale?: SiteLocale
 }
 
-const { detail } = Astro.props
+const { detail, locale = 'zh-CN' } = Astro.props
+const en = locale === 'en'
+const casesPath = en ? '/en/cases' : '/cases'
 ---
 
 <header class="relative isolate overflow-hidden bg-[#0a1a33] py-20 lg:py-28">
   <img
     src={detail.image}
-    alt={`${detail.fullName}合作案例业务场景`}
+    alt={en ? `${detail.fullName} operations case` : `${detail.fullName}合作案例业务场景`}
     class="absolute inset-0 -z-20 h-full w-full object-cover opacity-45"
     fetchpriority="high"
   />
@@ -20,12 +24,21 @@ const { detail } = Astro.props
   >
   </div>
   <div class="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
-    <nav aria-label="面包屑" class="mb-8 flex items-center gap-2 text-sm text-slate-300">
-      <a href="/" class="hover:text-white">首页</a><span aria-hidden="true">/</span>
-      <a href="/cases" class="hover:text-white">合作案例</a><span aria-hidden="true">/</span>
+    <nav
+      aria-label={en ? 'Breadcrumb' : '面包屑'}
+      class="mb-8 flex items-center gap-2 text-sm text-slate-300"
+    >
+      <a href={en ? '/en' : '/'} class="hover:text-white">{en ? 'Home' : '首页'}</a><span
+        aria-hidden="true">/</span
+      >
+      <a href={casesPath} class="hover:text-white">{en ? 'Cases' : '合作案例'}</a><span
+        aria-hidden="true">/</span
+      >
       <span aria-current="page">{detail.name}</span>
     </nav>
-    <p class="mb-3 text-sm font-bold tracking-[0.14em] text-orange-400">鞋服仓配合作案例</p>
+    <p class="mb-3 text-sm font-bold tracking-[0.14em] text-orange-400">
+      {en ? 'APPAREL OPERATIONS CASE' : '鞋服仓配合作案例'}
+    </p>
     <h1 class="max-w-4xl text-4xl font-black leading-tight text-white lg:text-6xl">
       {detail.fullName}
     </h1>

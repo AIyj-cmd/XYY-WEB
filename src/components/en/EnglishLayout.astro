@@ -2,6 +2,7 @@
 import Layout from '@/layouts/Layout.astro'
 import type { SiteSettingsRecord } from '@/lib/directus'
 import { getEnglishSiteSettings } from '@/i18n/site-settings'
+import type { LocalePair } from '@/i18n/case-routes'
 
 interface Props {
   title: string
@@ -13,6 +14,7 @@ interface Props {
   siteSettings?: Omit<SiteSettingsRecord, 'id' | 'status' | 'key'>
   showFooter?: boolean
   showFloatingContact?: boolean
+  localePair?: LocalePair
 }
 
 const {
@@ -25,6 +27,7 @@ const {
   siteSettings,
   showFooter,
   showFloatingContact,
+  localePair,
 } = Astro.props
 const resolvedSettings = siteSettings ?? (await getEnglishSiteSettings())
 ---
@@ -39,5 +42,6 @@ const resolvedSettings = siteSettings ?? (await getEnglishSiteSettings())
   siteSettings={resolvedSettings}
   {showFooter}
   {showFloatingContact}
+  {localePair}
   locale="en"><slot /></Layout
 >

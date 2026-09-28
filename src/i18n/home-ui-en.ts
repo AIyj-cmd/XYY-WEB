@@ -74,7 +74,7 @@ export const homeUiEn = {
     open: 'Open case',
     all: 'View all cases →',
   },
-  modal: { close: 'Close case', contact: 'Discuss a similar operation →' },
+  modal: { close: 'Close case', contact: 'View full case details →' },
   fulfillment: {
     tag: 'FULFILMENT FLOW',
     heading: 'From order connection to delivery confirmation, with visible handoffs throughout.',

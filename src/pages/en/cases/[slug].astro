@@ -1,0 +1,68 @@
+---
+import CaseDetailContact from '@/components/cases/CaseDetailContact.astro'
+import CaseDetailHero from '@/components/cases/CaseDetailHero.astro'
+import CaseDetailOverview from '@/components/cases/CaseDetailOverview.astro'
+import EnglishLayout from '@/components/en/EnglishLayout.astro'
+import { CASE_FALLBACKS } from '@/data/cases'
+import { BRAND } from '@/lib/brand'
+import { getCasesResolution } from '@/lib/directus'
+import { translateCases } from '@/i18n/cases'
+import { caseLocalePair } from '@/i18n/case-routes'
+import { ORGANIZATION_ID, createBreadcrumbSchema } from '@/lib/seo'
+import '@/styles/english-cases.css'
+
+const slug = Astro.params.slug
+const caseResolution = await getCasesResolution(CASE_FALLBACKS)
+const cases = translateCases(caseResolution.items, 'cases')
+const summary = cases.find((item) => item.slug === slug)
+
+if (!summary?.slug) return new Response(null, { status: 404 })
+
+const detail = {
+  slug: summary.slug,
+  name: summary.name || summary.label,
+  fullName: summary.full_name || summary.label,
+  category: summary.category,
+  image: summary.img,
+  accent: summary.accent || '#2563EB',
+  description: summary.case_description || summary.details,
+  stats: summary.stats ?? [],
+}
+const casePath = `/en/cases/${detail.slug}`
+const localePair = caseLocalePair(detail.slug)
+const imageUrl = detail.image.startsWith('http') ? detail.image : `${BRAND.url}${detail.image}`
+const pageTitle = `${detail.fullName} apparel operations case`
+const pageDescription = `${detail.fullName}: public apparel fulfilment and operations case summary from XINYIYUAN.`
+const breadcrumbSchema = createBreadcrumbSchema([
+  { name: 'Home', path: '/en' },
+  { name: 'Cases', path: '/en/cases' },
+  { name: detail.fullName, path: casePath },
+])
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  '@id': `${BRAND.url}${casePath}#article`,
+  mainEntityOfPage: `${BRAND.url}${casePath}`,
+  headline: pageTitle,
+  description: pageDescription,
+  image: imageUrl,
+  inLanguage: 'en',
+  about: summary.tags,
+  author: { '@id': ORGANIZATION_ID },
+  publisher: { '@id': ORGANIZATION_ID },
+}
+---
+
+<EnglishLayout
+  title={pageTitle}
+  description={pageDescription}
+  ogImage={imageUrl}
+  jsonLd={[breadcrumbSchema, articleSchema]}
+  {localePair}
+>
+  <article class="case-detail case-detail--en">
+    <CaseDetailHero {detail} locale="en" />
+    <CaseDetailOverview {detail} summary={summary} locale="en" />
+    <CaseDetailContact locale="en" />
+  </article>
+</EnglishLayout>

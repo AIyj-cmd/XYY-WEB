@@ -1,19 +1,43 @@
 ---
 import ConversionCTA from '@/components/conversion/ConversionCTA.astro'
+import type { SiteLocale } from '@/i18n/routes'
+
+interface Props {
+  locale?: SiteLocale
+}
+
+const { locale = 'zh-CN' } = Astro.props
+const en = locale === 'en'
 ---
 
 <ConversionCTA
   className="case-detail-contact"
   headingId="case-contact-heading"
-  eyebrow="合作案例"
-  headingLines={['想了解与您业务相近的', '仓配方案？']}
-  description="提交SKU规模、订单渠道与退货情况，获取针对性的仓配建议。"
-  actionLabel="获取仓配方案"
+  eyebrow={en ? 'CASE DISCUSSION' : '合作案例'}
+  headingLines={en
+    ? ['Discuss an operation close to', 'your own requirements.']
+    : ['想了解与您业务相近的', '仓配方案？']}
+  description={en
+    ? 'Share your SKU profile, sales channels and returns scenario to begin a focused operations discussion.'
+    : '提交SKU规模、订单渠道与退货情况，获取针对性的仓配建议。'}
+  actionLabel={en ? 'Discuss this operation' : '获取仓配方案'}
+  actionHref={en ? '/en/contact' : '/contact'}
   preparationItems={[
-    { label: 'SKU规模', detail: 'SKU数量与商品品类' },
-    { label: '订单渠道', detail: '主要销售渠道与订单来源' },
-    { label: '退货情况', detail: '退货规模与处理需求' },
+    {
+      label: en ? 'SKU profile' : 'SKU规模',
+      detail: en ? 'SKU count and product categories' : 'SKU数量与商品品类',
+    },
+    {
+      label: en ? 'Sales channels' : '订单渠道',
+      detail: en ? 'Primary sales channels and order sources' : '主要销售渠道与订单来源',
+    },
+    {
+      label: en ? 'Returns scenario' : '退货情况',
+      detail: en ? 'Returns profile and handling needs' : '退货规模与处理需求',
+    },
   ]}
-  secondaryLinks={[{ href: '/cases', label: '返回案例列表' }]}
+  secondaryLinks={[
+    { href: en ? '/en/cases' : '/cases', label: en ? 'Back to cases' : '返回案例列表' },
+  ]}
   reveal="service"
 />

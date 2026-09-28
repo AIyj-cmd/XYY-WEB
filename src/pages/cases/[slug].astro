@@ -7,12 +7,18 @@ import { CASE_FALLBACKS } from '@/data/cases'
 import { BRAND, CASE_DETAILS } from '@/lib/brand'
 import { getCaseDetail, getCasesResolution } from '@/lib/directus'
 import { ORGANIZATION_ID, createBreadcrumbSchema } from '@/lib/seo'
+import { translateCases } from '@/i18n/cases'
+import { caseLocalePair } from '@/i18n/case-routes'
 
 const slug = Astro.params.slug
 const caseEntry = Object.entries(CASE_DETAILS).find(([, detail]) => detail.slug === slug)
 const caseResolution = await getCasesResolution(CASE_FALLBACKS)
 const cases = caseResolution.items
 const caseSummary = cases.find((item) => item.slug === slug || item.label === caseEntry?.[0])
+const englishSummary = translateCases(cases, 'cases').find(
+  (item) => item.slug === caseSummary?.slug
+)
+const localePair = caseLocalePair(englishSummary?.slug)
 
 if (caseResolution.source === 'cms' && !caseSummary) {
   return new Response(null, { status: 404 })
@@ -72,6 +78,7 @@ const articleSchema = {
   description={pageDescription}
   ogImage={imageUrl}
   jsonLd={[breadcrumbSchema, articleSchema]}
+  {localePair}
 >
   <article>
     <CaseDetailHero detail={displayDetail} />

@@ -5,6 +5,8 @@ import { getWhitepapers } from '@/data/whitepapers'
 import { getClaimText } from '@/lib/claims'
 import { getCases } from '@/lib/directus'
 import { absoluteUrl } from '@/lib/seo'
+import { translateCases } from '@/i18n/cases'
+import { localizedCasePath } from '@/i18n/case-routes'
 
 const page = (pathname: string) => absoluteUrl(pathname)
 const singleLine = (value: string) => value.replace(/\s+/g, ' ').trim()
@@ -18,6 +20,16 @@ export const GET: APIRoute = async () => {
       (item) =>
         `- [${singleLine(item.name || item.label)}合作案例](${page(`/cases/${item.slug}`)}): ${singleLine(item.category)}；${singleLine(item.metrics)}。`
     )
+    .join('\n')
+  const englishCaseLinks = translateCases(cases, 'llms')
+    .flatMap((item) => {
+      const path = localizedCasePath(item, 'en')
+      return path
+        ? [
+            `- [${singleLine(item.name || item.label)} case](${page(path)}): ${singleLine(item.category)}; ${singleLine(item.metrics)}.`,
+          ]
+        : []
+    })
     .join('\n')
   const whitepaperLinks = getWhitepapers()
     .map(
@@ -80,7 +92,8 @@ ${whitepaperLinks}
 - [English digital operations](${page('/en/digital-operations')}): Order, inventory, warehouse and logistics-status coordination.
 - [English smart shipping](${page('/en/smart-shipping')}): Store shipping, transfers, return-to-warehouse requests and carrier coordination.
 - [English about](${page('/en/about')}): Company background, warehouse network, milestones and honours.
-- [English cases](${page('/en/cases')}): Public English case summaries; use the English contact page to discuss a relevant example.
+- [English cases](${page('/en/cases')}): Public English case summaries and full case-detail pages.
+${englishCaseLinks}
 - [English contact](${page('/en/contact')}): Business enquiries for China apparel supply-chain operations.
 - [English privacy notice](${page('/en/privacy')}): Privacy information for English website enquiries.
 `

@@ -1,27 +1,37 @@
 ---
 import type { CaseDetail } from '@/data/brand/case-details'
 import type { Case } from '@/lib/directus'
+import type { SiteLocale } from '@/i18n/routes'
 
 interface Props {
   detail: CaseDetail
   summary?: Case
+  locale?: SiteLocale
 }
 
-const { detail, summary } = Astro.props
+const { detail, summary, locale = 'zh-CN' } = Astro.props
+const en = locale === 'en'
 ---
 
-<section class="bg-white py-16 lg:py-20" aria-labelledby="case-overview-heading">
+<section
+  class:list={['case-detail-overview bg-white py-16 lg:py-20', { 'case-detail-overview--en': en }]}
+  aria-labelledby="case-overview-heading"
+>
   <div class="mx-auto grid max-w-7xl gap-12 px-5 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:px-8">
     <div>
-      <p class="mb-3 text-xs font-bold tracking-[0.14em] text-blue-600">案例概况</p>
+      <p class="mb-3 text-xs font-bold tracking-[0.14em] text-blue-600">
+        {en ? 'CASE OVERVIEW' : '案例概况'}
+      </p>
       <h2 id="case-overview-heading" class="text-3xl font-black text-[#0a1a33]">
-        品牌背景与服务场景
+        {en ? 'Brand background and operating scope' : '品牌背景与服务场景'}
       </h2>
       <p class="mt-6 leading-8 text-slate-600">{detail.description}</p>
       {
         summary && (
           <div class="mt-8">
-            <h3 class="text-sm font-black text-[#0a1a33]">主要服务范围</h3>
+            <h3 class="text-sm font-black text-[#0a1a33]">
+              {en ? 'Service scope' : '主要服务范围'}
+            </h3>
             <div class="mt-3 flex flex-wrap gap-2">
               {summary.tags.map((tag) => (
                 <span class="rounded-full bg-blue-50 px-3 py-1.5 text-xs font-bold text-blue-700">
@@ -35,7 +45,9 @@ const { detail, summary } = Astro.props
     </div>
 
     <div>
-      <p class="mb-4 text-xs font-bold tracking-[0.14em] text-blue-600">项目运营数据</p>
+      <p class="mb-4 text-xs font-bold tracking-[0.14em] text-blue-600">
+        {en ? 'OPERATING INDICATORS' : '项目运营数据'}
+      </p>
       <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
         {
           detail.stats.map((stat) => (
@@ -50,7 +62,11 @@ const { detail, summary } = Astro.props
         }
       </div>
       <p class="mt-5 text-xs leading-6 text-slate-500">
-        数据来源于新亦源内部项目运营统计，部分业务细节已脱敏；具体以对应统计周期、项目范围和经营记录为准。
+        {
+          en
+            ? 'Operating indicators are drawn from the stated project records. Some details are de-identified; the applicable reporting period, project scope and operating records govern.'
+            : '数据来源于新亦源内部项目运营统计，部分业务细节已脱敏；具体以对应统计周期、项目范围和经营记录为准。'
+        }
       </p>
     </div>
   </div>

@@ -1,0 +1,203 @@
+{
+  "order": ["ur", "maxrieny", "xingmian", "meiyi", "romi-studio", "toyouth"],
+  "stats": {
+    "ur": [
+      {
+        "label": "Total inventory",
+        "value": "2,600,000+",
+        "unit": "units"
+      },
+      {
+        "label": "SKU count",
+        "value": "130,000+",
+        "unit": "SKUs"
+      },
+      {
+        "label": "Warehouse area",
+        "value": "100,000+",
+        "unit": "m²",
+        "unitAliases": ["sq m"]
+      },
+      {
+        "label": "Average inbound volume",
+        "labelAliases": ["Average daily inbound"],
+        "value": "60,000+",
+        "unit": "units/day"
+      },
+      {
+        "label": "Peak B2C volume",
+        "labelAliases": ["Peak B2C"],
+        "value": "100,000+",
+        "unit": "units/day"
+      },
+      {
+        "label": "Average B2C volume",
+        "labelAliases": ["Average daily B2C"],
+        "value": "50,000+",
+        "unit": "units/day"
+      },
+      {
+        "label": "Average B2B volume",
+        "labelAliases": ["Average daily B2B"],
+        "value": "20,000+",
+        "unit": "units/day"
+      },
+      {
+        "label": "Average returns",
+        "labelAliases": ["Average daily returns"],
+        "value": "30,000+",
+        "unit": "units/day"
+      }
+    ],
+    "maxrieny": [
+      {
+        "label": "Total inventory",
+        "value": "900,000+",
+        "unit": "units"
+      },
+      {
+        "label": "SKU count",
+        "value": "17,000+",
+        "unit": "SKUs"
+      },
+      {
+        "label": "Warehouse area",
+        "value": "12,000+",
+        "unit": "m²",
+        "unitAliases": ["sq m"]
+      },
+      {
+        "label": "Average inbound volume",
+        "labelAliases": ["Average daily inbound"],
+        "value": "20,000+",
+        "unit": "units/day"
+      },
+      {
+        "label": "Average B2C volume",
+        "labelAliases": ["Average daily B2C"],
+        "value": "12,000+",
+        "unit": "units/day"
+      },
+      {
+        "label": "Peak B2C volume",
+        "labelAliases": ["Peak B2C"],
+        "value": "75,000+",
+        "unit": "units/day"
+      },
+      {
+        "label": "Average B2B volume",
+        "labelAliases": ["Average daily B2B"],
+        "value": "11,000+",
+        "unit": "units/day"
+      },
+      {
+        "label": "Peak B2B volume",
+        "labelAliases": ["Peak B2B"],
+        "value": "60,000+",
+        "unit": "units/day"
+      }
+    ],
+    "xingmian": [
+      {
+        "label": "Total inventory",
+        "value": "3,700,000+",
+        "unit": "units"
+      },
+      {
+        "label": "SKU count",
+        "value": "5,000+",
+        "unit": "SKUs"
+      },
+      {
+        "label": "Warehouse area",
+        "value": "25,000+",
+        "unit": "m²",
+        "unitAliases": ["sq m"]
+      },
+      {
+        "label": "Average inbound volume",
+        "labelAliases": ["Average daily inbound"],
+        "value": "50,000+",
+        "unit": "units/day"
+      },
+      {
+        "label": "Average B2C volume",
+        "labelAliases": ["Average daily B2C"],
+        "value": "60,000+",
+        "unit": "units/day"
+      },
+      {
+        "label": "Peak B2C volume",
+        "labelAliases": ["Peak B2C"],
+        "value": "100,000+",
+        "unit": "units/day"
+      },
+      {
+        "label": "Average returns",
+        "labelAliases": ["Average daily returns"],
+        "value": "15,000+",
+        "unit": "units/day"
+      }
+    ],
+    "meiyi": [
+      {
+        "label": "Annual shipments",
+        "labelAliases": ["Annual dispatch"],
+        "value": "1,000,000–1,500,000",
+        "unit": "units/year"
+      },
+      {
+        "label": "Annual quality inspection volume",
+        "labelAliases": ["Annual inspection"],
+        "value": "1,200,000–2,000,000",
+        "unit": "units/year"
+      },
+      {
+        "label": "Annual putaway volume",
+        "labelAliases": ["Annual putaway"],
+        "value": "1,300,000–1,800,000",
+        "unit": "units/year"
+      },
+      {
+        "label": "Annual packing volume",
+        "labelAliases": ["Annual packing"],
+        "value": "800,000–1,600,000",
+        "unit": "units/year"
+      }
+    ],
+    "romi-studio": [
+      {
+        "label": "Average outbound volume",
+        "labelAliases": ["Average daily outbound"],
+        "value": "30,000+",
+        "unit": "units/day"
+      },
+      {
+        "label": "Warehouse capacity",
+        "value": "Rapid replenishment",
+        "unit": "",
+        "labelAliases": ["Fulfilment capability"],
+        "valueAliases": ["Fast replenishment"]
+      },
+      {
+        "label": "Livestream service",
+        "value": "Creator sample dispatch",
+        "unit": ""
+      }
+    ],
+    "toyouth": [
+      {
+        "label": "Inventory management",
+        "value": "All-channel",
+        "unit": "single inventory pool",
+        "unitAliases": ["unified inventory pool"]
+      },
+      {
+        "label": "Brand operations",
+        "value": "Online and offline",
+        "unit": "integrated",
+        "unitAliases": ["integrated operations"]
+      }
+    ]
+  }
+}

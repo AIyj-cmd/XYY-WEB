@@ -14,6 +14,7 @@ import { englishClaim } from '@/i18n/claims'
 import { createEnglishHomeCaseDetails, translateCases } from '@/i18n/cases'
 import { translateHomeFaqs, translateHomeServices, translateHomeStats } from '@/i18n/home-content'
 import { createFaqSchema, ORGANIZATION_ID } from '@/lib/seo'
+import '@/styles/english-cases.css'
 
 const [statsSource, servicesSource, casesSource, faqsSource] = await Promise.all([
   getHomepageStats(HOME_STATS_FALLBACKS),
@@ -23,7 +24,7 @@ const [statsSource, servicesSource, casesSource, faqsSource] = await Promise.all
 ])
 const stats = translateHomeStats(statsSource)
 const services = translateHomeServices(servicesSource)
-const cases = translateCases(casesSource)
+const cases = translateCases(casesSource, 'home')
 const faqs = translateHomeFaqs(faqsSource)
 const caseCardMeta = cases.flatMap((item) =>
   item.slug

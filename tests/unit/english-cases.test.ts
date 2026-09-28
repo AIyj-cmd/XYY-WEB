@@ -7,7 +7,7 @@ import { createEnglishHomeCaseDetails, translateCaseFaqs, translateCases } from 
 const containsChinese = (value: string) => /[\u3400-\u9fff]/.test(value)
 
 describe('reviewed English case catalog', () => {
-  it('localizes all six approved cases without exposing unreviewed operational metrics', () => {
+  it('localizes all six approved fallback cases with their complete reviewed stats', () => {
     const cases = translateCases(CASE_FALLBACKS)
 
     expect(cases.map((item) => item.slug)).toEqual([
@@ -19,10 +19,14 @@ describe('reviewed English case catalog', () => {
       'inman',
     ])
     for (const item of cases) {
-      expect(item.stats).toEqual([])
-      expect(item.metrics).toBe('')
+      expect(item.stats).toHaveLength(
+        { ur: 8, maxrieny: 8, xingmian: 7, meiyi: 4, 'romi-studio': 3, inman: 2 }[item.slug!]!
+      )
+      expect(item.metrics).not.toBe('')
       expect(
-        containsChinese(`${item.label} ${item.category} ${item.details} ${item.tags.join(' ')}`)
+        containsChinese(
+          `${item.label} ${item.category} ${item.details} ${item.metrics} ${item.tags.join(' ')} ${item.stats?.map((stat) => `${stat.label} ${stat.value} ${stat.unit}`).join(' ')}`
+        )
       ).toBe(false)
     }
   })
@@ -46,7 +50,10 @@ describe('reviewed English case catalog', () => {
       slug: 'ur',
       name: 'UR',
       category: 'Fast-fashion womenswear',
-      stats: [],
+      stats: expect.arrayContaining([
+        { label: 'Total inventory', value: '2,600,000+', unit: 'units' },
+        { label: 'SKU count', value: '130,000+', unit: 'SKUs' },
+      ]),
     })
     expect(containsChinese(details.ur.description)).toBe(false)
   })

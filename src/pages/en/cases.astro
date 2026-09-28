@@ -11,15 +11,17 @@ import { BRAND } from '@/lib/brand'
 import { getCases, getFaqs } from '@/lib/directus'
 import { createBreadcrumbSchema, createFaqSchema } from '@/lib/seo'
 import { translateCaseFaqs, translateCases } from '@/i18n/cases'
+import { localizedCasePath } from '@/i18n/case-routes'
 import '@/styles/cases-overview.css'
 import '@/styles/cases-values.css'
+import '@/styles/english-cases.css'
 
 const excludedQuestion = '合作一般需要多长时间才能"跑顺"？上线后要多久看到效果？'
 const [sourceCases, sourceFaqs] = await Promise.all([
   getCases(CASE_FALLBACKS),
   getFaqs('cases', CASE_FAQS),
 ])
-const cases = translateCases(sourceCases)
+const cases = translateCases(sourceCases, 'cases')
 const faqs = translateCaseFaqs(sourceFaqs.filter(({ q }) => q.trim() !== excludedQuestion))
 const breadcrumbSchema = createBreadcrumbSchema([
   { name: 'Home', path: '/en' },
@@ -31,13 +33,20 @@ const caseListSchema = {
   name: 'XINYIYUAN apparel operations cases',
   description: 'Public apparel fulfilment, inspection and returns collaboration summaries.',
   numberOfItems: cases.length,
-  itemListElement: cases.map((item, index) => ({
-    '@type': 'ListItem',
-    position: index + 1,
-    name: item.label,
-    description: item.case_description || item.details,
-    url: `${BRAND.url}/en/contact`,
-  })),
+  itemListElement: cases.flatMap((item, index) => {
+    const path = localizedCasePath(item, 'en')
+    return path
+      ? [
+          {
+            '@type': 'ListItem',
+            position: index + 1,
+            name: item.label,
+            description: item.case_description || item.details,
+            url: `${BRAND.url}${path}`,
+          },
+        ]
+      : []
+  }),
 }
 ---
 

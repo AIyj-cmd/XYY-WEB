@@ -1,6 +1,6 @@
 ---
 import type { Case } from '@/lib/directus'
-import { getCaseDescription, getCasePath, getCaseStats } from './case-display'
+import { getCaseDescription, getCaseStats, getLocalizedCasePath } from './case-display'
 import type { SiteLocale } from '@/i18n/routes'
 
 interface Props {
@@ -10,8 +10,8 @@ interface Props {
 }
 
 const { item, index, locale = 'zh-CN' } = Astro.props
-const casePath = locale === 'en' ? '/en/contact' : getCasePath(item)
-const action = locale === 'en' ? 'Discuss this case' : '查看案例'
+const casePath = getLocalizedCasePath(item, locale)
+const action = locale === 'en' ? 'View case details' : '查看案例'
 const description = getCaseDescription(item)
 const stats = getCaseStats(item, 3)
 ---
@@ -19,13 +19,16 @@ const stats = getCaseStats(item, 3)
 <article
   class:list={['case-card', { 'case-card--static': !casePath }]}
   data-category={item.category}
+  data-locale={locale}
 >
   {
     casePath ? (
       <a
         class="case-card__surface"
         href={casePath}
-        aria-label={locale === 'en' ? `Discuss ${item.label}` : `查看${item.label}案例详情`}
+        aria-label={
+          locale === 'en' ? `View ${item.label} case details` : `查看${item.label}案例详情`
+        }
       >
         <img src={item.img} alt="" loading="lazy" decoding="async" />
         <div class="case-card__body">

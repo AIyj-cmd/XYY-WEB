@@ -50,5 +50,7 @@ export function isNavigationActive(href: string, pathname: string, locale: SiteL
   if (href === '/') return pathname === '/'
   if (href === '/en') return pathname === '/en'
   if (locale === 'en' && href === '/en/services') return ENGLISH_SERVICE_PATHS.has(pathname)
+  if (locale === 'en' && href === '/en/cases')
+    return pathname === href || pathname.startsWith('/en/cases/')
   return pathname === href
 }
