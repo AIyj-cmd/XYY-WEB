@@ -1,0 +1,91 @@
+---
+import EnglishLayout from '@/components/en/EnglishLayout.astro'
+import AboutHero from '@/components/about/AboutHero.astro'
+import AboutExplorer from '@/components/about/AboutExplorer.astro'
+import AboutHistory from '@/components/about/AboutHistory.astro'
+import AboutWarehouseNetwork from '@/components/about/AboutWarehouseNetwork.astro'
+import AboutWarehouseRegions from '@/components/about/AboutWarehouseRegions.astro'
+import AboutHonors from '@/components/about/AboutHonors.astro'
+import AboutScrollGallery from '@/components/about/AboutScrollGallery.astro'
+import AboutMinimalFooter from '@/components/about/AboutMinimalFooter.astro'
+import PageFAQ from '@/components/PageFAQ.astro'
+import { ABOUT_FAQS, ABOUT_HISTORY, groupWarehouses } from '@/data/about'
+import { HONORS, WAREHOUSES } from '@/lib/brand'
+import { translateAboutWarehouses } from '@/i18n/about-catalog'
+import {
+  ABOUT_CONTENT_FALLBACK,
+  translateAboutFaqs,
+  translateAboutHistory,
+  translateAboutHonors,
+  translateAboutOverview,
+} from '@/i18n/about-content'
+import { getEnglishSiteSettings } from '@/i18n/site-settings'
+import { createFaqSchema } from '@/lib/seo'
+import {
+  getAboutContent,
+  getAboutHistory,
+  getAboutHonors,
+  getFaqs,
+  getWarehouses,
+} from '@/lib/directus'
+
+const honorFallbacks = HONORS.map((title, index) => ({
+  title,
+  image: `/about/honor/${index + 1}.jpg`,
+}))
+const [about, history, honors, warehouses, faqs, settings] = await Promise.all([
+  getAboutContent(ABOUT_CONTENT_FALLBACK),
+  getAboutHistory(ABOUT_HISTORY),
+  getAboutHonors(honorFallbacks),
+  getWarehouses(WAREHOUSES),
+  getFaqs('about', ABOUT_FAQS),
+  getEnglishSiteSettings(),
+])
+const sourceGroups = groupWarehouses(warehouses)
+const translateGroups = (groups: typeof sourceGroups.south) =>
+  groups.map((group) => ({ ...group, items: translateAboutWarehouses(group.items) }))
+const groups = {
+  south: translateGroups(sourceGroups.south),
+  east: translateGroups(sourceGroups.east),
+}
+const overview = translateAboutOverview(about.overview)
+const historyItems = translateAboutHistory(history)
+const honorItems = translateAboutHonors(honors)
+const faqItems = translateAboutFaqs(faqs)
+const faqSchema = createFaqSchema(faqItems)
+---
+
+<EnglishLayout
+  title="About XINYIYUAN"
+  description="Learn about XINYIYUAN Supply Chain, an apparel supply-chain operator based in Guangzhou."
+  jsonLd={faqSchema}
+  siteSettings={settings}
+  showFooter={false}
+  showFloatingContact={false}
+>
+  <AboutHero {overview} locale="en">
+    <AboutExplorer locale="en">
+      <Fragment slot="history"><AboutHistory items={historyItems} locale="en" /></Fragment>
+      <Fragment slot="warehouse">
+        <AboutWarehouseNetwork locale="en" />
+        <AboutWarehouseRegions southGroups={groups.south} eastGroups={groups.east} locale="en" />
+      </Fragment>
+      <Fragment slot="honors"><AboutHonors honors={honorItems} locale="en" /></Fragment>
+      <Fragment slot="faq">
+        <PageFAQ heading="Frequently asked questions about XINYIYUAN" items={faqItems} />
+      </Fragment>
+    </AboutExplorer>
+  </AboutHero>
+  <AboutScrollGallery locale="en" />
+  <AboutMinimalFooter
+    icp={settings.icp}
+    phone={settings.phone}
+    headquartersLabel={settings.headquarters_label}
+    headquartersAddress={settings.headquarters_address}
+    locale="en"
+  />
+</EnglishLayout>
+
+<script>
+  import '@/scripts/about-page'
+</script>

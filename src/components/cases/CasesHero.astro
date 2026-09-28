@@ -1,3 +1,9 @@
+---
+import type { SiteLocale } from '@/i18n/routes'
+const { locale = 'zh-CN' } = Astro.props as { locale?: SiteLocale }
+const en = locale === 'en'
+---
+
 <section class="cases-hero" aria-labelledby="cases-hero-heading">
   <img
     src="/w-apparel.webp"
@@ -9,17 +15,23 @@
   <div class="cases-hero__shade" aria-hidden="true"></div>
   <div class="cases-hero__inner">
     <p class="cases-kicker">COOPERATION CASES</p>
-    <h1 id="cases-hero-heading">鞋服仓配合作案例</h1>
-    <p class="cases-hero__subtitle">仓配、质检与退货处理实践</p>
+    <h1 id="cases-hero-heading">{en ? 'Apparel operations cases' : '鞋服仓配合作案例'}</h1>
+    <p class="cases-hero__subtitle">
+      {en ? 'Fulfilment, inspection and returns in practice' : '仓配、质检与退货处理实践'}
+    </p>
     <p class="cases-hero__description">
-      从仓内履约到逆向处理，了解不同品牌在复杂订单、品质要求与业务波峰中的合作实践。
+      {
+        en
+          ? 'Learn how brands work through complex orders, quality requirements and operating peaks.'
+          : '从仓内履约到逆向处理，了解不同品牌在复杂订单、品质要求与业务波峰中的合作实践。'
+      }
     </p>
     <div class="cases-hero__actions">
       <a class="cases-hero__primary" href="#cases-grid"
-        >浏览合作案例 <span aria-hidden="true">↓</span></a
+        >{en ? 'Browse cases' : '浏览合作案例'} <span aria-hidden="true">↓</span></a
       >
-      <a class="cases-hero__secondary" href="/contact"
-        >预约案例分享 <span aria-hidden="true">→</span></a
+      <a class="cases-hero__secondary" href={en ? '/en/contact' : '/contact'}
+        >{en ? 'Discuss a relevant case' : '预约案例分享'} <span aria-hidden="true">→</span></a
       >
     </div>
   </div>

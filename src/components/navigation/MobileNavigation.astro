@@ -1,16 +1,22 @@
 ---
 import { NAV_LINKS } from '@/lib/brand'
+import { ENGLISH_NAVIGATION, isNavigationActive, type SiteLocale } from '@/i18n/routes'
 
 interface Props {
   pathname: string
   isProductActive: boolean
+  locale?: SiteLocale
 }
 
-const { pathname, isProductActive } = Astro.props
-const navGroups = [NAV_LINKS.slice(0, 3), NAV_LINKS.slice(3)]
+const { pathname, isProductActive, locale = 'zh-CN' } = Astro.props
+const links = locale === 'en' ? ENGLISH_NAVIGATION : NAV_LINKS
+const navGroups = [links.slice(0, 3), links.slice(3)]
 ---
 
-<nav class="site-header__mobile-navigation" aria-label="移动端导航">
+<nav
+  class="site-header__mobile-navigation"
+  aria-label={locale === 'en' ? 'Mobile navigation' : '移动端导航'}
+>
   {
     navGroups.map((links, index) => (
       <div
@@ -21,11 +27,9 @@ const navGroups = [NAV_LINKS.slice(0, 3), NAV_LINKS.slice(3)]
       >
         {links.map(({ href, label }) => {
           const isActive =
-            href === '/product'
+            locale === 'zh-CN' && href === '/product'
               ? isProductActive
-              : href === '/'
-                ? pathname === '/'
-                : pathname.startsWith(href)
+              : isNavigationActive(href, pathname, locale)
           return (
             <a
               href={href}

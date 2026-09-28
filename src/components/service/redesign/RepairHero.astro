@@ -1,26 +1,30 @@
 ---
+import type { SiteLocale } from '@/i18n/routes'
 interface Props {
   serviceName: string
   subheading: string
   description: string
   videoSrc: string
   poster: string
+  locale?: SiteLocale
 }
 
-const { serviceName, subheading, description, videoSrc, poster } = Astro.props
+const { serviceName, subheading, description, videoSrc, poster, locale = 'zh-CN' } = Astro.props
 ---
 
 <header class="repair-hero">
   <div class="redesign-shell">
     <div class="repair-hero__grid">
       <div class="repair-hero__title">
-        <p class="redesign-kicker">后整修复</p>
+        <p class="redesign-kicker">{locale === 'en' ? 'Garment care and repair' : '后整修复'}</p>
         <h1 id="lp-h1">{serviceName}</h1>
       </div>
       <div class="repair-hero__copy">
         {subheading && <p class="repair-hero__subheading">{subheading}</p>}
         {description && <p>{description}</p>}
-        <a class="redesign-button" href="/contact">评估修复需求</a>
+        <a class="redesign-button" href={locale === 'en' ? '/en/contact' : '/contact'}
+          >{locale === 'en' ? 'Assess repair requirements' : '评估修复需求'}</a
+        >
       </div>
     </div>
     <video
@@ -34,7 +38,7 @@ const { serviceName, subheading, description, videoSrc, poster } = Astro.props
       width="1280"
       height="720"
       poster={poster}
-      aria-label={`${serviceName}服务视频`}
+      aria-label={`${serviceName}${locale === 'en' ? ' service video' : '服务视频'}`}
     >
       <source src={videoSrc} type="video/mp4" />
     </video>

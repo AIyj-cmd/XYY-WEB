@@ -39,6 +39,16 @@
     font-size: clamp(2.65rem, 12vw, 3.6rem);
   }
 
+  .about-stage[data-locale='en'] .about-stage__title {
+    max-width: 10.5ch;
+    font-size: clamp(2.4rem, 11.5vw, 3.25rem);
+  }
+
+  .about-stage[data-locale='en'] .about-stage__brand {
+    max-width: 16rem;
+    font-size: 0.34em;
+  }
+
   .about-overview {
     max-width: 26rem;
     margin-top: 1.25rem;
@@ -50,6 +60,22 @@
 
   .about-stage__video-controls {
     right: 1.25rem;
+  }
+}
+
+@media (max-width: 374px) {
+  .about-stage[data-locale='en'] .about-stage__title {
+    font-size: 2.25rem;
+  }
+}
+
+@media (max-width: 35rem) {
+  .about-stage[data-locale='en'] .about-stage__video-controls {
+    top: 7rem;
+  }
+
+  .about-stage[data-locale='en'] .about-stage__shell {
+    padding-top: 10.75rem;
   }
 }
 

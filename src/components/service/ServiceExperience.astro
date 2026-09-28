@@ -6,6 +6,8 @@ import {
   type ServiceVariant,
 } from '@/data/service'
 import ConversionCTA from '@/components/conversion/ConversionCTA.astro'
+import { smartShippingCopy } from '@/i18n/smart-shipping'
+import type { SiteLocale } from '@/i18n/routes'
 import '@/styles/service-experience.css'
 
 interface Props {
@@ -17,6 +19,7 @@ interface Props {
   features: FeatureItem[]
   faqs: FaqItem[]
   useConversionCta: boolean
+  locale?: SiteLocale
 }
 
 const {
@@ -28,8 +31,11 @@ const {
   features,
   faqs,
   useConversionCta,
+  locale = 'zh-CN',
 } = Astro.props
 const copy = SERVICE_EXPERIENCE_COPY[variant]
+const english =
+  locale === 'en' && variant === 'delivery-desk' ? smartShippingCopy(locale) : undefined
 ---
 
 <section
@@ -42,17 +48,25 @@ const copy = SERVICE_EXPERIENCE_COPY[variant]
         <p>{copy.detailCode}</p>
         <span>{featuresLabel}</span>
       </div>
-      <h2 id="lp-detail-heading">{copy.detailTitle}</h2>
+      <h2 id="lp-detail-heading">{english?.experience.detailTitle ?? copy.detailTitle}</h2>
     </header>
 
     <div class="service-detail__layout">
       <aside class="service-detail__brief" data-service-reveal="copy">
         <p>{contentDesc}</p>
-        <nav aria-label="产品服务相关页面">
-          <span>继续了解</span>
-          <a href="/product">产品服务总览</a>
-          <a href="/cases">合作案例</a>
-          <a href="/contact">联系商务</a>
+        <nav aria-label={english?.experience.linksAria ?? '产品服务相关页面'}>
+          <span>{english?.experience.linksHeading ?? '继续了解'}</span>
+          {
+            english ? (
+              english.experience.links.map(({ href, label }) => <a {href}>{label}</a>)
+            ) : (
+              <>
+                <a href="/product">产品服务总览</a>
+                <a href="/cases">合作案例</a>
+                <a href="/contact">联系商务</a>
+              </>
+            )
+          }
         </nav>
       </aside>
 
@@ -80,7 +94,7 @@ const copy = SERVICE_EXPERIENCE_COPY[variant]
   <div class="service-faq__inner">
     <header class="service-faq__header" data-service-reveal="copy">
       <p>{copy.faqCode}</p>
-      <h2 id="lp-faq-heading">{breadcrumbLabel}常见问题</h2>
+      <h2 id="lp-faq-heading">{english?.experience.faqHeading ?? `${breadcrumbLabel}常见问题`}</h2>
     </header>
     <dl class="service-faq__list">
       {
@@ -99,7 +113,20 @@ const copy = SERVICE_EXPERIENCE_COPY[variant]
 </section>
 
 {
-  useConversionCta ? (
+  english ? (
+    <ConversionCTA
+      headingId="service-conversion-cta-heading"
+      eyebrow={english.experience.useConversion.eyebrow}
+      headingLines={[...english.experience.useConversion.heading]}
+      description={english.experience.useConversion.description}
+      actionLabel={english.experience.useConversion.action}
+      actionHref="/en/contact"
+      preparationTitle={english.experience.useConversion.preparationTitle}
+      preparationAriaLabel={english.experience.useConversion.preparationAria}
+      preparationItems={[...english.experience.useConversion.preparation]}
+      reveal="service"
+    />
+  ) : useConversionCta ? (
     <ConversionCTA
       headingId="service-conversion-cta-heading"
       eyebrow="START A CONVERSATION"

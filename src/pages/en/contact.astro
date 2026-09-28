@@ -1,0 +1,38 @@
+---
+import EnglishLayout from '@/components/en/EnglishLayout.astro'
+import EnglishContact from '@/components/en/EnglishContact.astro'
+import { BRAND } from '@/lib/brand'
+import { getEnglishSiteSettings } from '@/i18n/site-settings'
+
+const settings = await getEnglishSiteSettings()
+const localBusinessSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'LocalBusiness',
+  '@id': `${BRAND.url}/#localbusiness`,
+  name: 'Guangzhou XINYIYUAN Supply Chain Management Co., Ltd.',
+  url: `${BRAND.url}/en/contact`,
+  ...(settings.phone ? { telephone: [settings.phone] } : {}),
+  ...(settings.headquarters_address
+    ? {
+        location: [
+          {
+            '@type': 'Place',
+            name: settings.headquarters_label || 'Guangzhou headquarters',
+            address: {
+              '@type': 'PostalAddress',
+              streetAddress: settings.headquarters_address,
+              addressCountry: 'CN',
+            },
+          },
+        ],
+      }
+    : {}),
+}
+---
+
+<EnglishLayout
+  title="Contact"
+  description="Contact XINYIYUAN Supply Chain to discuss apparel fulfilment operations in China."
+  jsonLd={localBusinessSchema}
+  siteSettings={settings}><EnglishContact {settings} /></EnglishLayout
+>

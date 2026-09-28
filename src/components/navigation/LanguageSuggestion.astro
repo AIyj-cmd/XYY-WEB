@@ -1,0 +1,44 @@
+---
+import { englishPathFor, ENGLISH_ROUTES, type SiteLocale } from '@/i18n/routes'
+import '@/styles/language-suggestion.css'
+
+interface Props {
+  locale: SiteLocale
+  pathname: string
+}
+
+const { locale, pathname } = Astro.props
+const englishPath = englishPathFor(pathname)
+const hasEnglishPair = ENGLISH_ROUTES.some(([zh]) => zh === pathname)
+---
+
+<aside
+  id="language-suggestion"
+  class="language-suggestion"
+  data-current-locale={locale}
+  hidden
+  lang="en"
+  aria-label="Language preference"
+>
+  <div class="language-suggestion__inner">
+    <p>Prefer English?</p>
+    <div class="language-suggestion__actions">
+      <a href={englishPath} data-language-choice="en">
+        {hasEnglishPair ? 'Continue in English' : 'English home'}
+      </a>
+      <button type="button" data-language-choice="zh-CN" lang="zh-CN">继续使用中文</button>
+      <button
+        type="button"
+        class="language-suggestion__close"
+        data-language-dismiss
+        aria-label="Close"
+      >
+        <span aria-hidden="true">×</span>
+      </button>
+    </div>
+  </div>
+</aside>
+
+<script>
+  import '@/scripts/language-suggestion'
+</script>

@@ -1,10 +1,21 @@
 ---
 import { ABOUT_WAREHOUSE_TIERS } from '@/data/about'
 import { BRAND } from '@/lib/brand'
+import { aboutUi } from '@/i18n/about-ui'
+import type { SiteLocale } from '@/i18n/routes'
 
+interface Props {
+  locale?: SiteLocale
+}
+
+const { locale = 'zh-CN' } = Astro.props
+const copy = aboutUi(locale)
 const tiers = ABOUT_WAREHOUSE_TIERS.map((tier) => ({
   ...tier,
   location: tier.locationKey === 'south' ? BRAND.locations.south.address : tier.location,
+  ...(locale === 'en'
+    ? copy.warehouseNetwork.tiers[tier.abbr as keyof typeof copy.warehouseNetwork.tiers]
+    : {}),
 }))
 ---
 
@@ -12,6 +23,7 @@ const tiers = ABOUT_WAREHOUSE_TIERS.map((tier) => ({
   class="flex flex-col lg:flex-row overflow-hidden"
   style="min-height: 580px;"
   aria-labelledby="warehouse-heading"
+  data-locale={locale}
 >
   <div
     class="relative flex-shrink-0 w-full lg:w-[52%] bg-navy-50 flex items-center justify-center overflow-hidden"
@@ -24,18 +36,22 @@ const tiers = ABOUT_WAREHOUSE_TIERS.map((tier) => ({
       aria-hidden="true"
     />
     <div class="absolute bottom-8 left-8 lg:left-10">
-      <p class="text-navy-800/40 text-[10px] tracking-[0.3em] uppercase font-bold mb-1">仓网布局</p>
-      <p class="text-navy-800/70 text-xs">华南 · 华东 · 华中，区域仓网协同</p>
+      <p class="text-navy-800/40 text-[10px] tracking-[0.3em] uppercase font-bold mb-1">
+        {copy.warehouseNetwork.mapTitle}
+      </p>
+      <p class="text-navy-800/70 text-xs">{copy.warehouseNetwork.mapDetail}</p>
     </div>
   </div>
 
   <div class="flex-1 bg-white flex flex-col justify-center px-12 lg:px-20 py-14">
-    <p class="text-[#B94718] font-bold text-[11px] tracking-[0.35em] uppercase mb-3">仓网布局</p>
+    <p class="text-[#B94718] font-bold text-[11px] tracking-[0.35em] uppercase mb-3">
+      {copy.warehouseNetwork.eyebrow}
+    </p>
     <h2 id="warehouse-heading" class="text-3xl font-black text-navy-800 mb-2">
-      CDC/RDC/FDC三级仓网，覆盖华南、华东与华中节点
+      {copy.warehouseNetwork.heading}
     </h2>
     <p class="text-gray-400 text-sm leading-relaxed mb-10 max-w-sm">
-      CDC + RDC + FDC 三级仓网，按项目配置仓点、库存与订单路由
+      {copy.warehouseNetwork.description}
     </p>
 
     <div class="space-y-0 divide-y divide-gray-100">

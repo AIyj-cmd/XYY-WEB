@@ -1,4 +1,14 @@
-<section class="relative py-16 lg:py-20 overflow-hidden" aria-labelledby="contact-hero-heading">
+---
+import type { SiteLocale } from '@/i18n/routes'
+
+const { locale = 'zh-CN' } = Astro.props as { locale?: SiteLocale }
+const english = locale === 'en'
+---
+
+<section
+  class:list={['relative py-16 lg:py-20 overflow-hidden', english && 'english-contact-hero']}
+  aria-labelledby="contact-hero-heading"
+>
   <img
     src="/w-hq.webp"
     alt=""
@@ -13,15 +23,33 @@
   >
   </div>
   <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <p class="text-brand-orange font-semibold text-sm tracking-wider uppercase mb-3">联系我们</p>
+    <p class="text-brand-orange font-semibold text-sm tracking-wider uppercase mb-3">
+      {english ? 'Contact' : '联系我们'}
+    </p>
     <h1
       id="contact-hero-heading"
       class="text-4xl lg:text-5xl font-black text-white leading-tight mb-4"
     >
-      开始合作对话
+      {english ? 'Start an operational conversation' : '开始合作对话'}
     </h1>
     <p class="text-lg text-navy-100 max-w-xl leading-relaxed">
-      无论您是想了解具体报价、参观仓库，还是希望了解我们如何服务您的品类，都可以提交需求，由商务团队跟进。
+      {
+        english
+          ? 'Whether you need an initial service discussion, a warehouse visit or category-specific support, share your requirements and our business team will follow up.'
+          : '无论您是想了解具体报价、参观仓库，还是希望了解我们如何服务您的品类，都可以提交需求，由商务团队跟进。'
+      }
     </p>
   </div>
 </section>
+
+<style>
+  .english-contact-hero {
+    padding-top: 7rem;
+  }
+
+  @media (min-width: 35rem) {
+    .english-contact-hero {
+      padding-top: 5rem;
+    }
+  }
+</style>

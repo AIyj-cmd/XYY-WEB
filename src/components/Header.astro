@@ -1,34 +1,65 @@
 ---
 import { SPECIALTY_LINKS } from '@/data/navigation'
+import { englishPathFor } from '@/i18n/routes'
+import { chinesePathFor, ENGLISH_ROUTES, type SiteLocale } from '@/i18n/routes'
+import { shellCopy } from '@/i18n/shell'
 import '@/styles/header-liquid-glass.css'
 import '@/styles/header-responsive.css'
 import DesktopNavigation from './navigation/DesktopNavigation.astro'
+import LanguageSuggestion from './navigation/LanguageSuggestion.astro'
 import MobileNavigation from './navigation/MobileNavigation.astro'
 
+interface Props {
+  locale?: SiteLocale
+}
+const { locale = 'zh-CN' } = Astro.props
 const pathname = Astro.url.pathname
 const isProductActive =
   pathname === '/product' || SPECIALTY_LINKS.some(({ href }) => pathname.startsWith(href))
+const englishPath = englishPathFor(pathname)
+const copy = shellCopy(locale)
+const homePath = locale === 'en' ? '/en' : '/'
+const switchPath = locale === 'en' ? chinesePathFor(pathname) : englishPath
+const hasLocalePair = ENGLISH_ROUTES.some(([zh, en]) => (locale === 'en' ? en : zh) === pathname)
+const switchLabel =
+  locale === 'en'
+    ? hasLocalePair
+      ? '查看此页面的中文版本'
+      : '中文首页'
+    : hasLocalePair
+      ? 'View this page in English'
+      : 'English home'
 ---
+
+<LanguageSuggestion {locale} {pathname} />
 
 <header class="site-header fixed z-50">
   <div class="site-header__glass px-2">
     <div class="site-header__row flex h-12 items-center justify-between gap-2">
       <a
-        href="/"
-        aria-label="新亦源供应链首页"
+        href={homePath}
+        aria-label={copy.home}
         class="site-header__logo shrink-0 px-2 hover:opacity-85 transition-opacity"
       >
         <img
           src="/logo.png"
-          alt="新亦源供应链"
+          alt={copy.brand}
           height="36"
           class="h-7 w-auto object-contain"
           fetchpriority="high"
         />
       </a>
 
-      <DesktopNavigation pathname={pathname} isProductActive={isProductActive} />
-      <MobileNavigation pathname={pathname} isProductActive={isProductActive} />
+      <DesktopNavigation {pathname} {isProductActive} {locale} />
+      <MobileNavigation {pathname} {isProductActive} {locale} />
+      <a
+        href={switchPath}
+        id="site-language-switch"
+        data-language-switch
+        data-language-preference={locale === 'en' ? 'zh-CN' : 'en'}
+        class="site-header__language-switch shrink-0 rounded-full border border-white/35 px-2.5 py-1 text-xs font-bold text-white hover:bg-white/15"
+        aria-label={switchLabel}>{locale === 'en' ? '中文' : 'EN'}</a
+      >
     </div>
   </div>
 </header>

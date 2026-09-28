@@ -1,14 +1,17 @@
 ---
 import type { Case } from '@/lib/directus'
 import { getCaseDescription, getCasePath, getCaseStats } from './case-display'
+import type { SiteLocale } from '@/i18n/routes'
 
 interface Props {
   item: Case
   index: number
+  locale?: SiteLocale
 }
 
-const { item, index } = Astro.props
-const casePath = getCasePath(item)
+const { item, index, locale = 'zh-CN' } = Astro.props
+const casePath = locale === 'en' ? '/en/contact' : getCasePath(item)
+const action = locale === 'en' ? 'Discuss this case' : '查看案例'
 const description = getCaseDescription(item)
 const stats = getCaseStats(item, 3)
 ---
@@ -19,7 +22,11 @@ const stats = getCaseStats(item, 3)
 >
   {
     casePath ? (
-      <a class="case-card__surface" href={casePath} aria-label={`查看${item.label}案例详情`}>
+      <a
+        class="case-card__surface"
+        href={casePath}
+        aria-label={locale === 'en' ? `Discuss ${item.label}` : `查看${item.label}案例详情`}
+      >
         <img src={item.img} alt="" loading="lazy" decoding="async" />
         <div class="case-card__body">
           <p class="case-card__meta">
@@ -31,7 +38,10 @@ const stats = getCaseStats(item, 3)
           <h3>{item.label}</h3>
           {description && <p class="case-card__description">{description}</p>}
           {stats.length > 0 && (
-            <dl class="case-card__stats" aria-label={`${item.label}案例数据`}>
+            <dl
+              class="case-card__stats"
+              aria-label={locale === 'en' ? `${item.label} case data` : `${item.label}案例数据`}
+            >
               {stats.map((stat) => (
                 <div>
                   <dt>{stat.label}</dt>
@@ -44,7 +54,7 @@ const stats = getCaseStats(item, 3)
             </dl>
           )}
           <span class="case-card__action">
-            查看案例 <span aria-hidden="true">→</span>
+            {action} <span aria-hidden="true">→</span>
           </span>
         </div>
       </a>

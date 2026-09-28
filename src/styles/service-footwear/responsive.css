@@ -82,6 +82,20 @@
     padding-top: 4.5rem;
     padding-bottom: 4.5rem;
   }
+
+  .footwear-page[data-locale='en'] :is(h1, h2, h3, p, a, summary, strong, span) {
+    overflow-wrap: anywhere;
+  }
+
+  .footwear-page[data-locale='en'] .footwear-hero h1 .footwear-hero__statement {
+    font-size: clamp(2rem, 9vw, 2.6rem);
+    line-height: 1.12;
+  }
+
+  .footwear-page[data-locale='en'] .footwear-fulfillment__tabs button {
+    white-space: normal;
+    text-align: left;
+  }
 }
 @media (max-width: 400px) {
   .footwear-page h2 {
@@ -101,5 +115,8 @@
     gap: 0.25rem;
     padding: 0.5rem 0.35rem;
     font-size: 0.82rem;
+  }
+  .footwear-page[data-locale='en'] .footwear-cta__panel li {
+    grid-template-columns: 1.65rem minmax(0, 1fr);
   }
 }

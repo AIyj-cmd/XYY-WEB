@@ -1,6 +1,8 @@
 ---
 import type { ServicePageContent } from '@/lib/directus-content-queries'
 import type { StatItem } from '@/data/service'
+import { FOOTWEAR_ENGLISH_UI } from '@/i18n/footwear-ui'
+import type { SiteLocale } from '@/i18n/routes'
 
 interface Props {
   content: ServicePageContent
@@ -11,18 +13,32 @@ interface Props {
   videoSrc: string
   poster: string
   available: boolean
+  locale?: SiteLocale
 }
 
-const { content, pillars, showActions, showVideo, videoSrc, poster, available } = Astro.props
+const {
+  content,
+  pillars,
+  showActions,
+  showVideo,
+  videoSrc,
+  poster,
+  available,
+  locale = 'zh-CN',
+} = Astro.props
 const heading = content.h1 || content.breadcrumbLabel
 const description = content.heroDesc || content.description
-const isDefaultStatement = content.h1sub === '款色码管清楚，多渠道发得顺。'
+const isDefaultStatement =
+  content.h1sub ===
+  (locale === 'en' ? FOOTWEAR_ENGLISH_UI.hero.defaultStatement : '款色码管清楚，多渠道发得顺。')
 ---
 
 <section class="footwear-hero" aria-labelledby="lp-h1">
   <div class="footwear-hero__inner">
     <div class="footwear-hero__copy">
-      <p class="footwear-hero__crumb">仓配服务 / {content.breadcrumbLabel}</p>
+      <p class="footwear-hero__crumb">
+        {locale === 'en' ? FOOTWEAR_ENGLISH_UI.hero.crumb : '仓配服务'} / {content.breadcrumbLabel}
+      </p>
       <h1 id="lp-h1">
         {
           available ? (
@@ -31,13 +47,21 @@ const isDefaultStatement = content.h1sub === '款色码管清楚，多渠道发�
               {content.h1sub &&
                 (isDefaultStatement ? (
                   <span class="footwear-hero__statement footwear-hero__statement--default">
-                    <span>款色码管清楚，</span>
-                    <span>多渠道发得顺。</span>
+                    {locale === 'en' ? (
+                      <span>{FOOTWEAR_ENGLISH_UI.hero.defaultStatement}</span>
+                    ) : (
+                      <>
+                        <span>款色码管清楚，</span>
+                        <span>多渠道发得顺。</span>
+                      </>
+                    )}
                   </span>
                 ) : (
                   <span class="footwear-hero__statement">{content.h1sub}</span>
                 ))}
             </>
+          ) : locale === 'en' ? (
+            FOOTWEAR_ENGLISH_UI.page.unavailable
           ) : (
             '服务内容暂不可用'
           )
@@ -46,7 +70,10 @@ const isDefaultStatement = content.h1sub === '款色码管清楚，多渠道发�
       {available && description && <p>{description}</p>}
       {
         pillars.length > 0 && (
-          <div class="footwear-hero__pills" aria-label="鞋服仓配重点">
+          <div
+            class="footwear-hero__pills"
+            aria-label={locale === 'en' ? FOOTWEAR_ENGLISH_UI.hero.pillsLabel : '鞋服仓配重点'}
+          >
             {pillars.map((pillar) => (
               <span>{pillar}</span>
             ))}
@@ -56,11 +83,11 @@ const isDefaultStatement = content.h1sub === '款色码管清楚，多渠道发�
       {
         available && showActions && (
           <div class="footwear-actions">
-            <a class="footwear-button" href="/contact">
-              咨询仓配方案
+            <a class="footwear-button" href={locale === 'en' ? '/en/contact' : '/contact'}>
+              {locale === 'en' ? FOOTWEAR_ENGLISH_UI.hero.contact : '咨询仓配方案'}
             </a>
             <a class="footwear-text-link" href="#footwear-fulfillment">
-              看看仓内作业
+              {locale === 'en' ? FOOTWEAR_ENGLISH_UI.hero.operations : '看看仓内作业'}
             </a>
           </div>
         )
@@ -78,7 +105,7 @@ const isDefaultStatement = content.h1sub === '款色码管清楚，多渠道发�
           width="1280"
           height="720"
           poster={poster}
-          aria-label={`${content.breadcrumbLabel}服务视频`}
+          aria-label={`${content.breadcrumbLabel}${locale === 'en' ? ` ${FOOTWEAR_ENGLISH_UI.hero.videoLabel}` : '服务视频'}`}
         >
           <source src={videoSrc} type="video/mp4" />
         </video>

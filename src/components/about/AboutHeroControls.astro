@@ -1,8 +1,22 @@
+---
+import { aboutUi } from '@/i18n/about-ui'
+import type { SiteLocale } from '@/i18n/routes'
+
+interface Props {
+  locale?: SiteLocale
+}
+
+const { locale = 'zh-CN' } = Astro.props
+const copy = aboutUi(locale)
+---
+
 <div class="flex items-center gap-3">
   <button
     id="hero-video-btn"
     class="group inline-flex items-center gap-3 text-sm text-white/60 transition-colors hover:text-white"
-    aria-label="暂停视频"
+    aria-label={copy.hero.pauseVideo}
+    data-about-video-pause={copy.hero.pauseVideo}
+    data-about-video-play={copy.hero.playVideo}
   >
     <span
       class="flex h-11 w-11 items-center justify-center rounded-full border border-white/25 transition-colors group-hover:border-white/60"
@@ -26,13 +40,15 @@
         <path d="M8 5v14l11-7z"></path>
       </svg>
     </span>
-    <span id="btn-label">暂停视频</span>
+    <span id="btn-label">{copy.hero.pauseVideo}</span>
   </button>
 
   <button
     id="hero-mute-btn"
     class="group flex h-11 w-11 items-center justify-center rounded-full border border-white/25 text-white/60 transition-colors hover:border-white/60 hover:text-white"
-    aria-label="开启声音"
+    aria-label={copy.hero.unmuteVideo}
+    data-about-video-unmute={copy.hero.unmuteVideo}
+    data-about-video-mute={copy.hero.muteVideo}
   >
     <svg id="icon-muted" class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
       <path

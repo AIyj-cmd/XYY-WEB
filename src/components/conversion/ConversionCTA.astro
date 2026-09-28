@@ -20,6 +20,7 @@ interface Props {
   actionLabel: string
   actionHref?: string
   preparationTitle?: string
+  preparationAriaLabel?: string
   preparationItems: PreparationItem[]
   secondaryLinks?: SecondaryLink[]
   condition?: string
@@ -35,6 +36,7 @@ const {
   actionLabel,
   actionHref = '/contact',
   preparationTitle,
+  preparationAriaLabel,
   preparationItems,
   secondaryLinks = [],
   condition,
@@ -75,7 +77,7 @@ const serviceReveal = reveal === 'service' ? 'copy' : undefined
 
     <div class="conversion-cta__preparation">
       <aside
-        aria-label={preparationTitle ?? '咨询前准备信息'}
+        aria-label={preparationAriaLabel ?? preparationTitle ?? '咨询前准备信息'}
         data-reveal={productReveal}
         data-service-reveal={serviceReveal}
       >

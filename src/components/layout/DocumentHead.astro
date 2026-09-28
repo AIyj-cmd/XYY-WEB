@@ -1,6 +1,7 @@
 ---
 import { BRAND } from '@/lib/brand'
 import { serializeJsonForScript } from '@/lib/safe-json'
+import { ENGLISH_ROUTES, type SiteLocale } from '@/i18n/routes'
 
 interface Props {
   title: string
@@ -9,11 +10,28 @@ interface Props {
   ogImage: string
   jsonLd?: Record<string, unknown> | Record<string, unknown>[]
   noIndex?: boolean
+  locale?: SiteLocale
 }
 
-const { title, description, canonical, ogImage, jsonLd, noIndex = false } = Astro.props
-const fullTitle = title.includes('新亦源') ? title : `${title} - ${BRAND.name}`
+const {
+  title,
+  description,
+  canonical,
+  ogImage,
+  jsonLd,
+  noIndex = false,
+  locale = 'zh-CN',
+} = Astro.props
+const fullTitle =
+  locale === 'en'
+    ? `${title} | XINYIYUAN Supply Chain`
+    : title.includes('新亦源')
+      ? title
+      : `${title} - ${BRAND.name}`
 const schemas = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : []
+const pathname = new URL(canonical).pathname.replace(/\/$/, '') || '/'
+const routePair = ENGLISH_ROUTES.find(([zh, en]) => (locale === 'en' ? en : zh) === pathname)
+const alternate = routePair && (locale === 'en' ? routePair[0] : routePair[1])
 ---
 
 <meta charset="UTF-8" />
@@ -24,16 +42,31 @@ const schemas = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : []
 <meta name="description" content={description} />
 {noIndex && <meta name="robots" content="noindex,nofollow" />}
 <link rel="canonical" href={canonical} />
+{alternate && <link rel="alternate" hreflang={locale === 'en' ? 'en' : 'zh-CN'} href={canonical} />}
+{
+  alternate && (
+    <link
+      rel="alternate"
+      hreflang={locale === 'en' ? 'zh-CN' : 'en'}
+      href={new URL(alternate, BRAND.url).href}
+    />
+  )
+}
+{
+  alternate && (
+    <link rel="alternate" hreflang="x-default" href={new URL(routePair[0], BRAND.url).href} />
+  )
+}
 
 <meta property="og:type" content="website" />
-<meta property="og:site_name" content={BRAND.name} />
+<meta property="og:site_name" content={locale === 'en' ? 'XINYIYUAN Supply Chain' : BRAND.name} />
 <meta property="og:title" content={fullTitle} />
 <meta property="og:description" content={description} />
 <meta property="og:url" content={canonical} />
 <meta property="og:image" content={ogImage} />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
-<meta property="og:locale" content="zh_CN" />
+<meta property="og:locale" content={locale === 'en' ? 'en_US' : 'zh_CN'} />
 
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content={fullTitle} />

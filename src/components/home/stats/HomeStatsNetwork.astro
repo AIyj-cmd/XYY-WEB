@@ -1,16 +1,20 @@
 ---
 import type { HomepageStat } from '@/lib/directus'
+import { homeUi } from '@/i18n/home-ui'
+import type { SiteLocale } from '@/i18n/routes'
 
 interface Props {
   stats: HomepageStat[]
+  locale?: SiteLocale
 }
 
-const { stats } = Astro.props
+const { stats, locale = 'zh-CN' } = Astro.props
+const copy = homeUi(locale).stats.cards
 ---
 
 <article class="stat-card stats-network" data-flow="network">
   <header class="stat-card-heading">
-    <span class="stat-card-kicker">服务网络</span>
+    <span class="stat-card-kicker">{copy.network}</span>
     <span class="stat-card-index">02</span>
   </header>
   <div class="stat-metrics stat-metrics--network">

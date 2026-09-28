@@ -2,11 +2,28 @@
 import ContactIdentityFields from './ContactIdentityFields.astro'
 import ContactInquiryFields from './ContactInquiryFields.astro'
 import ContactPrivacyConsent from './ContactPrivacyConsent.astro'
+import type { SiteLocale } from '@/i18n/routes'
+
+interface Props {
+  locale?: SiteLocale
+  contactPhone?: string
+}
+
+const { locale = 'zh-CN', contactPhone = '' } = Astro.props
+const english = locale === 'en'
 ---
 
 <div class="lg:col-span-3">
-  <h2 class="text-2xl font-black text-navy-800 mb-8">在线留言</h2>
-  <form id="contact-form" action="/api/contact" method="POST" class="space-y-5" novalidate>
+  <h2 class="text-2xl font-black text-navy-800 mb-8">{english ? 'Send an enquiry' : '在线留言'}</h2>
+  <form
+    id="contact-form"
+    action="/api/contact"
+    method="POST"
+    class="space-y-5"
+    novalidate
+    data-locale={english ? 'en' : undefined}
+    data-contact-phone={contactPhone}
+  >
     <div class="hidden" aria-hidden="true">
       <input
         id="website"
@@ -14,19 +31,19 @@ import ContactPrivacyConsent from './ContactPrivacyConsent.astro'
         type="text"
         tabindex="-1"
         autocomplete="off"
-        aria-label="Leave this field empty"
+        aria-label={english ? 'Leave this field empty' : 'Leave this field empty'}
       />
     </div>
 
-    <ContactIdentityFields />
-    <ContactInquiryFields />
-    <ContactPrivacyConsent />
+    <ContactIdentityFields {locale} />
+    <ContactInquiryFields {locale} />
+    <ContactPrivacyConsent {locale} />
 
     <button
       type="submit"
       id="submit-btn"
       class="w-full sm:w-auto px-8 py-3.5 bg-brand-orange hover:bg-brand-orange-dark text-white font-bold rounded-xl text-base transition-colors shadow-lg shadow-orange-900/20 disabled:opacity-60 disabled:cursor-not-allowed"
-      >提交咨询</button
+      >{english ? 'Submit enquiry' : '提交咨询'}</button
     >
     <div id="form-result" class="hidden" role="status" aria-live="polite" aria-atomic="true"></div>
   </form>

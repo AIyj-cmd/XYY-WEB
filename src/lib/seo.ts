@@ -19,7 +19,13 @@ export function createBreadcrumbSchema(items: Array<{ name: string; path: string
   }
 }
 
-export function createServiceSchema(input: { name: string; description: string; path: string }) {
+export function createServiceSchema(input: {
+  name: string
+  description: string
+  path: string
+  providerName?: string
+  countryName?: string
+}) {
   const url = absoluteUrl(input.path)
   return {
     '@context': 'https://schema.org',
@@ -30,9 +36,9 @@ export function createServiceSchema(input: { name: string; description: string; 
     provider: {
       '@type': 'Organization',
       '@id': ORGANIZATION_ID,
-      name: BRAND.fullName,
+      name: input.providerName || BRAND.fullName,
     },
-    areaServed: { '@type': 'Country', name: '中国' },
+    areaServed: { '@type': 'Country', name: input.countryName || '中国' },
     url,
   }
 }

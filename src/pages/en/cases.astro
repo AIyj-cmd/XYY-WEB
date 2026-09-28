@@ -1,0 +1,74 @@
+---
+import CasesGrid from '@/components/cases/CasesGrid.astro'
+import CasesHero from '@/components/cases/CasesHero.astro'
+import CasesLogoWall from '@/components/cases/CasesLogoWall.astro'
+import CasesValueProps from '@/components/cases/CasesValueProps.astro'
+import PageFAQ from '@/components/PageFAQ.astro'
+import ConversionCTA from '@/components/conversion/ConversionCTA.astro'
+import EnglishLayout from '@/components/en/EnglishLayout.astro'
+import { CASE_FAQS, CASE_FALLBACKS } from '@/data/cases'
+import { BRAND } from '@/lib/brand'
+import { getCases, getFaqs } from '@/lib/directus'
+import { createBreadcrumbSchema, createFaqSchema } from '@/lib/seo'
+import { translateCaseFaqs, translateCases } from '@/i18n/cases'
+import '@/styles/cases-overview.css'
+import '@/styles/cases-values.css'
+
+const excludedQuestion = '合作一般需要多长时间才能"跑顺"？上线后要多久看到效果？'
+const [sourceCases, sourceFaqs] = await Promise.all([
+  getCases(CASE_FALLBACKS),
+  getFaqs('cases', CASE_FAQS),
+])
+const cases = translateCases(sourceCases)
+const faqs = translateCaseFaqs(sourceFaqs.filter(({ q }) => q.trim() !== excludedQuestion))
+const breadcrumbSchema = createBreadcrumbSchema([
+  { name: 'Home', path: '/en' },
+  { name: 'Cases', path: '/en/cases' },
+])
+const caseListSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'XINYIYUAN apparel operations cases',
+  description: 'Public apparel fulfilment, inspection and returns collaboration summaries.',
+  numberOfItems: cases.length,
+  itemListElement: cases.map((item, index) => ({
+    '@type': 'ListItem',
+    position: index + 1,
+    name: item.label,
+    description: item.case_description || item.details,
+    url: `${BRAND.url}/en/contact`,
+  })),
+}
+---
+
+<EnglishLayout
+  title="Apparel operations cases"
+  description="Selected apparel fulfilment, inspection and returns-operation collaboration summaries."
+  jsonLd={[breadcrumbSchema, caseListSchema, createFaqSchema(faqs)]}
+>
+  <CasesHero locale="en" />
+  <CasesGrid {cases} locale="en" />
+  <CasesLogoWall locale="en" />
+  <CasesValueProps locale="en" />
+  <PageFAQ heading="Frequently asked questions about our cases" items={faqs} />
+  <ConversionCTA
+    headingId="cases-conversion-cta-heading"
+    eyebrow="START A CONVERSATION"
+    headingLines={['Discuss a case close to', 'your operating needs.']}
+    description="Tell us about your category, fulfilment scenario and current priorities. We can discuss relevant public examples and a suitable next step."
+    actionLabel="Discuss a relevant case"
+    actionHref="/en/contact"
+    preparationTitle="Useful information for a first discussion"
+    preparationItems={[
+      { label: 'Brand and category', detail: 'Product type and primary sales channels' },
+      {
+        label: 'Operating scenario',
+        detail: 'Fulfilment, returns inspection or value-added handling',
+      },
+      {
+        label: 'Current priorities',
+        detail: 'Relevant experience and current operating questions',
+      },
+    ]}
+  />
+</EnglishLayout>

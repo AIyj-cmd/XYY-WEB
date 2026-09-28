@@ -1,12 +1,15 @@
 ---
 import type { Case } from '@/lib/directus'
 import CaseCard from './CaseCard.astro'
+import type { SiteLocale } from '@/i18n/routes'
 
 interface Props {
   cases: Case[]
+  locale?: SiteLocale
 }
 
-const { cases } = Astro.props
+const { cases, locale = 'zh-CN' } = Astro.props
+const en = locale === 'en'
 ---
 
 <section class="cases-grid-section" aria-labelledby="cases-grid-heading">
@@ -14,25 +17,35 @@ const { cases } = Astro.props
     <header class="cases-grid-section__heading">
       <div>
         <p class="cases-kicker">ALL CASES</p>
-        <h2 id="cases-grid-heading">合作案例一览</h2>
+        <h2 id="cases-grid-heading">{en ? 'Case summaries' : '合作案例一览'}</h2>
       </div>
-      <p>从品牌运营节奏出发，呈现仓配、质检与退货处理中的具体协作方式。</p>
+      <p>
+        {
+          en
+            ? 'A selection of fulfilment, inspection and returns collaboration summaries.'
+            : '从品牌运营节奏出发，呈现仓配、质检与退货处理中的具体协作方式。'
+        }
+      </p>
     </header>
     {
       cases.length > 0 ? (
         <div id="cases-grid" class="cases-grid">
           {cases.map((item, index) => (
-            <CaseCard item={item} index={index} />
+            <CaseCard item={item} {index} {locale} />
           ))}
         </div>
       ) : (
         <div id="cases-grid" class="cases-empty" role="status">
-          当前暂无可展示的合作案例。
+          {en ? 'No English case summaries are currently available.' : '当前暂无可展示的合作案例。'}
         </div>
       )
     }
     <p class="cases-data-note">
-      合作品牌名称与Logo按合作关系展示；品牌背景数据来自公开资料；项目运营数据来自合作统计，部分业务细节已脱敏。
+      {
+        en
+          ? 'Names and logos reflect cooperation relationships. Public brand background and project operating data retain their stated sources; some details are de-identified.'
+          : '合作品牌名称与Logo按合作关系展示；品牌背景数据来自公开资料；项目运营数据来自合作统计，部分业务细节已脱敏。'
+      }
     </p>
   </div>
 </section>

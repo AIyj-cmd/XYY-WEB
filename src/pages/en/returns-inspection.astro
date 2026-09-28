@@ -1,0 +1,14 @@
+---
+import ServiceLanding from '@/layouts/ServiceLanding.astro'
+import { RETURNS_ENGLISH_SOURCE } from '@/i18n/service-sources-returns'
+const page = RETURNS_ENGLISH_SOURCE.source
+---
+
+<ServiceLanding
+  {...page}
+  locale="en"
+  presentation="returns"
+  slug="tuihuo-zhijian"
+  variant="evidence-lab"
+  faqs={RETURNS_ENGLISH_SOURCE.sourceFaqs}
+/>

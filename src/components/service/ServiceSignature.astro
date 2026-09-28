@@ -6,6 +6,8 @@ import {
   type StatItem,
 } from '@/data/service'
 import DeliveryDeskSignature from './signature/DeliveryDeskSignature.astro'
+import { smartShippingCopy } from '@/i18n/smart-shipping'
+import type { SiteLocale } from '@/i18n/routes'
 import '@/styles/service-signature.css'
 
 interface Props {
@@ -13,11 +15,15 @@ interface Props {
   contentDesc: string
   stats: readonly StatItem[]
   features: FeatureItem[]
+  locale?: SiteLocale
 }
 
-const { variant, contentDesc, stats, features } = Astro.props
+const { variant, contentDesc, stats, features, locale = 'zh-CN' } = Astro.props
 
-const config = SERVICE_SIGNATURE_CONFIG[variant]
+const config =
+  locale === 'en' && variant === 'delivery-desk'
+    ? smartShippingCopy(locale)!.signature
+    : SERVICE_SIGNATURE_CONFIG[variant]
 ---
 
 <section
@@ -37,7 +43,11 @@ const config = SERVICE_SIGNATURE_CONFIG[variant]
     </header>
 
     <div class="signature__body" data-service-reveal="visual">
-      {variant === 'delivery-desk' && <DeliveryDeskSignature {contentDesc} {stats} {features} />}
+      {
+        variant === 'delivery-desk' && (
+          <DeliveryDeskSignature {contentDesc} {stats} {features} {locale} />
+        )
+      }
     </div>
   </div>
 </section>

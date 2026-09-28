@@ -1,4 +1,5 @@
 ---
+import type { SiteLocale } from '@/i18n/routes'
 interface Props {
   serviceName: string
   valueTitle: string
@@ -7,24 +8,36 @@ interface Props {
   videoSrc: string
   poster: string
   hasGrades: boolean
+  locale?: SiteLocale
 }
 
 const { serviceName, valueTitle, subheading, description, videoSrc, poster, hasGrades } =
   Astro.props
-const [titlePrefix = valueTitle, titleValue = ''] = valueTitle.split('，')
+const { locale = 'zh-CN' } = Astro.props
+const [titlePrefix = valueTitle, titleValue = ''] = valueTitle.split(locale === 'en' ? '.' : '，')
 ---
 
-<header class="returns-hero">
+<header class="returns-hero" data-locale={locale}>
   <div class="returns-shell returns-hero__copy">
-    <p class="returns-kicker">退货质检</p>
+    <p class="returns-kicker">{locale === 'en' ? 'Returns inspection' : '退货质检'}</p>
     <p class="returns-hero__service-name">{serviceName}</p>
     <h1 id="lp-h1">
-      <span>{titleValue ? `${titlePrefix}，` : titlePrefix}</span><span>{titleValue}</span>
+      <span>{titleValue ? `${titlePrefix}${locale === 'en' ? '.' : '，'}` : titlePrefix}</span><span
+        >{titleValue}</span
+      >
     </h1>
     {subheading && <p class="returns-hero__subheading">{subheading}</p>}
     <div class="returns-hero__actions">
-      <a class="returns-button" href="/contact">沟通退货质检方案</a>
-      {hasGrades && <a href="#returns-grade-heading">查看分级处置</a>}
+      <a class="returns-button" href={locale === 'en' ? '/en/contact' : '/contact'}
+        >{locale === 'en' ? 'Discuss a returns-inspection plan' : '沟通退货质检方案'}</a
+      >
+      {
+        hasGrades && (
+          <a href="#returns-grade-heading">
+            {locale === 'en' ? 'View grading and routing' : '查看分级处置'}
+          </a>
+        )
+      }
     </div>
   </div>
   <div class="returns-shell returns-hero__media-wrap">
@@ -39,12 +52,17 @@ const [titlePrefix = valueTitle, titleValue = ''] = valueTitle.split('，')
       width="1280"
       height="720"
       poster={poster}
-      aria-label={`${serviceName}服务视频`}
+      aria-label={`${serviceName}${locale === 'en' ? ' service video' : '服务视频'}`}
     >
       <source src={videoSrc} type="video/mp4" />
     </video>
-    <aside class="returns-hero__note" aria-label="质检说明">
-      <strong>订单核对</strong><span>异常记录</span><span>等级判定</span>
+    <aside
+      class="returns-hero__note"
+      aria-label={locale === 'en' ? 'Inspection notes' : '质检说明'}
+    >
+      <strong>{locale === 'en' ? 'Order check' : '订单核对'}</strong><span
+        >{locale === 'en' ? 'Issue record' : '异常记录'}</span
+      ><span>{locale === 'en' ? 'Grade decision' : '等级判定'}</span>
       {description && <p>{description}</p>}
     </aside>
   </div>

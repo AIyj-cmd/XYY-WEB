@@ -1,17 +1,43 @@
 ---
+import { DIGITAL_OPERATIONS_ENGLISH } from '@/i18n/digital-operations'
+import type { SiteLocale } from '@/i18n/routes'
+
 interface Props {
   modules: ReadonlyArray<readonly [string, string, string]>
+  locale?: SiteLocale
 }
 
-const { modules } = Astro.props
+const { modules, locale = 'zh-CN' } = Astro.props
+const english = locale === 'en' ? DIGITAL_OPERATIONS_ENGLISH : undefined
 ---
 
 <section class="digital-modules" aria-labelledby="modules-heading">
   <div class="digital-shell">
     <header class="digital-section-heading">
       <p class="digital-kicker">SYSTEM MODULES</p>
-      <h2 id="modules-heading">一条履约链路，<br />不是一组分散的系统。</h2>
-      <p>围绕订单从进入仓库到完成交付的过程配置能力，重点是减少状态断点，而不是堆砌工具。</p>
+      <h2 id="modules-heading">
+        {
+          english ? (
+            <>
+              {english.modules.heading[0]}
+              <br />
+              {english.modules.heading[1]}
+            </>
+          ) : (
+            <>
+              一条履约链路，
+              <br />
+              不是一组分散的系统。
+            </>
+          )
+        }
+      </h2>
+      <p>
+        {
+          english?.modules.intro ??
+            '围绕订单从进入仓库到完成交付的过程配置能力，重点是减少状态断点，而不是堆砌工具。'
+        }
+      </p>
     </header>
     <div class="digital-module-grid">
       {

@@ -4,17 +4,24 @@ import type { Service } from '@/lib/directus'
 import '@/styles/home-core-solutions.css'
 import HomeDigitalProductSection from './HomeDigitalProductSection.astro'
 import HomeSolutionSection from './HomeSolutionSection.astro'
+import type { SiteLocale } from '@/i18n/routes'
 
 interface Props {
   services: Service[]
+  locale?: SiteLocale
 }
 
-const { services } = Astro.props
+const { services, locale = 'zh-CN' } = Astro.props
 ---
 
-{services.map((service, index) => <HomeSolutionSection service={service} index={index} />)}
+{services.map((service, index) => <HomeSolutionSection service={service} index={index} {locale} />)}
 {
   DIGITAL_PRODUCTS.map((product, index) => (
-    <HomeDigitalProductSection product={product} index={index} sequence={services.length + index} />
+    <HomeDigitalProductSection
+      product={product}
+      index={index}
+      sequence={services.length + index}
+      {locale}
+    />
   ))
 }

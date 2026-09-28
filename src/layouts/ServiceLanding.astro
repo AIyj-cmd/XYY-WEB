@@ -4,10 +4,8 @@ import ServiceLandingHero from '@/components/service/ServiceLandingHero.astro'
 import ServiceExperience from '@/components/service/ServiceExperience.astro'
 import FootwearPage from '@/components/service/footwear/FootwearPage.astro'
 import RedesignServicePage from '@/components/service/redesign/RedesignServicePage.astro'
-import {
-  isRedesignPresentation,
-  type RedesignPresentation,
-} from '@/components/service/redesign/presentation'
+import { isRedesignPresentation } from '@/components/service/redesign/presentation'
+import type { RedesignPresentation } from '@/components/service/redesign/presentation'
 import Layout from '@/layouts/Layout.astro'
 import { SPECIALTY_LINKS } from '@/data/navigation'
 import { getServiceHeroMedia } from '@/data/service-hero-media'
@@ -20,12 +18,17 @@ import { toLivePublicCopy } from '@/components/service/redesign/live-public-copy
 import { toSouthPublicCopy } from '@/components/service/redesign/south-public-copy'
 import { toB2bPublicCopy } from '@/components/service/redesign/b2b-public-copy'
 import { toFootwearPublicCopy } from '@/components/service/footwear/public-copy'
+import { translateReviewedService } from '@/i18n/service-sources'
+import { ENGLISH_SERVICE_SOURCES } from '@/i18n/service-source-catalog'
+import { englishPathFor, type SiteLocale } from '@/i18n/routes'
+import { getEnglishSiteSettings } from '@/i18n/site-settings'
 interface Props extends ServicePageContent {
   variant: ServiceVariant
   slug: string
-  stats: [StatItem, StatItem, StatItem, StatItem]
+  stats: readonly StatItem[]
   faqs: FaqItem[]
   presentation?: 'classic' | 'footwear' | RedesignPresentation
+  locale?: SiteLocale
 }
 const {
   variant,
@@ -45,9 +48,9 @@ const {
   features,
   faqs,
   presentation = 'classic',
+  locale = 'zh-CN',
 } = Astro.props
-
-const pageUrl = seo.absoluteUrl(`/${slug}`)
+const localizedPath = locale === 'en' ? englishPathFor(`/${slug}`) : `/${slug}`
 const content = await getServicePageContent(slug, {
   title,
   description,
@@ -78,76 +81,94 @@ const publicCopy =
             : undefined
 const displayContent = publicCopy?.content ?? content
 const publicFaqs = publicCopy?.faqs ?? displayFaqs
+const english =
+  locale === 'en' && ENGLISH_SERVICE_SOURCES[slug]
+    ? translateReviewedService(ENGLISH_SERVICE_SOURCES[slug], content, displayFaqs)
+    : undefined
+const visibleContent = english?.content ?? displayContent
+const visibleFaqs = english?.faqs ?? publicFaqs
+const hasVisibleClassicContent = locale !== 'en' || Boolean(visibleContent.h1)
+const uniqueClass = ['service-unique', `service-unique--${variant}`]
 const breadcrumbSchema = seo.createBreadcrumbSchema([
-  { name: '首页', path: '/' },
-  { name: '产品服务', path: '/product' },
-  { name: displayContent.breadcrumbLabel, path: `/${slug}` },
+  { name: locale === 'en' ? 'Home' : '首页', path: locale === 'en' ? '/en' : '/' },
+  {
+    name: locale === 'en' ? 'Services' : '产品服务',
+    path: locale === 'en' ? '/en/services' : '/product',
+  },
+  { name: visibleContent.breadcrumbLabel, path: localizedPath },
 ])
 const serviceSchema = seo.createServiceSchema({
-  name: displayContent.h1,
-  description: displayContent.description,
-  path: `/${slug}`,
+  name: visibleContent.h1,
+  description: visibleContent.description,
+  path: localizedPath,
+  providerName:
+    locale === 'en' ? 'Guangzhou XINYIYUAN Supply Chain Management Co., Ltd.' : undefined,
+  countryName: locale === 'en' ? 'China' : undefined,
 })
-const faqSchema = seo.createFaqSchema(publicFaqs)
+const faqSchema = seo.createFaqSchema(
+  presentation === 'classic' && !hasVisibleClassicContent ? [] : visibleFaqs
+)
 const heroMedia = getServiceHeroMedia(slug)
 ---
 
 <Layout
-  title={displayContent.title}
-  description={displayContent.description}
-  canonical={pageUrl}
+  title={visibleContent.title}
+  description={visibleContent.description}
+  canonical={seo.absoluteUrl(localizedPath)}
   jsonLd={[breadcrumbSchema, serviceSchema, faqSchema]}
+  locale={locale}
+  siteSettings={locale === 'en' ? await getEnglishSiteSettings() : undefined}
 >
   {
     slug === 'xiefu-yuncang' && presentation === 'footwear' ? (
-      <FootwearPage content={displayContent} faqs={publicFaqs} />
+      <FootwearPage content={visibleContent} faqs={visibleFaqs} {locale} />
     ) : isRedesignPresentation(presentation) ? (
       <RedesignServicePage
         {presentation}
-        content={displayContent}
-        faqs={publicFaqs}
+        content={visibleContent}
+        faqs={visibleFaqs}
         videoSrc={heroMedia?.src ?? ''}
         poster={heroMedia?.poster ?? content.imgSrc}
+        {locale}
       />
-    ) : (
+    ) : hasVisibleClassicContent ? (
       <>
         <ServiceLandingHero
-          eyebrow={content.eyebrow}
-          h1={content.h1}
-          h1sub={content.h1sub}
-          heroDesc={content.heroDesc}
-          imgSrc={content.imgSrc}
-          imgAlt={content.imgAlt}
+          eyebrow={visibleContent.eyebrow}
+          h1={visibleContent.h1}
+          h1sub={visibleContent.h1sub}
+          heroDesc={visibleContent.heroDesc}
+          imgSrc={visibleContent.imgSrc}
+          imgAlt={visibleContent.imgAlt}
           videoSrc={heroMedia?.src}
           poster={heroMedia?.poster}
+          {locale}
         />
         <ServiceSignature
           variant={variant}
-          contentDesc={content.contentDesc}
-          stats={content.stats}
-          features={content.features}
+          contentDesc={visibleContent.contentDesc}
+          stats={visibleContent.stats}
+          features={visibleContent.features}
+          {locale}
         />
-        <div
-          class:list={['service-unique', `service-unique--${variant}`]}
-          data-service-reveal="visual"
-        >
+        <div class:list={uniqueClass} data-service-reveal="visual">
           <slot name="unique" />
         </div>
         <ServiceExperience
           variant={variant}
-          h1={content.h1}
-          breadcrumbLabel={content.breadcrumbLabel}
-          contentDesc={content.contentDesc}
-          featuresLabel={content.featuresLabel}
-          features={content.features}
-          faqs={displayFaqs}
+          h1={visibleContent.h1}
+          breadcrumbLabel={visibleContent.breadcrumbLabel}
+          contentDesc={visibleContent.contentDesc}
+          featuresLabel={visibleContent.featuresLabel}
+          features={visibleContent.features}
+          faqs={visibleFaqs}
           useConversionCta={SPECIALTY_LINKS.some(({ href }) => href === `/${slug}`)}
+          {locale}
         />
       </>
-    )
+    ) : null
   }
 </Layout>
-
 <script>
   import '@/scripts/service-page'
 </script>

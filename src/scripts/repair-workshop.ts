@@ -11,7 +11,10 @@ if (workshop) {
     if (!controls || tabs.length !== panels.length || tabs.length === 0) return false
 
     controls.setAttribute('role', 'tablist')
-    controls.setAttribute('aria-label', '修复工位选择')
+    controls.setAttribute(
+      'aria-label',
+      workshop.dataset.locale === 'en' ? 'Repair workstation selection' : '修复工位选择'
+    )
     tabs.forEach((tab, index) => {
       tab.id = `repair-workshop-tab-${index}`
       tab.setAttribute('role', 'tab')

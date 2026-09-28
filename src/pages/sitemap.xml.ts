@@ -25,19 +25,36 @@ const STATIC_PAGES = [
   { url: '/privacy', priority: '0.3', changefreq: 'yearly' },
 ]
 
+const ENGLISH_STATIC_PAGES = [
+  '/en',
+  '/en/services',
+  '/en/apparel-fulfillment',
+  '/en/returns-inspection',
+  '/en/garment-care',
+  '/en/retail-distribution',
+  '/en/digital-operations',
+  '/en/smart-shipping',
+  '/en/about',
+  '/en/cases',
+  '/en/contact',
+  '/en/privacy',
+].map((url) => ({ url, priority: url === '/en' ? '0.8' : '0.6', changefreq: 'monthly' }))
+
 // Update this only when the static-page content is materially revised.
 const STATIC_CONTENT_LASTMOD = '2026-08-08'
 
 export const GET: APIRoute = async () => {
-  const staticEntries = STATIC_PAGES.map(
-    ({ url, priority, changefreq }) =>
-      `  <url>
+  const staticEntries = [...STATIC_PAGES, ...ENGLISH_STATIC_PAGES]
+    .map(
+      ({ url, priority, changefreq }) =>
+        `  <url>
     <loc>${BRAND.url}${url}</loc>
     <lastmod>${STATIC_CONTENT_LASTMOD}</lastmod>
     <changefreq>${changefreq}</changefreq>
     <priority>${priority}</priority>
   </url>`
-  ).join('\n')
+    )
+    .join('\n')
 
   const [cases, news] = await Promise.all([getCases(CASE_FALLBACKS), getPublishedNews(500, 1)])
   const caseEntries = cases

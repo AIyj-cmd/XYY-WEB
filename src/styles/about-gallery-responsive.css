@@ -14,9 +14,32 @@
     font-size: clamp(2rem, 9.5vw, 3.25rem);
   }
 
+  .about-gallery[data-locale='en'] .about-gallery__statement h2 {
+    max-width: 12ch;
+    font-size: clamp(1.9rem, 9vw, 2.8rem);
+  }
+
   .about-gallery__statement p {
     max-width: 20rem;
     font-size: 0.82rem;
+  }
+
+  .about-gallery[data-locale='en'] .about-gallery__statement p {
+    max-width: 18rem;
+    font-size: 0.78rem;
+    line-height: 1.65;
+  }
+
+  .about-gallery[data-locale='en'] .about-gallery__statements {
+    width: 100%;
+    max-width: calc(100vw - 3rem);
+  }
+
+  .about-gallery[data-locale='en'] .about-gallery__eyebrow {
+    max-width: min(100%, 17rem);
+    letter-spacing: 0.18em;
+    line-height: 1.5;
+    white-space: normal;
   }
 }
 

@@ -19,12 +19,15 @@ const groups = (): ReturnFeatureGroups => ({
 export function groupReturnFeatures(features: FeatureItem[]): ReturnFeatureGroups {
   return features.reduce((result, feature) => {
     const title = feature.title
-    if (title.includes('四级')) result.grade.push(feature)
-    else if (title.includes('服装')) result.apparel.push(feature)
-    else if (title.includes('鞋')) result.footwear.push(feature)
+    if (title.includes('四级') || title === 'Four-grade inspection example')
+      result.grade.push(feature)
+    else if (title.includes('服装') || title === 'Apparel inspection') result.apparel.push(feature)
+    else if (title.includes('鞋') || title === 'Footwear inspection') result.footwear.push(feature)
     else if (title.includes('AQL')) result.rules.push(feature)
-    else if (title.includes('视频') || title.includes('举证')) result.evidence.push(feature)
-    else if (title.includes('修复')) result.repair.push(feature)
+    else if (title.includes('视频') || title.includes('举证') || title === 'Video evidence')
+      result.evidence.push(feature)
+    else if (title.includes('修复') || title === 'Repair routing and re-listing')
+      result.repair.push(feature)
     else result.other.push(feature)
     return result
   }, groups())

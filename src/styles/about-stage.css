@@ -40,6 +40,19 @@
   letter-spacing: -0.045em;
 }
 
+.about-stage[data-locale='en'] .about-stage__title {
+  max-width: 9.5ch;
+  font-size: clamp(2.75rem, 4vw, 4.4rem);
+  letter-spacing: -0.04em;
+}
+
+.about-stage[data-locale='en'] .about-stage__brand {
+  max-width: 18rem;
+  font-size: 0.3em;
+  letter-spacing: 0.08em;
+  line-height: 1.2;
+}
+
 .about-stage__brand {
   display: block;
   margin-bottom: 0.65rem;

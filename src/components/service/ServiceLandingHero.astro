@@ -1,4 +1,7 @@
 ---
+import { smartShippingCopy } from '@/i18n/smart-shipping'
+import type { SiteLocale } from '@/i18n/routes'
+
 interface Props {
   eyebrow: string
   h1: string
@@ -8,13 +11,25 @@ interface Props {
   imgAlt: string
   videoSrc?: string
   poster?: string
+  locale?: SiteLocale
 }
 
-const { eyebrow, h1, h1sub, heroDesc, imgSrc, imgAlt, videoSrc, poster } = Astro.props
+const {
+  eyebrow,
+  h1,
+  h1sub,
+  heroDesc,
+  imgSrc,
+  imgAlt,
+  videoSrc,
+  poster,
+  locale = 'zh-CN',
+} = Astro.props
+const english = smartShippingCopy(locale)
 ---
 
 <section
-  class="relative py-16 lg:py-28 overflow-hidden"
+  class:list={['relative py-16 lg:py-28 overflow-hidden', { 'pt-28 sm:pt-32': locale === 'en' }]}
   aria-labelledby="lp-h1"
   data-service-motion-root
 >
@@ -30,7 +45,7 @@ const { eyebrow, h1, h1sub, heroDesc, imgSrc, imgAlt, videoSrc, poster } = Astro
         width="1280"
         height="720"
         poster={poster}
-        aria-label={`${h1}服务视频`}
+        aria-label={english?.hero.videoAria ?? `${h1}服务视频`}
         data-service-hero-media
       >
         <source src={videoSrc} type="video/mp4" />
@@ -58,16 +73,16 @@ const { eyebrow, h1, h1sub, heroDesc, imgSrc, imgAlt, videoSrc, poster } = Astro
     <p class="text-lg text-navy-100 max-w-2xl leading-relaxed mb-8">{heroDesc}</p>
     <div class="flex flex-wrap gap-3">
       <a
-        href="/contact"
+        href={locale === 'en' ? '/en/contact' : '/contact'}
         class="inline-flex items-center px-6 py-3 bg-brand-orange hover:bg-brand-orange-dark text-white font-bold rounded-xl transition-colors text-sm"
       >
-        免费获取方案
+        {english?.hero.primaryAction ?? '免费获取方案'}
       </a>
       <a
-        href="/product"
+        href={locale === 'en' ? '/en/services' : '/product'}
         class="inline-flex items-center px-6 py-3 border border-white/30 hover:border-white/60 text-white/80 hover:text-white font-medium rounded-xl transition-colors text-sm"
       >
-        查看全部产品
+        {english?.hero.secondaryAction ?? '查看全部产品'}
       </a>
     </div>
   </div>

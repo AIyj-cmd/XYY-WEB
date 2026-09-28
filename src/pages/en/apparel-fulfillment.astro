@@ -1,0 +1,13 @@
+---
+import ServiceLanding from '@/layouts/ServiceLanding.astro'
+import { FOOTWEAR_ENGLISH_SOURCE } from '@/i18n/service-sources-footwear'
+---
+
+<ServiceLanding
+  {...FOOTWEAR_ENGLISH_SOURCE.source}
+  locale="en"
+  presentation="footwear"
+  slug="xiefu-yuncang"
+  variant="journey"
+  faqs={FOOTWEAR_ENGLISH_SOURCE.sourceFaqs}
+/>

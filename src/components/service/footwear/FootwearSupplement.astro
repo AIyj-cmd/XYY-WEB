@@ -1,16 +1,23 @@
 ---
 import type { FeatureItem, StatItem } from '@/data/service'
+import { FOOTWEAR_ENGLISH_UI } from '@/i18n/footwear-ui'
+import type { SiteLocale } from '@/i18n/routes'
 interface Props {
   features: FeatureItem[]
   stats: readonly StatItem[]
   contentDesc: string
+  locale?: SiteLocale
 }
-const { features, stats, contentDesc } = Astro.props
+const { features, stats, contentDesc, locale = 'zh-CN' } = Astro.props
 ---
 
 <section class="footwear-section footwear-supplement" aria-labelledby="footwear-supplement-heading">
-  <p class="footwear-section__label">补充说明</p>
-  <h2 id="footwear-supplement-heading">更多服务信息</h2>
+  <p class="footwear-section__label">
+    {locale === 'en' ? FOOTWEAR_ENGLISH_UI.supplement.label : '补充说明'}
+  </p>
+  <h2 id="footwear-supplement-heading">
+    {locale === 'en' ? FOOTWEAR_ENGLISH_UI.supplement.heading : '更多服务信息'}
+  </h2>
   {contentDesc && <p class="footwear-supplement__context">{contentDesc}</p>}
   {
     features.map(({ title, desc }) => (

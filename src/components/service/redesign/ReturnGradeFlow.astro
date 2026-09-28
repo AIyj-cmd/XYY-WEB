@@ -1,12 +1,16 @@
 ---
 import type { FeatureItem } from '@/data/service'
 import { CLAIM_TEXT } from '@/lib/claims'
+import { englishClaim } from '@/i18n/claims'
+import type { SiteLocale } from '@/i18n/routes'
+import { REDESIGN_ENGLISH_UI } from '@/i18n/redesign-ui'
 
 interface Props {
   features: FeatureItem[]
+  locale?: SiteLocale
 }
 
-const { features } = Astro.props
+const { features, locale = 'zh-CN' } = Astro.props
 
 const grades = [
   [
@@ -38,12 +42,22 @@ const grades = [
     '按品牌方确认方案进行隔离、退回或其他处置',
   ],
 ]
+const copy = REDESIGN_ENGLISH_UI.returns
+const displayGrades = locale === 'en' ? copy.grades : grades
+const turnaround =
+  locale === 'en'
+    ? englishClaim('returnTurnaround', 'service:tuihuo-zhijian')
+    : CLAIM_TEXT.returnTurnaround
 ---
 
 <section class="returns-section returns-grades" aria-labelledby="returns-grade-heading">
   <div class="returns-shell">
     <header class="returns-section__heading">
-      <p class="returns-kicker">分流</p><h2 id="returns-grade-heading">四级分流，一眼对照</h2>
+      <p class="returns-kicker">{locale === 'en' ? copy.gradeKicker : '分流'}</p><h2
+        id="returns-grade-heading"
+      >
+        {locale === 'en' ? copy.gradeHeading : '四级分流，一眼对照'}
+      </h2>
       {
         features.map(({ title, desc }) => (
           <p data-redesign-feature>
@@ -55,10 +69,16 @@ const grades = [
         ))
       }
     </header>
-    <p class="returns-grades__rule">以下为处置示例；具体判定条件和处置方式按品牌确认标准执行。</p>
-    <div class="returns-grades__table" role="list" aria-label="四级质检处置示例">
+    <p class="returns-grades__rule">
+      {locale === 'en' ? copy.rule : '以下为处置示例；具体判定条件和处置方式按品牌确认标准执行。'}
+    </p>
+    <div
+      class="returns-grades__table"
+      role="list"
+      aria-label={locale === 'en' ? 'Four-grade inspection examples' : '四级质检处置示例'}
+    >
       {
-        grades.map(([grade, label, definition, cases, action]) => (
+        displayGrades.map(([grade, label, definition, cases, action]) => (
           <article role="listitem">
             <div>
               <>
@@ -69,16 +89,26 @@ const grades = [
             <>
               <p>{definition}</p>
               <p>
-                <b>典型异常</b>
+                <b>{locale === 'en' ? copy.anomaly : '典型异常'}</b>
                 {cases}
               </p>
             </>
             <p>
-              <b>处理去向</b>
-              {grade === 'B- 级' ? <a href="/houzheng-xiufu">{action}</a> : action}
+              <b>{locale === 'en' ? copy.outcome : '处理去向'}</b>
+              {grade === (locale === 'en' ? 'B-' : 'B- 级') ? (
+                <a href={locale === 'en' ? '/en/garment-care' : '/houzheng-xiufu'}>{action}</a>
+              ) : (
+                action
+              )}
             </p>
             <small>
-              {grade === 'C 级' ? '按约定通知' : `纳入${CLAIM_TEXT.returnTurnaround}整体流程`}
+              {grade === (locale === 'en' ? 'C' : 'C 级')
+                ? locale === 'en'
+                  ? copy.notice
+                  : '按约定通知'
+                : locale === 'en'
+                  ? `Included in the ${turnaround} workflow`
+                  : `纳入${CLAIM_TEXT.returnTurnaround}整体流程`}
             </small>
           </article>
         ))

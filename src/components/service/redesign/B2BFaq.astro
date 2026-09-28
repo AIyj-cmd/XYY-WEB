@@ -1,16 +1,22 @@
 ---
 import type { FaqItem } from '@/data/service'
+import type { SiteLocale } from '@/i18n/routes'
+import { REDESIGN_ENGLISH_UI } from '@/i18n/redesign-ui'
 interface Props {
   faqs: FaqItem[]
+  locale?: SiteLocale
 }
-const { faqs } = Astro.props
+const { faqs, locale = 'zh-CN' } = Astro.props
+const copy = REDESIGN_ENGLISH_UI.b2b
 ---
 
 <section class="b2b-faq b2b-section" aria-labelledby="b2b-faq-heading">
   <div class="redesign-shell">
     <header class="b2b-section-heading">
-      <p class="redesign-kicker">常见问题</p><h2 id="b2b-faq-heading">
-        关于门店仓配，你可能还想了解。
+      <p class="redesign-kicker">{locale === 'en' ? copy.faq : '常见问题'}</p><h2
+        id="b2b-faq-heading"
+      >
+        {locale === 'en' ? copy.faqHeading : '关于门店仓配，你可能还想了解。'}
       </h2>
     </header>{
       faqs.map(({ q, a }) => (

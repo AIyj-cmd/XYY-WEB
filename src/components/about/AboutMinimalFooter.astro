@@ -1,28 +1,37 @@
 ---
 import '@/styles/about-minimal-footer.css'
+import { aboutUi } from '@/i18n/about-ui'
+import type { SiteLocale } from '@/i18n/routes'
 
 interface Props {
   icp: string
   phone: string
   headquartersLabel: string
   headquartersAddress: string
+  locale?: SiteLocale
 }
 
-const { icp, phone, headquartersLabel, headquartersAddress } = Astro.props
+const { icp, phone, headquartersLabel, headquartersAddress, locale = 'zh-CN' } = Astro.props
 const currentYear = new Date().getFullYear()
+const copy = aboutUi(locale)
 ---
 
 <div class="about-minimal-ending">
-  <footer class="about-minimal-footer" role="contentinfo" aria-label="关于页页脚">
+  <footer
+    class="about-minimal-footer"
+    role="contentinfo"
+    aria-label={copy.footer.label}
+    data-locale={locale}
+  >
     <div class="about-minimal-footer__inner">
       <div class="about-minimal-footer__row">
         <div class="about-minimal-footer__meta">
-          <p>© {currentYear} 广州新亦源供应链管理有限公司</p>
+          <p>{copy.footer.copyright(currentYear)}</p>
           <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">
             {icp}
           </a>
         </div>
-        <aside class="about-minimal-footer__contact" aria-label="新亦源联系信息">
+        <aside class="about-minimal-footer__contact" aria-label={copy.footer.contact}>
           <div class="about-minimal-footer__address">
             <strong>{headquartersLabel}</strong>
             <span>{headquartersAddress}</span>
@@ -43,7 +52,7 @@ const currentYear = new Date().getFullYear()
           </a>
         </aside>
         <a class="about-minimal-footer__top" href="#about-hero">
-          返回顶部
+          {copy.footer.backToTop}
           <span aria-hidden="true">↑</span>
         </a>
       </div>

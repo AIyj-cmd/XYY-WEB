@@ -1,24 +1,63 @@
+---
+import { DIGITAL_OPERATIONS_ENGLISH } from '@/i18n/digital-operations'
+import type { SiteLocale } from '@/i18n/routes'
+
+interface Props {
+  locale?: SiteLocale
+}
+
+const { locale = 'zh-CN' } = Astro.props
+const english = locale === 'en' ? DIGITAL_OPERATIONS_ENGLISH : undefined
+---
+
 <section class="digital-hero" aria-labelledby="digital-heading">
   <div class="digital-shell digital-hero__grid">
     <header>
       <p class="digital-kicker">LOGISTICS CONTROL LAYER</p>
-      <h1 id="digital-heading">让订单、库存与<br />履约状态在同一处协同。</h1>
+      <h1 id="digital-heading">
+        {
+          english ? (
+            <>
+              {english.hero.heading[0]}
+              <br />
+              {english.hero.heading[1]}
+            </>
+          ) : (
+            <>
+              让订单、库存与
+              <br />
+              履约状态在同一处协同。
+            </>
+          )
+        }
+      </h1>
       <p class="digital-hero__lead">
-        不是再增加一个后台，而是让品牌已有的订单、仓内与物流信息能够被看见、被关联、被回查。
+        {
+          english?.hero.lead ??
+            '不是再增加一个后台，而是让品牌已有的订单、仓内与物流信息能够被看见、被关联、被回查。'
+        }
       </p>
-      <a class="digital-action" href="/contact">
-        咨询系统对接方案 <span aria-hidden="true">→</span>
+      <a
+        class="digital-action"
+        href={english ? '/en/contact' : '/contact'}
+        aria-label={english?.hero.actionAria}
+      >
+        {english?.hero.action ?? '咨询系统对接方案'}
+        <span aria-hidden="true">→</span>
       </a>
     </header>
     <figure class="digital-hero__screen">
       <img
         src="/w-fulfill-system-dashboard.png"
-        alt="新亦源物流服务中台订单履约数据看板"
+        alt={english?.hero.imageAlt ?? '新亦源物流服务中台订单履约数据看板'}
         width="979"
         height="511"
         fetchpriority="high"
       />
-      <figcaption><span>LIVE OPERATIONS</span> 订单、仓内与物流状态看板</figcaption>
+      <figcaption>
+        <span>LIVE OPERATIONS</span>
+        {english?.hero.caption ?? '订单、仓内与物流状态看板'}
+      </figcaption>
     </figure>
   </div>
 </section>

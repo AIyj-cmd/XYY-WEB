@@ -27,4 +27,13 @@
     padding: 1.2rem 0;
     border-left: 0;
   }
+
+  .delivery[data-locale='en'] .delivery__summary article {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.2rem;
+  }
+
+  .delivery[data-locale='en'] .delivery__summary article strong {
+    grid-row: auto;
+  }
 }

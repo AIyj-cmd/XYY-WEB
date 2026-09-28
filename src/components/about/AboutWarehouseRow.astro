@@ -1,11 +1,15 @@
 ---
 import type { Warehouse } from '@/lib/directus'
+import { aboutUi } from '@/i18n/about-ui'
+import type { SiteLocale } from '@/i18n/routes'
 
 interface Props {
   warehouse: Warehouse
+  locale?: SiteLocale
 }
 
-const { warehouse } = Astro.props
+const { warehouse, locale = 'zh-CN' } = Astro.props
+const copy = aboutUi(locale)
 const pendingAddress = /^具体地址/.test(warehouse.address.trim())
 ---
 
@@ -17,6 +21,10 @@ const pendingAddress = /^具体地址/.test(warehouse.address.trim())
       pendingAddress ? 'text-gray-400' : 'text-gray-600',
     ]}
   >
-    {pendingAddress ? '地址待确认' : warehouse.address || '地址待公布'}
+    {
+      pendingAddress
+        ? copy.warehouseRegions.addressPending
+        : warehouse.address || copy.warehouseRegions.addressUnavailable
+    }
   </p>
 </div>

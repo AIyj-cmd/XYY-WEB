@@ -1,0 +1,15 @@
+---
+import ServiceLanding from '@/layouts/ServiceLanding.astro'
+import YundaoOperations from '@/components/service/YundaoOperations.astro'
+import { YUNDAO_ENGLISH_SOURCE } from '@/i18n/service-sources-yundao'
+---
+
+<ServiceLanding
+  {...YUNDAO_ENGLISH_SOURCE.source}
+  locale="en"
+  slug="yundao-zhineng-jijian"
+  variant="delivery-desk"
+  faqs={YUNDAO_ENGLISH_SOURCE.sourceFaqs}
+>
+  <YundaoOperations slot="unique" locale="en" />
+</ServiceLanding>

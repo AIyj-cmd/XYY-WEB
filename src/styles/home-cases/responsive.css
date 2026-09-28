@@ -64,3 +64,16 @@
     transition: none;
   }
 }
+
+[data-locale='en'] .cg-label strong,
+[data-locale='en'] .cg-detail p,
+[data-locale='en'] .cg-detail small {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 390px) {
+  [data-locale='en'] .cg-detail > p {
+    font-size: 0.72rem;
+    line-height: 1.45;
+  }
+}

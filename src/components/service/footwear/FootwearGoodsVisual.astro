@@ -1,12 +1,21 @@
 ---
+import { FOOTWEAR_ENGLISH_UI } from '@/i18n/footwear-ui'
+import type { SiteLocale } from '@/i18n/routes'
+interface Props {
+  locale?: SiteLocale
+}
+const { locale = 'zh-CN' } = Astro.props
+const copy = FOOTWEAR_ENGLISH_UI.goods.visual
 const visualLabel =
-  '款式、颜色和尺码的商品信息示意图；其中颜色和尺码仅为示意，不代表实际库存或业务数据。'
+  locale === 'en'
+    ? copy.label
+    : '款式、颜色和尺码的商品信息示意图；其中颜色和尺码仅为示意，不代表实际库存或业务数据。'
 ---
 
 <article class="footwear-goods-visual" role="img" aria-label={visualLabel}>
   <header class="footwear-goods-visual__header">
-    <span>商品档案</span>
-    <span>信息示意</span>
+    <span>{locale === 'en' ? copy.record : '商品档案'}</span>
+    <span>{locale === 'en' ? copy.illustration : '信息示意'}</span>
   </header>
   <div class="footwear-goods-visual__body">
     <div class="footwear-goods-visual__garment" aria-hidden="true">
@@ -24,17 +33,17 @@ const visualLabel =
     </div>
     <div class="footwear-goods-visual__details">
       <section class="footwear-goods-visual__group">
-        <span class="footwear-goods-visual__label">款式</span>
-        <strong>版型示意</strong>
+        <span class="footwear-goods-visual__label">{locale === 'en' ? copy.style : '款式'}</span>
+        <strong>{locale === 'en' ? copy.styleExample : '版型示意'}</strong>
       </section>
       <section class="footwear-goods-visual__group">
-        <span class="footwear-goods-visual__label">颜色</span>
+        <span class="footwear-goods-visual__label">{locale === 'en' ? copy.colour : '颜色'}</span>
         <span class="footwear-goods-visual__swatches" aria-hidden="true">
           <i></i><i></i><i></i>
         </span>
       </section>
       <section class="footwear-goods-visual__group footwear-goods-visual__group--size">
-        <span class="footwear-goods-visual__label">尺码</span>
+        <span class="footwear-goods-visual__label">{locale === 'en' ? copy.size : '尺码'}</span>
         <span class="footwear-goods-visual__sizes" aria-hidden="true"><b>S</b><b>M</b><b>L</b></span
         >
       </section>
@@ -63,7 +72,6 @@ const visualLabel =
   }
   .footwear-goods-visual__header {
     justify-content: space-between;
-    margin-bottom: 0;
     color: #1d1d1b;
     font-size: 0.8rem;
     font-weight: 800;

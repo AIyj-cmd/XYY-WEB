@@ -15,6 +15,13 @@
   }
 }
 @media (max-width: 640px) {
+  .b2b-page[data-locale='en'] .b2b-hero {
+    padding-top: 7rem;
+  }
+  .b2b-page[data-locale='en'] .b2b-cta .conversion-cta__message {
+    min-width: 0;
+    max-width: 100%;
+  }
   .b2b-section {
     padding: 3.75rem 0;
   }
@@ -46,5 +53,11 @@
   }
   .b2b-preparation__base .b2b-stat {
     display: block;
+  }
+}
+
+@media (max-width: 760px) {
+  .b2b-page[data-locale='en'] .b2b-cta a.conversion-cta__action {
+    margin-inline: 0;
   }
 }

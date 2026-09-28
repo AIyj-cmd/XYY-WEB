@@ -6,6 +6,7 @@ import Footer from '@/components/Footer.astro'
 import DocumentHead from '@/components/layout/DocumentHead.astro'
 import FloatingContact from '@/components/layout/FloatingContact.astro'
 import { DEFAULT_SITE_SETTINGS } from '@/data/site-settings'
+import type { SiteLocale } from '@/i18n/routes'
 import '@/styles/global.css'
 
 interface Props {
@@ -18,6 +19,7 @@ interface Props {
   siteSettings?: typeof DEFAULT_SITE_SETTINGS
   showFooter?: boolean
   showFloatingContact?: boolean
+  locale?: SiteLocale
 }
 
 const {
@@ -30,22 +32,23 @@ const {
   siteSettings: providedSiteSettings,
   showFooter = true,
   showFloatingContact = true,
+  locale = 'zh-CN',
 } = Astro.props
 const siteSettings = providedSiteSettings ?? (await getSiteSettings(DEFAULT_SITE_SETTINGS))
 ---
 
 <!doctype html>
-<html lang="zh-Hans" class="scroll-smooth">
+<html lang={locale === 'en' ? 'en' : 'zh-Hans'} class="scroll-smooth">
   <head>
-    <DocumentHead {title} {description} {canonical} {ogImage} {jsonLd} {noIndex} />
+    <DocumentHead {title} {description} {canonical} {ogImage} {jsonLd} {noIndex} {locale} />
   </head>
   <body class="bg-white text-gray-900 font-sans antialiased">
-    <Header />
+    <Header {locale} />
     <main>
       <slot />
     </main>
-    {showFooter && <Footer settings={siteSettings} />}
+    {showFooter && <Footer settings={siteSettings} {locale} />}
 
-    {showFloatingContact && <FloatingContact phone={siteSettings.phone} />}
+    {showFloatingContact && <FloatingContact phone={siteSettings.phone} {locale} />}
   </body>
 </html>

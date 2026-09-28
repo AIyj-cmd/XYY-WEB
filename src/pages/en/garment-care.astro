@@ -1,0 +1,13 @@
+---
+import ServiceLanding from '@/layouts/ServiceLanding.astro'
+import { REPAIR_ENGLISH_SOURCE } from '@/i18n/service-sources-repair'
+---
+
+<ServiceLanding
+  {...REPAIR_ENGLISH_SOURCE.source}
+  locale="en"
+  presentation="repair"
+  slug="houzheng-xiufu"
+  variant="repair-workshop"
+  faqs={REPAIR_ENGLISH_SOURCE.sourceFaqs}
+/>

@@ -1,23 +1,27 @@
 ---
 import type { HomepageStat } from '@/lib/directus'
+import { homeUi } from '@/i18n/home-ui'
+import type { SiteLocale } from '@/i18n/routes'
 
 interface Props {
   stats: HomepageStat[]
+  locale?: SiteLocale
 }
 
-const { stats } = Astro.props
+const { stats, locale = 'zh-CN' } = Astro.props
+const copy = homeUi(locale).stats.cards
 ---
 
 <article class="stat-card stats-inspection" data-flow="inspection">
   <header class="stat-card-heading">
-    <span class="stat-card-kicker">质检履约</span>
+    <span class="stat-card-kicker">{copy.inspection}</span>
     <span class="stat-card-index">03</span>
   </header>
   <div class="stat-metrics stat-metrics--inspection">
     {
       stats.map(({ value, label, unit, detail }, index) => (
         <div class="stat-metric">
-          <span class="inspection-direction">{index === 0 ? '正向入仓' : '逆向回流'}</span>
+          <span class="inspection-direction">{index === 0 ? copy.inbound : copy.returns}</span>
           <div class="stat-val">
             <span class="stat-num" data-raw={value}>
               {value}

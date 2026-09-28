@@ -68,6 +68,21 @@ ${whitepaperLinks}
 - [行业动态](${page('/news')}): 鞋服物流、云仓、质检和供应链行业内容。
 - [供应链白皮书](${page('/supply-chain-whitepapers/')}): 新亦源发布的鞋服供应链知识内容。
 - [个人信息保护说明](${page('/privacy')}): 官网咨询表单的个人信息收集、使用和权利说明。
+
+## English pages
+
+- [English home](${page('/en')}): English overview for apparel brands doing business in China.
+- [English services](${page('/en/services')}): Apparel fulfilment, returns inspection, garment care and retail distribution.
+- [English apparel fulfilment](${page('/en/apparel-fulfillment')}): Apparel warehousing, order fulfilment and systems integration.
+- [English returns inspection](${page('/en/returns-inspection')}): Returns handling, inspection and disposition workflows.
+- [English garment care](${page('/en/garment-care')}): Apparel preparation, care and value-added handling.
+- [English retail distribution](${page('/en/retail-distribution')}): Retail, B2B and store-replenishment distribution.
+- [English digital operations](${page('/en/digital-operations')}): Order, inventory, warehouse and logistics-status coordination.
+- [English smart shipping](${page('/en/smart-shipping')}): Store shipping, transfers, return-to-warehouse requests and carrier coordination.
+- [English about](${page('/en/about')}): Company background, warehouse network, milestones and honours.
+- [English cases](${page('/en/cases')}): Public English case summaries; use the English contact page to discuss a relevant example.
+- [English contact](${page('/en/contact')}): Business enquiries for China apparel supply-chain operations.
+- [English privacy notice](${page('/en/privacy')}): Privacy information for English website enquiries.
 `
 
   return new Response(content, {

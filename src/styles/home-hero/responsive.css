@@ -22,3 +22,20 @@
     animation: none;
   }
 }
+
+[data-locale='en'] .hero-title,
+[data-locale='en'] .hero-sub,
+[data-locale='en'] .hero-data {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 390px) {
+  [data-locale='en'] .hero-title {
+    font-size: clamp(1.5rem, 7.5vw, 1.9rem);
+  }
+
+  [data-locale='en'] .hero-data {
+    font-size: 0.7rem;
+    line-height: 1.7;
+  }
+}

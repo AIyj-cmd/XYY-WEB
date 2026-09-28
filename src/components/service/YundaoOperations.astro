@@ -1,5 +1,14 @@
 ---
 import '@/styles/yundao-operations.css'
+import { smartShippingCopy } from '@/i18n/smart-shipping'
+import type { SiteLocale } from '@/i18n/routes'
+
+interface Props {
+  locale?: SiteLocale
+}
+
+const { locale = 'zh-CN' } = Astro.props
+const english = smartShippingCopy(locale)
 
 const FLOW = [
   ['01', '需求进入', '门店或企业提交寄件、调拨或退仓需求'],
@@ -15,17 +24,38 @@ const SCENARIOS = [
   ['电商业务', '平台订单寄件、售后退回及正逆向物流状态协同。'],
   ['企业机构', '文件、样品、物料以及批量寄件需求统一处理。'],
 ] as const
+const flow = english?.operations.flow.steps ?? FLOW
+const scenarios = english?.operations.scenarios.items ?? SCENARIOS
 ---
 
-<section class="yd-operations" aria-labelledby="yd-interface-heading">
+<section class="yd-operations" aria-labelledby="yd-interface-heading" data-locale={locale}>
   <div class="yd-operations__inner">
     <header class="yd-operations__header">
       <div>
         <p>ACTUAL INTERFACE / OPERATION RECORD</p>
-        <h2 id="yd-interface-heading">业务人员需要看到的，<br />是每一票货现在在哪里。</h2>
+        <h2 id="yd-interface-heading">
+          {
+            english ? (
+              <>
+                {english.operations.heading[0]}
+                <br />
+                {english.operations.heading[1]}
+              </>
+            ) : (
+              <>
+                业务人员需要看到的，
+                <br />
+                是每一票货现在在哪里。
+              </>
+            )
+          }
+        </h2>
       </div>
       <p>
-        订单、运单、轨迹、签收与异常不再散落在多个查询入口；界面承接日常操作，流程负责把每个结果继续向后推进。
+        {
+          english?.operations.intro ??
+            '订单、运单、轨迹、签收与异常不再散落在多个查询入口；界面承接日常操作，流程负责把每个结果继续向后推进。'
+        }
       </p>
     </header>
 
@@ -33,33 +63,45 @@ const SCENARIOS = [
       <figure class="yd-interface__main">
         <img
           src="/yundao-order-list.png"
-          alt="运到智能寄件平台订单信息界面"
+          alt={english?.operations.figures[1][0] ?? '运到智能寄件平台订单信息界面'}
           loading="lazy"
           width="926"
           height="490"
         />
-        <figcaption><span>01</span><strong>订单与寄件信息统一管理</strong></figcaption>
+        <figcaption>
+          <span>01</span><strong
+            >{english?.operations.figures[0][0] ?? '订单与寄件信息统一管理'}</strong
+          >
+        </figcaption>
       </figure>
       <div class="yd-interface__side">
         <figure>
           <img
             src="/yundao-alerts.png"
-            alt="运到智能寄件平台发货预警界面"
+            alt={english?.operations.figures[1][1] ?? '运到智能寄件平台发货预警界面'}
             loading="lazy"
             width="543"
             height="451"
           />
-          <figcaption><span>02</span><strong>异常节点及时进入视野</strong></figcaption>
+          <figcaption>
+            <span>02</span><strong
+              >{english?.operations.figures[0][1] ?? '异常节点及时进入视野'}</strong
+            >
+          </figcaption>
         </figure>
         <figure>
           <img
             src="/yundao-report.png"
-            alt="运到智能寄件平台统计报表界面"
+            alt={english?.operations.figures[1][2] ?? '运到智能寄件平台统计报表界面'}
             loading="lazy"
             width="570"
             height="472"
           />
-          <figcaption><span>03</span><strong>寄件结果沉淀为报表</strong></figcaption>
+          <figcaption>
+            <span>03</span><strong
+              >{english?.operations.figures[0][2] ?? '寄件结果沉淀为报表'}</strong
+            >
+          </figcaption>
         </figure>
       </div>
     </div>
@@ -67,12 +109,17 @@ const SCENARIOS = [
     <div class="yd-flow">
       <header>
         <p>SERVICE FLOW</p>
-        <h2>一次寄件如何完成？</h2>
-        <span>从需求进入到结果沉淀，六个环节分别对应明确的业务状态。</span>
+        <h2>{english?.operations.flow.heading ?? '一次寄件如何完成？'}</h2>
+        <span
+          >{
+            english?.operations.flow.note ??
+              '从需求进入到结果沉淀，六个环节分别对应明确的业务状态。'
+          }</span
+        >
       </header>
       <ol>
         {
-          FLOW.map(([number, title, note]) => (
+          flow.map(([number, title, note]) => (
             <li>
               <>
                 <span>{number}</span>
@@ -86,10 +133,12 @@ const SCENARIOS = [
     </div>
 
     <div class="yd-scenarios">
-      <header><p>SUITABLE FOR</p><h2>三类常见接入场景</h2></header>
+      <header>
+        <p>SUITABLE FOR</p><h2>{english?.operations.scenarios.heading ?? '三类常见接入场景'}</h2>
+      </header>
       <div>
         {
-          SCENARIOS.map(([title, note], index) => (
+          scenarios.map(([title, note], index) => (
             <article>
               <>
                 <span>{String(index + 1).padStart(2, '0')}</span>

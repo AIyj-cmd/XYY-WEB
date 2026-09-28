@@ -37,3 +37,10 @@
     flex: 0 0 45%;
   }
 }
+
+[data-locale='en'] .fulfillment-title,
+[data-locale='en'] .fulfillment-sub,
+[data-locale='en'] .fulfillment-step-title,
+[data-locale='en'] .fulfillment-step-desc {
+  overflow-wrap: anywhere;
+}

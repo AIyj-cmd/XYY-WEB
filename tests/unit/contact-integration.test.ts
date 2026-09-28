@@ -78,6 +78,7 @@ describe('contact Xiansuo integration', () => {
     expect(response.status).toBe(503)
     await expect(response.json()).resolves.toEqual({
       error: '提交失败，请稍后重试或直接拨打客服热线',
+      code: 'storage_unavailable',
     })
   })
 

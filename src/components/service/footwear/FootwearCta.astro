@@ -1,30 +1,67 @@
 ---
+import { FOOTWEAR_ENGLISH_UI } from '@/i18n/footwear-ui'
+import type { SiteLocale } from '@/i18n/routes'
 interface Props {
   contentDesc: string
+  locale?: SiteLocale
 }
-const { contentDesc } = Astro.props
+const { contentDesc, locale = 'zh-CN' } = Astro.props
+const copy = FOOTWEAR_ENGLISH_UI.cta
 ---
 
 <section class="footwear-section footwear-cta" aria-labelledby="footwear-cta-heading">
   <div class="footwear-cta__inner">
     <div class="footwear-cta__content">
-      <p class="footwear-section__label">合作准备</p>
-      <h2 id="footwear-cta-heading"><span>从你的货品</span><span>和订单开始。</span></h2>
+      <p class="footwear-section__label">{locale === 'en' ? copy.label : '合作准备'}</p>
+      <h2 id="footwear-cta-heading">
+        <span>{locale === 'en' ? copy.headingStart : '从你的货品'}</span><span
+          >{locale === 'en' ? copy.headingEnd : '和订单开始。'}</span
+        >
+      </h2>
       {contentDesc && <p class="footwear-cta__description">{contentDesc}</p>}
       <div class="footwear-cta__actions">
-        <a class="footwear-button" href="/contact">沟通鞋服仓配需求</a>
-        <p><a href="/cases">查看案例</a><a href="/product">了解服务</a></p>
+        <a class="footwear-button" href={locale === 'en' ? '/en/contact' : '/contact'}
+          >{locale === 'en' ? copy.contact : '沟通鞋服仓配需求'}</a
+        >
+        <p>
+          <a href={locale === 'en' ? '/en/cases' : '/cases'}
+            >{locale === 'en' ? copy.cases : '查看案例'}</a
+          ><a href={locale === 'en' ? '/en/services' : '/product'}
+            >{locale === 'en' ? copy.services : '了解服务'}</a
+          >
+        </p>
       </div>
     </div>
     <div class="footwear-cta__preparation">
       <div class="footwear-cta__panel">
         <ol>
-          <li><span>01</span><div><h3>SKU与品类</h3><p>商品品类、款式与尺码</p></div></li>
-          <li><span>02</span><div><h3>销售渠道</h3><p>主要销售平台与门店</p></div></li>
-          <li><span>03</span><div><h3>日常与峰值单量</h3><p>日常订单量与活动预估</p></div></li>
+          {
+            (locale === 'en'
+              ? copy.preparation
+              : [
+                  ['SKU与品类', '商品品类、款式与尺码'],
+                  ['销售渠道', '主要销售平台与门店'],
+                  ['日常与峰值单量', '日常订单量与活动预估'],
+                ]
+            ).map(([title, description], index) => (
+              <li>
+                <>
+                  <span>{String(index + 1).padStart(2, '0')}</span>
+                  <div>
+                    <>
+                      <h3>{title}</h3>
+                      <p>{description}</p>
+                    </>
+                  </div>
+                </>
+              </li>
+            ))
+          }
         </ol>
       </div>
-      <p class="footwear-cta__condition">具体存储、操作、系统实施和增值服务按需求确认。</p>
+      <p class="footwear-cta__condition">
+        {locale === 'en' ? copy.condition : '具体存储、操作、系统实施和增值服务按需求确认。'}
+      </p>
     </div>
   </div>
 </section>

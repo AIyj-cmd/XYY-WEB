@@ -2,21 +2,19 @@
 import '@/styles/about-explorer.css'
 import '@/styles/about-dialog.css'
 import '@/styles/about-explorer-responsive.css'
+import { aboutUi } from '@/i18n/about-ui'
+import type { SiteLocale } from '@/i18n/routes'
 
-const entries = [
-  { id: 'history', number: '01', title: '发展历程', eyebrow: 'HISTORY' },
-  {
-    id: 'warehouse',
-    number: '02',
-    title: '仓网布局',
-    eyebrow: 'WAREHOUSE NETWORK',
-  },
-  { id: 'honors', number: '03', title: '资质与荣誉', eyebrow: 'HONORS' },
-  { id: 'faq', number: '04', title: '常见问题', eyebrow: 'FAQ' },
-]
+interface Props {
+  locale?: SiteLocale
+}
+
+const { locale = 'zh-CN' } = Astro.props
+const copy = aboutUi(locale)
+const entries = copy.explorer.entries
 ---
 
-<section class="about-explorer" aria-label="浏览新亦源">
+<section class="about-explorer" aria-label={copy.explorer.label} data-locale={locale}>
   <div class="about-explorer__viewport">
     <div class="about-explorer__track">
       {
@@ -56,14 +54,14 @@ const entries = [
       <div>
         <p>ABOUT XYY</p>
         <h2 id="about-explorer-dialog-title" class="m-0 text-2xl font-black text-navy-800">
-          了解新亦源
+          {copy.explorer.dialogTitle}
         </h2>
       </div>
       <button
         type="button"
         class="about-explorer-dialog__close grid h-11 w-11 cursor-pointer place-items-center rounded-full border border-slate-200 bg-white text-[1.7rem] leading-none text-navy-800 focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-blue-300"
         data-about-explorer-close
-        aria-label="关闭内容层"
+        aria-label={copy.explorer.close}
       >
         <span aria-hidden="true">×</span>
       </button>

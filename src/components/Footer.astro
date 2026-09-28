@@ -1,12 +1,20 @@
 ---
 import { BRAND, FOOTER_SERVICE_LINKS, NAV_LINKS } from '@/lib/brand'
 import type { SiteSettingsRecord } from '@/lib/directus'
+import { ENGLISH_NAVIGATION, ENGLISH_SERVICE_LINKS, type SiteLocale } from '@/i18n/routes'
+import { shellCopy } from '@/i18n/shell'
 
 interface Props {
   settings: Omit<SiteSettingsRecord, 'id' | 'status' | 'key'>
+  locale?: SiteLocale
 }
 
-const { settings } = Astro.props
+const { settings, locale = 'zh-CN' } = Astro.props
+const copy = shellCopy(locale)
+const navLinks = locale === 'en' ? ENGLISH_NAVIGATION : NAV_LINKS
+const serviceLinks = locale === 'en' ? ENGLISH_SERVICE_LINKS : FOOTER_SERVICE_LINKS
+const homePath = locale === 'en' ? '/en' : '/'
+const privacyPath = locale === 'en' ? '/en/privacy' : '/privacy'
 ---
 
 <footer class="border-t border-slate-200 bg-slate-50 pt-10 pb-6 text-navy-700">
@@ -15,10 +23,10 @@ const { settings } = Astro.props
     <div class="mb-8 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
       <!-- Brand column -->
       <div class="lg:col-span-1">
-        <a href="/" class="inline-block mb-5" aria-label="新亦源供应链首页">
+        <a href={homePath} class="inline-block mb-5" aria-label={copy.home}>
           <img
             src="/logo.png"
-            alt="新亦源供应链"
+            alt={copy.brand}
             class="h-12 w-auto brightness-0 opacity-80"
             loading="lazy"
           />
@@ -50,10 +58,12 @@ const { settings } = Astro.props
 
       <!-- Products -->
       <div>
-        <h3 class="mb-4 text-sm font-semibold uppercase tracking-wider text-navy-900">仓配服务</h3>
+        <h3 class="mb-4 text-sm font-semibold uppercase tracking-wider text-navy-900">
+          {copy.services}
+        </h3>
         <ul class="space-y-2.5">
           {
-            FOOTER_SERVICE_LINKS.map(({ href, label }) => (
+            serviceLinks.map(({ href, label }) => (
               <li>
                 <a href={href} class="text-sm text-slate-600 transition-colors hover:text-navy-900">
                   {label}
@@ -66,10 +76,12 @@ const { settings } = Astro.props
 
       <!-- Navigation -->
       <div>
-        <h3 class="mb-4 text-sm font-semibold uppercase tracking-wider text-navy-900">快速入口</h3>
+        <h3 class="mb-4 text-sm font-semibold uppercase tracking-wider text-navy-900">
+          {copy.quick}
+        </h3>
         <ul class="space-y-2.5">
           {
-            NAV_LINKS.map(({ href, label }) => (
+            navLinks.map(({ href, label }) => (
               <li>
                 <a href={href} class="text-sm text-slate-600 transition-colors hover:text-navy-900">
                   {label}
@@ -83,7 +95,7 @@ const { settings } = Astro.props
       <!-- Contact -->
       <div>
         <h3 class="mb-4 text-sm font-semibold uppercase tracking-wider text-navy-900">
-          联系与地址
+          {copy.contact}
         </h3>
         <ul class="space-y-3.5">
           <li class="text-sm">
@@ -99,12 +111,20 @@ const { settings } = Astro.props
       class="flex flex-col items-center justify-between gap-3 border-t border-slate-200 pt-5 sm:flex-row"
     >
       <p class="text-xs text-slate-500">
-        © {new Date().getFullYear()}
-        {BRAND.fullName}. 保留所有权利.
+        © {new Date().getFullYear()}{locale === 'en' && ' '}
+        {
+          locale === 'en' ? (
+            <>Guangzhou XINYIYUAN Supply Chain Management Co., Ltd. {copy.rights}</>
+          ) : (
+            <>
+              {BRAND.fullName}. {copy.rights}
+            </>
+          )
+        }
       </p>
       <div class="flex items-center gap-4">
-        <a href="/privacy" class="text-xs text-slate-500 transition-colors hover:text-navy-900">
-          个人信息保护说明
+        <a href={privacyPath} class="text-xs text-slate-500 transition-colors hover:text-navy-900">
+          {copy.privacy}
         </a>
         <a
           href="https://beian.miit.gov.cn/"

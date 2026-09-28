@@ -98,6 +98,16 @@
     0 0.5rem 2rem rgba(1, 7, 18, 0.8);
 }
 
+.about-gallery[data-locale='en'] .about-gallery__statement h2 {
+  max-width: 16ch;
+  font-size: clamp(2.25rem, 4.8vw, 4.7rem);
+  letter-spacing: -0.035em;
+}
+
+.about-gallery[data-locale='en'] .about-gallery__statement p {
+  max-width: 32rem;
+}
+
 .about-gallery__statement h2 br:last-child {
   display: none;
 }

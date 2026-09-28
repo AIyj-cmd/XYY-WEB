@@ -1,18 +1,25 @@
 ---
 import type { FeatureItem } from '@/data/service'
+import { FOOTWEAR_ENGLISH_UI } from '@/i18n/footwear-ui'
+import type { SiteLocale } from '@/i18n/routes'
 import FootwearGoodsVisual from './FootwearGoodsVisual.astro'
 
 interface Props {
   features: FeatureItem[]
+  locale?: SiteLocale
 }
 
-const { features } = Astro.props
+const { features, locale = 'zh-CN' } = Astro.props
 ---
 
 <section class="footwear-section footwear-goods" aria-labelledby="footwear-goods-heading">
   <header>
-    <p class="footwear-section__label">货品管理</p>
-    <h2 id="footwear-goods-heading">款、色、码分得清，库存才好用。</h2>
+    <p class="footwear-section__label">
+      {locale === 'en' ? FOOTWEAR_ENGLISH_UI.goods.label : '货品管理'}
+    </p>
+    <h2 id="footwear-goods-heading">
+      {locale === 'en' ? FOOTWEAR_ENGLISH_UI.goods.heading : '款、色、码分得清，库存才好用。'}
+    </h2>
   </header>
   <div class="footwear-goods__grid">
     <div class="footwear-goods__copy footwear-goods__copy--left">
@@ -28,7 +35,7 @@ const { features } = Astro.props
       }
     </div>
     <div class="footwear-goods__visual">
-      <FootwearGoodsVisual />
+      <FootwearGoodsVisual {locale} />
     </div>
     <div class="footwear-goods__copy footwear-goods__copy--right">
       {

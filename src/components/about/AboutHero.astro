@@ -1,39 +1,61 @@
 ---
 import AboutHeroControls from './AboutHeroControls.astro'
 import AboutHeroMedia from './AboutHeroMedia.astro'
+import { aboutUi } from '@/i18n/about-ui'
+import type { SiteLocale } from '@/i18n/routes'
 import '@/styles/about-stage.css'
 import '@/styles/about-stage-responsive.css'
 
 interface Props {
   overview: string
+  locale?: SiteLocale
 }
 
-const { overview } = Astro.props
+const { overview, locale = 'zh-CN' } = Astro.props
+const copy = aboutUi(locale)
 ---
 
-<section id="about-hero" class="about-stage" aria-labelledby="about-hero-heading">
-  <AboutHeroMedia />
+<section
+  id="about-hero"
+  class="about-stage"
+  aria-labelledby="about-hero-heading"
+  data-locale={locale}
+>
+  <AboutHeroMedia {locale} />
 
   <div class="about-stage__video-controls">
-    <AboutHeroControls />
+    <AboutHeroControls {locale} />
   </div>
 
   <div class="about-stage__shell">
     <div class="about-stage__intro">
-      <p class="about-stage__eyebrow">关于我们</p>
+      <p class="about-stage__eyebrow">{copy.hero.eyebrow}</p>
       <h1 id="about-hero-heading" class="about-stage__title">
-        <span class="about-stage__brand">新亦源供应链</span>
-        让每个品牌<br />
-        都有专业的<br />
-        <span class="about-stage__accent">出货能力</span>
+        <span class="about-stage__brand">{copy.hero.brand}</span>
+        {
+          copy.hero.titleLines.map((line, index) => (
+            <>
+              <span
+                class:list={{ 'about-stage__accent': index === copy.hero.titleLines.length - 1 }}
+              >
+                {line}
+              </span>
+              {index < copy.hero.titleLines.length - 1 && <br />}
+            </>
+          ))
+        }
       </h1>
 
       <div class="about-overview" aria-labelledby="about-overview-heading">
         <div class="about-overview__heading">
-          <a class="about-overview__logo" href="/" aria-label="新亦源供应链首页">
-            <img src="/logo.png" alt="新亦源供应链" width="2362" height="905" />
+          <a
+            class="about-overview__logo"
+            href={locale === 'en' ? '/en' : '/'}
+            aria-label={copy.hero.homeAria}
+          >
+            <img src="/logo.png" alt={copy.hero.logoAlt} width="2362" height="905" />
           </a>
-          <h2 id="about-overview-heading">关于新亦源</h2>
+          <h2 id="about-overview-heading">{copy.hero.overviewHeading}</h2>
         </div>
         <p>{overview}</p>
       </div>

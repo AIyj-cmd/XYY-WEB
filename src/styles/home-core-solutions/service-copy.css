@@ -87,6 +87,14 @@
     color 0.2s;
 }
 
+[data-locale='en'] .svc-problem,
+[data-locale='en'] .svc-title,
+[data-locale='en'] .svc-sub,
+[data-locale='en'] .svc-desc,
+[data-locale='en'] .svc-features li {
+  overflow-wrap: anywhere;
+}
+
 .svc-link:hover {
   border-color: #1d4ed8;
   color: #1d4ed8;

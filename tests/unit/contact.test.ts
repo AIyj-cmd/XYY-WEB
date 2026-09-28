@@ -59,7 +59,10 @@ describe('contact API', () => {
     } as any)
 
     expect(response.status).toBe(400)
-    await expect(response.json()).resolves.toEqual({ error: '请输入有效的邮箱地址' })
+    await expect(response.json()).resolves.toEqual({
+      error: '请输入有效的邮箱地址',
+      code: 'validation_failed',
+    })
     expect(fetchMock).not.toHaveBeenCalled()
   })
 
@@ -110,6 +113,7 @@ describe('contact API', () => {
     expect(response.status).toBe(503)
     await expect(response.json()).resolves.toEqual({
       error: '提交失败，请稍后重试或直接拨打客服热线',
+      code: 'storage_unavailable',
     })
     expect(fetchMock).not.toHaveBeenCalled()
   })

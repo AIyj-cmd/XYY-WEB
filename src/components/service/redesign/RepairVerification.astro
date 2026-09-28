@@ -1,21 +1,31 @@
 ---
 import type { StatItem } from '@/data/service'
+import type { SiteLocale } from '@/i18n/routes'
+import { REDESIGN_ENGLISH_UI } from '@/i18n/redesign-ui'
 
 interface Props {
   contentDesc: string
   stats: readonly StatItem[]
+  locale?: SiteLocale
 }
 
-const { contentDesc, stats } = Astro.props
-const successStats = stats.filter(({ label }) => label.includes('修复成功率'))
-const supportingStats = stats.filter(({ label }) => !label.includes('修复成功率'))
+const { contentDesc, stats, locale = 'zh-CN' } = Astro.props
+const successStats = stats.filter(
+  ({ label }) => label.includes('修复成功率') || label === 'Repair success rate'
+)
+const supportingStats = stats.filter(
+  ({ label }) => !label.includes('修复成功率') && label !== 'Repair success rate'
+)
+const copy = REDESIGN_ENGLISH_UI.repair
 ---
 
 <section class="repair-verification repair-section" aria-labelledby="repair-verification-heading">
   <div class="redesign-shell">
     <header class="repair-section__heading">
-      <p class="redesign-kicker">数据与依据</p>
-      <h2 id="repair-verification-heading">修复结果，有明确的统计口径。</h2>
+      <p class="redesign-kicker">{locale === 'en' ? copy.verification : '数据与依据'}</p>
+      <h2 id="repair-verification-heading">
+        {locale === 'en' ? copy.verificationHeading : '修复结果，有明确的统计口径。'}
+      </h2>
     </header>
     <div class="repair-verification__layout">
       {
@@ -27,7 +37,9 @@ const supportingStats = stats.filter(({ label }) => !label.includes('修复成�
                 <span>{label}</span>
                 <p>
                   {sub}
-                  。指进入修复流程的商品中，经处理和二次质检后达到品牌约定上架等级的比例，不作为每批货保证。
+                  {locale === 'en'
+                    ? `. ${copy.verificationNote}`
+                    : '。指进入修复流程的商品中，经处理和二次质检后达到品牌约定上架等级的比例，不作为每批货保证。'}
                 </p>
               </>
             ))}

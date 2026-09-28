@@ -1,31 +1,35 @@
 ---
 import type { HomepageStat } from '@/lib/directus'
+import { homeUi } from '@/i18n/home-ui'
+import type { SiteLocale } from '@/i18n/routes'
 
 interface Props {
   stats: HomepageStat[]
+  locale?: SiteLocale
 }
 
-const { stats } = Astro.props
+const { stats, locale = 'zh-CN' } = Astro.props
+const copy = homeUi(locale).stats.cards
 ---
 
 <article class="stat-card stats-warehouse" data-flow="warehouse">
   <header class="stat-card-heading">
-    <span class="stat-card-kicker">仓储规模</span>
+    <span class="stat-card-kicker">{copy.warehouse}</span>
     <span class="stat-card-index">01</span>
   </header>
   <div class="stat-metrics stat-metrics--warehouse">
     {
-      stats.map(({ value, label, unit, detail }) => (
+      stats.map((stat) => (
         <div class="stat-metric">
           <div class="stat-val">
-            <span class="stat-num" data-raw={value}>
-              {value}
+            <span class="stat-num" data-raw={stat.value}>
+              {stat.value}
             </span>
-            <span class="stat-unit">{unit}</span>
+            <span class="stat-unit">{stat.unit}</span>
           </div>
-          <h3 class="stat-label">{label}</h3>
+          <h3 class="stat-label">{stat.label}</h3>
           <p class="stat-detail">
-            {label === '管理SKU' ? '覆盖多品类、多款式、多尺码商品管理' : detail}
+            {stat.claimKey === 'managedSkus' ? copy.skuDetail : stat.detail}
           </p>
         </div>
       ))

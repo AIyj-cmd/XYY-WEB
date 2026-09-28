@@ -1,12 +1,16 @@
 ---
+import type { SiteLocale } from '@/i18n/routes'
+import { REDESIGN_ENGLISH_UI } from '@/i18n/redesign-ui'
 interface Props {
   h1: string
   h1sub: string
   heroDesc: string
   videoSrc: string
   poster: string
+  locale?: SiteLocale
 }
-const { h1, h1sub, heroDesc, videoSrc, poster } = Astro.props
+const { h1, h1sub, heroDesc, videoSrc, poster, locale = 'zh-CN' } = Astro.props
+const copy = REDESIGN_ENGLISH_UI.b2b
 ---
 
 <header class="b2b-hero">
@@ -18,14 +22,18 @@ const { h1, h1sub, heroDesc, videoSrc, poster } = Astro.props
         h1sub && (
           <p class="b2b-hero__scenarios">
             <>
-              <span>连锁补货</span>
-              <span>批发铺货</span>
-              <span>加盟配送</span>
+              {(locale === 'en' ? copy.scenarios : ['连锁补货', '批发铺货', '加盟配送']).map(
+                (item) => (
+                  <span>{item}</span>
+                )
+              )}
             </>
           </p>
         )
       }
-      <a class="redesign-button" href="/contact">咨询门店仓配</a>
+      <a class="redesign-button" href={locale === 'en' ? '/en/contact' : '/contact'}
+        >{locale === 'en' ? copy.contact : '咨询门店仓配'}</a
+      >
     </div>
     <video
       class="b2b-hero__video"
@@ -38,7 +46,7 @@ const { h1, h1sub, heroDesc, videoSrc, poster } = Astro.props
       width="1280"
       height="720"
       poster={poster}
-      aria-label={`${h1}服务视频`}
+      aria-label={`${h1}${locale === 'en' ? ' service video' : '服务视频'}`}
     >
       <source src={videoSrc} type="video/mp4" />
     </video>

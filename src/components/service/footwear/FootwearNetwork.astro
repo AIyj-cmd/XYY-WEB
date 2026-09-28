@@ -1,23 +1,37 @@
 ---
 import type { FeatureItem } from '@/data/service'
+import { FOOTWEAR_ENGLISH_UI } from '@/i18n/footwear-ui'
+import type { SiteLocale } from '@/i18n/routes'
 
 interface Props {
   features: FeatureItem[]
   full: boolean
+  locale?: SiteLocale
 }
 
-const { features, full } = Astro.props
-const channels = [
-  { label: 'B2C', title: '电商发货', desc: '多平台订单汇集、库存核对与出库安排。' },
-  { label: 'B2B', title: '门店与批发', desc: '按店补货和批量分货，匹配不同收货安排。' },
-  { label: 'O2O', title: '线上线下协同', desc: '衔接门店库存与线上订单，按项目确认协同范围。' },
-]
+const { features, full, locale = 'zh-CN' } = Astro.props
+const channels =
+  locale === 'en'
+    ? FOOTWEAR_ENGLISH_UI.network.channels
+    : [
+        { label: 'B2C', title: '电商发货', desc: '多平台订单汇集、库存核对与出库安排。' },
+        { label: 'B2B', title: '门店与批发', desc: '按店补货和批量分货，匹配不同收货安排。' },
+        {
+          label: 'O2O',
+          title: '线上线下协同',
+          desc: '衔接门店库存与线上订单，按项目确认协同范围。',
+        },
+      ]
 ---
 
 <section class="footwear-section footwear-network" aria-labelledby="footwear-network-heading">
   <header class="footwear-network__heading">
-    <p class="footwear-section__label">一盘货流转</p>
-    <h2 id="footwear-network-heading">线上卖、门店补，同一盘货有序分配。</h2>
+    <p class="footwear-section__label">
+      {locale === 'en' ? FOOTWEAR_ENGLISH_UI.network.label : '一盘货流转'}
+    </p>
+    <h2 id="footwear-network-heading">
+      {locale === 'en' ? FOOTWEAR_ENGLISH_UI.network.heading : '线上卖、门店补，同一盘货有序分配。'}
+    </h2>
   </header>
   {
     full && (

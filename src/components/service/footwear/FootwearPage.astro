@@ -1,6 +1,8 @@
 ---
 import type { FaqItem } from '@/data/service'
 import type { ServicePageContent } from '@/lib/directus-content-queries'
+import { FOOTWEAR_ENGLISH_UI } from '@/i18n/footwear-ui'
+import type { SiteLocale } from '@/i18n/routes'
 import { groupFootwearFeatures, groupFootwearStats } from './content'
 import FootwearAssurance from './FootwearAssurance.astro'
 import FootwearFitFaq from './FootwearFitFaq.astro'
@@ -16,9 +18,10 @@ import '@/styles/service-footwear.css'
 interface Props {
   content: ServicePageContent
   faqs: FaqItem[]
+  locale?: SiteLocale
 }
 
-const { content, faqs } = Astro.props
+const { content, faqs, locale = 'zh-CN' } = Astro.props
 const available = Boolean(
   content.description ||
   content.h1 ||
@@ -41,14 +44,15 @@ const standardFeatureTitles = new Set(
 )
 const hasStandardBusiness = standardFeatureTitles.size === 6
 const hasCta = hasStandardBusiness
-const pills = [
-  hasStandardBusiness && '款色码管理',
-  hasStandardBusiness && '全渠道发货',
-  hasStandardBusiness && '退货回库',
-].filter(Boolean) as string[]
+const pills = (
+  locale === 'en' ? FOOTWEAR_ENGLISH_UI.page.pills : ['款色码管理', '全渠道发货', '退货回库']
+).filter(() => hasStandardBusiness)
 ---
 
-<article class:list={['footwear-page', { 'footwear-page--empty': !available }]}>
+<article
+  class:list={['footwear-page', { 'footwear-page--empty': !available }]}
+  data-locale={locale}
+>
   {
     hasHero && (
       <FootwearHero
@@ -60,21 +64,22 @@ const pills = [
         videoSrc={overviewVideo}
         poster={overviewPoster}
         {available}
+        {locale}
       />
     )
   }
   {
     available && (
       <>
-        {features.goods.length > 0 && <FootwearGoods features={features.goods} />}
+        {features.goods.length > 0 && <FootwearGoods features={features.goods} {locale} />}
         {features.channels.length > 0 && (
-          <FootwearNetwork features={features.channels} full={hasStandardBusiness} />
+          <FootwearNetwork features={features.channels} full={hasStandardBusiness} {locale} />
         )}
-        {hasStandardBusiness && <FootwearFulfillment />}
+        {hasStandardBusiness && <FootwearFulfillment {locale} />}
         {(features.daily.length > 0 || stats.daily.length > 0) && (
-          <FootwearAssurance stats={stats.daily} features={features.daily} />
+          <FootwearAssurance stats={stats.daily} features={features.daily} {locale} />
         )}
-        {hasStandardBusiness && <FootwearReturns />}
+        {hasStandardBusiness && <FootwearReturns {locale} />}
         {(features.unknown.length > 0 ||
           stats.unknown.length > 0 ||
           (content.contentDesc && !hasCta)) && (
@@ -82,17 +87,20 @@ const pills = [
             features={features.unknown}
             stats={stats.unknown}
             contentDesc={hasCta ? '' : content.contentDesc}
+            {locale}
           />
         )}
-        {faqs.length > 0 && <FootwearFitFaq {faqs} />}
-        {hasCta && <FootwearCta contentDesc={content.contentDesc} />}
+        {faqs.length > 0 && <FootwearFitFaq {faqs} {locale} />}
+        {hasCta && <FootwearCta contentDesc={content.contentDesc} {locale} />}
       </>
     )
   }
   {
     !available && (
       <section class="footwear-empty">
-        <h1 id="lp-h1">服务内容暂不可用</h1>
+        <h1 id="lp-h1">
+          {locale === 'en' ? FOOTWEAR_ENGLISH_UI.page.unavailable : '服务内容暂不可用'}
+        </h1>
       </section>
     )
   }

@@ -1,0 +1,13 @@
+---
+import ServiceLanding from '@/layouts/ServiceLanding.astro'
+import { B2B_ENGLISH_SOURCE } from '@/i18n/service-sources-b2b'
+---
+
+<ServiceLanding
+  {...B2B_ENGLISH_SOURCE.source}
+  locale="en"
+  presentation="b2b"
+  slug="b2b-mendian-cangpei"
+  variant="store-rhythm"
+  faqs={B2B_ENGLISH_SOURCE.sourceFaqs}
+/>

@@ -1,0 +1,77 @@
+---
+import EnglishLayout from '@/components/en/EnglishLayout.astro'
+import HomeCapabilityStats from '@/components/home/HomeCapabilityStats.astro'
+import HomeCases from '@/components/home/HomeCases.astro'
+import HomeCoreSolutions from '@/components/home/HomeCoreSolutions.astro'
+import HomeFAQ from '@/components/home/HomeFAQ.astro'
+import HomeFulfillment from '@/components/home/HomeFulfillment.astro'
+import HomeHero from '@/components/home/HomeHero.astro'
+import { CASE_FALLBACKS } from '@/data/cases'
+import { HOME_FAQS, HOME_IMAGES, HOME_SERVICE_FALLBACKS, HOME_STATS_FALLBACKS } from '@/data/home'
+import { BRAND } from '@/lib/brand'
+import { getCases, getFaqs, getHomepageStats, getServices } from '@/lib/directus'
+import { englishClaim } from '@/i18n/claims'
+import { createEnglishHomeCaseDetails, translateCases } from '@/i18n/cases'
+import { translateHomeFaqs, translateHomeServices, translateHomeStats } from '@/i18n/home-content'
+import { createFaqSchema, ORGANIZATION_ID } from '@/lib/seo'
+
+const [statsSource, servicesSource, casesSource, faqsSource] = await Promise.all([
+  getHomepageStats(HOME_STATS_FALLBACKS),
+  getServices(HOME_SERVICE_FALLBACKS),
+  getCases(CASE_FALLBACKS),
+  getFaqs('home', HOME_FAQS),
+])
+const stats = translateHomeStats(statsSource)
+const services = translateHomeServices(servicesSource)
+const cases = translateCases(casesSource)
+const faqs = translateHomeFaqs(faqsSource)
+const caseCardMeta = cases.flatMap((item) =>
+  item.slug
+    ? [{ shortName: item.name || item.label, slug: item.slug, metricContext: item.category }]
+    : []
+)
+const caseDetails = createEnglishHomeCaseDetails(cases)
+const homeClaims = {
+  warehouseArea: englishClaim('warehouseArea', 'home'),
+  partnerBrands: englishClaim('partnerBrands', 'home'),
+  servedStores: englishClaim('servedStores', 'home'),
+  coveredCities: englishClaim('coveredCities', 'home'),
+}
+const orgSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  '@id': ORGANIZATION_ID,
+  name: 'XINYIYUAN Supply Chain',
+  url: `${BRAND.url}/en`,
+  inLanguage: 'en',
+}
+---
+
+<EnglishLayout
+  title="Apparel fulfilment in China"
+  description="Apparel warehousing, quality inspection, fulfilment and returns operations for brands doing business in China."
+  jsonLd={[orgSchema, createFaqSchema(faqs)]}
+>
+  <HomeHero image={HOME_IMAGES.hero} {...homeClaims} locale="en" />
+  <HomeCapabilityStats stats={stats} locale="en" />
+  <HomeCoreSolutions services={services} locale="en" />
+  <HomeCases
+    {cases}
+    cardMeta={caseCardMeta}
+    {caseDetails}
+    partnerBrands={homeClaims.partnerBrands}
+    locale="en"
+  />
+  <HomeFulfillment locale="en" />
+  <HomeFAQ items={faqs} phone={BRAND.phone.toll} locale="en" />
+</EnglishLayout>
+
+<style>
+  :global(html) {
+    scroll-behavior: auto;
+  }
+</style>
+
+<script>
+  import '@/scripts/home-page'
+</script>

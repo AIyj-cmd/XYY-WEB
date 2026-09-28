@@ -2,6 +2,8 @@
 import '@/styles/home-faq.css'
 import '@/styles/home-conversion-cta.css'
 import ConversionCTA from '@/components/conversion/ConversionCTA.astro'
+import { homeUi } from '@/i18n/home-ui'
+import type { SiteLocale } from '@/i18n/routes'
 
 interface FaqItem {
   contentKey?: string
@@ -12,17 +14,19 @@ interface FaqItem {
 interface Props {
   items: FaqItem[]
   phone: string
+  locale?: SiteLocale
 }
 
-const { items } = Astro.props
+const { items, locale = 'zh-CN' } = Astro.props
+const copy = homeUi(locale).faq
 ---
 
-<section id="s-faq" class="s-faq" aria-labelledby="faq-heading">
+<section id="s-faq" class="s-faq" aria-labelledby="faq-heading" data-locale={locale}>
   <div class="faq-inner">
     <aside class="faq-intro">
-      <p class="section-tag">常见问题</p>
-      <h2 id="faq-heading" class="faq-title">关于鞋服仓配<br />你可能还想了解这些</h2>
-      <p class="faq-intro-copy">合作前，品牌通常会从服务范围、履约能力和合作方式开始了解。</p>
+      <p class="section-tag">{copy.tag}</p>
+      <h2 id="faq-heading" class="faq-title">{copy.heading[0]}<br />{copy.heading[1]}</h2>
+      <p class="faq-intro-copy">{copy.intro}</p>
     </aside>
     <div class="faq-content">
       <div class="faq-list">
@@ -42,7 +46,7 @@ const { items } = Astro.props
         }
       </div>
       <p class="faq-authority">
-        数据说明：本页涉及的新亦源服务与运营数据来源于新亦源内部运营统计，具体以对应统计周期和经营记录为准。
+        {copy.authority}
       </p>
     </div>
   </div>
@@ -50,26 +54,14 @@ const { items } = Astro.props
 
 <ConversionCTA
   headingId="home-conversion-cta-heading"
-  eyebrow="咨询仓配"
-  headingLines={['让仓配方案', '贴合你的业务']}
-  description="无论是新业务入仓、现有仓配调整，还是退货处理优化，都可以从你的货品、订单和渠道需求开始沟通。"
-  actionLabel="获取仓配方案"
-  preparationTitle="我们可以一起梳理"
-  preparationItems={[
-    {
-      label: '仓储与订单履约',
-      detail: '结合 SKU 规模、日均订单与大促波峰，沟通库存管理、拣货复核和发货安排。',
-    },
-    {
-      label: '销售渠道与仓网配置',
-      detail: '从电商发货、门店补货到跨境业务，结合销售渠道与发货区域讨论仓配需求。',
-    },
-    {
-      label: '退货处理与配套服务',
-      detail: '按业务流程梳理退货质检、后整修复、二次上架及系统对接需求。',
-    },
-  ]}
-  condition="已有大致需求即可开始沟通，具体服务内容与费用结合项目情况确认。"
+  eyebrow={copy.cta.eyebrow}
+  headingLines={[...copy.cta.heading]}
+  description={copy.cta.description}
+  actionLabel={copy.cta.action}
+  actionHref={locale === 'en' ? '/en/contact' : '/contact'}
+  preparationTitle={copy.cta.preparationTitle}
+  preparationItems={copy.cta.preparation.map(([label, detail]) => ({ label, detail }))}
+  condition={copy.cta.condition}
   reveal="product"
   className="home-conversion-cta"
 />

@@ -1,0 +1,49 @@
+---
+import EnglishLayout from '@/components/en/EnglishLayout.astro'
+import ProductVideoSequence from '@/components/product/ProductVideoSequence.astro'
+import { createBreadcrumbSchema, createServiceSchema } from '@/lib/seo'
+
+const services = [
+  {
+    name: 'Apparel fulfilment',
+    description:
+      'Apparel warehousing, order fulfilment and systems integration for China operations.',
+    path: '/en/apparel-fulfillment',
+    providerName: 'Guangzhou XINYIYUAN Supply Chain Management Co., Ltd.',
+    countryName: 'China',
+  },
+  {
+    name: 'Returns inspection',
+    description: 'Returns unpacking, inspection, disposition and re-listing workflows for apparel.',
+    path: '/en/returns-inspection',
+    providerName: 'Guangzhou XINYIYUAN Supply Chain Management Co., Ltd.',
+    countryName: 'China',
+  },
+  {
+    name: 'Garment care',
+    description: 'Apparel preparation, care and value-added handling workflows.',
+    path: '/en/garment-care',
+    providerName: 'Guangzhou XINYIYUAN Supply Chain Management Co., Ltd.',
+    countryName: 'China',
+  },
+  {
+    name: 'Retail distribution',
+    description: 'Retail, B2B and store-replenishment distribution workflows for apparel brands.',
+    path: '/en/retail-distribution',
+    providerName: 'Guangzhou XINYIYUAN Supply Chain Management Co., Ltd.',
+    countryName: 'China',
+  },
+]
+const breadcrumbSchema = createBreadcrumbSchema([
+  { name: 'Home', path: '/en' },
+  { name: 'Services', path: '/en/services' },
+])
+---
+
+<EnglishLayout
+  title="Apparel supply-chain services"
+  description="Explore apparel fulfilment, returns inspection, garment care and retail distribution services in China."
+  jsonLd={[breadcrumbSchema, ...services.map(createServiceSchema)]}
+  showFooter={false}
+  showFloatingContact={false}><ProductVideoSequence locale="en" /></EnglishLayout
+>

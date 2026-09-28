@@ -1,22 +1,34 @@
+---
+import type { SiteLocale } from '@/i18n/routes'
+
+const { locale = 'zh-CN' } = Astro.props as { locale?: SiteLocale }
+const english = locale === 'en'
+---
+
 <div>
-  <label for="service" class="mb-1.5 block text-sm font-semibold text-gray-700">咨询服务</label>
+  <label for="service" class="mb-1.5 block text-sm font-semibold text-gray-700"
+    >{english ? 'Service' : '咨询服务'}</label
+  >
   <select
     id="service"
     name="service"
     class="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-700 outline-none transition-colors focus:border-navy-400 focus:ring-2 focus:ring-navy-100"
   >
-    <option value="">请选择您感兴趣的服务</option>
-    <option value="cloud-warehouse">鞋服云仓</option>
-    <option value="quality-inspection">后整质检修复</option>
-    <option value="logistics-cloud">物流云</option>
-    <option value="all">全链路解决方案</option>
-    <option value="other">其他</option>
+    <option value="">{english ? 'Select a service' : '请选择您感兴趣的服务'}</option>
+    <option value="cloud-warehouse">{english ? 'Apparel fulfilment' : '鞋服云仓'}</option>
+    <option value="quality-inspection"
+      >{english ? 'Inspection and garment care' : '后整质检修复'}</option
+    >
+    <option value="logistics-cloud">{english ? 'Logistics cloud' : '物流云'}</option>
+    <option value="all">{english ? 'End-to-end solution' : '全链路解决方案'}</option>
+    <option value="other">{english ? 'Other' : '其他'}</option>
   </select>
 </div>
 
 <div>
   <label for="message" class="mb-1.5 block text-sm font-semibold text-gray-700">
-    需求描述 <span class="text-brand-orange" aria-hidden="true">*</span>
+    {english ? 'Your requirements' : '需求描述'}
+    <span class="text-brand-orange" aria-hidden="true">*</span>
   </label>
   <textarea
     id="message"
@@ -24,7 +36,9 @@
     required
     maxlength="1200"
     rows={5}
-    placeholder="请简要描述您的品类、当前规模（日均出库量/SKU数）和主要痛点，便于我们为您准备针对性方案"
+    placeholder={english
+      ? 'Describe your category, current operating scale and priorities so we can prepare a relevant discussion.'
+      : '请简要描述您的品类、当前规模（日均出库量/SKU数）和主要痛点，便于我们为您准备针对性方案'}
     class="w-full resize-none rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none transition-colors focus:border-navy-400 focus:ring-2 focus:ring-navy-100"
   ></textarea>
 </div>

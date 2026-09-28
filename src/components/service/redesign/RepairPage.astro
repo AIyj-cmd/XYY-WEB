@@ -10,15 +10,17 @@ import RepairProcess from './RepairProcess.astro'
 import RepairVerification from './RepairVerification.astro'
 import RepairWorkshop from './RepairWorkshop.astro'
 import { repairFeaturesInSourceOrder } from './repair-content'
+import type { SiteLocale } from '@/i18n/routes'
 
 interface Props {
   content: ServicePageContent
   faqs: FaqItem[]
   videoSrc: string
   poster: string
+  locale?: SiteLocale
 }
 
-const { content, faqs, videoSrc, poster } = Astro.props
+const { content, faqs, videoSrc, poster, locale = 'zh-CN' } = Astro.props
 const available = hasRedesignContent(content, faqs.length)
 const hasProcess = Boolean(content.features.length || content.contentDesc || content.stats.length)
 const repairFeatures = repairFeaturesInSourceOrder(content.features)
@@ -34,18 +36,21 @@ const repairFeatures = repairFeaturesInSourceOrder(content.features)
           description={content.heroDesc}
           {videoSrc}
           {poster}
+          {locale}
         />
-        <RepairDirectory features={repairFeatures} />
-        {repairFeatures.length > 0 && <RepairWorkshop />}
-        {hasProcess && <RepairProcess />}
+        <RepairDirectory features={repairFeatures} {locale} />
+        {repairFeatures.length > 0 && <RepairWorkshop {locale} />}
+        {hasProcess && <RepairProcess {locale} />}
         {(content.contentDesc || content.stats.length > 0) && (
-          <RepairVerification contentDesc={content.contentDesc} stats={content.stats} />
+          <RepairVerification contentDesc={content.contentDesc} stats={content.stats} {locale} />
         )}
-        <RepairFaq {faqs} />
+        <RepairFaq {faqs} {locale} />
       </>
     ) : (
       <section class="redesign-empty">
-        <h1 id="lp-h1">服务内容暂不可用</h1>
+        <h1 id="lp-h1">
+          {locale === 'en' ? 'Service content is currently unavailable.' : '服务内容暂不可用'}
+        </h1>
       </section>
     )
   }

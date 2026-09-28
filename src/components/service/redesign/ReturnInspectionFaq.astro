@@ -1,12 +1,16 @@
 ---
 import type { FaqItem } from '@/data/service'
 import ConversionCTA from '@/components/conversion/ConversionCTA.astro'
+import type { SiteLocale } from '@/i18n/routes'
+import { REDESIGN_ENGLISH_UI } from '@/i18n/redesign-ui'
 
 interface Props {
   faqs: FaqItem[]
+  locale?: SiteLocale
 }
 
-const { faqs } = Astro.props
+const { faqs, locale = 'zh-CN' } = Astro.props
+const copy = REDESIGN_ENGLISH_UI.returns
 ---
 
 <section
@@ -19,8 +23,10 @@ const { faqs } = Astro.props
         <>
           <header class="returns-section__heading">
             <>
-              <p class="returns-kicker">常见问题</p>
-              <h2 id="returns-faq-heading">标准确认前，先把问题说清楚</h2>
+              <p class="returns-kicker">{locale === 'en' ? copy.faq : '常见问题'}</p>
+              <h2 id="returns-faq-heading">
+                {locale === 'en' ? copy.faqHeading : '标准确认前，先把问题说清楚'}
+              </h2>
             </>
           </header>
           <div>
@@ -39,18 +45,35 @@ const { faqs } = Astro.props
 <ConversionCTA
   className="returns-section returns-contact"
   headingId="returns-contact-heading"
-  eyebrow="沟通方案"
-  headingLines={['把退件和判定规则，', '一起梳理']}
-  description="可先准备商品类型、退件规模和品牌判定规则。"
-  actionLabel="沟通退货质检方案"
-  preparationItems={[
-    { label: '商品类型', detail: '商品品类与退件状态' },
-    { label: '退件规模', detail: '日常数量与集中退件安排' },
-    { label: '品牌判定规则', detail: '判定口径与处理要求' },
-  ]}
+  eyebrow={locale === 'en' ? 'Discuss a plan' : '沟通方案'}
+  headingLines={locale === 'en'
+    ? ['Clarify returned items', 'and decision rules.']
+    : ['把退件和判定规则，', '一起梳理']}
+  description={locale === 'en'
+    ? 'Prepare item types, return volume and brand decision rules.'
+    : '可先准备商品类型、退件规模和品牌判定规则。'}
+  actionLabel={locale === 'en' ? 'Discuss a returns-inspection plan' : '沟通退货质检方案'}
+  preparationAriaLabel={locale === 'en' ? 'Information to prepare before consultation' : undefined}
+  preparationItems={locale === 'en'
+    ? [
+        { label: 'Item types', detail: 'Product categories and return condition' },
+        { label: 'Return volume', detail: 'Routine volume and concentrated return plans' },
+        { label: 'Brand decision rules', detail: 'Decision basis and handling requirements' },
+      ]
+    : [
+        { label: '商品类型', detail: '商品品类与退件状态' },
+        { label: '退件规模', detail: '日常数量与集中退件安排' },
+        { label: '品牌判定规则', detail: '判定口径与处理要求' },
+      ]}
   secondaryLinks={[
-    { href: '/cases', label: '查看合作案例' },
-    { href: '/product', label: '查看全部仓配服务' },
+    {
+      href: locale === 'en' ? '/en/cases' : '/cases',
+      label: locale === 'en' ? 'View cases' : '查看合作案例',
+    },
+    {
+      href: locale === 'en' ? '/en/services' : '/product',
+      label: locale === 'en' ? 'Explore services' : '查看全部仓配服务',
+    },
   ]}
   reveal="service"
 />

@@ -1,5 +1,7 @@
 ---
 import type { FeatureItem, StatItem } from '@/data/service'
+import type { SiteLocale } from '@/i18n/routes'
+import { REDESIGN_ENGLISH_UI } from '@/i18n/redesign-ui'
 
 interface Props {
   apparel: FeatureItem[]
@@ -9,15 +11,25 @@ interface Props {
   repair: FeatureItem[]
   other: FeatureItem[]
   stats: readonly StatItem[]
+  locale?: SiteLocale
 }
 
-const { apparel, footwear, rules, evidence, repair, other, stats } = Astro.props
+const { apparel, footwear, rules, evidence, repair, other, stats, locale = 'zh-CN' } = Astro.props
 
 const sections: [string, FeatureItem[]][] = [
   ['服装检查', apparel],
   ['鞋类检查', footwear],
   ['规则与判定', rules],
 ]
+const copy = REDESIGN_ENGLISH_UI.returns
+const displaySections: [string, FeatureItem[]][] =
+  locale === 'en'
+    ? [
+        ['Apparel inspection', apparel],
+        ['Footwear inspection', footwear],
+        ['Rules and decisions', rules],
+      ]
+    : sections
 ---
 
 {
@@ -26,12 +38,14 @@ const sections: [string, FeatureItem[]][] = [
       <div class="returns-shell">
         <header class="returns-section__heading">
           <>
-            <p class="returns-kicker">检查重点</p>
-            <h2 id="returns-checks-heading">服装和鞋类，按不同重点检查</h2>
+            <p class="returns-kicker">{locale === 'en' ? copy.checks : '检查重点'}</p>
+            <h2 id="returns-checks-heading">
+              {locale === 'en' ? copy.checksHeading : '服装和鞋类，按不同重点检查'}
+            </h2>
           </>
         </header>
         <div class="returns-checks__grid">
-          {sections
+          {displaySections
             .filter(([, features]) => features.length > 0)
             .map(([heading, features]) => (
               <article>
@@ -53,16 +67,20 @@ const sections: [string, FeatureItem[]][] = [
 <section class="returns-section returns-evidence" aria-labelledby="returns-evidence-heading">
   <div class="returns-shell returns-evidence__layout">
     <div>
-      <p class="returns-kicker">可复核依据</p><h2 id="returns-evidence-heading">
-        留下拆包、检查与判定的依据
+      <p class="returns-kicker">{locale === 'en' ? copy.evidence : '可复核依据'}</p><h2
+        id="returns-evidence-heading"
+      >
+        {locale === 'en' ? copy.evidenceHeading : '留下拆包、检查与判定的依据'}
       </h2>
       {
         (evidence.length || repair.length || other.length) > 0 && (
           <ol>
             <>
-              <li>拆包记录</li>
-              <li>检查照片</li>
-              <li>判定结果</li>
+              {(locale === 'en' ? copy.evidenceSteps : ['拆包记录', '检查照片', '判定结果']).map(
+                (item) => (
+                  <li>{item}</li>
+                )
+              )}
             </>
           </ol>
         )

@@ -1,0 +1,43 @@
+---
+import Layout from '@/layouts/Layout.astro'
+import type { SiteSettingsRecord } from '@/lib/directus'
+import { getEnglishSiteSettings } from '@/i18n/site-settings'
+
+interface Props {
+  title: string
+  description: string
+  canonical?: string
+  ogImage?: string
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[]
+  noIndex?: boolean
+  siteSettings?: Omit<SiteSettingsRecord, 'id' | 'status' | 'key'>
+  showFooter?: boolean
+  showFloatingContact?: boolean
+}
+
+const {
+  title,
+  description,
+  canonical,
+  ogImage,
+  jsonLd,
+  noIndex,
+  siteSettings,
+  showFooter,
+  showFloatingContact,
+} = Astro.props
+const resolvedSettings = siteSettings ?? (await getEnglishSiteSettings())
+---
+
+<Layout
+  {title}
+  {description}
+  {canonical}
+  {ogImage}
+  {jsonLd}
+  {noIndex}
+  siteSettings={resolvedSettings}
+  {showFooter}
+  {showFloatingContact}
+  locale="en"><slot /></Layout
+>

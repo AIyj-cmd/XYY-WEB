@@ -1,0 +1,35 @@
+---
+import EnglishLayout from '@/components/en/EnglishLayout.astro'
+import LogisticsDigitalChain from '@/components/digital/LogisticsDigitalChain.astro'
+import LogisticsDigitalHero from '@/components/digital/LogisticsDigitalHero.astro'
+import LogisticsDigitalModules from '@/components/digital/LogisticsDigitalModules.astro'
+import LogisticsDigitalProof from '@/components/digital/LogisticsDigitalProof.astro'
+import { DIGITAL_OPERATIONS_ENGLISH } from '@/i18n/digital-operations'
+import { createBreadcrumbSchema, createServiceSchema } from '@/lib/seo'
+import '@/styles/logistics-digital.css'
+
+const copy = DIGITAL_OPERATIONS_ENGLISH
+const breadcrumbSchema = createBreadcrumbSchema([
+  { name: 'Home', path: '/en' },
+  { name: 'Services', path: '/en/services' },
+  { name: copy.breadcrumb, path: '/en/digital-operations' },
+])
+const serviceSchema = createServiceSchema({
+  name: copy.breadcrumb,
+  description: copy.description,
+  path: '/en/digital-operations',
+  providerName: 'Guangzhou XINYIYUAN Supply Chain Management Co., Ltd.',
+  countryName: 'China',
+})
+---
+
+<EnglishLayout
+  title={copy.title}
+  description={copy.description}
+  jsonLd={[breadcrumbSchema, serviceSchema]}
+>
+  <LogisticsDigitalHero locale="en" />
+  <LogisticsDigitalModules modules={copy.modulesList} locale="en" />
+  <LogisticsDigitalChain steps={copy.chainSteps} locale="en" />
+  <LogisticsDigitalProof locale="en" />
+</EnglishLayout>

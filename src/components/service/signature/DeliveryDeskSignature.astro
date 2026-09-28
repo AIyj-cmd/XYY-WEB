@@ -1,29 +1,35 @@
 ---
 import type { FeatureItem, StatItem } from '@/data/service'
+import { smartShippingCopy } from '@/i18n/smart-shipping'
+import type { SiteLocale } from '@/i18n/routes'
 
 interface Props {
   contentDesc: string
   stats: readonly StatItem[]
   features: FeatureItem[]
+  locale?: SiteLocale
 }
 
-const { contentDesc, stats, features } = Astro.props
+const { contentDesc, stats, features, locale = 'zh-CN' } = Astro.props
+const english = smartShippingCopy(locale)
 ---
 
-<div class="delivery">
+<div class="delivery" data-locale={locale}>
   <figure class="delivery__console">
     <div class="delivery__console-bar">
       <span>YUNDAO DELIVERY DESK</span>
-      <b>运单管理 / 实际系统界面</b>
+      <b>{english?.delivery.consoleLabel ?? '运单管理 / 实际系统界面'}</b>
     </div>
     <img
       src="/yundao-logistics-list.png"
-      alt="运到智能寄件平台运单管理界面"
+      alt={english?.delivery.imageAlt ?? '运到智能寄件平台运单管理界面'}
       loading="lazy"
       width="926"
       height="490"
     />
-    <figcaption>承运商、来源平台、运输状态和最后跟踪时间集中查询</figcaption>
+    <figcaption>
+      {english?.delivery.caption ?? '承运商、来源平台、运输状态和最后跟踪时间集中查询'}
+    </figcaption>
   </figure>
   <aside class="delivery__summary">
     <p>{contentDesc}</p>

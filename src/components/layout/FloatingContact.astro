@@ -1,18 +1,23 @@
 ---
 import '@/styles/floating-contact.css'
+import type { SiteLocale } from '@/i18n/routes'
+import { shellCopy } from '@/i18n/shell'
 
 interface Props {
   phone: string
+  locale?: SiteLocale
 }
 
-const { phone } = Astro.props
+const { phone, locale = 'zh-CN' } = Astro.props
+const copy = shellCopy(locale)
+const contactPath = locale === 'en' ? '/en/contact' : '/contact'
 ---
 
 <div id="float-contact" class="fixed bottom-6 right-5 z-50 flex flex-col items-end gap-2.5">
   <button
     id="btn-scroll-top"
     class="w-11 h-11 rounded-full bg-white border border-gray-200 shadow-md flex items-center justify-center text-gray-400 hover:text-navy-800 hover:border-navy-300 hover:shadow-lg transition-all duration-200 opacity-0 translate-y-2 pointer-events-none"
-    aria-label="回到顶部"
+    aria-label={copy.scrollTop}
   >
     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
       <path
@@ -24,10 +29,10 @@ const { phone } = Astro.props
   </button>
 
   <a
-    href="/contact"
+    href={contactPath}
     class="float-chat w-11 h-11 rounded-full bg-navy-800 shadow-md flex items-center justify-center text-white hover:bg-navy-700 hover:shadow-lg transition-all duration-200"
-    aria-label="在线咨询"
-    title="在线咨询"
+    aria-label={copy.chat}
+    title={copy.chat}
   >
     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
       <path
@@ -42,7 +47,7 @@ const { phone } = Astro.props
   <div class="float-phone relative group">
     <button
       class="w-11 h-11 rounded-full bg-brand-orange shadow-md flex items-center justify-center text-white hover:bg-brand-orange-dark hover:shadow-lg transition-all duration-200"
-      aria-label="电话咨询"
+      aria-label={copy.phone}
     >
       <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
         <path
@@ -56,12 +61,12 @@ const { phone } = Astro.props
     <div
       class="absolute bottom-0 right-14 bg-white rounded-xl shadow-xl border border-gray-100 px-4 py-3 w-48 opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-opacity duration-200 whitespace-nowrap"
     >
-      <p class="text-[10px] text-gray-400 font-medium tracking-wider mb-2.5">电话咨询</p>
+      <p class="text-[10px] text-gray-400 font-medium tracking-wider mb-2.5">{copy.phoneLabel}</p>
       <a
         href={`tel:${phone.replace(/[^\d+]/g, '')}`}
         class="flex items-center gap-2 text-sm font-bold text-navy-800 hover:text-brand-orange transition-colors"
       >
-        <span class="text-brand-orange text-xs">全国</span>{phone}
+        <span class="text-brand-orange text-xs">{copy.nationwide}</span>{phone}
       </a>
     </div>
   </div>

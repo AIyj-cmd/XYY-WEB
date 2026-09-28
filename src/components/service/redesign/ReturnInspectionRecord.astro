@@ -1,9 +1,12 @@
 ---
+import type { SiteLocale } from '@/i18n/routes'
+import { REDESIGN_ENGLISH_UI } from '@/i18n/redesign-ui'
 interface Props {
   context: string
+  locale?: SiteLocale
 }
 
-const { context } = Astro.props
+const { context, locale = 'zh-CN' } = Astro.props
 
 const fields = [
   ['商品信息', '款号、颜色、尺码与退件来源'],
@@ -12,19 +15,26 @@ const fields = [
   ['等级判定', '按品牌确认规则写入处理结果'],
   ['处置记录', '上架、修复、隔离或其他确认去向'],
 ]
+const copy = REDESIGN_ENGLISH_UI.returns
+const displayFields = locale === 'en' ? copy.fields : fields
 ---
 
 <section class="returns-section returns-record" aria-labelledby="returns-record-heading">
   <div class="returns-shell">
     <header class="returns-section__heading">
-      <p class="returns-kicker">检验记录</p>
-      <h2 id="returns-record-heading">一份记录，把检查和处置连起来</h2>
+      <p class="returns-kicker">{locale === 'en' ? copy.record : '检验记录'}</p>
+      <h2 id="returns-record-heading">
+        {locale === 'en' ? copy.recordHeading : '一份记录，把检查和处置连起来'}
+      </h2>
       {context && <p>{context}</p>}
     </header>
-    <div class="returns-record__sheet" aria-label="质检记录字段示意">
-      <div class="returns-record__caption">字段示意</div>
+    <div
+      class="returns-record__sheet"
+      aria-label={locale === 'en' ? 'Inspection record field example' : '质检记录字段示意'}
+    >
+      <div class="returns-record__caption">{locale === 'en' ? copy.recordCaption : '字段示意'}</div>
       {
-        fields.map(([label, description]) => (
+        displayFields.map(([label, description]) => (
           <article>
             <>
               <strong>{label}</strong>
@@ -34,6 +44,8 @@ const fields = [
         ))
       }
     </div>
-    <p class="returns-record__note">记录内容与判定口径按品牌要求确认。</p>
+    <p class="returns-record__note">
+      {locale === 'en' ? copy.recordNote : '记录内容与判定口径按品牌要求确认。'}
+    </p>
   </div>
 </section>

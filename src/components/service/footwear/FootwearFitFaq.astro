@@ -1,18 +1,24 @@
 ---
 import type { FaqItem } from '@/data/service'
+import { FOOTWEAR_ENGLISH_UI } from '@/i18n/footwear-ui'
+import type { SiteLocale } from '@/i18n/routes'
 
 interface Props {
   faqs: FaqItem[]
+  locale?: SiteLocale
 }
-const { faqs } = Astro.props
+const { faqs, locale = 'zh-CN' } = Astro.props
+const copy = FOOTWEAR_ENGLISH_UI.faq
 ---
 
 <section class="footwear-section footwear-faq" aria-labelledby="footwear-faq-heading">
   <header>
-    <p class="footwear-section__label">常见问题</p><h2 id="footwear-faq-heading">
-      关于鞋服仓配，你可能还想了解。
+    <p class="footwear-section__label">{locale === 'en' ? copy.label : '常见问题'}</p><h2
+      id="footwear-faq-heading"
+    >
+      {locale === 'en' ? copy.heading : '关于鞋服仓配，你可能还想了解。'}
     </h2>
-    <p>展开查看平台、旺季、时效和合作安排。</p>
+    <p>{locale === 'en' ? copy.description : '展开查看平台、旺季、时效和合作安排。'}</p>
   </header>
   <div>
     {

@@ -9,6 +9,7 @@ import EastInventoryPage from './EastInventoryPage.astro'
 import LiveCommercePage from './LiveCommercePage.astro'
 import B2BAllocationPage from './B2BAllocationPage.astro'
 import type { RedesignPresentation } from './presentation'
+import type { SiteLocale } from '@/i18n/routes'
 
 interface Props {
   presentation: RedesignPresentation
@@ -16,16 +17,17 @@ interface Props {
   faqs: FaqItem[]
   videoSrc: string
   poster: string
+  locale?: SiteLocale
 }
 
-const { presentation, content, faqs, videoSrc, poster } = Astro.props
+const { presentation, content, faqs, videoSrc, poster, locale = 'zh-CN' } = Astro.props
 ---
 
 {
   presentation === 'returns' ? (
-    <ReturnInspectionPage {content} {faqs} {videoSrc} {poster} />
+    <ReturnInspectionPage {content} {faqs} {videoSrc} {poster} {locale} />
   ) : presentation === 'repair' ? (
-    <RepairPage {content} {faqs} {videoSrc} {poster} />
+    <RepairPage {content} {faqs} {videoSrc} {poster} {locale} />
   ) : presentation === 'south' ? (
     <SouthNetworkPage {content} {faqs} {videoSrc} {poster} />
   ) : presentation === 'east' ? (
@@ -33,7 +35,7 @@ const { presentation, content, faqs, videoSrc, poster } = Astro.props
   ) : presentation === 'live' ? (
     <LiveCommercePage {content} {faqs} {videoSrc} {poster} />
   ) : presentation === 'b2b' ? (
-    <B2BAllocationPage {content} {faqs} {videoSrc} {poster} />
+    <B2BAllocationPage {content} {faqs} {videoSrc} {poster} {locale} />
   ) : (
     <CrossborderPage {content} {faqs} {videoSrc} {poster} />
   )

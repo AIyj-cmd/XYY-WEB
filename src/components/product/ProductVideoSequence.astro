@@ -1,11 +1,20 @@
 ---
 import { PRODUCT_VIDEO_SECTIONS } from '@/data/product/video-sections'
+import { ENGLISH_PRODUCT_VIDEO_COPY, PRODUCT_SEQUENCE_LABELS } from '@/i18n/product'
+import type { SiteLocale } from '@/i18n/routes'
 import ProductAssurance from './ProductAssurance.astro'
 import '@/styles/product/video-sequence.css'
 import '@/styles/product/video-assurance.css'
+
+interface Props {
+  locale?: SiteLocale
+}
+
+const { locale = 'zh-CN' } = Astro.props
+const labels = PRODUCT_SEQUENCE_LABELS[locale]
 ---
 
-<section class="product-video-sequence" data-product-video-sequence>
+<section class="product-video-sequence" data-product-video-sequence data-locale={locale}>
   <div
     id="product-video-scroll"
     class="product-video-sequence__scroll"
@@ -14,74 +23,79 @@ import '@/styles/product/video-assurance.css'
     tabindex="0"
   >
     {
-      PRODUCT_VIDEO_SECTIONS.map(
-        ({ id, label, heading, description, highlights, href, link, src, poster }, index) => {
-          const commaIndex = heading.indexOf('，')
-          const headingPrefix = heading.slice(0, commaIndex + 1)
-          const headingValue = heading.slice(commaIndex + 1)
+      PRODUCT_VIDEO_SECTIONS.map(({ id, src, poster }, index) => {
+        const sourceSection = PRODUCT_VIDEO_SECTIONS[index]
+        const section = locale === 'en' ? ENGLISH_PRODUCT_VIDEO_COPY[index] : sourceSection
+        const headingPrefix =
+          locale === 'en'
+            ? ENGLISH_PRODUCT_VIDEO_COPY[index].headingPrefix
+            : sourceSection.heading.slice(0, sourceSection.heading.indexOf('，') + 1)
+        const headingValue =
+          locale === 'en'
+            ? ENGLISH_PRODUCT_VIDEO_COPY[index].headingValue
+            : sourceSection.heading.slice(sourceSection.heading.indexOf('，') + 1)
 
-          return (
-            <section
-              class="product-video-sequence__slide"
-              data-product-video-slide
-              aria-labelledby={`${id}-heading`}
+        return (
+          <section
+            class="product-video-sequence__slide"
+            data-product-video-slide
+            aria-labelledby={`${id}-heading`}
+          >
+            <div class="product-video-sequence__copy" data-product-video-copy>
+              {index === 0 ? (
+                <h1 id={`${id}-heading`}>
+                  <span class="product-video-sequence__heading-prefix">{headingPrefix}</span>
+                  <span class="product-video-sequence__heading-value">{headingValue}</span>
+                </h1>
+              ) : (
+                <h2 id={`${id}-heading`}>
+                  <span class="product-video-sequence__heading-prefix">{headingPrefix}</span>
+                  <span class="product-video-sequence__heading-value">{headingValue}</span>
+                </h2>
+              )}
+              <p>{section.description}</p>
+              <ul class="product-video-sequence__highlights" data-product-video-highlights>
+                {section.highlights.map((highlight) => (
+                  <li>{highlight}</li>
+                ))}
+              </ul>
+              <a href={section.href}>{section.link}</a>
+            </div>
+            <video
+              id={id}
+              data-product-video
+              aria-label={section.label}
+              autoplay={index === 0}
+              loop
+              muted
+              playsinline
+              preload={index === 0 ? 'auto' : 'none'}
+              width="854"
+              height="480"
+              poster={poster}
             >
-              <div class="product-video-sequence__copy" data-product-video-copy>
-                {index === 0 ? (
-                  <h1 id={`${id}-heading`}>
-                    <span class="product-video-sequence__heading-prefix">{headingPrefix}</span>
-                    <span class="product-video-sequence__heading-value">{headingValue}</span>
-                  </h1>
-                ) : (
-                  <h2 id={`${id}-heading`}>
-                    <span class="product-video-sequence__heading-prefix">{headingPrefix}</span>
-                    <span class="product-video-sequence__heading-value">{headingValue}</span>
-                  </h2>
-                )}
-                <p>{description}</p>
-                <ul class="product-video-sequence__highlights" data-product-video-highlights>
-                  {highlights.map((highlight) => (
-                    <li>{highlight}</li>
-                  ))}
-                </ul>
-                <a href={href}>{link}</a>
-              </div>
-              <video
-                id={id}
-                data-product-video
-                aria-label={label}
-                autoplay={index === 0}
-                loop
-                muted
-                playsinline
-                preload={index === 0 ? 'auto' : 'none'}
-                width="854"
-                height="480"
-                poster={poster}
-              >
-                <source src={index === 0 ? src : undefined} data-src={src} type="video/mp4" />
-              </video>
-            </section>
-          )
-        }
-      )
+              <source src={index === 0 ? src : undefined} data-src={src} type="video/mp4" />
+            </video>
+          </section>
+        )
+      })
     }
     <div
       class="product-video-sequence__assurance-slide"
       data-product-video-slide
       aria-labelledby="assurance-heading"
     >
-      <ProductAssurance />
+      <ProductAssurance locale={locale} />
     </div>
   </div>
 
-  <nav class="product-video-sequence__navigation" aria-label="页面分区导航">
+  <nav class="product-video-sequence__navigation" aria-label={labels.navigation}>
     <button
       type="button"
       class="product-video-sequence__control"
       data-product-video-previous
       aria-controls="product-video-scroll"
-      aria-label="上一个区域"
+      aria-label={labels.previous}
       disabled
     >
       <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
@@ -97,7 +111,7 @@ import '@/styles/product/video-assurance.css'
       class="product-video-sequence__control"
       data-product-video-next
       aria-controls="product-video-scroll"
-      aria-label="下一个区域"
+      aria-label={labels.next}
     >
       <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
         <path d="m6 10 6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"

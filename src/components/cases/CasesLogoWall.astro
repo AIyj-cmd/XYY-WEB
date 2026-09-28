@@ -1,5 +1,9 @@
 ---
 import { CASE_LOGO_BRANDS, CASE_LOGO_ROWS } from '@/data/cases'
+import type { SiteLocale } from '@/i18n/routes'
+
+const { locale = 'zh-CN' } = Astro.props as { locale?: SiteLocale }
+const en = locale === 'en'
 
 const logos = CASE_LOGO_ROWS.flat()
 const visibleLogos = logos.slice(0, 12)
@@ -10,7 +14,9 @@ const remainingLogos = logos.slice(12)
   <div class="cases-logo-wall__inner">
     <header>
       <p class="cases-kicker">PARTNER BRANDS</p>
-      <h2 id="cases-logo-wall-heading">与品牌一起，把履约做好</h2>
+      <h2 id="cases-logo-wall-heading">
+        {en ? 'Making fulfilment work with brands' : '与品牌一起，把履约做好'}
+      </h2>
     </header>
     <div class="cases-logo-wall__grid">
       {
@@ -18,7 +24,7 @@ const remainingLogos = logos.slice(12)
           <div class="cases-logo-wall__item">
             <img
               src={`/logos/imgi_${number}_default.png`}
-              alt={`${CASE_LOGO_BRANDS[number]} 合作品牌 logo`}
+              alt={en ? 'Partner brand logo' : `${CASE_LOGO_BRANDS[number]} 合作品牌 logo`}
               loading="lazy"
             />
           </div>
@@ -26,14 +32,17 @@ const remainingLogos = logos.slice(12)
       }
     </div>
     <details class="cases-logo-wall__more">
-      <summary>展开更多合作品牌 <span aria-hidden="true">+</span></summary>
+      <summary
+        >{en ? 'Show more partner brands' : '展开更多合作品牌'}
+        <span aria-hidden="true">+</span></summary
+      >
       <div class="cases-logo-wall__grid">
         {
           remainingLogos.map((number) => (
             <div class="cases-logo-wall__item">
               <img
                 src={`/logos/imgi_${number}_default.png`}
-                alt={`${CASE_LOGO_BRANDS[number]} 合作品牌 logo`}
+                alt={en ? 'Partner brand logo' : `${CASE_LOGO_BRANDS[number]} 合作品牌 logo`}
                 loading="lazy"
               />
             </div>

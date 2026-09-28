@@ -1,16 +1,38 @@
 ---
 import { CASE_VALUE_PROPS } from '@/data/cases'
+import type { SiteLocale } from '@/i18n/routes'
+
+const { locale = 'zh-CN' } = Astro.props as { locale?: SiteLocale }
+const values =
+  locale === 'en'
+    ? [
+        {
+          title: 'Apparel operations focus',
+          desc: 'Processes, systems and staffing are designed for apparel products.',
+        },
+        {
+          title: 'Flexible capacity planning',
+          desc: 'Capacity is planned around forecast volume and operating peaks.',
+        },
+        {
+          title: 'Project-based engagement',
+          desc: 'Implementation and service terms are confirmed for each project.',
+        },
+      ]
+    : CASE_VALUE_PROPS
 ---
 
 <section class="case-values" aria-labelledby="value-heading">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="case-values__heading">
       <p>WHY XYY</p>
-      <h2 id="value-heading">为什么品牌选择新亦源</h2>
+      <h2 id="value-heading">
+        {locale === 'en' ? 'Why brands choose XINYIYUAN' : '为什么品牌选择新亦源'}
+      </h2>
     </div>
     <div class="case-values__list">
       {
-        CASE_VALUE_PROPS.map(({ title, desc }, index) => (
+        values.map(({ title, desc }, index) => (
           <article class="case-value-item">
             <span>{String(index + 1).padStart(2, '0')}</span>
             <h3>{title}</h3>

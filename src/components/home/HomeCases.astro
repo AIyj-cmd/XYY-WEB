@@ -1,6 +1,8 @@
 ---
 import HomeCaseModal from './HomeCaseModal.astro'
 import '../../styles/home-cases.css'
+import { homeUi } from '@/i18n/home-ui'
+import type { SiteLocale } from '@/i18n/routes'
 
 interface CaseItem {
   label: string
@@ -8,13 +10,14 @@ interface CaseItem {
   img: string
   details: string
   tags: string[]
+  slug?: string
 }
 
 interface CaseCardMeta {
   shortName: string
   slug?: string
-  metric: { value: string; label: string }
-  metricContext: string
+  metric?: { value: string; label: string }
+  metricContext?: string
 }
 
 interface Props {
@@ -22,57 +25,63 @@ interface Props {
   cardMeta: CaseCardMeta[]
   caseDetails: Record<string, unknown>
   partnerBrands: string
+  locale?: SiteLocale
 }
 
-const { cases, cardMeta, caseDetails, partnerBrands } = Astro.props
+const { cases, cardMeta, caseDetails, partnerBrands, locale = 'zh-CN' } = Astro.props
+const copy = homeUi(locale).cases
+const displayCases =
+  locale === 'en'
+    ? cases.flatMap((item) => {
+        const card = cardMeta.find((candidate) => candidate.slug === item.slug)
+        return card && item.slug ? [{ item, card }] : []
+      })
+    : cases.flatMap((item, index) => {
+        const card = cardMeta[index]
+        return card ? [{ item, card }] : []
+      })
 ---
 
-<section id="s-cases" class="s-cases" aria-labelledby="cases-heading">
+<section id="s-cases" class="s-cases" aria-labelledby="cases-heading" data-locale={locale}>
   <div class="cases-head">
-    <p class="section-tag">合作案例</p>
-    <h2 id="cases-heading" class="section-title">{partnerBrands} 品牌的共同选择</h2>
-    <p class="section-sub">
-      服务鞋服、潮玩、美妆、箱包等多个细分行业，并覆盖库存协同、全渠道履约、退货质检与跨境出海等场景
-    </p>
+    <p class="section-tag">{copy.tag}</p>
+    <h2 id="cases-heading" class="section-title">{copy.heading(partnerBrands)}</h2>
+    <p class="section-sub">{copy.intro}</p>
   </div>
-  <div class="cases-gallery" aria-label="部分合作案例，悬停查看品牌合作数据">
+  <div class="cases-gallery" aria-label={copy.gallery}>
     {
-      cases.map((item, index) => (
-        <a
-          class="case-card cg-panel"
-          data-case={item.label}
-          href={cardMeta[index].slug ? `/cases/${cardMeta[index].slug}` : '/cases'}
-        >
-          <img
-            src={item.img}
-            alt={`${cardMeta[index].shortName} 合作案例业务场景`}
-            loading="lazy"
-          />
-          <div class="cg-shade" aria-hidden="true" />
-          <div class="cg-label">
-            <span>0{index + 1}</span>
-            <strong>{cardMeta[index].shortName}</strong>
-            <small>{item.category}</small>
-          </div>
-          <div class="cg-detail">
-            <span>{item.category}</span>
-            <strong>{cardMeta[index].metric.value}</strong>
-            <small>{cardMeta[index].metricContext}</small>
-            <p>{item.details}</p>
-            <div class="cg-tags">
-              {item.tags.slice(0, 3).map((tag) => (
-                <span>{tag}</span>
-              ))}
+      displayCases.map(({ item, card }, index) => {
+        const cardKey = locale === 'en' ? item.slug : item.label
+        const href = locale === 'en' ? '/en/contact' : card?.slug ? `/cases/${card.slug}` : '/cases'
+        return (
+          <a class="case-card cg-panel" data-case={cardKey} href={href}>
+            <img src={item.img} alt={copy.imageAlt(card?.shortName ?? item.label)} loading="lazy" />
+            <div class="cg-shade" aria-hidden="true" />
+            <div class="cg-label">
+              <span>0{index + 1}</span>
+              <strong>{card?.shortName ?? item.label}</strong>
+              <small>{item.category}</small>
             </div>
-            <i aria-hidden="true">查看案例 →</i>
-          </div>
-        </a>
-      ))
+            <div class="cg-detail">
+              <span>{item.category}</span>
+              {card.metric && <strong>{card.metric.value}</strong>}
+              {card.metricContext && <small>{card.metricContext}</small>}
+              <p>{item.details}</p>
+              <div class="cg-tags">
+                {item.tags.slice(0, 3).map((tag) => (
+                  <span>{tag}</span>
+                ))}
+              </div>
+              <i aria-hidden="true">{copy.open}</i>
+            </div>
+          </a>
+        )
+      })
     }
   </div>
   <div class="cases-more">
-    <a href="/cases" class="btn-outline-dark">查看全部案例 →</a>
+    <a href={locale === 'en' ? '/en/cases' : '/cases'} class="btn-outline-dark">{copy.all}</a>
   </div>
 </section>
 
-<HomeCaseModal caseDetails={caseDetails} />
+<HomeCaseModal caseDetails={caseDetails} {locale} />

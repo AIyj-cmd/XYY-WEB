@@ -1,0 +1,99 @@
+:root {
+  --language-suggestion-visible-height: 0px;
+}
+
+.language-suggestion {
+  position: relative;
+  z-index: 60;
+  width: 100%;
+  border-bottom: 1px solid #dbe3ec;
+  background: #f1f5f9;
+  color: #1e293b;
+}
+
+.language-suggestion[hidden] {
+  display: none;
+}
+
+.language-suggestion__inner {
+  display: flex;
+  width: min(100% - 2rem, 72rem);
+  min-height: 3rem;
+  margin: auto;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  font-size: 0.875rem;
+}
+
+.language-suggestion p {
+  margin: 0;
+  font-weight: 700;
+}
+
+.language-suggestion__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.language-suggestion :is(a, button) {
+  border-radius: 999px;
+  padding: 0.35rem 0.65rem;
+  font: inherit;
+  font-weight: 650;
+}
+
+.language-suggestion a {
+  background: #0f2747;
+  color: #fff;
+  text-decoration: none;
+}
+
+.language-suggestion button {
+  border: 0;
+  background: transparent;
+  color: #334155;
+  cursor: pointer;
+}
+
+.language-suggestion :is(a, button):hover {
+  background-color: #dbeafe;
+  color: #0f2747;
+}
+
+.language-suggestion a:hover {
+  background-color: #0f2747;
+  color: #fff;
+  opacity: 0.88;
+}
+
+.language-suggestion :is(a, button):focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
+
+.language-suggestion__close {
+  min-width: 2rem;
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+@media (width < 35rem) {
+  .language-suggestion__inner {
+    min-height: 0;
+    padding-block: 0.55rem;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 0.3rem 0.5rem;
+  }
+
+  .language-suggestion__actions {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .language-suggestion__close {
+    margin-left: auto;
+  }
+}

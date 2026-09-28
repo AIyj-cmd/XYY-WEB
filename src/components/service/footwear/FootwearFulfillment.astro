@@ -1,8 +1,20 @@
 ---
 import { CLAIM_TEXT } from '@/lib/claims'
+import { englishClaim } from '@/i18n/claims'
+import { FOOTWEAR_ENGLISH_UI } from '@/i18n/footwear-ui'
+import type { SiteLocale } from '@/i18n/routes'
 import FulfillmentIcon from './FulfillmentIcon.astro'
 
-const stages = [
+type FulfillmentIconName = 'receive' | 'inspect' | 'rfid' | 'order' | 'pick' | 'pack' | 'dispatch'
+type FulfillmentStage = {
+  id: string
+  label: string
+  title: string
+  outcome: string
+  steps: readonly (readonly [FulfillmentIconName, string, string])[]
+}
+
+const chineseStages = [
   {
     id: 'inbound',
     label: '入仓建档',
@@ -34,7 +46,33 @@ const stages = [
       ['dispatch', '发货出库', `${CLAIM_TEXT.shippingSla}。`],
     ],
   },
-] as const
+] as const satisfies readonly FulfillmentStage[]
+
+interface Props {
+  locale?: SiteLocale
+}
+
+const { locale = 'zh-CN' } = Astro.props
+const stages: readonly FulfillmentStage[] =
+  locale === 'en'
+    ? chineseStages.map((stage, index) => {
+        const copy = FOOTWEAR_ENGLISH_UI.fulfillment.stages[index]
+        return {
+          ...stage,
+          ...copy,
+          steps: stage.steps.map(
+            ([icon], stepIndex) =>
+              [
+                icon,
+                copy.steps[stepIndex][0],
+                index === 2 && stepIndex === 1
+                  ? `${englishClaim('shippingSla', 'service:xiefu-yuncang')}.`
+                  : copy.steps[stepIndex][1],
+              ] as const
+          ),
+        }
+      })
+    : chineseStages
 ---
 
 <section
@@ -43,12 +81,19 @@ const stages = [
   aria-labelledby="footwear-fulfillment-heading"
 >
   <header class="footwear-fulfillment__heading">
-    <p class="footwear-section__label">履约</p>
-    <h2 id="footwear-fulfillment-heading">货到仓后，看看我们怎么做。</h2>
+    <p class="footwear-section__label">
+      {locale === 'en' ? FOOTWEAR_ENGLISH_UI.fulfillment.label : '履约'}
+    </p>
+    <h2 id="footwear-fulfillment-heading">
+      {locale === 'en' ? FOOTWEAR_ENGLISH_UI.fulfillment.heading : '货到仓后，看看我们怎么做。'}
+    </h2>
   </header>
   <div class="footwear-fulfillment__body" data-footwear-tabs>
     <div class="footwear-fulfillment__tabs">
-      <div role="tablist" aria-label="履约阶段">
+      <div
+        role="tablist"
+        aria-label={locale === 'en' ? FOOTWEAR_ENGLISH_UI.fulfillment.tablist : '履约阶段'}
+      >
         {
           stages.map(({ id, label }, index) => (
             <button
@@ -79,7 +124,8 @@ const stages = [
             <div class="footwear-fulfillment__board">
               <div class="footwear-fulfillment__copy">
                 <p class="footwear-fulfillment__stage">
-                  阶段 {String(stageIndex + 1).padStart(2, '0')}
+                  {locale === 'en' ? FOOTWEAR_ENGLISH_UI.fulfillment.stage : '阶段'}{' '}
+                  {String(stageIndex + 1).padStart(2, '0')}
                 </p>
                 <h3>{title}</h3>
                 <ol class:list={{ 'footwear-fulfillment__steps--two': steps.length === 2 }}>
@@ -90,7 +136,10 @@ const stages = [
                       </span>
                       <FulfillmentIcon name={icon} />
                       <div>
-                        <strong>{label}：</strong>
+                        <strong>
+                          {label}
+                          {locale === 'en' ? ': ' : '：'}
+                        </strong>
                         <span>{description}</span>
                       </div>
                     </li>
@@ -98,7 +147,9 @@ const stages = [
                 </ol>
               </div>
               <footer class="footwear-fulfillment__outcome">
-                <span>阶段结果</span>
+                <span>
+                  {locale === 'en' ? FOOTWEAR_ENGLISH_UI.fulfillment.outcome : '阶段结果'}
+                </span>
                 <p>{outcome}</p>
               </footer>
             </div>

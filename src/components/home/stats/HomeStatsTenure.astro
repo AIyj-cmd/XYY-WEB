@@ -1,22 +1,29 @@
+---
+import { homeUi } from '@/i18n/home-ui'
+import type { SiteLocale } from '@/i18n/routes'
+interface Props {
+  locale?: SiteLocale
+}
+const { locale = 'zh-CN' } = Astro.props
+const copy = homeUi(locale).stats.tenure
+---
+
 <article class="stats-tenure">
   <div class="tenure-topline">
-    <span>运营年限</span>
-    <span class="tenure-status"><i></i>仓网协同中</span>
+    <span>{copy.label}</span>
+    <span class="tenure-status"><i></i>{copy.status}</span>
   </div>
-  <div class="tenure-value" aria-label="十五年">
+  <div class="tenure-value" aria-label={copy.aria}>
     <strong data-raw="15">15</strong>
     <span>YEARS</span>
   </div>
-  <p class="tenure-label">鞋服供应链经验</p>
+  <p class="tenure-label">{copy.experience}</p>
   <div class="tenure-coverage">
     <ul>
-      <li>仓储管理</li>
-      <li>订单履约</li>
-      <li>退货处理</li>
-      <li>库存协同</li>
+      {copy.coverage.map((item) => <li>{item}</li>)}
     </ul>
   </div>
-  <div class="tenure-range" aria-label="2011年至2026年">
+  <div class="tenure-range" aria-label={copy.range}>
     <span>2011</span>
     <i aria-hidden="true"></i>
     <span>2026</span>

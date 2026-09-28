@@ -9,33 +9,48 @@ import {
 } from '@/data/home'
 import type { Service } from '@/lib/directus'
 import HomeServiceFeatures from './HomeServiceFeatures.astro'
+import { homeUi } from '@/i18n/home-ui'
+import type { SiteLocale } from '@/i18n/routes'
 
 interface Props {
   service: Service
   index: number
+  locale?: SiteLocale
 }
 
-const { service, index } = Astro.props
+const { service, index, locale = 'zh-CN' } = Astro.props
+const copy = homeUi(locale)
 const current = HOME_SOLUTION_COPY[index] ?? HOME_SOLUTION_COPY[0]
+const english =
+  locale === 'en'
+    ? copy.solutions.bySlug[service.slug as keyof typeof copy.solutions.bySlug]
+    : undefined
+const display = locale === 'en' ? english : current
+const serviceHref =
+  locale === 'en' ? (english?.href ?? '/en/contact') : resolveHomeServiceHref(service, index)
+const serviceLink = locale === 'en' ? (english?.link ?? 'Discuss your operation →') : current.cta
 const features =
-  [CLOUD_WAREHOUSE_FEATURES, RETURN_QUALITY_FEATURES, DIGITAL_LOGISTICS_FEATURES][index] ??
-  service.features.slice(0, 4)
+  locale === 'en'
+    ? service.features.slice(0, 4)
+    : ([CLOUD_WAREHOUSE_FEATURES, RETURN_QUALITY_FEATURES, DIGITAL_LOGISTICS_FEATURES][index] ??
+      service.features.slice(0, 4))
 ---
 
 <section
   class:list={['s-service', { reverse: index % 2 === 1 }]}
   id={`svc-${service.slug}`}
   aria-labelledby={`svc-title-${index}`}
+  data-locale={locale}
 >
   <div class="svc-media">
     {
       index === 2 ? (
         <div class="svc-dashboard-frame">
-          <p class="svc-dashboard-heading">OTD物流服务中台 · 实际系统界面</p>
+          <p class="svc-dashboard-heading">{copy.solutions.dashboard}</p>
           <div class="svc-dashboard-viewport">
             <img
               src={HOME_IMAGES.svc2}
-              alt="OTD物流服务中台订单与履约数据看板"
+              alt={copy.solutions.dashboardAlt}
               class="svc-img"
               loading="lazy"
             />
@@ -51,49 +66,51 @@ const features =
       )
     }
     <div class="svc-num-badge svc-num-badge--solution">
-      <span>0{index + 1}</span><small>{current.badge}</small>
+      <span>0{index + 1}</span><small>{display?.badge}</small>
     </div>
     <p class="svc-media-caption">
       {
-        current.caption.map((item, itemIndex) => (
+        (display?.caption ?? []).map((item, itemIndex, captions) => (
           <>
             {item}
-            {itemIndex < current.caption.length - 1 && <i>｜</i>}
+            {itemIndex < captions.length - 1 && <i>｜</i>}
           </>
         ))
       }
     </p>
   </div>
   <div class="svc-body">
-    <p class="section-tag">核心解决方案</p>
-    <p class="svc-problem">{current.problem}</p>
+    <p class="section-tag">{copy.solutions.tag}</p>
+    <p class="svc-problem">{display?.problem}</p>
     <h2 id={`svc-title-${index}`} class="svc-title">{service.name}</h2>
-    <p class="svc-sub">{current.subtitle}</p>
+    <p class="svc-sub">{service.subtitle}</p>
     {
       index === 1 && (
-        <div class="svc-quality-assurance" aria-label="广检集团合作质检能力">
+        <div class="svc-quality-assurance" aria-label={copy.solutions.qualityAria}>
           <>
-            <p>与广检集团合作 QC 团队</p>
-            <span>按 AQL 1.0–6.5 执行，质检技师经广检集团资深讲师培训认证</span>
+            <p>{copy.solutions.quality[0]}</p>
+            <span>{copy.solutions.quality[1]}</span>
           </>
         </div>
       )
     }
-    <p class="svc-desc">{current.description}</p>
+    <p class="svc-desc">{service.description}</p>
     <HomeServiceFeatures features={features} />
-    <div class="svc-scenarios" aria-label="适用业务场景">
-      <span>{index === 0 ? '支持业务场景' : '适用业务场景'}</span><div>
-        {current.scenarios.map((scenario) => <b>{scenario}</b>)}
+    <div class="svc-scenarios" aria-label={copy.solutions.scenarios}>
+      <span>{copy.solutions.scenarios}</span><div>
+        {(display?.scenarios ?? []).map((scenario) => <b>{scenario}</b>)}
       </div>
     </div>
     {
       index === 2 && (
         <p class="svc-fee-note">
-          <strong>费用说明：</strong>
-          不收取系统使用费；实施、接口联调及定制开发费用根据具体方案确认。
+          <strong>{copy.solutions.fee[0]}</strong>
+          {copy.solutions.fee[1]}
         </p>
       )
     }
-    <a href={resolveHomeServiceHref(service, index)} class="svc-link">{current.cta}</a>
+    <a href={serviceHref} class="svc-link">
+      {serviceLink}
+    </a>
   </div>
 </section>
