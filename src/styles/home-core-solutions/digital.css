@@ -90,3 +90,30 @@
 .svc-system-overlay i {
   display: none;
 }
+
+@media (max-width: 768px) {
+  #svc-logistics-cloud[data-locale='en'] .svc-media {
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 0.9rem;
+    padding: 1rem;
+  }
+
+  #svc-logistics-cloud[data-locale='en'] .svc-num-badge--solution {
+    position: static;
+    order: -1;
+    align-self: flex-start;
+  }
+
+  #svc-logistics-cloud[data-locale='en'] .svc-dashboard-frame {
+    width: 100%;
+    flex: none;
+  }
+
+  #svc-logistics-cloud[data-locale='en'] .svc-media-caption {
+    position: static;
+    align-self: flex-start;
+    max-width: 100%;
+  }
+}

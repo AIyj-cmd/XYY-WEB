@@ -1,5 +1,9 @@
 import { HOME_FAQS, HOME_SERVICE_FALLBACKS, HOME_STATS_FALLBACKS } from '@/data/home'
 import { englishClaim } from '@/i18n/claims'
+import {
+  HOME_SERVICE_APPROVED_TEMPLATE_SOURCES,
+  HOME_SERVICE_PUBLISHED_SOURCES,
+} from '@/i18n/home-service-sources'
 import type { FaqItem, HomepageStat, Service } from '@/lib/directus'
 
 const reportHomeOmission = (scope: string, key: string) =>
@@ -93,17 +97,21 @@ const serviceCopy: Record<
 
 export function translateHomeServices(items: Service[]): Service[] {
   return items.flatMap((item) => {
-    const source = HOME_SERVICE_FALLBACKS.find((candidate) => candidate.slug === item.slug)
+    const source = [
+      ...HOME_SERVICE_FALLBACKS,
+      ...HOME_SERVICE_PUBLISHED_SOURCES,
+      ...HOME_SERVICE_APPROVED_TEMPLATE_SOURCES,
+    ].find(
+      (candidate) =>
+        candidate.slug === item.slug &&
+        candidate.name === item.name &&
+        candidate.subtitle === item.subtitle &&
+        candidate.description === item.description &&
+        candidate.features.length === item.features.length &&
+        candidate.features.every((feature, index) => feature === item.features[index])
+    )
     const copy = serviceCopy[item.slug]
-    if (
-      !source ||
-      !copy ||
-      source.id !== item.id ||
-      source.name !== item.name ||
-      source.subtitle !== item.subtitle ||
-      source.description !== item.description ||
-      source.features.join('\n') !== item.features.join('\n')
-    ) {
+    if (!source || !copy) {
       reportHomeOmission('service', item.slug)
       return []
     }
