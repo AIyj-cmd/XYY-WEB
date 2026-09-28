@@ -53,6 +53,15 @@ export const ENGLISH_CASE_COPY: Record<string, EnglishCaseCopy> = {
       'ROMI STUDIO is a Shenzhen womenswear brand with e-commerce and live-commerce operations. The operation requires responsive replenishment and creator sample dispatch.',
     tags: ['Live-commerce womenswear', 'Flexible replenishment'],
   },
+  toyouth: {
+    label: 'TOYOUTH',
+    name: 'TOYOUTH',
+    fullName: 'TOYOUTH',
+    category: 'Original designer womenswear',
+    description:
+      'TOYOUTH is a Chinese original designer womenswear brand known for its independent styling and denim collections. Its operations coordinate inventory and orders across sales channels.',
+    tags: ['Original designer womenswear', 'All-channel inventory'],
+  },
   inman: {
     label: 'Inman',
     name: 'Inman',

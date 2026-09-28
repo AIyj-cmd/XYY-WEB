@@ -40,6 +40,7 @@ const displayCases =
         const card = cardMeta[index]
         return card ? [{ item, card }] : []
       })
+const displayGallery = locale === 'en' ? displayCases.length > 0 : true
 ---
 
 <section id="s-cases" class="s-cases" aria-labelledby="cases-heading" data-locale={locale}>
@@ -48,40 +49,53 @@ const displayCases =
     <h2 id="cases-heading" class="section-title">{copy.heading(partnerBrands)}</h2>
     <p class="section-sub">{copy.intro}</p>
   </div>
-  <div class="cases-gallery" aria-label={copy.gallery}>
-    {
-      displayCases.map(({ item, card }, index) => {
-        const cardKey = locale === 'en' ? item.slug : item.label
-        const href = locale === 'en' ? '/en/contact' : card?.slug ? `/cases/${card.slug}` : '/cases'
-        return (
-          <a class="case-card cg-panel" data-case={cardKey} href={href}>
-            <img src={item.img} alt={copy.imageAlt(card?.shortName ?? item.label)} loading="lazy" />
-            <div class="cg-shade" aria-hidden="true" />
-            <div class="cg-label">
-              <span>0{index + 1}</span>
-              <strong>{card?.shortName ?? item.label}</strong>
-              <small>{item.category}</small>
-            </div>
-            <div class="cg-detail">
-              <span>{item.category}</span>
-              {card.metric && <strong>{card.metric.value}</strong>}
-              {card.metricContext && <small>{card.metricContext}</small>}
-              <p>{item.details}</p>
-              <div class="cg-tags">
-                {item.tags.slice(0, 3).map((tag) => (
-                  <span>{tag}</span>
-                ))}
+  {
+    displayGallery && (
+      <div class="cases-gallery" aria-label={copy.gallery}>
+        {displayCases.map(({ item, card }, index) => {
+          const cardKey = locale === 'en' ? item.slug : item.label
+          const href =
+            locale === 'en' ? '/en/contact' : card?.slug ? `/cases/${card.slug}` : '/cases'
+          return (
+            <a class="case-card cg-panel" data-case={cardKey} href={href}>
+              <img
+                src={item.img}
+                alt={copy.imageAlt(card?.shortName ?? item.label)}
+                loading="lazy"
+              />
+              <div class="cg-shade" aria-hidden="true" />
+              <div class="cg-label">
+                <span>0{index + 1}</span>
+                <strong>{card?.shortName ?? item.label}</strong>
+                <small>{item.category}</small>
               </div>
-              <i aria-hidden="true">{copy.open}</i>
-            </div>
-          </a>
-        )
-      })
-    }
-  </div>
-  <div class="cases-more">
-    <a href={locale === 'en' ? '/en/cases' : '/cases'} class="btn-outline-dark">{copy.all}</a>
-  </div>
+              <div class="cg-detail">
+                <span>{item.category}</span>
+                {card.metric && <strong>{card.metric.value}</strong>}
+                {card.metricContext && <small>{card.metricContext}</small>}
+                <p>{item.details}</p>
+                <div class="cg-tags">
+                  {item.tags.slice(0, 3).map((tag) => (
+                    <span>{tag}</span>
+                  ))}
+                </div>
+                <i aria-hidden="true">{copy.open}</i>
+              </div>
+            </a>
+          )
+        })}
+      </div>
+    )
+  }
+  {
+    displayGallery && (
+      <div class="cases-more">
+        <a href={locale === 'en' ? '/en/cases' : '/cases'} class="btn-outline-dark">
+          {copy.all}
+        </a>
+      </div>
+    )
+  }
 </section>
 
-<HomeCaseModal caseDetails={caseDetails} {locale} />
+{displayGallery && <HomeCaseModal caseDetails={caseDetails} {locale} />}

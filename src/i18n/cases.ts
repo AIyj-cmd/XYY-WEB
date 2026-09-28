@@ -3,6 +3,7 @@ import type { CaseDetail } from '@/data/brand/case-details'
 import { CASE_FAQS } from '@/data/cases/faqs'
 import type { Case, FaqItem } from '@/lib/directus'
 
+import { PUBLISHED_CASE_SOURCE_DIGESTS, reviewedCaseSourceDigest } from './case-sources'
 import { ENGLISH_CASE_COPY, ENGLISH_CASE_FAQS } from './cases-copy'
 
 export type EnglishCaseDiagnostic = {
@@ -12,33 +13,21 @@ export type EnglishCaseDiagnostic = {
 
 export type EnglishCaseFaq = (typeof ENGLISH_CASE_FAQS)[number]
 
-const meaningfulSource = (item: Case) => ({
-  slug: item.slug,
-  label: item.label,
-  name: item.name,
-  full_name: item.full_name,
-  accent: item.accent,
-  category: item.category,
-  case_description: item.case_description,
-  stats: item.stats,
-  metrics: item.metrics,
-  details: item.details,
-  tags: item.tags,
-  img: item.img,
-})
-
-const approvedSources = new Map(
+const fallbackSourceDigests = new Map(
   CASE_FALLBACKS.filter((item): item is Case & { slug: string } => Boolean(item.slug)).map(
-    (item) => [item.slug, JSON.stringify(meaningfulSource(item))]
+    (item) => [item.slug, reviewedCaseSourceDigest(item)]
   )
 )
 
 function caseDiagnostic(item: Case): EnglishCaseDiagnostic | undefined {
-  const expected = item.slug ? approvedSources.get(item.slug) : undefined
-  if (!expected || !item.slug || !ENGLISH_CASE_COPY[item.slug]) {
+  if (!item.slug || !ENGLISH_CASE_COPY[item.slug]) {
     return { slug: item.slug, reason: 'unknown-source' }
   }
-  if (JSON.stringify(meaningfulSource(item)) !== expected) {
+  const sourceDigest = reviewedCaseSourceDigest(item)
+  const expectedFallback = fallbackSourceDigests.get(item.slug)
+  const expectedPublished =
+    PUBLISHED_CASE_SOURCE_DIGESTS[item.slug as keyof typeof PUBLISHED_CASE_SOURCE_DIGESTS]
+  if (sourceDigest !== expectedFallback && sourceDigest !== expectedPublished) {
     return { slug: item.slug, reason: 'stale-source' }
   }
 }
