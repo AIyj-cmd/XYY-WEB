@@ -76,7 +76,9 @@ test('target pages retain their approved conversion paths without overflow', asy
   expect(productResponse?.ok(), '/product should return a successful response').toBe(true)
   await expect(page.locator('[data-conversion-cta]')).toHaveCount(0)
   await expect(page.locator('[data-product-video]')).toHaveCount(8)
-  const productLinks = page.locator('[data-product-video-slide] a[href^="/"]')
+  const productLinks = page.locator(
+    '[data-product-video-slide]:has([data-product-video]) a[href^="/"]'
+  )
   await expect(productLinks).toHaveCount(8)
   expect(
     await productLinks.evaluateAll((links) => links.map((link) => link.getAttribute('href')))
