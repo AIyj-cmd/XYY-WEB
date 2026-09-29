@@ -1,5 +1,6 @@
 import type { BrandClaimKey } from './claims'
 import type { CmsHomepageStatReference } from './claims/cms'
+import type { EnglishNewsFields } from './news-english-types'
 
 export interface HomepageStat {
   id: number
@@ -64,7 +65,7 @@ export interface Case {
   image_file?: string | null
 }
 
-export interface NewsArticle {
+export interface NewsArticle extends EnglishNewsFields {
   id: number
   status?: 'published' | 'draft' | 'archived'
   title: string

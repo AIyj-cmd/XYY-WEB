@@ -1,0 +1,124 @@
+---
+import { formatEnglishNewsDate } from '@/lib/news-english'
+import { getDirectusAssetUrl, type EnglishNewsArticle } from '@/lib/directus'
+
+interface Props {
+  article: EnglishNewsArticle
+  related: EnglishNewsArticle[]
+}
+
+const { article, related } = Astro.props
+---
+
+<nav
+  class="border-b border-gray-100 bg-gray-50 pb-3 pt-[calc(8rem+var(--language-suggestion-visible-height,0px))] sm:pt-[calc(6rem+var(--language-suggestion-visible-height,0px))]"
+  aria-label="Breadcrumb"
+>
+  <div class="mx-auto max-w-4xl px-4 sm:px-6">
+    <ol class="flex items-center gap-2 text-sm text-gray-500">
+      <li><a href="/en" class="transition-colors hover:text-navy-800">Home</a></li>
+      <li aria-hidden="true">/</li>
+      <li><a href="/en/news" class="transition-colors hover:text-navy-800">Insights</a></li>
+      <li aria-hidden="true">/</li>
+      <li class="max-w-xs truncate font-medium text-gray-700">{article.title}</li>
+    </ol>
+  </div>
+</nav>
+
+<article class="bg-white py-12" itemscope itemtype="https://schema.org/NewsArticle">
+  <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+    <header class="mb-8">
+      <div class="mb-4 flex flex-wrap items-center gap-3">
+        <span
+          class="rounded-full bg-orange-50 px-3 py-1.5 text-xs font-bold text-brand-orange"
+          itemprop="articleSection">{article.category}</span
+        >
+        <time class="text-sm text-gray-400" datetime={article.published_at} itemprop="datePublished"
+          >{formatEnglishNewsDate(article.published_at)}</time
+        >
+      </div>
+      <h1 class="text-3xl font-black leading-tight text-navy-900 lg:text-5xl" itemprop="headline">
+        {article.title}
+      </h1>
+      <p
+        class="mt-5 border-l-4 border-brand-orange pl-5 text-lg leading-relaxed text-gray-600"
+        itemprop="description"
+      >
+        {article.summary}
+      </p>
+    </header>
+    {
+      article.cover_image && (
+        <figure class="mb-10 aspect-video overflow-hidden rounded-2xl">
+          <img
+            src={getDirectusAssetUrl(article.cover_image)}
+            alt={article.title}
+            width="800"
+            height="450"
+            class="h-full w-full object-cover"
+            itemprop="image"
+            fetchpriority="high"
+          />
+        </figure>
+      )
+    }
+    <div
+      class="prose prose-lg max-w-none prose-headings:text-navy-800 prose-headings:font-bold prose-a:text-navy-700 prose-a:underline prose-strong:text-navy-800 prose-blockquote:border-brand-orange"
+      itemprop="articleBody"
+      set:html={article.content}
+    />
+    <footer class="mt-12 border-t border-gray-100 pt-8">
+      <p
+        class="text-sm font-semibold text-gray-800"
+        itemprop="author"
+        itemscope
+        itemtype="https://schema.org/Organization"
+      >
+        <span itemprop="name">XINYIYUAN Supply Chain editorial team</span>
+      </p>
+      <p class="mt-1 text-xs text-gray-500">Reviewed for publication by XINYIYUAN Supply Chain.</p>
+    </footer>
+  </div>
+</article>
+
+<section
+  class="border-t border-gray-100 bg-gray-50 py-12"
+  aria-labelledby="related-insights-heading"
+>
+  <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+    <h2 id="related-insights-heading" class="text-xl font-bold text-navy-800">Related insights</h2>
+    {
+      related.length ? (
+        <div class="mt-7 grid gap-5 md:grid-cols-3">
+          {related.map((item) => (
+            <article class="rounded-xl border border-gray-100 bg-white p-5">
+              <span class="text-xs font-bold text-brand-orange">{item.category}</span>
+              <h3 class="mt-2 text-sm font-bold leading-snug text-navy-800">
+                <a href={`/en/news/${item.slug}`} class="transition-colors hover:text-brand-orange">
+                  {item.title}
+                </a>
+              </h3>
+              <time class="mt-3 block text-xs text-gray-400" datetime={item.published_at}>
+                {formatEnglishNewsDate(item.published_at)}
+              </time>
+            </article>
+          ))}
+        </div>
+      ) : (
+        <p class="mt-3 text-sm text-gray-600">
+          More reviewed English insights will appear here when available.
+        </p>
+      )
+    }
+  </div>
+</section>
+
+<div class="border-t border-gray-100 bg-white py-8">
+  <div class="mx-auto max-w-4xl px-4 sm:px-6">
+    <a
+      href="/en/news"
+      class="inline-flex items-center text-sm font-semibold text-navy-700 transition-colors hover:text-brand-orange"
+      >← Back to insights</a
+    >
+  </div>
+</div>

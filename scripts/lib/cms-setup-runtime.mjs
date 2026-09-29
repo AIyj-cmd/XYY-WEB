@@ -8,6 +8,20 @@ export function createCmsSetupRuntime(directus) {
   const seedRuntime = createCmsSeedRuntime(directus)
   const createNavigationGroup = createCmsNavigationRuntime(directus)
 
+  async function createMissingAliases(name, aliases, existingFields) {
+    for (const definition of aliases) {
+      if (existingFields.has(definition.field)) continue
+      const translations = fieldTranslations(name, definition.field)
+      await directus.request('POST', `/fields/${name}`, {
+        field: definition.field,
+        type: 'alias',
+        schema: null,
+        meta: { ...definition.meta, ...(translations && { translations }) },
+      })
+      existingFields.add(definition.field)
+    }
+  }
+
   /**
    * @param {{
    *   name: string,
@@ -57,6 +71,8 @@ export function createCmsSetupRuntime(directus) {
 
     const existingFieldRecords = exists ? await directus.request('GET', `/fields/${name}`) : []
     const existingFields = new Map(existingFieldRecords.map((field) => [field.field, field]))
+    const groupAliases = aliases.filter((definition) => definition.meta?.special?.includes('group'))
+    await createMissingAliases(name, groupAliases, new Set(existingFields.keys()))
     let existingItems
 
     for (const definition of fields) {
@@ -165,19 +181,11 @@ export function createCmsSetupRuntime(directus) {
       const fieldsAfterRelations = new Set(
         (await directus.request('GET', `/fields/${name}`)).map(({ field }) => field)
       )
-      for (const definition of aliases) {
-        if (fieldsAfterRelations.has(definition.field)) continue
-        const translations = fieldTranslations(name, definition.field)
-        await directus.request('POST', `/fields/${name}`, {
-          field: definition.field,
-          type: 'alias',
-          schema: null,
-          meta: {
-            ...definition.meta,
-            ...(translations && { translations }),
-          },
-        })
-      }
+      await createMissingAliases(
+        name,
+        aliases.filter((definition) => !groupAliases.includes(definition)),
+        fieldsAfterRelations
+      )
     }
   }
 

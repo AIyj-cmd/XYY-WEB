@@ -1,0 +1,45 @@
+---
+import EnglishLayout from '@/components/en/EnglishLayout.astro'
+import EnglishNewsLanding from '@/components/news/EnglishNewsLanding.astro'
+import { BRAND } from '@/lib/brand'
+import { getPublishedEnglishNews } from '@/lib/directus'
+import { ENGLISH_NEWS_CATEGORIES, type EnglishNewsCategory } from '@/lib/news-english'
+import { createBreadcrumbSchema } from '@/lib/seo'
+import '@/styles/news.css'
+
+const requestedCategory = Astro.url.searchParams.get('category') ?? ''
+const category = Object.hasOwn(ENGLISH_NEWS_CATEGORIES, requestedCategory)
+  ? (requestedCategory as EnglishNewsCategory)
+  : undefined
+const showAll = Astro.url.searchParams.get('all') === '1'
+const allArticles = await getPublishedEnglishNews(100, 1, category)
+const articles = showAll ? allArticles : allArticles.slice(0, 10)
+const viewAllHref =
+  !showAll && allArticles.length > 10
+    ? `/en/news?${new URLSearchParams({ ...(category ? { category } : {}), all: '1' })}`
+    : undefined
+const path = '/en/news'
+const breadcrumbSchema = createBreadcrumbSchema([
+  { name: 'Home', path: '/en' },
+  { name: 'Insights', path },
+])
+const pageSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  '@id': `${BRAND.url}${path}`,
+  name: 'XINYIYUAN insights',
+  description: 'Selected English insights on apparel fulfilment and supply-chain operations.',
+  url: `${BRAND.url}${path}`,
+  inLanguage: 'en',
+}
+---
+
+<EnglishLayout
+  title="Apparel fulfilment insights"
+  description="Selected English insights on apparel warehousing, returns inspection and supply-chain operations."
+  canonical={`${BRAND.url}${path}`}
+  jsonLd={[breadcrumbSchema, pageSchema]}
+  localePair={['/news', path]}
+>
+  <EnglishNewsLanding {articles} {category} totalCount={allArticles.length} {viewAllHref} />
+</EnglishLayout>

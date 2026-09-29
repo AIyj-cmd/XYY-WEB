@@ -94,6 +94,7 @@ ${whitepaperLinks}
 - [English about](${page('/en/about')}): Company background, warehouse network, milestones and honours.
 - [English cases](${page('/en/cases')}): Public English case summaries and full case-detail pages.
 ${englishCaseLinks}
+- [English supply-chain whitepapers](${page('/en/supply-chain-whitepapers')}): English summaries with links to original Chinese Forest Journal articles and PDFs.
 - [English contact](${page('/en/contact')}): Business enquiries for China apparel supply-chain operations.
 - [English privacy notice](${page('/en/privacy')}): Privacy information for English website enquiries.
 `

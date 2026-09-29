@@ -20,7 +20,9 @@ export {
   getWarehouses,
   NEWS_CATEGORIES,
 } from './directus-queries'
+export { getEnglishNewsArticle, getPublishedEnglishNews } from './directus-news-english'
 export { isPublishedAtOrBeforeNow, parseNewsPublicationTime } from './news-publication-time'
+export type { EnglishNewsArticle } from './news-english'
 export {
   getAboutContent,
   getAboutHistory,

@@ -1,7 +1,7 @@
 ---
 import { BRAND } from '@/lib/brand'
 import { serializeJsonForScript } from '@/lib/safe-json'
-import { ENGLISH_ROUTES, type SiteLocale } from '@/i18n/routes'
+import { findLocalePair, matchesLocalePath, type SiteLocale } from '@/i18n/routes'
 import type { LocalePair } from '@/i18n/case-routes'
 
 interface Props {
@@ -34,9 +34,9 @@ const fullTitle =
 const schemas = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : []
 const pathname = new URL(canonical).pathname.replace(/\/$/, '') || '/'
 const routePair =
-  localePair && (locale === 'en' ? localePair[1] : localePair[0]) === pathname
+  localePair && matchesLocalePath(localePair, locale, pathname)
     ? localePair
-    : ENGLISH_ROUTES.find(([zh, en]) => (locale === 'en' ? en : zh) === pathname)
+    : findLocalePair(pathname, locale)
 const alternate = routePair && (locale === 'en' ? routePair[0] : routePair[1])
 ---
 

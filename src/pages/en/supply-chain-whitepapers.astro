@@ -1,0 +1,73 @@
+---
+import PageFAQ from '@/components/PageFAQ.astro'
+import ConversionCTA from '@/components/conversion/ConversionCTA.astro'
+import EnglishLayout from '@/components/en/EnglishLayout.astro'
+import EnglishPublicationsDirectory from '@/components/publications/EnglishPublicationsDirectory.astro'
+import EnglishPublicationsHero from '@/components/publications/EnglishPublicationsHero.astro'
+import { PUBLICATION_FAQS, PUBLICATION_ISSUES } from '@/data/publications'
+import { getWhitepaperDirectory } from '@/data/whitepapers'
+import { BRAND } from '@/lib/brand'
+import { getFaqs, getPublications } from '@/lib/directus'
+import { createBreadcrumbSchema, createFaqSchema } from '@/lib/seo'
+import { translatePublicationFaqs, translateWhitepapers } from '@/i18n/whitepapers'
+
+const path = '/en/supply-chain-whitepapers'
+const [sourceFaqs, cmsIssues] = await Promise.all([
+  getFaqs('senlinqikan', PUBLICATION_FAQS),
+  getPublications(PUBLICATION_ISSUES),
+])
+const { whitepapers: sourceWhitepapers } = getWhitepaperDirectory(cmsIssues)
+const whitepapers = translateWhitepapers(sourceWhitepapers)
+const faqs = translatePublicationFaqs(sourceFaqs)
+const breadcrumbSchema = createBreadcrumbSchema([
+  { name: 'Home', path: '/en' },
+  { name: 'Insights', path: '/en/news' },
+  { name: 'Supply-chain whitepapers', path },
+])
+const collectionSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'XINYIYUAN supply-chain whitepaper library',
+  description: 'English summaries with links to original Chinese Forest Journal articles and PDFs.',
+  numberOfItems: whitepapers.length,
+  itemListElement: whitepapers.map((issue, index) => ({
+    '@type': 'ListItem',
+    position: index + 1,
+    name: issue.title,
+    url: `${BRAND.url}/supply-chain-whitepapers/${issue.issue}/`,
+    inLanguage: 'zh-CN',
+  })),
+}
+---
+
+<EnglishLayout
+  title="Supply-chain whitepapers"
+  description="English summaries of XINYIYUAN supply-chain whitepapers, with links to the original Chinese articles and PDFs."
+  canonical={`${BRAND.url}${path}`}
+  jsonLd={[breadcrumbSchema, collectionSchema, ...(faqs.length ? [createFaqSchema(faqs)] : [])]}
+  localePair={['/supply-chain-whitepapers/', path]}
+>
+  <EnglishPublicationsHero latest={whitepapers[0]} />
+  <EnglishPublicationsDirectory {whitepapers} />
+  {faqs.length > 0 && <PageFAQ heading="Supply-chain whitepaper FAQs" items={faqs} />}
+  <ConversionCTA
+    headingId="english-whitepapers-conversion-cta-heading"
+    eyebrow="START A CONVERSATION"
+    headingLines={['Looking for a relevant', 'fulfilment discussion?']}
+    description="Share your category, fulfilment channels and operating question. We can discuss a suitable next step for your project."
+    actionLabel="Contact us"
+    actionHref="/en/contact"
+    preparationTitle="Helpful context for a first discussion"
+    preparationItems={[
+      {
+        label: 'Category and product',
+        detail: 'Product type, SKU characteristics and sales channels',
+      },
+      {
+        label: 'Operating question',
+        detail: 'Fulfilment, returns, inspection or systems coordination',
+      },
+      { label: 'Current priorities', detail: 'The issue or scenario you would like to discuss' },
+    ]}
+  />
+</EnglishLayout>

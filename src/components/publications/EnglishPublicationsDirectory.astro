@@ -1,0 +1,98 @@
+---
+import type { WhitepaperListing } from '@/data/whitepapers/types'
+
+interface Props {
+  whitepapers: WhitepaperListing[]
+}
+
+const { whitepapers } = Astro.props
+const [latest, ...archive] = whitepapers
+---
+
+<section id="issues" class="bg-gray-50 py-16" aria-labelledby="issues-heading">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="mb-10">
+      <p class="mb-2 text-[11px] font-bold uppercase tracking-[0.35em] text-brand-orange">
+        Issue archive
+      </p>
+      <h2 id="issues-heading" class="text-3xl font-black text-navy-800">Available issues</h2>
+    </div>
+
+    {
+      latest ? (
+        <article class="mb-8 overflow-hidden rounded-2xl border border-gray-100 bg-white transition-all duration-300 hover:border-navy-200 hover:shadow-xl">
+          <div class="flex flex-col lg:flex-row">
+            <div class="lg:w-96 shrink-0 overflow-hidden" style="max-height:320px;">
+              <img
+                src={latest.cover}
+                alt={`Cover of Issue ${latest.issue} (Chinese original)`}
+                loading="eager"
+                class="h-full w-full object-cover"
+              />
+            </div>
+            <div class="flex flex-1 flex-col justify-center p-8 lg:p-12">
+              <div class="mb-4 flex flex-wrap items-center gap-3">
+                <span class="rounded-full bg-brand-orange px-3 py-1 text-xs font-bold text-white">
+                  Latest available issue
+                </span>
+                <span class="text-xs text-gray-400">{latest.sourcePublishedLabel}</span>
+              </div>
+              <h3 class="mb-3 text-2xl font-black text-navy-800">{latest.title}</h3>
+              <p class="mb-6 leading-relaxed text-gray-500">{latest.description}</p>
+              <div class="flex flex-wrap gap-4 text-sm font-semibold">
+                <a class="text-brand-orange" href={`/supply-chain-whitepapers/${latest.issue}/`}>
+                  Read original Chinese article
+                </a>
+                <a href={latest.sourcePdf} target="_blank" rel="noopener" class="text-navy-700">
+                  Open original Chinese PDF
+                </a>
+              </div>
+            </div>
+          </div>
+        </article>
+      ) : (
+        <div class="rounded-2xl border border-gray-100 bg-white px-6 py-12 text-center shadow-sm">
+          <h3 class="text-2xl font-black text-navy-800">No whitepapers are currently available</h3>
+          <p class="mx-auto mt-3 max-w-xl leading-relaxed text-gray-600">
+            Please return when a published issue is available in this library.
+          </p>
+        </div>
+      )
+    }
+
+    {
+      archive.length > 0 && (
+        <div class="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {archive.map((issue) => (
+            <article class="flex flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white transition-all duration-300 hover:border-navy-200 hover:shadow-lg">
+              <div class="aspect-[3/2] overflow-hidden">
+                <img
+                  src={issue.cover}
+                  alt={`Cover of Issue ${issue.issue} (Chinese original)`}
+                  loading="lazy"
+                  class="h-full w-full object-cover"
+                />
+              </div>
+              <div class="flex flex-1 flex-col p-5">
+                <span class="self-start rounded-full bg-orange-50 px-2 py-0.5 text-[11px] font-bold text-brand-orange">
+                  Issue {issue.issue}
+                </span>
+                <p class="mt-2 text-xs text-gray-400">{issue.sourcePublishedLabel}</p>
+                <h3 class="mb-2 mt-2 text-base font-black text-navy-800">{issue.title}</h3>
+                <p class="flex-1 text-xs leading-relaxed text-gray-500">{issue.description}</p>
+                <div class="mt-4 flex flex-wrap gap-x-4 gap-y-2 text-xs font-semibold">
+                  <a class="text-brand-orange" href={`/supply-chain-whitepapers/${issue.issue}/`}>
+                    Read Chinese article
+                  </a>
+                  <a href={issue.sourcePdf} target="_blank" rel="noopener" class="text-navy-700">
+                    Chinese PDF
+                  </a>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+      )
+    }
+  </div>
+</section>

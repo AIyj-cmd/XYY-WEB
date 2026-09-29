@@ -210,6 +210,7 @@ export function isCanonicalSlug(value: unknown): value is string {
 
 function isPublicNewsArticle(article: NewsArticle) {
   return (
+    (article.status === undefined || article.status === 'published') &&
     isCanonicalSlug(article.slug) &&
     Boolean(article.published_at) &&
     isPublishedAtOrBeforeNow(article.published_at)

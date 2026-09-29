@@ -79,7 +79,9 @@ test.describe('language suggestion behavior', () => {
     await expect(paired.page).toHaveURL(/\/en\/about$/)
     await paired.context.close()
 
-    const unpaired = await openWithLanguages(browser, testInfo, '/news', ['en-US'])
+    const unpaired = await openWithLanguages(browser, testInfo, '/supply-chain-whitepapers/14/', [
+      'en-US',
+    ])
     await expect(unpaired.page.locator('[data-language-choice="en"]')).toHaveAttribute(
       'href',
       '/en'

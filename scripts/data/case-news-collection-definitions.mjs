@@ -1,4 +1,5 @@
 import { dateCreatedField, dateUpdatedField, statusField } from './cms-field-builders.mjs'
+import { ENGLISH_NEWS_ALIASES, ENGLISH_NEWS_FIELDS } from './english-news-fields.mjs'
 
 const fileRelation = (collection, field) => ({
   collection,
@@ -161,9 +162,11 @@ export const CASE_NEWS_COLLECTION_DEFINITIONS = [
           ],
         },
       },
+      ...ENGLISH_NEWS_FIELDS,
       dateCreatedField(),
       dateUpdatedField(),
     ],
+    aliases: ENGLISH_NEWS_ALIASES,
     relations: [fileRelation('news', 'cover_image')],
   },
 ]

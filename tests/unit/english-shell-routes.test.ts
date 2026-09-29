@@ -14,6 +14,6 @@ describe('English shell route behavior', () => {
     expect(chinesePathFor('/en/about')).toBe('/about')
     expect(englishPathFor('/about')).toBe('/en/about')
     expect(chinesePathFor('/en/unknown')).toBe('/')
-    expect(englishPathFor('/news')).toBe('/en')
+    expect(englishPathFor('/news')).toBe('/en/news')
   })
 })

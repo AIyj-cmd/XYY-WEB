@@ -2,7 +2,7 @@ import type { APIRoute } from 'astro'
 import { BRAND } from '@/lib/brand'
 import { CASE_FALLBACKS } from '@/data/cases'
 import { getWhitepapers } from '@/data/whitepapers'
-import { getCases, getPublishedNews } from '@/lib/directus'
+import { getCases, getPublishedEnglishNews, getPublishedNews } from '@/lib/directus'
 import { translateCases } from '@/i18n/cases'
 import { localizedCasePath } from '@/i18n/case-routes'
 
@@ -38,6 +38,8 @@ const ENGLISH_STATIC_PAGES = [
   '/en/smart-shipping',
   '/en/about',
   '/en/cases',
+  '/en/news',
+  '/en/supply-chain-whitepapers',
   '/en/contact',
   '/en/privacy',
 ].map((url) => ({ url, priority: url === '/en' ? '0.8' : '0.6', changefreq: 'monthly' }))
@@ -58,7 +60,11 @@ export const GET: APIRoute = async () => {
     )
     .join('\n')
 
-  const [cases, news] = await Promise.all([getCases(CASE_FALLBACKS), getPublishedNews(500, 1)])
+  const [cases, news, englishNews] = await Promise.all([
+    getCases(CASE_FALLBACKS),
+    getPublishedNews(500, 1),
+    getPublishedEnglishNews(500, 1),
+  ])
   const caseEntries = cases
     .filter((item) => item.slug)
     .map(
@@ -94,6 +100,16 @@ export const GET: APIRoute = async () => {
   </url>`
     )
     .join('\n')
+  const englishNewsEntries = englishNews
+    .map(
+      (article) => `  <url>
+    <loc>${BRAND.url}/en/news/${encodeURIComponent(article.slug)}</loc>
+    <lastmod>${article.published_at.slice(0, 10)}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>`
+    )
+    .join('\n')
   const whitepaperEntries = getWhitepapers()
     .map(
       (article) => `  <url>
@@ -110,6 +126,7 @@ ${staticEntries}
 ${caseEntries}
 ${englishCaseEntries}
 ${newsEntries}
+${englishNewsEntries}
 ${whitepaperEntries}
 </urlset>`
 

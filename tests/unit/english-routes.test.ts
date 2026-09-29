@@ -7,7 +7,7 @@ describe('English routes and CMS case translations', () => {
   it('maps completed route pairs without inventing untranslated paths', () => {
     expect(englishPathFor('/product')).toBe('/en/services')
     expect(chinesePathFor('/en/returns-inspection')).toBe('/tuihuo-zhijian')
-    expect(englishPathFor('/news')).toBe('/en')
+    expect(englishPathFor('/news')).toBe('/en/news')
   })
 
   it('omits a CMS case when its stable source snapshot no longer matches', () => {

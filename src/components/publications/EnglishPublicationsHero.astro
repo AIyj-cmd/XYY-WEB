@@ -1,0 +1,79 @@
+---
+import type { WhitepaperListing } from '@/data/whitepapers/types'
+
+interface Props {
+  latest?: WhitepaperListing
+}
+
+const { latest } = Astro.props
+---
+
+<section
+  class="relative overflow-hidden pb-20 pt-[calc(8rem+var(--language-suggestion-visible-height,0px))] sm:pt-[calc(6rem+var(--language-suggestion-visible-height,0px))] lg:pt-[calc(5rem+var(--language-suggestion-visible-height,0px))]"
+  aria-labelledby="whitepapers-hero-heading"
+>
+  {
+    latest && (
+      <img
+        src={latest.cover}
+        alt={`Cover of Issue ${latest.issue} of Forest Journal (Chinese original)`}
+        class="absolute inset-0 h-full w-full object-cover object-center"
+        fetchpriority="high"
+      />
+    )
+  }
+  <div
+    class="absolute inset-0"
+    style="background: linear-gradient(105deg, rgba(8,20,42,0.97) 0%, rgba(8,20,42,0.85) 50%, rgba(8,20,42,0.55) 100%);"
+    aria-hidden="true"
+  >
+  </div>
+  <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <p class="mb-4 text-[11px] font-bold uppercase tracking-[0.4em] text-brand-orange">
+      XINYIYUAN SUPPLY CHAIN · RESEARCH LIBRARY
+    </p>
+    <h1
+      id="whitepapers-hero-heading"
+      class="mb-5 text-5xl font-black leading-tight text-white lg:text-6xl"
+    >
+      Supply-chain whitepapers
+    </h1>
+    <p class="mb-3 max-w-2xl text-xl font-bold leading-relaxed text-white">
+      Operational reference material for apparel supply-chain decisions.
+    </p>
+    <p class="mb-8 max-w-3xl text-base leading-relaxed text-navy-100">
+      Browse translated issue summaries from Forest Journal. The article pages and PDFs remain in
+      their original Chinese so that source material can be checked in context.
+    </p>
+    <div class="flex flex-wrap gap-4">
+      {
+        latest && (
+          <a
+            href={`/supply-chain-whitepapers/${latest.issue}/`}
+            class="inline-flex items-center gap-2 rounded-xl bg-brand-orange px-6 py-3 font-bold text-white transition-colors hover:bg-brand-orange-dark"
+          >
+            Read Issue {latest.issue} in Chinese
+          </a>
+        )
+      }
+      {
+        latest && (
+          <a
+            href={latest.sourcePdf}
+            target="_blank"
+            rel="noopener"
+            class="inline-flex items-center gap-2 rounded-xl border border-white/30 px-6 py-3 font-medium text-white transition-colors hover:bg-white/10"
+          >
+            Open Chinese PDF
+          </a>
+        )
+      }
+      <a
+        href="#issues"
+        class="inline-flex items-center gap-2 rounded-xl border border-white/30 px-6 py-3 font-medium text-white transition-colors hover:bg-white/10"
+      >
+        Browse all issues
+      </a>
+    </div>
+  </div>
+</section>

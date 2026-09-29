@@ -1,7 +1,12 @@
 ---
 import { SPECIALTY_LINKS } from '@/data/navigation'
-import { englishPathFor } from '@/i18n/routes'
-import { chinesePathFor, ENGLISH_ROUTES, type SiteLocale } from '@/i18n/routes'
+import {
+  chinesePathFor,
+  englishPathFor,
+  findLocalePair,
+  matchesLocalePath,
+  type SiteLocale,
+} from '@/i18n/routes'
 import { shellCopy } from '@/i18n/shell'
 import '@/styles/header-liquid-glass.css'
 import '@/styles/header-responsive.css'
@@ -19,9 +24,9 @@ const pathname = Astro.url.pathname
 const isProductActive =
   pathname === '/product' || SPECIALTY_LINKS.some(({ href }) => pathname.startsWith(href))
 const routePair =
-  localePair && (locale === 'en' ? localePair[1] : localePair[0]) === pathname
+  localePair && matchesLocalePath(localePair, locale, pathname)
     ? localePair
-    : ENGLISH_ROUTES.find(([zh, en]) => (locale === 'en' ? en : zh) === pathname)
+    : findLocalePair(pathname, locale)
 const englishPath = routePair?.[1] ?? englishPathFor(pathname)
 const copy = shellCopy(locale)
 const homePath = locale === 'en' ? '/en' : '/'

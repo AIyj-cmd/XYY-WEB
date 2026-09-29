@@ -9,6 +9,8 @@ const englishRoutes = [
   ['/houzheng-xiufu', '/en/garment-care'],
   ['/b2b-mendian-cangpei', '/en/retail-distribution'],
   ['/cases', '/en/cases'],
+  ['/news', '/en/news'],
+  ['/supply-chain-whitepapers/', '/en/supply-chain-whitepapers'],
   ['/contact', '/en/contact'],
   ['/privacy', '/en/privacy'],
 ] as const
@@ -18,7 +20,6 @@ const h1WidthsByProject = new Map([
   ['chromium', [1440, 768]],
   ['mobile', [390, 360]],
 ])
-
 const readVisibleH1Ranges = () => {
   const heading = document.querySelector('h1')
   if (!heading) return { error: 'missing h1', violations: ['missing h1'] }
@@ -165,7 +166,7 @@ test.describe('English acceptance route contract', () => {
 
     const mobileNav = page.locator('.site-header__mobile-navigation')
     const links = mobileNav.getByRole('link')
-    await expect(links).toHaveCount(5)
+    await expect(links).toHaveCount(6)
     for (const link of await links.all()) await expect(link).toBeVisible()
     await expect(page.getByRole('link', { name: '中文' })).toBeVisible()
     await expect(mobileNav.getByRole('button')).toHaveCount(0)

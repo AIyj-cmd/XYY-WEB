@@ -1,0 +1,90 @@
+---
+import EnglishLayout from '@/components/en/EnglishLayout.astro'
+import EnglishNewsArticle from '@/components/news/EnglishNewsArticle.astro'
+import { BRAND } from '@/lib/brand'
+import { getDirectusAssetUrl, getEnglishNewsArticle, getPublishedEnglishNews } from '@/lib/directus'
+import { createBreadcrumbSchema } from '@/lib/seo'
+import '@/styles/news.css'
+
+const slug = Astro.params.slug ?? ''
+const article = await getEnglishNewsArticle(slug)
+if (!article) Astro.response.status = 404
+const unavailableCanonical = new URL(
+  `/en/news/${encodeURIComponent(slug || 'unavailable')}`,
+  BRAND.url
+).href
+
+const related = article
+  ? (await getPublishedEnglishNews(4, 1)).filter((item) => item.slug !== article.slug).slice(0, 3)
+  : []
+const page = article
+  ? (() => {
+      const path = `/en/news/${article.slug}`
+      const image = article.cover_image ? getDirectusAssetUrl(article.cover_image) : undefined
+      return {
+        path,
+        image,
+        schemas: [
+          {
+            '@context': 'https://schema.org',
+            '@type': 'NewsArticle',
+            '@id': `${BRAND.url}${path}`,
+            headline: article.title,
+            description: article.summary,
+            datePublished: article.published_at,
+            dateModified: article.date_updated ?? article.published_at,
+            inLanguage: 'en',
+            author: { '@type': 'Organization', name: 'XINYIYUAN Supply Chain', url: BRAND.url },
+            publisher: { '@type': 'Organization', name: 'XINYIYUAN Supply Chain', url: BRAND.url },
+            url: `${BRAND.url}${path}`,
+            mainEntityOfPage: { '@type': 'WebPage', '@id': `${BRAND.url}${path}` },
+            ...(image && { image }),
+          },
+          createBreadcrumbSchema([
+            { name: 'Home', path: '/en' },
+            { name: 'Insights', path: '/en/news' },
+            { name: article.title, path },
+          ]),
+        ],
+      }
+    })()
+  : undefined
+---
+
+{
+  article && page ? (
+    <EnglishLayout
+      title={article.title}
+      description={article.summary}
+      canonical={`${BRAND.url}${page.path}`}
+      ogImage={page.image}
+      jsonLd={page.schemas}
+      localePair={[`/news/${article.slug}`, page.path]}
+    >
+      <EnglishNewsArticle {article} {related} />
+    </EnglishLayout>
+  ) : (
+    <EnglishLayout
+      title="Insight not found"
+      description="The requested English insight is not available."
+      canonical={unavailableCanonical}
+      noIndex
+    >
+      <section class="bg-gray-50 px-4 pb-16 pt-32 text-center">
+        <div class="mx-auto max-w-xl rounded-3xl border border-gray-100 bg-white px-6 py-12 shadow-sm">
+          <p class="text-sm font-bold uppercase tracking-[0.14em] text-brand-orange">404</p>
+          <h1 class="mt-3 text-3xl font-black text-navy-800">Insight not found</h1>
+          <p class="mt-4 leading-relaxed text-gray-600">
+            This English insight is unavailable or no longer published.
+          </p>
+          <a
+            href="/en/news"
+            class="mt-7 inline-flex rounded-xl bg-navy-800 px-6 py-3 text-sm font-bold text-white"
+          >
+            Back to insights
+          </a>
+        </div>
+      </section>
+    </EnglishLayout>
+  )
+}

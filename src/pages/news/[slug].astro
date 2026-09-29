@@ -3,12 +3,18 @@ import NewsArticleContent from '@/components/news/NewsArticleContent.astro'
 import Layout from '@/layouts/Layout.astro'
 import { BRAND } from '@/lib/brand'
 import { getNewsArticle, getPublishedNews, getDirectusAssetUrl } from '@/lib/directus'
+import { toPublishedEnglishNewsArticle } from '@/lib/news-english'
 import { sanitizeRichText } from '@/lib/sanitize'
 import '@/styles/news.css'
 
 const { slug } = Astro.params as { slug: string }
 const article = await getNewsArticle(slug)
 if (!article) return Astro.redirect('/news', 302)
+
+const englishArticle = toPublishedEnglishNewsArticle(article)
+const localePair = englishArticle
+  ? ([`/news/${article.slug}`, `/en/news/${article.slug}`] as const)
+  : undefined
 
 const relatedArticles = await getPublishedNews(3, 1)
 const related = relatedArticles.filter((item) => item.slug !== slug).slice(0, 3)
@@ -55,6 +61,7 @@ const breadcrumbSchema = {
   canonical={`${BRAND.url}/news/${article.slug}`}
   ogImage={article.cover_image ? getDirectusAssetUrl(article.cover_image) : undefined}
   jsonLd={[articleSchema, breadcrumbSchema]}
+  {localePair}
 >
   <NewsArticleContent article={article} related={related} sanitizedContent={sanitizedContent} />
 </Layout>
