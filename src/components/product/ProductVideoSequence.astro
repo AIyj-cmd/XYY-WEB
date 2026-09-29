@@ -86,10 +86,18 @@ const labels = PRODUCT_SEQUENCE_LABELS[locale]
       aria-labelledby="assurance-heading"
     >
       <ProductAssurance locale={locale} />
+      <div class="product-video-sequence__footer" data-product-video-footer role="contentinfo">
+        <slot name="footer" />
+      </div>
     </div>
   </div>
 
-  <nav class="product-video-sequence__navigation" aria-label={labels.navigation}>
+  <nav
+    class="product-video-sequence__navigation"
+    data-product-video-navigation
+    aria-label={labels.navigation}
+    hidden
+  >
     <button
       type="button"
       class="product-video-sequence__control"

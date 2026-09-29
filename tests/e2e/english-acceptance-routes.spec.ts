@@ -157,19 +157,19 @@ test.describe('English acceptance route contract', () => {
     expect(response.status()).toBe(301)
     expect(response.headers().location).toBe('/en/about')
   })
-
-  test('keeps the mobile English navigation visible without a menu-only affordance', async ({
-    page,
-  }) => {
+  test('keeps the mobile English navigation usable with overflow menu', async ({ page }) => {
     await page.setViewportSize({ width: 360, height: 844 })
     await page.goto('/en/contact')
-
-    const mobileNav = page.locator('.site-header__mobile-navigation')
-    const links = mobileNav.getByRole('link')
-    await expect(links).toHaveCount(6)
-    for (const link of await links.all()) await expect(link).toBeVisible()
+    const menu = page.locator('[data-header-overflow-menu]')
+    const summary = menu.locator('summary')
+    await expect(summary).toBeVisible()
     await expect(page.getByRole('link', { name: '中文' })).toBeVisible()
-    await expect(mobileNav.getByRole('button')).toHaveCount(0)
+    await summary.click()
+    const links = page.locator(
+      '.site-header__desktop-navigation a:visible, [data-header-overflow-menu][open] [data-header-overflow-link]:visible'
+    )
+    await expect(links).toHaveCount(6)
+    await expect(page.locator('.site-header [aria-current="page"]:visible')).toHaveCount(1)
 
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)
     expect(overflow).toBeLessThanOrEqual(0)

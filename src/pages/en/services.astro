@@ -1,6 +1,8 @@
 ---
 import EnglishLayout from '@/components/en/EnglishLayout.astro'
+import Footer from '@/components/Footer.astro'
 import ProductVideoSequence from '@/components/product/ProductVideoSequence.astro'
+import { getEnglishSiteSettings } from '@/i18n/site-settings'
 import { createBreadcrumbSchema, createServiceSchema } from '@/lib/seo'
 
 const services = [
@@ -38,12 +40,17 @@ const breadcrumbSchema = createBreadcrumbSchema([
   { name: 'Home', path: '/en' },
   { name: 'Services', path: '/en/services' },
 ])
+const settings = await getEnglishSiteSettings()
 ---
 
 <EnglishLayout
   title="Apparel supply-chain services"
   description="Explore apparel fulfilment, returns inspection, garment care and retail distribution services in China."
   jsonLd={[breadcrumbSchema, ...services.map(createServiceSchema)]}
+  siteSettings={settings}
   showFooter={false}
-  showFloatingContact={false}><ProductVideoSequence locale="en" /></EnglishLayout
+  showFloatingContact={false}
+  ><ProductVideoSequence locale="en"
+    ><Footer settings={settings} locale="en" slot="footer" /></ProductVideoSequence
+  ></EnglishLayout
 >

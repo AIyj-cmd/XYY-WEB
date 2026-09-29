@@ -7,6 +7,11 @@
 .site-header__mobile-navigation {
   display: none;
 }
+.site-header__mobile-navigation[hidden],
+.site-header__desktop-navigation > a[hidden],
+.site-header__mobile-menu a[hidden] {
+  display: none !important;
+}
 @media (min-width: 40rem) {
   .site-header {
     top: calc(
@@ -45,63 +50,121 @@
 }
 @media (width < 40rem) {
   .site-header__glass {
-    padding-inline: 0.5rem;
+    padding-inline: 0.75rem;
     border-radius: 1.65rem;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  .site-header__glass::before {
+    -webkit-backdrop-filter: blur(22px) saturate(180%) contrast(1.06);
+    backdrop-filter: blur(22px) saturate(180%) contrast(1.06);
   }
   .site-header__row {
-    height: auto;
-    min-height: 5.5rem;
-    flex-wrap: wrap;
-    align-content: center;
-    gap: 0;
+    height: 3.5rem;
+    min-height: 3.5rem;
+    flex-wrap: nowrap;
+    align-content: normal;
+    gap: 0.5rem;
   }
   .site-header__logo {
     display: flex;
-    height: 2.75rem;
-    flex: 0 0 4rem;
+    height: 3.5rem;
+    flex: 0 0 clamp(3.25rem, 10vw, 4rem);
     align-items: center;
     padding: 0;
-    order: 1;
   }
   .site-header__logo img {
-    width: 4rem;
+    width: clamp(3.25rem, 10vw, 4rem);
     height: auto;
   }
-  .site-header__mobile-navigation {
-    display: contents;
+  .site-header__desktop-navigation {
+    display: none !important;
   }
-  .site-header__mobile-row {
-    display: flex;
+  .site-header[data-header-overflow-ready='true'] .site-header__desktop-navigation {
+    display: flex !important;
     min-width: 0;
-    min-height: 2.75rem;
+    flex: 1 1 auto;
     align-items: center;
     justify-content: space-between;
     gap: 0.2rem;
+    overflow: hidden;
   }
-  .site-header__mobile-row--primary {
-    flex: 1 1 0;
-    order: 2;
+  .site-header[data-header-overflow-ready='true'] .site-header__desktop-navigation a {
+    flex: 0 0 auto;
+    padding: 0.4rem 0.3rem;
+    font-size: 0.875rem;
+    white-space: nowrap;
   }
-  .site-header__mobile-row--secondary {
-    flex: 0 0 100%;
-    order: 4;
+  .site-header[data-header-overflow-ready='true'] .site-header__desktop-navigation a:focus-visible,
+  .site-header .site-header__mobile-navigation summary:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: -2px;
+    box-shadow: inset 0 0 0 2px rgba(241, 106, 45, 0.8);
+  }
+  .site-header__mobile-navigation {
+    display: flex;
+    position: relative;
+    flex: 0 0 auto;
+    align-items: center;
+  }
+  .site-header__mobile-navigation summary {
+    display: grid;
+    width: 2rem;
+    height: 2rem;
+    place-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 0.5rem;
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+    color: #fff;
+    cursor: pointer;
+    line-height: 1;
+    list-style: none;
+  }
+  .site-header__mobile-navigation summary svg {
+    width: 1rem;
+    height: 1rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-width: 1.5;
+  }
+  .site-header__mobile-navigation summary::-webkit-details-marker {
+    display: none;
+  }
+  .site-header__mobile-navigation summary:hover,
+  .site-header__mobile-navigation[open] summary {
+    background: rgba(255, 255, 255, 0.18);
+    color: #fff;
   }
   .site-header__language-switch {
-    order: 3;
-    margin-inline-start: 0.5rem;
+    flex: 0 0 auto;
+    margin-inline-start: 0;
+  }
+  .site-header__mobile-menu {
+    position: absolute;
+    z-index: 60;
+    top: calc(100% + 1.25rem);
+    right: 0;
+    display: grid;
+    width: min(17rem, calc(100vw - 3rem));
+    max-height: calc(100dvh - var(--language-suggestion-visible-height, 0px) - 5rem);
+    gap: 0.25rem;
+    overflow-y: auto;
+    padding: 0.5rem;
   }
   .site-header__mobile-link {
     display: inline-flex;
-    min-width: 0;
-    flex: 0 1 auto;
-    min-height: 2.75rem;
+    min-height: 2.5rem;
     align-items: center;
-    justify-content: center;
-    padding: 0.25rem 0.2rem;
+    padding: 0.25rem 0.5rem;
     color: #fff;
     font-size: 0.875rem;
-    letter-spacing: -0.04em;
-    line-height: 1.15;
-    text-align: center;
+    line-height: 1.25;
+    white-space: nowrap;
+  }
+  .site-header .site-header__mobile-link:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: -2px;
   }
 }

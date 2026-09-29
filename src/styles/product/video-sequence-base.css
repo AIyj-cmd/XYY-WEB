@@ -1,5 +1,7 @@
 .product-video-sequence {
-  height: 100dvh;
+  --product-video-viewport-height: calc(100dvh - var(--language-suggestion-visible-height, 0px));
+  position: relative;
+  height: var(--product-video-viewport-height);
   overflow: hidden;
 }
 
@@ -26,7 +28,7 @@
 .product-video-sequence__slide {
   position: relative;
   isolation: isolate;
-  height: 100dvh;
+  height: var(--product-video-viewport-height);
   overflow: hidden;
   scroll-snap-align: start;
   scroll-snap-stop: always;
@@ -114,7 +116,7 @@
 }
 
 .product-video-sequence__navigation {
-  position: fixed;
+  position: absolute;
   z-index: 40;
   top: 50%;
   right: max(0.75rem, env(safe-area-inset-right));
@@ -129,6 +131,10 @@
   transform: translateY(-50%);
   -webkit-backdrop-filter: blur(16px);
   backdrop-filter: blur(16px);
+}
+
+.product-video-sequence__navigation[hidden] {
+  display: none;
 }
 
 .product-video-sequence__control {

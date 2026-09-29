@@ -6,7 +6,7 @@
   --body: #454c50;
   --line: #d9dddc;
   --paper: #f7f7f5;
-  min-height: 100dvh;
+  min-height: var(--product-video-viewport-height);
   height: auto;
   overflow: visible;
   scroll-snap-align: start;
@@ -15,7 +15,7 @@
 }
 
 .product-video-sequence__assurance-slide .assurance-section {
-  min-height: 100dvh;
+  min-height: var(--product-video-viewport-height);
   padding: clamp(6rem, 9vw, 8rem) 0;
   color: var(--ink);
 }
@@ -67,7 +67,7 @@
 
 @media (max-width: 760px) {
   .product-video-sequence__assurance-slide .assurance-section {
-    min-height: 100dvh;
+    min-height: var(--product-video-viewport-height);
     padding: 5.5rem 0 4rem;
   }
 

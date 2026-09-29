@@ -44,7 +44,7 @@ const switchLabel =
 
 <LanguageSuggestion {locale} {pathname} {localePair} />
 
-<header class="site-header fixed z-50">
+<header class="site-header fixed z-50" data-header-overflow>
   <div class="site-header__glass px-2">
     <div class="site-header__row flex h-12 items-center justify-between gap-2">
       <a
@@ -62,7 +62,6 @@ const switchLabel =
       </a>
 
       <DesktopNavigation {pathname} {isProductActive} {locale} />
-      <MobileNavigation {pathname} {isProductActive} {locale} />
       <a
         href={switchPath}
         id="site-language-switch"
@@ -71,8 +70,13 @@ const switchLabel =
         class="site-header__language-switch shrink-0 rounded-full border border-white/35 px-2.5 py-1 text-xs font-bold text-white hover:bg-white/15"
         aria-label={switchLabel}>{locale === 'en' ? '中文' : 'EN'}</a
       >
+      <MobileNavigation {pathname} {isProductActive} {locale} />
     </div>
   </div>
 </header>
 
 <div class="h-0" aria-hidden="true"></div>
+
+<script>
+  import '@/scripts/header-overflow'
+</script>

@@ -1,6 +1,7 @@
 ---
 import { NAV_LINKS } from '@/lib/brand'
 import { ENGLISH_NAVIGATION, isNavigationActive, type SiteLocale } from '@/i18n/routes'
+import { shellCopy } from '@/i18n/shell'
 
 interface Props {
   pathname: string
@@ -10,42 +11,40 @@ interface Props {
 
 const { pathname, isProductActive, locale = 'zh-CN' } = Astro.props
 const links = locale === 'en' ? ENGLISH_NAVIGATION : NAV_LINKS
-const navGroups = [links.slice(0, 3), links.slice(3)]
+const copy = shellCopy(locale)
+const menuLabel = locale === 'en' ? 'More navigation' : '更多导航'
+const menuId = `site-header-overflow-menu-${locale}`
 ---
 
-<nav
-  class="site-header__mobile-navigation"
-  aria-label={locale === 'en' ? 'Mobile navigation' : '移动端导航'}
->
-  {
-    navGroups.map((links, index) => (
-      <div
-        class:list={[
-          'site-header__mobile-row',
-          index === 0 ? 'site-header__mobile-row--primary' : 'site-header__mobile-row--secondary',
-        ]}
-      >
-        {links.map(({ href, label }) => {
-          const isActive =
-            locale === 'zh-CN' && href === '/product'
-              ? isProductActive
-              : isNavigationActive(href, pathname, locale)
-          return (
-            <a
-              href={href}
-              class:list={[
-                'site-header__mobile-link rounded-md text-sm font-medium transition-colors',
-                isActive
-                  ? 'bg-white/15 text-white'
-                  : 'text-navy-100 hover:bg-white/10 hover:text-white',
-              ]}
-              aria-current={isActive ? 'page' : undefined}
-            >
-              {label}
-            </a>
-          )
-        })}
-      </div>
-    ))
-  }
-</nav>
+<details class="site-header__mobile-navigation" data-header-overflow-menu>
+  <summary aria-controls={menuId} aria-label={menuLabel} title={menuLabel}>
+    <svg aria-hidden="true" focusable="false" viewBox="0 0 16 16">
+      <path d="M3 4h10M3 8h10M3 12h10"></path>
+    </svg>
+  </summary>
+  <nav id={menuId} class="site-header__mobile-menu" aria-label={copy.nav} data-lenis-prevent>
+    {
+      links.map(({ href, label }) => {
+        const isActive =
+          locale === 'zh-CN' && href === '/product'
+            ? isProductActive
+            : isNavigationActive(href, pathname, locale)
+        return (
+          <a
+            href={href}
+            data-header-overflow-link
+            class:list={[
+              'site-header__mobile-link rounded-md text-sm font-medium transition-colors',
+              isActive
+                ? 'bg-white/15 text-white'
+                : 'text-navy-100 hover:bg-white/10 hover:text-white',
+            ]}
+            aria-current={isActive ? 'page' : undefined}
+          >
+            {label}
+          </a>
+        )
+      })
+    }
+  </nav>
+</details>

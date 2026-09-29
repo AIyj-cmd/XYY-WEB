@@ -120,7 +120,11 @@ test('product page presents eight muted videos and a static assurance section in
     copyIsInsideVideo: true,
     headingClearsHeader: true,
   })
-  await expect(page.locator('.product-editorial, [data-conversion-cta], footer')).toHaveCount(0)
+  await expect(page.locator('.product-editorial, [data-conversion-cta]')).toHaveCount(0)
+  await expect(page.locator('body > footer')).toHaveCount(0)
+  await expect(
+    page.locator('[data-product-video-scroll] [data-product-video-footer] > footer')
+  ).toHaveCount(1)
   await expect(page.locator('[data-floating-contact]')).toHaveCount(0)
   const assurance = page.locator('#assurance')
   await expect(assurance).toBeVisible()
@@ -194,13 +198,14 @@ test('product navigation remains a single active entry on detail pages', async (
     return
   }
 
-  const mobileNavigation = page.getByRole('navigation', { name: '移动端导航' })
-  await expect(mobileNavigation.locator('a')).toHaveCount(7)
-  await expect(
-    mobileNavigation.getByRole('link', { name: '仓配服务', exact: true })
-  ).toHaveAttribute('href', '/product')
-  await expect(mobileNavigation.getByRole('link', { name: '仓配服务', exact: true })).toHaveClass(
-    /bg-white\/15/
+  const overflowMenu = page.locator('[data-header-overflow-menu]')
+  await overflowMenu.locator('summary').click()
+  const mobileNavigation = page.locator(
+    '.site-header__desktop-navigation a:visible, [data-header-overflow-menu][open] [data-header-overflow-link]:visible'
   )
-  await expect(mobileNavigation.locator('a[href="/xiefu-yuncang"]')).toHaveCount(0)
+  await expect(mobileNavigation).toHaveCount(7)
+  const productLink = mobileNavigation.filter({ hasText: '仓配服务' }).first()
+  await expect(productLink).toHaveAttribute('href', '/product')
+  await expect(productLink).toHaveClass(/bg-white\/15/)
+  await expect(page.locator('[data-header-overflow-link][href="/xiefu-yuncang"]')).toHaveCount(0)
 })

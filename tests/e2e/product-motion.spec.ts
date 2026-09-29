@@ -75,6 +75,10 @@ test('product page autoplays videos and keeps navigation synced with one scroll 
   const lastMechanism = page.locator('#assurance .assurance-mechanisms__list article').last()
   await lastMechanism.scrollIntoViewIfNeeded()
   await expect(lastMechanism).toBeInViewport()
+  const assuranceHeading = page.locator('#assurance').getByRole('heading', { level: 2 })
+  await assuranceHeading.scrollIntoViewIfNeeded()
+  await expect(assuranceHeading).toBeInViewport()
+  await expect(previous).toBeVisible()
   await previous.click()
   await expect(status).toHaveText('08 / 09')
   await expect
@@ -92,7 +96,8 @@ test('product page autoplays videos and keeps navigation synced with one scroll 
     element.scrollTop = element.scrollHeight - element.clientHeight
   })
   await expect(status).toHaveText('09 / 09')
-  await expect(next).toBeDisabled()
+  await expect(page.locator('[data-product-video-next]')).toBeDisabled()
+  await expect(page.locator('[data-product-video-navigation]')).toHaveAttribute('hidden', '')
 })
 
 test('product video navigation uses immediate scrolling when motion is reduced', async ({

@@ -124,13 +124,17 @@ test('shared service landing layout renders every visual variant', async ({ page
   }
 })
 
-test('mobile navigation and honors dialog remain usable', async ({ page }) => {
+test('mobile overflow navigation and honors dialog remain usable', async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 800 })
   await page.goto('/about')
 
-  const mobileNavigation = page.getByRole('navigation', { name: '移动端导航' })
-  await expect(mobileNavigation.getByRole('link')).toHaveCount(7)
-  await expect(mobileNavigation.getByRole('link', { name: '首页', exact: true })).toBeVisible()
+  const overflowMenu = page.locator('[data-header-overflow-menu]')
+  await overflowMenu.locator('summary').click()
+  const mobileLinks = page.locator(
+    '.site-header__desktop-navigation a:visible, [data-header-overflow-menu][open] [data-header-overflow-link]:visible'
+  )
+  await expect(mobileLinks).toHaveCount(7)
+  await expect(mobileLinks.filter({ hasText: '首页' }).first()).toBeVisible()
 
   await page.getByRole('button', { name: '资质与荣誉', exact: true }).click()
   const explorer = page.getByRole('dialog', { name: '资质与荣誉', exact: true })
@@ -147,9 +151,11 @@ test('mobile navigation and honors dialog remain usable', async ({ page }) => {
   await expect(explorer).toBeHidden()
 
   await page.goto('/supply-chain-whitepapers/')
-  const mobileWhitepapersLink = page
-    .getByRole('navigation', { name: '移动端导航' })
-    .getByRole('link', { name: '供应链白皮书', exact: true })
+  const whitepaperMenu = page.locator('[data-header-overflow-menu]')
+  if (await whitepaperMenu.isVisible()) await whitepaperMenu.locator('summary').click()
+  const mobileWhitepapersLink = page.locator(
+    '.site-header__desktop-navigation a:visible[href="/supply-chain-whitepapers/"], [data-header-overflow-menu][open] [data-header-overflow-link][href="/supply-chain-whitepapers/"]:visible'
+  )
   await expect(mobileWhitepapersLink).toHaveAttribute('href', '/supply-chain-whitepapers/')
   await expect(mobileWhitepapersLink).toHaveClass(/bg-white\/15/)
   await mobileWhitepapersLink.click()

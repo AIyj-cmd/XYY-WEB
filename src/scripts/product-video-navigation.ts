@@ -7,10 +7,13 @@ const initProductVideoNavigation = () => {
     const previous = sequence.querySelector<HTMLButtonElement>('[data-product-video-previous]')
     const next = sequence.querySelector<HTMLButtonElement>('[data-product-video-next]')
     const status = sequence.querySelector<HTMLOutputElement>('[data-product-video-status]')
+    const navigation = sequence.querySelector<HTMLElement>('[data-product-video-navigation]')
+    const footer = sequence.querySelector<HTMLElement>('[data-product-video-footer]')
 
     if (!scrollContainer || !slides.length || !previous || !next || !status) return
 
     sequence.dataset.initialized = 'true'
+    if (navigation) navigation.hidden = false
 
     let currentIndex = 0
     let pendingIndex: number | null = null
@@ -77,6 +80,12 @@ const initProductVideoNavigation = () => {
       cancelPendingNavigation()
       scheduleSync()
     })
+    if (navigation && footer && 'IntersectionObserver' in window) {
+      new IntersectionObserver(([entry]) => (navigation.hidden = entry.isIntersecting), {
+        root: scrollContainer,
+        threshold: 0.01,
+      }).observe(footer)
+    }
     setCurrentIndex(closestIndex())
   })
 }
