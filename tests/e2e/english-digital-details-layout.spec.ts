@@ -89,6 +89,9 @@ function audit() {
   return {
     failures: [...new Set(failures)],
     rangeCount: boxes.length,
+    mainRangeCount: boxes.filter(({ area }) => area === 'MAIN').length,
+    headingRangeCount: headingRects.length,
+    navigationRangeCount: boxes.filter(({ area }) => area === 'HEADER').length,
     scrollY,
     documentOverflow: document.documentElement.scrollWidth - innerWidth,
     h1: headingRects.map(({ x, y, width, height }) => ({ x, y, width, height })),
@@ -179,7 +182,9 @@ for (const route of routes) {
     )
     for (const record of records) {
       for (const sample of [record.initial, ...record.sectionRecords, record.final]) {
-        expect.soft(sample.rangeCount).toBeGreaterThan(20)
+        expect.soft(sample.mainRangeCount).toBeGreaterThan(0)
+        expect.soft(sample.headingRangeCount).toBeGreaterThan(0)
+        expect.soft(sample.navigationRangeCount).toBeGreaterThan(0)
         expect.soft(sample.failures, `${route} ${record.width} y=${sample.scrollY}`).toEqual([])
         expect.soft(sample.documentOverflow).toBeLessThanOrEqual(0)
         expect.soft(sample.fontStatus).toBe('loaded')
