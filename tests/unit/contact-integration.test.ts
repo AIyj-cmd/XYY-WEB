@@ -53,6 +53,61 @@ describe('contact Xiansuo integration', () => {
     )
   })
 
+  it('keeps an English locale marker out of the six-field integration payload', async () => {
+    const fetchMock = vi.fn(async () =>
+      Response.json({ code: 0, data: { id: 1, duplicate: false } })
+    )
+    vi.stubGlobal('fetch', fetchMock)
+    const englishLead = {
+      name: 'Overseas buyer',
+      phone: '',
+      company: 'Example Apparel',
+      email: 'buyer@example.com',
+      service: 'cloud-warehouse',
+      message: 'Need an apparel fulfilment discussion.',
+      privacyConsent: 'on',
+      locale: 'en',
+    }
+
+    const response = await POST({ request: request(englishLead) } as any)
+
+    expect(response.status).toBe(200)
+    expect(fetchMock).toHaveBeenCalledWith(
+      'https://xs.test/api/integrations/website-leads',
+      expect.objectContaining({
+        body: JSON.stringify({
+          name: englishLead.name,
+          phone: '',
+          company: englishLead.company,
+          email: englishLead.email,
+          service: englishLead.service,
+          message: englishLead.message,
+        }),
+      })
+    )
+  })
+
+  it('accepts a formatted international phone number for an English enquiry', async () => {
+    const fetchMock = vi.fn(async () =>
+      Response.json({ code: 0, data: { id: 1, duplicate: false } })
+    )
+    vi.stubGlobal('fetch', fetchMock)
+
+    const response = await POST({
+      request: request({
+        name: 'Overseas buyer',
+        phone: '+44 (20) 7946-0958',
+        email: 'buyer@example.com',
+        message: 'Need an apparel fulfilment discussion.',
+        privacyConsent: 'on',
+        locale: 'en',
+      }),
+    } as any)
+
+    expect(response.status).toBe(200)
+    expect(fetchMock).toHaveBeenCalledOnce()
+  })
+
   it('treats duplicate as a successful submission', async () => {
     vi.stubGlobal(
       'fetch',

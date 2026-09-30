@@ -42,11 +42,28 @@ const english = locale === 'en'
             <div class="font-bold text-navy-800">{settings.phone}</div>
             <div class="text-xs text-gray-500">
               {english
-                ? 'Availability follows the current service arrangement.'
+                ? 'China domestic hotline. Availability follows the current service arrangement.'
                 : '全国服务热线，具体接听时间以实际服务安排为准'}
             </div>
           </div>
         </a>
+      </div>
+    )
+  }
+
+  {
+    english && (
+      <div class="mb-8 rounded-xl border border-gray-200 bg-gray-50 p-4">
+        <h3 class="text-xs font-bold uppercase tracking-wider text-navy-500">
+          International enquiries
+        </h3>
+        <p class="mt-2 text-sm leading-relaxed text-gray-600">
+          Please use the{' '}
+          <a href="#contact-form" class="font-semibold text-navy-700 underline underline-offset-2">
+            enquiry form below
+          </a>
+          . A valid email address is required so our business team can follow up.
+        </p>
       </div>
     )
   }

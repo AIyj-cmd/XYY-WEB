@@ -1,5 +1,6 @@
 ---
 import type { SiteLocale } from '@/i18n/routes'
+import { CONTACT_FIELD_MAX_LENGTHS } from '@/lib/contact/validation'
 
 const { locale = 'zh-CN' } = Astro.props as { locale?: SiteLocale }
 const english = locale === 'en'
@@ -41,31 +42,53 @@ const english = locale === 'en'
 <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
   <div>
     <label for="phone" class="mb-1.5 block text-sm font-semibold text-gray-700">
-      {english ? 'China mobile or landline' : '联系电话'}
-      <span class="text-brand-orange" aria-hidden="true">*</span>
+      {english ? 'Phone number (optional)' : '联系电话'}
+      {
+        !english && (
+          <span class="text-brand-orange" aria-hidden="true">
+            *
+          </span>
+        )
+      }
     </label>
     <input
       type="tel"
       id="phone"
       name="phone"
-      required
-      maxlength="40"
+      required={!english}
+      maxlength={CONTACT_FIELD_MAX_LENGTHS.phone}
       autocomplete="tel"
-      placeholder={english ? 'Enter a domestic contact number' : '请输入您的手机号'}
+      placeholder={english ? '+1 (555) 123-4567' : '请输入您的手机号'}
+      aria-describedby={english ? 'phone-help' : undefined}
       class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none transition-colors focus:border-navy-400 focus:ring-2 focus:ring-navy-100"
     />
+    {
+      english && (
+        <p id="phone-help" class="mt-1.5 text-xs text-gray-500">
+          If provided, include + and the country or region code. Spaces, hyphens, and parentheses
+          are accepted.
+        </p>
+      )
+    }
   </div>
   <div>
     <label for="email" class="mb-1.5 block text-sm font-semibold text-gray-700"
-      >{english ? 'Email' : '邮箱'}</label
+      >{english ? 'Email' : '邮箱'}{
+        english && (
+          <span class="text-brand-orange" aria-hidden="true">
+            *
+          </span>
+        )
+      }</label
     >
     <input
       type="email"
       id="email"
       name="email"
-      maxlength="120"
+      required={english}
+      maxlength={CONTACT_FIELD_MAX_LENGTHS.email}
       autocomplete="email"
-      placeholder={english ? 'Optional, for service follow-up' : '选填，用于接收方案'}
+      placeholder={english ? 'Enter your email address' : '选填，用于接收方案'}
       class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none transition-colors focus:border-navy-400 focus:ring-2 focus:ring-navy-100"
     />
   </div>

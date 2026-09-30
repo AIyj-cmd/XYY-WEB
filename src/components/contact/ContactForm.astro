@@ -9,7 +9,7 @@ interface Props {
   contactPhone?: string
 }
 
-const { locale = 'zh-CN', contactPhone = '' } = Astro.props
+const { locale = 'zh-CN' } = Astro.props
 const english = locale === 'en'
 ---
 
@@ -19,10 +19,9 @@ const english = locale === 'en'
     id="contact-form"
     action="/api/contact"
     method="POST"
-    class="space-y-5"
+    class:list={['space-y-5', english && 'scroll-mt-28']}
     novalidate
     data-locale={english ? 'en' : undefined}
-    data-contact-phone={contactPhone}
   >
     <div class="hidden" aria-hidden="true">
       <input
@@ -33,6 +32,7 @@ const english = locale === 'en'
         autocomplete="off"
         aria-label={english ? 'Leave this field empty' : 'Leave this field empty'}
       />
+      {english && <input name="locale" type="hidden" value="en" />}
     </div>
 
     <ContactIdentityFields {locale} />

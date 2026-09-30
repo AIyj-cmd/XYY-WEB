@@ -4,7 +4,6 @@ import { randomBytes } from 'node:crypto'
 import { POST, __resetContactRateLimitForTests } from '@/pages/api/contact'
 
 const integrationToken = randomBytes(32).toString('base64url')
-
 function request(body: Record<string, unknown>, headers: Record<string, string> = {}) {
   const payload = JSON.stringify(body)
   return new Request('https://56xyy.com/api/contact', {
@@ -38,8 +37,10 @@ describe('contact API', () => {
     __resetContactRateLimitForTests()
   })
 
-  it('rejects missing required fields', async () => {
-    const response = await POST({ request: request({ name: '', phone: '', message: '' }) } as any)
+  it('keeps Chinese requests on the domestic phone rule without an English marker', async () => {
+    const response = await POST({
+      request: request({ name: '张三', phone: '', message: '咨询', privacyConsent: 'on' }),
+    } as any)
 
     expect(response.status).toBe(400)
   })
@@ -63,6 +64,34 @@ describe('contact API', () => {
       error: '请输入有效的邮箱地址',
       code: 'validation_failed',
     })
+    expect(fetchMock).not.toHaveBeenCalled()
+  })
+
+  it.each([
+    ['missing email', { email: '', phone: '' }],
+    ['invalid email', { email: 'not-an-email', phone: '' }],
+    ['non-international phone', { email: 'buyer@example.com', phone: '13800138000' }],
+    ['too-short international phone', { email: 'buyer@example.com', phone: '+123' }],
+    [
+      'too-long international phone',
+      { email: 'buyer@example.com', phone: '+44 20 7946 0958'.padEnd(41, ' ') },
+    ],
+  ])('rejects English enquiries with %s before storage', async (_label, fields) => {
+    const fetchMock = vi.fn()
+    vi.stubGlobal('fetch', fetchMock)
+
+    const response = await POST({
+      request: request({
+        name: 'Overseas buyer',
+        locale: 'en',
+        message: 'Need an apparel fulfilment discussion.',
+        privacyConsent: 'on',
+        ...fields,
+      }),
+    } as any)
+
+    expect(response.status).toBe(400)
+    await expect(response.json()).resolves.toMatchObject({ code: 'validation_failed' })
     expect(fetchMock).not.toHaveBeenCalled()
   })
 

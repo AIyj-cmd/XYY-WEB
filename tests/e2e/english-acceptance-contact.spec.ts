@@ -1,5 +1,4 @@
 import { expect, test, type Page, type Route } from '@playwright/test'
-
 type ContactMode =
   | 'busy'
   | 'success'
@@ -19,13 +18,16 @@ type ContactMode =
 
 const enquiry = {
   name: 'QA apparel brand',
-  phone: '13800138000',
+  email: 'buyer@example.com',
+  phone: '+1 (555) 123-4567',
   requirements: 'Need a local fulfilment discussion.',
 }
+const emailField = (page: Page) => page.getByRole('textbox', { name: 'Email', exact: true })
 
 async function fillEnglishEnquiry(page: Page) {
   await page.getByLabel('Your name').fill(enquiry.name)
-  await page.getByLabel('China mobile or landline').fill(enquiry.phone)
+  await emailField(page).fill(enquiry.email)
+  await page.getByLabel('Phone number (optional)').fill(enquiry.phone)
   await page.getByLabel('Your requirements').fill(enquiry.requirements)
   await page.getByRole('checkbox').check()
 }
@@ -79,9 +81,7 @@ async function serveContact(route: Route, mode: Exclude<ContactMode, 'busy'>) {
   return route.fulfill({ status: 500, json: { error: '内部文字不应显示', code: 'mystery' } })
 }
 
-test('localizes contact busy, success, coded, unknown, malformed and network states', async ({
-  page,
-}) => {
+test('localizes contact submission states', async ({ page }) => {
   let mode: ContactMode = 'busy'
   let releaseBusy: (() => void) | undefined
   await page.route('**/api/contact', async (route) => {
@@ -95,6 +95,14 @@ test('localizes contact busy, success, coded, unknown, malformed and network sta
   })
 
   await page.goto('/en/contact')
+  await expect(emailField(page)).toHaveAttribute('required', '')
+  await expect(page.getByLabel('Phone number (optional)')).not.toHaveAttribute('required', '')
+  await expect(page.getByText('China domestic hotline.')).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'International enquiries' })).toBeVisible()
+  await expect(page.getByRole('link', { name: 'enquiry form below' })).toHaveAttribute(
+    'href',
+    '#contact-form'
+  )
   const button = page.locator('button[type="submit"]')
   const result = page.locator('#form-result')
 
@@ -112,19 +120,52 @@ test('localizes contact busy, success, coded, unknown, malformed and network sta
 
   const cases: Array<[Exclude<ContactMode, 'busy'>, string]> = [
     ['success', 'Thank you. Our business team will follow up'],
-    ['validation', 'Please complete the required fields using a valid domestic contact number.'],
-    ['storage', 'We could not save your enquiry. Please call 400-6865-156.'],
+    ['validation', 'Please provide your name, a valid email address'],
+    [
+      'storage',
+      'We could not save your enquiry. Please try again and keep your details in the form.',
+    ],
     ['rate-limited', 'Too many submissions. Please try again later.'],
-    ['unknown', 'We could not submit your enquiry. Please call 400-6865-156.'],
-    ['unknown-toString', 'We could not submit your enquiry. Please call 400-6865-156.'],
-    ['unknown-constructor', 'We could not submit your enquiry. Please call 400-6865-156.'],
-    ['unknown-proto', 'We could not submit your enquiry. Please call 400-6865-156.'],
-    ['malformed200-empty', 'We could not submit your enquiry. Please call 400-6865-156.'],
-    ['malformed200-null', 'We could not submit your enquiry. Please call 400-6865-156.'],
-    ['malformed200-false', 'We could not submit your enquiry. Please call 400-6865-156.'],
-    ['malformed200-invalid-json', 'We could not submit your enquiry. Please call 400-6865-156.'],
-    ['malformed', 'We could not submit your enquiry. Please call 400-6865-156.'],
-    ['network', 'We could not submit your enquiry. Please call 400-6865-156.'],
+    [
+      'unknown',
+      'We could not submit your enquiry. Please try again and keep your details in the form.',
+    ],
+    [
+      'unknown-toString',
+      'We could not submit your enquiry. Please try again and keep your details in the form.',
+    ],
+    [
+      'unknown-constructor',
+      'We could not submit your enquiry. Please try again and keep your details in the form.',
+    ],
+    [
+      'unknown-proto',
+      'We could not submit your enquiry. Please try again and keep your details in the form.',
+    ],
+    [
+      'malformed200-empty',
+      'We could not submit your enquiry. Please try again and keep your details in the form.',
+    ],
+    [
+      'malformed200-null',
+      'We could not submit your enquiry. Please try again and keep your details in the form.',
+    ],
+    [
+      'malformed200-false',
+      'We could not submit your enquiry. Please try again and keep your details in the form.',
+    ],
+    [
+      'malformed200-invalid-json',
+      'We could not submit your enquiry. Please try again and keep your details in the form.',
+    ],
+    [
+      'malformed',
+      'We could not submit your enquiry. Please try again and keep your details in the form.',
+    ],
+    [
+      'network',
+      'We could not submit your enquiry. Please try again and keep your details in the form.',
+    ],
   ]
   for (const [nextMode, expected] of cases) {
     mode = nextMode
@@ -141,10 +182,36 @@ test('localizes contact busy, success, coded, unknown, malformed and network sta
       await expect(page.locator('#form-result')).not.toContainText('We could not')
     } else {
       await expect(page.getByLabel('Your name')).toHaveValue(enquiry.name)
-      await expect(page.getByLabel('China mobile or landline')).toHaveValue(enquiry.phone)
+      await expect(emailField(page)).toHaveValue(enquiry.email)
+      await expect(page.getByLabel('Phone number (optional)')).toHaveValue(enquiry.phone)
       await expect(page.getByLabel('Your requirements')).toHaveValue(enquiry.requirements)
       await expect(page.getByRole('checkbox')).toBeChecked()
       await expect(page.locator('#form-result')).not.toContainText('Thank you')
     }
   }
+})
+
+test('rejects invalid English fields locally and preserves values', async ({ page }) => {
+  let requests = 0
+  await page.route('**/api/contact', async (route) => {
+    requests += 1
+    await route.fulfill({ status: 200, json: { success: true } })
+  })
+  await page.goto('/en/contact')
+
+  await page.getByLabel('Your name').fill(enquiry.name)
+  await page.getByLabel('Your requirements').fill(enquiry.requirements)
+  await page.getByRole('checkbox').check()
+  await page.locator('button[type="submit"]').click()
+  await expect(page.locator('#form-result')).toContainText('Please enter your email address.')
+  await expect(page.getByLabel('Your name')).toHaveValue(enquiry.name)
+
+  await emailField(page).fill(enquiry.email)
+  await page.getByLabel('Phone number (optional)').fill('13800138000')
+  await page.locator('button[type="submit"]').click()
+  await expect(page.locator('#form-result')).toContainText(
+    'If you add a phone number, include + and the country or region code.'
+  )
+  await expect(page.getByLabel('Phone number (optional)')).toHaveValue('13800138000')
+  expect(requests).toBe(0)
 })
