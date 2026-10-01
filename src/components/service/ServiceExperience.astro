@@ -8,6 +8,7 @@ import {
 import ConversionCTA from '@/components/conversion/ConversionCTA.astro'
 import { smartShippingCopy } from '@/i18n/smart-shipping'
 import type { SiteLocale } from '@/i18n/routes'
+import ContactLink from '@/components/conversion/ContactLink.astro'
 import '@/styles/service-experience.css'
 
 interface Props {
@@ -58,12 +59,22 @@ const english =
           <span>{english?.experience.linksHeading ?? '继续了解'}</span>
           {
             english ? (
-              english.experience.links.map(({ href, label }) => <a {href}>{label}</a>)
+              english.experience.links.map(({ href, label }) =>
+                href === '/en/contact' ? (
+                  <ContactLink sourcePath={Astro.url.pathname} {locale} entry="body">
+                    {label}
+                  </ContactLink>
+                ) : (
+                  <a {href}>{label}</a>
+                )
+              )
             ) : (
               <>
                 <a href="/product">产品服务总览</a>
                 <a href="/cases">合作案例</a>
-                <a href="/contact">联系商务</a>
+                <ContactLink sourcePath={Astro.url.pathname} {locale} entry="body">
+                  联系商务
+                </ContactLink>
               </>
             )
           }

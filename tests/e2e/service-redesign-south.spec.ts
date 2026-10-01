@@ -45,8 +45,11 @@ test('south network restores its prior sections while keeping all warehouse addr
 
   await page.locator('.south-faq details').first().locator('summary').press('Enter')
   await expect(page.locator('.south-faq details').first()).toHaveAttribute('open', '')
-  await page.getByRole('link', { name: '咨询华南仓配服务' }).focus()
-  await expect(page.getByRole('link', { name: '咨询华南仓配服务' })).toBeFocused()
+  const bottomContact = page.locator(
+    'a[href="/contact?from=%2Fhuanan-xiefu-yuncang&entry=bottom#contact-form"]'
+  )
+  await bottomContact.focus()
+  await expect(bottomContact).toBeFocused()
 })
 
 test('south presentation keeps the public copy, lanes, and FAQ schema aligned', async ({
@@ -187,10 +190,16 @@ test.describe('south network redesign without JavaScript', () => {
     await expect(page.locator('.south-warehouse-city li')).toHaveCount(9)
     await expect(page.locator('[data-redesign-feature]')).toHaveCount(6)
     await expect(page.locator('[data-redesign-faq]')).toHaveCount(5)
-    await expect(page.getByRole('link', { name: '咨询华南仓配服务' })).toHaveAttribute(
-      'href',
-      '/contact'
+    const heroLink = page.locator(
+      'a[href="/contact?from=%2Fhuanan-xiefu-yuncang&entry=hero#contact-form"]'
     )
+    await expect(heroLink).toHaveAttribute(
+      'href',
+      '/contact?from=%2Fhuanan-xiefu-yuncang&entry=hero#contact-form'
+    )
+    await heroLink.click()
+    await expect(page).toHaveURL(/\/contact\?from=%2Fhuanan-xiefu-yuncang&entry=hero#contact-form$/)
+    await expect(page.locator('select[name="service"]')).toHaveValue('cloud-warehouse')
   })
 })
 

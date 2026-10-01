@@ -2,6 +2,7 @@
 import type { FaqItem } from '@/data/service'
 import type { ServicePageContent } from '@/lib/directus-content-queries'
 import ConversionCTA from '@/components/conversion/ConversionCTA.astro'
+import ContactLink from '@/components/conversion/ContactLink.astro'
 import '@/styles/service-redesign.css'
 import CrossborderBoundary from './CrossborderBoundary.astro'
 import { hasRedesignContent } from './content-presence'
@@ -37,6 +38,11 @@ const stats = groupCrossborderStats(content.stats)
             </h1>
             {content.h1sub && <p class="crossborder-hero__sub">{content.h1sub}</p>}
             {content.heroDesc && <p class="crossborder-hero__desc">{content.heroDesc}</p>}
+            <div class="mt-6">
+              <ContactLink sourcePath={Astro.url.pathname} entry="hero" class="redesign-button">
+                梳理跨境仓内方案
+              </ContactLink>
+            </div>
           </div>
           <div class="redesign-shell">
             <video

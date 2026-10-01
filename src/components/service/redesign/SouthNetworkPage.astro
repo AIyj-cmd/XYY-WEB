@@ -2,6 +2,7 @@
 import type { FaqItem } from '@/data/service'
 import type { ServicePageContent } from '@/lib/directus-content-queries'
 import ConversionCTA from '@/components/conversion/ConversionCTA.astro'
+import ContactLink from '@/components/conversion/ContactLink.astro'
 import '@/styles/service-redesign.css'
 import SouthBusiness from './SouthBusiness.astro'
 import { hasRedesignContent } from './content-presence'
@@ -49,6 +50,11 @@ const stats = groupSouthStats(content.stats)
                     {content.heroDesc && <p>{summarizeSouthHeroDescription(content.heroDesc)}</p>}
                   </div>
                 )}
+                <div class="mt-6">
+                  <ContactLink sourcePath={Astro.url.pathname} entry="hero" class="redesign-button">
+                    咨询华南仓配服务
+                  </ContactLink>
+                </div>
               </div>
               <video
                 class="south-hero__video"

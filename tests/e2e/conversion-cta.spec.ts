@@ -63,6 +63,7 @@ const productDetailRoutes = [
   '/zhibo-cangpei',
   '/b2b-mendian-cangpei',
 ]
+const sourceAwareRoutes = new Set(productDetailRoutes)
 
 test.setTimeout(60_000)
 
@@ -88,7 +89,9 @@ test('target pages retain their approved conversion paths without overflow', asy
   const footwearResponse = await page.goto('/xiefu-yuncang')
   expect(footwearResponse?.ok(), '/xiefu-yuncang should return a successful response').toBe(true)
   await expect(page.locator('[data-conversion-cta]')).toHaveCount(0)
-  const footwearContact = page.locator('.footwear-cta a[href="/contact"]')
+  const footwearContact = page.locator(
+    '.footwear-cta a[href="/contact?from=%2Fxiefu-yuncang&entry=bottom#contact-form"]'
+  )
   await expect(footwearContact).toHaveCount(1)
   await expect(footwearContact).toHaveAccessibleName(/\S+/)
 
@@ -115,7 +118,14 @@ test('target pages retain their approved conversion paths without overflow', asy
 
     const contactLink = cta.getByRole('link', { name: contract.actionLabel, exact: true })
     await expect(contactLink).toHaveCount(1)
-    await expect(contactLink).toHaveAttribute('href', '/contact')
+    if (sourceAwareRoutes.has(path)) {
+      await expect(contactLink).toHaveAttribute(
+        'href',
+        `/contact?from=${encodeURIComponent(path)}&entry=bottom#contact-form`
+      )
+    } else {
+      await expect(contactLink).toHaveAttribute('href', '/contact')
+    }
 
     const dimensions = await page.evaluate(() => ({
       viewport: document.documentElement.clientWidth,

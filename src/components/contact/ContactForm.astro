@@ -3,6 +3,7 @@ import ContactIdentityFields from './ContactIdentityFields.astro'
 import ContactInquiryFields from './ContactInquiryFields.astro'
 import ContactPrivacyConsent from './ContactPrivacyConsent.astro'
 import type { SiteLocale } from '@/i18n/routes'
+import { getConversionContext } from '@/lib/conversion/contact-source'
 
 interface Props {
   locale?: SiteLocale
@@ -11,6 +12,7 @@ interface Props {
 
 const { locale = 'zh-CN' } = Astro.props
 const english = locale === 'en'
+const conversionContext = getConversionContext(Astro.url)
 ---
 
 <div class="lg:col-span-3">
@@ -19,7 +21,7 @@ const english = locale === 'en'
     id="contact-form"
     action="/api/contact"
     method="POST"
-    class:list={['space-y-5', english && 'scroll-mt-28']}
+    class="space-y-5 scroll-mt-44"
     novalidate
     data-locale={english ? 'en' : undefined}
   >
@@ -36,7 +38,7 @@ const english = locale === 'en'
     </div>
 
     <ContactIdentityFields {locale} />
-    <ContactInquiryFields {locale} />
+    <ContactInquiryFields {locale} preselectedService={conversionContext?.service} />
     <ContactPrivacyConsent {locale} />
 
     <button

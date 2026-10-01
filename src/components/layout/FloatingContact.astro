@@ -2,6 +2,7 @@
 import '@/styles/floating-contact.css'
 import type { SiteLocale } from '@/i18n/routes'
 import { shellCopy } from '@/i18n/shell'
+import ContactLink from '@/components/conversion/ContactLink.astro'
 
 interface Props {
   phone: string
@@ -10,7 +11,6 @@ interface Props {
 
 const { phone, locale = 'zh-CN' } = Astro.props
 const copy = shellCopy(locale)
-const contactPath = locale === 'en' ? '/en/contact' : '/contact'
 ---
 
 <div id="float-contact" class="fixed bottom-6 right-5 z-50 flex flex-col items-end gap-2.5">
@@ -28,10 +28,12 @@ const contactPath = locale === 'en' ? '/en/contact' : '/contact'
     </svg>
   </button>
 
-  <a
-    href={contactPath}
+  <ContactLink
+    sourcePath={Astro.url.pathname}
+    {locale}
+    entry="floating"
     class="float-chat w-11 h-11 rounded-full bg-navy-800 shadow-md flex items-center justify-center text-white hover:bg-navy-700 hover:shadow-lg transition-all duration-200"
-    aria-label={copy.chat}
+    ariaLabel={copy.chat}
     title={copy.chat}
   >
     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
@@ -42,7 +44,7 @@ const contactPath = locale === 'en' ? '/en/contact' : '/contact'
         d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
       ></path>
     </svg>
-  </a>
+  </ContactLink>
 
   <div class="float-phone relative group">
     <button

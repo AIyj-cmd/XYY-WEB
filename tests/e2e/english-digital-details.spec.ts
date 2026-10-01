@@ -63,7 +63,10 @@ test('SSR, reciprocal SEO, schemas and discovery expose both complete pages', as
         ])
       )
     expect(attributes.join(' ')).not.toMatch(/[\u3400-\u9fff]/)
-    await expect(page.locator('main a[href="/en/contact"]').first()).toBeVisible()
+    const contactLink = page.locator(
+      `main a[href="/en/contact?from=${encodeURIComponent(route.en)}&entry=hero#contact-form"]`
+    )
+    await expect(contactLink).toBeVisible()
     if (route.en.endsWith('smart-shipping')) {
       await expect(page.locator('.yd-flow li')).toHaveCount(6)
       await expect(page.locator('.yd-scenarios article')).toHaveCount(3)

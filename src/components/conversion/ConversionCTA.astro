@@ -1,5 +1,7 @@
 ---
 import '@/styles/conversion-cta.css'
+import ContactLink from './ContactLink.astro'
+import { getConversionSource } from '@/lib/conversion/contact-source'
 
 interface PreparationItem {
   label: string
@@ -46,6 +48,9 @@ const {
 
 const productReveal = reveal === 'product' ? 'copy' : undefined
 const serviceReveal = reveal === 'service' ? 'copy' : undefined
+const source = getConversionSource(Astro.url.pathname)
+const contactLocale = source?.locale ?? (actionHref.startsWith('/en/contact') ? 'en' : 'zh-CN')
+const isContactAction = actionHref === '/contact' || actionHref === '/en/contact'
 ---
 
 <section class:list={['conversion-cta', className]} aria-labelledby={headingId} data-conversion-cta>
@@ -60,10 +65,24 @@ const serviceReveal = reveal === 'service' ? 'copy' : undefined
         {headingLines.map((line) => <span>{line}</span>)}
       </h2>
       {description && <p class="conversion-cta__description">{description}</p>}
-      <a class="conversion-cta__action" href={actionHref}>
-        {actionLabel}
-        <span aria-hidden="true">→</span>
-      </a>
+      {
+        isContactAction ? (
+          <ContactLink
+            sourcePath={Astro.url.pathname}
+            locale={contactLocale}
+            entry="bottom"
+            class="conversion-cta__action"
+          >
+            {actionLabel}
+            <span aria-hidden="true">→</span>
+          </ContactLink>
+        ) : (
+          <a class="conversion-cta__action" href={actionHref}>
+            {actionLabel}
+            <span aria-hidden="true">→</span>
+          </a>
+        )
+      }
       {
         secondaryLinks.length > 0 && (
           <p class="conversion-cta__links">

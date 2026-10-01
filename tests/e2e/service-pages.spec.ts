@@ -105,7 +105,9 @@ test('shared service landing layout renders every visual variant', async ({ page
       const cta = page.locator('[data-conversion-cta]')
       await expect(cta).toHaveCount(1)
       await expect(page.locator('.service-cta')).toHaveCount(0)
-      const contactLink = cta.locator('a[href="/contact"]')
+      const contactLink = cta.locator(
+        'a[href="/contact?from=%2Fyundao-zhineng-jijian&entry=bottom#contact-form"]'
+      )
       await expect(contactLink).toHaveCount(1)
       await cta.scrollIntoViewIfNeeded()
       await expect(contactLink).toBeVisible()

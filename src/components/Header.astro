@@ -14,6 +14,7 @@ import DesktopNavigation from './navigation/DesktopNavigation.astro'
 import LanguageSuggestion from './navigation/LanguageSuggestion.astro'
 import type { LocalePair } from '@/i18n/case-routes'
 import MobileNavigation from './navigation/MobileNavigation.astro'
+import { contactLanguageHref, isContactPath } from '@/lib/conversion/contact-source'
 
 interface Props {
   locale?: SiteLocale
@@ -30,7 +31,11 @@ const routePair =
 const englishPath = routePair?.[1] ?? englishPathFor(pathname)
 const copy = shellCopy(locale)
 const homePath = locale === 'en' ? '/en' : '/'
-const switchPath = locale === 'en' ? (routePair?.[0] ?? chinesePathFor(pathname)) : englishPath
+const defaultSwitchPath =
+  locale === 'en' ? (routePair?.[0] ?? chinesePathFor(pathname)) : englishPath
+const switchPath = isContactPath(pathname)
+  ? contactLanguageHref(Astro.url, locale === 'en' ? 'zh-CN' : 'en')
+  : defaultSwitchPath
 const hasLocalePair = Boolean(routePair)
 const switchLabel =
   locale === 'en'

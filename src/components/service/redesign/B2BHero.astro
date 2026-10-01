@@ -1,6 +1,7 @@
 ---
 import type { SiteLocale } from '@/i18n/routes'
 import { REDESIGN_ENGLISH_UI } from '@/i18n/redesign-ui'
+import ContactLink from '@/components/conversion/ContactLink.astro'
 interface Props {
   h1: string
   h1sub: string
@@ -31,9 +32,9 @@ const copy = REDESIGN_ENGLISH_UI.b2b
           </p>
         )
       }
-      <a class="redesign-button" href={locale === 'en' ? '/en/contact' : '/contact'}
-        >{locale === 'en' ? copy.contact : '咨询门店仓配'}</a
-      >
+      <ContactLink sourcePath={Astro.url.pathname} {locale} entry="hero" class="redesign-button">
+        {locale === 'en' ? copy.contact : '咨询门店仓配'}
+      </ContactLink>
     </div>
     <video
       class="b2b-hero__video"

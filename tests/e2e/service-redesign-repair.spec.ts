@@ -62,8 +62,14 @@ test('repair redesign keeps its six sections, source content, and links readable
   await expect(firstFaq).toContainText('9个专业修复专区')
   const contactLinks = page.getByRole('link', { name: '评估修复需求' })
   await expect(contactLinks).toHaveCount(2)
-  await expect(contactLinks.nth(0)).toHaveAttribute('href', '/contact')
-  await expect(contactLinks.nth(1)).toHaveAttribute('href', '/contact')
+  await expect(contactLinks.nth(0)).toHaveAttribute(
+    'href',
+    '/contact?from=%2Fhouzheng-xiufu&entry=hero#contact-form'
+  )
+  await expect(contactLinks.nth(1)).toHaveAttribute(
+    'href',
+    '/contact?from=%2Fhouzheng-xiufu&entry=bottom#contact-form'
+  )
   await expect(page.getByRole('link', { name: '了解退货质检' })).toHaveAttribute(
     'href',
     '/tuihuo-zhijian'

@@ -20,6 +20,12 @@ const isEnglishSuccessPayload = (payload: unknown) =>
     Object.hasOwn(payload, 'success') &&
     (payload as { success?: unknown }).success === true
   )
+const responseErrorMessage = (payload: unknown) =>
+  payload &&
+  typeof payload === 'object' &&
+  typeof (payload as { error?: unknown }).error === 'string'
+    ? (payload as { error: string }).error
+    : undefined
 
 form?.addEventListener('submit', async (event) => {
   event.preventDefault()
@@ -65,17 +71,13 @@ form?.addEventListener('submit', async (event) => {
     })
     const payload = await response.json().catch(() => ({}))
 
-    const invalidEnglishSuccess = isEnglish && response.ok && !isEnglishSuccessPayload(payload)
-    if (!response.ok || invalidEnglishSuccess) {
-      if (isEnglish && !invalidEnglishSuccess) {
+    const invalidSuccess = response.ok && !isEnglishSuccessPayload(payload)
+    if (!response.ok || invalidSuccess) {
+      if (isEnglish && !invalidSuccess) {
         englishSubmissionFailure = englishContactFailure(responseCode(payload))
       }
       throw new Error(
-        isEnglish
-          ? englishSubmissionFailure
-          : typeof payload.error === 'string'
-            ? payload.error
-            : 'server error'
+        isEnglish ? englishSubmissionFailure : (responseErrorMessage(payload) ?? 'server error')
       )
     }
 

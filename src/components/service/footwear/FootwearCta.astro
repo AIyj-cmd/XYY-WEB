@@ -1,6 +1,7 @@
 ---
 import { FOOTWEAR_ENGLISH_UI } from '@/i18n/footwear-ui'
 import type { SiteLocale } from '@/i18n/routes'
+import ContactLink from '@/components/conversion/ContactLink.astro'
 interface Props {
   contentDesc: string
   locale?: SiteLocale
@@ -20,9 +21,14 @@ const copy = FOOTWEAR_ENGLISH_UI.cta
       </h2>
       {contentDesc && <p class="footwear-cta__description">{contentDesc}</p>}
       <div class="footwear-cta__actions">
-        <a class="footwear-button" href={locale === 'en' ? '/en/contact' : '/contact'}
-          >{locale === 'en' ? copy.contact : '沟通鞋服仓配需求'}</a
+        <ContactLink
+          sourcePath={Astro.url.pathname}
+          {locale}
+          entry="bottom"
+          class="footwear-button"
         >
+          {locale === 'en' ? copy.contact : '沟通鞋服仓配需求'}
+        </ContactLink>
         <p>
           <a href={locale === 'en' ? '/en/cases' : '/cases'}
             >{locale === 'en' ? copy.cases : '查看案例'}</a

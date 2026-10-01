@@ -1,0 +1,25 @@
+---
+import { contactHref, type ConversionEntry } from '@/lib/conversion/contact-source'
+import type { SiteLocale } from '@/i18n/routes'
+
+interface Props {
+  sourcePath?: string
+  locale?: SiteLocale
+  entry: ConversionEntry
+  class?: string
+  ariaLabel?: string
+  title?: string
+}
+
+const {
+  sourcePath = Astro.url.pathname,
+  locale = 'zh-CN',
+  entry,
+  class: className,
+  ariaLabel,
+  title,
+} = Astro.props
+const href = contactHref(sourcePath, locale, entry)
+---
+
+<a {href} class={className} aria-label={ariaLabel} {title}><slot /></a>

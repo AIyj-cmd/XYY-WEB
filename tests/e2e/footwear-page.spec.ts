@@ -34,7 +34,7 @@ test('footwear full page keeps eight zones, content, metadata and hero video', a
   ).toHaveCount(1)
   await expect(
     page.locator(
-      '.footwear-page a[href="/tuihuo-zhijian"], .footwear-page a[href="/houzheng-xiufu"], .footwear-page a[href="/contact"]'
+      '.footwear-page a[href="/tuihuo-zhijian"], .footwear-page a[href="/houzheng-xiufu"], .footwear-page a[href^="/contact?from=%2Fxiefu-yuncang&entry="]'
     )
   ).toHaveCount(4)
 

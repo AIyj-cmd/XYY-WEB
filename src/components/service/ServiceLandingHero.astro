@@ -1,6 +1,7 @@
 ---
 import { smartShippingCopy } from '@/i18n/smart-shipping'
 import type { SiteLocale } from '@/i18n/routes'
+import ContactLink from '@/components/conversion/ContactLink.astro'
 
 interface Props {
   eyebrow: string
@@ -72,12 +73,14 @@ const english = smartShippingCopy(locale)
     <p class="text-brand-orange font-bold text-lg mb-4">{h1sub}</p>
     <p class="text-lg text-navy-100 max-w-2xl leading-relaxed mb-8">{heroDesc}</p>
     <div class="flex flex-wrap gap-3">
-      <a
-        href={locale === 'en' ? '/en/contact' : '/contact'}
+      <ContactLink
+        sourcePath={Astro.url.pathname}
+        {locale}
+        entry="hero"
         class="inline-flex items-center px-6 py-3 bg-brand-orange hover:bg-brand-orange-dark text-white font-bold rounded-xl transition-colors text-sm"
       >
         {english?.hero.primaryAction ?? '免费获取方案'}
-      </a>
+      </ContactLink>
       <a
         href={locale === 'en' ? '/en/services' : '/product'}
         class="inline-flex items-center px-6 py-3 border border-white/30 hover:border-white/60 text-white/80 hover:text-white font-medium rounded-xl transition-colors text-sm"

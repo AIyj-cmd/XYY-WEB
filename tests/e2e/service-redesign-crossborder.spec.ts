@@ -4,6 +4,11 @@ test('crossborder redesign keeps documents, domestic return handling, and source
   page,
 }) => {
   await page.setViewportSize({ width: 390, height: 844 })
+  const statisticRequests: string[] = []
+  page.on('request', (request) => {
+    if (new URL(request.url()).pathname === '/api/conversion-events')
+      statisticRequests.push(request.url())
+  })
   await page.goto('/kuajing-yuncang')
 
   await expect(page.locator('.crossborder-page')).toHaveCount(1)
@@ -18,6 +23,7 @@ test('crossborder redesign keeps documents, domestic return handling, and source
   await page.locator('.crossborder-faq details').first().locator('summary').press('Enter')
   await expect(page.locator('.crossborder-faq details').first()).toHaveAttribute('open', '')
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390)
+  expect(statisticRequests).toEqual([])
 })
 
 test.describe('crossborder redesign without JavaScript', () => {
@@ -28,5 +34,15 @@ test.describe('crossborder redesign without JavaScript', () => {
     await expect(page.locator('.crossborder-boundary__track > article')).toHaveCount(3)
     await expect(page.getByText(/核对订单与 SKU 并录入 WMS/)).toBeVisible()
     await expect(page.locator('[data-redesign-faq]')).toHaveCount(5)
+    const heroLink = page.locator(
+      'a[href="/contact?from=%2Fkuajing-yuncang&entry=hero#contact-form"]'
+    )
+    await expect(heroLink).toHaveAttribute(
+      'href',
+      '/contact?from=%2Fkuajing-yuncang&entry=hero#contact-form'
+    )
+    await heroLink.click()
+    await expect(page).toHaveURL(/\/contact\?from=%2Fkuajing-yuncang&entry=hero#contact-form$/)
+    await expect(page.locator('select[name="service"]')).toHaveValue('cloud-warehouse')
   })
 })

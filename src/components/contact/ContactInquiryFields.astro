@@ -1,7 +1,10 @@
 ---
 import type { SiteLocale } from '@/i18n/routes'
 
-const { locale = 'zh-CN' } = Astro.props as { locale?: SiteLocale }
+const { locale = 'zh-CN', preselectedService } = Astro.props as {
+  locale?: SiteLocale
+  preselectedService?: string
+}
 const english = locale === 'en'
 ---
 
@@ -14,12 +17,18 @@ const english = locale === 'en'
     name="service"
     class="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-700 outline-none transition-colors focus:border-navy-400 focus:ring-2 focus:ring-navy-100"
   >
-    <option value="">{english ? 'Select a service' : '请选择您感兴趣的服务'}</option>
-    <option value="cloud-warehouse">{english ? 'Apparel fulfilment' : '鞋服云仓'}</option>
-    <option value="quality-inspection"
+    <option value="" selected={!preselectedService}
+      >{english ? 'Select a service' : '请选择您感兴趣的服务'}</option
+    >
+    <option value="cloud-warehouse" selected={preselectedService === 'cloud-warehouse'}
+      >{english ? 'Apparel fulfilment' : '鞋服云仓'}</option
+    >
+    <option value="quality-inspection" selected={preselectedService === 'quality-inspection'}
       >{english ? 'Inspection and garment care' : '后整质检修复'}</option
     >
-    <option value="logistics-cloud">{english ? 'Logistics cloud' : '物流云'}</option>
+    <option value="logistics-cloud" selected={preselectedService === 'logistics-cloud'}
+      >{english ? 'Logistics cloud' : '物流云'}</option
+    >
     <option value="all">{english ? 'End-to-end solution' : '全链路解决方案'}</option>
     <option value="other">{english ? 'Other' : '其他'}</option>
   </select>

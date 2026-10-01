@@ -3,6 +3,7 @@ import type { ServicePageContent } from '@/lib/directus-content-queries'
 import type { StatItem } from '@/data/service'
 import { FOOTWEAR_ENGLISH_UI } from '@/i18n/footwear-ui'
 import type { SiteLocale } from '@/i18n/routes'
+import ContactLink from '@/components/conversion/ContactLink.astro'
 
 interface Props {
   content: ServicePageContent
@@ -83,9 +84,14 @@ const isDefaultStatement =
       {
         available && showActions && (
           <div class="footwear-actions">
-            <a class="footwear-button" href={locale === 'en' ? '/en/contact' : '/contact'}>
+            <ContactLink
+              sourcePath={Astro.url.pathname}
+              {locale}
+              entry="hero"
+              class="footwear-button"
+            >
               {locale === 'en' ? FOOTWEAR_ENGLISH_UI.hero.contact : '咨询仓配方案'}
-            </a>
+            </ContactLink>
             <a class="footwear-text-link" href="#footwear-fulfillment">
               {locale === 'en' ? FOOTWEAR_ENGLISH_UI.hero.operations : '看看仓内作业'}
             </a>

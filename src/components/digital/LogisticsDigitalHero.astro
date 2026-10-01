@@ -1,6 +1,7 @@
 ---
 import { DIGITAL_OPERATIONS_ENGLISH } from '@/i18n/digital-operations'
 import type { SiteLocale } from '@/i18n/routes'
+import ContactLink from '@/components/conversion/ContactLink.astro'
 
 interface Props {
   locale?: SiteLocale
@@ -37,14 +38,16 @@ const english = locale === 'en' ? DIGITAL_OPERATIONS_ENGLISH : undefined
             '不是再增加一个后台，而是让品牌已有的订单、仓内与物流信息能够被看见、被关联、被回查。'
         }
       </p>
-      <a
+      <ContactLink
+        sourcePath={Astro.url.pathname}
+        {locale}
+        entry="hero"
         class="digital-action"
-        href={english ? '/en/contact' : '/contact'}
-        aria-label={english?.hero.actionAria}
+        ariaLabel={english?.hero.actionAria}
       >
         {english?.hero.action ?? '咨询系统对接方案'}
         <span aria-hidden="true">→</span>
-      </a>
+      </ContactLink>
     </header>
     <figure class="digital-hero__screen">
       <img

@@ -1,5 +1,6 @@
 ---
 import type { SiteLocale } from '@/i18n/routes'
+import ContactLink from '@/components/conversion/ContactLink.astro'
 interface Props {
   serviceName: string
   valueTitle: string
@@ -28,9 +29,9 @@ const [titlePrefix = valueTitle, titleValue = ''] = valueTitle.split(locale === 
     </h1>
     {subheading && <p class="returns-hero__subheading">{subheading}</p>}
     <div class="returns-hero__actions">
-      <a class="returns-button" href={locale === 'en' ? '/en/contact' : '/contact'}
-        >{locale === 'en' ? 'Discuss a returns-inspection plan' : '沟通退货质检方案'}</a
-      >
+      <ContactLink sourcePath={Astro.url.pathname} {locale} entry="hero" class="returns-button">
+        {locale === 'en' ? 'Discuss a returns-inspection plan' : '沟通退货质检方案'}
+      </ContactLink>
       {
         hasGrades && (
           <a href="#returns-grade-heading">

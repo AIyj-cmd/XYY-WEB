@@ -1,5 +1,6 @@
 ---
 import type { ServicePageContent } from '@/lib/directus-content-queries'
+import ContactLink from '@/components/conversion/ContactLink.astro'
 
 interface Props {
   content: ServicePageContent
@@ -24,7 +25,9 @@ const { content, videoSrc, poster } = Astro.props
         {content.h1sub && <p class="east-hero__sub">{content.h1sub}</p>}
         {content.heroDesc && <p class="east-hero__description">{content.heroDesc}</p>}
         <div class="east-hero__actions">
-          <a class="redesign-button" href="/contact">咨询华东仓配</a>
+          <ContactLink sourcePath={Astro.url.pathname} entry="hero" class="redesign-button"
+            >咨询华东仓配</ContactLink
+          >
           <a href="#east-warehouses-heading">查看仓库分布</a>
         </div>
       </div>

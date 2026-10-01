@@ -46,7 +46,9 @@ test('east inventory redesign renders seven areas, three warehouses, and public 
     await expect(page.locator('.east-warehouses address')).toHaveText(addressTexts)
     const contactCta = page.locator('.east-contact[data-conversion-cta]')
     await expect(contactCta).toHaveCount(1)
-    const contactLink = contactCta.locator('a[href="/contact"]')
+    const contactLink = contactCta.locator(
+      'a[href="/contact?from=%2Fhuadong-xiefu-yuncang&entry=bottom#contact-form"]'
+    )
     await expect(contactLink).toHaveCount(1)
     await expect(contactLink).toHaveAccessibleName(/咨询华东仓配/)
     await expect(page.locator('.east-page')).not.toContainText(bannedCopy)
@@ -138,7 +140,9 @@ test.describe('east inventory redesign without JavaScript', () => {
     await expect(page.locator('[data-redesign-faq]')).toHaveCount(5)
     const contactCta = page.locator('.east-contact[data-conversion-cta]')
     await expect(contactCta).toHaveCount(1)
-    const contactLink = contactCta.locator('a[href="/contact"]')
+    const contactLink = contactCta.locator(
+      'a[href="/contact?from=%2Fhuadong-xiefu-yuncang&entry=bottom#contact-form"]'
+    )
     await expect(contactLink).toHaveCount(1)
     await expect(contactLink).toHaveAccessibleName(/咨询华东仓配/)
     const dimensions = await page.evaluate(() => ({

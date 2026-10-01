@@ -1,6 +1,7 @@
 ---
 import { englishPathFor, findLocalePair, matchesLocalePath, type SiteLocale } from '@/i18n/routes'
 import type { LocalePair } from '@/i18n/case-routes'
+import { contactLanguageHref, isContactPath } from '@/lib/conversion/contact-source'
 import '@/styles/language-suggestion.css'
 
 interface Props {
@@ -14,7 +15,10 @@ const routePair =
   localePair && matchesLocalePath(localePair, locale, pathname)
     ? localePair
     : findLocalePair(pathname, locale)
-const englishPath = routePair?.[1] ?? englishPathFor(pathname)
+const defaultEnglishPath = routePair?.[1] ?? englishPathFor(pathname)
+const englishPath = isContactPath(pathname)
+  ? contactLanguageHref(Astro.url, 'en')
+  : defaultEnglishPath
 const hasEnglishPair = Boolean(routePair)
 ---
 
