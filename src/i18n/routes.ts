@@ -45,7 +45,11 @@ export const ENGLISH_SERVICE_LINKS = [
   { href: '/en/apparel-fulfillment', label: 'Apparel fulfilment' },
   { href: '/en/returns-inspection', label: 'Returns inspection' },
   { href: '/en/garment-care', label: 'Garment care' },
-  { href: '/en/retail-distribution', label: 'Retail distribution' },
+  { href: '/en/services#04-cross-border', label: 'Cross-border warehouse operations' },
+  { href: '/en/services#05-south-china', label: 'South China apparel fulfilment' },
+  { href: '/en/services#06-east-china', label: 'East China apparel fulfilment' },
+  { href: '/en/services#07-live-commerce', label: 'Livestream commerce fulfilment' },
+  { href: '/en/retail-distribution', label: 'B2B store distribution' },
 ] as const
 
 const ENGLISH_SERVICE_PATHS = new Set([
