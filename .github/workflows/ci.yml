@@ -37,6 +37,51 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Prepare cn-font-split Linux x64 native runtime
+        if: runner.os == 'Linux' && runner.arch == 'X64'
+        shell: bash
+        run: |
+          set -euo pipefail
+          readonly asset='libffi-x86_64-unknown-linux-gnu.so'
+          readonly expected_sha256='db4690e3b9c4b04f6dfa5965792585c389914038f6a4c90fbe73baaf16bbf19c'
+          readonly expected_size='6145760'
+          readonly asset_url="https://github.com/KonghaYao/cn-font-split/releases/download/7.6.8/${asset}"
+          readonly native_dir='node_modules/cn-font-split/dist'
+          readonly target="${native_dir}/${asset}"
+          test -d "$native_dir"
+
+          download="$(mktemp "${RUNNER_TEMP:-/tmp}/cn-font-split.XXXXXX")"
+          staged="$(mktemp "${native_dir}/.${asset}.ci.XXXXXX")"
+          trap 'rm -f -- "$download" "$staged"' EXIT
+          curl --fail --location --proto '=https' --proto-redir '=https' \
+            --retry 3 --retry-all-errors --retry-delay 2 \
+            --connect-timeout 10 --max-time 90 --output "$download" "$asset_url"
+          actual_size="$(stat --format='%s' "$download")"
+          if [[ "$actual_size" != "$expected_size" ]]; then
+            printf 'cn-font-split native asset size mismatch: expected=%s actual=%s path=%s\n' \
+              "$expected_size" "$actual_size" "$download" >&2
+            exit 1
+          fi
+          if ! printf '%s  %s\n' "$expected_sha256" "$download" | sha256sum --check; then
+            printf 'cn-font-split native asset SHA-256 mismatch: expected=%s path=%s\n' \
+              "$expected_sha256" "$download" >&2
+            exit 1
+          fi
+
+          install --mode=0644 "$download" "$staged"
+          mv -f "$staged" "$target"
+          stat --format='native path=%n size=%s mode=%a' "$target"
+          if ! ldd_output="$(ldd "$target")"; then
+            echo 'ldd failed for cn-font-split native runtime' >&2
+            exit 1
+          fi
+          printf '%s\n' "$ldd_output"
+          if grep -Fq 'not found' <<<"$ldd_output"; then
+            echo 'cn-font-split native runtime has missing dynamic dependencies' >&2
+            exit 1
+          fi
+          node -e "require('cn-font-split/dist/node/index.js')"
+
       - name: Install Playwright Chromium
         run: npx playwright install --with-deps chromium
 
