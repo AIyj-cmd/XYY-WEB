@@ -51,9 +51,9 @@ for (const heroCase of heroCases) {
       path: `output/removal/xyy-20261001-06/luna/hero-${heroCase.name}-${testInfo.project.name}-stable.png`,
       fullPage: false,
     })
-    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(
-      testInfo.project.name === 'mobile' ? 390 : 1440
-    )
+    expect(
+      await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)
+    ).toBe(true)
     await heroLink.click()
     await expect(page).toHaveURL(
       new RegExp(`${heroCase.href.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`)
