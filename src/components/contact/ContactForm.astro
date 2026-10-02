@@ -3,20 +3,68 @@ import ContactIdentityFields from './ContactIdentityFields.astro'
 import ContactInquiryFields from './ContactInquiryFields.astro'
 import ContactPrivacyConsent from './ContactPrivacyConsent.astro'
 import type { SiteLocale } from '@/i18n/routes'
-import { getConversionContext } from '@/lib/conversion/contact-source'
+import {
+  getRecommendedContactService,
+  getServiceFinderContext,
+  type ServiceFinderNeed,
+  type ServiceFinderRegion,
+} from '@/lib/conversion/contact-source'
+import '@/styles/contact-enquiry.css'
 
 interface Props {
   locale?: SiteLocale
   contactPhone?: string
+  caseContext?: { label: string; scenario?: string }
 }
 
-const { locale = 'zh-CN' } = Astro.props
+const { locale = 'zh-CN', caseContext } = Astro.props
 const english = locale === 'en'
-const conversionContext = getConversionContext(Astro.url)
+const preselectedService = getRecommendedContactService(Astro.url)
+const finderContext = getServiceFinderContext(Astro.url)
+const finderNeeds: Record<ServiceFinderNeed, string> = english
+  ? {
+      'ecommerce-fulfilment': 'E-commerce fulfilment',
+      'store-replenishment': 'Store replenishment',
+      'returns-inspection': 'Returns inspection',
+      'garment-care': 'Garment care and finishing',
+      'livestream-fulfilment': 'Livestream fulfilment',
+    }
+  : {
+      'ecommerce-fulfilment': '电商发货',
+      'store-replenishment': '门店补货',
+      'returns-inspection': '退货质检',
+      'garment-care': '商品整理',
+      'livestream-fulfilment': '直播履约',
+    }
+const finderRegions: Record<ServiceFinderRegion, string> = english
+  ? { any: 'No regional preference', 'east-china': 'East China', 'south-china': 'South China' }
+  : { any: '区域不限', 'east-china': '华东', 'south-china': '华南' }
+const enquiryContext = [
+  caseContext && `${english ? 'Case context:' : '案例：'} ${caseContext.label}`,
+  finderContext &&
+    `${english ? 'Operating need:' : '业务需求：'} ${finderNeeds[finderContext.need]}`,
+  finderContext && `${english ? 'Region:' : '区域：'} ${finderRegions[finderContext.region]}`,
+]
+  .filter((line): line is string => Boolean(line))
+  .join('\n')
 ---
 
 <div class="lg:col-span-3">
   <h2 class="text-2xl font-black text-navy-800 mb-8">{english ? 'Send an enquiry' : '在线留言'}</h2>
+  {
+    caseContext && (
+      <aside
+        class="contact-case-context"
+        aria-label={english ? 'Selected case context' : '已选案例场景'}
+      >
+        <strong>
+          {english ? 'Case context: ' : '案例场景：'}
+          {caseContext.label}
+        </strong>
+        {caseContext.scenario && <span>{caseContext.scenario}</span>}
+      </aside>
+    )
+  }
   <form
     id="contact-form"
     action="/api/contact"
@@ -24,6 +72,7 @@ const conversionContext = getConversionContext(Astro.url)
     class="space-y-5 scroll-mt-44"
     novalidate
     data-locale={english ? 'en' : undefined}
+    data-enquiry-context={enquiryContext || undefined}
   >
     <div class="hidden" aria-hidden="true">
       <input
@@ -38,7 +87,7 @@ const conversionContext = getConversionContext(Astro.url)
     </div>
 
     <ContactIdentityFields {locale} />
-    <ContactInquiryFields {locale} preselectedService={conversionContext?.service} />
+    <ContactInquiryFields {locale} {preselectedService} />
     <ContactPrivacyConsent {locale} />
 
     <button
@@ -50,3 +99,7 @@ const conversionContext = getConversionContext(Astro.url)
     <div id="form-result" class="hidden" role="status" aria-live="polite" aria-atomic="true"></div>
   </form>
 </div>
+
+<script>
+  import '@/scripts/contact-enquiry'
+</script>

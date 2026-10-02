@@ -12,8 +12,16 @@ interface Props {
 }
 
 const { services, locale = 'zh-CN' } = Astro.props
+const finderHref = `${locale === 'en' ? '/en/contact' : '/contact'}#service-finder`
 ---
 
+<div class="mx-auto max-w-7xl px-4 pt-12 sm:px-6 lg:px-8">
+  <a
+    href={finderHref}
+    class="inline-flex min-h-11 items-center rounded-xl border border-navy-200 px-4 py-2 text-sm font-bold text-navy-800 transition-colors hover:bg-navy-50"
+    >{locale === 'en' ? 'Find a service for your requirements' : '按需求选择服务'}</a
+  >
+</div>
 {services.map((service, index) => <HomeSolutionSection service={service} index={index} {locale} />)}
 {
   DIGITAL_PRODUCTS.map((product, index) => (

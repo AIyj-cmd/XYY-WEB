@@ -1,0 +1,71 @@
+.contact-case-context {
+  display: grid;
+  gap: 0.25rem;
+  margin: -1rem 0 1.5rem;
+  border-left: 3px solid #e85d26;
+  background: #fff7ed;
+  padding: 0.75rem 0.875rem;
+  color: #7c2d12;
+  font-size: 0.875rem;
+  line-height: 1.55;
+}
+
+.contact-case-context span {
+  color: #9a3412;
+}
+
+.contact-enquiry-template {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.625rem 0.875rem;
+  margin-top: 0.625rem;
+}
+
+.contact-enquiry-template button {
+  min-height: 2.75rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.75rem;
+  background: #fff;
+  padding: 0.55rem 0.8rem;
+  color: #132b50;
+  font-size: 0.875rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.contact-enquiry-template button:hover,
+.contact-enquiry-template button:focus-visible {
+  border-color: #1b3a6b;
+  background: #eff4ff;
+}
+
+.contact-enquiry-template p {
+  margin: 0;
+  color: #475569;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+}
+
+@media (max-width: 640px) {
+  #contact-form :is(input:not([type='checkbox']):not([type='hidden']), select, textarea, button) {
+    font-size: 1rem;
+  }
+
+  #contact-form :is(input:not([type='checkbox']):not([type='hidden']), select, button) {
+    min-height: 2.75rem;
+  }
+
+  #contact-form textarea {
+    min-height: 8rem;
+  }
+
+  #contact-form .contact-enquiry-template button {
+    min-height: 2.75rem;
+  }
+
+  #contact-form .contact-privacy-consent {
+    min-height: 2.75rem;
+    padding-block: 0.5rem;
+  }
+}

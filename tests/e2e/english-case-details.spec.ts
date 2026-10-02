@@ -81,7 +81,9 @@ test.describe('published English case details', () => {
         expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(
           viewport.width + 1
         )
-        await expect(page.locator('main a[href="/en/contact"]').first()).toBeVisible()
+        await expect(
+          page.locator(`main a[href="/en/contact?case=${slug}#contact-form"]`).first()
+        ).toBeVisible()
         await expect(page.locator('main a[target]')).toHaveCount(0)
       }
     }
@@ -152,7 +154,6 @@ test.describe('published English case details', () => {
     expect(noJsResponse?.status()).toBe(200)
     await expect(noJsPage.locator('main h1')).toHaveCount(1)
     await noJsContext.close()
-
     const newTab = await context.newPage()
     const newTabResponse = await newTab.goto('/en/cases/ur', { waitUntil: 'domcontentloaded' })
     expect(newTabResponse?.status()).toBe(200)
@@ -161,9 +162,10 @@ test.describe('published English case details', () => {
 
     const contactNavigation = page.waitForResponse(
       (response) =>
-        response.url().endsWith('/en/contact') && response.request().isNavigationRequest()
+        response.url().endsWith('/en/contact?case=meiyi') &&
+        response.request().isNavigationRequest()
     )
-    await page.locator('main a[href="/en/contact"]').first().click()
+    await page.locator('main a[href="/en/contact?case=meiyi#contact-form"]').first().click()
     const contact = await contactNavigation
     expect(contact.status()).toBe(200)
     expect(contact.request().method()).toBe('GET')

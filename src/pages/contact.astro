@@ -3,11 +3,20 @@ import Layout from '@/layouts/Layout.astro'
 import ContactHero from '@/components/contact/ContactHero.astro'
 import ContactInfo from '@/components/contact/ContactInfo.astro'
 import ContactForm from '@/components/contact/ContactForm.astro'
+import ServiceFinder from '@/components/service-finder/ServiceFinder.astro'
 import { BRAND } from '@/lib/brand'
+import { CASE_FALLBACKS } from '@/data/cases'
 import { DEFAULT_SITE_SETTINGS } from '@/data/site-settings'
-import { getSiteSettings } from '@/lib/directus'
+import { getCasesResolution, getSiteSettings } from '@/lib/directus'
+import { getCaseContactKey } from '@/lib/conversion/contact-source'
 
 const settings = await getSiteSettings(DEFAULT_SITE_SETTINGS)
+const caseKey = getCaseContactKey(Astro.url)
+const casesResolution = caseKey ? await getCasesResolution(CASE_FALLBACKS) : undefined
+const selectedCase = casesResolution?.items.find((item) => item.slug === caseKey)
+const caseContext = selectedCase
+  ? { label: selectedCase.label, scenario: selectedCase.category || selectedCase.details }
+  : undefined
 
 const localBusinessSchema = {
   '@context': 'https://schema.org',
@@ -44,9 +53,10 @@ const localBusinessSchema = {
   <ContactHero />
   <section class="py-16 bg-white" aria-label="联系方式与表单">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <ServiceFinder />
       <div class="lg:grid lg:grid-cols-5 lg:gap-14">
         <ContactInfo {settings} />
-        <ContactForm />
+        <ContactForm {caseContext} />
       </div>
     </div>
   </section>

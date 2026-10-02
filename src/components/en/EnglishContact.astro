@@ -2,19 +2,36 @@
 import ContactForm from '@/components/contact/ContactForm.astro'
 import ContactHero from '@/components/contact/ContactHero.astro'
 import ContactInfo from '@/components/contact/ContactInfo.astro'
+import ServiceFinder from '@/components/service-finder/ServiceFinder.astro'
+import { CASE_FALLBACKS } from '@/data/cases'
+import { getCasesResolution } from '@/lib/directus'
+import { getCaseContactKey } from '@/lib/conversion/contact-source'
+import { translateCases } from '@/i18n/cases'
 import type { SiteSettingsRecord } from '@/lib/directus'
 interface Props {
   settings: Omit<SiteSettingsRecord, 'id' | 'status' | 'key'>
 }
 const { settings } = Astro.props
+const caseKey = getCaseContactKey(Astro.url)
+const casesResolution = caseKey ? await getCasesResolution(CASE_FALLBACKS) : undefined
+const selectedCase = casesResolution
+  ? translateCases(casesResolution.items, 'cases').find((item) => item.slug === caseKey)
+  : undefined
+const caseContext = selectedCase
+  ? {
+      label: selectedCase.full_name || selectedCase.name || selectedCase.label,
+      scenario: selectedCase.category || selectedCase.case_description || selectedCase.details,
+    }
+  : undefined
 ---
 
 <ContactHero locale="en" />
 <section class="py-16 bg-white" aria-label="Contact details and enquiry form">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <ServiceFinder locale="en" />
     <div class="lg:grid lg:grid-cols-5 lg:gap-14">
       <ContactInfo {settings} locale="en" />
-      <ContactForm locale="en" contactPhone={settings.phone} />
+      <ContactForm locale="en" contactPhone={settings.phone} {caseContext} />
     </div>
   </div>
 </section>

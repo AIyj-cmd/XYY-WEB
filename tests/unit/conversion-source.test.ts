@@ -1,10 +1,14 @@
 import { describe, expect, it } from 'vitest'
 
 import {
+  caseContactHref,
   contactHref,
   contactLanguageHref,
   getConversionContext,
   getConversionSource,
+  getCaseContactKey,
+  getRecommendedContactService,
+  getServiceFinderContext,
 } from '@/lib/conversion/contact-source'
 
 describe('contact conversion sources', () => {
@@ -75,5 +79,64 @@ describe('contact conversion sources', () => {
     expect(
       contactLanguageHref(new URL('https://example.test/contact?from=constructor&entry=hero'), 'en')
     ).toBe('/en/contact')
+  })
+
+  it('accepts the five finder needs across all three reviewed regions', () => {
+    const needs = [
+      ['ecommerce-fulfilment', 'cloud-warehouse'],
+      ['store-replenishment', 'cloud-warehouse'],
+      ['returns-inspection', 'quality-inspection'],
+      ['garment-care', 'quality-inspection'],
+      ['livestream-fulfilment', 'cloud-warehouse'],
+    ] as const
+    for (const [need, service] of needs) {
+      for (const region of ['any', 'east-china', 'south-china'] as const) {
+        const url = new URL(`https://example.test/contact?need=${need}&region=${region}`)
+        expect(getServiceFinderContext(url)).toMatchObject({ need, region, service })
+        expect(getRecommendedContactService(url)).toBe(service)
+      }
+    }
+  })
+
+  it('rejects duplicate, conflicting, unknown, and malicious finder or case parameters', () => {
+    const rejected = [
+      '?need=ecommerce-fulfilment&need=garment-care&region=any',
+      '?need=ecommerce-fulfilment&region=any&region=south-china',
+      '?need=constructor&region=any',
+      '?need=ecommerce-fulfilment&region=constructor',
+      '?need=%3Cscript%3Ealert(1)%3C%2Fscript%3E&region=any',
+    ]
+    for (const query of rejected) {
+      const url = new URL(`https://example.test/contact${query}`)
+      expect(getServiceFinderContext(url)).toBeNull()
+      expect(getRecommendedContactService(url)).toBeNull()
+    }
+
+    expect(
+      getRecommendedContactService(
+        new URL(
+          'https://example.test/contact?from=%2Ftuihuo-zhijian&entry=hero&need=ecommerce-fulfilment&region=any'
+        )
+      )
+    ).toBeNull()
+    expect(getCaseContactKey(new URL('https://example.test/contact?case=UR'))).toBeNull()
+    expect(getCaseContactKey(new URL('https://example.test/contact?case=ur&case=ur'))).toBeNull()
+    expect(
+      getCaseContactKey(new URL('https://example.test/contact?case=%3Cimg%20src=x%3E'))
+    ).toBeNull()
+    expect(caseContactHref('ur', 'en')).toBe('/en/contact?case=ur#contact-form')
+  })
+
+  it('preserves valid finder and case context when switching language', () => {
+    expect(
+      contactLanguageHref(
+        new URL(
+          'https://example.test/contact?from=%2Fxiefu-yuncang&entry=hero&need=ecommerce-fulfilment&region=east-china&case=ur'
+        ),
+        'en'
+      )
+    ).toBe(
+      '/en/contact?from=%2Fxiefu-yuncang&entry=hero&need=ecommerce-fulfilment&region=east-china&case=ur#contact-form'
+    )
   })
 })

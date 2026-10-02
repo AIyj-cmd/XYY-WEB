@@ -1,12 +1,14 @@
 ---
 import ConversionCTA from '@/components/conversion/ConversionCTA.astro'
+import { caseContactHref } from '@/lib/conversion/contact-source'
 import type { SiteLocale } from '@/i18n/routes'
 
 interface Props {
   locale?: SiteLocale
+  caseSlug: string
 }
 
-const { locale = 'zh-CN' } = Astro.props
+const { locale = 'zh-CN', caseSlug } = Astro.props
 const en = locale === 'en'
 ---
 
@@ -21,7 +23,7 @@ const en = locale === 'en'
     ? 'Share your SKU profile, sales channels and returns scenario to begin a focused operations discussion.'
     : '提交SKU规模、订单渠道与退货情况，获取针对性的仓配建议。'}
   actionLabel={en ? 'Discuss this operation' : '获取仓配方案'}
-  actionHref={en ? '/en/contact' : '/contact'}
+  actionHref={caseContactHref(caseSlug, locale)}
   preparationItems={[
     {
       label: en ? 'SKU profile' : 'SKU规模',

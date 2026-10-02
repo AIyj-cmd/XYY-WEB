@@ -83,6 +83,6 @@ const articleSchema = {
   <article>
     <CaseDetailHero detail={displayDetail} />
     <CaseDetailOverview detail={displayDetail} summary={caseSummary} />
-    <CaseDetailContact />
+    <CaseDetailContact caseSlug={detail.slug} />
   </article>
 </Layout>

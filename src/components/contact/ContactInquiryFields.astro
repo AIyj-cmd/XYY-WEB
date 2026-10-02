@@ -50,4 +50,10 @@ const english = locale === 'en'
       : '请简要描述您的品类、当前规模（日均出库量/SKU数）和主要痛点，便于我们为您准备针对性方案'}
     class="w-full resize-none rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none transition-colors focus:border-navy-400 focus:ring-2 focus:ring-navy-100"
   ></textarea>
+  <div class="contact-enquiry-template">
+    <button type="button" data-contact-template>
+      {english ? 'Insert enquiry outline' : '插入填写提纲'}
+    </button>
+    <p id="contact-template-status" role="status" aria-live="polite"></p>
+  </div>
 </div>

@@ -63,6 +63,6 @@ const articleSchema = {
   <article class="case-detail case-detail--en">
     <CaseDetailHero {detail} locale="en" />
     <CaseDetailOverview {detail} summary={summary} locale="en" />
-    <CaseDetailContact locale="en" />
+    <CaseDetailContact locale="en" caseSlug={detail.slug} />
   </article>
 </EnglishLayout>

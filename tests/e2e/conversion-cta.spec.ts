@@ -41,6 +41,11 @@ const conversionCtaContracts = {
     actionLabel: '预约案例分享',
     preparationLabels: ['品牌与品类', '服务场景', '关注重点'],
   },
+  '/cases/ur': {
+    headingId: 'case-contact-heading',
+    actionLabel: '获取仓配方案',
+    preparationLabels: ['SKU规模', '订单渠道', '退货情况'],
+  },
   '/news': {
     headingId: 'news-conversion-cta-heading',
     actionLabel: '获取物流方案',
@@ -78,7 +83,7 @@ test('target pages retain their approved conversion paths without overflow', asy
   await expect(page.locator('[data-conversion-cta]')).toHaveCount(0)
   await expect(page.locator('[data-product-video]')).toHaveCount(8)
   const productLinks = page.locator(
-    '[data-product-video-slide]:has([data-product-video]) a[href^="/"]'
+    '[data-product-video-slide]:has([data-product-video]) a[href^="/"]:not(.product-video-sequence__finder-link)'
   )
   await expect(productLinks).toHaveCount(8)
   expect(
@@ -118,7 +123,9 @@ test('target pages retain their approved conversion paths without overflow', asy
 
     const contactLink = cta.getByRole('link', { name: contract.actionLabel, exact: true })
     await expect(contactLink).toHaveCount(1)
-    if (sourceAwareRoutes.has(path)) {
+    if (path === '/cases/ur') {
+      await expect(contactLink).toHaveAttribute('href', '/contact?case=ur#contact-form')
+    } else if (sourceAwareRoutes.has(path)) {
       await expect(contactLink).toHaveAttribute(
         'href',
         `/contact?from=${encodeURIComponent(path)}&entry=bottom#contact-form`
