@@ -14,6 +14,7 @@ export default [
       'output/**',
       'test-results/**',
       'public/fonts/**',
+      'scripts/vendor/http-cache-semantics/index.js',
     ],
   },
   js.configs.recommended,

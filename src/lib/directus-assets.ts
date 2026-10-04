@@ -14,6 +14,7 @@ const references = [
 ] as const satisfies readonly (readonly [DirectusCollection, string])[]
 
 let cache: { expiresAt: number; ids: Set<string> } | null = null
+let cacheRead: Promise<Set<string>> | null = null
 
 function relationId(value: unknown) {
   if (typeof value === 'string') return value
@@ -46,6 +47,7 @@ async function readPublishedAssetIds() {
 
 export function __resetDirectusAssetCacheForTests() {
   cache = null
+  cacheRead = null
 }
 
 export function isDirectusFileId(value: string) {
@@ -54,9 +56,18 @@ export function isDirectusFileId(value: string) {
 
 export async function isPublishedDirectusAsset(fileId: string) {
   if (!isDirectusFileId(fileId)) return false
-  if (cache && cache.expiresAt > Date.now() && cache.ids.has(fileId)) return true
-  const ids = await readPublishedAssetIds()
-  cache = { expiresAt: Date.now() + REFERENCE_CACHE_MS, ids }
+  if (cache && cache.expiresAt > Date.now()) return cache.ids.has(fileId)
+  if (!cacheRead) {
+    cacheRead = readPublishedAssetIds()
+      .then((ids) => {
+        cache = { expiresAt: Date.now() + REFERENCE_CACHE_MS, ids }
+        return ids
+      })
+      .finally(() => {
+        cacheRead = null
+      })
+  }
+  const ids = await cacheRead
   return ids.has(fileId)
 }
 
@@ -70,13 +81,24 @@ const forwardedResponseHeaders = [
   'last-modified',
   'content-disposition',
 ]
+const assetContentSecurityPolicy =
+  "sandbox; default-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'"
+
+function throwIfAborted(signal?: AbortSignal) {
+  if (signal?.aborted) {
+    throw signal.reason ?? new DOMException('The operation was aborted.', 'AbortError')
+  }
+}
 
 export async function fetchPublishedDirectusAsset(
   fileId: string,
   requestHeaders: Headers,
-  fetchImpl: typeof fetch = fetch
+  fetchImpl: typeof fetch = fetch,
+  signal?: AbortSignal
 ) {
+  throwIfAborted(signal)
   if (!(await isPublishedDirectusAsset(fileId))) return new Response(null, { status: 404 })
+  throwIfAborted(signal)
   const token = getDirectusContentToken()
   if (!token) return new Response(null, { status: 503 })
 
@@ -89,14 +111,20 @@ export async function fetchPublishedDirectusAsset(
   try {
     upstream = await fetchImpl(`${getDirectusApiUrl()}/assets/${encodeURIComponent(fileId)}`, {
       headers,
+      signal,
     })
-  } catch {
+  } catch (error) {
+    if (signal?.aborted) throw error
     return new Response(null, { status: 503 })
   }
   if (!upstream.ok && upstream.status !== 304) {
     return new Response(null, { status: upstream.status === 404 ? 404 : 502 })
   }
-  const responseHeaders = new Headers({ 'Cache-Control': 'public, max-age=300' })
+  const responseHeaders = new Headers({
+    'Cache-Control': 'public, max-age=300',
+    'Content-Security-Policy': assetContentSecurityPolicy,
+    'X-Content-Type-Options': 'nosniff',
+  })
   for (const name of forwardedResponseHeaders) {
     const value = upstream.headers.get(name)
     if (value) responseHeaders.set(name, value)

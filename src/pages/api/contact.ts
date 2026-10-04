@@ -18,8 +18,8 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
       return contactJson({ error: '提交内容过大，请精简后再试', code: 'body_too_large' }, 413)
     }
 
-    const contentType = request.headers.get('content-type') || ''
-    if (contentType && !contentType.includes('application/json')) {
+    const mediaType = request.headers.get('content-type')?.split(';', 1)[0]?.trim().toLowerCase()
+    if (mediaType !== 'application/json') {
       return contactJson({ error: '请求格式不正确', code: 'unsupported_content_type' }, 415)
     }
 

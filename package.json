@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "astro dev",
     "prepare:fonts": "node scripts/prepare-fonts.mjs",
-    "prebuild": "npm run prepare:fonts",
+    "prebuild": "npm run check:assets",
     "build": "astro build",
     "build:local-preview": "astro build --mode development",
     "preview": "astro preview",
@@ -22,7 +22,8 @@
     "cms:sync-content-permissions": "node scripts/sync-content-policy-permissions.mjs",
     "cms:verify-runtime-permissions": "node scripts/verify-runtime-permissions.mjs",
     "typecheck": "astro check",
-    "precheck:assets": "npm run prepare:fonts",
+    "precheck:assets": "npm run check:public-artifacts && npm run prepare:fonts",
+    "check:public-artifacts": "node scripts/check-public-artifacts.mjs",
     "check:assets": "node scripts/check-public-assets.mjs",
     "check:maintainability": "node scripts/check-maintainability.mjs",
     "maintainability:check": "npm run check:maintainability",
@@ -49,10 +50,12 @@
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "gsap": "^3.15.0",
+    "http-cache-semantics": "file:scripts/vendor/http-cache-semantics",
     "lenis": "^1.3.25",
     "sanitize-html": "^2.17.7"
   },
   "overrides": {
+    "http-cache-semantics": "$http-cache-semantics",
     "qs": "6.16.0"
   },
   "devDependencies": {

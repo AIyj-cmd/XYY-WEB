@@ -1,0 +1,20 @@
+{
+  "name": "http-cache-semantics",
+  "version": "4.2.0-xyy.1",
+  "description": "Local 4.2.0 safety patch for XYY-WEB until an upstream fix is released",
+  "main": "index.js",
+  "types": "index.js",
+  "license": "BSD-2-Clause",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kornelski/http-cache-semantics.git"
+  },
+  "xyyLocalPatch": {
+    "upstreamVersion": "4.2.0",
+    "upstreamIndexSha256": "01b7d66c854b2fe53ac05c98feb6e0d64722ab8898a778e2d2426a8b468d178f",
+    "upstreamTarball": "https://registry.npmjs.org/http-cache-semantics/-/http-cache-semantics-4.2.0.tgz",
+    "upstreamIntegrity": "sha512-dTxcvPXqPvXBQpq5dUr6mEMJX4oIEFv6bwom3FDwKRDsuIjjJGANqhBuoAn9c1RQJIdAKav33ED65E2ys+87QQ==",
+    "tracking": "GHSA-ch52-4w7c-c8xp / CVE-2026-93748",
+    "details": "PATCH.md"
+  }
+}

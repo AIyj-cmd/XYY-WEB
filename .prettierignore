@@ -5,3 +5,4 @@ node_modules
 coverage
 public/fonts
 package-lock.json
+scripts/vendor/http-cache-semantics/index.js

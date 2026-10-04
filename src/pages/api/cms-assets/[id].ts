@@ -8,7 +8,7 @@ export const GET: APIRoute = async ({ params, request }) => {
   const fileId = params.id || ''
   if (!isDirectusFileId(fileId)) return new Response(null, { status: 404 })
   try {
-    return await fetchPublishedDirectusAsset(fileId, request.headers)
+    return await fetchPublishedDirectusAsset(fileId, request.headers, fetch, request.signal)
   } catch {
     return new Response(null, { status: 503 })
   }

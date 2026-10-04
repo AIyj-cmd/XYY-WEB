@@ -11,11 +11,36 @@ export function newsPublishJson(data: Record<string, unknown>, status = 200) {
 }
 
 export async function readNewsPublishJson(request: Request) {
-  const rawBody = await request.text()
-  if (new TextEncoder().encode(rawBody).byteLength > MAX_NEWS_PUBLISH_BODY_BYTES) {
-    return { error: newsPublishJson({ error: '请求内容过大' }, 413) }
+  const reader = request.body?.getReader()
+  if (!reader) return parseNewsPublishJson('')
+
+  const chunks: Uint8Array[] = []
+  let byteLength = 0
+  try {
+    while (true) {
+      const { done, value } = await reader.read()
+      if (done) break
+      byteLength += value.byteLength
+      if (byteLength > MAX_NEWS_PUBLISH_BODY_BYTES) {
+        void reader.cancel().catch(() => undefined)
+        return { error: newsPublishJson({ error: '请求内容过大' }, 413) }
+      }
+      chunks.push(value)
+    }
+  } finally {
+    reader.releaseLock()
   }
 
+  const body = new Uint8Array(byteLength)
+  let offset = 0
+  for (const chunk of chunks) {
+    body.set(chunk, offset)
+    offset += chunk.byteLength
+  }
+  return parseNewsPublishJson(new TextDecoder().decode(body))
+}
+
+function parseNewsPublishJson(rawBody: string) {
   try {
     const value: unknown = JSON.parse(rawBody)
     if (!value || typeof value !== 'object' || Array.isArray(value)) {
