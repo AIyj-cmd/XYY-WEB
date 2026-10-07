@@ -23,7 +23,7 @@ const fixture = (): CmsSnapshot => ({
     { id: 10, key: 'home' },
     { id: 11, key: 'about' },
   ],
-  faqs: [{ id: 101, page_key: 'home', faq_page: null, sort: 1, question: '问题一' }],
+  faqs: [{ id: 101, page_key: 'home', faq_page: 10, sort: 1, question: '问题一' }],
   warehouses: [{ id: 201, name: '旧显示名' }],
   about_history: [],
   about_honors: [],
@@ -60,7 +60,7 @@ describe('CMS contract migration planning', () => {
       ])
     )
   })
-  it('plans exact stable keys, FAQ relationships and homepage claimKey references', () => {
+  it('plans exact stable keys while treating the FAQ relationship as already authoritative', () => {
     const result = buildCmsContractMigrationPlan(fixture(), mappings)
     expect(result.issues).toEqual([])
     expect(result.changes).toEqual(
@@ -70,7 +70,6 @@ describe('CMS contract migration planning', () => {
           id: 101,
           patch: expect.objectContaining({
             content_key: 'faq-home-service-fit',
-            faq_page: 10,
           }),
         }),
         expect.objectContaining({
@@ -127,7 +126,7 @@ describe('CMS contract migration planning', () => {
     )
   })
 
-  it('blocks dangling FAQ relations and duplicate page ordering', () => {
+  it('blocks dangling FAQ relations without falling back to legacy page_key', () => {
     const snapshot = fixture()
     snapshot.faqs = [
       { id: 101, content_key: 'faq-one', page_key: 'home', faq_page: 999, sort: 1 },
@@ -135,10 +134,10 @@ describe('CMS contract migration planning', () => {
     ]
     const issues = buildCmsContractMigrationPlan(snapshot, mappings).issues.join('\n')
     expect(issues).toContain('dangling_relation collection=faqs id=101')
-    expect(issues).toContain('duplicate_sort collection=faqs page=home sort=1')
+    expect(issues).not.toContain('duplicate_sort collection=faqs page=home sort=1')
   })
 
-  it('treats faq_page as authoritative and only repairs a conflicting legacy page_key', () => {
+  it('does not write a conflicting legacy page_key during the normal contract migration', () => {
     const snapshot = fixture()
     snapshot.faqs = [
       {
@@ -149,8 +148,8 @@ describe('CMS contract migration planning', () => {
         sort: 1,
       },
     ]
-    expect(buildCmsContractMigrationPlan(snapshot, mappings).changes).toEqual(
-      expect.arrayContaining([{ collection: 'faqs', id: 101, patch: { page_key: 'home' } }])
+    expect(buildCmsContractMigrationPlan(snapshot, mappings).changes).not.toEqual(
+      expect.arrayContaining([expect.objectContaining({ collection: 'faqs' })])
     )
   })
 

@@ -145,7 +145,8 @@ describe('CMS contract runtime validation', () => {
     ['cases', 'metrics', 'text', false],
     ['news', 'summary', 'text', true],
     ['news', 'published_at', 'timestamp', false],
-    ['faqs', 'page_key', 'string', true],
+    ['faqs', 'page_key', 'string', false],
+    ['faqs', 'faq_page', 'integer', true],
     ['about_honors', 'image', 'string', true],
   ])('uses the migrated schema contract for %s.%s', (collection, field, type, isRequired) => {
     const contract = CMS_CONTRACT_BY_COLLECTION[collection]

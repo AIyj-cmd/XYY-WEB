@@ -52,6 +52,7 @@ describe('News publishing integration errors', () => {
     ],
     ['downstream 500', async () => Response.json({ errors: [] }, { status: 500 }), 502],
     ['invalid JSON', async () => new Response('not JSON', { status: 200 }), 502],
+    ['Directus 204 after a possible create', async () => new Response(null, { status: 204 }), 502],
     ['invalid success contract', async () => Response.json({ data: [] }), 502],
     ['network failure', async () => Promise.reject(new TypeError('network failure')), 502],
     ['timeout', async () => Promise.reject(new DOMException('timeout', 'TimeoutError')), 502],

@@ -8,6 +8,7 @@ import { promisify } from 'node:util'
 import { afterEach, describe, expect, it } from 'vitest'
 
 import { checkReleaseVersion } from '../../scripts/health-check.mjs'
+import { CMS_SCHEMA_VERSION } from '../../config/cms-contract.mjs'
 
 const run = promisify(execFile)
 const sha = '54fa9e64642403548f2c3e04f0242e427445aa30'
@@ -18,7 +19,7 @@ const identity = {
   releaseId: '20260815T120000Z-54fa9e6',
   buildTime: '2026-08-15T12:00:00.000Z',
   environment: 'staging',
-  cmsSchemaVersion: '2026-08-cms-hardening',
+  cmsSchemaVersion: CMS_SCHEMA_VERSION,
 }
 
 const servers: ReturnType<typeof createServer>[] = []
@@ -41,8 +42,12 @@ async function serveVersion(body = identity) {
 async function makeDeployFixture() {
   const root = resolve(import.meta.dirname, '../..')
   const fixture = await mkdtemp(resolve(tmpdir(), 'xyy-deploy-preflight-'))
-  await mkdir(resolve(fixture, 'scripts'), { recursive: true })
+  await mkdir(resolve(fixture, 'scripts/lib'), { recursive: true })
   await cp(resolve(root, 'scripts/deploy.sh'), resolve(fixture, 'scripts/deploy.sh'))
+  await cp(
+    resolve(root, 'scripts/lib/deploy-capacity.sh'),
+    resolve(fixture, 'scripts/lib/deploy-capacity.sh')
+  )
   await cp(
     resolve(root, 'scripts/create-release-manifest.mjs'),
     resolve(fixture, 'scripts/create-release-manifest.mjs')
@@ -124,40 +129,38 @@ describe('deployment release identity', () => {
     }
   )
 
-  it('allows a clean preflight and generates a SHA-bound manifest', async () => {
+  it('blocks a clean preflight while the CMS schema candidate is unverified', async () => {
     const fixture = await makeDeployFixture()
-    const { stdout } = await run('bash', ['scripts/deploy.sh'], {
-      cwd: fixture,
-      env: { ...process.env, DEPLOY_ENVIRONMENT: 'staging', DEPLOY_PREFLIGHT_ONLY: 'true' },
-    })
-    expect(stdout).toContain('deployment preflight ok')
-    expect(stdout).toMatch(/[0-9]{8}T[0-9]{6}Z-[0-9a-f]{7}/)
+    await expect(
+      run('bash', ['scripts/deploy.sh'], {
+        cwd: fixture,
+        env: { ...process.env, DEPLOY_ENVIRONMENT: 'staging', DEPLOY_PREFLIGHT_ONLY: 'true' },
+      })
+    ).rejects.toMatchObject({ stderr: expect.stringContaining('release_manifest_blocked') })
     await rm(fixture, { recursive: true, force: true })
   })
 
-  it('generates a manifest from explicit CI inputs', async () => {
+  it('blocks a manifest from explicit CI inputs while the CMS schema candidate is unverified', async () => {
     const root = resolve(import.meta.dirname, '../..')
     const directory = await mkdtemp(resolve(tmpdir(), 'xyy-manifest-'))
     const output = resolve(directory, 'manifest.json')
-    await run(
-      process.execPath,
-      [
-        'scripts/create-release-manifest.mjs',
-        '--output',
-        output,
-        '--git-sha',
-        sha,
-        '--build-time',
-        identity.buildTime,
-        '--environment',
-        'ci',
-      ],
-      { cwd: root }
-    )
-    expect(JSON.parse(await readFile(output, 'utf8'))).toMatchObject({
-      gitSha: sha,
-      environment: 'ci',
-    })
+    await expect(
+      run(
+        process.execPath,
+        [
+          'scripts/create-release-manifest.mjs',
+          '--output',
+          output,
+          '--git-sha',
+          sha,
+          '--build-time',
+          identity.buildTime,
+          '--environment',
+          'ci',
+        ],
+        { cwd: root }
+      )
+    ).rejects.toMatchObject({ stderr: expect.stringContaining('release_manifest_blocked') })
     await rm(directory, { recursive: true, force: true })
   })
 })

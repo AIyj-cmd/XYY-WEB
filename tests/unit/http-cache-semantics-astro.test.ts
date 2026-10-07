@@ -2,7 +2,7 @@ import { createRequire } from 'node:module'
 import { resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 
 const require = createRequire(import.meta.url)
 const remotePath = resolve('node_modules/astro/dist/assets/build/remote.js')
@@ -19,18 +19,26 @@ function cachedImageHeaders(extra: Record<string, string> = {}) {
 
 describe('Astro remote image cache consumer', () => {
   it('loads the local patched package and gives restricted image responses no TTL', async () => {
-    expect(require('http-cache-semantics/package.json').version).toBe('4.2.0-xyy.1')
+    const fixedNow = new Date('2026-10-05T00:00:00.000Z')
+    const realDate = Date
+    vi.useFakeTimers({ toFake: ['Date'] })
+    vi.setSystemTime(fixedNow)
+    try {
+      expect(require('http-cache-semantics/package.json').version).toBe('4.2.0-xyy.1')
 
-    const before = Date.now()
-    const image = await remote.loadRemoteImage(
-      imageUrl,
-      async () =>
-        new Response('image', {
-          headers: cachedImageHeaders({ 'set-cookie': 'synthetic-private-cookie' }),
-        })
-    )
+      const image = await remote.loadRemoteImage(
+        imageUrl,
+        async () =>
+          new Response('image', {
+            headers: cachedImageHeaders({ 'set-cookie': 'synthetic-private-cookie' }),
+          })
+      )
 
-    expect(image.expires).toBeLessThanOrEqual(before + 100)
+      expect(image.expires).toBe(fixedNow.getTime())
+    } finally {
+      vi.useRealTimers()
+    }
+    expect(Date).toBe(realDate)
   })
 
   it('retains ordinary image caching and successful 304 revalidation', async () => {

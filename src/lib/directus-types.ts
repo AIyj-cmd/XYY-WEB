@@ -100,7 +100,7 @@ export interface FaqRecord {
   sort: number
   question: string
   answer: string
-  faq_page?: number | FaqPageRecord | null
+  faq_page: number | FaqPageRecord
   date_created?: string
   date_updated?: string | null
 }

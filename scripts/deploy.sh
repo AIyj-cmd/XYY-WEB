@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
+source scripts/lib/deploy-capacity.sh
 if ! git diff --quiet || ! git diff --cached --quiet || [[ -n "$(git ls-files --others --exclude-standard)" ]]; then
   echo "deployment_requires_clean_worktree" >&2
   exit 1
@@ -41,43 +42,42 @@ WEB_PORT="${WEB_PORT:-50031}"
 [[ ${WEB_PORT} =~ ^[1-9][0-9]{0,4}$ ]] || { echo "Error: WEB_PORT must be a valid TCP port" >&2; exit 1; }
 [[ ${REMOTE_DIR} =~ ^/[A-Za-z0-9._/-]+$ ]] || { echo "Error: REMOTE_DIR must be a safe absolute path" >&2; exit 1; }
 [[ ${NODE_BIN} =~ ^/[A-Za-z0-9._/-]+$ ]] || { echo "Error: NODE_BIN must be a safe absolute path" >&2; exit 1; }
-RELEASES_DIR="$REMOTE_DIR/releases"; RELEASE_DIR="$RELEASES_DIR/$RELEASE_ID"
-CURRENT_LINK="$REMOTE_DIR/current"
+RELEASES_DIR="$REMOTE_DIR/releases"; RELEASE_DIR="$RELEASES_DIR/$RELEASE_ID"; CURRENT_LINK="$REMOTE_DIR/current"
+CAPACITY_BASELINE_FILE="${CAPACITY_BASELINE_FILE:-output/capacity-baseline.json}"
+REMOTE_CAPACITY_BASELINE_FILE="${REMOTE_CAPACITY_BASELINE_FILE:-$REMOTE_DIR/capacity-baseline.json}"
+PINNED_RELEASES="${PINNED_RELEASES:-}"
+RELEASE_CLEANUP_APPLY="${RELEASE_CLEANUP_APPLY:-false}"
+PINNED_RELEASES_FILE="${PINNED_RELEASES_FILE:-$REMOTE_DIR/pinned-releases.txt}"
+RELEASE_CLEANUP_PLAN_FILE="${RELEASE_CLEANUP_PLAN_FILE:-$REMOTE_DIR/maintenance/release-cleanup-$RELEASE_ID.json}"
+REMOTE_BOOTSTRAP_DIR="$REMOTE_DIR/.capacity-preflight-$RELEASE_ID"
+[[ ${RELEASE_CLEANUP_APPLY} =~ ^(true|false)$ ]] || { echo "Error: RELEASE_CLEANUP_APPLY must be true or false" >&2; exit 1; }
+[[ "$RELEASE_CLEANUP_APPLY" == false ]] || { echo '[error] deploy.sh only creates an exact cleanup preview; apply the reviewed plan separately' >&2; exit 1; }
+validate_capacity_maintenance_paths "$REMOTE_DIR" "$REMOTE_CAPACITY_BASELINE_FILE" "$PINNED_RELEASES_FILE" "$RELEASE_CLEANUP_PLAN_FILE"
 ssh_cmd=(ssh -o BatchMode=yes -o StrictHostKeyChecking=accept-new)
 RSYNC_RSH="ssh -o BatchMode=yes -o StrictHostKeyChecking=accept-new"
-DIRECTUS_URL="$BUILD_DIRECTUS_URL" \
-  PUBLIC_SITE_URL="$SITE_URL" \
-  PUBLIC_DIRECTUS_URL="$PUBLIC_DIRECTUS_URL" \
-  npm run verify:release
-"${ssh_cmd[@]}" "$DEPLOY_HOST" "set -euo pipefail
-test -f '$REMOTE_DIR/.env'
-grep -Eq '^DIRECTUS_URL=.+' '$REMOTE_DIR/.env'
-if ! grep -Eq '^DIRECTUS_CONTENT_TOKEN=.+' '$REMOTE_DIR/.env' || ! grep -Eq '^XIANSUO_API_URL=https://.+' '$REMOTE_DIR/.env' || ! grep -Eq '^XIANSUO_INGEST_TOKEN=.+' '$REMOTE_DIR/.env'; then
-  echo '[error] required CMS content or Xiansuo contact integration settings are missing' >&2
-  exit 1
-fi
-mkdir -p '$RELEASES_DIR'
-test ! -e '$RELEASE_DIR'
-mkdir -p '$RELEASE_DIR/dist'
-if [[ -d '$CURRENT_LINK/dist' ]]; then
-  cp -al '$CURRENT_LINK/dist/.' '$RELEASE_DIR/dist/'
-fi"
+run_local_capacity_preflight "$CAPACITY_BASELINE_FILE" --path "$PWD" --path "${TMPDIR:-/tmp}" --path "${PLAYWRIGHT_ARTIFACTS_DIR:-output/playwright}"
+DIRECTUS_URL="$BUILD_DIRECTUS_URL" PUBLIC_SITE_URL="$SITE_URL" PUBLIC_DIRECTUS_URL="$PUBLIC_DIRECTUS_URL" npm run verify:release
+"${ssh_cmd[@]}" "$DEPLOY_HOST" "bash -s -- '$REMOTE_DIR' '$NODE_BIN' '$REMOTE_BOOTSTRAP_DIR' '$RELEASE_DIR'" < scripts/lib/remote-capacity-bootstrap.sh
+rsync -az -e "$RSYNC_RSH" scripts/capacity-preflight.mjs \
+  "$DEPLOY_HOST:$REMOTE_BOOTSTRAP_DIR/scripts/capacity-preflight.mjs"
+rsync -az -e "$RSYNC_RSH" scripts/lib/capacity-guard.mjs \
+  "$DEPLOY_HOST:$REMOTE_BOOTSTRAP_DIR/scripts/lib/capacity-guard.mjs"
+"${ssh_cmd[@]}" "$DEPLOY_HOST" "bash -s -- '$NODE_BIN' '$REMOTE_BOOTSTRAP_DIR' '$REMOTE_CAPACITY_BASELINE_FILE' '$REMOTE_DIR' '$RELEASES_DIR' '$RELEASE_DIR' '$CURRENT_LINK'" < scripts/lib/remote-capacity-provision.sh
+run_local_capacity_preflight "$CAPACITY_BASELINE_FILE" --path "$PWD" --path "$PWD/dist" --path "${TMPDIR:-/tmp}" --path "${PLAYWRIGHT_ARTIFACTS_DIR:-output/playwright}"
 rsync -az --delete -e "$RSYNC_RSH" dist/ "$DEPLOY_HOST:$RELEASE_DIR/dist/"
 rsync -az -e "$RSYNC_RSH" \
   package.json package-lock.json server.mjs ecosystem.config.cjs config server scripts \
   "$DEPLOY_HOST:$RELEASE_DIR/"
 rsync -az -e "$RSYNC_RSH" "$RELEASE_MANIFEST_FILE" "$DEPLOY_HOST:$RELEASE_DIR/release-manifest.json"
+prepare_remote_cleanup_plan_directory "$DEPLOY_HOST" "$REMOTE_DIR" "$RELEASE_CLEANUP_PLAN_FILE"
+capture_remote_previous_release "$DEPLOY_HOST" "$REMOTE_DIR" "$RELEASES_DIR" "$RELEASE_DIR" "$CURRENT_LINK"
 "${ssh_cmd[@]}" "$DEPLOY_HOST" "set -euo pipefail
 release_dir='$RELEASE_DIR'
 current_link='$CURRENT_LINK'
+PATH='$NODE_BIN':\$PATH node "\$release_dir/scripts/capacity-preflight.mjs" --scope remote --baseline-file '$REMOTE_CAPACITY_BASELINE_FILE' --path '$RELEASES_DIR' --path /tmp
 previous_target=''
-if [[ -L \"\$current_link\" ]]; then
-  previous_target=\$(readlink -f \"\$current_link\")
-elif [[ -f '$REMOTE_DIR/ecosystem.config.cjs' && -d '$REMOTE_DIR/dist' ]]; then
-  previous_target='$REMOTE_DIR'
-fi
-if [[ -n \"\$previous_target\" ]]; then
-  printf '%s\\n' \"\$previous_target\" > \"\$release_dir/.previous_target\"
+if [[ -f "\$release_dir/.previous_target" ]]; then
+  previous_target=\$(cat "\$release_dir/.previous_target")
 fi
 verify_release_identity() {
   local manifest=\"\$1\"
@@ -121,7 +121,7 @@ restore_previous() {
 ln -s '$REMOTE_DIR/.env' \"\$release_dir/.env\"
 find \"\$release_dir/dist\" -type d -exec chmod 755 {} +
 find \"\$release_dir/dist\" -type f -exec chmod 644 {} +
-PATH='$NODE_BIN':\$PATH npm ci --omit=dev --prefix \"\$release_dir\"
+CAPACITY_SCOPE=remote REMOTE_CAPACITY_BASELINE_FILE='$REMOTE_CAPACITY_BASELINE_FILE' TMPDIR=/tmp PATH='$NODE_BIN':\$PATH npm ci --omit=dev --prefix \"\$release_dir\"
 PATH='$NODE_BIN':\$PATH node --check \"\$release_dir/server.mjs\"
 test -f \"\$release_dir/dist/server/entry.mjs\"
 ln -sfn \"\$release_dir\" \"\$current_link.next\"
@@ -192,7 +192,8 @@ echo '[critical] rolled-back release failed health check' >&2
 exit 1"
   exit 1
 fi
-"${ssh_cmd[@]}" "$DEPLOY_HOST" "set -euo pipefail
-cd '$RELEASES_DIR'
-ls -1dt -- */ 2>/dev/null | tail -n +$((RELEASE_KEEP + 1)) | xargs -r rm -rf --"
+if ! preview_remote_release_cleanup "$DEPLOY_HOST" "$RELEASE_DIR" "$RELEASES_DIR" "$CURRENT_LINK" "$REMOTE_DIR" "$RELEASE_KEEP" "$PINNED_RELEASES" "$PINNED_RELEASES_FILE" "$RELEASE_CLEANUP_PLAN_FILE" "$NODE_BIN"; then
+  echo "[error] release $RELEASE_ID is active, but cleanup preview failed; verify the cleanup plan before use" >&2
+  exit 1
+fi
 echo "Deployed release $RELEASE_ID to $HEALTHCHECK_SITE_URL"

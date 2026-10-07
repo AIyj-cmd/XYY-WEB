@@ -1,3 +1,6 @@
-@import './service-experience/detail.css';
+@import './service-experience/foundation.css';
+@import './service-experience/detail-base.css';
+@import './service-experience/detail-layout.css';
+@import './service-experience/detail-variants.css';
 @import './service-experience/faq-cta.css';
 @import './service-experience/responsive.css';

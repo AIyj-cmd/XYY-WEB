@@ -136,6 +136,7 @@ export function createCmsSeedRuntime(directus) {
     return items.map(({ faqPageKey, ...item }) => {
       const pageId = pageByKey.get(faqPageKey)
       if (pageId === undefined) throw new Error(`unknown FAQ page key: ${faqPageKey}`)
+      delete item.page_key
       return { ...item, faq_page: pageId }
     })
   }

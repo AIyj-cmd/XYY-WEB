@@ -17,8 +17,53 @@
       },
       "blocks": [
         {
+          "type": "paragraph",
+          "text": "文／王伟。",
+          "source": {
+            "pdfPage": 2,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              220,
+              760,
+              820
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "新年伊始，春回大地，神州南方丽景，生机盎然！",
+          "source": {
+            "pdfPage": 2,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              220,
+              760,
+              820
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "过去的岁月，就是用热爱去拥抱物流时光。物流，赋能与努力使之永恒。人生何其短，择一事而爱，择一事终！我爱物流，为之热爱而发光！",
+          "source": {
+            "pdfPage": 2,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              220,
+              760,
+              820
+            ]
+          }
+        },
+        {
           "type": "review-note",
-          "text": "原刊物理第2页“用热爱去拥抱物流时光岁月”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
+          "text": "原稿视觉核对：原稿裁切中部第1—5段的行末字形仍模糊；已恢复署名、首句和页底结语，其他段落不以推测补写。",
           "source": {
             "pdfPage": 2,
             "printedPage": null,
@@ -52,7 +97,7 @@
         },
         {
           "type": "paragraph",
-          "text": "2023 年服装零售行业研究报告号文 /摘录并引用 “干际投资”数据",
+          "text": "文／摘录并引用“千际投资”数据",
           "source": {
             "pdfPage": 2,
             "printedPage": null,
@@ -67,7 +112,7 @@
         },
         {
           "type": "review-note",
-          "text": "原刊物理第2页“2023年服装零售行业研究报告”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
+          "text": "原稿视觉核对：右栏“第一章 行业概况”标题下连续正文第2—9段及图表轴题、数值为细小字，未能逐字确认；已保留已读署名和章节名。",
           "source": {
             "pdfPage": 2,
             "printedPage": null,
@@ -91,23 +136,98 @@
       },
       "blocks": [
         {
-          "type": "paragraph",
-          "text": "中国仓储与配送协会专家服装物流专家委员会专家",
+          "type": "subheading",
+          "text": "程凯",
           "source": {
             "pdfPage": 3,
             "printedPage": null,
             "side": "full",
             "bbox": [
-              264,
-              422,
-              406,
-              472
+              190,
+              160,
+              800,
+              1180
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "新亦源供应链联合创始人、CMO。",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              160,
+              800,
+              1180
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "中国仓储与配送协会专家。",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              160,
+              800,
+              1180
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "服装物流专家委员会专家。",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              160,
+              800,
+              1180
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "罗戈研究院服装物流专家。",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              160,
+              800,
+              1180
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "细分行业物流变革方案专家。",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              160,
+              800,
+              1180
             ]
           }
         },
         {
           "type": "review-note",
-          "text": "原刊物理第3页“新亦源，请回答”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
+          "text": "原稿视觉核对：人物资料下方两栏问答的题干与答句存在细小、压缩字形；已按原稿分项恢复姓名、身份和四项专家资料，不合并为一条。",
           "source": {
             "pdfPage": 3,
             "printedPage": null,
@@ -131,8 +251,23 @@
       },
       "blocks": [
         {
+          "type": "paragraph",
+          "text": "近日，广州市检验检测认证集团（以下简称“广检”）与广州新亦源供应链管理有限公司（以下简称“新亦源”）正式达成鞋服QC技能认证培训项目合作协议。",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              860,
+              1080,
+              1450,
+              1600
+            ]
+          }
+        },
+        {
           "type": "review-note",
-          "text": "原刊物理第3页“广检集团与新亦源达成合作，共同推进鞋服QC技能认证培训项目”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
+          "text": "原稿视觉核对：首段已恢复；左栏第2—5段、右栏第1—4段的细小字仍无法可靠逐字辨认，标题未作为正文替代。",
           "source": {
             "pdfPage": 3,
             "printedPage": null,
@@ -157,7 +292,7 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "喜讯 : 36000m* 东莞桥头仓第一期正式启用",
+          "text": "喜讯：36000㎡东莞桥头仓第一期正式启用",
           "source": {
             "pdfPage": 3,
             "printedPage": null,
@@ -171,8 +306,38 @@
           }
         },
         {
+          "type": "paragraph",
+          "text": "文／罗锦涛。",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              1280,
+              800,
+              1800
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "近年来，随着新亦源在鞋服云仓领域的深耕，专业服务能力得到了众多鞋服品牌的认可，仓储规模有了快速增长，客户及订单量的不断增加，现有的仓库容量已难以满足客户的需求。面对客户日益增加的仓储需求，我司一直希望在全国各地开设更多的标准化仓库，以满足客户仓储需求！",
+          "source": {
+            "pdfPage": 3,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              1280,
+              800,
+              1800
+            ]
+          }
+        },
+        {
           "type": "review-note",
-          "text": "原刊物理第3页“喜讯：36000㎡东莞桥头仓第一期正式启用”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
+          "text": "原稿视觉核对：首段已恢复；第2段中仓库配置和面积说明的行末字、末段图片说明仍不能可靠逐字辨认。",
           "source": {
             "pdfPage": 3,
             "printedPage": null,
@@ -196,8 +361,23 @@
       },
       "blocks": [
         {
+          "type": "paragraph",
+          "text": "www.56xyy.com，新亦源欢迎您！",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              160,
+              800,
+              1040
+            ]
+          }
+        },
+        {
           "type": "review-note",
-          "text": "原刊物理第4页“新亦源拍了拍你，说“我们新官网上线啦””区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
+          "text": "原稿视觉核对：首屏介绍段第2—5行与两张网站截图内微小导航文字无法可靠逐字辨认；结尾网址及欢迎语已保留。",
           "source": {
             "pdfPage": 4,
             "printedPage": null,
@@ -221,8 +401,23 @@
       },
       "blocks": [
         {
+          "type": "paragraph",
+          "text": "2023年2月10日-2月12日。",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              860,
+              160,
+              1450,
+              1040
+            ]
+          }
+        },
+        {
           "type": "review-note",
-          "text": "原刊物理第4页“信息驱动，服务创新——新亦源2022年度总结及2023年度会议”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
+          "text": "原稿视觉核对：会议说明左栏照片下第1段及右栏第1—4段仍有细小字形；日期已恢复，未把照片中的人名或数字推测写入。",
           "source": {
             "pdfPage": 4,
             "printedPage": null,
@@ -246,8 +441,23 @@
       },
       "blocks": [
         {
+          "type": "subheading",
+          "text": "签署《目标责任状》",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              1040,
+              800,
+              1800
+            ]
+          }
+        },
+        {
           "type": "review-note",
-          "text": "原刊物理第4页“签订《目标责任书》”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
+          "text": "原稿视觉核对：原稿可见小节标题为“签署《目标责任状》”；照片周围未见可完整确认的正文段，仅保留此原稿文字，不改现有章节名。",
           "source": {
             "pdfPage": 4,
             "printedPage": null,
@@ -263,7 +473,7 @@
       ]
     },
     {
-      "title": "3·12“植初心 种未来”植树主题活动",
+      "title": "312“植初心 种未来”植树主题活动",
       "source": {
         "pdfPage": 4,
         "printedPage": null,
@@ -272,7 +482,7 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "312“植初心种未来”植树主题活动",
+          "text": "312“植初心 种未来”植树主题活动",
           "source": {
             "pdfPage": 4,
             "printedPage": null,
@@ -287,7 +497,7 @@
         },
         {
           "type": "review-note",
-          "text": "原刊物理第4页“3·12“植初心 种未来”植树主题活动”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
+          "text": "原稿视觉核对：标题日期仅能确认“312”，字符间中点不可辨；诗歌第2—6行及活动段末行的个别字形无法可靠确认，未改写为“3·12”。",
           "source": {
             "pdfPage": 4,
             "printedPage": null,
@@ -331,7 +541,7 @@
         },
         {
           "type": "review-note",
-          "text": "原刊物理第5页“面朝大海，春暖花开｜年度企业之星旅游奖励”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
+          "text": "原稿视觉核对：旅游照片旁的说明文字及照片内文字过小；未转录人名、行程或未能确认的说明。",
           "source": {
             "pdfPage": 5,
             "printedPage": null,
@@ -355,8 +565,53 @@
       },
       "blocks": [
         {
+          "type": "paragraph",
+          "text": "光阴如画，岁月成诗。",
+          "source": {
+            "pdfPage": 5,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              860,
+              1280,
+              1450,
+              1800
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "我们又在2023年的女神节见面了。",
+          "source": {
+            "pdfPage": 5,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              860,
+              1280,
+              1450,
+              1800
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "为庆祝这个特殊美丽的日子，新亦源在各地举办了女神节活动。",
+          "source": {
+            "pdfPage": 5,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              860,
+              1280,
+              1450,
+              1800
+            ]
+          }
+        },
+        {
           "type": "review-note",
-          "text": "原刊物理第5页“女神节｜不负时光馈赠，每一个你都自带光芒”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
+          "text": "原稿视觉核对：三句正文已恢复；活动照片内字、末尾落款和其余小字行无法可靠确认。",
           "source": {
             "pdfPage": 5,
             "printedPage": null,
@@ -380,8 +635,53 @@
       },
       "blocks": [
         {
+          "type": "subheading",
+          "text": "成衣外观检查",
+          "source": {
+            "pdfPage": 6,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              860,
+              150,
+              1450,
+              1800
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "成衣服装大货生产完毕，入库前的检验是公司跟踪生产中的一个重要环节，最终出库流向市场的产品的检验质量的高低会直接影响到公司的经济效益，甚至影响到公司的品牌效应。在当前竞争日益激烈的市场情况下，为确保质量链条流畅，防止不合格品入库，对其实施入库前检验是很有必要的。那么，你对成衣质检了解多少呢？",
+          "source": {
+            "pdfPage": 6,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              860,
+              150,
+              1450,
+              1800
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "正常外观检查采用目测，距离约50cm距离目测为准，实物以平铺、45度、90度方式目测。",
+          "source": {
+            "pdfPage": 6,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              860,
+              150,
+              1450,
+              1800
+            ]
+          }
+        },
+        {
           "type": "review-note",
-          "text": "原刊物理第6页“成衣入库外观质检知多少？”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
+          "text": "原稿视觉核对：开篇说明和正常外观检查的距离、角度已恢复；右侧表格字段、下方图片标签和其余检查细目存在细小字形，未推测补写。",
           "source": {
             "pdfPage": 6,
             "printedPage": null,
@@ -405,8 +705,83 @@
       },
       "blocks": [
         {
+          "type": "subheading",
+          "text": "门店自主寄件，次月结算",
+          "source": {
+            "pdfPage": 7,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              160,
+              800,
+              1100
+            ]
+          }
+        },
+        {
+          "type": "subheading",
+          "text": "总部合作一家快递承运商，门店统一使用",
+          "source": {
+            "pdfPage": 7,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              160,
+              800,
+              1100
+            ]
+          }
+        },
+        {
+          "type": "subheading",
+          "text": "总部合作多家快递承运商，门店选择使用",
+          "source": {
+            "pdfPage": 7,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              160,
+              800,
+              1100
+            ]
+          }
+        },
+        {
+          "type": "subheading",
+          "text": "总部外包物流，由物流承包商分配资源揽收",
+          "source": {
+            "pdfPage": 7,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              160,
+              800,
+              1100
+            ]
+          }
+        },
+        {
+          "type": "subheading",
+          "text": "寄件采用到付，原价寄件",
+          "source": {
+            "pdfPage": 7,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              160,
+              800,
+              1100
+            ]
+          }
+        },
+        {
           "type": "review-note",
-          "text": "原刊物理第7页“服务数万家门店，运到智能寄件平台”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
+          "text": "原稿视觉核对：五种模式标题已恢复；每项“场景”“痛点”段落的行内细节仍有细小字形，未推测填充。",
           "source": {
             "pdfPage": 7,
             "printedPage": null,
@@ -431,7 +806,7 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "印花加工的系统应用一一新亦源印花服装供应链",
+          "text": "印花加工的系统应用——新亦源印花服装供应链",
           "source": {
             "pdfPage": 7,
             "printedPage": null,
@@ -445,8 +820,143 @@
           }
         },
         {
+          "type": "paragraph",
+          "text": "文／江记松。",
+          "source": {
+            "pdfPage": 7,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              1280,
+              800,
+              1800
+            ]
+          }
+        },
+        {
+          "type": "subheading",
+          "text": "一、系统需求/问题",
+          "source": {
+            "pdfPage": 7,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              1280,
+              800,
+              1800
+            ]
+          }
+        },
+        {
+          "type": "subheading",
+          "text": "1、进销存管理",
+          "source": {
+            "pdfPage": 7,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              1280,
+              800,
+              1800
+            ]
+          }
+        },
+        {
+          "type": "subheading",
+          "text": "2、订单管理系统",
+          "source": {
+            "pdfPage": 7,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              1280,
+              800,
+              1800
+            ]
+          }
+        },
+        {
+          "type": "subheading",
+          "text": "3、订单数据跟踪报表",
+          "source": {
+            "pdfPage": 7,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              1280,
+              800,
+              1800
+            ]
+          }
+        },
+        {
+          "type": "subheading",
+          "text": "4、系统对接",
+          "source": {
+            "pdfPage": 7,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              1280,
+              800,
+              1800
+            ]
+          }
+        },
+        {
+          "type": "subheading",
+          "text": "5、库存管理",
+          "source": {
+            "pdfPage": 7,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              1280,
+              800,
+              1800
+            ]
+          }
+        },
+        {
+          "type": "subheading",
+          "text": "6、货源",
+          "source": {
+            "pdfPage": 7,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              1280,
+              800,
+              1800
+            ]
+          }
+        },
+        {
+          "type": "subheading",
+          "text": "7、退换管理",
+          "source": {
+            "pdfPage": 7,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              1280,
+              800,
+              1800
+            ]
+          }
+        },
+        {
           "type": "review-note",
-          "text": "原刊物理第7页“印花加工的系统应用——新亦源印花服装供应链”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
+          "text": "原稿视觉核对：作者、系统需求/问题与七项小标题已恢复；各项说明段内的 OMS/WMS 操作细节有细小字形，未推测填充。",
           "source": {
             "pdfPage": 7,
             "printedPage": null,
@@ -470,8 +980,68 @@
       },
       "blocks": [
         {
+          "type": "subheading",
+          "text": "2022年度表彰评优结果公示",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              150,
+              800,
+              1000
+            ]
+          }
+        },
+        {
+          "type": "subheading",
+          "text": "服务之星",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              150,
+              800,
+              1000
+            ]
+          }
+        },
+        {
+          "type": "subheading",
+          "text": "节约之星",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              150,
+              800,
+              1000
+            ]
+          }
+        },
+        {
+          "type": "subheading",
+          "text": "效率标兵",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              150,
+              800,
+              1000
+            ]
+          }
+        },
+        {
           "type": "review-note",
-          "text": "原刊物理第8页“仰望星空，追逐梦想”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
+          "text": "原稿视觉核对：表彰公告标题和三类奖项已恢复；获奖姓名和照片旁的细字未逐项写入，以免误识。",
           "source": {
             "pdfPage": 8,
             "printedPage": null,
@@ -495,8 +1065,68 @@
       },
       "blocks": [
         {
+          "type": "paragraph",
+          "text": "项目中心 客服组长 罗雪萍。2022年服务之星。",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              1060,
+              800,
+              1800
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "文／熊家芳。",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              1060,
+              800,
+              1800
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "座右铭：没有翅膀的翱翔，只有奋斗出来的精彩。",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              1060,
+              800,
+              1800
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "自我要求：努力做到最好。",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              1060,
+              800,
+              1800
+            ]
+          }
+        },
+        {
           "type": "review-note",
-          "text": "原刊物理第8页“追随平凡之光，汲取非凡力量”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
+          "text": "原稿视觉核对：岗位、荣誉、座右铭和自我要求已恢复；下方人物稿各段中个别细小字仍无法可靠确认，未推测补写。",
           "source": {
             "pdfPage": 8,
             "printedPage": null,

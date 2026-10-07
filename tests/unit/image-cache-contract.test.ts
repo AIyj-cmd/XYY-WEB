@@ -1,5 +1,7 @@
 import { readFileSync, statSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
+import { SERVICE_PAGE_CONFIG } from '../../src/data/service-pages/config'
+import { APPROVED_SERVICE_PAGE_SEEDS } from '../../scripts/data/approved-cms-page-seeds.mjs'
 
 const readProjectFile = (path: string) =>
   readFileSync(new URL(`../../${path}`, import.meta.url), 'utf8')
@@ -31,10 +33,11 @@ describe('cache-safe image references', () => {
     ['b2b-mendian-cangpei', '/w-b2b-store-hero.webp'],
   ])('keeps the %s page and CMS seed on the same unique image URL', (slug, image) => {
     const page = readProjectFile(`src/pages/${slug}.astro`)
-    const seeds = readProjectFile('scripts/data/approved-cms-page-seeds.mjs')
+    const seed = APPROVED_SERVICE_PAGE_SEEDS.find((item) => item.slug === slug)
 
-    expect(page).toContain(`imgSrc="${image}"`)
-    expect(seeds).toContain(`img_src: '${image}'`)
+    expect(page).toContain(`SERVICE_PAGE_CONFIG['${slug}']`)
+    expect(SERVICE_PAGE_CONFIG[slug]?.imgSrc).toBe(image)
+    expect(seed?.img_src).toBe(image)
   })
 
   it('uses a unique URL for the homepage return-inspection image', () => {

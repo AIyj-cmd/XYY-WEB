@@ -5,10 +5,7 @@ const SAFE_TYPE_MIGRATIONS = [
   ['news', 'summary', 'string'],
   ['news', 'published_at', 'string'],
 ]
-const SAFE_REQUIRED_MIGRATIONS = [
-  ['faqs', 'page_key'],
-  ['about_honors', 'image'],
-]
+const SAFE_REQUIRED_MIGRATIONS = [['about_honors', 'image']]
 
 const recordsFor = (snapshot, collection) =>
   snapshot.records?.[collection] ?? snapshot[collection] ?? []
@@ -115,6 +112,37 @@ export function planContractFieldConvergence(snapshot, issues) {
       changes.push({ phase: 'require_contract', collection, field })
     }
   }
+  const faqFields = fieldsFor(snapshot, 'faqs')
+  const faqPage = faqFields?.find((candidate) => candidate.field === 'faq_page')
+  const faqRelation = relationsFor(snapshot, 'faqs').find(
+    (candidate) => candidate.field === 'faq_page'
+  )
+  const faqRecords = recordsFor(snapshot, 'faqs')
+  if (faqFields) {
+    if (!faqPage) {
+      issues.push('migration_required:missing_field collection=faqs field=faq_page')
+    } else if (faqRecords.some((record) => empty(record.faq_page))) {
+      issues.push('manual_mapping_required collection=faqs relation=faq_page')
+    } else if (!required(faqPage)) {
+      changes.push({ phase: 'require_contract', collection: 'faqs', field: 'faq_page' })
+    }
+  }
+  const expected = contractRelation('faqs', 'faq_page')
+  if (faqFields && !faqRelation && faqPage) {
+    changes.push({ phase: 'relation', ...expected })
+  } else if (faqRelation) {
+    if (faqRelation.related_collection !== expected.related_collection) {
+      issues.push(
+        `unsupported_relation collection=faqs field=faq_page expected=${expected.related_collection} actual=${faqRelation.related_collection}`
+      )
+    } else if (faqRelation.schema?.on_delete !== expected.schema?.on_delete) {
+      if (faqRelation.id === undefined || faqRelation.id === null) {
+        issues.push('migration_required:relation_on_delete collection=faqs field=faq_page')
+      } else {
+        changes.push({ phase: 'relation_update', id: faqRelation.id, ...expected })
+      }
+    }
+  }
   return changes
 }
 
@@ -130,6 +158,16 @@ export async function applyContractFieldConvergence(directus, changes) {
   }
   for (const change of changes.filter(({ phase }) => phase === 'relation')) {
     await directus.request('POST', '/relations', {
+      collection: change.collection,
+      field: change.field,
+      related_collection: change.related_collection,
+      schema: change.schema,
+      meta: change.meta,
+    })
+    applied += 1
+  }
+  for (const change of changes.filter(({ phase }) => phase === 'relation_update')) {
+    await directus.request('PATCH', `/relations/${change.id}`, {
       collection: change.collection,
       field: change.field,
       related_collection: change.related_collection,

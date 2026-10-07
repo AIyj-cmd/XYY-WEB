@@ -75,34 +75,25 @@ function planStableIdentities(snapshot, mappings, changes, issues) {
   }
 }
 
-function planFaqRelations(snapshot, changes, issues) {
+function planFaqRelations(snapshot, issues) {
   const pages = recordsFor(snapshot, 'faq_pages')
-  const pageByKey = new Map()
   const pageById = new Map()
   for (const page of pages) {
-    if (pageByKey.has(page.key))
+    if ([...pageById.values()].some((candidate) => candidate.key === page.key))
       issues.push(`duplicate_identity collection=faq_pages key=${page.key}`)
-    pageByKey.set(page.key, page)
     pageById.set(String(page.id), page)
   }
 
-  const existingChange = new Map(
-    changes
-      .filter(({ collection }) => collection === 'faqs')
-      .map((change) => [String(change.id), change])
-  )
   const pageSorts = new Set()
   for (const faq of recordsFor(snapshot, 'faqs')) {
     const relationId =
       typeof faq.faq_page === 'object' && faq.faq_page ? faq.faq_page.id : faq.faq_page
     const relatedPage = relationId ? pageById.get(String(relationId)) : undefined
-    const legacyPage = faq.page_key ? pageByKey.get(faq.page_key) : undefined
-    const pageForSort = relatedPage ?? legacyPage
-    if (pageForSort) {
-      const sortSignature = `${pageForSort.key}:${String(faq.sort)}`
+    if (relatedPage) {
+      const sortSignature = `${relatedPage.key}:${String(faq.sort)}`
       if (pageSorts.has(sortSignature)) {
         issues.push(
-          `duplicate_sort collection=faqs page=${pageForSort.key} sort=${String(faq.sort)}`
+          `duplicate_sort collection=faqs page=${relatedPage.key} sort=${String(faq.sort)}`
         )
       }
       pageSorts.add(sortSignature)
@@ -111,16 +102,9 @@ function planFaqRelations(snapshot, changes, issues) {
       issues.push(`dangling_relation collection=faqs id=${recordId(faq)} faq_page=${relationId}`)
       continue
     }
-    if (!relatedPage && !legacyPage) {
+    if (!relatedPage) {
       issues.push(`manual_mapping_required collection=faqs id=${recordId(faq)} relation=faq_page`)
       continue
-    }
-    const authoritativePage = relatedPage ?? legacyPage
-    const patch = existingChange.get(String(faq.id))?.patch ?? {}
-    if (!relatedPage) patch.faq_page = authoritativePage.id
-    if (faq.page_key !== authoritativePage.key) patch.page_key = authoritativePage.key
-    if (Object.keys(patch).length && !existingChange.has(String(faq.id))) {
-      changes.push({ collection: 'faqs', id: faq.id, patch })
     }
   }
 }
@@ -130,7 +114,7 @@ export function buildCmsContractMigrationPlan(snapshot, mappings = {}) {
   const issues = []
   planStableIdentities(snapshot, mappings, changes, issues)
   planHomepageClaims(recordsFor(snapshot, 'homepage_content'), mappings, changes, issues)
-  planFaqRelations(snapshot, changes, issues)
+  planFaqRelations(snapshot, issues)
   const { schemaChanges, identityChecks } = planIdentitySchemaPhases(snapshot, changes, issues)
   schemaChanges.push(...planSafeSchemaChanges(snapshot, issues))
   return { changes, schemaChanges, identityChecks, issues }

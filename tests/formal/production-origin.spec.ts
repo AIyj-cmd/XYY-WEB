@@ -84,7 +84,8 @@ test('formal server normalizes www, legacy domains and legacy paths', async ({ r
     maxRedirects: 0,
   })
   expect(legacyPath.status()).toBe(301)
-  expect(legacyPath.headers().location).toBe('/?source=old')
+  // Direct clients cannot authenticate X-Forwarded-Proto; canonical redirects use the formal origin.
+  expect(legacyPath.headers().location).toBe(`${formalOrigin}/?source=old`)
 })
 
 test('formal whitepaper routes preserve query redirects and reject unknown issues', async ({

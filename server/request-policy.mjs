@@ -46,13 +46,19 @@ function normalizeCanonicalPath(originRelativePath) {
     : originRelativePath
 }
 
+/** Use forwarded protocol only after server middleware has authenticated the socket peer. */
+export function resolveRequestProtocol({ socketEncrypted, trustedPeer, forwardedProto }) {
+  if (trustedPeer && typeof forwardedProto === 'string') {
+    const normalized = forwardedProto.trim().toLowerCase()
+    if (normalized === 'http' || normalized === 'https') return normalized
+  }
+  return socketEncrypted ? 'https' : 'http'
+}
+
 export function createCanonicalRedirect(config) {
   return (req, res, next) => {
     const requestHost = req.hostname.toLowerCase()
-    const forwardedProto = (req.get('x-forwarded-proto') || req.protocol)
-      .split(',')[0]
-      .trim()
-      .toLowerCase()
+    const requestProtocol = res.locals?.requestProtocol ?? req.protocol
     const query = req.originalUrl.includes('?')
       ? req.originalUrl.slice(req.originalUrl.indexOf('?'))
       : ''
@@ -64,7 +70,7 @@ export function createCanonicalRedirect(config) {
       requestHost === config.formalHost || requestHost === `www.${config.formalHost}`
     const isLegacyHost = config.legacyHosts.has(requestHost)
     const needsFormalOrigin =
-      (isFormalHost && (requestHost !== config.formalHost || forwardedProto !== 'https')) ||
+      (isFormalHost && (requestHost !== config.formalHost || requestProtocol !== 'https')) ||
       (config.enableDomainRedirects && isLegacyHost)
 
     if (needsFormalOrigin) {

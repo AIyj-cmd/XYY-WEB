@@ -17,6 +17,36 @@
       },
       "blocks": [
         {
+          "type": "paragraph",
+          "text": "2022年5月6日，新亦源5岁了。五年间，从最初5人开始到600人。",
+          "source": {
+            "pdfPage": 2,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              150,
+              780,
+              800
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "我们因物流而存在，物流因服务而永恒。感恩过去五年，一路风雨，未来的五年物流将更加激荡，我们将指挥物流航母，乘风破浪！",
+          "source": {
+            "pdfPage": 2,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              150,
+              780,
+              800
+            ]
+          }
+        },
+        {
           "type": "review-note",
           "text": "原刊物理第2页“感恩五年一路风雨”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
           "source": {
@@ -41,6 +71,36 @@
         "side": "full"
       },
       "blocks": [
+        {
+          "type": "paragraph",
+          "text": "新亦源供应链（简称“新亦源”）总部位于广州。",
+          "source": {
+            "pdfPage": 2,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              850,
+              150,
+              1450,
+              800
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "诞生于互联网时代的新浪潮。",
+          "source": {
+            "pdfPage": 2,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              850,
+              150,
+              1450,
+              800
+            ]
+          }
+        },
         {
           "type": "review-note",
           "text": "原刊物理第2页“公司简介”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
@@ -67,8 +127,23 @@
       },
       "blocks": [
         {
+          "type": "paragraph",
+          "text": "全国工商联纺织服装业商会第四次会员大会。",
+          "source": {
+            "pdfPage": 2,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              1280,
+              780,
+              1530
+            ]
+          }
+        },
+        {
           "type": "review-note",
-          "text": "原刊物理第2页“新闻快讯”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
+          "text": "原刊物理第2页“新闻快讯”仍有低清小字未能逐字可靠辨认；本阅读版保留已视觉核对的标题、栏目或句子，并以方括号或本提示标出未恢复范围，请以 PDF 原版核对。",
           "source": {
             "pdfPage": 2,
             "printedPage": null,
@@ -92,8 +167,23 @@
       },
       "blocks": [
         {
+          "type": "paragraph",
+          "text": "——摘录《网络货运平台指南》",
+          "source": {
+            "pdfPage": 2,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              850,
+              1080,
+              1450,
+              1170
+            ]
+          }
+        },
+        {
           "type": "review-note",
-          "text": "原刊物理第2页“2022上半年物流资产投资运营情况浅析”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
+          "text": "原刊物理第2页“2022上半年物流资产投资运营情况浅析”仍有低清小字未能逐字可靠辨认；本阅读版保留已视觉核对的标题、栏目或句子，并以方括号或本提示标出未恢复范围，请以 PDF 原版核对。",
           "source": {
             "pdfPage": 2,
             "printedPage": null,
@@ -109,7 +199,7 @@
       ]
     },
     {
-      "title": "2022年供应链及物流合同物流发展研究报告——服装赛道",
+      "title": "2022年供应链及物流合同物流发展研究报告 - 服装赛道",
       "source": {
         "pdfPage": 3,
         "printedPage": null,
@@ -118,7 +208,7 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "物流发展研究报告 - 服装宣道",
+          "text": "2022年供应链及物流合同物流发展研究报告 - 服装赛道",
           "source": {
             "pdfPage": 3,
             "printedPage": null,
@@ -158,16 +248,16 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": ",总库存可达 200 万 (羽绒服为主 ) 工厂生产一件代发IT 等主营业务的新型模式 , 打破传统电商模式 , 降低售、 发货效率更加快捷 ; 现湖北仓主要合作商家 :有",
+          "text": "湖北仓以服装类商品为主，总库存可达 200 万（羽绒服为主）。工厂生产一件代发、线上B2C、线下B2B、唯品JIT等主营业务的新型模式，打破传统电商模式，降低商家库存压力，整体备货、销货、发货效率更加快捷；现湖北仓主要合作商家：鸭鸭、雪中飞、HEA等品牌。",
           "source": {
             "pdfPage": 3,
             "printedPage": null,
             "side": "full",
             "bbox": [
-              1064,
-              1146,
-              1422,
-              1215
+              850,
+              940,
+              1450,
+              1660
             ]
           }
         },
@@ -227,8 +317,38 @@
           }
         },
         {
+          "type": "paragraph",
+          "text": "心路历程-2022年度成本节约之星。",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              180,
+              800,
+              400
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "心路历程-2022年度服务之星。",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              800,
+              180,
+              1450,
+              400
+            ]
+          }
+        },
+        {
           "type": "review-note",
-          "text": "原刊物理第4页“优秀员工栏”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
+          "text": "原刊物理第4页“优秀员工栏”仍有低清小字未能逐字可靠辨认；本阅读版保留已视觉核对的标题、栏目或句子，并以方括号或本提示标出未恢复范围，请以 PDF 原版核对。",
           "source": {
             "pdfPage": 4,
             "printedPage": null,
@@ -252,8 +372,38 @@
       },
       "blocks": [
         {
+          "type": "paragraph",
+          "text": "文 / 程浩。",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              690,
+              970,
+              980,
+              1070
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "因此，在2021年初，新亦源正式推出产地仓模式，并将其纳入公司三大战略发展方向。",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              400,
+              1560,
+              800,
+              1710
+            ]
+          }
+        },
+        {
           "type": "review-note",
-          "text": "原刊物理第4页“给你零库存服装供应链”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
+          "text": "原刊物理第4页“给你零库存服装供应链”仍有低清小字未能逐字可靠辨认；本阅读版保留已视觉核对的标题、栏目或句子，并以方括号或本提示标出未恢复范围，请以 PDF 原版核对。",
           "source": {
             "pdfPage": 4,
             "printedPage": null,
@@ -277,8 +427,38 @@
       },
       "blocks": [
         {
+          "type": "paragraph",
+          "text": "产地仓模式一：仓入厂。",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              850,
+              1250,
+              1100,
+              1330
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "产地仓模式二：厂入仓。",
+          "source": {
+            "pdfPage": 4,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              850,
+              1580,
+              1100,
+              1660
+            ]
+          }
+        },
+        {
           "type": "review-note",
-          "text": "原刊物理第4页“产地仓模式”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
+          "text": "原刊物理第4页“产地仓模式”仍有低清小字未能逐字可靠辨认；本阅读版保留已视觉核对的标题、栏目或句子，并以方括号或本提示标出未恢复范围，请以 PDF 原版核对。",
           "source": {
             "pdfPage": 4,
             "printedPage": null,
@@ -301,6 +481,81 @@
         "side": "full"
       },
       "blocks": [
+        {
+          "type": "subheading",
+          "text": "人效系统简介",
+          "source": {
+            "pdfPage": 5,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              150,
+              1450,
+              800
+            ]
+          }
+        },
+        {
+          "type": "subheading",
+          "text": "仓储系统信息互通",
+          "source": {
+            "pdfPage": 5,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              150,
+              1450,
+              800
+            ]
+          }
+        },
+        {
+          "type": "subheading",
+          "text": "作业看板",
+          "source": {
+            "pdfPage": 5,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              150,
+              1450,
+              800
+            ]
+          }
+        },
+        {
+          "type": "subheading",
+          "text": "任务管理",
+          "source": {
+            "pdfPage": 5,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              150,
+              1450,
+              800
+            ]
+          }
+        },
+        {
+          "type": "subheading",
+          "text": "输出报表",
+          "source": {
+            "pdfPage": 5,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              150,
+              1450,
+              800
+            ]
+          }
+        },
         {
           "type": "figure",
           "src": "/images/supply-chain-whitepapers/3/team-activity.png",
@@ -346,8 +601,23 @@
       },
       "blocks": [
         {
+          "type": "paragraph",
+          "text": "新亦源于2022年7月14日至15日在总部召开2022年中复盘会议。",
+          "source": {
+            "pdfPage": 5,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              1180,
+              850,
+              1300
+            ]
+          }
+        },
+        {
           "type": "review-note",
-          "text": "原刊物理第5页““提供服务 保增效 共进步”年中会议”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
+          "text": "原刊物理第5页““提供服务 保增效 共进步”年中会议”仍有低清小字未能逐字可靠辨认；本阅读版保留已视觉核对的标题、栏目或句子，并以方括号或本提示标出未恢复范围，请以 PDF 原版核对。",
           "source": {
             "pdfPage": 5,
             "printedPage": null,
@@ -371,8 +641,83 @@
       },
       "blocks": [
         {
+          "type": "paragraph",
+          "text": "2022年公司启动“启明星课堂”培训计划，截至目前：学习人数50人（其中[类别字样不清]11人，其他[类别字样不清]39人）；课件课程103门（其中[类别字样不清]27门，其他课程76门）；学习平台PV（访问次数）8282次，UV（访问人数）351人。",
+          "source": {
+            "pdfPage": 6,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              150,
+              760,
+              290
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "“我爱学习”系列课程。7-8月学习与考核。",
+          "source": {
+            "pdfPage": 6,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              560,
+              710,
+              640
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "本期“我爱学习”系列课程学习内容为《仓库6S管理》，学习周期为1个月。2022年6月，人事行政中心组织[后续行动说明小字不清]。",
+          "source": {
+            "pdfPage": 6,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              650,
+              800,
+              730
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "共有8人获得“学习标兵”荣誉称号，8人获得“最佳进步奖”荣誉称号。",
+          "source": {
+            "pdfPage": 6,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              710,
+              800,
+              760
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "恭喜以上伙伴，希望再接再厉，继续保持学习的热情，不断成长与进步。",
+          "source": {
+            "pdfPage": 6,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              750,
+              800,
+              800
+            ]
+          }
+        },
+        {
           "type": "review-note",
-          "text": "原刊物理第6页“启明星课堂”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
+          "text": "原刊物理第6页“启明星课堂”区域仍有小字类别、组织行动说明及奖状姓名无法可靠辨认；本阅读版保留已核对文字和精确缺口，请以 PDF 原版核对未恢复部分。",
           "source": {
             "pdfPage": 6,
             "printedPage": null,
@@ -396,8 +741,53 @@
       },
       "blocks": [
         {
+          "type": "paragraph",
+          "text": "客户消息通道·管理又省心。",
+          "source": {
+            "pdfPage": 6,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              1120,
+              760,
+              1460
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "搭建一站式经营服务。",
+          "source": {
+            "pdfPage": 6,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              760,
+              1120,
+              1110,
+              1460
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "平台功能与服务优势。",
+          "source": {
+            "pdfPage": 6,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              1110,
+              1120,
+              1450,
+              1460
+            ]
+          }
+        },
+        {
           "type": "review-note",
-          "text": "原刊物理第6页“全国智通算法快递平台”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
+          "text": "原刊物理第6页“全国智通算法快递平台”仍有低清小字未能逐字可靠辨认；本阅读版保留已视觉核对的标题、栏目或句子，并以方括号或本提示标出未恢复范围，请以 PDF 原版核对。",
           "source": {
             "pdfPage": 6,
             "printedPage": null,
@@ -421,8 +811,23 @@
       },
       "blocks": [
         {
+          "type": "paragraph",
+          "text": "01、02、03、04。",
+          "source": {
+            "pdfPage": 7,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              850,
+              260,
+              1450,
+              720
+            ]
+          }
+        },
+        {
           "type": "review-note",
-          "text": "原刊物理第7页“大规模批量培养人才的16字诀”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
+          "text": "原刊物理第7页“大规模批量培养人才的16字诀”仍有低清小字未能逐字可靠辨认；本阅读版保留已视觉核对的标题、栏目或句子，并以方括号或本提示标出未恢复范围，请以 PDF 原版核对。",
           "source": {
             "pdfPage": 7,
             "printedPage": null,
@@ -446,8 +851,23 @@
       },
       "blocks": [
         {
+          "type": "paragraph",
+          "text": "企业内部竞聘平台正式开启。",
+          "source": {
+            "pdfPage": 7,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              850,
+              980,
+              1450,
+              1100
+            ]
+          }
+        },
+        {
           "type": "review-note",
-          "text": "原刊物理第7页“千帆竞发勇者胜，百舸争流奋楫先”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
+          "text": "原刊物理第7页“千帆竞发勇者胜，百舸争流奋楫先”仍有低清小字未能逐字可靠辨认；本阅读版保留已视觉核对的标题、栏目或句子，并以方括号或本提示标出未恢复范围，请以 PDF 原版核对。",
           "source": {
             "pdfPage": 7,
             "printedPage": null,
@@ -470,6 +890,36 @@
         "side": "full"
       },
       "blocks": [
+        {
+          "type": "paragraph",
+          "text": "2022年6月，省内外多地遭遇强降水袭击，清远市启动防汛I级应急响应。[后续灾情说明小字不清]",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              150,
+              800,
+              800
+            ]
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "灾情当前，共克时艰。6月24日，[后续行动说明小字不清]。",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              150,
+              800,
+              800
+            ]
+          }
+        },
         {
           "type": "review-note",
           "text": "原刊物理第8页“英德抗洪物资援助活动”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
@@ -496,6 +946,21 @@
       },
       "blocks": [
         {
+          "type": "paragraph",
+          "text": "每个人的路都要自己走，出发前有同伴结伴而行，但是中途由于每个人的体能都不一样，会拉开距离。[中间过渡文字不清]不可能一辈子都陪伴在你的身边，自己要学会解决困难、学会适应能力。",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              850,
+              150,
+              1450,
+              800
+            ]
+          }
+        },
+        {
           "type": "review-note",
           "text": "原刊物理第8页“身逐大漠星辰，心守物流信念”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
           "source": {
@@ -521,8 +986,23 @@
       },
       "blocks": [
         {
+          "type": "paragraph",
+          "text": "2022年1月，在新亦源组织架构调整的背景下，[后续文字不清]。",
+          "source": {
+            "pdfPage": 8,
+            "printedPage": null,
+            "side": "full",
+            "bbox": [
+              190,
+              1200,
+              800,
+              1370
+            ]
+          }
+        },
+        {
           "type": "review-note",
-          "text": "原刊物理第8页“阿米巴模式下迸发出新力量”区域为低清图像排版；本阅读版仅保留可核对文字，未可靠恢复的正文请以 PDF 原版核对。",
+          "text": "原刊物理第8页“阿米巴模式下迸发出新力量”仍有低清小字未能逐字可靠辨认；本阅读版保留已视觉核对的标题、栏目或句子，并以方括号或本提示标出未恢复范围，请以 PDF 原版核对。",
           "source": {
             "pdfPage": 8,
             "printedPage": null,

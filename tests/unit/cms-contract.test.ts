@@ -7,7 +7,7 @@ const MUTABLE_IDENTITY_FIELDS = new Set(['label', 'name', 'title', 'sort', 'year
 
 describe('CMS model contract', () => {
   it('publishes one stable schema version and one contract per collection definition', () => {
-    expect(CMS_SCHEMA_VERSION).toBe('2026-08-cms-hardening')
+    expect(CMS_SCHEMA_VERSION).toBe('2026-10-cms-maintenance')
     expect(CMS_COLLECTION_CONTRACTS.map(({ name }) => name)).toEqual(
       CMS_COLLECTION_DEFINITIONS.map(({ name }) => name)
     )

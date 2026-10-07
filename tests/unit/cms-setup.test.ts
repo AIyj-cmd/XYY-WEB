@@ -65,11 +65,11 @@ describe('CMS setup domains', () => {
 
   it('keeps all reviewed page FAQs available for first-time CMS initialization', () => {
     expect(APPROVED_FAQ_SEEDS).toHaveLength(85)
-    expect(new Set(APPROVED_FAQ_SEEDS.map(({ page_key }) => page_key))).toEqual(
+    expect(new Set(APPROVED_FAQ_SEEDS.map(({ faqPageKey }) => faqPageKey))).toEqual(
       new Set(FAQ_PAGE_OPTIONS.map(({ value }) => value))
     )
     expect(
-      new Set(APPROVED_FAQ_SEEDS.map(({ page_key, sort }) => `${page_key}:${sort}`)).size
+      new Set(APPROVED_FAQ_SEEDS.map(({ faqPageKey, sort }) => `${faqPageKey}:${sort}`)).size
     ).toBe(APPROVED_FAQ_SEEDS.length)
   })
 

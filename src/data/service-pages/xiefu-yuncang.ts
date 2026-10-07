@@ -1,0 +1,96 @@
+import type { ServicePageStaticConfigRaw } from './types'
+
+export const RAW_SERVICE_PAGE_CONFIG = {
+  slug: 'xiefu-yuncang',
+  title: '鞋服云仓服务｜B2C+B2B+O2O全渠道仓配｜新亦源',
+  description:
+    '新亦源鞋服云仓采用CDC/RDC/FDC三级仓网架构，实际单仓单日峰值{{singleWarehousePeak}}，{{shippingSla}}，支持B2C+B2B+O2O全渠道一盘货。',
+  eyebrow: '鞋服云仓 · 专注鞋服行业的仓配服务商',
+  h1: '鞋服云仓：全渠道一盘货与鞋服专用仓配',
+  h1sub: 'B2C+B2B+O2O全渠道库存协同',
+  stats: [
+    {
+      stat: '{{shippingAccuracy}}',
+      label: '发货准确率',
+      sub: '出库扫码复核',
+    },
+    {
+      stat: '{{singleWarehousePeak}}',
+      label: '单仓峰值',
+      sub: '弹性产能保大促',
+    },
+    {
+      stat: '18:00前',
+      label: '截单时间',
+      sub: '当日24:00前发出',
+    },
+    {
+      stat: '{{partnerBrands}}',
+      label: '合作品牌',
+      sub: '多数涉及全渠道运营',
+    },
+  ],
+  features: [
+    {
+      title: '全渠道一盘货',
+      desc: 'B2C+B2B+O2O库存实时同步，支持天猫、京东、拼多多、唯品会JIT/JITX、抖音、小程序等全渠道，降低超卖与空单风险。',
+    },
+    {
+      title: 'RFID智能识别',
+      desc: '三代智能仓通过RFID、电子标签与自动化分拣协同管理鞋服款色码，减少拣货和复核差错。',
+    },
+    {
+      title: '弹性产能机制',
+      desc: '动态人力池配合多仓协同，实际单仓单日峰值{{singleWarehousePeak}}、地区单日峰值{{regionalPeak}}。',
+    },
+    {
+      title: '深度定制WMS',
+      desc: '针对鞋服优化的WMS支持序列号、RFID、款色码管理和线上线下一体协同，可按项目使用奇门、EDI或定制接口；不收系统使用费，实施和定制费用按方案确认。',
+    },
+    {
+      title: '精细库存管控',
+      desc: '日动盘+周抽盘+月实盘+季忙盘+年度全盘体系，库存准确率{{inventoryAccuracy}}，综合损耗下降20%。',
+    },
+    {
+      title: '全程监控追溯',
+      desc: '1080P拆包监控、操作台高低位双摄和关键区域监控，支持按订单调取录像与平台争议举证。',
+    },
+  ],
+  breadcrumbLabel: '鞋服云仓',
+  heroDesc:
+    '新亦源专注鞋服物流15年，RFID智能仓三代演进，支持B2C+B2B+O2O全渠道发货，采用CDC/RDC/FDC三级仓网架构，合作品牌{{partnerBrands}}，单仓单日峰值{{singleWarehousePeak}}。',
+  imgSrc: '/w-footwear-cloud.webp',
+  imgAlt: '鞋服云仓 — 专业鞋服仓储配送',
+  contentDesc:
+    '适合需要全渠道一盘货管理的鞋服品牌，重点解决高SKU管理、旺季产能波动和多仓库存协同问题。三代智能仓采用RFID、电子标签和自动化分拣，配合动态人力池与CDC/RDC/FDC三级仓网。库存准确率{{inventoryAccuracy}}，综合损耗下降20%。',
+  featuresLabel: '核心能力',
+  presentation: 'footwear',
+  variant: 'journey',
+  faqs: [
+    {
+      contentKey: 'faq-xiefu-yuncang-01',
+      q: '鞋服云仓和普通仓库有什么区别？',
+      a: '鞋服云仓围绕鞋服高SKU、多色多码、退货率高和季节性波动等特点配置系统与流程：WMS针对序列号、RFID和款色码管理进行优化，可同时对接天猫、京东、唯品会、抖音等多平台订单；仓内提供退货质检、瑕疵修复和二次上架，形成正向与逆向履约闭环；动态人力池和多仓协同用于应对旺季货量变化。',
+    },
+    {
+      contentKey: 'faq-xiefu-yuncang-02',
+      q: '新亦源鞋服云仓支持哪些电商平台对接？',
+      a: '支持B2C、B2B和O2O全渠道对接。B2C平台包括天猫、淘宝、京东、唯品会JIT/JITX、拼多多、抖音、快手、小红书、得物和微信小程序；B2B支持批发、门店分仓和零售连锁补货；O2O支持线下门店库存与线上订单融合管理。可采用奇门、EDI等标准协议或客户定制接口，具体实施与定制范围以项目方案为准。',
+    },
+    {
+      contentKey: 'faq-xiefu-yuncang-03',
+      q: '鞋服云仓如何应对618/双11大促爆仓？',
+      a: '新亦源通常在大促前根据品牌预测货量启动人力储备，并通过动态人力池、多仓协同、智能波次、RFID识别和自动化分拣应对旺季货量。实际单仓单日峰值{{singleWarehousePeak}}、地区单日峰值{{regionalPeak}}；具体项目会提前核对库存分布、仓容、人力、包材和物流通道，并在服务方案中确认峰值安排。',
+    },
+    {
+      contentKey: 'faq-xiefu-yuncang-04',
+      q: '新亦源鞋服云仓发货时效是多少？',
+      a: '{{shippingSla}}，发货准确率为{{shippingAccuracy}}。承运商运输时效受线路、目的地和平台规则影响，按项目确认。',
+    },
+    {
+      contentKey: 'faq-xiefu-yuncang-05',
+      q: '小型品牌也可以入驻新亦源鞋服云仓吗？',
+      a: '可以。新亦源支持不同规模品牌按项目评估合作，费用根据存储、操作、系统实施和增值服务需求确认。品牌可先以单仓方案开始，业务规模扩大后再评估三级仓网协同。',
+    },
+  ],
+} as const satisfies ServicePageStaticConfigRaw

@@ -11,7 +11,7 @@ import { validateContactBody } from '@/lib/contact/validation'
 
 export { resetContactRateLimitForTests as __resetContactRateLimitForTests }
 
-export const POST: APIRoute = async ({ request, clientAddress }) => {
+export const POST: APIRoute = async ({ request, locals }) => {
   try {
     const contentLength = Number(request.headers.get('content-length') || 0)
     if (contentLength > MAX_CONTACT_BODY_BYTES) {
@@ -23,7 +23,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
       return contactJson({ error: '请求格式不正确', code: 'unsupported_content_type' }, 415)
     }
 
-    if (isContactRateLimited(getContactRequesterId(request, clientAddress))) {
+    if (isContactRateLimited(getContactRequesterId(locals?.requesterIp))) {
       return contactJson({ error: '提交过于频繁，请稍后再试', code: 'rate_limited' }, 429)
     }
 
