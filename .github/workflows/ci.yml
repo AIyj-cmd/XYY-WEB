@@ -101,11 +101,10 @@ jobs:
 
       - name: Validate candidate release identity
         run: |
-          node scripts/create-release-manifest.mjs \
-            --output /tmp/xyy-release-manifest.json \
+          node scripts/validate-ci-release-identity.mjs \
             --git-sha "$RELEASE_GIT_SHA" \
             --build-time "$(date -u +%Y-%m-%dT%H:%M:%S.000Z)" \
-            --environment "$DEPLOY_ENVIRONMENT"
+            --environment ci
 
       - name: Audit production dependencies
         run: npm audit --omit=dev
