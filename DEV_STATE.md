@@ -11,8 +11,8 @@
 
 ## 当前目标
 
-- `XYY-20261009-01`：按用户要求归档当前源码、素材、治理与状态文档，验证后同步 GitHub `AIyj-cmd/XYY-WEB` main，并发布测试站 `wz.tomatopia.top`。本轮完整发布检查 R4 已 exit 0、Luna PASS、Nova APPROVED（Git 归档内容）；125 文件已整理，提交/推送尚未执行，部署前置条件仍受阻。
-- Git 基线 main / GitHub main 为 `5f94e34`。此前 main CI `37885398485` 已在本轮回读确认为 completed/success。根开发依赖与 lock 有七项安装版本差异，本轮使用数据盘全新隔离安装，不修改既有开发进程。
+- `XYY-20261009-01`：125 文件已提交为 `6f53695` 并普通推送至 GitHub `AIyj-cmd/XYY-WEB` main，远端 SHA 回读一致。本轮完整发布检查 R4 exit 0、Luna PASS、Nova APPROVED；本地状态和角色日志已归档。测试站 `wz.tomatopia.top` 尚未部署，前置条件仍受阻。
+- 本轮起始 Git 基线为 `5f94e34`；应用归档提交为 `6f536950c6485b9ac89b1aafac87f3a354064e5f`，本节是推送后的状态补录。此前 main CI `37885398485` 本轮回读为 success；新提交 CI `37901004241` 已触发，记录时 in_progress，尚无远端通过结论。根开发依赖与 lock 有七项安装版本差异，本轮使用数据盘全新隔离安装，根依赖未修改。
 - 测试站本轮最终只读复核仍为 `0ffe149` / `20261004T044635Z-0ffe149`，健康两依赖 ok；可用空间仅 `866316288` bytes，低于 2 GiB 底线。真实 CMS 候选门禁仍明确阻止 manifest；当前未部署。
 - 具体剩余动作见 `docs/plans/xyy-20261009-01-deployment-prerequisites.md`；服务器旧版本删除、CMS/数据库备份恢复与契约维护、独立运行配置变更须按 AGENTS.md 单独明确授权，不由应用部署请求自动涵盖。正式站与 Oracle 不在本轮范围。
 
@@ -23,7 +23,8 @@
 - Luna R4 实际外层容量监测执行完整 `npm run verify:release`（含 verify），exit 0：647 类型文件、0 errors/0 warnings/4 hints；118 文件/757 单测、269 E2E/9 既有跳过、4 formal、最终 build 全部通过。实际容量峰值 552108032 bytes、3838 inodes。此前真实失败、旧测试进程产物失配与本机重启后缺失完成结果均保留，不计通过。
 - 中英文 contact/about × 1440/390 八组页脚验证通过，链接、二维码开关、键盘可见焦点和无横溢保持；一组探针等待图片实际加载的时序修正仅在原 5 秒内等待后补测，应用无新增修改。新进程真实 tap、click、Enter 与 pointer 清理通过，Sol 审阅五张代表截图。
 - 测试站部署仍受 `candidate_unverified`、约 826 MiB 可用空间及配套运行配置前置条件阻断，当前没有部署或执行 CMS/数据库/权限/删除操作。准确动作与保护范围见本任务部署前置清单；真实 CMS 和线上新版本验收待该条件满足。
-- Luna PASS、Nova 最终内容 Review APPROVED，部署仍 BLOCKED；证据 `output/release/xyy-20261009-01/`、`output/playwright/xyy-20261009-01-touch/`。提交和推送结果将在实际完成后同步，不以本地测试代替外部状态。
+- Luna PASS、Nova 最终内容及冻结身份 Review APPROVED。普通提交 `6f53695` 的 parent 为 `5f94e34`、tree 为 `7ea2d6e4ea49459d541bbf39404abbd48310e230`；125 路径/mode/blob、工作区和候选身份一致。首次 HTTPS 连接超时后普通重试成功，GitHub main 精确回读该 SHA，无强推/历史重写。
+- 部署仍 BLOCKED；证据 `output/release/xyy-20261009-01/`、`output/playwright/xyy-20261009-01-touch/`。本次状态补录仅改文档，检查新增 diff/格式，复用同一业务树已完成的完整验证；不将正在运行的 GitHub CI 记为成功。
 
 ## 此前目标快照（以下提交状态以各任务记录日期为准）
 

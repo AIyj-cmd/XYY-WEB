@@ -2357,3 +2357,6 @@ Limits：本轮限Chrome152模拟视口及离线/helper验证，空内容schema�
 - 用户继续会话时检测到本机刚重启（启动时间 2026-10-09 15:14:00），R3 进程不在，日志停在 mobile 第 203 项通过，缺少最终退出/成功容量报告，不计完整 PASS。保留原日志后交 Luna 开始 R4；没有借用此前单测/局部通过代替整轮发布门禁。
 - R4 完整真实容量 wrapper 已 exit 0：647 类型文件0错误/0警告/4提示、757 unit、269 E2E/9既有skip、4 formal和最终 build。容量文件实测峰值552108032 bytes/3838 inodes。八组页脚由7组首轮通过和1组原5秒等待内的图片加载补测组成；Sol亲看5张代表截图，Nova对探针修正无finding。此时仅待最终独立报告/Review及普通提交推送，部署前置阻断仍保持。
 - Luna 最终 PASS、Nova 当前125文件归档内容 APPROVED；没有新实现finding。最终只读测试站仍0ffe149、health两依赖ok，容量更新为866316288 bytes；该值已同步当前状态和前置清单。Sol对新增记录diff/格式检查通过，纯记录不重复已通过的业务测试；后续仅冻结index、普通提交/推送与精确身份回读。
+- Nova 最终有限身份确认 APPROVED：tree `7ea2d6e4ea49459d541bbf39404abbd48310e230`，125条路径/mode/blob全部一致、100644、无unstaged/untracked、1445候选文件零差异、敏感模式/禁入项零命中。git write-tree 首次受沙箱只读限制，升级后成功，未改变代码内容。
+- 已普通提交 `6f536950c6485b9ac89b1aafac87f3a354064e5f`，唯一parent `5f94e34`，tree与获批候选一致；第一次 push 在135792ms后报告GitHub HTTPS连接失败，第二次普通push成功（约52.79MiB pack）。GitHub API回读main为同一SHA，本地main/origin main一致且当时工作树干净，无force/历史重写。
+- GitHub CI `37901004241` 已由该提交触发，记录时in_progress，不记成功。仅在DEV_STATE、本合同和本日志补录以上已发生的Git状态，新增diff/格式检查通过，无业务代码变化，复用同一代码树的R4完整结果。测试站未部署，CMS/数据库/旧版本删除/运行配置前置操作未执行，待准确授权。
