@@ -18,9 +18,6 @@ Disallow: /cms/
 Disallow: /preview/
 Disallow: /search?
 
-User-agent: GPTBot
-Disallow: /
-
 # Sitemaps
 Sitemap: ${BRAND.url}/sitemap.xml
 `

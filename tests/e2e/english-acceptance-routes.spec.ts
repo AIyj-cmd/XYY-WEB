@@ -185,7 +185,6 @@ test.describe('English acceptance route contract', () => {
       expect(overflow, `${width}px English home should not overflow`).toBeLessThanOrEqual(0)
     }
   })
-
   test('keeps every English H1 text range inside visible boundaries', async ({
     page,
   }, testInfo) => {
@@ -205,6 +204,7 @@ test.describe('English acceptance route contract', () => {
             ])
           }
         })
+        await expect(page.locator('h1')).toHaveCSS('opacity', '1')
         const geometry = await page.evaluate(readVisibleH1Ranges)
         expect(geometry.error, `${path} ${width}px should have an H1`).toBe('')
         expect(geometry.visible, `${path} ${width}px H1 should be visible`).toBe(true)

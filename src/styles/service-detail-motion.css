@@ -1,0 +1,21 @@
+[data-service-detail-reveal] {
+  opacity: 0;
+  will-change: opacity, translate, scale;
+}
+
+[data-service-detail-reveal='copy'] {
+  translate: 0 0.875rem;
+}
+
+[data-service-detail-reveal='media'] {
+  scale: 1.025;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-service-detail-reveal] {
+    opacity: revert;
+    translate: revert;
+    scale: revert;
+    will-change: auto;
+  }
+}

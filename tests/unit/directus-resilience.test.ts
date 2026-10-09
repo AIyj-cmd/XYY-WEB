@@ -57,6 +57,7 @@ describe('Directus public content resilience', () => {
         ? [
             {
               id: 1,
+              status: 'published',
               stats: [
                 {
                   claimKey: 'partnerBrands',

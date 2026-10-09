@@ -7,9 +7,13 @@ import { getCases } from '@/lib/directus'
 import { absoluteUrl } from '@/lib/seo'
 import { translateCases } from '@/i18n/cases'
 import { localizedCasePath } from '@/i18n/case-routes'
+import { shellCopy } from '@/i18n/shell'
 
 const page = (pathname: string) => absoluteUrl(pathname)
 const singleLine = (value: string) => value.replace(/\s+/g, ' ').trim()
+const cultureLines = shellCopy('zh-CN')
+  .culture.map(({ label, value }) => `- ${singleLine(label)} ${singleLine(value)}`)
+  .join('\n')
 
 export const GET: APIRoute = async () => {
   const claim = (key: Parameters<typeof getClaimText>[0]) => getClaimText(key, 'llms')
@@ -37,19 +41,23 @@ export const GET: APIRoute = async () => {
         `- [${singleLine(article.title)}](${page(`/supply-chain-whitepapers/${article.issue}/`)}): ${singleLine(article.description)}`
     )
     .join('\n')
-  const content = `# 新亦源供应链
+  const content = `# 新亦源供应链（XINYIYUAN Supply Chain）
 
 > 广州新亦源供应链管理有限公司，2011年成立，专注鞋服供应链服务，为品牌提供鞋服云仓、订单履约、退货质检、瑕疵修复、物流数字化和智能寄件服务。
 
 官网当前公开运营口径包括：直营仓储${claim('warehouseArea')}、服务${claim('partnerBrands')}品牌、员工${claim('employeeCount')}名、管理SKU ${claim('managedSkus')}、服务门店${claim('servedStores')}、覆盖${claim('coveredCities')}城市。运营数据的统计周期、项目范围和适用条件以对应页面说明及经营记录为准。
 
+## 企业文化
+
+${cultureLines}
+
 ## 关键页面
 
 - [首页](${page('/')}): 新亦源供应链整体介绍、核心运营数据、解决方案、履约流程、合作案例和常见问题。
-- [产品服务](${page('/product')}): 按商品入仓、履约、退货处理和再次销售场景了解仓配服务体系。
+- [产品服务](${page('/product')}): 鞋服云仓、退货质检、后整修复、跨境云仓、华南与华东鞋服云仓、直播电商仓配和B2B门店仓配；可[按需求选择服务](${page('/contact#service-finder')})。
 - [合作案例](${page('/cases')}): 鞋服、运动、内衣、跨境等业务场景的仓配与质检合作案例。
 - [关于我们](${page('/about')}): 公司背景、发展历程、仓网、团队和资质信息。
-- [联系我们](${page('/contact')}): 咨询鞋服仓配、质检修复、系统对接和智能寄件方案。
+- [联系我们](${page('/contact')}): 可按业务需求和区域选择服务，并通过表单咨询鞋服仓配、质检修复、系统对接和智能寄件方案。
 
 ## 核心解决方案
 
@@ -62,7 +70,7 @@ export const GET: APIRoute = async () => {
 ## 仓网与业务场景
 
 - [华东鞋服云仓](${page('/huadong-xiefu-yuncang')}): 面向长三角与华东区域的鞋服仓配服务。
-- [华南鞋服云仓](${page('/huanan-xiefu-yuncang')}): 面向广州、东莞、肇庆等华南仓网的鞋服仓配服务。
+- [华南鞋服云仓](${page('/huanan-xiefu-yuncang')}): 面向广州、东莞、佛山、肇庆等华南仓网的鞋服仓配服务。
 - [B2B门店仓配](${page('/b2b-mendian-cangpei')}): 连锁门店补货、批发铺货、分货与标签处理服务。
 - [直播电商仓配](${page('/zhibo-cangpei')}): 面向直播电商订单波峰与多平台履约的仓配服务。
 - [跨境云仓](${page('/kuajing-yuncang')}): 跨境备货、质检、换标换包装和退货逆向处理。
@@ -75,16 +83,25 @@ ${caseLinks}
 
 ${whitepaperLinks}
 
+## 咨询与内容引用
+
+- [按需求选择服务](${page('/contact#service-finder')}): 选择业务需求和区域，查看适合进一步沟通的服务方向，并通过联系表单咨询。
+- 为便于初步沟通，需求描述可填写：品类、SKU/订单规模、销售渠道、日均发货单量、B2B还是B2C模式。
+- 合作案例仅描述对应项目的公开场景和页面统计范围，不构成其他项目的通用承诺；引用时请保留本页和原始案例链接。
+
 ## Optional
 
 - [行业动态](${page('/news')}): 鞋服物流、云仓、质检和供应链行业内容。
+- [English insights](${page('/en/news')}): English insights and article summaries for apparel supply-chain operations.
 - [供应链白皮书](${page('/supply-chain-whitepapers/')}): 新亦源发布的鞋服供应链知识内容。
 - [个人信息保护说明](${page('/privacy')}): 官网咨询表单的个人信息收集、使用和权利说明。
+- [站点地图](${page('/sitemap.xml')}): 网站公开页面目录。
+- [爬虫规则](${page('/robots.txt')}): 网站爬取规则。
 
 ## English pages
 
 - [English home](${page('/en')}): English overview for apparel brands doing business in China.
-- [English services](${page('/en/services')}): Apparel fulfilment, returns inspection, garment care and retail distribution.
+- [English services](${page('/en/services')}): Apparel fulfilment, returns inspection, garment care, cross-border warehousing, South China and East China apparel warehousing, live-commerce fulfilment and B2B retail distribution.
 - [English apparel fulfilment](${page('/en/apparel-fulfillment')}): Apparel warehousing, order fulfilment and systems integration.
 - [English returns inspection](${page('/en/returns-inspection')}): Returns handling, inspection and disposition workflows.
 - [English garment care](${page('/en/garment-care')}): Apparel preparation, care and value-added handling.
@@ -95,7 +112,7 @@ ${whitepaperLinks}
 - [English cases](${page('/en/cases')}): Public English case summaries and full case-detail pages.
 ${englishCaseLinks}
 - [English supply-chain whitepapers](${page('/en/supply-chain-whitepapers')}): English summaries with links to original Chinese Forest Journal articles and PDFs.
-- [English contact](${page('/en/contact')}): Business enquiries for China apparel supply-chain operations.
+- [English contact](${page('/en/contact')}): Choose a service by operating need and region, then submit a business enquiry for China apparel supply-chain operations.
 - [English privacy notice](${page('/en/privacy')}): Privacy information for English website enquiries.
 `
 

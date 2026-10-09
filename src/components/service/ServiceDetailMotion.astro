@@ -1,0 +1,28 @@
+---
+import type { SiteLocale } from '@/i18n/routes'
+import '@/styles/service-detail-motion.css'
+
+interface Props {
+  locale: SiteLocale
+  slug: string
+}
+
+const { locale, slug } = Astro.props
+const enabled =
+  (locale === 'zh-CN' || locale === 'en') &&
+  [
+    'xiefu-yuncang',
+    'tuihuo-zhijian',
+    'houzheng-xiufu',
+    'kuajing-yuncang',
+    'huanan-xiefu-yuncang',
+    'huadong-xiefu-yuncang',
+    'zhibo-cangpei',
+    'b2b-mendian-cangpei',
+  ].includes(slug)
+---
+
+{enabled && <template data-service-detail-motion-root />}
+<script>
+  import '@/scripts/service-motion/detail-reveal'
+</script>

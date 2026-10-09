@@ -2,6 +2,7 @@
 import '@/styles/about-minimal-footer.css'
 import { aboutUi } from '@/i18n/about-ui'
 import type { SiteLocale } from '@/i18n/routes'
+import FooterSocialLinks from '@/components/FooterSocialLinks.astro'
 
 interface Props {
   icp: string
@@ -50,6 +51,7 @@ const copy = aboutUi(locale)
             </svg>
             <span>{phone}</span>
           </a>
+          <FooterSocialLinks {locale} />
         </aside>
         <a class="about-minimal-footer__top" href="#about-hero">
           {copy.footer.backToTop}

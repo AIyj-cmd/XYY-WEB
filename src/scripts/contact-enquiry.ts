@@ -9,15 +9,15 @@ const outlines: Record<'zh' | 'en', OutlineField[]> = {
     { title: '品类：', line: '品类：' },
     { title: 'SKU/订单规模：', line: 'SKU/订单规模：' },
     { title: '销售渠道：', line: '销售渠道：' },
-    { title: '退货情况：', line: '退货情况：' },
-    { title: '计划时间：', line: '计划时间：' },
+    { title: '日均发货单量：', line: '日均发货单量：' },
+    { title: 'B2B还是B2C模式：', line: 'B2B还是B2C模式：' },
   ],
   en: [
     { title: 'Category:', line: 'Category:' },
     { title: 'SKU / order scale:', line: 'SKU / order scale:' },
     { title: 'Sales channels:', line: 'Sales channels:' },
-    { title: 'Returns scenario:', line: 'Returns scenario:' },
-    { title: 'Target timeline:', line: 'Target timeline:' },
+    { title: 'Average daily shipments:', line: 'Average daily shipments:' },
+    { title: 'Business model (B2B or B2C):', line: 'Business model (B2B or B2C):' },
   ],
 } as const
 

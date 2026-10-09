@@ -138,6 +138,7 @@ describe('Directus helpers', () => {
         ? [
             {
               id: 1,
+              status: 'published',
               stats: [{ claimKey: 'partnerBrands', label: '合作品牌', detail: '鞋服品牌' }],
             },
           ]
@@ -158,7 +159,7 @@ describe('Directus helpers', () => {
     ])
     expect(requester).toHaveBeenCalledWith(
       'homepage_content',
-      expect.objectContaining({ fields: ['id', 'stats'] })
+      expect.objectContaining({ fields: ['id', 'status', 'stats'] })
     )
   })
 

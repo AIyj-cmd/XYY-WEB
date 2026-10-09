@@ -2,10 +2,13 @@
 import ServiceSignature from '@/components/service/ServiceSignature.astro'
 import ServiceLandingHero from '@/components/service/ServiceLandingHero.astro'
 import ServiceExperience from '@/components/service/ServiceExperience.astro'
+import ServiceDetailMotion from '@/components/service/ServiceDetailMotion.astro'
 import FootwearPage from '@/components/service/footwear/FootwearPage.astro'
 import RedesignServicePage from '@/components/service/redesign/RedesignServicePage.astro'
-import { isRedesignPresentation } from '@/components/service/redesign/presentation'
-import type { RedesignPresentation } from '@/components/service/redesign/presentation'
+import {
+  isRedesignPresentation,
+  type RedesignPresentation,
+} from '@/components/service/redesign/presentation'
 import Layout from '@/layouts/Layout.astro'
 import { SPECIALTY_LINKS } from '@/data/navigation'
 import { getServiceHeroMedia } from '@/data/service-hero-media'
@@ -151,7 +154,7 @@ const heroMedia = getServiceHeroMedia(slug)
           features={visibleContent.features}
           {locale}
         />
-        <div class:list={uniqueClass} data-service-reveal="visual">
+        <div class:list={[...uniqueClass, 'empty:hidden']} data-service-reveal="visual">
           <slot name="unique" />
         </div>
         <ServiceExperience
@@ -168,12 +171,8 @@ const heroMedia = getServiceHeroMedia(slug)
       </>
     ) : null
   }
+  <ServiceDetailMotion {locale} {slug} />
 </Layout>
 <script>
   import '@/scripts/service-page'
 </script>
-<style>
-  .service-unique:empty {
-    display: none;
-  }
-</style>

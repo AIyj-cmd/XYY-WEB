@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test'
 
 test('return inspection redesign keeps its records, routing, and source content readable', async ({
   page,
-}) => {
+}, testInfo) => {
   await page.setViewportSize({ width: 390, height: 844 })
   await page.goto('/tuihuo-zhijian')
 
@@ -23,7 +23,9 @@ test('return inspection redesign keeps its records, routing, and source content 
     'href',
     '/product'
   )
-  await page.getByRole('link', { name: /流转修复车间/ }).click()
+  const repairLink = page.getByRole('link', { name: /流转修复车间/ })
+  if (testInfo.project.name === 'mobile') await repairLink.tap()
+  else await repairLink.click()
   await expect(page).toHaveURL(/\/houzheng-xiufu$/)
 
   await page.goto('/tuihuo-zhijian')

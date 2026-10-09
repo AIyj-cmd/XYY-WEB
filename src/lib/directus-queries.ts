@@ -42,20 +42,20 @@ export async function getHomepageStats(
 ): Promise<HomepageStat[]> {
   try {
     const row = await requestSingleton<HomepageContentRecord>('homepage_content', {
-      fields: ['id', 'stats'],
+      fields: ['id', 'status', 'stats'],
     })
     if (!row || row.status === 'draft') return []
-    if (!Array.isArray(row.stats)) {
+    if (row.status !== 'published' || !Array.isArray(row.stats)) {
       throw invalidDirectusData('homepage_content', 'read_singleton', 'invalid_data')
     }
     if (row.stats.length) {
       const warned = new Set<string>()
       return row.stats.map((item, index) => resolveHomepageClaimStat(item, index, warned))
     }
+    return []
   } catch (error) {
     return fallbackForUnavailable(error, [...fallback])
   }
-  return []
 }
 
 export async function getServices(fallback: readonly Service[] = []): Promise<Service[]> {

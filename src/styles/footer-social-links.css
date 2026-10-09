@@ -1,0 +1,120 @@
+.footer-social-links {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35rem;
+}
+
+.footer-social-links > p {
+  margin: 0;
+  color: #0a1a33;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1.2;
+}
+
+.footer-social-links__icons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.footer-social-link,
+.wechat-qr-popover__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  width: 3rem;
+  height: 3rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #111827;
+  text-decoration: none;
+  transition: color 180ms ease;
+}
+
+.footer-social-link {
+  cursor: pointer;
+}
+
+.footer-social-link:hover,
+.wechat-qr-popover__close:hover {
+  color: #000;
+}
+
+.footer-social-link:focus-visible,
+.wechat-qr-popover__close:focus-visible {
+  outline: 2px solid #0a1a33;
+  outline-offset: 2px;
+}
+
+.footer-social-link svg {
+  display: block;
+  width: 2rem;
+  height: 2rem;
+  fill: currentColor;
+}
+
+.footer-social-link--xiaohongshu svg {
+  width: 3rem;
+  height: 3rem;
+}
+
+.wechat-qr-popover {
+  width: min(20rem, calc(100vw - 2rem));
+  max-height: calc(100dvh - 2rem);
+  margin: auto;
+  padding: 0;
+  overflow: auto;
+  border: 0;
+  background: transparent;
+  color: #0a1a33;
+}
+
+.wechat-qr-popover__card {
+  padding: 1.25rem;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  box-shadow: 0 1.25rem 3.5rem rgb(15 23 42 / 22%);
+}
+
+.wechat-qr-popover__heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.wechat-qr-popover h2,
+.wechat-qr-popover p {
+  margin: 0;
+}
+
+.wechat-qr-popover h2 {
+  font-size: 1rem;
+}
+
+.wechat-qr-popover p {
+  margin-top: 0.5rem;
+  color: #475569;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.wechat-qr-popover img {
+  display: block;
+  width: min(100%, 16.125rem);
+  height: auto;
+  margin: 1rem auto 0;
+}
+
+.wechat-qr-popover__close {
+  flex: 0 0 auto;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+}

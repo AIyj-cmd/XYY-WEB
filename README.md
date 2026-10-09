@@ -105,7 +105,7 @@ Directus 成功返回空数据时页面保持为空；只有网络失败、超�
 - 不为追求行数机械拆分事实注册表或原子请求；
 - 详细状态、保留理由与剩余债务见 [docs/MAINTAINABILITY.md](docs/MAINTAINABILITY.md)。
 
-性能侧使用响应式WebP、站点字符集字体子集和非首屏渲染隔离。字体由 `npm run prepare:fonts` 根据源码实际字符从锁定字体包生成，资源检查和生产构建会自动补齐，不依赖本机遗留文件；桌面异步加载品牌字体，移动端使用系统中文字体避免重复排版。最新本地Lighthouse单次采样为：桌面首页97、产品页97、关于页99；移动端首页86、产品页77、关于页76。正式域名上线后仍须在真实网络与缓存条件下复测。
+性能侧使用响应式WebP、站点字符集字体子集和非首屏渲染隔离。字体由 `npm run prepare:fonts` 根据源码实际字符从锁定字体包生成，资源检查和生产构建会自动补齐，不依赖本机遗留文件；桌面异步加载品牌字体，移动端使用系统中文字体避免重复排版。`npm run test:lhci:all` 在生产构建后对 desktop/mobile 各八条核心路由采样三次并输出中位数报告，默认只观察；desktop 失败时 mobile 未测不代表通过。完成 CI 同环境稳定基线、页面/设备阈值校准并留存证据后，才可用 `LHCI_MODE=enforce` 返回非零。CI required checks、合并规则和发布脚本均未因该观察流程改变。真实用户体验须由 CrUX/Search Console 等真实用户数据确认，旧本地单次 Lighthouse 分数不是当前基线。详见 [docs/PERFORMANCE_BASELINE.md](docs/PERFORMANCE_BASELINE.md)。
 
 ## AEO 与 Agent 发现
 

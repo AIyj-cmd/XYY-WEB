@@ -29,6 +29,7 @@
   align-items: center;
   justify-content: center;
   gap: 1.25rem;
+  flex-wrap: wrap;
 }
 
 .about-minimal-footer__address {

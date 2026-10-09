@@ -13,14 +13,16 @@ import { getCases, getFaqs, getHomepageStats, getServices } from '@/lib/directus
 import { englishClaim } from '@/i18n/claims'
 import { createEnglishHomeCaseDetails, translateCases } from '@/i18n/cases'
 import { translateHomeFaqs, translateHomeServices, translateHomeStats } from '@/i18n/home-content'
+import { getEnglishSiteSettings } from '@/i18n/site-settings'
 import { createFaqSchema, ORGANIZATION_ID } from '@/lib/seo'
 import '@/styles/english-cases.css'
 
-const [statsSource, servicesSource, casesSource, faqsSource] = await Promise.all([
+const [statsSource, servicesSource, casesSource, faqsSource, siteSettings] = await Promise.all([
   getHomepageStats(HOME_STATS_FALLBACKS),
   getServices(HOME_SERVICE_FALLBACKS),
   getCases(CASE_FALLBACKS),
   getFaqs('home', HOME_FAQS),
+  getEnglishSiteSettings(),
 ])
 const stats = translateHomeStats(statsSource)
 const services = translateHomeServices(servicesSource)
@@ -52,6 +54,7 @@ const orgSchema = {
   title="Apparel fulfilment in China"
   description="Apparel warehousing, quality inspection, fulfilment and returns operations for brands doing business in China."
   jsonLd={[orgSchema, createFaqSchema(faqs)]}
+  {siteSettings}
 >
   <HomeHero image={HOME_IMAGES.hero} {...homeClaims} locale="en" />
   <HomeCapabilityStats stats={stats} locale="en" />

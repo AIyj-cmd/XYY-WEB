@@ -3,6 +3,7 @@ import { BRAND, FOOTER_SERVICE_LINKS, NAV_LINKS } from '@/lib/brand'
 import type { SiteSettingsRecord } from '@/lib/directus'
 import { ENGLISH_NAVIGATION, ENGLISH_SERVICE_LINKS, type SiteLocale } from '@/i18n/routes'
 import { shellCopy } from '@/i18n/shell'
+import FooterSocialLinks from '@/components/FooterSocialLinks.astro'
 
 interface Props {
   settings: Omit<SiteSettingsRecord, 'id' | 'status' | 'key'>
@@ -31,7 +32,19 @@ const privacyPath = locale === 'en' ? '/en/privacy' : '/privacy'
             loading="lazy"
           />
         </a>
-        <p class="mb-5 text-sm leading-relaxed text-slate-600">{settings.footer_description}</p>
+        <div class="mb-5">
+          <p class="mb-2 text-sm font-semibold text-navy-800">{copy.cultureTitle}</p>
+          <dl class="space-y-1.5 text-sm leading-relaxed text-slate-600">
+            {
+              copy.culture.map(({ label, value }) => (
+                <div class="flex flex-wrap gap-x-1">
+                  <dt class="font-semibold text-navy-800">{label}</dt>
+                  <dd class="m-0">{value}</dd>
+                </div>
+              ))
+            }
+          </dl>
+        </div>
         <div class="space-y-1.5">
           <a
             href={`tel:${settings.phone}`}
@@ -102,6 +115,7 @@ const privacyPath = locale === 'en' ? '/en/privacy' : '/privacy'
             <span class="text-brand-orange font-medium">{settings.headquarters_label}</span>
             <p class="mt-0.5 leading-relaxed text-slate-600">{settings.headquarters_address}</p>
           </li>
+          <li><FooterSocialLinks {locale} /></li>
         </ul>
       </div>
     </div>

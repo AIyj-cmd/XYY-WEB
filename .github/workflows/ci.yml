@@ -15,7 +15,7 @@ permissions:
 jobs:
   release-verification:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 60
     env:
       RELEASE_GIT_SHA: ${{ github.sha }}
       DEPLOY_ENVIRONMENT: ci
@@ -130,3 +130,27 @@ jobs:
           TMPDIR="${capacity_dir}/tmp" PLAYWRIGHT_ARTIFACTS_DIR="${capacity_dir}/playwright" \
             CAPACITY_BASELINE_FILE="${capacity_dir}/verify-release-baseline.json" \
             node scripts/check-capacity.mjs
+
+      - name: Collect median Lighthouse reports after production build
+        shell: bash
+        run: |
+          set -euo pipefail
+          chrome_path="$(node -e "process.stdout.write(require('playwright').chromium.executablePath())")"
+          test -x "$chrome_path"
+          LHCI_CHROME_PATH="$chrome_path" npm run test:lhci:all
+
+      - name: Upload desktop Lighthouse report
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: lighthouse-desktop-${{ github.run_id }}-${{ github.run_attempt }}
+          path: output/lighthouse/desktop/
+          if-no-files-found: warn
+
+      - name: Upload mobile Lighthouse report
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: lighthouse-mobile-${{ github.run_id }}-${{ github.run_attempt }}
+          path: output/lighthouse/mobile/
+          if-no-files-found: warn

@@ -20,6 +20,7 @@ describe('homepage CMS claim references', () => {
     __setDirectusRequesterForTests(async () => [
       {
         id: 1,
+        status: 'published',
         stats: [
           {
             claimKey: 'partnerBrands',
@@ -48,6 +49,7 @@ describe('homepage CMS claim references', () => {
     __setDirectusRequesterForTests(async () => [
       {
         id: 1,
+        status: 'published',
         stats: [
           {
             claimKey: 'unknownClaim',
@@ -69,6 +71,7 @@ describe('homepage CMS claim references', () => {
     __setDirectusRequesterForTests(async () => [
       {
         id: 1,
+        status: 'published',
         stats: [
           {
             id: 1,
@@ -94,6 +97,7 @@ describe('homepage CMS claim references', () => {
     __setDirectusRequesterForTests(async () => [
       {
         id: 1,
+        status: 'published',
         stats: [
           {
             value: '旧值',
@@ -113,6 +117,7 @@ describe('homepage CMS claim references', () => {
     __setDirectusRequesterForTests(async () => [
       {
         id: 1,
+        status: 'published',
         stats: [
           {
             id: 999,

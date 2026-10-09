@@ -7,17 +7,19 @@ import HomeHero from '@/components/home/HomeHero.astro'
 import HomeCapabilityStats from '@/components/home/HomeCapabilityStats.astro'
 import HomeCoreSolutions from '@/components/home/HomeCoreSolutions.astro'
 import { HOME_FAQS, HOME_IMAGES, HOME_SERVICE_FALLBACKS, HOME_STATS_FALLBACKS } from '@/data/home'
+import { DEFAULT_SITE_SETTINGS } from '@/data/site-settings'
 import { CASE_FALLBACKS, createHomeCaseDetails } from '@/data/cases'
 import { BRAND, CASE_DETAILS } from '@/lib/brand'
 import { getClaimText } from '@/lib/claims'
-import { getHomepageStats, getServices, getCases, getFaqs } from '@/lib/directus'
+import { getHomepageStats, getServices, getCases, getFaqs, getSiteSettings } from '@/lib/directus'
 import { ORGANIZATION_ID, createBreadcrumbSchema, createFaqSchema } from '@/lib/seo'
 
-const [STATS, SERVICES, allCases, FAQS] = await Promise.all([
+const [STATS, SERVICES, allCases, FAQS, siteSettings] = await Promise.all([
   getHomepageStats(HOME_STATS_FALLBACKS),
   getServices(HOME_SERVICE_FALLBACKS),
   getCases(CASE_FALLBACKS),
   getFaqs('home', HOME_FAQS),
+  getSiteSettings(DEFAULT_SITE_SETTINGS),
 ])
 const CASES = allCases.slice(0, 6)
 const homeClaims = {
@@ -85,6 +87,7 @@ const faqSchema = createFaqSchema(FAQS)
   title="新亦源鞋服云仓｜鞋服仓储、质检、发货一体化服务"
   description={`新亦源2011年成立，提供鞋服仓配、退货质检、瑕疵修复及全渠道库存管理。直营仓储${homeClaims.warehouseArea}，服务${homeClaims.partnerBrands}品牌，发货准确率与库存准确率${homeClaims.shippingAccuracy}。`}
   jsonLd={[orgSchema, webSiteSchema, breadcrumbSchema, faqSchema]}
+  {siteSettings}
 >
   <HomeHero
     image={HOME_IMAGES.hero}
