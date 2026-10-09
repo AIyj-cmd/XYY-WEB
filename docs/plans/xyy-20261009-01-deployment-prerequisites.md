@@ -55,3 +55,8 @@
 ## 清理执行证据
 
 R3.1 runner SHA `5ac729890b535734accebb74e96400839c3890039da6d45689badcb1ee6e5692`，Luna 本地夹具 PASS、Nova APPROVED。远端 preflight 1543 个进程路径引用未匹配候选，preview 精确 20/5，apply exit 0且 deleted 集合精确一致。后续可用 `10241183744` bytes、1608885 inodes；current/previous 保持，版本仍0ffe149，health两依赖ok。证据为本任务 output 下 cleanup-preflight.log、cleanup-preview.log、cleanup-apply.log、cleanup-post.json。
+
+## 实际发布结果（2026-10-09）
+
+- 用户批准的测试站前置清单已执行；测试CMS严格验证通过，应用提交 `40591be` 已推送并部署至 `wz.tomatopia.top`，release `20261009T091340Z-40591be`。完整 verify:release exit0（762 unit、269 E2E/9既有skip、4formal/build），公网版本身份与health通过，运行配置后验通过。旧release及旧env备份保留，发布后清理仅preview，没有新增删除。
+- 本条补录实际完成结果；前文中的未执行/候选/阻断描述属于对应阶段历史。三个原有无引用存储文件保持，未发生真实内容发布、正式站或Oracle操作。

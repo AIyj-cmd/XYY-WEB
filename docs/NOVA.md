@@ -3189,3 +3189,7 @@ Task ID：`XYY-20261009-01`（HIGH）。**Result：APPROVED。** `cms-contract`�
 #### XYY-20261009-01 — corrected runtime final Review
 
 **Result：APPROVED_FOR_EXACT_STAGING_RUNTIME_AND_DEPLOY_WRAPPER。** 新runtime SHA `2c1492e6…fa6425`把文件测试移出算术上下文，并先赋值release再构造manifest。独立fixture证明prepare只改HOST/TRUSTED_PROXY且保留其他值、rollback exit0并逐字节恢复旧env、写入后TERM exit1并逐字节恢复。批准绑定该新SHA与wrapper `3f3f96fb…f8a79f`；旧SHA `fbc296b0…5f550`保持撤回。远端完成仍须verify-new身份、health和127 socket证据。
+
+#### XYY-20261009-01 — staging deployment final Review
+
+Task ID：`XYY-20261009-01`（HIGH）。**Result：APPROVED。** 固定wrapper最终exit0；标准`verify:release`实际通过119 files/762 unit、269 E2E/9 skip、4 formal及最终build，本地与远端容量均ok，远端production install审计0漏洞。测试站部署为release `20261009T091340Z-40591be`、完整SHA `40591be3f362e81eed13ccf7a129fa22efc55932`；site、health、CMS ping、robots、sitemap、llms和version identity全部通过，runtime `verify-new`确认配套配置生效。首次PM2启动后一次loopback curl未ready随后在有界重试内恢复，最终后验全绿且未rollback；cleanup仅preview。Sol独立公网回读同release/SHA、staging及schema `2026-10-cms-maintenance`，health两依赖ok，并目视首页正常。Luna八组线上只读QA由Sol继续收口，不阻塞本固定部署执行Review；真实失败再沿同ID返工。正式站、额外CMS/DB写入、DNS/TLS、权限、真实询盘和新清理均未批准。完整报告：`output/release/xyy-20261009-01/nova/postdeploy-review.md`。

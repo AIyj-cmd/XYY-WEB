@@ -2369,3 +2369,9 @@ Limits：本轮限Chrome152模拟视口及离线/helper验证，空内容schema�
 - 实际测试站 E/G 精确完成：page_key 三属性、关系 RESTRICT、faq_page require_contract、英文组与五字段；0 内容变更，后续 dry-run 0/0；strict 19 集合、0 warnings/0 failures、2 files，exit0。Nova LIVE E/G VERIFIED。应用此时仍旧版，未将 CMS 维护当作应用部署成功；最终配置37项独立单测通过，继续必需 verify/verify:release 与版本切换。
 
 - 最终 verify R1 因新增正向测试使 release-deployment 超过220行预算失败；Terra将完整用例迁至CI identity测试，所有断言保持，219行与19项定向测试通过，Nova确认。Sol同步同一候选执行 `npm run verify` R2 exit0：648类型文件、0 errors/0 warnings/4 hints、119文件/762单测和build通过。运行脚本两个真实失败（trap文件判断、set-u local初始化）已修正；独立本地fixture证实prepare仅两目标键、rollback字节/SHA还原、写入后TERM非零且还原，Nova绑定新hash批准。迁移快照已加密且真实解密通过，四个临时明文文件删除；恢复容器、网络和loopback代理已关闭。源码Prettier与diff-check通过；两计划文档格式通过，DEV_STATE/SOL全文件Prettier警告在HEAD基线已存在，仅核本轮diff与Markdown结构，不改历史格式。
+
+- 最终应用/配置提交 `40591be3f362e81eed13ccf7a129fa22efc55932` 普通push成功，GitHub main回读相同；干净数据盘部署副本快进相同HEAD后执行获批wrapper。标准deploy.sh内完整verify:release exit0：762单测、269 E2E/9skip、4formal和最终build；新release `20261009T091340Z-40591be` 已切换测试站，远程npm ci生产审计0漏洞，公开首页/health/CMS ping/robots/sitemap/llms/version身份均ok，runtime verify-new证实127.0.0.1:50031及可信loopback代理配置。启动初期一次连接拒绝在健康等待内恢复，最终无回退。清理仅preview旧保留项，未执行新删除。Sol独立公网回读版本精确40591be、staging、schema2026-10-cms-maintenance，health两依赖ok。
+
+- GitHub应用提交CI `37909903788` 最终回读 completed/success；Sol亲看上线首页桌面截图，主要内容、图片与导航正常。
+
+- 上线后Luna独立8组中英文首页/联系页桌面/手机HTTP200、H1可见、无横溢/pageerror；两组联系页二维码实际加载/开关及最新中英文提纲补证R2 exit0，无非读取请求。R1在lazy图片visible后立即读取complete的探针时序失败已保留，仅在既定5秒内等待图片实际加载后复测，应用未修改。Sol亲看真实首页桌面与联系页手机截图，Nova部署终审APPROVED。当前无部署阻塞，三个既有未引用存储文件仍作为数据清单限制保留。

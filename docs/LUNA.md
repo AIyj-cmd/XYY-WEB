@@ -5491,3 +5491,23 @@ Task ID：`XYY-20261009-01`；Result：**FAIL_WITH_LIMITATION（caller 身份漂
 为验证 caller 其余合同，Luna 在临时替身中仅将 expected 行对齐当前 runner，并将 key/backup 路径、SSH、GPG 全部替换为本地 fake；七项结果均符合预期：成功 sidecar/hash、key-root symlink、archive/sidecar collision、dangling archive 拒绝、SSH pipeline exit 7、decrypt exit 9 且不 rename。结构化结果为 [capture-pair-qa.json](../output/release/xyy-20261009-01/luna/capture-pair-qa.json)，其结果明确为 `PASS_WITH_IDENTITY_LIMITATION`，不替代 workspace caller PASS。无真实 key 读取、SSH 连接、外部写入或备份生成。
 
 Terra runner 当前版本再次独立复测：SHA-256 `9309b88903d4348ea0263bb06c917f299b5fd4d3ee5ca2543f657d9e2a60174e`，本地 fake PM2 提供 exact online/cwd/exec/listener identity 后，七场景（成功 pair、四故障恢复、16.14 拒绝、FIFO 拒绝）exit 0；证据 [capture-r4-qa-r3.log](../output/release/xyy-20261009-01/luna/capture-r4-qa-r3.log)，报告 [capture-r4-qa-r3-pass.md](../output/release/xyy-20261009-01/luna/capture-r4-qa-r3-pass.md)。该 PASS 不覆盖 caller 当前 expected SHA 漂移。
+
+### XYY-20261009-01 — Luna 最终候选两文件独立复测
+
+Task ID：`XYY-20261009-01`；Result：**PASS**。
+
+Tests performed：在最终候选 `/home/yj/data/xyy-release-20261009-01/candidate` 执行指定命令 `TMPDIR=/home/yj/data/xyy-release-20261009-01/t ./node_modules/.bin/vitest run tests/unit/ci-release-identity.test.ts tests/unit/release-deployment.test.ts`，exit 0；Vitest 报告 **2 files passed、19 tests passed**。原始日志与退出码见 [target-tests.log](../output/release/xyy-20261009-01/luna-final/target-tests.log) 和 [target-tests.exit](../output/release/xyy-20261009-01/luna-final/target-tests.exit)。
+
+Regression coverage：覆盖 CI release identity 的精确身份、非法 SHA/时间戳/环境、未验证 CMS candidate 阻断、verified manifest 创建，以及部署前 worktree、release identity、CI 权限和 Directus 隔离契约；本次仅执行这两份最终候选测试，不重复完整 verify、浏览器或部署验证。
+
+Remaining risks：结果仅证明最终候选中上述 19 项定向测试通过；不替代 Sol 已执行的完整 `verify:release`、Nova review、测试站部署后检查或真实 CMS/生产环境验证。本轮未修改实现或测试，未执行远程写入、真实 API、数据库、CMS 或部署操作。
+
+### XYY-20261009-01 — Luna 测试站上线后公开页独立 QA
+
+Task ID：`XYY-20261009-01`；Result：**PASS**。
+
+Tests performed：针对 Release `40591be3f362e81eed13ccf7a129fa22efc55932/release20261009T091340Z-40591be`，测试站公开页 `/`、`/en/`、`/contact`、`/en/contact` 在 1440×900 桌面与 390×844 移动共 8 组均 HTTP 200、H1 可见、无文档/body 横向溢出、无致命 pageerror。代表截图为 [zh-home-desktop.png](../output/playwright/xyy-20261009-01-staging-luna/zh-home-desktop.png) 与 [zh-contact-mobile.png](../output/playwright/xyy-20261009-01-staging-luna/zh-contact-mobile.png)。完整 8 组结构化结果见 [public-qa.json](../output/release/xyy-20261009-01/luna-final/public-qa.json)。
+
+补证：仅对中文联系页桌面与英文联系页移动两组验证页脚二维码按钮打开、二维码图片在既有 5000ms 预算内完成加载、Esc 关闭；点击 `插入填写提纲` / `Insert enquiry outline` 后，textarea 分别包含 `日均发货单量`、`B2B还是B2C模式` / `Average daily shipments`、`Business model (B2B or B2C)`。两组均无 POST、无 pageerror。R1 原始时序探针与 R2 修正后 PASS 证据见 [qr-outline-supplement-r1.json](../output/release/xyy-20261009-01/luna-final/qr-outline-supplement-r1.json)、[qr-outline-supplement-r2.json](../output/release/xyy-20261009-01/luna-final/qr-outline-supplement-r2.json)。未提交表单、未点击外部社交链接、未写 CMS 或其他外部系统。
+
+Remaining risks：本轮为上线后公开页只读验证，覆盖指定 8 组及 2 组补证；不替代后台/CMS、真实表单提交、生产主站或数据库验证。此前 R1 `naturalWidth` 立即读取为 0 的记录保留，原因是探针时序；在既有 5000ms 图片加载等待内复测 R2 通过，未修改应用实现。

@@ -11,13 +11,16 @@
 
 ## 当前目标
 
-- `XYY-20261009-01`：当前工作已提交为 `6f53695`，状态提交为 `b987a16`，均已普通推送 GitHub main；`b987a16` 的 CI `37901152704` 已回读 success。测试站应用仍为 `0ffe149`，正在完成本次应用发布，尚不记为部署成功。
-- 测试站 `47.82.105.103` / `wz.tomatopia.top` 的已批准前置工作已完成：精确清理 20 个旧版本并保留五版本及 current/previous；完成 Directus 12.1.1 / PostgreSQL 16.15 成对加密备份、隔离恢复与两个在用附件 HTTP/SHA 核对。恢复忠实保留三个既有未引用文件，不删除、不改变引用。
-- 已完成测试 CMS 限定 E/G 维护：FAQ page_key 可空/只读/非必填、faq_page 必填非空与 RESTRICT、英文新闻分组及五字段（默认 draft）。没有内容发布或内容记录迁移。真实后续计划为 0 内容/0 schema 变更，严格验证 19 集合、13 active/5 legacy/1 private、0 warnings/0 failures、2 files 通过；Nova 已核准测试 CMS verified 状态。
-- 待本轮最后提交的是 PM2 从 release 根 .env 读取 HOST、相应回归测试、测试 CMS 已验证状态和执行记录。37 项独立定向测试已通过；最终 verify R2 exit0（648 类型文件、0错误/0警告/4提示、119文件/762单测、build）。标准部署内 verify:release 尚待执行；HOST/TRUSTED_PROXY 配置与应用版本尚未切换。
-- 本任务仅处理用户明确授权的测试站和 GitHub 同步，不涉及正式站、Oracle、DNS/TLS 或权限扩张。当前证据位于 `output/release/xyy-20261009-01/`；备份、密钥、凭据和构建产物均不进入 Git。
+- `XYY-20261009-01`：测试站 **https://wz.tomatopia.top 已部署成功**。应用提交 `40591be3f362e81eed13ccf7a129fa22efc55932` 已普通推送 GitHub main；线上 release 为 `20261009T091340Z-40591be`，environment=`staging`，CMS schema=`2026-10-cms-maintenance`。部署脚本及配套运行配置后验均 exit0，公网 `/version` 与候选精确一致，`/healthz` 的 cmsContent/contactStorage 均为 ok。
+- 本轮完整部署内 `npm run verify:release`（含 `npm run verify`）实际通过：648类型文件、0 errors/0 warnings/4 hints，119文件/762单测，269 E2E通过/9既有跳过，4 formal和最终build；远程运行依赖安装/审计0漏洞，首页/CMS ping/robots/sitemap/llms/version检查通过。此前单独最终verify R2和Luna最终19项发布定向复测亦通过；失败记录保留。
+- PM2 读取 release 根 `.env` 的 HOST 已生效；测试站仅监听 `127.0.0.1:50031`，`TRUSTED_PROXY_CIDRS=127.0.0.1/32`，实际PM2/socket/健康/版本均核对通过。旧应用版本保留为回退目标，完整字节的旧运行配置私有备份保留；部署末尾仅生成清理预览，没有再次删除保留版本。
+- 已完成获批的20个旧版本清理、测试CMS/数据库成对加密备份、隔离恢复及限定E/G维护。恢复时两条文件引用与HTTP/SHA一致，五个存储文件忠实保留，其中三个既有未引用文件未删除；真实CMS最终计划0内容/0schema变更，strict19集合/0 warnings/0 failures/2files。迁移快照另行加密并验证解密，临时明文快照及恢复运行资源已清理。备份、密钥、凭据和构建产物不入Git。
+- 本轮源文件改动为运行HOST读取、CMS verified元数据和相关测试；本地状态与各角色记录已补充，本节为实际部署后的状态补录。上线后中英文首页/联系页 × 1440/390 共8组独立抽查通过（HTTP200、H1、无横溢/脚本错误）；两组二维码加载/开关与最新填写提纲通过，无真实POST。GitHub应用提交 `40591be` 的 CI `37909903788` 已在本轮回读 completed/success。
+- 本任务仅处理用户明确授权的测试站和GitHub同步，不涉及正式站、Oracle、DNS/TLS或权限扩张。证据位于 `output/release/xyy-20261009-01/`，当前无应用部署阻塞。
 
-## 当前工作归档与测试站发布（2026-10-09）
+## 当前工作归档与测试站发布阶段记录（2026-10-09）
+
+以下记录保留各阶段当时状态；最终完成情况以“当前目标”为准。
 
 - `XYY-20261009-01`，HIGH。125 文件范围包括当前中英文首页/页脚、服务动效及素材、联系页提纲、robots/llms、Lighthouse 工具和治理/状态记录；没有提交凭据、依赖、构建或 output 产物。页脚 CSS 原文拆分以通过行数预算；动效只补 pointer/compatibility mouse 的 focus 区分与清理，保持动画设计，移动导航测试改用真实 tap。
 - 数据盘干净 npm ci 成功，CI 固定字体原生库大小/SHA 与加载验证通过；根开发依赖未修改。完整格式检查、候选 1445 份源码/配置/素材一致性和 production audit 0 通过；开发依赖审计另有 23 项，不混同生产审计结果。
