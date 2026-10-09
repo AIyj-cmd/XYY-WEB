@@ -1,22 +1,36 @@
 import { execFile } from 'node:child_process'
-import { mkdtemp, readdir, rm, stat } from 'node:fs/promises'
+import { cp, mkdtemp, readFile, readdir, rm, stat, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { resolve } from 'node:path'
 import { promisify } from 'node:util'
 
 import { describe, expect, it } from 'vitest'
 
-import { CMS_SCHEMA_VERSION_STATUS } from '../../config/cms-contract.mjs'
-
 const run = promisify(execFile)
 const sha = '54fa9e64642403548f2c3e04f0242e427445aa30'
 const buildTime = '2026-10-08T12:00:00.000Z'
 
-async function runCiIdentity(directory: string, argumentsList: string[]) {
+async function makeCiFixture(cmsSchemaStatus = 'candidate_unverified') {
   const root = resolve(import.meta.dirname, '../..')
+  const fixture = await mkdtemp(resolve(tmpdir(), 'xyy-ci-release-identity-'))
+  await cp(resolve(root, 'config'), resolve(fixture, 'config'), { recursive: true })
+  await cp(resolve(root, 'scripts'), resolve(fixture, 'scripts'), { recursive: true })
+  const cmsContractPath = resolve(fixture, 'config/cms-contract.mjs')
+  const cmsContract = await readFile(cmsContractPath, 'utf8')
+  await writeFile(
+    cmsContractPath,
+    cmsContract.replace(
+      /export const CMS_SCHEMA_VERSION_STATUS = '[^']+'/,
+      `export const CMS_SCHEMA_VERSION_STATUS = '${cmsSchemaStatus}'`
+    )
+  )
+  return fixture
+}
+
+async function runCiIdentity(directory: string, argumentsList: string[]) {
   return run(
     process.execPath,
-    [resolve(root, 'scripts/validate-ci-release-identity.mjs'), ...argumentsList],
+    [resolve(directory, 'scripts/validate-ci-release-identity.mjs'), ...argumentsList],
     {
       cwd: directory,
       env: process.env,
@@ -26,7 +40,7 @@ async function runCiIdentity(directory: string, argumentsList: string[]) {
 
 describe('CI release identity validation', () => {
   it('validates an exact CI identity and only reports the CMS candidate status', async () => {
-    const directory = await mkdtemp(resolve(tmpdir(), 'xyy-ci-release-identity-'))
+    const directory = await makeCiFixture('candidate_unverified')
     try {
       const result = await runCiIdentity(directory, [
         '--git-sha',
@@ -47,9 +61,9 @@ describe('CI release identity validation', () => {
           environment: 'ci',
           cmsSchemaVersion: '2026-10-cms-maintenance',
         },
-        cmsSchemaStatus: CMS_SCHEMA_VERSION_STATUS,
+        cmsSchemaStatus: 'candidate_unverified',
       })
-      expect(await readdir(directory)).toEqual([])
+      expect(await readdir(directory)).toEqual(['config', 'scripts'])
     } finally {
       await rm(directory, { recursive: true, force: true })
     }
@@ -66,20 +80,19 @@ describe('CI release identity validation', () => {
       ['--git-sha', sha, '--build-time', buildTime, '--environment', 'staging'],
     ],
   ])('rejects a %s', async (_name, argumentsList) => {
-    const directory = await mkdtemp(resolve(tmpdir(), 'xyy-ci-release-identity-'))
+    const directory = await makeCiFixture('candidate_unverified')
     try {
       await expect(runCiIdentity(directory, argumentsList)).rejects.toMatchObject({
         stderr: expect.stringContaining('identity'),
       })
-      expect(await readdir(directory)).toEqual([])
+      expect(await readdir(directory)).toEqual(expect.arrayContaining(['config', 'scripts']))
     } finally {
       await rm(directory, { recursive: true, force: true })
     }
   })
 
   it('keeps deployment manifest creation blocked for an unverified CMS candidate', async () => {
-    const root = resolve(import.meta.dirname, '../..')
-    const directory = await mkdtemp(resolve(tmpdir(), 'xyy-release-manifest-'))
+    const directory = await makeCiFixture('candidate_unverified')
     const output = resolve(directory, 'release-manifest.json')
     try {
       await expect(
@@ -96,10 +109,38 @@ describe('CI release identity validation', () => {
             '--environment',
             'ci',
           ],
-          { cwd: root, env: process.env }
+          { cwd: directory, env: process.env }
         )
       ).rejects.toMatchObject({ stderr: expect.stringContaining('release_manifest_blocked') })
       await expect(stat(output)).rejects.toThrow()
+    } finally {
+      await rm(directory, { recursive: true, force: true })
+    }
+  })
+
+  it('creates an exact manifest from a verified fixture', async () => {
+    const directory = await makeCiFixture('verified')
+    const output = resolve(directory, 'release-manifest.json')
+    try {
+      await run(
+        process.execPath,
+        [
+          'scripts/create-release-manifest.mjs',
+          '--output',
+          output,
+          '--git-sha',
+          sha,
+          '--build-time',
+          buildTime,
+          '--environment',
+          'ci',
+        ],
+        { cwd: directory, env: process.env }
+      )
+      await expect(readFile(output, 'utf8')).resolves.toContain(`"gitSha": "${sha}"`)
+      await expect(readFile(output, 'utf8')).resolves.toContain(
+        '"cmsSchemaVersion": "2026-10-cms-maintenance"'
+      )
     } finally {
       await rm(directory, { recursive: true, force: true })
     }

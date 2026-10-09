@@ -1,7 +1,7 @@
-// This version is a local candidate until a separately authorized CMS backup, restore, migration,
-// and strict verification have completed. Do not publish it merely by deploying application code.
+// Verified on staging on 2026-10-09 after the authorized paired backup, isolated restore,
+// limited E/G migration, zero-change plan, and strict CMS verification.
 export const CMS_SCHEMA_VERSION = '2026-10-cms-maintenance'
-export const CMS_SCHEMA_VERSION_STATUS = 'candidate_unverified'
+export const CMS_SCHEMA_VERSION_STATUS = 'verified'
 
 const policies = {
   homepage_stats: { lifecycle: 'legacy', identity: [], seedPolicy: 'migration_only' },

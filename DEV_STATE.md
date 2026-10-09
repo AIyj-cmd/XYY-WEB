@@ -11,10 +11,11 @@
 
 ## 当前目标
 
-- `XYY-20261009-01`：125 文件已提交为 `6f53695` 并普通推送至 GitHub `AIyj-cmd/XYY-WEB` main，远端 SHA 回读一致。本轮完整发布检查 R4 exit 0、Luna PASS、Nova APPROVED；本地状态和角色日志已归档。测试站 `wz.tomatopia.top` 尚未部署，前置条件仍受阻。
-- 本轮起始 Git 基线为 `5f94e34`；应用归档提交为 `6f536950c6485b9ac89b1aafac87f3a354064e5f`，本节是推送后的状态补录。此前 main CI `37885398485` 本轮回读为 success；新提交 CI `37901004241` 已触发，记录时 in_progress，尚无远端通过结论。根开发依赖与 lock 有七项安装版本差异，本轮使用数据盘全新隔离安装，根依赖未修改。
-- 测试站本轮最终只读复核仍为 `0ffe149` / `20261004T044635Z-0ffe149`，健康两依赖 ok；可用空间仅 `866316288` bytes，低于 2 GiB 底线。真实 CMS 候选门禁仍明确阻止 manifest；当前未部署。
-- 具体剩余动作见 `docs/plans/xyy-20261009-01-deployment-prerequisites.md`；服务器旧版本删除、CMS/数据库备份恢复与契约维护、独立运行配置变更须按 AGENTS.md 单独明确授权，不由应用部署请求自动涵盖。正式站与 Oracle 不在本轮范围。
+- `XYY-20261009-01`：当前工作已提交为 `6f53695`，状态提交为 `b987a16`，均已普通推送 GitHub main；`b987a16` 的 CI `37901152704` 已回读 success。测试站应用仍为 `0ffe149`，正在完成本次应用发布，尚不记为部署成功。
+- 测试站 `47.82.105.103` / `wz.tomatopia.top` 的已批准前置工作已完成：精确清理 20 个旧版本并保留五版本及 current/previous；完成 Directus 12.1.1 / PostgreSQL 16.15 成对加密备份、隔离恢复与两个在用附件 HTTP/SHA 核对。恢复忠实保留三个既有未引用文件，不删除、不改变引用。
+- 已完成测试 CMS 限定 E/G 维护：FAQ page_key 可空/只读/非必填、faq_page 必填非空与 RESTRICT、英文新闻分组及五字段（默认 draft）。没有内容发布或内容记录迁移。真实后续计划为 0 内容/0 schema 变更，严格验证 19 集合、13 active/5 legacy/1 private、0 warnings/0 failures、2 files 通过；Nova 已核准测试 CMS verified 状态。
+- 待本轮最后提交的是 PM2 从 release 根 .env 读取 HOST、相应回归测试、测试 CMS 已验证状态和执行记录。37 项独立定向测试已通过；最终 verify R2 exit0（648 类型文件、0错误/0警告/4提示、119文件/762单测、build）。标准部署内 verify:release 尚待执行；HOST/TRUSTED_PROXY 配置与应用版本尚未切换。
+- 本任务仅处理用户明确授权的测试站和 GitHub 同步，不涉及正式站、Oracle、DNS/TLS 或权限扩张。当前证据位于 `output/release/xyy-20261009-01/`；备份、密钥、凭据和构建产物均不进入 Git。
 
 ## 当前工作归档与测试站发布（2026-10-09）
 

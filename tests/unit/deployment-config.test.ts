@@ -99,7 +99,8 @@ describe('production deployment contracts', () => {
     const deploy = read('scripts/deploy.sh')
     const provision = read('scripts/lib/remote-capacity-provision.sh')
 
-    expect(ecosystem).toContain("HOST: '0.0.0.0'")
+    expect(ecosystem).toContain("const defaultHost = '0.0.0.0'")
+    expect(ecosystem).toContain('HOST: runtimeHost')
     expect(ecosystem).toContain("PORT: '50031'")
     expect(nginx).toContain('server 127.0.0.1:50031;')
     expect(deploy).toContain('remote-capacity-provision.sh')

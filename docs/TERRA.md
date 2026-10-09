@@ -2024,3 +2024,68 @@ Status: CODE DONE（待 Luna 独立完整验证与 Nova Review）
 
 - Sol 的 Pixel 7 `tap()` 原始事件顺序为 `pointerdown(touch) → pointerup(touch) → mousedown → focusin`；R1 在 `pointerup` 清除 marker 后，compat `mousedown/focusin` 会错误按键盘 focus 处理。仅令既有 root capture handler 同时记录 `pointerdown` 与 `mousedown`（`PointerEvent | MouseEvent`），并在 window `mouseup` 清理；`pointerup`、`pointercancel` 和 cleanup 保持。故 compat `mousedown` 在 focus 前重设 marker，pointer-origin focus 不再中途清除 translate；键盘路径没有 press marker，仍即时 reveal。
 - cleanup 解除新增 `mousedown`/`mouseup` 监听并清空 marker；未使用 timeout，不改动动画参数、targets/selectors、CSS、页面、链接、文案或测试。自检 PASS：目标 Prettier、ESLint、`npm run typecheck`（647 files，0 errors / 0 warnings / 4 hints）、`npm run check:maintainability`（820 files）及 scoped `git diff --check`。`detail-reveal.ts` 为177行，低于260行预算。未运行 E2E、完整 verify 或浏览器；交 Luna 用真实 mouse、Pixel 7 tap、键盘和 cleanup 复测。证据：`output/release/xyy-20261009-01/terra/implementation.md`。
+
+#### XYY-20261009-01 — 已授权测试站前置执行：release 清理方案
+
+- 只读审阅现有 `release-retention` / `release-cleanup` 与部署容量工具后，新增本地执行方案和精确20项候选清单。方案要求远端每次 apply 前重核 releases inode、current、实际 `.previous_target`、pinned 状态、全部进程 cwd、远端脚本 hash 和冻结 preview；候选或保护集任一差异即停止。现有 cleanup 库的 plan identity 再比较仍是最终删除前闸门，失败不重跑。
+- 未执行 SSH、远端写入、release 删除、CMS/数据库/备份、停止进程或配置变更；未新增/修改受保护脚本。仅方案与清单位于 `output/release/xyy-20261009-01/ops/`，交 Sol 按用户授权执行，并在精确清理证据成立后再继续备份阶段。
+
+#### XYY-20261009-01 R2 — 测试站 release 清理执行草案返工
+
+- R1 草案已标记不可执行。新的本地 SSH stdin runner 固定精确20项 allowlist、5项保护集、release root inode、current 与实际 `.previous_target`；每个候选均按其 root 或任意后代路径匹配。它遍历全部存活 `/proc/PID/cwd`、`exe` 与 `fd/*` 引用；无法读取而仍存在的引用会明确失败，命中时只输出 PID 和匹配路径，绝不输出 cmdline 或环境。
+- 因当前测试站 `0ffe149` 不含维护脚本，方案要求 Sol 先以不可覆盖的目录创建方式上传已审计的 `release-cleanup.mjs` 和其唯一 import `release-retention.mjs`，精确 SHA-256 校验后显式使用 `/opt/node-v22/bin/node` preview/apply。preview 以 `wx` 建立唯一冻结 plan；apply 重复全部状态/引用/hash 检查，并由既有库在首项删除前重建 identity 比较。
+- 本次只创建本地草案，未执行 SSH、上传、远端写入、清理、CMS/数据库/备份、停进程或配置修改。自检 PASS：runner `bash -n`、三个 ops 文件 Prettier，以及本地 allowlist/后代 guard/`cwd`+`exe`+`fd`/脱敏输出静态断言；`docs/TERRA.md` 仅有一处既有 Prettier 空行差异，未格式化无关历史。交 Luna 用假 releases/proc 目录验证 root 与后代 cwd/exe/fd 阻断、不可读引用失败和无匹配通过；交 Nova 复核远端命令与删除前闸门。
+
+#### XYY-20261009-01 R3 — 测试站清理冻结与成对备份草案
+
+- 新增 R3 清理 runner/计划，保留 R2 供证据且明确不执行。apply 在删除调用前再次重跑 topology、存活引用、工具和完整 preview 断言；冻结 `releasesDirectory`、`root.path`、`currentLink`、`previousFile`、`keep=5`、直接 pinned 值及 `pinnedFile`，并要求 plan 为非 symlink、root 所有、0600。tools/plan/lock/result 的 symlink（含悬空）或非私有路径均失败；`noclobber` 先创建私有 lock/result 再重定向。
+- 本地负向执行证据：以假 release/proc 树中的候选目录 cwd 运行 R3 preflight，exit 1 并只输出 `pid=812` 和该匹配路径，随后 `live_candidate_release_reference`；未访问远端。`bash -n`、四个 R3/备份 ops 文件 Prettier、锁定 preview 与备份 trap/loopback 静态断言、`docs/TERRA.md` scoped diff check 均 PASS。
+- 新增测试站 CMS 成对备份/隔离恢复执行草案与远端 runner：仅在一次 `xyy-cms` 停写窗口生成 PostgreSQL custom dump 和 uploads archive，remote trap 重启并要求 ping；stdout 单流本地 GPG AES-256 加密到数据盘，独立 passphrase 0600，不记录凭据或真实数据。草案要求 `postgres:16.15-alpine` 固定 digest、`directus:12.1.1` 内部 Docker 网络恢复、附件对应与无外部邮件/webhook启动验证。未执行停 CMS、dump、加密、恢复、Docker、CMS/数据库写入或远端操作。
+- Sol 的只读 live E/G dry-run 当前仅在 `faqs.faq_page` relation `on_delete` 非 RESTRICT 处以 `migration_required` 停止；草案不放宽 validator 或关系授权。待隔离恢复后仅按已批准范围 PATCH 该既有 relation 至 RESTRICT，再 dry-run/apply 非空约束和二次零差异验证。
+
+#### XYY-20261009-01 R4 — 测试站成对备份 capture runner 加固
+
+- R3 cleanup 已冻结，SHA-256 为 `41951225180c4fb13e22d7924b7e83dfde67685bea7c1d6f954cfc075eabfa4e`，可由 Luna 独立测试；本节仅返工备份 capture runner。它不再 shell `source` Directus `.env`：固定 `/opt/node-v22/bin/node`/PATH，通过当前 CMS `node_modules/dotenv` 解析，并仅把密码作为 Node `spawnSync` 子进程的内存环境传给固定 `/usr/bin/pg_dump`/`psql`，不输出凭据。
+- 停写前预检固定 CMS 路径、Directus 12.1.1、uploads 无任何 symlink、PostgreSQL client/server 16.15 与 loopback `directus` 配置；`cms_stopped=1` 先于 `pm2 stop`，随后必须确认 8055 listener 消失，并以 `pg_stat_activity` 确认没有其他 client backend（不终止未知连接）。`EXIT` 必恢复并 ping，HUP/INT/TERM 先转成非零再进入恢复。
+- manifest 现记录 pair ID、UTC 停写窗口、Directus/PostgreSQL版本及 DB/uploads 文件的 bytes/SHA-256；stage plaintext 限 `/tmp/xyy-staging-cms-pair.*`、0700、trap 清理。调用草案改用独立 key `/home/yj/.local/share/xyy-backup-keys/xyy-20261009-01/passphrase`（0700/0600）、加密包在 data 盘、解密恢复在 data 盘 `private-restore`，不再使用 root `/tmp`。单 stdin tar→本地 GPG pipeline 以 `set -o pipefail` 和 partial trap 传播远端或恢复失败。
+- 本地命令替身故障注入：模拟 CMS stop 后 8055 listener 仍存在，runner exit 1 且 fake PM2 顺序为 `describe → stop → restart`；成功 fixture 同样为 `describe → stop → restart`，输出仅三项 pair 成员。fixture manifest 静态验证含 pair ID、UTC window、Directus 12.1.1、PostgreSQL 16.15、DB/uploads bytes 与64位 hash。`bash -n`、目标 Prettier 与 dotenv/停写/listener/quiesce/manifest 静态断言均 PASS。未执行远端、PM2、数据库、加密或 Docker 实际操作。
+
+#### XYY-20261009-01 R3.1 — 清理权限掩码返工
+
+- Luna R3 FAIL 定位到 `assert_safe_directory` 的 Bash 位运算优先级：合法 `0700` 被误判为 `unsafe_maintenance_permissions`。仅将表达式由未分组的 `8#mode & 8#022 == 0` 改为 `((8#mode & 8#022) == 0)`；不改 allowlist、plan、引用检测或其他 runner 行为。新 SHA-256：`5ac729890b535734accebb74e96400839c3890039da6d45689badcb1ee6e5692`。
+- 自检 PASS：`bash -n`、目标 Prettier，且直接以同一位掩码验证 `0700` 通过、`0722` 拒绝。未执行远端或改动备份 runner；交 Luna 用原夹具完整复测。
+
+#### XYY-20261009-01 R4.1 — 备份恢复失败与 PostgreSQL版本返工
+
+- 仅修改成对备份 runner/调用草案。`resume_cms` 的 `pm2 restart` 与 health wait 均显式 `|| return 1`，避免 `if ! resume_cms` 上下文使 `set -e` 失效后错误清除 stopped 标记；restart 或 ping 失败会保留失败并由 cleanup 输出 `cms_restart_or_health_check_failed`。HUP/INT/TERM 仍先转为非零再进入恢复。
+- PostgreSQL client 不再全串等于短版本：从 `/usr/bin/pg_dump --version` 提取第一个语义版本，接受 `16.15` 及 Ubuntu vendor 后缀并保留原始版本字段；server 以 `show server_version_num` 严格等于 `160015`，同时保留 server vendor/version 字段。Sol 的测试站 SSH 只读确认当前 CMS `createRequire(...package.json)('dotenv')` 可用，server_version_num 为160015。
+- 调用草案不再创建密钥；只读取 Sol 已放置的分离目录 key（目录0700、文件0600），不得替换、打印、hash 或归档。自检 PASS：`bash -n`、Prettier；本地替身 client `16.15 (Ubuntu …)` 成功并恢复，`16.14` 在 stop 前以 `postgres_version_changed` 拒绝；PM2 restart fail 与 ping fail 各 exit 1，均记录 `describe → stop → restart` 且 cleanup 明确失败。未执行远端、真实 CMS/数据库、加密或 Docker 操作。
+
+#### XYY-20261009-01 — 测试站 PM2 HOST 最小配置修复
+
+- 仅修改根 `ecosystem.config.cjs` 和两项 unit test。PM2 仍固定 interpreter、PORT、其余 app 属性；新增从 `realpathSync(__dirname)` 的 release-root `.env` 经 `dotenv.parse` 仅读取 `HOST`。`HOST=127.0.0.1` 时写入 PM2 env；缺 `.env` 或未设 HOST 时保持 `0.0.0.0`。不导出其它键、不写 `process.env`、不依赖调用 cwd；非 ENOENT 读取错误直接抛出，避免静默使用错误绑定。
+- 新增 `pm2-runtime-config` 覆盖 appRoot lookup、缺 HOST/缺文件、特殊字符 SECRET 不进入配置序列化、cwd 隔离和 `.env` 为目录的明确读取失败。Sol 扩大最小测试所有权后，`deployment-config` 原 HOST 字面量断言改为保留默认常量并断言 runtime HOST 接入，其他部署断言不变。
+- 自检 PASS：两文件组 `vitest` 18 tests、目标 Prettier/ESLint、scoped diff、`npm run typecheck`（仅既有2条 warning）及 `npm run check:maintainability`（821 files）。未修改真实 `.env`、PM2、部署、CMS status、备份 runner、服务器或生产。
+
+#### XYY-20261009-01 R4.2 — capture uploads special-file 与 FAQ E/G 执行草案
+
+- backup capture runner 仅新增 uploads 特殊文件预检：除目录和普通文件外一律在 `pm2 describe` 前停止。检查改用无管道 `find -print -quit` command substitution，避免 `pipefail` 下 `grep -q` 提前退出使 `find` 的 SIGPIPE 掩盖命中。FIFO 本地负向夹具 exit 1、`uploads_unsafe_entry_present` 且 PM2 调用数为0；不读取或归档 FIFO/device/socket，不改 R4.1 其它行为。新 capture SHA-256：`a666df61d396996af3a028cac59a64303b29584c7f20ceca448780d3d416b198`。
+- 新增仅供 Sol 执行的 FAQ E/G relation guard、contract runner 与计划。冻结 `cms-faq-before.json`（SHA `4e6c1c2671b9a129b0cf94b37ae4b31389e26ff88d0f1e43933d24ea331d8bbc`）；guard 对 `/fields/faqs/faq_page` 和 `/relations/faqs/faq_page` 完全匹配才继续，唯一直接请求为 `PATCH /relations/faqs/faq_page` body `{"schema":{"on_delete":"RESTRICT"}}`，并复核 field 不变及 relation 仅该 schema 值改变，绝不发送 relation meta。
+- 草案先固定隔离地址 `127.0.0.1:18059`，再仅用 `https://wz.tomatopia.top/cms`；两个 runner 以 current release 的 dotenv 解析既有 token、从不输出它。relation 后以既有工具进行 non-empty required-field dry-run/apply、第二次零 dry-run 与 strict verify。未执行 SSH、CMS读写、迁移、Docker、PM2或真实备份操作。
+
+#### XYY-20261009-01 R5 — capture PM2/监听身份冻结
+
+- 停 CMS 前不再只依赖 PM2 的名称查询：runner 在内存解析 `pm2 jlist`，要求唯一 `xyy-cms` 是 online，且 `pm_cwd=/var/www/xyy-cms`、`pm_exec_path=/var/www/xyy-cms/start-directus.sh`；再要求其 PID 与 8055 唯一监听 PID 相同，且 `/proc/PID/exe` 精确为 `/opt/node-v22/bin/node`。jlist、环境与命令行均不输出；任一不匹配在停写前失败。
+- 唯一执行调用器改为 Sol 所有的 `output/release/xyy-20261009-01/capture-pair.sh`；本 ops 目录的旧同名草案已降为不可执行弃用说明，执行计划仅引用唯一调用器。远端 runner SHA-256：`9309b88903d4348ea0263bb06c917f299b5fd4d3ee5ca2543f657d9e2a60174e`，由 Sol 冻结到其调用器。
+- 自检 PASS：本地替身正向身份链路（唯一 online、固定 cwd/script、监听 PID/Node 可执行文件一致）、`bash -n`、目标 Prettier 与 scoped `git diff --check`。未 SSH、停止 CMS、读取/写入数据库、加密、Docker、部署或 CMS 写入；交 Luna 以错误 cwd/script、PID 和 Node 路径分别作停写前负向验证。
+
+#### XYY-20261009-01 — FAQ E/G 本机候选执行草案返工
+
+- 两个 E/G runner 现固定由本机工作区运行：源码和已安装依赖根为 `/home/yj/data/xyy-release-20261009-01/candidate`，`DIRECTUS_TOKEN` 仅从根工作区 `.env` 经 candidate 的 `dotenv` 内存解析；不再 SSH 上传、使用远端 current、依赖远端 Node 或读取远端 `.env`。目标仍严格只接受隔离 `http://127.0.0.1:18059` 或测试站 `https://wz.tomatopia.top/cms`。
+- contract runner 使用本机 `process.execPath`。apply 前机器检查首轮输出精确为零 content、一个 `faqs.faq_page require_contract` schema change 且无 issue；随后只在 candidate `output/cms-migrations` 下先建 0700、拒绝 symlink，再 apply、二次机器检查零计划与 strict verify。已有 migration 工具仍以 0600 建立 snapshot/sidecar；演练后须加密并清除候选内明文。
+- 当前 SHA-256：relation guard `1e778ba0008e927238d001d0083767f27c9c9c5a2ac1cd7499e926fb8abba060`，contract runner `07ba6f4ad87cbac1ab61a830d59ffd9d9359b7bfd523162a9cbee03a2f2ec8b6`。runner 直接导入 candidate 迁移库，在同一内存 plan 上执行精确检查、snapshot 与 apply，避免子 CLI 重读后扩大写入计划；新增只读 `verify-zero` 模式。自检 PASS：两 runner `node --check`、目标 Prettier/ESLint 与 scoped diff。未发出 HTTP 请求、未执行 CMS 读写、数据库、Docker、SSH、部署或生产操作；交 Luna 在恢复的隔离实例演练 exact-plan、PATCH 最小体和二次零计划。
+
+#### XYY-20261009-01 — release identity fixture 状态显式化
+
+- 仅修改 `tests/unit/release-deployment.test.ts` 与 `tests/unit/ci-release-identity.test.ts`。两者的临时 fixture 在复制 config 后显式写入 `candidate_unverified`，因此保留 manifest 阻断和无产物检查，不再依赖根配置的将来状态。新增 verified fixture 断言可生成完整身份 manifest；CI identity CLI 同样从 fixture 执行并断言仅输出候选状态，不直接读取真实配置常量。
+- 自检 PASS：目标 Prettier、ESLint、`vitest` 两文件 19 tests 和 scoped diff。未改 CMS status、manifest gate、生产配置、E/G/capture 冻结包、部署或外部系统；等待 Sol 在真实 live 严格验证后再单独授权更改 status。

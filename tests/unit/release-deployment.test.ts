@@ -39,7 +39,7 @@ async function serveVersion(body = identity) {
   return `http://127.0.0.1:${address.port}`
 }
 
-async function makeDeployFixture() {
+async function makeDeployFixture(cmsSchemaStatus = 'candidate_unverified') {
   const root = resolve(import.meta.dirname, '../..')
   const fixture = await mkdtemp(resolve(tmpdir(), 'xyy-deploy-preflight-'))
   await mkdir(resolve(fixture, 'scripts/lib'), { recursive: true })
@@ -53,6 +53,14 @@ async function makeDeployFixture() {
     resolve(fixture, 'scripts/create-release-manifest.mjs')
   )
   await cp(resolve(root, 'config'), resolve(fixture, 'config'), { recursive: true })
+  const cmsContractPath = resolve(fixture, 'config/cms-contract.mjs')
+  await writeFile(
+    cmsContractPath,
+    (await readFile(cmsContractPath, 'utf8')).replace(
+      /export const CMS_SCHEMA_VERSION_STATUS = '[^']+'/,
+      `export const CMS_SCHEMA_VERSION_STATUS = '${cmsSchemaStatus}'`
+    )
+  )
   await run('git', ['init', '-q'], { cwd: fixture })
   await run('git', ['add', '.'], { cwd: fixture })
   await run(
@@ -64,7 +72,6 @@ async function makeDeployFixture() {
   )
   return fixture
 }
-
 describe('deployment release identity', () => {
   it('keeps inline release verification safe from outer shell parameter expansion', async () => {
     const root = resolve(import.meta.dirname, '../..')
@@ -141,9 +148,8 @@ describe('deployment release identity', () => {
   })
 
   it('blocks a manifest from explicit CI inputs while the CMS schema candidate is unverified', async () => {
-    const root = resolve(import.meta.dirname, '../..')
-    const directory = await mkdtemp(resolve(tmpdir(), 'xyy-manifest-'))
-    const output = resolve(directory, 'manifest.json')
+    const fixture = await makeDeployFixture('candidate_unverified')
+    const output = resolve(fixture, 'manifest.json')
     await expect(
       run(
         process.execPath,
@@ -158,10 +164,11 @@ describe('deployment release identity', () => {
           '--environment',
           'ci',
         ],
-        { cwd: root }
+        { cwd: fixture }
       )
     ).rejects.toMatchObject({ stderr: expect.stringContaining('release_manifest_blocked') })
-    await rm(directory, { recursive: true, force: true })
+    await expect(readFile(output)).rejects.toThrow()
+    await rm(fixture, { recursive: true, force: true })
   })
 })
 

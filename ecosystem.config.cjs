@@ -1,6 +1,16 @@
-const { realpathSync } = require('node:fs')
+const { readFileSync, realpathSync } = require('node:fs')
+const { join } = require('node:path')
+const { parse } = require('dotenv')
 
 const appRoot = realpathSync(__dirname)
+const defaultHost = '0.0.0.0'
+let runtimeHost = defaultHost
+
+try {
+  runtimeHost = parse(readFileSync(join(appRoot, '.env'), 'utf8')).HOST || defaultHost
+} catch (error) {
+  if (error?.code !== 'ENOENT') throw error
+}
 
 module.exports = {
   apps: [
@@ -15,7 +25,7 @@ module.exports = {
       max_memory_restart: '512M',
       env: {
         NODE_ENV: 'production',
-        HOST: '0.0.0.0',
+        HOST: runtimeHost,
         PORT: '50031',
       },
     },

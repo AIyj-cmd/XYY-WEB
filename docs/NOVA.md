@@ -3113,3 +3113,79 @@ Contract Risks：CMS仍`candidate_unverified`，manifest preflight exit1且无�
 Test Coverage Review：R4由外层capacity wrapper运行完整`verify:release`并exit0，峰值552108032 bytes/3838 inodes；118 files/757 unit、269 E2E pass/9 skip/0 fail、4 formal及最终build通过。fresh 4402响应确认含mousedown后，真实Pixel 7 tap、desktop click、keyboard Enter、pointerup/cancel均通过。页脚8组合首轮7 pass/1图片加载时序失败，只在原5秒内等待complete/naturalWidth后单组补测通过，原链接/aria/focus/Popover/Esc/关闭/溢出/零POST断言保持，最终8/8。R1失败、R2中止与R3无完成汇总均保留且不计PASS。
 
 Remaining Risks / Handoff：结论限隔离候选、本机Chromium、CI单worker与loopback fallback；真实GitHub CI须绑定实际提交SHA。本批准允许Sol把本Review日志加入后冻结最终125路径index并回交有限身份确认；源码/配置/测试或路径变化即失效。身份通过后可依用户授权普通提交/push；测试站继续BLOCKED，须另获准确前置授权并真实解除manifest/容量门禁后再Review。完整报告：`output/release/xyy-20261009-01/nova/final-review.md`。
+
+#### XYY-20261009-01 — 测试站前置执行方案 R1 Review
+
+Task ID：`XYY-20261009-01`（HIGH）。**Result：REJECTED_FOR_CLEANUP_APPLY / CMS_RESTORE_BLOCKED。** 用户已准确授权清单动作，本结论不要求重复授权。
+
+Review Scope：只读审阅20项release清单、Terra清理方案、既有retention实现与Luna隔离恢复QA草案；未执行SSH、删除、备份、解密、数据库、容器、配置、部署或Git写入。20项与前置表精确一致，方案覆盖20/20；retention实现会拒绝非法名称/symlink/非目录/realpath越界，并在apply前重算完整plan及逐项identity。
+
+Blocking finding：apply前cwd guard仅以`${cwd##*/}`对比release ID，会漏掉cwd位于候选子目录（如`<release>/dist`）的进程，不满足“候选内部无进程cwd”AC；必须按`$releases/$id`及其后代匹配。CMS恢复草案仍显式exit2，且尚未闭合加密pair解密、backupId/共同截止/bytes、manifest与归档realpath/symlink、tar成员类型及唯一uploads根约束，因此不可执行。
+
+Handoff：Terra同ID修正cwd root/descendant guard；Sol提供测试CMS共享隔离只读证据与完整备份/加密方案后再审。Luna草案继续作为验收框架，在准确pair、digest镜像和Directus/query contract到位前保持BLOCKED。完整报告：`output/release/xyy-20261009-01/nova/pre-execution-review-r1.md`。
+
+#### XYY-20261009-01 — release cleanup R2 执行前 Review
+
+Task ID：`XYY-20261009-01`（HIGH）。**Result：REJECTED_FOR_CLEANUP_APPLY。** R2已正确修复R1的cwd basename问题：候选根/后代的cwd、exe和fd均阻断，不输出cmdline；任务专用tools目录、Node22与两个审核SHA也替代了“current自带脚本”的错误假设。
+
+剩余HIGH finding：apply没有在删除前再次调用精确preview断言，只让库按plan内参数重算自洽；若plan被替换，20项deleted比较发生在删除后。须在删除调用前锁定20项candidate/5项protected，并同时锁定releases/root path、currentLink、previousFile、keep、pinnedFile及plan非symlink/root owner/0600，或使用等价冻结SHA。修复前只允许只读preflight/受控preview，apply未批准。完整报告：`output/release/xyy-20261009-01/nova/pre-execution-review-r2.md`。
+
+#### XYY-20261009-01 — release cleanup R3.1 执行前 Review
+
+Task ID：`XYY-20261009-01`（HIGH）。**Result：APPROVED_FOR_EXACT_STAGING_CLEANUP。** 批准对象仅为SHA`5ac72989…e6e5692`的R3.1 runner、两个固定hash module、精确20项allowlist和`root@47.82.105.103`。
+
+R3.1在preview后及apply删除调用前均锁定20 candidate/5 protected、releases/root path、currentLink、previousFile、keep、pinned与plan权限/owner/symlink；apply内二次复核topology、cwd/exe/fd后代引用、工具hash与plan，retention库再重建完整identity。Luna fake 25-release/真实`/proc`夹具合法删除20保留5，11个删除前负向场景全部fail-closed；首轮权限位掩码FAIL保留，单行括号修复后全量复测exit0。
+
+Sol可按preflight→不可覆盖工具上传→preview→apply执行；任一hash/inode/current/previous/pin/reference/plan/权限/集合差异立即停止。真实完成后须保存结果、surviving set、current/previous/pinned、post-reference与容量证据。此批准不覆盖CMS备份/恢复/E/G/配置/部署。完整报告：`output/release/xyy-20261009-01/nova/pre-execution-review-r3-cleanup.md`。
+
+#### XYY-20261009-01 — staging CMS paired capture R4 Review
+
+Task ID：`XYY-20261009-01`（HIGH）。**Result：REJECTED_FOR_CAPTURE_EXECUTION。** 冻结远端runner `a666df61…416b198`的一致性窗口、PG16.15/loopback约束、上传symlink/FIFO/device拒绝、manifest与退出重启设计通过；冻结caller `dea4745…f2549`的key-root权限、dangling输出拒绝、解密读取及sidecar noclobber静态修复方向通过。
+
+阻断有三项：远端只`pm2 describe xyy-cms`，没有在stop前fail-closed冻结唯一`pm_cwd=/var/www/xyy-cms`及Node22执行身份；执行计划仍保留含GPG`--yes`且缺少当前guard/解密验证/noclobber的旧可执行流程；Luna七场景PASS只绑定远端runner，当前caller未获独立成功与SSH/GPG/decrypt/碰撞失败覆盖。补最小修正与Luna最终组合QA后再有限复审。未SSH、停写、备份、解密、操作CMS/DB或部署。完整报告：`output/release/xyy-20261009-01/nova/capture-review-r4.md`。
+
+#### XYY-20261009-01 — staging CMS paired capture R5 Review
+
+Task ID：`XYY-20261009-01`（HIGH）。**Result：APPROVED_FOR_EXACT_STAGING_CAPTURE。** 批准严格绑定远端runner SHA`9309b889…a60174e`、唯一根caller SHA`fc5dbe1c…f704539`及`root@47.82.105.103`测试CMS。runner在stop前要求唯一online `xyy-cms`、精确cwd/script、8055唯一listener同PID及`/proc` Node22；路径、版本、进程或数据库边界漂移均fail-closed。plan已删除旧内嵌流程，ops副本仅为退役说明。
+
+Luna最终远端七场景与caller七场景均PASS：成功pair/manifest，stop/dump/restart/ping/PG版本/FIFO拒绝，以及成功cipher/sidecar/metadata、key-root symlink、archive/sidecar/dangling碰撞、SSH pipeline与decrypt失败不rename；当前workspace/embedded hashes匹配，旧SHA首轮失败保留。可由Sol执行一次固定capture；成功后仍须保存CMS restart health及cipher证据并完成真实解密/隔离恢复，才可进入E/G维护。未执行SSH、真实备份、CMS/DB或部署。完整报告：`output/release/xyy-20261009-01/nova/capture-review-r5.md`。
+
+#### XYY-20261009-01 — HOST3 source Review
+
+Task ID：`XYY-20261009-01`（HIGH）。**Result：APPROVED_FOR_HOST3_SOURCE_CHANGE。** 三文件diff只让PM2从canonical release-root `.env`读取HOST；既有deploy会把根`.env`链接进release，数据源一致且不受caller cwd影响。缺文件/缺HOST保持`0.0.0.0`，非ENOENT错误显式抛出，其他dotenv值不进入导出配置；PORT50031、Node22、单实例及部署/备份门禁保持。
+
+Luna定向2 files/18 tests、Prettier和scoped diff-check全部PASS，覆盖release-root读取、cwd隔离、缺省、错误传播和secret-like值不暴露。批准只覆盖源码/测试；真实配置与部署后仍须证明共享`.env`目标值、50031 loopback listener、`/version`与`/healthz`，并保留旧env/release回退。未执行PM2、远端配置、CMS/DB或部署。完整报告：`output/release/xyy-20261009-01/nova/host3-source-review.md`。
+
+#### XYY-20261009-01 — isolated restore Review
+
+Task ID：`XYY-20261009-01`（HIGH）。**Result：APPROVED_FOR_ISOLATED_EG_REHEARSAL_WITH_LIMITATION。** 真实pair的cipher/sidecar/metadata/manifest/bytes/SHA、PG16.15完整恢复、Directus12.1.1、集合与FAQ聚合均验证；归档5个普通文件逐一bytes/SHA忠实，DB引用2/2存在且duplicate0，两个在用附件经本机loopback Directus HTTP200并与storage SHA一致。internal-only容器无外发，socat只绑定127.0.0.1入站。
+
+其余3个原归档文件无精确DB关联，来源未知但原样保留，不删文件、不改DB、不声称存储洁净。旧失败和环境诊断保留。该结果只允许当前隔离副本进行冻结E/G演练，不批准live；演练后须清理暂留容器/network/private workdir/forward。完整报告：`output/release/xyy-20261009-01/nova/restore-review.md`。
+
+#### XYY-20261009-01 — live staging E/G Review
+
+Task ID：`XYY-20261009-01`（HIGH）。**Result：APPROVED_FOR_EXACT_LIVE_STAGING_EG。** 批准绑定fields runner `6bada0d9…502ffb`、fields before `4fdda536…f9ece`、relation guard `a1e0901b…216018`、FAQ before `4e6c1c26…d8bbc`、contract runner `07ba6f4a…ec8b6`及b987 candidate 658文件身份。目标仅`wz.tomatopia.top/cms`。
+
+隔离演练完成FAQ page_key三属性、英文1 alias/5 fields、relation RESTRICT和FAQ required；最终zero为0 content/0 schema，strict为19集合、warn0/fail0、2 files。新guard发送完整frozen relation且只改on_delete，与隔离真实成功payload等价；旧最小payload失败由guard捕获且live未动。允许Sol按相同顺序执行live；任一身份/before/plan差异立即停止，完成必须以live zero+strict证据为准。完整报告：`output/release/xyy-20261009-01/nova/live-eg-review.md`。
+
+#### XYY-20261009-01 — staging runtime/deploy Review
+
+Task ID：`XYY-20261009-01`（HIGH）。**Result：APPROVED_FOR_EXACT_STAGING_RUNTIME_AND_DEPLOY_WRAPPER。** 批准绑定deploy wrapper `3f3f96fb…f8a79f`与runtime runner `fbc296b0…5f550`。wrapper固定测试主机/wz/staging并调用标准deploy.sh完整verify:release、容量/manifest/health/identity/回退流程，cleanup apply=false。
+
+runtime prepare保存0600旧env及SHA，signal现先exit1再由EXIT trap精确恢复；rollback逐字节恢复旧env并切回固定0ffe149，verify-new核HOST/TRUSTED_PROXY、PM2 env、唯一127.0.0.1:50031 socket及manifest/version/health。Luna最终配置4 files/37 tests PASS；bash-n/diff-check通过。实际运行仍须clean deploy tree准确HEAD及CMS verified manifest，完成后保存完整部署/回退证据。完整报告：`output/release/xyy-20261009-01/nova/runtime-deploy-review.md`。
+
+#### XYY-20261009-01 — live staging E/G post-execution Review
+
+Task ID：`XYY-20261009-01`（HIGH）。**Result：APPROVED / LIVE E/G VERIFIED。** 最终只读证据确认page_key只有nullable/optional/readonly三项批准差异；英文group由单字段endpoint exact验证，5字段builder零变化。relation guard beforeMatched+patched；contract apply精确0 content/1 faq_page require，随后0/0；live strict 19集合、13 active/5 legacy/1 private、warn0/fail0、2 files。Directus12列表不返回alias的失败探针保留，未重复写入。可更新CMS schema状态为verified并继续既定测试站部署。完整报告：`output/release/xyy-20261009-01/nova/live-eg-post-review.md`。
+
+#### XYY-20261009-01 — final six-file source Review
+
+Task ID：`XYY-20261009-01`（HIGH）。**Result：APPROVED。** `cms-contract`只依据staging实际backup/restore/E/G/zero/strict把既有schema版本状态改为verified，集合/Claims/API契约不变；HOST实现保持已批准release-root `.env`来源。identity/deploy测试通过隔离fixture继续证明candidate_unverified阻断且无manifest，并新增verified精确manifest成功路径，没有删除门禁。CI identity、release deployment、deployment config和PM2 runtime共4 files/37 tests PASS，六文件diff-check通过。可进入最终verify及测试站部署。完整报告：`output/release/xyy-20261009-01/nova/final-source-review.md`。
+
+#### XYY-20261009-01 — runtime approval correction
+
+此前runtime SHA `fbc296b0…5f550`的执行批准已撤回：failure handler把`-f`文件测试放入`(( ... ))`算术上下文，`bash -n`不能证明该恢复分支的执行语义。deploy wrapper源Review仍有效，但paired runtime保持PENDING，须由Terra移出文件测试并由Luna真实failure fixture证明旧env逐字节恢复后，再绑定新hash批准。
+
+#### XYY-20261009-01 — corrected runtime final Review
+
+**Result：APPROVED_FOR_EXACT_STAGING_RUNTIME_AND_DEPLOY_WRAPPER。** 新runtime SHA `2c1492e6…fa6425`把文件测试移出算术上下文，并先赋值release再构造manifest。独立fixture证明prepare只改HOST/TRUSTED_PROXY且保留其他值、rollback exit0并逐字节恢复旧env、写入后TERM exit1并逐字节恢复。批准绑定该新SHA与wrapper `3f3f96fb…f8a79f`；旧SHA `fbc296b0…5f550`保持撤回。远端完成仍须verify-new身份、health和127 socket证据。

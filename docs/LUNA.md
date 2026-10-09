@@ -5397,3 +5397,97 @@ Footer QA：独立候选预览 4403 已关闭。中英文 contact/about × deskt
 Regression coverage：R1 的两个 H1 时序失败和两个 service-redesign 导航失败保留于 [report-r1.md](../output/release/xyy-20261009-01/luna/report-r1.md)；R2 主动中断及旧服务证据保留于 [report-r2-interrupted.md](../output/release/xyy-20261009-01/luna/report-r2-interrupted.md)；恢复会话时主机已重启，R3 日志停在 E2E 203 且无完成结果，具体终止时点和原因未确认，保留 [verify-release-r3.log](../output/release/xyy-20261009-01/luna/verify-release-r3.log)，未计为 PASS。R4 使用新候选服务及独立容量输出完成，未重现上述失败；新版 CMS 状态契约、动效、候选部署阻断和合法空内容语义随全量执行。
 
 Remaining risks：证据仅覆盖隔离候选、CI 单 worker、loopback CMS fallback 和本机浏览器，不替代真实 CMS、外站账号、生产部署或数据库验证；未提交、推送、部署或写入外部系统。最终报告见 [report-r4-final.md](../output/release/xyy-20261009-01/luna/report-r4-final.md)。
+
+### XYY-20261009-01 — Luna 隔离备份恢复 QA 准备
+
+Task ID：`XYY-20261009-01`；Result：**BLOCKED（等待 Sol 提供成对备份路径，未执行恢复）**。
+
+只读审阅了最新 release/external-acceptance 合同、测试站部署前置清单，以及 `deploy/postgresql/backup-directus.sh`、`restore-test-directus.sh`、`deploy/uploads/backup-directus-uploads.sh`、`restore-test-directus-uploads.sh` 和相关 CMS 合同。发现现有数据库 restore 脚本无条件查询 `homepage_stats`、`case_details`、`case_stats`、`service_stats`、`service_features` 等 legacy 表；uploads restore 只校验 SHA、归档路径安全和文件总数，未验证 `directus_files.filename_disk` 与 storage 文件的双向映射，因此未直接调用现有 restore 脚本。
+
+已准备 [restore-qa-plan.md](../output/release/xyy-20261009-01/luna/restore-qa-plan.md) 与 [restore-qa-draft.sh](../output/release/xyy-20261009-01/luna/restore-qa-draft.sh)，并仅执行 `bash -n` 语法检查。方案限定 pair manifest、custom dump、uploads archive 均在任务私有目录；要求 SHA/字节/共同截止点/backup ID 一致、使用预拉取 digest 镜像、本机 `--internal` Docker 网络、数据库无端口发布、Directus 仅可回环发布、邮件/webhook/真实询盘无外发。验收输出仅包含实际版本、active/private/legacy 集合计数、FAQ 聚合关系计数、附件双向映射计数、资源抽样 status/bytes/hash 前缀和清理结果，不记录 PII、SQL、Token 或附件内容。
+
+独立 AC 明确要求：custom dump 忠实恢复；legacy 表缺失可单列放行，active/private 集合不可缺失；FAQ 在恢复阶段只核对旧 contract/备份快照中的总数、空值、孤儿、重复 identity 和关系元数据是否忠实恢复，不把旧 CMS 尚未具备的目标 `faq_page` 非空或 `RESTRICT` 约束误判为恢复失败；`directus_files` 每条 metadata 与 storage 文件双向完整映射；至少三个本机 loopback asset 只读抽样；无外部连接或写入；容器、网络、临时解密/解包目录清理成功。目标 FAQ 约束留给隔离 E/G 演练及 live 后验证并输出 `target_contract_pending`。只有恢复忠实性等上述条件全部通过才可判定隔离恢复成功；当前不代表备份就绪或测试站部署完成。
+
+Remaining risks：Sol 尚未提供准确 pair manifest/备份路径、镜像 digest 和运行时版本核对输入；因此本轮未读取备份内容、未解密、未创建容器、未连接 CMS/数据库、未产生远端或外部写入。待 Sol 提供路径并确认恢复窗口后，继续同一 Task ID 执行独立恢复 QA。
+
+### XYY-20261009-01 — Luna cleanup R3 首轮夹具复测
+
+Task ID：`XYY-20261009-01`；Result：**FAIL（实现问题，删除前阻断）**。
+
+在本地 fake release root/proc 夹具运行 `node output/release/xyy-20261009-01/luna/release-cleanup-r3-qa.mjs`，`preflight=0`，`preview=1`，stderr 为 `unsafe_maintenance_permissions`；fixture 的 maintenance、tools、tools/lib 均为 `0700`，工具文件为 `0600`，没有删除任何 release。失败发生在任何 `rm` 前，故 AC20/5、plan 参数/权限/symlink、root/current/previous/pinned 变化及 cwd/exe/fd 后代 guard 尚未取得结果，不能记 PASS。
+
+Likely affected area：`output/release/xyy-20261009-01/ops/release-cleanup-r3-remote.sh:69` 的 `((8#${mode} & 8#022 == 0))` 算术优先级；Bash 将其解析为 `mode & (mask == 0)`，合法 0700 目录被拒绝。R3 runner SHA 为 `41951225180c4fb13e22d7924b7e83dfde67685bea7c1d6f954cfc075eabfa4e`。完整 FAIL 字段与 hashes 见 [release-cleanup-r3-qa-fail.md](../output/release/xyy-20261009-01/luna/release-cleanup-r3-qa-fail.md)，原始日志见 [release-cleanup-r3-qa.log](../output/release/xyy-20261009-01/luna/release-cleanup-r3-qa.log)。
+
+Remaining risks：本轮未修改 Terra ops 文件、未执行 SSH、未上传工具、未执行真实删除；需 Terra 交付修复后的新 SHA 后沿同一 Task ID 重新执行全部本地夹具，再决定是否交 Nova 有限 Review。
+
+### XYY-20261009-01 — Luna cleanup R3.1 独立夹具复测
+
+Task ID：`XYY-20261009-01`；Result：**PASS（本地隔离夹具；未执行远端）**。
+
+Terra R3.1 runner SHA 为 `5ac729890b535734accebb74e96400839c3890039da6d45689badcb1ee6e5692`。执行 `node output/release/xyy-20261009-01/luna/release-cleanup-r3-qa.mjs`，真实 exit 0；合法 `preflight`/`preview` 生成精确 **20 candidates / 5 retained**，合法 apply 删除恰好 20 个 fake candidate，5 个固定保留版本、current、previous 保持。结构化结果见 [release-cleanup-r3-qa.json](../output/release/xyy-20261009-01/luna/release-cleanup-r3-qa.json)，日志见 [release-cleanup-r3-qa-r2.log](../output/release/xyy-20261009-01/luna/release-cleanup-r3-qa-r2.log)，PASS 报告见 [release-cleanup-r3-qa-pass.md](../output/release/xyy-20261009-01/luna/release-cleanup-r3-qa-pass.md)。
+
+负向覆盖均发生在删除前：plan ID/path 替换、plan symlink/非 0600、root inode/current/previous/pinned 变化，以及真实 `/proc` 后代 cwd/exe/fd 引用；每项 exit 1，候选目录未减少。首轮括号优先级 FAIL 及其 exit 1 证据保留于 [release-cleanup-r3-qa-fail.md](../output/release/xyy-20261009-01/luna/release-cleanup-r3-qa-fail.md)，未被本轮 PASS 覆盖。
+
+本地夹具仅将生产 runner 的 root-owner/inode 常量映射到临时 fake root，未修改 Terra ops 文件；未执行 SSH、远端 preflight/preview/apply、上传工具或真实删除。结果仅支持向 Nova 提交有限 cleanup Review，不证明测试站状态已改变。
+
+### XYY-20261009-01 — Luna capture R4.1 独立夹具验收
+
+Task ID：`XYY-20261009-01`；Result：**PASS（本地合成夹具；未执行远端）**。
+
+Terra capture runner `output/release/xyy-20261009-01/ops/staging-cms-pair-backup-remote.sh` 冻结 SHA-256 为 `1070e4919e6816ea3bcc9113ccaf01242fca5565673f9999bb9d9186bd6f3394`。`node --check output/release/xyy-20261009-01/luna/capture-r4-qa.mjs` 与夹具实际运行均 exit 0。夹具只创建临时 loopback fake CMS/PM2/PostgreSQL、合成非 PII 上传和临时 `.env`，没有 SSH、真实数据库、远端/生产写入或 Git 操作。
+
+Tests performed：六个场景均按合同结果完成：成功 pair exit 0，归档精确含 `manifest.json`、一个 custom dump、一个 uploads archive 共 3 个成员；manifest 校验 directus `12.1.1`、PostgreSQL client `16.15`、server `160015`、正字节数和 64 位 SHA-256（manifest JSON 592 bytes）。stop failure exit 1 且尝试恢复；backup failure exit 1 且为 `database_command_failed` 并尝试恢复；restart failure 与 restart ping failure 均 exit 1 且为 `cms_restart_or_health_check_failed`；16.14 版本漂移 exit 1 且为 `postgres_version_changed`，在 capture 前拒绝。特殊字符密码包含 `$`、`#`、`;`、`=`，dotenv/`PGPASSWORD` 校验通过且未写入日志。
+
+Evidence：结构化结果为 [capture-r4-qa.json](../output/release/xyy-20261009-01/luna/capture-r4-qa.json)，实际日志和 exit marker 为 [capture-r4-qa.log](../output/release/xyy-20261009-01/luna/capture-r4-qa.log)，独立夹具为 [capture-r4-qa.mjs](../output/release/xyy-20261009-01/luna/capture-r4-qa.mjs)，完整 PASS 报告为 [capture-r4-qa-pass.md](../output/release/xyy-20261009-01/luna/capture-r4-qa-pass.md)。
+
+Remaining risks：本轮不证明加密 staging pair 存在、可用受保护 key 解密、或在隔离 Docker 中恢复成功；真实 PM2/PostgreSQL、附件 UUID 映射、真实备份和外部环境仍待收到准确 cipherpath 后按恢复 QA 合同执行。未执行远端、生产、CMS、数据库写入、部署或应用实现修改。
+
+### XYY-20261009-01 — Luna capture R4.1 guard 回归
+
+Task ID：`XYY-20261009-01`；Result：**PASS（本地合成夹具；未执行远端）**。
+
+Terra 当前 capture runner SHA-256 为 `a666df61d396996af3a028cac59a64303b29584c7f20ceca448780d3d416b198`，已包含 uploads symlink 与非 regular entry（FIFO/device）防护。Luna 独立夹具 `node --check` 与完整运行均 exit 0，七场景全部按合同完成：原成功 pair、stop/backup/restart/ping 故障、16.14 拒绝均保持结果；新增 synthetic FIFO 在 capture 前 exit 1，错误为 `uploads_unsafe_entry_present`。静态断言确认 symlink guard 和 `! -type f ! -type d` guard 均存在；后者覆盖 FIFO/device 类条目。成功 pair 仍为精确 3 成员，manifest 版本、bytes/hash 与特殊字符 dotenv 检查通过，日志无密码。
+
+Evidence：结构化结果 [capture-r4-qa.json](../output/release/xyy-20261009-01/luna/capture-r4-qa.json)、新增运行日志 [capture-r4-qa-r2.log](../output/release/xyy-20261009-01/luna/capture-r4-qa-r2.log)、夹具 [capture-r4-qa.mjs](../output/release/xyy-20261009-01/luna/capture-r4-qa.mjs)、报告 [capture-r4-qa-r2-pass.md](../output/release/xyy-20261009-01/luna/capture-r4-qa-r2-pass.md)。当前 Sol-owned `capture-pair.sh` 仍固定旧 runner SHA `1070e491...`，已通知 Sol 同步后再使用；Luna 未修改该脚本。
+
+Remaining risks：夹具不证明真实加密 pair、真实 device node、staging 数据或隔离恢复成功；restore runner 仍待准确 cipherpath。
+
+### XYY-20261009-01 — Luna 隔离恢复执行器准备 R4.1
+
+Task ID：`XYY-20261009-01`；Result：**BLOCKED（cipher 未到，未执行恢复）**。
+
+已准备 [restore-qa-runner.sh](../output/release/xyy-20261009-01/luna/restore-qa-runner.sh)，强制只接受任务私有 `private-backups/` 下的 cipher、既有 0600 key、0700 `private-restore/` 和核准 digest 镜像；解密 pair、manifest/bytes/hash、outer/uploads 归档路径与成员类型、`pg_restore --list` 均在 Docker 前完成。执行器使用 internal-only Docker network，PostgreSQL 不发布端口，Directus 仅 `127.0.0.1:18059`，restore 使用 `--exit-on-error --no-owner --no-acl`，附件以 DB `filename_disk` 与 storage 文件双向集合校验，日志只记录版本/计数/状态，不输出 PII、SQL、Token 或附件内容；退出时清理容器、network 和 private-restore 临时目录。
+
+验证：`bash -n` exit 0；缺失 cipher 门禁实际 exit 2，证据为 [restore-qa-preflight.log](../output/release/xyy-20261009-01/luna/restore-qa-preflight.log)。当前没有读取备份、解密、创建容器、连接数据库或启动 Directus；待 Sol 提供准确 cipherpath 后才运行，当前不代表恢复 PASS。
+
+R4.2/R4.3 执行器修正：cipher sidecar 与 Sol metadata 的 path/bytes/SHA 现做三方比对；manifest 时间可解析且顺序有效；legacy 表先存在性判断再查询计数，active/private 缺失硬失败；`pg_restore --list` 在 PostgreSQL 容器内执行；成功写脱敏 state 并暂留容器/network/private workdir 给 Sol E/G，失败清理并用 `docker rm -f -v`；Directus asset HTTP/hash 抽样规则为至少3个、总数少于3时全量；signal trap 先 exit1 再由 EXIT trap 清理；uploads 成员严格限定 `uploads`/`uploads/...`，拒绝 `.`、`..`、双斜线和根外路径。真实首次/复跑已完成解密与 PG restore，但附件映射发现 DB 2、storage 5、未引用3，未到 HTTP 抽样；证据见对应 restore-qa 日志，当前结论 FAIL。
+
+### XYY-20261009-01 — Luna 真实隔离恢复 QA
+
+Task ID：`XYY-20261009-01`；Result：**FAIL**。
+
+真实 cipher preflight 通过：556132 bytes、SHA-256 `f3fe4e5a13ba46feccd83a6a4095a010c75f6b3d3c42c923b6179ef9d5f9f8f0`、0600、sidecar 与 metadata 一致。manifest pair ID 为 `xyy-20261009-01-20261009T082731Z`，window `08:27:31Z–08:27:32Z`，Directus `12.1.1`，PG client/server `16.15`/`160015`；database/uploads bytes/hash 均匹配。三次真实 runner 均在失败后清理容器和临时目录，最终修正版日志仍 exit 1。
+
+PG custom dump 在 internal-only Docker 中恢复成功；active/private 集合可读，legacy 集合均存在。FAQ 观察为 `faqs=100`、`faq_pages=17`、null relation/orphan/duplicate page key/duplicate content key 均 0。附件门禁失败：`directus_files=2`，storage regular files=5，DB missing=0，storage unreferenced=3，duplicate=0；因此未启动 Directus，也未执行 HTTP asset 抽样。私有诊断确认 3 个 extra 均为 regular：两个 AVIF、derived-like 命名模式；一个 5-byte extensionless ASCII；三者均无 exact DB filename 或 content-hash 关联。未把它们伪造为 Directus thumbnail/cache/.gitkeep，未删除或修改任何文件/数据库。
+
+Evidence：[restore-qa-fail.md](../output/release/xyy-20261009-01/luna/restore-qa-fail.md)、[restore-qa-20261009T082940Z-62471.log](../output/release/xyy-20261009-01/luna/restore-qa-20261009T082940Z-62471.log)、[restore-pair-metadata.json](../output/release/xyy-20261009-01/luna/restore-pair-metadata.json)。详细 names/hash 仅保存在任务私有 `/home/yj/data/xyy-release-20261009-01/private-restore/attachment-diagnosis.json`（0600）。
+
+Likely affected area：测试站 uploads 与 `directus_files` 备份不一致，可能含派生或残余文件，但当前证据不足以证明其生命周期；runner 按合同 fail-closed。Severity：**High**，阻断恢复成功和后续 E/G；无远端部署、CMS 写入或生产操作。
+
+### XYY-20261009-01 — Luna capture caller 当前身份独立验收
+
+Task ID：`XYY-20261009-01`；Result：**PASS（本地 fake 路径/SSH/GPG；未执行远端）**。
+
+Sol 已同步 caller：`capture-pair.sh` SHA-256 `fc5dbe1c828412d2b918b2d88f10756547612716d2369d3dee65cdd6ff704539`，其 embedded runner SHA 与当前 Terra runner `9309b88903d4348ea0263bb06c917f299b5fd4d3ee5ca2543f657d9e2a60174e` 一致。Luna 独立替身 `node --check`/运行 exit 0，7 项均通过：成功 sidecar/archive hash 与 metadata；key-root symlink、已有 archive、已有 sidecar、dangling archive 均在 pipeline 前拒绝；fake SSH exit 7 与 fake decrypt exit 9 均不 rename partial。
+
+Evidence：[capture-pair-qa-pass.md](../output/release/xyy-20261009-01/luna/capture-pair-qa-pass.md)、[capture-pair-qa.json](../output/release/xyy-20261009-01/luna/capture-pair-qa.json)、[capture-pair-qa-r3.log](../output/release/xyy-20261009-01/luna/capture-pair-qa-r3.log)。此前 Terra 变更期间 stale expected SHA 的失败记录保留于 [capture-pair-qa-fail.md](../output/release/xyy-20261009-01/luna/capture-pair-qa-fail.md)，不代表当前 caller 缺陷。未读取真实 key、未 SSH、未写 private-backups、未执行外部操作。
+
+### XYY-20261009-01 — Luna capture caller 独立 gate
+
+Task ID：`XYY-20261009-01`；Result：**FAIL_WITH_LIMITATION（caller 身份漂移）**。
+
+当前 `capture-pair.sh` SHA-256 为 `dea4745edec...f52f2549`，内嵌 expected runner SHA 为 `a666df61...416b198`；Terra 最新 runner 实际为 `9309b889...2a60174e`，所以未修改的 workspace caller 在身份门禁处 exit 1，未进入 SSH/GPG pipeline。失败报告为 [capture-pair-qa-fail.md](../output/release/xyy-20261009-01/luna/capture-pair-qa-fail.md)。
+
+为验证 caller 其余合同，Luna 在临时替身中仅将 expected 行对齐当前 runner，并将 key/backup 路径、SSH、GPG 全部替换为本地 fake；七项结果均符合预期：成功 sidecar/hash、key-root symlink、archive/sidecar collision、dangling archive 拒绝、SSH pipeline exit 7、decrypt exit 9 且不 rename。结构化结果为 [capture-pair-qa.json](../output/release/xyy-20261009-01/luna/capture-pair-qa.json)，其结果明确为 `PASS_WITH_IDENTITY_LIMITATION`，不替代 workspace caller PASS。无真实 key 读取、SSH 连接、外部写入或备份生成。
+
+Terra runner 当前版本再次独立复测：SHA-256 `9309b88903d4348ea0263bb06c917f299b5fd4d3ee5ca2543f657d9e2a60174e`，本地 fake PM2 提供 exact online/cwd/exec/listener identity 后，七场景（成功 pair、四故障恢复、16.14 拒绝、FIFO 拒绝）exit 0；证据 [capture-r4-qa-r3.log](../output/release/xyy-20261009-01/luna/capture-r4-qa-r3.log)，报告 [capture-r4-qa-r3-pass.md](../output/release/xyy-20261009-01/luna/capture-r4-qa-r3-pass.md)。该 PASS 不覆盖 caller 当前 expected SHA 漂移。

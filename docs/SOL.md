@@ -2360,3 +2360,12 @@ Limits：本轮限Chrome152模拟视口及离线/helper验证，空内容schema�
 - Nova 最终有限身份确认 APPROVED：tree `7ea2d6e4ea49459d541bbf39404abbd48310e230`，125条路径/mode/blob全部一致、100644、无unstaged/untracked、1445候选文件零差异、敏感模式/禁入项零命中。git write-tree 首次受沙箱只读限制，升级后成功，未改变代码内容。
 - 已普通提交 `6f536950c6485b9ac89b1aafac87f3a354064e5f`，唯一parent `5f94e34`，tree与获批候选一致；第一次 push 在135792ms后报告GitHub HTTPS连接失败，第二次普通push成功（约52.79MiB pack）。GitHub API回读main为同一SHA，本地main/origin main一致且当时工作树干净，无force/历史重写。
 - GitHub CI `37901004241` 已由该提交触发，记录时in_progress，不记成功。仅在DEV_STATE、本合同和本日志补录以上已发生的Git状态，新增diff/格式检查通过，无业务代码变化，复用同一代码树的R4完整结果。测试站未部署，CMS/数据库/旧版本删除/运行配置前置操作未执行，待准确授权。
+
+- 用户批准具体测试站前置清单后，进一步明确只处理测试站、不检查主站。清理 R3.1 经 Luna 一正向/11负向夹具 PASS 与 Nova APPROVED，Sol 按固定20目录执行，三阶段均exit0；清理后五保留版本、current/previous不变，空间10241183744 bytes、health两依赖ok、应用仍0ffe149。CMS只读dry-run仅发现FAQ关联SET NULL及可空需要收敛到批准的RESTRICT/必填；尚未执行迁移。备份加密密钥已在分离私有目录0600创建，数据盘备份目录0700；未记录值。
+
+- Capture R5 remote `9309b889…a60174e` / sole caller `fc5dbe1c…f704539` 经Luna双方各七场景PASS和Nova APPROVED后实际执行exit0。pair ID为 `xyy-20261009-01-20261009T082731Z`，捕获窗口08:27:31Z–08:27:32Z，Directus12.1.1/PostgreSQL16.15；加密包556132bytes，SHA `f3fe4e5a13ba46feccd83a6a4095a010c75f6b3d3c42c923b6179ef9d5f9f8f0`，真实解密校验exit0。CMS重启等待期间的短暂连接拒绝保留，最终公网CMS ping200、health两依赖ok、version0ffe149保持；备份/密钥分离，不进Git。隔离数据库可恢复，附件3个额外文件正在忠实恢复核对，尚未将完整恢复验收记为PASS。
+
+- 测试 CMS 成对备份隔离恢复验收 PASS_WITH_LIMITATION：两条文件引用均存在且 HTTP/SHA 一致，五个存储文件忠实恢复，三个原有无引用文件保留。E/G 首次关系最小 payload 在隔离环境暴露 FK 丢失，恢复后改为完整 frozen relation、仅改变 on_delete；真实测试站执行前后结构差异验证通过。英文分组不出现在 Directus12 集合字段列表，初始后验探针因此失败；单字段 endpoint 确认 exact group，并与五字段合并验证零差异，未重复创建。
+- 实际测试站 E/G 精确完成：page_key 三属性、关系 RESTRICT、faq_page require_contract、英文组与五字段；0 内容变更，后续 dry-run 0/0；strict 19 集合、0 warnings/0 failures、2 files，exit0。Nova LIVE E/G VERIFIED。应用此时仍旧版，未将 CMS 维护当作应用部署成功；最终配置37项独立单测通过，继续必需 verify/verify:release 与版本切换。
+
+- 最终 verify R1 因新增正向测试使 release-deployment 超过220行预算失败；Terra将完整用例迁至CI identity测试，所有断言保持，219行与19项定向测试通过，Nova确认。Sol同步同一候选执行 `npm run verify` R2 exit0：648类型文件、0 errors/0 warnings/4 hints、119文件/762单测和build通过。运行脚本两个真实失败（trap文件判断、set-u local初始化）已修正；独立本地fixture证实prepare仅两目标键、rollback字节/SHA还原、写入后TERM非零且还原，Nova绑定新hash批准。迁移快照已加密且真实解密通过，四个临时明文文件删除；恢复容器、网络和loopback代理已关闭。源码Prettier与diff-check通过；两计划文档格式通过，DEV_STATE/SOL全文件Prettier警告在HEAD基线已存在，仅核本轮diff与Markdown结构，不改历史格式。
