@@ -3,6 +3,7 @@ import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 import { createReleaseIdentity } from '../config/release-contract.mjs'
+import { CMS_SCHEMA_VERSION_STATUS } from '../config/cms-contract.mjs'
 
 function parseArguments(argumentsList) {
   const values = {}
@@ -18,6 +19,9 @@ function parseArguments(argumentsList) {
 }
 
 export async function createReleaseManifest(argumentsList) {
+  if (CMS_SCHEMA_VERSION_STATUS !== 'verified') {
+    throw new Error(`release_manifest_blocked: cms_schema_status=${CMS_SCHEMA_VERSION_STATUS}`)
+  }
   const options = parseArguments(argumentsList)
   if (!options.output) throw new Error('--output is required')
   const identity = createReleaseIdentity({

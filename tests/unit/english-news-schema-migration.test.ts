@@ -61,6 +61,19 @@ describe('English news schema migration', () => {
     ])
   })
 
+  it('plans zero changes after an applied fixture is reread', () => {
+    const first = buildEnglishNewsSchemaPlan([])
+    const applied = [
+      ...first.aliases.map((field: { field: string }) => ({ ...field, schema: null })),
+      ...first.fields,
+    ]
+    expect(buildEnglishNewsSchemaPlan(applied)).toEqual({
+      collection: 'news',
+      aliases: [],
+      fields: [],
+    })
+  })
+
   it('stops on incompatible existing English field or group metadata', () => {
     expect(() =>
       buildEnglishNewsSchemaPlan([

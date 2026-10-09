@@ -3,6 +3,7 @@ import { randomBytes } from 'node:crypto'
 
 const testPort = process.env.PLAYWRIGHT_PORT ?? '4399'
 const testOrigin = `http://127.0.0.1:${testPort}`
+const artifactDirectory = process.env.PLAYWRIGHT_ARTIFACTS_DIR ?? 'output/playwright'
 const integrationToken = randomBytes(32).toString('base64url')
 const testEnvironment =
   `DIRECTUS_URL=http://127.0.0.1:1 ` +
@@ -17,7 +18,8 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   expect: { timeout: 5_000 },
   fullyParallel: true,
-  reporter: [['list'], ['html', { outputFolder: 'output/playwright-report', open: 'never' }]],
+  outputDir: `${artifactDirectory}/test-results`,
+  reporter: [['list'], ['html', { outputFolder: `${artifactDirectory}/report`, open: 'never' }]],
   use: {
     baseURL: testOrigin,
     trace: 'retain-on-failure',

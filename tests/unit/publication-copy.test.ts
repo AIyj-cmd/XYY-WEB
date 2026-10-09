@@ -56,12 +56,12 @@ describe('supply-chain whitepapers copy contract', () => {
       expectedFaqs.map(([q, a], index) => ({ contentKey: `faq-senlinqikan-0${index + 1}`, q, a }))
     )
     expect(
-      APPROVED_FAQ_SEEDS.filter((faq) => faq.page_key === 'senlinqikan').map((faq) => ({
+      APPROVED_FAQ_SEEDS.filter((faq) => faq.faqPageKey === 'senlinqikan').map((faq) => ({
         contentKey: faq.content_key,
         q: faq.question,
         a: faq.answer,
         faqPageKey: faq.faqPageKey,
-        pageKey: faq.page_key,
+        pageKey: faq.faqPageKey,
         sort: faq.sort,
       }))
     ).toEqual(

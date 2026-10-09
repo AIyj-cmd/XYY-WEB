@@ -6,7 +6,8 @@ import { fileURLToPath } from 'node:url'
 import { format, resolveConfig } from 'prettier'
 import { APPROVED_CASE_SEEDS } from './data/approved-case-seeds.mjs'
 import { SERVICE_PAGE_SLUGS } from './data/service-page-slugs.mjs'
-import { parseServiceProps, parseVariable } from './lib/source-seed-extractor.mjs'
+import { parseVariable } from './lib/source-seed-extractor.mjs'
+import { loadRawServicePageConfig } from './lib/service-page-static-config-source.mjs'
 import { assertKnownClaimReferences } from './lib/claim-reference-validation.mjs'
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
@@ -71,8 +72,9 @@ const honors = parseVariable(
   image: `/about/honor/${index + 1}.jpg`,
 }))
 
+const servicePageConfig = loadRawServicePageConfig(root)
 const servicePages = SERVICE_PAGE_SLUGS.map((slug) => {
-  const props = parseServiceProps(read(`src/pages/${slug}.astro`), `${slug}.astro`)
+  const props = servicePageConfig[slug]
   return {
     status: 'published',
     slug,

@@ -26,7 +26,7 @@ describe('migrated CMS schema drift', () => {
     ['cases', 'metrics', 'string', false, 'field_type'],
     ['news', 'summary', 'string', true, 'field_type'],
     ['news', 'published_at', 'string', false, 'field_type'],
-    ['faqs', 'page_key', 'string', false, 'required'],
+    ['faqs', 'faq_page', 'integer', false, 'required'],
     ['about_honors', 'image', 'string', false, 'required'],
   ])('rejects a drifted schema for %s.%s', (collection, field, type, isRequired, errorKind) => {
     const contract = CMS_CONTRACT_BY_COLLECTION[collection]

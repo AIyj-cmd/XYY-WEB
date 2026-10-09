@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url'
 import ts from 'typescript'
 import { format, resolveConfig } from 'prettier'
 import { assertKnownClaimReferences } from './lib/claim-reference-validation.mjs'
+import { loadRawServicePageConfig } from './lib/service-page-static-config-source.mjs'
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const sources = [
@@ -14,15 +15,15 @@ const sources = [
   ['cases', 'src/data/cases/faqs.ts', 'CASE_FAQS'],
   ['news', 'src/data/news.ts', 'NEWS_FAQS'],
   ['senlinqikan', 'src/data/publications/support.ts', 'PUBLICATION_FAQS'],
-  ['houzheng-xiufu', 'src/pages/houzheng-xiufu.astro'],
-  ['kuajing-yuncang', 'src/pages/kuajing-yuncang.astro'],
-  ['huanan-xiefu-yuncang', 'src/pages/huanan-xiefu-yuncang.astro'],
-  ['zhibo-cangpei', 'src/pages/zhibo-cangpei.astro'],
-  ['b2b-mendian-cangpei', 'src/pages/b2b-mendian-cangpei.astro'],
-  ['huadong-xiefu-yuncang', 'src/pages/huadong-xiefu-yuncang.astro'],
-  ['tuihuo-zhijian', 'src/pages/tuihuo-zhijian.astro'],
-  ['xiefu-yuncang', 'src/pages/xiefu-yuncang.astro'],
-  ['yundao-zhineng-jijian', 'src/pages/yundao-zhineng-jijian.astro', 'FAQS'],
+  ['houzheng-xiufu', 'src/data/service-pages/config.ts', 'RAW_SERVICE_PAGE_CONFIG'],
+  ['kuajing-yuncang', 'src/data/service-pages/config.ts', 'RAW_SERVICE_PAGE_CONFIG'],
+  ['huanan-xiefu-yuncang', 'src/data/service-pages/config.ts', 'RAW_SERVICE_PAGE_CONFIG'],
+  ['zhibo-cangpei', 'src/data/service-pages/config.ts', 'RAW_SERVICE_PAGE_CONFIG'],
+  ['b2b-mendian-cangpei', 'src/data/service-pages/config.ts', 'RAW_SERVICE_PAGE_CONFIG'],
+  ['huadong-xiefu-yuncang', 'src/data/service-pages/config.ts', 'RAW_SERVICE_PAGE_CONFIG'],
+  ['tuihuo-zhijian', 'src/data/service-pages/config.ts', 'RAW_SERVICE_PAGE_CONFIG'],
+  ['xiefu-yuncang', 'src/data/service-pages/config.ts', 'RAW_SERVICE_PAGE_CONFIG'],
+  ['yundao-zhineng-jijian', 'src/data/service-pages/config.ts', 'RAW_SERVICE_PAGE_CONFIG'],
 ]
 
 function balancedArray(source, start) {
@@ -110,13 +111,23 @@ function parseFaqs(arraySource, file) {
   })
 }
 
+const serviceConfig = loadRawServicePageConfig(root)
 const seeds = sources.flatMap(([pageKey, file, symbol]) => {
+  if (file.endsWith('service-pages/config.ts')) {
+    return serviceConfig[pageKey].faqs.map((faq, index) => ({
+      status: 'published',
+      content_key: faq.contentKey,
+      faqPageKey: pageKey,
+      sort: index + 1,
+      question: faq.q,
+      answer: faq.a,
+    }))
+  }
   const source = readFileSync(resolve(root, file), 'utf8')
   return parseFaqs(findArray(source, symbol), file).map((faq, index) => ({
     status: 'published',
     content_key: faq.contentKey,
     faqPageKey: pageKey,
-    page_key: pageKey,
     sort: index + 1,
     question: faq.question,
     answer: faq.answer,

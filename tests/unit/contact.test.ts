@@ -164,7 +164,11 @@ describe('contact API', () => {
 
     for (let i = 0; i < 6; i += 1) {
       lastResponse = await POST({
-        request: request(body, { 'x-forwarded-for': '203.0.113.1' }),
+        request: request(body, {
+          'x-forwarded-for': '198.51.100.10',
+          'x-real-ip': '198.51.100.11',
+        }),
+        locals: { requesterIp: '203.0.113.1' },
       } as any)
     }
 
@@ -198,7 +202,9 @@ describe('contact API', () => {
       lastResponse = await POST({
         request: requestWithoutContentLength(body, {
           'x-forwarded-for': `198.51.100.${i}, 203.0.113.8`,
+          'x-real-ip': `198.51.100.${i}`,
         }),
+        locals: { requesterIp: '203.0.113.8' },
       } as any)
     }
 

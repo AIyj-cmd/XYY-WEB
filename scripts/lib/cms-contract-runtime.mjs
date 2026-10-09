@@ -1,10 +1,8 @@
 import { CMS_LEGACY_FIELD_ALLOWLIST } from '../../config/cms-contract.mjs'
-
+import { validateFaqRelationTargets } from './cms-faq-relation-validation.mjs'
 const hasOwn = (value, key) => Object.prototype.hasOwnProperty.call(value ?? {}, key)
-
 const required = (field) => field?.meta?.required === true || field?.schema?.is_nullable === false
 const unique = (field) => field?.schema?.is_unique === true
-
 const error = (kind, collection, field, expected, actual) =>
   `migration_required:${kind} collection=${collection}${field ? ` field=${field}` : ''} expected=${JSON.stringify(expected)} actual=${JSON.stringify(actual)}`
 
@@ -137,6 +135,8 @@ export function validateCollectionSnapshot(contract, snapshot, options = {}) {
     }
   }
 
+  validateFaqRelationTargets(contract, snapshot, errors)
+
   return { errors, warnings }
 }
 
@@ -147,8 +147,16 @@ export function assertCollectionSnapshot(contract, snapshot, options) {
 }
 
 export async function loadCollectionSnapshot(directus, contract) {
-  const identityFields = contract.identity.fields.map(encodeURIComponent).join(',')
-  const [collection, fields, relations, itemsPayload] = await Promise.all([
+  const requestedFields = [
+    ...new Set([
+      'id',
+      ...contract.identity.fields,
+      ...(contract.relations ?? []).map(({ field }) => field),
+    ]),
+  ]
+    .map(encodeURIComponent)
+    .join(',')
+  const [collection, fields, relations, itemsPayload, relatedRecords] = await Promise.all([
     directus.request('GET', `/collections/${contract.name}`),
     directus.request('GET', `/fields/${contract.name}`),
     contract.relations?.length
@@ -158,16 +166,34 @@ export async function loadCollectionSnapshot(directus, contract) {
       ? Promise.resolve({ data: [] })
       : directus.request(
           'GET',
-          `/items/${contract.name}?limit=-1&fields=${identityFields}`,
+          `/items/${contract.name}?limit=-1&fields=${requestedFields}`,
           undefined,
           { unwrapData: false }
         ),
+    contract.name === 'faqs'
+      ? directus.request('GET', '/items/faq_pages?limit=-1&fields=id,key')
+      : Promise.resolve(undefined),
   ])
-  const records = Array.isArray(itemsPayload?.data)
-    ? itemsPayload.data
-    : itemsPayload?.data
-      ? [itemsPayload.data]
-      : []
-  const result = assertCollectionSnapshot(contract, { collection, fields, relations, records })
+  const singleton = Boolean(contract.meta?.singleton)
+  if (!itemsPayload || !Object.hasOwn(itemsPayload, 'data')) {
+    throw new Error(`migration_required:items_payload collection=${contract.name}`)
+  }
+  if (!singleton && !Array.isArray(itemsPayload.data)) {
+    throw new Error(`migration_required:items_payload collection=${contract.name}`)
+  }
+  if (singleton && (Array.isArray(itemsPayload.data) || !itemsPayload.data)) {
+    throw new Error(`migration_required:items_payload collection=${contract.name}`)
+  }
+  if (contract.name === 'faqs' && !Array.isArray(relatedRecords)) {
+    throw new Error('migration_required:relation_target_inventory collection=faqs field=faq_page')
+  }
+  const records = singleton ? [itemsPayload.data] : itemsPayload.data
+  const result = assertCollectionSnapshot(contract, {
+    collection,
+    fields,
+    relations,
+    records,
+    relatedRecords: relatedRecords === undefined ? {} : { faq_pages: relatedRecords },
+  })
   return { result, records }
 }

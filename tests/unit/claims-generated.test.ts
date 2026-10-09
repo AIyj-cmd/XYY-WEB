@@ -46,7 +46,7 @@ describe('generated CMS claim references', () => {
   it('fully resolves every generated FAQ placeholder in its page scope', () => {
     for (const faq of APPROVED_FAQ_SEEDS) {
       const answer = interpolateClaims(faq.answer, {
-        pageScope: faq.page_key,
+        pageScope: faq.faqPageKey,
         source: { collection: 'faqs', recordId: faq.sort, field: 'answer' },
       })
       expect(answer).not.toMatch(/\{\{[^}]+\}\}/)

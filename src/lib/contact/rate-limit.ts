@@ -58,15 +58,8 @@ function evictEarliestBucket() {
   }
 }
 
-export function getContactRequesterId(request: Request, clientAddress?: string) {
-  const realIp = request.headers.get('x-real-ip')?.trim()
-  const forwardedFor = request.headers
-    .get('x-forwarded-for')
-    ?.split(',')
-    .map((value) => value.trim())
-    .filter(Boolean)
-    .at(-1)
-  return realIp || forwardedFor || clientAddress || 'unknown'
+export function getContactRequesterId(requesterIp?: string) {
+  return requesterIp || 'unknown'
 }
 
 export function isContactRateLimited(key: string, now = Date.now()) {

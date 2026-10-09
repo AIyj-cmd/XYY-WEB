@@ -11,7 +11,8 @@ import {
   SPECIALTY_SERVICE_PAGE_SLUGS,
   STRUCTURE_FIELDS,
 } from '../../scripts/lib/service-page-structure-sync.mjs'
-import { parseServiceProps, parseVariable } from '../../scripts/lib/source-seed-extractor.mjs'
+import { parseVariable } from '../../scripts/lib/source-seed-extractor.mjs'
+import { loadRawServicePageConfig } from '../../scripts/lib/service-page-static-config-source.mjs'
 
 const root = resolve(import.meta.dirname, '../..')
 const read = (file: string) => readFileSync(resolve(root, file), 'utf8')
@@ -25,6 +26,7 @@ const specialtySlugs = parseVariable(
 const approvedTargetSeeds = APPROVED_SERVICE_PAGE_SEEDS.filter(({ slug }) =>
   SPECIALTY_SERVICE_PAGE_SLUGS.includes(slug)
 )
+const servicePageConfig = loadRawServicePageConfig(root)
 
 describe('specialty service-page structure seeds', () => {
   it('reads service pages with their supported slug sort rather than the generic sort field', () => {
@@ -36,7 +38,7 @@ describe('specialty service-page structure seeds', () => {
     expect(approvedTargetSeeds).toHaveLength(8)
 
     for (const seed of approvedTargetSeeds) {
-      const source = parseServiceProps(read(`src/pages/${seed.slug}.astro`), `${seed.slug}.astro`)
+      const source = servicePageConfig[seed.slug]
       expect(seed.stats).toEqual(source.stats)
       expect(seed.features).toEqual(source.features)
       expect(seed.stats).toHaveLength(4)

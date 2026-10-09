@@ -1,4 +1,7 @@
-export const CMS_SCHEMA_VERSION = '2026-08-cms-hardening'
+// This version is a local candidate until a separately authorized CMS backup, restore, migration,
+// and strict verification have completed. Do not publish it merely by deploying application code.
+export const CMS_SCHEMA_VERSION = '2026-10-cms-maintenance'
+export const CMS_SCHEMA_VERSION_STATUS = 'candidate_unverified'
 
 const policies = {
   homepage_stats: { lifecycle: 'legacy', identity: [], seedPolicy: 'migration_only' },

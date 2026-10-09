@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 
-import { createCanonicalRedirect } from '../../server/request-policy.mjs'
+import { createCanonicalRedirect, resolveRequestProtocol } from '../../server/request-policy.mjs'
 
 const config = {
   formalHost: '56xyy.com',
@@ -27,7 +27,10 @@ function runCanonicalRedirect(
       originalUrl,
       get: vi.fn(() => request.forwardedProto),
     },
-    { redirect },
+    {
+      redirect,
+      locals: { requestProtocol: request.forwardedProto ?? request.protocol ?? 'https' },
+    },
     next
   )
 
@@ -35,6 +38,28 @@ function runCanonicalRedirect(
 }
 
 describe('canonical redirect policy', () => {
+  it('uses forwarded protocol only after trusted middleware has normalized it', () => {
+    expect(
+      resolveRequestProtocol({
+        socketEncrypted: false,
+        trustedPeer: false,
+        forwardedProto: 'https',
+      })
+    ).toBe('http')
+    expect(
+      resolveRequestProtocol({ socketEncrypted: false, trustedPeer: true, forwardedProto: 'https' })
+    ).toBe('https')
+    expect(
+      resolveRequestProtocol({
+        socketEncrypted: false,
+        trustedPeer: true,
+        forwardedProto: 'https, http',
+      })
+    ).toBe('http')
+    expect(
+      resolveRequestProtocol({ socketEncrypted: true, trustedPeer: true, forwardedProto: 'evil' })
+    ).toBe('https')
+  })
   it.each([
     ['//attacker.example/', '/attacker.example'],
     [String.raw`\\attacker.example\path/`, String.raw`/attacker.example\path`],

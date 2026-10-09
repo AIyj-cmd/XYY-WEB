@@ -34,8 +34,19 @@ jobs:
           node-version: 22
           cache: npm
 
-      - name: Install dependencies
-        run: npm ci
+      - name: Measure first dependency install capacity
+        shell: bash
+        run: |
+          set -euo pipefail
+          capacity_dir="${RUNNER_TEMP}/xyy-capacity"
+          tmp_dir="${capacity_dir}/tmp"
+          playwright_dir="${capacity_dir}/playwright"
+          mkdir -p "$tmp_dir" "$playwright_dir"
+          TMPDIR="$tmp_dir" PLAYWRIGHT_ARTIFACTS_DIR="$playwright_dir" \
+            node scripts/capacity-baseline.mjs --scope local \
+              --output "$capacity_dir/npm-ci-baseline.json" \
+              --path "$GITHUB_WORKSPACE" --path "$tmp_dir" --path "$playwright_dir" \
+              --command 'npm ci'
 
       - name: Prepare cn-font-split Linux x64 native runtime
         if: runner.os == 'Linux' && runner.arch == 'X64'
@@ -90,14 +101,32 @@ jobs:
 
       - name: Validate candidate release identity
         run: |
-          node scripts/create-release-manifest.mjs \
-            --output /tmp/xyy-release-manifest.json \
+          node scripts/validate-ci-release-identity.mjs \
             --git-sha "$RELEASE_GIT_SHA" \
             --build-time "$(date -u +%Y-%m-%dT%H:%M:%S.000Z)" \
-            --environment "$DEPLOY_ENVIRONMENT"
+            --environment ci
 
       - name: Audit production dependencies
         run: npm audit --omit=dev
 
-      - name: Run release verification
-        run: npm run verify:release
+      - name: Measure first full release verification capacity
+        shell: bash
+        run: |
+          set -euo pipefail
+          capacity_dir="${RUNNER_TEMP}/xyy-capacity"
+          tmp_dir="${capacity_dir}/tmp"
+          playwright_dir="${capacity_dir}/playwright"
+          TMPDIR="$tmp_dir" PLAYWRIGHT_ARTIFACTS_DIR="$playwright_dir" \
+            node scripts/capacity-baseline.mjs --scope local \
+              --output "$capacity_dir/verify-release-baseline.json" \
+              --path "$GITHUB_WORKSPACE" --path "$tmp_dir" --path "$playwright_dir" \
+              --command 'npm run verify:release'
+
+      - name: Verify recorded release capacity budget
+        shell: bash
+        run: |
+          set -euo pipefail
+          capacity_dir="${RUNNER_TEMP}/xyy-capacity"
+          TMPDIR="${capacity_dir}/tmp" PLAYWRIGHT_ARTIFACTS_DIR="${capacity_dir}/playwright" \
+            CAPACITY_BASELINE_FILE="${capacity_dir}/verify-release-baseline.json" \
+            node scripts/check-capacity.mjs

@@ -8,17 +8,50 @@ import { dirname, join } from 'path'
 import { handler as ssrHandler } from './dist/server/entry.mjs'
 import { healthHandler } from './server/health.mjs'
 import { createVersionHandler } from './server/release-info.mjs'
-import { createCanonicalRedirect, createSecurityHeaders } from './server/request-policy.mjs'
+import {
+  createCanonicalRedirect,
+  createSecurityHeaders,
+  resolveRequestProtocol,
+} from './server/request-policy.mjs'
 import { getRuntimeConfig } from './server/runtime-config.mjs'
+import {
+  ForwardedAddressError,
+  parseTrustedProxyCidrs,
+  resolveTrustedClientAddress,
+} from './server/trusted-proxy.mjs'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const clientDir = join(__dirname, 'dist/client')
 const runtime = getRuntimeConfig()
+const trustedProxyCidrs = parseTrustedProxyCidrs(process.env.TRUSTED_PROXY_CIDRS)
 
 const app = express()
 
 app.disable('x-powered-by')
-app.set('trust proxy', 1)
+app.set('trust proxy', false)
+
+app.use((req, res, next) => {
+  try {
+    const requester = resolveTrustedClientAddress({
+      socketAddress: req.socket.remoteAddress,
+      forwardedFor: req.get('x-forwarded-for') || undefined,
+      trustedProxyCidrs,
+    })
+    res.locals.requesterIp = requester.clientAddress
+    res.locals.requestProtocol = resolveRequestProtocol({
+      socketEncrypted: Boolean(req.socket.encrypted),
+      trustedPeer: requester.trustedPeer,
+      forwardedProto: requester.trustedPeer ? req.get('x-forwarded-proto') || undefined : undefined,
+    })
+    next()
+  } catch (error) {
+    if (error instanceof ForwardedAddressError) {
+      res.status(400).type('text/plain').send('Bad Request')
+      return
+    }
+    next(error)
+  }
+})
 
 app.use(createCanonicalRedirect(runtime))
 app.use(createSecurityHeaders(runtime))
@@ -59,7 +92,7 @@ app.use((_req, res, next) => {
 })
 
 // Astro SSR for all dynamic/server-rendered routes
-app.use(ssrHandler)
+app.use((req, res, next) => ssrHandler(req, res, next, { requesterIp: res.locals.requesterIp }))
 
 // Astro's middleware delegates unknown paths to Express; serve the branded 404.
 app.use((_req, res) => {

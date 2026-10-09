@@ -1,7 +1,9 @@
 # Directus 内容维护模型
 
-当前机器可读模型版本为 `2026-08-cms-hardening`，唯一契约入口是
-`config/cms-contract.mjs`。集合生命周期、稳定身份和 seedPolicy 均从该契约派生；
+当前机器可读模型候选版本为 `2026-10-cms-maintenance`，状态为
+`candidate_unverified`，唯一契约入口是 `config/cms-contract.mjs`。在成对数据库与附件备份、
+隔离恢复、真实结构验证和受控迁移完成前，此版本不得通过应用发布宣称已启用。集合生命周期、
+稳定身份和 seedPolicy 均从该契约派生；
 `scripts/data/cms-contract-definitions.mjs` 只负责把脚本侧字段定义绑定到主契约，setup、verify、
 seed 与迁移工具从绑定结果工作。运行时依赖方向固定为
 `server/runtime-permissions.mjs → config/cms-collections.mjs → config/cms-contract.mjs`，`config/`
@@ -9,27 +11,27 @@ seed 与迁移工具从绑定结果工作。运行时依赖方向固定为
 
 ## 当前已接入
 
-| 集合                 | 用途          | 前端行为                 |
-| ------------------ | ----------- | -------------------- |
-| `homepage_content` | 首页集中配置      | 单例内维护全部运营数据          |
+| 集合               | 用途                 | 前端行为                         |
+| ------------------ | -------------------- | -------------------------------- |
+| `homepage_content` | 首页集中配置         | 单例内维护全部运营数据           |
 | `homepage_stats`   | 旧首页数据兼容备份   | 后台隐藏，运行时不再读取         |
-| `services`         | 导航与首页服务入口   | 发布记录按 `sort` 展示      |
-| `warehouses`       | 仓网信息        | 发布记录按 `sort` 展示      |
+| `services`         | 导航与首页服务入口   | 发布记录按 `sort` 展示           |
+| `warehouses`       | 仓网信息             | 发布记录按 `sort` 展示           |
 | `cases`            | 案例正文与全部指标   | 每个品牌一条记录，按 `sort` 展示 |
-| `news`             | 行业动态文章      | 发布记录按发布时间展示          |
-| `faq_pages`        | 17 个页面的 FAQ | 每个页面内聚合维护问题列表        |
-| `faqs`             | FAQ 子项兼容集合  | 由 `faq_pages` 关系字段维护 |
+| `news`             | 行业动态文章         | 发布记录按发布时间展示           |
+| `faq_pages`        | 17 个页面的 FAQ      | 每个页面内聚合维护问题列表       |
+| `faqs`             | FAQ 子项兼容集合     | 由 `faq_pages` 关系字段维护      |
 | `case_details`     | 旧案例正文兼容备份   | 后台隐藏，运行时不再读取         |
 | `case_stats`       | 旧案例指标兼容备份   | 后台隐藏，运行时不再读取         |
-| `publications`     | 森林期刊目录      | 按 `sort` 展示封面和 PDF   |
-| `service_pages`    | 服务文案、指标、能力  | 每个专题一条记录集中维护         |
+| `publications`     | 森林期刊目录         | 按 `sort` 展示封面和 PDF         |
+| `service_pages`    | 服务文案、指标、能力 | 每个专题一条记录集中维护         |
 | `service_stats`    | 旧服务指标兼容备份   | 后台隐藏，运行时不再读取         |
 | `service_features` | 旧服务能力兼容备份   | 后台隐藏，运行时不再读取         |
-| `about_content`    | 关于我们主文案     | Directus 单例          |
-| `about_history`    | 公司发展历程      | 按 `sort` 展示          |
-| `about_honors`     | 公司荣誉        | 按 `sort` 展示          |
-| `site_settings`    | 全站联系方式与页脚   | Directus 单例          |
-| `contact_leads`    | 官网咨询历史线索    | 保留历史，不再接收新写入或迁移       |
+| `about_content`    | 关于我们主文案       | Directus 单例                    |
+| `about_history`    | 公司发展历程         | 按 `sort` 展示                   |
+| `about_honors`     | 公司荣誉             | 按 `sort` 展示                   |
+| `site_settings`    | 全站联系方式与页脚   | Directus 单例                    |
+| `contact_leads`    | 官网咨询历史线索     | 保留历史，不再接收新写入或迁移   |
 
 ## 内容源优先级
 
@@ -71,7 +73,8 @@ Web运行时只要求 `DIRECTUS_CONTENT_TOKEN`；`/healthz` 分别验证 `cmsCon
 `faqs` 作为关系子项保留，不在后台主导航单独展示。子项字段：
 
 - `status`：只有 `published` 会在官网显示；
-- `faq_page`：唯一权威页面归属，通过 `faq_pages.key` 跨环境解析真实关系 ID；
+- `faq_page`：唯一权威页面归属，必须有值；关系删除规则为 `RESTRICT`，通过
+  `faq_pages.key` 跨环境解析真实关系 ID；
 - `content_key`：不可随问题文案或排序改变的稳定身份；
 - `page_key`：只读 legacy 标识，仅用于迁移核对，新查询和 seed 身份均不依赖它；
 - `sort`：同一页面内的顺序；
@@ -83,19 +86,20 @@ Directus 暂时不可用，页面会使用代码中的审核版 FAQ，避免整�
 
 ## 集合生命周期与稳定身份
 
-| 生命周期    | 集合                                                                              | 稳定身份                         |
-| ------- | ------------------------------------------------------------------------------- | ---------------------------- |
-| active  | `homepage_content`、`about_content`、`site_settings`                              | `key`                        |
-| active  | `services`、`cases`、`news`、`service_pages`                                       | `slug`                       |
-| active  | `faq_pages`                                                                     | `key`                        |
-| active  | `faqs`、`warehouses`、`about_history`、`about_honors`                              | `content_key`                |
-| active  | `publications`                                                                  | `issue`                      |
-| legacy  | `homepage_stats`、`case_details`、`case_stats`、`service_stats`、`service_features` | 无新增稳定身份要求；保留现有 Schema        |
-| private | `contact_leads`                                                                 | Directus 主键；不参与 seed 或内容记录迁移 |
+| 生命周期 | 集合                                                                                | 稳定身份                                  |
+| -------- | ----------------------------------------------------------------------------------- | ----------------------------------------- |
+| active   | `homepage_content`、`about_content`、`site_settings`                                | `key`                                     |
+| active   | `services`、`cases`、`news`、`service_pages`                                        | `slug`                                    |
+| active   | `faq_pages`                                                                         | `key`                                     |
+| active   | `faqs`、`warehouses`、`about_history`、`about_honors`                               | `content_key`                             |
+| active   | `publications`                                                                      | `issue`                                   |
+| legacy   | `homepage_stats`、`case_details`、`case_stats`、`service_stats`、`service_features` | 无新增稳定身份要求；保留现有 Schema       |
+| private  | `contact_leads`                                                                     | Directus 主键；不参与 seed 或内容记录迁移 |
 
 `label`、`name`、`title`、`sort` 和 `year` 都是可编辑展示字段，不能作为 seed 身份。active 集合
 若缺少新的稳定身份，`setup-cms` 会返回 `migration_required`，不会在有数据的集合上直接创建
-必填且唯一的字段；legacy 集合不再为了理想模型新增 `content_key` 或 `metric_key`。
+必填且唯一的字段；legacy 集合不再为了理想模型新增 `content_key` 或 `metric_key`。不存在的
+legacy 集合也不会被 setup 重建；若已存在，setup 只读取并验证其历史结构。
 
 每个集合还具有明确的 seedPolicy：active 为 `normal`，legacy 为 `migration_only`，private 为
 `never`。因此 legacy 集合仍保留当前 Schema 供旧数据核对和必要回滚使用，但不写入 seed、
@@ -104,8 +108,9 @@ Directus 暂时不可用，页面会使用代码中的审核版 FAQ，避免整�
 
 ## Setup、Verify 与迁移边界
 
-- `scripts/setup-cms.mjs` 只创建缺失集合、安全的缺失字段与关系，并补齐缺失 seed；不会删除
-  集合、字段或记录，也不会覆盖运营人员已编辑正文。它不是 Singleton 内容同步工具：只有稳定
+- `scripts/setup-cms.mjs` 只创建缺失的 active 集合、安全的缺失字段与关系，并补齐缺失 seed；不会删除
+  集合、字段或记录，也不会覆盖运营人员已编辑正文。legacy 集合缺失时保持缺失，存在时只验证。
+  它不是 Singleton 内容同步工具：只有稳定
   身份和全部 seed 管理业务字段都为空时才会写入完整初始 seed；身份相同的现有 Singleton 不会
   回填正文，身份缺失或不一致且已有内容时返回 `singleton_migration_required`；
 - 已存在字段的类型、必填、唯一、默认值、singleton、关系目标或 `on_delete` 与契约不一致时，
@@ -113,8 +118,12 @@ Directus 暂时不可用，页面会使用代码中的审核版 FAQ，避免整�
 - 经过确认的旧字符串文件字段只允许出现在 `CMS_LEGACY_FIELD_ALLOWLIST`，verify 会持续输出
   删除条件明确的 legacy 警告；
 - `npm run cms:migrate-contract` 默认 dry-run。真实写入必须显式增加 `--apply`，并设置
-  `CONFIRM_CMS_CONTRACT_MIGRATION=2026-08-cms-hardening`；写入前会在 Git 忽略的
+  `CONFIRM_CMS_CONTRACT_MIGRATION=2026-10-cms-maintenance`；写入前会在 Git 忽略的
   `output/cms-migrations/` 保存受影响集合快照及 SHA-256；
+- 正常 setup、seed 和 contract migration 只使用 `faq_page`；旧 `page_key` 的核对或修复只能由
+  `node scripts/migrate-faq-page-key.mjs` 显式执行。该工具遇到空、未知或悬空关系时输出
+  `manual_mapping_required`，不会猜测映射；`--apply` 还要求
+  `CONFIRM_FAQ_PAGE_KEY_MIGRATION=2026-10-cms-maintenance`，先保存快照并在二次读取为零变更后结束；
 - 迁移只接受已有稳定 slug/key/issue、审核 seed key 或人工确认的“集合记录 ID → 稳定 key”
   映射。每个 ID 映射必须同时声明 collection、record ID、target stable key 与 expected-before
   精确断言；ID 对应记录不符合审核预期时输出 `manual_mapping_required`。文本或 hash 只能验证
@@ -132,10 +141,10 @@ Directus 暂时不可用，页面会使用代码中的审核版 FAQ，避免整�
 - Directus API 的多次写入不具备单一数据库事务保证。迁移因此采用 fail-fast、逐步幂等、先备份
   和可安全重跑策略，不宣称原子性。
 
-真实 staging CMS 已完成144项 active 稳定身份与首页 claimKey 迁移，legacy 映射为0；迁移后
-`npm run cms:verify` 为0 failure，运行权限审计通过，第二次 `npm run cms:migrate-contract`
-为0项内容变更、0项 Schema 变更。后续只有新增真实模型变更时才重新进入 dry-run、备份、人工审核、
-显式 apply 和迁移后 Verify 流程。
+历史 staging 记录仅适用于当时的模型版本，不能作为本候选版本的真实验证证据。本次真实变更前必须
+准备数据库与附件成对备份、加密异机副本和隔离恢复；现有历史 backup/restore 脚本假定 legacy
+集合存在，不能据其成功推断缺失 legacy 会被重建。完成恢复演练、受控 dry-run、显式 apply 和迁移后
+strict verify 后，才能更新此处的真实验收记录。
 
 答案支持 `{{partnerBrands}}`、`{{warehouseArea}}`、`{{shippingAccuracy}}` 等事实占位符。
 渲染时由 `src/lib/claims.ts` 替换为当前审核值，避免品牌数量、仓储面积和时效口径在

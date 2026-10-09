@@ -92,7 +92,7 @@ describe('CMS stable seed identities', () => {
     ).rejects.toThrow(/duplicate current identity.*faqs/i)
   })
 
-  it('resolves FAQ relationships by faq_pages.key without trusting cross-environment IDs', async () => {
+  it('resolves FAQ relationships by faq_pages.key and omits the legacy field from normal seeds', async () => {
     const runtime = createCmsSetupRuntime({
       request: vi.fn(async () => [{ id: 73, key: 'home' }]),
     })
@@ -101,14 +101,12 @@ describe('CMS stable seed identities', () => {
         {
           content_key: 'faq-home-service-fit',
           faqPageKey: 'home',
-          page_key: 'legacy-home',
         },
       ])
     ).resolves.toEqual([
       {
         content_key: 'faq-home-service-fit',
         faq_page: 73,
-        page_key: 'legacy-home',
       },
     ])
   })

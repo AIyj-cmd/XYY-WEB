@@ -30,7 +30,9 @@
 
 旧文章没有英文栏位时保持中文页面、中文列表和 sitemap 的既有行为；它们只是不出现在 `/en/news`。英文分类由网站按既有中文分类本地化，不需重复维护分类字段。
 
-本地 schema 定义包含定向脚本 `scripts/migrate-english-news-schema.mjs`。它默认 dry-run，只打印拟创建的英文 group alias 与字段；只有同时传入 `--apply` 和 `CONFIRM_ENGLISH_NEWS_SCHEMA=apply` 才会写入 CMS。当前任务没有执行该脚本，也没有进行任何 CMS、数据库或内容写入。
+本地 schema 定义包含定向脚本 `scripts/migrate-english-news-schema.mjs`。它默认 dry-run，只打印拟创建的英文 group alias 与字段；真实 apply 还必须提供与 `DIRECTUS_URL` 相同的 `--target`、明确的 `--confirm-environment` 和相同的 `CONFIRM_ENGLISH_NEWS_SCHEMA` 标记，随后重新读取并要求零变更。当前任务没有执行该脚本，也没有进行任何 CMS、数据库或内容写入。
+
+新闻批量写入仍未启用。标准 Directus 12.1.1 的纯 `news:create` 凭据可能在创建后返回 204 空响应，无法满足现有 `data[].id` 接口契约；网站会返回 502，但记录可能已创建。不得为规避该限制增加 writer 的 read/update/delete 权限或改用高权限 token。只有完成数据库与附件配对备份、隔离恢复、精确目标授权，并证明目标平台可保持现有返回契约后，才可用 `scripts/verify-news-permissions.mjs --target=<target>` 预览所需最小权限，并按任务唯一 slug 回读、精确 ID 清理和二次回读零残留。
 
 未来获得准确授权后，按以下顺序上线：
 
@@ -41,3 +43,5 @@
 5. 验收线上公开、语言配对和撤下行为。
 
 语言配对只在两个可访问版本都存在时输出；遵循 [Google 的 localized versions 指引](https://developers.google.com/search/docs/specialty/international/localized-versions)。后台分组采用 Directus 的 `group-detail` alias 约定（[Directus group interface](https://raw.githubusercontent.com/directus/directus/main/app/src/interfaces/group-detail/index.ts)）；初始化时会先创建 group alias，再创建归组字段。
+
+`verify-news-permissions.mjs` 默认只输出本地最小权限预览；只有显式 `--check` 才用写入凭据只读请求 `/permissions/me`，并验证实际有效权限及可创建字段。预览不构成平台权限证明，缺少凭据、非 2xx 或任一额外权限都会失败且不输出 token。

@@ -1,0 +1,96 @@
+import type { ServicePageStaticConfigRaw } from './types'
+
+export const RAW_SERVICE_PAGE_CONFIG = {
+  slug: 'houzheng-xiufu',
+  title: '服装瑕疵修复｜9大修复专区，修复成功率{{repairSuccessRate}}｜新亦源',
+  description:
+    '新亦源服装瑕疵修复设9个专区，覆盖清污、缝补、配饰、熨烫、鞋类修复、干湿洗和补换标识；修复成功率{{repairSuccessRate}}，完成后二次质检。',
+  eyebrow: '服装瑕疵修复 · 九大专业分区',
+  h1: '服装瑕疵修复与二次上架',
+  h1sub: '瑕疵修复成功率{{repairSuccessRate}}，专属9区修复分区',
+  stats: [
+    {
+      stat: '{{repairSuccessRate}}',
+      label: '瑕疵修复成功率',
+      sub: '专属9区修复分区',
+    },
+    {
+      stat: '{{recognizableAnomalies}}',
+      label: '可识别缺陷',
+      sub: '7大类缺陷覆盖',
+    },
+    {
+      stat: '{{returnTurnaround}}',
+      label: '质检+二次上架',
+      sub: '整体流程',
+    },
+    {
+      stat: '{{returnInspectionAnnual}}',
+      label: '年退货质检量',
+      sub: '公司运营统计',
+    },
+  ],
+  features: [
+    {
+      title: '清污处理',
+      desc: '使用相应设备和处理方案应对粉底印、锈斑、油渍、领口发黄等已确认异常，并根据面料特点控制工艺，结果以二次质检为准。',
+    },
+    {
+      title: '面料修复',
+      desc: '针对起毛起球、抽纱、破洞等异常进入对应修复流程，结合商品材质和客户标准评估处理方式，完成后复检。',
+    },
+    {
+      title: '缝线修复',
+      desc: '处理断线、爆口、跳线等异常，按商品线色和工艺要求完成修复，并依据客户确认标准复检。',
+    },
+    {
+      title: '配饰修复',
+      desc: '针对掉钻等配饰异常进行处理，所需配件由品牌提供或确认，完成后按约定验收要求复检。',
+    },
+    {
+      title: '鞋类专项修复',
+      desc: '针对开胶等已确认异常进入鞋类修复专区，按确认工艺完成处理后进行二次质检。',
+    },
+    {
+      title: '标识与异味处理',
+      desc: '处理吊牌与码唛不一致、潮湿异味等异常，完成标识核对或异味处理后，按客户确认标准进入后续流程。',
+    },
+  ],
+  breadcrumbLabel: '后整修复',
+  heroDesc:
+    '根据新亦源运营统计，后整修复服务分为6类，实际设置9个专业修复专区；修复完成后进行二次质检，并按客户确认标准进入后续流程。',
+  imgSrc: '/w-post-processing.webp',
+  imgAlt: '后整修复 — 专业服装瑕疵修复',
+  contentDesc:
+    '适合需要对退货商品进行分级、修复和二次利用的鞋服品牌。后整修复服务分为6类，实际设置自动熨烫、手工熨烫、异味晾晒、手工清污、配饰修复、缝补、鞋类修复、干湿洗、补换标识9个专业修复专区。根据新亦源运营统计，修复成功率{{repairSuccessRate}}；具体标准按客户销售渠道定制。',
+  featuresLabel: '修复服务类型',
+  presentation: 'repair',
+  variant: 'repair-workshop',
+  faqs: [
+    {
+      contentKey: 'faq-houzheng-xiufu-01',
+      q: '后整修复包含哪些具体服务？',
+      a: '后整修复服务分为6类，实际设置9个专业修复专区。已确认异常示例包括粉底印、锈斑、油渍、领口发黄、起毛起球、抽纱、破洞、断线、爆口、跳线、掉钻、开胶、吊牌与码唛不一致、潮湿异味。修复后统一二次质检，具体标准按客户销售渠道定制。',
+    },
+    {
+      contentKey: 'faq-houzheng-xiufu-02',
+      q: '新亦源的瑕疵修复成功率是多少？',
+      a: '根据新亦源运营统计，瑕疵修复成功率为{{repairSuccessRate}}，指进入修复流程的商品中，经处理和二次质检后达到品牌约定上架等级的比例。商品是否达到二次上架标准，具体按客户销售渠道定制。',
+    },
+    {
+      contentKey: 'faq-houzheng-xiufu-03',
+      q: '后整修复和退货质检是什么关系？',
+      a: '两者通常联动运行。退货质检先对商品进行缺陷识别和A/B+/B-/C分级，需要处理的商品会流转至后整修复专区；修复完成后再做二次质检。具体分级与处置标准按客户销售渠道定制，质检、修复与二次上架在{{returnTurnaround}}流程内完成。',
+    },
+    {
+      contentKey: 'faq-houzheng-xiufu-04',
+      q: '高档服装（真丝/羽绒/皮草）可以修复吗？',
+      a: '需要先评估材质、瑕疵类型和品牌标准。针对真丝、羽绒或皮草等高价值商品，新亦源会在处理前与品牌确认工艺、风险和验收规则；不适合仓内修复的商品将按品牌授权分流。',
+    },
+    {
+      contentKey: 'faq-houzheng-xiufu-05',
+      q: '修复后货品的质量由谁保证？',
+      a: '修复后需按品牌确认的质检标准进行二次质检，通过后才可上架；项目可采用AQL抽检规则及A/B+/B-/C分级设置判定方式。未通过商品按约定继续修复或转入相应等级，关键操作记录可按项目约定用于追溯。',
+    },
+  ],
+} as const satisfies ServicePageStaticConfigRaw

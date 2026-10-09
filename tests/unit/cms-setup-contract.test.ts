@@ -4,6 +4,48 @@ import { fieldTranslations } from '../../scripts/data/cms-admin-translations.mjs
 import { createCmsSetupRuntime } from '../../scripts/lib/cms-setup-runtime.mjs'
 
 describe('CMS setup contract enforcement', () => {
+  const legacyDefinition = {
+    name: 'legacy_sample',
+    lifecycle: 'legacy' as const,
+    identity: { fields: [] },
+    seedPolicy: 'migration_only' as const,
+    fields: [{ field: 'legacy_value', type: 'string', meta: {}, schema: {} }],
+    relations: [],
+  }
+
+  it('preserves an absent legacy collection without creating it', async () => {
+    const request = vi.fn(async (method: string, path: string) => {
+      if (method === 'GET' && path === '/collections') return []
+      throw new Error(`unexpected request ${method} ${path}`)
+    })
+    const runtime = createCmsSetupRuntime({ request })
+
+    await expect(runtime.createCollection(legacyDefinition)).resolves.toEqual({
+      status: 'legacy_missing',
+    })
+    expect(request).toHaveBeenCalledTimes(1)
+    expect(request).not.toHaveBeenCalledWith('POST', '/collections', expect.anything())
+  })
+
+  it('only verifies a present legacy collection and blocks incompatible structure', async () => {
+    const request = vi.fn(async (method: string, path: string) => {
+      if (method === 'GET' && path === '/collections') {
+        return [{ collection: 'legacy_sample', meta: { singleton: false } }]
+      }
+      if (method === 'GET' && path === '/fields/legacy_sample') {
+        return [{ field: 'legacy_value', type: 'integer', meta: {}, schema: {} }]
+      }
+      if (method === 'GET' && path === '/relations/legacy_sample') return []
+      throw new Error(`unexpected request ${method} ${path}`)
+    })
+    const runtime = createCmsSetupRuntime({ request })
+
+    await expect(runtime.createCollection(legacyDefinition)).rejects.toThrow(
+      /migration_required:field_type.*legacy_sample.*legacy_value/i
+    )
+    expect(request.mock.calls.every(([method]) => method === 'GET')).toBe(true)
+  })
+
   it('performs no writes when an existing collection already matches the contract', async () => {
     const request = vi.fn(async (method: string, path: string) => {
       if (method === 'GET' && path === '/collections') {

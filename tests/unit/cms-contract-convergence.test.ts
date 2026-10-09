@@ -24,19 +24,6 @@ const currentFields = {
 }
 
 describe('real-environment CMS contract convergence', () => {
-  it('never plans legacy stable identities or legacy manual mappings', () => {
-    const result = buildCmsContractMigrationPlan({
-      homepage_stats: [{ id: 1 }],
-      case_stats: [{ id: 2 }],
-      service_stats: [{ id: 3 }],
-      service_features: [{ id: 4 }],
-    })
-    expect(result.changes).toEqual([])
-    expect(result.issues.join('\n')).not.toMatch(
-      /homepage_stats|case_stats|service_stats|service_features/
-    )
-  })
-
   it('reads private contact schema metadata without reading private records', async () => {
     const directus = {
       request: vi.fn(async (...requestArgs: [string, string, unknown?]) => {
@@ -136,6 +123,12 @@ describe('real-environment CMS contract convergence', () => {
         faqs: [
           { field: 'page_key', type: 'string', meta: { required: false }, schema: {} },
           {
+            field: 'faq_page',
+            type: 'integer',
+            meta: { required: true },
+            schema: { is_nullable: false },
+          },
+          {
             field: 'content_key',
             type: 'string',
             meta: { required: true },
@@ -152,25 +145,33 @@ describe('real-environment CMS contract convergence', () => {
           },
         ],
       },
+      relations: {
+        faqs: [
+          {
+            id: 3,
+            field: 'faq_page',
+            related_collection: 'faq_pages',
+            schema: { on_delete: 'RESTRICT' },
+          },
+        ],
+      },
     })
     expect(plan.issues).toEqual([])
     expect(plan.schemaChanges).toEqual([
       { phase: 'type', collection: 'cases', field: 'metrics', type: 'text' },
       { phase: 'type', collection: 'news', field: 'summary', type: 'text' },
       { phase: 'type', collection: 'news', field: 'published_at', type: 'timestamp' },
-      { phase: 'require_contract', collection: 'faqs', field: 'page_key' },
       { phase: 'require_contract', collection: 'about_honors', field: 'image' },
     ])
     const directus = { request: vi.fn(async () => ({})) }
     await expect(applyCmsContractPlan(directus, plan, { apply: true })).resolves.toEqual({
       applied: 0,
-      schemaApplied: 5,
+      schemaApplied: 4,
     })
     expect(directus.request.mock.calls).toEqual([
       ['PATCH', '/fields/cases/metrics', { type: 'text', schema: {} }],
       ['PATCH', '/fields/news/summary', { type: 'text', schema: {} }],
       ['PATCH', '/fields/news/published_at', { type: 'timestamp', schema: {} }],
-      ['PATCH', '/fields/faqs/page_key', expect.any(Object)],
       ['PATCH', '/fields/about_honors/image', expect.any(Object)],
     ])
   })

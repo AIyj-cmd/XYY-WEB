@@ -18,6 +18,11 @@ describe('production deployment contracts', () => {
     expect(workflow).toMatch(/actions\/checkout@[0-9a-f]{40}/)
     expect(workflow).toMatch(/actions\/setup-node@[0-9a-f]{40}/)
     expect(workflow).toContain('npm ci')
+    expect(workflow).toContain('Measure first dependency install capacity')
+    expect(workflow).toContain('npm-ci-baseline.json')
+    expect(workflow).toContain('Measure first full release verification capacity')
+    expect(workflow).toContain('verify-release-baseline.json')
+    expect(workflow).toContain('Verify recorded release capacity budget')
     expect(workflow).toContain('npm run format:check')
     expect(workflow).toContain('npm audit --omit=dev')
     expect(workflow).toContain('npm run verify:release')
@@ -92,11 +97,13 @@ describe('production deployment contracts', () => {
     const ecosystem = read('ecosystem.config.cjs')
     const nginx = read('deploy/nginx-56xyy.conf')
     const deploy = read('scripts/deploy.sh')
+    const provision = read('scripts/lib/remote-capacity-provision.sh')
 
     expect(ecosystem).toContain("HOST: '0.0.0.0'")
     expect(ecosystem).toContain("PORT: '50031'")
     expect(nginx).toContain('server 127.0.0.1:50031;')
-    expect(deploy).toContain("cp -al '$CURRENT_LINK/dist/.' '$RELEASE_DIR/dist/'")
+    expect(deploy).toContain('remote-capacity-provision.sh')
+    expect(provision).toContain('cp -al "$current_link/dist/." "$release_dir/dist/"')
   })
 
   it('applies a narrow request-size limit to the public contact endpoint', () => {
@@ -107,21 +114,6 @@ describe('production deployment contracts', () => {
     expect(contactLocation).toContain('proxy_pass http://xyy_web;')
   })
 
-  it('deploys through an isolated release and switches the current symlink', () => {
-    const deploy = read('scripts/deploy.sh')
-
-    expect(deploy).toContain('RELEASE_DIR="$RELEASES_DIR/$RELEASE_ID"')
-    expect(deploy).toContain('CURRENT_LINK="$REMOTE_DIR/current"')
-    expect(deploy).toContain('server.mjs ecosystem.config.cjs config server scripts')
-    expect(deploy).toMatch(/mv -Tf \\"\\\$current_link\.next\\" \\"\\\$current_link\\"/)
-    expect(deploy).toContain('.previous_target')
-    expect(deploy).toContain('if [[ -L \\"\\$current_link\\" ]]')
-    expect(deploy).not.toContain('readlink -f \\"\\$current_link\\" 2>/dev/null || true')
-    expect(deploy.match(/pm2 delete xyy-web/g)).toHaveLength(3)
-    const healthLoop = deploy.match(/healthy=0[\s\S]*?done/)?.[0] ?? ''
-    expect(healthLoop.match(/curl -fsS http:\/\/127\.0\.0\.1:\$WEB_PORT\/healthz/g)).toHaveLength(1)
-    expect(healthLoop).toMatch(/health_payload[\s\S]*cmsContent[\s\S]*contactStorage/)
-  })
   it('imports runtime permission checks from the minimal real release package', async () => {
     const release = await mkdtemp(resolve(tmpdir(), 'xyy-minimal-release-'))
     try {

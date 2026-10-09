@@ -1,6 +1,7 @@
 import { collectionTranslations, fieldTranslations } from '../data/cms-admin-translations.mjs'
 import { CMS_LEGACY_FIELD_ALLOWLIST } from '../../config/cms-contract.mjs'
 import { assertCollectionSnapshot } from './cms-contract-runtime.mjs'
+import { verifyLegacyCollection } from './cms-legacy-collection-verification.mjs'
 import { createCmsNavigationRuntime, metadataIncludes } from './cms-navigation-runtime.mjs'
 import { createCmsSeedRuntime } from './cms-seed-runtime.mjs'
 
@@ -22,28 +23,15 @@ export function createCmsSetupRuntime(directus) {
     }
   }
 
-  /**
-   * @param {{
-   *   name: string,
-   *   icon?: string,
-   *   meta?: Record<string, unknown>,
-   *   fields?: Array<{field: string, type: string, meta?: Record<string, unknown>, schema?: Record<string, unknown>}>,
-   *   aliases?: Array<{field: string, type: 'alias', meta?: Record<string, unknown>}>,
-   *   relations?: Array<{collection: string, field: string, related_collection: string, schema?: Record<string, unknown>, meta?: Record<string, unknown>}>,
-   *   lifecycle?: 'active' | 'legacy' | 'private',
-   *   identity?: { fields: string[] },
-   *   seedPolicy?: 'normal' | 'migration_only' | 'never'
-   * }} definition
-   */
   async function createCollection({
     name,
     icon = 'database',
     meta = {},
-    fields = [],
-    relations = [],
-    aliases = [],
+    fields = /** @type {any[]} */ ([]),
+    relations = /** @type {any[]} */ ([]),
+    aliases = /** @type {any[]} */ ([]),
     lifecycle = 'active',
-    identity = { fields: [] },
+    identity = { fields: /** @type {string[]} */ ([]) },
     seedPolicy = 'never',
   }) {
     console.log(`\n[collection] ${name}`)
@@ -52,6 +40,17 @@ export function createCmsSetupRuntime(directus) {
     const exists = Boolean(existingCollection)
     const translations = collectionTranslations(name)
     const collectionMeta = { icon, ...meta, ...(translations && { translations }) }
+    if (lifecycle === 'legacy') {
+      if (!exists) {
+        console.log(`  preserving absent legacy collection ${name}`)
+        return { status: 'legacy_missing' }
+      }
+      return verifyLegacyCollection(
+        directus,
+        { name, meta, fields, relations, identity, lifecycle, seedPolicy },
+        existingCollection
+      )
+    }
     if (!exists) {
       await directus.request('POST', '/collections', {
         collection: name,

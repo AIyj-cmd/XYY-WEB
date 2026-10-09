@@ -13,6 +13,8 @@ if (!baseUrl || !token) {
 }
 
 const directus = createDirectusAdminClient({ baseUrl, token })
+const inventory = await directus.request('GET', '/collections')
+const collectionNames = new Set(inventory.map(({ collection }) => collection))
 const lifecycleCounts = { active: 0, legacy: 0, private: 0 }
 const failures = []
 const warnings = []
@@ -21,6 +23,10 @@ console.log(`CMS schema version: ${CMS_SCHEMA_VERSION}`)
 
 for (const contract of CMS_COLLECTION_CONTRACTS) {
   lifecycleCounts[contract.lifecycle] += 1
+  if (contract.lifecycle === 'legacy' && !collectionNames.has(contract.name)) {
+    console.log(`ok collection ${contract.name} lifecycle=legacy status=legacy_missing`)
+    continue
+  }
   try {
     const { result, records } = await loadCollectionSnapshot(directus, contract)
     warnings.push(...result.warnings)

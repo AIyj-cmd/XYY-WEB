@@ -3,6 +3,7 @@ import { randomBytes } from 'node:crypto'
 
 const port = process.env.PLAYWRIGHT_FORMAL_PORT ?? '4401'
 const origin = `http://127.0.0.1:${port}`
+const artifactDirectory = process.env.PLAYWRIGHT_FORMAL_ARTIFACTS_DIR ?? 'output/playwright-formal'
 const integrationToken = randomBytes(32).toString('base64url')
 const environment =
   `DIRECTUS_URL=http://127.0.0.1:1 ` +
@@ -16,6 +17,7 @@ export default defineConfig({
   timeout: 30_000,
   expect: { timeout: 5_000 },
   fullyParallel: true,
+  outputDir: `${artifactDirectory}/test-results`,
   reporter: [['list']],
   use: {
     ...devices['Desktop Chrome'],

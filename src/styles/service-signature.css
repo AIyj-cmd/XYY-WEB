@@ -1,3 +1,4 @@
 @import './service-signature/base.css';
 @import './service-signature/delivery-desk.css';
-@import './service-signature/responsive.css';
+@import './service-signature/responsive-tablet.css';
+@import './service-signature/responsive-mobile.css';
