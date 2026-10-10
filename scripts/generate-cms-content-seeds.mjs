@@ -10,6 +10,11 @@ import { parseVariable } from './lib/source-seed-extractor.mjs'
 import { loadRawServicePageConfig } from './lib/service-page-static-config-source.mjs'
 import { assertKnownClaimReferences } from './lib/claim-reference-validation.mjs'
 
+const args = process.argv.slice(2)
+if (args.length > 1 || (args.length === 1 && args[0] !== '--check')) {
+  throw new Error('Usage: node scripts/generate-cms-content-seeds.mjs [--check]')
+}
+const checkOnly = args[0] === '--check'
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const read = (file) => readFileSync(resolve(root, file), 'utf8')
 
@@ -36,6 +41,7 @@ const unifiedCaseSeeds = APPROVED_CASE_SEEDS.map((item) => {
         name: detail.name,
         full_name: detail.fullName,
         accent: detail.accent,
+        img: detail.image,
         case_description: detail.description,
         stats: detail.stats,
       }
@@ -149,14 +155,18 @@ const raw = Object.entries(exports)
   .join('\n\n')
 const outputPath = resolve(root, 'scripts/data/approved-cms-page-seeds.mjs')
 const prettierConfig = (await resolveConfig(outputPath)) ?? {}
-writeFileSync(
-  outputPath,
-  await format(`// Generated file. Do not edit manually.\n${raw}\n`, {
-    ...prettierConfig,
-    parser: 'babel',
-    filepath: outputPath,
-  })
-)
+const output = await format(`// Generated file. Do not edit manually.\n${raw}\n`, {
+  ...prettierConfig,
+  parser: 'babel',
+  filepath: outputPath,
+})
+if (checkOnly) {
+  if (readFileSync(outputPath, 'utf8') !== output) {
+    throw new Error('Generated CMS content is stale; run npm run cms:generate-content-seeds.')
+  }
+} else {
+  writeFileSync(outputPath, output)
+}
 console.log(
-  `Generated ${servicePageSeeds.length} service pages, ${publications.length} publications, ${caseDetailSeeds.length} case details and about/site content.`
+  `${checkOnly ? 'Verified' : 'Generated'} ${servicePageSeeds.length} service pages, ${publications.length} publications, ${caseDetailSeeds.length} case details and about/site content.`
 )

@@ -216,8 +216,20 @@ bash scripts/deploy.sh
 - 账号、Token、数据库口令和服务器路径由部署团队管理，不进入仓库。
 
 ```bash
-# 首次建模或补齐缺失集合（仅使用短期管理级 Token）
+# 首次创建模型、初始化基础内容并核验（仅使用短期管理级 Token）
 node scripts/setup-cms.mjs
+
+# 明确只建结构：不会导入网站基础内容，页面尚未具备完整内容
+node scripts/setup-cms.mjs --schema-only
+
+# 已有模型时，预览基础内容初始化计划（只有读取请求）
+npm run cms:init-content
+
+# 确认目标后，补入缺失基础内容并回读检查
+npm run cms:init-content -- --apply
+
+# 只读检查首次安装所需的内容身份、发布状态和关键字段
+npm run cms:check-content
 
 # FAQ 源文案变化后，重新生成初始化种子并提交审核
 npm run cms:generate-faq-seeds
@@ -243,6 +255,18 @@ npm run cms:repair-service-page-structure
 # 备份后执行定向修复，并对结果回读验证
 npm run cms:repair-service-page-structure -- --apply
 ```
+
+`cms:init-content` / `cms:check-content` 要求显式设置 `DIRECTUS_URL` 和
+`DIRECTUS_TOKEN`，不会自动加载 `.env`。内容初始化要求模型已经建立；不会建表或修改权限。
+基础内容来自仓库版本化种子：12 个集合共 171 条记录，包括首页配置、联系方式、9 个服务详情、
+14 期白皮书目录、85 条 FAQ，以及公司介绍、仓点、案例、历程和荣誉。新闻文章、询盘和历史上传
+文件不属于这份内容包。首次安装选择“基础内容初始化”，即可保留这些网站原有内容而不迁移历史业务数据。
+
+初始化只创建缺失身份，保留已有编辑、草稿和主动留空的字段。已有记录不完整时会报告缺项，
+不会直接覆盖；重复执行完整内容初始化不会写内容。显式重跑会补回已删除的种子身份，因此不要
+在普通 Web 部署或网站启动时自动执行。`cms:check-content` 用于首次基础内容验收，不是要求运营
+长期保留全部初始案例和页面的日常发布规则。`/healthz` 检查依赖连通性与权限，不能代替内容验收。
+多次 API 写入不是事务，中断后应查看失败信息，再明确执行补缺重试。
 
 服务专题结构修复只处理仓配下拉菜单对应的 9 条 `service_pages`，不会新建记录或改动
 其他字段。它会在 dry-run 和 apply 前将当前 `service_pages` 快照写入 Git 忽略的

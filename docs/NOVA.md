@@ -3237,3 +3237,55 @@ Result：**APPROVED_FOR_FINAL_RECORD_COMMIT_AND_ORDINARY_MAIN_PUSH**。无 CRITI
 Remaining Risks：线上浏览器证据为 Chromium 桌面/手机模拟视口，未覆盖真机、Safari、微信浏览器、生产站、真实询盘提交或 CMS/数据库写入；9 个既有 skip 保留。GitHub push 与 CI 在本 Review 时尚未发生，不能提前声明成功。推送后必须实读本地 HEAD、main、origin/main、GitHub main、工作区和 CI 状态；CI 运行中或失败须按真实状态报告，不能写成通过。
 
 Handoff：交 Sol 冻结六文档最终差异、创建普通记录提交并普通 push `origin/main`。上线应用身份仍为 eb05b8f；最终 Git SHA 预期是其纯文档子提交。push 后只需做 Git/CI/工作区最终回读并保存 ignored 证据；若六文档外出现差异、应用树改变、非快进或远端 main 漂移，本批准失效并停止推送。
+
+### XYY-20261010-08 — 基础内容初始化最终 Review
+
+Task ID：`XYY-20261010-08`（MEDIUM）；Result：**APPROVED**。
+
+Review Scope：审阅相对 HEAD `31395e15ae24d14899367e5e2ba69e7187762a97` 的初始化 CLI、四个内容模块、setup 参数与调用链、Directus admin、种子生成器/生成文件、英文案例绑定、测试和 README/CMS 文档；读取任务合同、当前状态与相关角色记录。仅追加本日志及 ignored `nova-offline-probe.json`，未修改实现或测试，保留原有与并行差异。Graphify 仅查询已有本地图谱（输出预算1000 tokens），关系线索再由当前源码核实，无构图或远端模型调用。
+
+Architecture / Scope：PASS。新内容入口仅使用 active、normal、非空受审核种子，当前为12集合171条；默认 preview 与 check 只发 GET，apply 才调用既有 POST/PATCH 种子运行时。全量读取及身份/重复/FAQ关系预检在首次写入之前，逐集合写前重读；setup 明确区分 schema-only 与基础内容模式，原模型/权限职责仍留在 setup，新 CLI 不访问 news、private、legacy、Schema 或权限路径，普通 deploy 未接入内容初始化。
+
+Safety / Contract：PASS。合法 `data:null` 保留；非法 JSON/envelope、不可访问集合和异常身份明确失败，内容入口输出受控错误而不暴露服务端错误正文。R2 已把未保存 Singleton 限定为 null、空数组或显式 id:null 且业务字段为空的默认对象；缺 id/undefined 立即阻断，已有编辑、草稿、已保存空字段均不覆盖或重新发布。FAQ 使用真实回读的页面 ID；最终对全部集合回读身份、发布状态、关键字段及关系，并按实际存在记录统计，未把接受请求当作持久化成功。
+
+Content / Maintainability：PASS。生成文件只有六条案例 img 改为已有本地图；固定初始源摘要只增加精确审核快照，原生产摘要与英文文案保持，十类受保护源字段变化仍被拒绝。生成器 --check 比较格式化内容且不写文件；非法参数和虚拟差异测试保留只读断言。模块边界与现有运行时一致，无新增依赖、部署旁路或无关重构。
+
+Test Coverage Review：PASS。复核 Luna 原始定向日志18 files/135 tests，缺 id Singleton 独立首轮真实失败与 R2 13/13通过，最终类型660 files/0 errors/0 warnings/4既有hints、目标格式/Lint/维护性832文件与 diff-check；浏览器本地合成CMS共24组通过，包括6案例本地封面、14白皮书及 About 历史10/仓点12/荣誉15/FAQ8。Nova 未重复全套测试或浏览器，只追加内存离线风险探针：逐一模拟12集合接受写入却丢弃保存，全部报告不完整或明确关系失败；5种非法HTTP200 envelope/数据形状全部写前失败，合法data:null保持。探针清空环境，fetch只允许合成响应，net/http/https连接API全部阻断；首次错误使用不存在的 `/usr/bin/node` 在执行前exit127，改用已安装Node后exit0，无实现变更。Sol最终核对Luna记录的7个源码hash全部匹配；Nova本轮 `git diff --check` 通过。
+
+Remaining Risks：多次API写入非事务，失败可能留下部分新增内容，显式重试只补缺失身份；集合重读不构成事务锁，不代表并发写入隔离。首次验收不要求长期保留种子内容，也不替代真实目标CMS及文件可用性验证。证据仅为离线内存/loopback与Chromium模拟视口，未访问真实服务器、CMS、数据库、.env、外网或执行提交/推送/部署，不代表新服务器已初始化；完整verify与发布门禁本轮未执行。交Sol完成本地任务验收。
+
+## Review Summary
+
+| Severity | Count | Status |
+| -------- | ----- | ------ |
+| CRITICAL | 0     | pass   |
+| HIGH     | 0     | pass   |
+| MEDIUM   | 0     | pass   |
+| LOW      | 0     | pass   |
+
+Verdict: APPROVE — 本地源码与模拟验收通过，无阻断finding。
+
+### XYY-20261010-09 — GitHub 同步提交前最终 Review
+
+Task ID：`XYY-20261010-09`（MEDIUM）；Result：**APPROVED_FOR_NORMAL_MAIN_COMMIT_AND_PUSH**。
+
+Review Scope：核对任务合同、AGENTS、当前状态与任务07/08/09记录，以及相对 HEAD `31395e15ae24d14899367e5e2ba69e7187762a97` 的31路径。当前分支main、暂存区为空，本地HEAD与已刷新origin/main为0/0；远端main和push权限的实时核对由Sol提供。本次仅追加本日志及 ignored `output/git-sync/xyy-20261010-09/nova/precommit-review.json`，未改实现/测试、暂存/提交/推送或访问服务器、真实CMS/数据库及.env。
+
+Scope / Security：PASS。31路径精确匹配Sol候选清单，为任务08已批准实现和测试、相应文档、保留的任务07记录及任务09合同/日志；无环境文件、依赖、构建、备份或ignored证据。Nova重新扫描当前新增diff与未跟踪候选文件，高置信私钥/GitHub/AWS/阿里云密钥模式零命中，未输出或保存秘密正文。现有CI只验证与上传报告，没有部署任务；CI、依赖、部署工具及权限配置没有本次差异。
+
+Identity / Architecture：PASS。Nova逐项复核21个非文档候选的SHA-256：与Sol提交前快照及Luna实际通过verify的候选manifest全部一致，文件mode亦无差异；任务08保存的7个关键源码hash全部精确匹配。Luna1544文件候选/工作区比对为0差异，runtime digest为 `7363cc6a19b1f37a74b76d96f27befa0c9d551bededcac84127e018e7a7ff36e`。本次没有改变任务08已批准的内容保护、回读验收或英文源绑定，实现Review继续有效；验证后的变化仅为对应所有者追加工作记录。
+
+Test Coverage Review：PASS。亲读本轮 `verify-r2.log`、命令/最小环境、退出结果与候选比对：完整 `npm run verify` exit0，660类型文件0 errors/0 warnings/4既有hints、ESLint、832维护性文件、69/103资源、cache patch、125 files/836 tests及SSR build全部通过；preverify/prebuild真实容量门禁均通过。R1整体node_modules软链接导致patch精确路径失败的exit1保留，R2仅复制既有依赖修正隔离目录后从头验证，无安装或应用修改。Sol全量format:check原始日志为PASS；Nova本轮diff-check及新增日志段格式检查通过。未重复全套测试或任务08已完成的24组浏览器，因候选业务字节未变且无新风险。
+
+Handoff / Limits：允许Sol将精确31路径冻结入index，复核最终tree/parent后创建普通提交并正常推送origin/main；本批准是质量闸门，推送权限来自用户本轮明确授权，不允许force、amend或夹带额外路径。提交与推送尚未由Nova执行或见证；完成后必须实际回读HEAD、origin/main、GitHub main、ahead/behind及干净工作树，CI按实际状态报告。此批准不含部署、真实CMS初始化、数据库或权限操作，不能将Git同步解释为服务器内容已修复。
+
+## Review Summary
+
+| Severity | Count | Status |
+| -------- | ----- | ------ |
+| CRITICAL | 0     | pass   |
+| HIGH     | 0     | pass   |
+| MEDIUM   | 0     | pass   |
+| LOW      | 0     | pass   |
+
+Verdict: APPROVE — 精确候选可正常提交并推送main，无阻断finding。

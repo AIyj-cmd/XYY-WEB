@@ -4,7 +4,11 @@ import { CASE_FAQS } from '@/data/cases/faqs'
 import type { Case, FaqItem } from '@/lib/directus'
 
 import type { CaseClaimPageScope } from '@/lib/claims/cases'
-import { PUBLISHED_CASE_SOURCE_DIGESTS, reviewedCaseSourceDigest } from './case-sources'
+import {
+  INITIAL_CASE_SOURCE_DIGESTS,
+  PUBLISHED_CASE_SOURCE_DIGESTS,
+  reviewedCaseSourceDigest,
+} from './case-sources'
 import { ENGLISH_CASE_COPY, ENGLISH_CASE_FAQS, resolveEnglishCaseStats } from './cases-copy'
 
 export type EnglishCaseDiagnostic = {
@@ -28,7 +32,13 @@ function caseDiagnostic(item: Case): EnglishCaseDiagnostic | undefined {
   const expectedFallback = fallbackSourceDigests.get(item.slug)
   const expectedPublished =
     PUBLISHED_CASE_SOURCE_DIGESTS[item.slug as keyof typeof PUBLISHED_CASE_SOURCE_DIGESTS]
-  if (sourceDigest !== expectedFallback && sourceDigest !== expectedPublished) {
+  const expectedInitial =
+    INITIAL_CASE_SOURCE_DIGESTS[item.slug as keyof typeof INITIAL_CASE_SOURCE_DIGESTS]
+  if (
+    sourceDigest !== expectedFallback &&
+    sourceDigest !== expectedPublished &&
+    sourceDigest !== expectedInitial
+  ) {
     return { slug: item.slug, reason: 'stale-source' }
   }
 }

@@ -13,7 +13,7 @@ export function createDirectusAdminClient({ baseUrl, token }) {
   }
 
   async function request(method, path, body, options = {}) {
-    const { allowStatuses = [], unwrapData = true, warnOnly = false } = options
+    const { allowStatuses = [], unwrapData = true, warnOnly = false, requireData = false } = options
     const response = await fetch(`${normalizedUrl}${path}`, {
       method,
       headers,
@@ -26,7 +26,10 @@ export function createDirectusAdminClient({ baseUrl, token }) {
       try {
         payload = JSON.parse(text)
       } catch {
-        throw new Error(`${method} ${path}: Directus returned invalid JSON`)
+        throw Object.assign(new Error(`${method} ${path}: Directus returned invalid JSON`), {
+          status: response.status,
+          code: 'invalid_json',
+        })
       }
     }
 
@@ -34,12 +37,19 @@ export function createDirectusAdminClient({ baseUrl, token }) {
       const message = payload?.errors?.[0]?.message || `${response.status} ${response.statusText}`
       if (warnOnly) {
         console.warn(`  [warn] ${method} ${path} → ${message}`)
-        return unwrapData ? (payload?.data ?? payload) : payload
+        return unwrapData && payload && Object.hasOwn(payload, 'data') ? payload.data : payload
       }
-      throw new Error(`${method} ${path}: ${message}`)
+      throw Object.assign(new Error(`${method} ${path}: ${message}`), { status: response.status })
     }
 
-    return unwrapData ? (payload?.data ?? payload) : payload
+    if (requireData && (!payload || !Object.hasOwn(payload, 'data'))) {
+      throw Object.assign(new Error(`${method} ${path}: Directus data envelope is required`), {
+        status: response.status,
+        code: 'invalid_envelope',
+      })
+    }
+
+    return unwrapData && payload && Object.hasOwn(payload, 'data') ? payload.data : payload
   }
 
   return {

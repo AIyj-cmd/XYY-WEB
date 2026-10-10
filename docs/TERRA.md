@@ -2098,3 +2098,15 @@ Status: CODE DONE（待 Luna 独立验证与 Nova Review）
 - `consultation-service-finder` E2E 移除结果、GET 选择器、入口和 finder 几何断言，保留案例上下文、用户需求模板、失败重试、旧查询参数预选和四宽表单无横溢覆盖。当前模板仍输出 `SKU/订单规模：`，故该断言未改。
 - 自检 PASS：目标文件 `npx prettier --check`、`npx vitest run tests/unit/conversion-source.test.ts`（1 file / 7 tests）及 `npm run typecheck`（647 files，0 errors / 0 warnings / 4既有hints）；目标 diff `git diff --check` 通过。未运行 E2E、浏览器或完整 verify，未启动/停止现有服务，未提交、推送、部署或产生外部写入。
 - 交 Luna：使用最终源码独立复核六路由的 1440/390 删除效果、联系表单和旧查询兼容，以及本 E2E 文件保留的模板/案例/重试/几何覆盖；交 Nova 审查删除范围与旧 URL 兼容未受影响。
+
+### XYY-20261010-08 — 基础内容预览、补缺与首次验收
+
+Status: CODE DONE（待 Luna 独立验证与 Nova Review）
+
+- 新增 `cms:init-content`（默认 GET 预览、显式 `--apply` 补缺）和 `cms:check-content`（只读首次验收）；新入口只从显式 `DIRECTUS_URL` / `DIRECTUS_TOKEN` 取配置，不自动加载 `.env`。严格拒绝未知/冲突参数，`--help` 无凭据可用，URL 内嵌凭据不接受，错误仅保留受控集合/字段/身份及 HTTP 状态码，不输出服务端正文或令牌。
+- 内容范围由 active、normal、非空受审核种子约束为12集合171条，排除新闻、询盘与 legacy。完成全部集合读取、响应/稳定身份/重复/FAQ映射预检后才开始内容写入，并在每集合写前再读当前状态。复用既有种子运行时的最小 POST/PATCH；有 id 的既有单例、草稿、空字段和运营编辑均保持，未持久化的 `null` 或 `id:null + key:main + 空业务字段` 可初始化；缺 id 但已有业务内容明确拒绝。
+- 回读按真实记录统计 required/created/existing/missing，验证必要身份、published、页面关键文本与列表结构、FAQ关联及审核 Claims 键；允许运营合法文案与上传附件替代静态路径。内容缺失或不完整时逐项报告，check/apply 非零，preview 保持成功预览。API 写入非事务，异常仅报告已接受请求数及未完成回读，不宣称回滚或持久化成功。
+- `setup-cms.mjs` 新增显式 `--schema-only` 与参数校验；该模式不写种子且明确内容未初始化/验收。正常 setup 仍执行原有 schema/权限工作，权限同步调整到内容写入之前，再执行补缺和首次回读；没有把完整 setup 描述为零写预检，也未接入 Web 部署。Directus admin 最小兼容修正保留 `data:null`，新增可选严格 data envelope 校验和脱敏错误元数据，默认其他调用行为保持。
+- 自测先验证新模块缺失与 `data:null` 原有错误均为红灯，再实现。目标 Vitest 7文件67测试 PASS（基础初始化、CLI、admin、singleton、stable identity、setup及setup contract）；目标 Prettier、ESLint与 `check:maintainability`（832文件）PASS。测试完全使用内存 fake 请求/无凭据 CLI，没有执行真实 setup/init/sync、访问外部 CMS/服务器/数据库、读取环境秘密、提交或部署；未运行全量构建/verify/发布门禁，显示效果与独立故障测试交 Luna。
+
+- 同 ID R2（Luna FAIL 返工）：将单例未保存判定收紧为 `null` / `[]` 或显式 `id:null` 且安全空业务默认对象。缺少 `id` 或 `id:undefined` 的对象现以 `missing_record_id` 在全量读取预检时阻断，任何内容写入为零；已保存 id 和显式 null 的保护分支保持。Terra 新增两项测试先复现错误写入/假 ready，再修复；7文件69测试 PASS，目标 Prettier、ESLint、scoped diff PASS。测试基表名称改用 `Object.entries` 消除动态索引的 TS7053，类型复核交 Luna；未修改 Luna 独立测试、访问外部系统或执行真实工具。

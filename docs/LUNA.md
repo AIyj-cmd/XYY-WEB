@@ -5549,3 +5549,35 @@ Tests performed：针对 staging `https://wz.tomatopia.top`，核对应用 sourc
 Regression coverage：覆盖已发布移除服务选择入口的中英文首页、产品/服务页及联系页；目标按钮、文案、模块与锚点持续消失；联系信息与表单可见；桌面/移动 HTTP、H1、主内容、横溢和脚本异常均通过。此前提交前 `npm run verify` 的 647 文件 typecheck、119 files/762 tests 与 build 结果见本 Task ID 前一段及对应 `precommit-verify` 证据。
 
 Remaining risks：本轮仅验证 staging 公网只读页面，不覆盖真机、Safari/微信浏览器、生产站、真实表单提交或 CMS/数据库写入；未扩展到合同外路由或外部链接。
+
+### XYY-20261010-08 — Luna 基础内容初始化独立验收
+
+Task ID：`XYY-20261010-08`；Result：**PASS（本地隔离，R2 复测通过）**。
+
+Tests performed：独立新增 `tests/fixtures/cms-initialization.ts` 与三份 `cms-initialization-acceptance*.test.ts`，使用12集合白名单的内存/loopback HTTP 模拟器。集中定向 Vitest 首轮 **18 files / 135 tests passed**；覆盖默认预览与check只GET、空数据171行显式apply、FAQ关系、回读ready、二次零内容写入、编辑/草稿/留空保护、`id:null`空默认Singleton、已保存空Singleton保护、400/401/403/500/非法响应/重复身份/缺FAQ主键预检零写、写后缺项非成功、未知参数与缺凭据无网络、种子/英文绑定/原生产指纹回归。所有新初始化请求均受fixture端点白名单约束，无news/private/legacy/Schema/permission请求。
+
+独立追加 `fields=*` 却缺 `id` 的Singleton响应回归，首次真实复现 **FAIL**：`{key:'main',status:'draft'}` 被当成新记录PATCH并报告ready。已返回Sol，由Terra修复；Luna最终复测faults文件 **13/13 PASS**（包含新增回归），未自行修改实现。类型首轮另发现本人fixture与Terra测试各一项TS7053，分别由所有者修复；最终Astro check **660 files / 0 errors / 0 warnings / 4 existing hints**。目标Prettier、ESLint、维护性 **832 files** 与 `git diff --check` 均通过。没有运行完整verify、发布构建或全量E2E。
+
+Browser evidence：使用专用Astro dev `127.0.0.1:4398` 与合成CMS `127.0.0.1:4408`，双语cases、产品/服务、鞋服云仓、联系、白皮书 × 1440×900/390×844 共 **20/20 PASS**。案例四组均6卡、6张本地封面decode成功，英文卡片无中文；白皮书四组均14条；联系页表单与电话四组齐全；全部HTTP200、H1/正文非空、无横向溢出、无pageerror。随后补测 `/about`、`/en/about` 双端 **4/4 PASS**：公司概述非空，历史10、仓点12、荣誉15、FAQ8，16次面板打开均可见且文字非空。合成CMS共91次请求，全部GET，禁止集合/路径0；浏览器外部或写请求0。
+
+隔离方式：Astro/Vitest专用配置 `envDir:false`；运行时preload禁用 `process.loadEnvFile` 并限制fetch到loopback，使用最小环境与虚拟Token；未读取真实.env。浏览器使用已缓存Playwright CLI，未安装依赖，命名会话只允许loopback GET/HEAD。首次Astro配置URL类型错误和历史output目录watch ENOSPC属于验收harness问题，修正专用配置后启动成功；About首次networkidle等待因背景视频超时，改用load事件后4组通过，未修改应用或放宽内容断言。
+
+证据：[luna-validation.json](../output/cms-initialization/xyy-20261010-08/luna-validation.json)、[target-tests.log](../output/cms-initialization/xyy-20261010-08/target-tests.log)、[singleton-projection-r1.log](../output/cms-initialization/xyy-20261010-08/singleton-projection-r1.log)、[singleton-projection-r2.log](../output/cms-initialization/xyy-20261010-08/singleton-projection-r2.log)、[typecheck-r3.log](../output/cms-initialization/xyy-20261010-08/typecheck-r3.log)、[browser-results.json](../output/cms-initialization/xyy-20261010-08/browser-results.json)、[about-results.json](../output/cms-initialization/xyy-20261010-08/about-results.json)。已目视复核中文案例桌面、英文案例手机、中文About仓网桌面及英文About仓网手机代表截图；全套截图位于同目录。本次日志新增段落与Prettier输出一致；整份LUNA日志的历史空行/下划线格式差异保留，不扩大修改历史记录。
+
+Remaining risks：仅代表本地模拟HTTP和Chromium视口验证，不代表真实新服务器已初始化或真机效果。未访问外部服务器、真实CMS/数据库/询盘，未提交、推送、部署或修改权限。验收结束已关闭本任务4398/4408与命名浏览器 `xyy-20261010-08-luna`；复核原4321/4322仍监听，其他会话保持。既有与并行实现改动完整保留。
+
+### XYY-20261010-09 — Luna GitHub 同步前完整 verify 门禁
+
+Task ID：`XYY-20261010-09`；Result：**PASS（R2，本地隔离候选）**。
+
+Tests performed：将当前1544份受版本管理/本次新增文件按原字节与mode复制到ignored候选目录，不复制真实.env。复用已安装依赖和任务05使用的真实容量基线，项目/TMPDIR/测试产物均位于设备66310；R2可用63013957632 bytes、5747616 inodes，门槛3221225472 bytes、4798 inodes，preverify/prebuild容量门禁实际通过，未使用测量或跳过标志。以最小环境、两个不同虚拟Token、Directus/询盘loopback地址、npm offline与禁止外部fetch的preload，实际运行 `CI=true npm run verify`。
+
+R2于 `2026-10-10T11:09:37.280Z–11:10:53.250Z` 完成，exit **0**：Astro typecheck **660 files / 0 errors / 0 warnings / 4 existing hints**；ESLint通过；maintainability **832 project files**；公共/部署资源 **69/103**（扫描526源码文件）；本地缓存补丁检查通过；全量Vitest **125 files / 836 tests passed**；Astro SSR build输出 **Complete!**。日志中的单行 `Terminated` 来自测试运行期间，随后完整Vitest汇总与总命令均成功，不作实现失败判断。
+
+R1隔离失败已保留：最初复用整个node_modules软链接，导致候选的 `require.resolve('http-cache-semantics')` 指向原仓vendor路径，cache-patch以 `runtime_does_not_resolve_local_patch` exit1；尚未运行单测/build。经Sol同意，R2仅把既有依赖复制进新的隔离候选并保留相对vendor链接，未安装依赖、改动原依赖或实现，随后从头重跑完整verify通过。
+
+Candidate identity：R1/R2的1544文件all-files SHA-256均为 `cec2907f8ff482a2a29c03d02591a7e5f52c9852320cdfcc041f7b9d8a233d24`；排除可追加记录文档后的runtime digest为 `7363cc6a19b1f37a74b76d96f27befa0c9d551bededcac84127e018e7a7ff36e`。验证完成后逐文件比对候选与原始manifest、当前工作区的字节和mode，均无差异；本条日志在该比对之后追加，不改变已验证业务代码。证据见 [candidate-check.json](../output/git-sync/xyy-20261010-09/luna/candidate-check.json) 与 [candidate-r2-manifest.json](../output/git-sync/xyy-20261010-09/luna/candidate-r2-manifest.json)。
+
+Evidence：[verify-r2.log](../output/git-sync/xyy-20261010-09/luna/verify-r2.log)、[verify-r2.exit](../output/git-sync/xyy-20261010-09/luna/verify-r2.exit)、[verify-r2-command.json](../output/git-sync/xyy-20261010-09/luna/verify-r2-command.json)、[verify-r2-result.json](../output/git-sync/xyy-20261010-09/luna/verify-r2-result.json)、[capacity-preflight-r2.json](../output/git-sync/xyy-20261010-09/luna/capacity-preflight-r2.json)；首轮原始失败保留为同目录 `verify.log` / `verify.exit`。
+
+Remaining risks：仅证明本次候选通过完整本地verify，不代表GitHub CI、推送或部署成功；未重复任务08浏览器、不运行verify:release。Luna未改实现/配置、Git暂存/提交、真实.env、CMS/数据库/表单或外部系统；未启停原4321/4322，最后复核两端口原PID仍监听。交Sol → Nova候选复核后再由Sol操作正常提交/推送。

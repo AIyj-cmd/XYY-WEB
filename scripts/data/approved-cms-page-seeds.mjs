@@ -9,7 +9,7 @@ export const APPROVED_UNIFIED_CASE_SEEDS = [
     details:
       'UR 是中国头部快时尚女装品牌，天猫超品日创服饰类目GMV新纪录，全球门店超400家。新亦源为其提供全渠道仓储，RFID全面上线，支持唯品会JIT/JITX。',
     tags: ['合作自2017年', 'B2C+B2B全渠道', 'RFID全面上线', '唯品会JIT/JITX'],
-    img: 'https://images.unsplash.com/photo-1445205170230-053b83016050?w=800&q=75&auto=format&fit=crop',
+    img: '/images/cases/ur.webp',
     name: 'UR',
     full_name: 'Urban Revivo（UR）',
     accent: '#2563EB',
@@ -67,7 +67,7 @@ export const APPROVED_UNIFIED_CASE_SEEDS = [
     details:
       '聚焦28–38岁独立都市高知女性，欧洲中世纪宫廷奇幻美学，产品均价800–4500元。新亦源提供B2C+B2B联动仓储及仓内质检修复。',
     tags: ['B2C+B2B联动', '仓内质检修复'],
-    img: 'https://images.unsplash.com/photo-1516762689617-e1cffcef479d?w=800&q=75&auto=format&fit=crop',
+    img: '/images/cases/maxrieny.webp',
     name: 'MAXRIENY',
     full_name: '玛克茜妮（MAXRIENY）',
     accent: '#7C3AED',
@@ -125,7 +125,7 @@ export const APPROVED_UNIFIED_CASE_SEEDS = [
     details:
       '国内内衣基础品类代表性品牌。新亦源提供多渠道订单聚合、新货退货质检、达播寄样、全链路一体化服务。',
     tags: ['多渠道接入', '达播寄样', '退货质检'],
-    img: 'https://images.unsplash.com/photo-1512436991641-6745cdb1723f?w=800&q=75&auto=format&fit=crop',
+    img: '/images/cases/xingmian.webp',
     name: '幸棉',
     full_name: '幸棉',
     accent: '#0D9488',
@@ -179,7 +179,7 @@ export const APPROVED_UNIFIED_CASE_SEEDS = [
     details:
       '美一（MEIYI）是专注跨境全品类女装的服饰品牌。新亦源为其提供 B2B+B2C 一体化仓储服务，涵盖收货验货、新货质检、包装整理、库存上架及发货打包全流程，年综合处理量达百万件级别。',
     tags: ['跨境出海', '质检+包装+上架'],
-    img: 'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=800&q=75&auto=format&fit=crop',
+    img: '/images/cases/meiyi.webp',
     name: '美一(MEIYI)',
     full_name: '美一（MEIYI）',
     accent: '#D97706',
@@ -217,7 +217,7 @@ export const APPROVED_UNIFIED_CASE_SEEDS = [
     details:
       'ROMI STUDIO 是创立于 2010 年的中国极简轻奢女装品牌，总部位于深圳，2019 年正式进入电商领域，2024 年抖音 GMV 达 22.5 亿元成为抖音 IP 女装 TOP1。',
     tags: ['直播电商', '快速补货', '达播寄样'],
-    img: 'https://images.unsplash.com/photo-1554881070-74595ca2b74c?w=800&q=75&auto=format&fit=crop',
+    img: '/images/cases/romi-studio.webp',
     name: 'ROMI STUDIO',
     full_name: 'ROMI STUDIO',
     accent: '#DB2777',
@@ -250,7 +250,7 @@ export const APPROVED_UNIFIED_CASE_SEEDS = [
     details:
       '知名棉麻生活服装品牌，多年线上线下融合运营。新亦源提供全渠道一盘货仓储，实现多平台库存统一。',
     tags: ['全渠道一盘货', '线上线下融合'],
-    img: 'https://images.unsplash.com/photo-1448070299168-7dede6dc70b4?w=800&q=75&auto=format&fit=crop',
+    img: '/images/cases/inman.webp',
     name: '茵曼',
     full_name: '茵曼（Inman）',
     accent: '#B7791F',

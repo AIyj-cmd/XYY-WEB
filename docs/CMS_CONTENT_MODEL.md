@@ -108,11 +108,21 @@ legacy 集合也不会被 setup 重建；若已存在，setup 只读取并验证
 
 ## Setup、Verify 与迁移边界
 
-- `scripts/setup-cms.mjs` 只创建缺失的 active 集合、安全的缺失字段与关系，并补齐缺失 seed；不会删除
-  集合、字段或记录，也不会覆盖运营人员已编辑正文。legacy 集合缺失时保持缺失，存在时只验证。
-  它不是 Singleton 内容同步工具：只有稳定
-  身份和全部 seed 管理业务字段都为空时才会写入完整初始 seed；身份相同的现有 Singleton 不会
-  回填正文，身份缺失或不一致且已有内容时返回 `singleton_migration_required`；
+- `scripts/setup-cms.mjs` 创建缺失的非 legacy 模型、安全的缺失字段与关系；其中 private
+  `contact_leads` 仅涉及模型，不初始化记录。默认补齐基础内容并执行首次内容检查；显式
+  `--schema-only` 跳过内容初始化并提示尚未完成。不会删除集合、字段或记录，也不会覆盖运营人员
+  已编辑正文。legacy 集合缺失时保持缺失，存在时只验证。
+  已保存的同身份 Singleton 不回填正文；未保存的空默认对象可以初始化，已有业务内容或异常身份
+  则明确失败，不能猜测覆盖。
+- `npm run cms:init-content` 在已有模型上预览基础内容计划，只有 GET；`--apply` 才补入缺失
+  身份并回读检查，`npm run cms:check-content` 只读验收。三者要求显式的 `DIRECTUS_URL` 和
+  `DIRECTUS_TOKEN`，不加载 `.env`，不创建模型或同步权限，也不访问新闻、询盘和 legacy 数据。
+  所有基础集合读取预检成功后才开始写入；响应错误、重复身份或关系异常明确失败。已有编辑、草稿、
+  已保存的空字段保持，未发布或不完整的必需记录会报告缺项，不自动发布或覆盖。
+- 首次内容验收检查种子业务身份、发布状态、页面必要字段和 FAQ 关联，不要求运营文案与种子逐字
+  相同。完整内容重复初始化无内容写入；显式重跑仍会补回缺失的种子身份，因此普通部署和网站启动
+  不运行它。运营主动删除内容后不应把首次基线检查当作日常发布条件。`cms:verify` 的模型核验与
+  `/healthz` 的依赖检查均不能代替首次内容完整性验收。
 - 已存在字段的类型、必填、唯一、默认值、singleton、关系目标或 `on_delete` 与契约不一致时，
   setup 和 verify 均阻断并输出 `migration_required`；
 - 经过确认的旧字符串文件字段只允许出现在 `CMS_LEGACY_FIELD_ALLOWLIST`，verify 会持续输出
@@ -150,7 +160,7 @@ strict verify 后，才能更新此处的真实验收记录。
 渲染时由 `src/lib/claims.ts` 替换为当前审核值，避免品牌数量、仓储面积和时效口径在
 后台文案中逐渐失真。新增占位符前应先进入事实注册表并通过审核。
 
-初始化命令会导入 17 个页面、100 条现有 FAQ：
+当前基础内容包包含 12 个非空集合共 171 条记录，其中 FAQ 为 14 个页面、85 条问答：
 
 ```bash
 npm run cms:generate-faq-seeds
@@ -158,7 +168,8 @@ DIRECTUS_URL=https://example.com/cms DIRECTUS_TOKEN='<admin-token>' node scripts
 ```
 
 初始化只补齐缺失页面和问题，不会覆盖后台已经编辑的记录。Singleton 运营内容应通过 Directus
-后台、受控内容同步或显式迁移维护，不能依赖 setup 更新。初始化完成后会查找
+后台、受控内容同步或显式迁移维护，不能依赖 setup 更新。基础内容入口不迁移真实新闻文章、
+历史询盘或上传文件。默认 setup 会核对
 `Website Content Read-Only` 策略，并为主契约中的13个 active 运行集合和 `directus_files` 补齐只读动作；发布状态
 继续由网站查询显式过滤，文件只经站内已发布引用代理交付，5个 legacy 集合和 `contact_leads` 不进入内容读取权限。
 若策略使用了其他名称，可设置 `DIRECTUS_CONTENT_POLICY_NAME`；也可以直接设置

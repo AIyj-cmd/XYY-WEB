@@ -49,7 +49,9 @@
     "test:lhci:all": "npm run test:lhci:desktop && npm run test:lhci:mobile",
     "crux": "node scripts/crux.mjs",
     "audit": "npm audit --omit=dev",
-    "verify": "npm run typecheck && npm run lint && npm run check:maintainability && npm run check:assets && npm run check:cache-patch && npm run test && npm run build"
+    "verify": "npm run typecheck && npm run lint && npm run check:maintainability && npm run check:assets && npm run check:cache-patch && npm run test && npm run build",
+    "cms:init-content": "node scripts/init-cms-content.mjs",
+    "cms:check-content": "node scripts/init-cms-content.mjs --check"
   },
   "engines": {
     "node": ">=22.12.0",

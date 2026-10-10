@@ -85,3 +85,31 @@ describe('Directus admin client', () => {
     )
   })
 })
+
+describe('Directus empty singleton envelopes', () => {
+  it('preserves data:null rather than returning the envelope', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue(new Response('{"data":null}', { status: 200 }))
+    )
+    const client = createDirectusAdminClient({
+      baseUrl: 'https://cms.example.com',
+      token: 'test-token',
+    })
+    await expect(client.request('GET', '/items/homepage_content')).resolves.toBeNull()
+  })
+
+  it('optionally requires a real data envelope for initialization reads', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue(new Response('{"unexpected":true}', { status: 200 }))
+    )
+    const client = createDirectusAdminClient({
+      baseUrl: 'https://cms.example.com',
+      token: 'test-token',
+    })
+    await expect(
+      client.request('GET', '/items/homepage_content', undefined, { requireData: true })
+    ).rejects.toMatchObject({ code: 'invalid_envelope', status: 200 })
+  })
+})

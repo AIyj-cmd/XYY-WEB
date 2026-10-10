@@ -2425,3 +2425,28 @@ Limits：本轮限Chrome152模拟视口及离线/helper验证，空内容schema�
 - Luna 上线终验 PASS：真实 staging 六路由 × 1440/390 共 12 组 HTTP 200、H1/主要内容可见、无横溢/pageerror、目标文案/模块/按钮/锚点为零；中英联系页联系方式与表单 4/4 保持，GET/HEAD-only 拦截器未观察到其他方法请求。Sol 已亲看线上手机首页和桌面联系页截图，服务内容完整、无删除残留空条；运行监听仍为 127.0.0.1:50031。
 - 纯发布结果记录提交前再次实际运行 `npm run verify`，exit 0：647 类型文件、0 errors/0 warnings/4 hints、119 文件/762 单测及 build 通过。README 仅更新本次实际部署日期/SHA/release 和已完成验证；其余业务文件与应用提交完全一致。当前记录为应用部署后的文档归档，线上应用身份仍绑定 eb05b8f；Nova 最终审查记录见同任务角色日志，最终 Git/CI 回读落在本任务 output 证据并于交付时实时说明。
 - 本轮未更改 CMS/数据库、环境文件、DNS/TLS/Nginx 或权限策略，未删除旧版本、未触碰正式站，未提交真实表单。验证边界为 Chromium 桌面/手机模拟视口；保留 9 个既有跳过和启动等待内短暂连接拒绝记录，不将其隐藏为从未发生。
+
+### XYY-20261010-07 — 测试站验收核对与本地分支清理
+
+- 本任务前置诊断涉及部署状态，按 HIGH 审证；收尾仅本地 Git 维护。用户澄清目标为既有 `wz.tomatopia.top` 测试站，并在确认测试站已完成验收后继续要求清理本地分支。任务 06 新服务器的未完成验收与任务 05 测试站的已完成验收已明确区分；本轮不恢复新服务器部署。
+- 测试站实读 `/version` 为 eb05b8f / `20261010T071221Z-eb05b8f`，`/healthz` 两依赖 ok，首页/联系页 HTTP 200；任务 05 六路由双端 12 组上线验收已有 PASS。GitHub CI `38035285808` 当前 completed/success，main/origin/main/GitHub main 均为 `31395e1`。
+- Luna 独立预检 PASS：目标本地分支唯一提交为 bd5395f，较 main 领先一个提交，47 文件差异；两个工作区均干净，GitHub 无该部署分支。为保留独有工作，Sol 先创建 ignored `output/branch-audit/xyy-20261010-07/native-bd5395f.bundle`，`git bundle verify` 通过，归档精确包含目标提交，前置提交为仍保留的 main 31395e1。
+- 将 `/home/yj/data/xyy-native-20261010-06` 固定在原提交 bd5395f 的 detached HEAD 后，已删除本地 `deploy/native-xyy-20261010-06` 分支名称。前后 HEAD/tree 相同，原工作树仍干净；没有删除目录、代码、提交对象或忽略文件，没有合并、改动 main 提交、推送、远端删除或部署。实际结果见 `branch-cleanup-result.json`，归档不入 Git。
+- 本轮只补充 DEV_STATE 和本日志，未提交。应用实现没有变化，因此不重跑应用测试、`npm run verify` 或发布门禁；Git 引用/工作区/归档一致性独立后验 Luna PASS，Nova 终审 APPROVED，本次两文档 diff 已审阅且 `git diff --check` 通过。归档位于本地 ignored 目录并依赖仍保留的 main 31395e1，不将其描述为已上传的远端备份。
+
+### XYY-20261010-08 — 本地基础内容初始化修复
+
+- MEDIUM；用户明确授权修复 `/home/yj/data/website` 本地代码。合同 `docs/plans/xyy-20261010-08-cms-initial-content.md`，流程 Terra → Luna → Terra R2 → Luna → Nova → Sol。起始 HEAD `31395e15ae24d14899367e5e2ba69e7187762a97`，既有脏文件仅 DEV_STATE/docs/SOL；追加本条前，两文件 SHA-256 与任务起始完全一致，原任务07记录保留。Graphify 旧图仅辅助定位，当前源码与本次证据为准。
+- 已实现 `cms:init-content` 默认 GET 预览、显式 `--apply` 补缺与回读、`cms:check-content` 只读验收；复用12集合171条受审核种子，不操作新闻、询盘、legacy、Schema 或权限。setup 保留原建模/权限职责，明确支持 schema-only，正常模式执行基础内容初始化及核验；普通 Web 部署不自动写内容。已有编辑、草稿和已保存留空字段保持，异常响应/身份/关系明确失败；完整内容重复初始化零内容写入。README/CMS 文档同步命令、边界与准确 FAQ 数量。
+- 内容包生成器将六个案例封面改为已有本地图，生成文件其余字段保持；增加精确初始案例英文源绑定，原生产绑定保留。生成器新增只读 `--check`，测试比较内容与 mtime，不再为验证可重复生成而重写工作树文件。未更改前端成功空响应保持为空的契约。
+- Luna 首轮定向18文件135项通过；追加缺 id Singleton 回归真实发现误判可初始化，Terra 将未保存对象限定为显式 id:null 的安全空对象，最终独立 faults 文件13/13通过，实施侧相关69项通过。类型最终660文件0 errors/0 warnings/4既有hints，目标格式/Lint/维护性832文件通过。中英文案例、服务、联系、白皮书及 About 桌面/手机共24组通过；六案例图片加载、14白皮书、历史10/仓点12/荣誉15/FAQ8均核验。Sol 亲看案例、服务、联系及英文About手机代表截图，核对 Luna 七个候选源码hash与当前文件一致。
+- Luna PASS、Nova APPROVED，无阻断finding；Nova额外离线探针确认12集合丢弃写入不会误报完整，5类非法成功响应写前失败。保留缺主键回归首轮失败、测试类型错误及独立预览配置/watch/networkidle环境问题的原始证据，修正后通过，不扩张为应用问题。证据 `output/cms-initialization/xyy-20261010-08/`；专用4398/4408与命名浏览器已关闭，原4321/4322保持。
+- Sol 验收本地结果，最终仅补充状态/日志并检查本轮文档diff、格式与空白。没有服务器连接、真实CMS/数据库/权限操作、环境文件变更、删除、提交、推送或部署；本轮未运行完整 verify/verify:release，不宣称真实新服务器已初始化。API多次写入非事务，异常可能留下部分新记录；显式重试只补缺失身份，已有不完整记录仅报告。后续真实目标应用须单独核对环境与授权。
+
+### XYY-20261010-09 — 基础内容修复 GitHub 同步
+
+- MEDIUM；用户明确要求推送GitHub并同步本地Git。合同 `docs/plans/xyy-20261010-09-github-sync.md`，目标为 `/home/yj/data/website` 的 main 与 `https://github.com/AIyj-cmd/XYY-WEB.git`；起始HEAD及fetch/ls-remote回读均为 `31395e15ae24d14899367e5e2ba69e7187762a97`，ahead/behind为0/0，暂存区为空。GitHub API确认默认分支main、仓库未归档、当前账号有push权限。只执行正常提交与快进推送，不扩展部署、服务器或真实CMS操作。
+- 候选31路径为已通过任务08独立验收的实现、测试和文档、保留任务07记录与本轮合同/角色日志。Sol文件清单检查未发现环境文件、依赖、构建、ignored证据或备份；新增内容高置信私钥、GitHub/AWS/阿里云密钥模式零命中。既有CI仅执行验证，无部署任务；本次未更改CI、依赖或环境配置。
+- Luna在数据盘隔离候选实际执行完整 `npm run verify`。R1的node_modules整体软链接使cache-patch精确路径检查失败，未到单测/build；保留原始exit1，仅修正验收目录，复制已有依赖并保留相对vendor链接，未安装或改动项目实现。R2复用匹配设备的真实容量基线，两次容量门禁通过，没有使用绕过标志；最小环境使用loopback和虚拟凭据，fetch阻止外部访问，npm offline。
+- R2实际exit0：660类型文件0 errors/0 warnings/4既有hints，ESLint、832文件维护性、69/103资源与cache-patch通过，125文件836单测通过，SSR构建Complete。Sol另行完整 `npm run format:check` exit0。本轮只需Git同步，未运行verify:release或重复任务08已通过的24组浏览器；发布构建/上线验收不能由本次Git推送替代。
+- 候选评审和精确身份记录见本任务Nova日志及 `output/git-sync/xyy-20261010-09/`。最终提交、origin/main、GitHub main与干净工作树由推送后回读记录，不在提交内自指尚未生成的SHA；工作记录随候选一次归档，后续同步回读仅保存ignored证据。授权范围没有真实CMS/数据库/权限或新服务器部署，基础内容在新服务器上的初始化状态不因本次推送改变。
