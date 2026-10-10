@@ -5619,3 +5619,17 @@ Capacity：沿用同设备66310的任务09真实成功峰值基线，preflight�
 Evidence：[summary.json](../output/release/xyy-20261010-16/luna/summary.json)、[verify.log](../output/release/xyy-20261010-16/luna/verify.log)、[verify-result.json](../output/release/xyy-20261010-16/luna/verify-result.json)、[format.log](../output/release/xyy-20261010-16/luna/format.log)、[candidate-check.json](../output/release/xyy-20261010-16/luna/candidate-check.json)、[capacity-preflight.json](../output/release/xyy-20261010-16/luna/capacity-preflight.json)。实际命令、环境摘要及退出码保存在同目录对应command/result/exit文件。
 
 Remaining risks：仅证明当前main候选通过本次提交前门禁；任务15已有页面证据未额外重复。尚未执行原生集成、verify:release或最终原生制品构建；等待Sol交付独立原生候选。未改应用/测试/原依赖、真实环境或Git状态，未连接真实端、提交/推送/部署；原4321/4322仍为PID1548/30469。
+
+#### XYY-20261010-16 — 原生发布门禁、最终制品及公网上线验收
+
+Result：**PASS**。原生候选在独立工作区 `/home/yj/data/xyy-native-update-20261010-16` 实际完成 `CI=true npm run verify:release`，exit0：类型 **691 files / 0 errors / 0 warnings / 4 hints**，维护性 **865 files**，Vitest **133 files / 896 tests**，E2E **263 passed / 9 skipped**，formal **4 passed**，首末build均通过。完整第二阶段记录已在原生merge提交内的LUNA日志保存。1589文件字节/mode门禁前后不变，runtime digest为 `2ea53964ed5f11db0c068016a9b6f93a8f5c6553981e2ccc3b8c22388c29ef4a`；任务15最终56文件和旧native兼容差异独立核对通过。
+
+Sol创建merge SHA `e64db32b4bd7208502ef11727fa6573bffe9c053` 后，Luna按确认参数运行最终 `npm run build`，于 `2026-10-10T13:54:58.274Z–13:55:03.789Z` exit0。`PUBLIC_SITE_URL=http://127.0.0.1:18080`、`PUBLIC_DIRECTUS_URL=http://127.0.0.1:18055`、staging、联系表单开启；实际构建CMS/询盘均loopback9虚拟环境，真实容量门禁通过。源码clean且runtime与release gate一致；dist **656文件**，inventory digest `83df06907b65a27226aee629c7b0a397d122383b781791af211a57e5e8a38091`。Luna未部署或修改原生tracked文件。
+
+收到Sol部署成功后，以Playwright CLI命名会话对 `http://8.138.148.179` 独立只读验证。浏览器 `/version` HTTP200精确匹配上述SHA和release `20261010T135801Z-e64db32`；`sitemap.xml`、`llms.txt`均HTTP200且四条新英文详情路径齐全。1440×900与390×844双端总览 **16次真实入口点击**均进入八个不同详情，两端第1/5项路径和H1均不同。
+
+四个新英文详情双端 **8/8 PASS**：HTTP200、完整英文主体/属性、标题/description、5条FAQ、媒体、页脚四链接和精确语言配对齐全，无横向溢出；均保持 `noindex, nofollow`。**40次FAQ实际展开、16次hero/bottom联系CTA实际点击、8组中英文往返**通过；中文对应页正文/5条FAQ完整、无横溢。联系页保持 `/en/contact`、正确 `from`/入口参数及 `#contact-form`，表单存在，Service为 `cloud-warehouse` / Apparel fulfilment预选；未填写或提交。跨境标题空格与华南 `Qiaotou Town` 补译在双端均通过。
+
+所有浏览器请求限定目标origin GET/HEAD，blocked/pageerror/consoleerror均0；未访问真实CMS/数据库/线索接口。保存 **18张截图**，亲看跨境双端、华南双端、华东手机hero和直播手机FAQ，未见新问题。截图目录为 [本轮公网页面证据](../output/playwright/xyy-20261010-16/)，主要结果为 [live/final-report.json](../output/release/xyy-20261010-16/luna/live/final-report.json)；完整原生门禁和制品结果见 [native/summary.json](../output/release/xyy-20261010-16/luna/native/summary.json)、[native-build-summary.json](../output/release/xyy-20261010-16/luna/native/native-build-summary.json)。Sol的健康双ok证据独立保存在 `public-after-deploy.json`，未冒记为Luna直接检查。
+
+Remaining risks：本次覆盖Chromium桌面/手机视口模拟及已列公开路径，不代表物理真机或其他浏览器；没有真实询盘提交。已关闭唯一自建浏览器 `xyy-20261010-16-live-luna`，未启动本地服务；原生工作区再次确认clean。Luna本次收尾仅追加主仓库本日志及ignored证据，未改应用、配置、依赖或其他角色修改，交Sol/Nova终验。

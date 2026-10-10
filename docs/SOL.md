@@ -2466,3 +2466,12 @@ Limits：本轮限Chrome152模拟视口及离线/helper验证，空内容schema�
 - 新建 `/home/yj/data/xyy-native-update-20261010-16`，分支 `deploy/native-update-20261010-16`，基于原生 `d92b0fd`；不重置原生任务10工作区及其既有脏文档。原生与main的依赖锁相同，可复用既有依赖，保留原生的运行兼容和运行时表单开关。
 - SSH只读核对主机 `l4`、机器标识与既有ECS一致，current为 `20261010T114608Z-d92b0fd`，四项服务active、Web/CMS/数据库内部监听，数据盘剩余182G。仅记录环境文件指纹与权限和明确非秘密的开关/公开URL，未读取输出令牌。现有健康偶发503，表现为contactStorage unreachable；使用服务器已配置令牌的三次只读线索健康请求均200/code0，耗时1101/2585/348ms，超过原1.5秒阈值的请求解释了波动。本次不调整超时或配置，不把既有波动隐藏为从未发生，切换仍要求双依赖ok。
 - Luna提交前独立隔离候选完整 `npm run verify` 及 `npm run format:check` 均exit0：679类型文件0 errors/0 warnings/4既有hints，127文件866单测，851维护性文件、69/103资源、cache patch和构建通过。1565候选文件内容/模式保持，运行源码指纹与当前工作区一致；不复制真实.env、不修改原依赖/4321/4322。此处只记录已完成的提交前门禁，原生完整发布验证及真实上线结果按后续证据收口。
+
+### XYY-20261010-16 — 实际发布结果补录
+
+- main 已普通提交/推送 `8c7517653e354d7e9d2c8fd4de155e1b909502e1`，本地 origin/main 与 GitHub API 回读一致；对应 Actions `38056303526` completed/success。原生新工作区合并为 `e64db32b4bd7208502ef11727fa6573bffe9c053`，准确双 parent 为原生 `d92b0fd2ec99499a1f7cb77ada7df246a62a0a18` 和 main 修复 `8c75176`；源码自动合并，仅四份角色日志追加冲突保留两侧记录。旧原生工作区的六个既有脏文件逐一保持原hash，不重置或清除。
+- Luna 原生完整 `CI=true npm run verify:release` exit0：691类型文件、0 errors/0 warnings/4既有hints，133文件896单测，865维护性文件、263 E2E通过/9既有跳过、4 formal及最终构建通过。源1589文件内容/模式不变，真实同设备容量门禁通过，无绕过；使用隔离loopback模拟依赖，无真实CMS/数据库/线索写入。干净合并提交后最终 `npm run build` exit0，运行源码摘要与门禁一致，656个dist文件固定为独立构建清单。
+- Sol 用准确Git源码与上述dist生成789文件原生制品，release `20261010T135801Z-e64db32`，manifest环境staging、CMS schema `2026-10-cms-maintenance`。制品SHA-256 `bc00ca62a8cde39d343371c09c93e33a6eff14745f56efa649d1b63c48c5591d`，runner `f4afeb56c00d0047dd087db048672ab7a37efc2e3396a32a72f852fd8a5acc43`；Nova逐文件确认源码/构建/manifest身份和包范围，批准准确Web切换。上传到数据盘后两指纹再次一致，未包含.env、凭据、node_modules或验收产物。
+- 经现有SSH在准确ECS执行获批runner，exit0、DEPLOY_OK；current为 `/data/xyy/releases/20261010T135801Z-e64db32`。公网/version、/healthz、/en/services均200，版本/发布身份精确，健康CMS与contactStorage双ok。环境文件SHA及root:xyy-web 640保持，锁文件一致；仅Web服务启动时间变化，CMS/Nginx/PostgreSQL三项启动时间完全保持。旧release `20261010T114608Z-d92b0fd`保留，没有删除数据或版本、调整配置、导入内容或提交真实表单。
+- 现有线索健康1.5秒超时导致的间歇503在部署前已明确记录；本次切换前后严格双ok通过，不将一次健康成功解释为远端接口永不波动。主机root会话与SSH控制连接已正常退出；最终公开页面双端验收通过；事实文档另行审阅提交。主要证据 `output/release/xyy-20261010-16/`，最终文档单独提交，不改变此次已验证和部署的运行源码。
+- Luna 公网1440/390双端16次总览实际点击全部通过，每端八个不同详情，第1/5的地址、标题与正文不同；四新详情共8组合、40次FAQ、16次联系CTA预选和8次中英往返通过，英语正文/地址/标题空格、无横向溢出及页脚链接正常。浏览器独立版本身份一致，sitemap/llms四新路径齐全，无blocked请求、page或console错误；只使用GET/HEAD，未提交真实线索。Sol亲看第五项桌面、跨境标题双端、直播桌面FAQ及华南手机FAQ截图，无新问题。证据为本任务luna/live报告及 `output/playwright/xyy-20261010-16/`。

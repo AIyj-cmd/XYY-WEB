@@ -3323,3 +3323,17 @@ Test Coverage Review：PASS。本次隔离候选实际执行 `npm run verify` ex
 Handoff / Limits：无 CRITICAL、HIGH、MEDIUM 或需返工的 LOW finding。允许 Sol 冻结精确 63 路径入 index，核对最终 tree 与唯一 parent 为上述基线后创建普通提交，并正常推送 GitHub `AIyj-cmd/XYY-WEB` 的 main；不允许 force、amend、夹带文件或忽略远端基线漂移。本结论是本阶段质量闸门，推送权限来自用户明确授权。推送后须实读 Git 引用、GitHub main、工作树和 CI 状态；目前不得记录为已成功推送。**原生部署批准仍待后续集成候选的完整 verify:release、最终制品身份、准确服务器与环境指纹、切换及回退脚本审核**；不得把本阶段批准扩大为部署门禁通过。
 
 Record Validation：本次新增日志段经 Prettier 内存对照一致，`git diff --check` 通过。未改写 NOVA 既有历史格式或其他角色文档。
+
+#### XYY-20261010-16 — 发布结果与最终文档提交 Review
+
+Result：**APPROVED_FOR_FINAL_RECORD_COMMIT_AND_ORDINARY_MAIN_PUSH**。本轮最终审查部署前完整门禁、准确制品与发布命令、实际部署结果、独立公网双端验收，以及 main 上 `DEV_STATE.md`、`docs/SOL.md`、`docs/LUNA.md` 和本日志四份文档差异。仅追加本日志和 ignored Nova 证据；未改应用、原生工作区 tracked 文件、配置或数据，未重跑完整测试或执行外部动作。
+
+Identity / Artifact：PASS。GitHub 应用提交为 `8c7517653e354d7e9d2c8fd4de155e1b909502e1`，对应 Actions `38056303526` 已 completed/success。原生部署提交 `e64db32b4bd7208502ef11727fa6573bffe9c053` 的 tree 为 `60a3ecb206e0b417f81af9bbb8f88ad93b86793e`，双 parent 精确为 d92b0fd 和上述 main；原生工作树干净。Nova 切换前独立读取压缩包全部 789 文件：656 个 dist 文件匹配 Luna 最终构建清单，其余应用源码匹配该提交，manifest 与 release `20261010T135801Z-e64db32`、staging 和 CMS schema 一致；无越界、链接、环境或依赖条目，文本高置信密钥模式零命中。制品 SHA-256 `bc00ca62a8cde39d343371c09c93e33a6eff14745f56efa649d1b63c48c5591d`、runner SHA-256 `f4afeb56c00d0047dd087db048672ab7a37efc2e3396a32a72f852fd8a5acc43` 与上传后实读一致。
+
+Deployment / Preservation：PASS。获批 runner 实际 exit 0、DEPLOY_OK，current 与公开 `/version` 精确匹配 e64db32 和上述 release；本机与公网 `/healthz` 均为 CMS、contactStorage 双 ok。web.env 字节指纹及 `root:xyy-web 640`、依赖锁保持；Nova 对照服务时间记录，只有 xyy-web 启动时间变化，Directus、Nginx、PostgreSQL 不变。旧 release 保留，旧原生工作区六个受保护脏文件独立重算全部匹配，未发生数据或版本删除。脚本和已审切换参数未包含真实 CMS 初始化、数据库或网络配置动作。
+
+Validation / Public UI：PASS。本次 main verify 为 127 files / 866 tests；原生完整 verify:release exit 0，691 类型文件 0 errors / 0 warnings / 4 既有 hints，133 files / 896 tests、263 E2E passed / 9 既有 skip、4 formal 与构建通过；准确合并提交上的最终原生 build exit 0，源码与门禁 runtime 指纹一致。亲读 Luna 公网原始 JSON 与最终报告：1440/390 两视口总览 16 次实际点击进入各自八个详情，第 1/5 项不同；四新详情 8/8、40 次 FAQ 展开、16 次联系入口预选、8 次语言往返及中文对应页通过，发现信息和页脚链接齐全。所有浏览器请求限定目标站 GET/HEAD，blocked/pageerror/consoleerror 均为零，未填写或提交询盘。Nova 另目视跨境手机首屏及华南桌面首屏截图，标题、按钮与图片完整，无新发现。
+
+Final Records / Limits：四文档只记录已发生事实，main 运行源码相对 8c75176 无差异；本次已完成的完整 verify 证据继续适用，没有新实现或失败依据要求重复测试。新增片段 Prettier 内存对照和 diff-check 通过，未改写历史文档格式。无 CRITICAL、HIGH、MEDIUM 或需返工的 LOW finding。允许 Sol 将精确四文档作为 8c75176 之上的普通记录提交并普通 push main；不得夹带源码、force 或 amend。提交后须实读最终 HEAD、origin/main、GitHub main、工作树及 CI 状态，不预报新文档提交的 CI 成功。该提交不改变已部署 e64db32 的身份，也不触发另一次部署。
+
+Remaining Risks：验证覆盖 Chromium 桌面/手机模拟视口及已列路径，不代表真机、其他浏览器或真实询盘链路验证。公开 URL 和 noindex 维持本次原生验收配置；既有线索接口偶发超过 1.5 秒引发健康 503 已在部署前记录，切换后一次双 ok 不代表该波动被修复。准入证据保存在原生工作区 `output/release/xyy-20261010-16/nova/`，部署与公网证据保存在主工作区同任务目录；最终只读审核证据位于主工作区 `nova/`。
