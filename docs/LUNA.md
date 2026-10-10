@@ -5581,3 +5581,41 @@ Candidate identity：R1/R2的1544文件all-files SHA-256均为 `cec2907f8ff482a2
 Evidence：[verify-r2.log](../output/git-sync/xyy-20261010-09/luna/verify-r2.log)、[verify-r2.exit](../output/git-sync/xyy-20261010-09/luna/verify-r2.exit)、[verify-r2-command.json](../output/git-sync/xyy-20261010-09/luna/verify-r2-command.json)、[verify-r2-result.json](../output/git-sync/xyy-20261010-09/luna/verify-r2-result.json)、[capacity-preflight-r2.json](../output/git-sync/xyy-20261010-09/luna/capacity-preflight-r2.json)；首轮原始失败保留为同目录 `verify.log` / `verify.exit`。
 
 Remaining risks：仅证明本次候选通过完整本地verify，不代表GitHub CI、推送或部署成功；未重复任务08浏览器、不运行verify:release。Luna未改实现/配置、Git暂存/提交、真实.env、CMS/数据库/表单或外部系统；未启停原4321/4322，最后复核两端口原PID仍监听。交Sol → Nova候选复核后再由Sol操作正常提交/推送。
+
+### XYY-20261010-15 — Luna 英文仓配详情独立验收
+
+Task ID：`XYY-20261010-15`；Result：**PASS（跨境标题空格缺陷经R2定向复测通过）**。
+
+Tests performed：基线 `/home/yj/data/website`、HEAD `0ff161f9cef3e124169d5ba2c0cd3b45c34affae`，沿用本任务已完成的独立integration **6 files / 43 tests PASS**，覆盖source绑定、空值及变化源边界，未无变更重复运行。全部实现冻结后，独立执行英文分组及四份中文redesign测试 **5 files / 24 tests PASS**；Astro check **679 files / 0 errors / 0 warnings / 4 existing hints**；55个src/tests范围文件的ESLint与Prettier、maintainability **851 files**、`git diff --check`均通过。未运行全量verify、build或发布门禁。
+
+Browser evidence：专用本地Astro `127.0.0.1:4515`、合成CMS `127.0.0.1:4516`，Playwright CLI命名会话完成四个新英文详情×1440×900/390×844共 **8/8** 组合；HTTP200、单一H1、正文/媒体/5条FAQ完整，main正文及alt/aria-label等属性无中文泄漏，标题与description为英文，canonical/hreflang精确，无横向溢出。**40次FAQ实开、16次hero/bottom联系CTA实点、8次中英文往返切换**通过；联系页保持 `/en/contact`、对应 `from`、入口标记和 `#contact-form`，Service预选 `cloud-warehouse` / Apparel fulfilment，未提交表单。对应中文页H1/正文/区块及5条FAQ保持，无横溢。总览双端 **16次真实点击**均到八个不同详情，第1和第5项路径及H1不同；四项页脚、sitemap与llms入口齐全。原完整浏览器矩阵的非loopback/写请求、pageerror、consoleerror均为0，R2标题补测无pageerror或被拦截请求。
+
+视觉复核发现跨境英文桌面H1实际显示 `domesticwarehouse` 粘连，已判FAIL并交Sol→Terra；仅 `CrossborderPage.astro` 英文标题补空格。Luna未改应用，实现修复后仅补跨境1440/390标题DOM空格、可见文字、无横溢与新 `hero-r2.png` 截图，并复验该文件格式/Lint/diff，全部通过。旧FAIL截图、`visual-findings-r1.json`及其余原成功截图均保留；最终报告仅用R2替换标题补测项。其余54文件与旧freeze完全一致，R2该文件SHA为 `3b57ed0e41330040eff31764c84e9008345348cc5806aea1f65eace2df08ac22`；55文件R2清单SHA为 `7cc0d58e36c515d53408e0c91d771b1dc673a9e1bf1f17ad27438561795df6fe`，未覆盖旧清单。
+
+隔离与工具修正：最小显式环境、Vite `envDir:false`、preload禁用loadEnvFile并阻断外部fetch，浏览器只允许loopback GET/HEAD；合成CMS两阶段共299次请求全部GET。初始Astro入口路径及CLI结果状态捕获错误仅修正验收工具，原日志保留。sitemap首轮因旧mock未提供news而按403返回500，补合法空news模拟响应后复测200且四链接齐全，应用fail-closed行为未改。验收结束已关闭4515/4516与 `xyy-20261010-15-luna`，原4321/4322仍为PID1548/30469。
+
+Evidence：[final-report.json](../output/english-services/xyy-20261010-15/luna/final-report.json)、[gates.json](../output/english-services/xyy-20261010-15/luna/gates.json)、[source-freeze-r2-check.json](../output/english-services/xyy-20261010-15/luna/source-freeze-r2-check.json)；页面/CTA/语言结果为同目录 `browser-layout-1440.json`、`browser-layout-390.json`、`browser-overview-1440.json`、`browser-overview-390.json`、`browser-retitle-1440.json`，后者包含双端R2补测；全部截图位于 [本轮Playwright证据](../output/playwright/xyy-20261010-15/)。已亲看跨境R1/R2、华南手机、华东双端、直播桌面及手机FAQ代表图。
+
+Remaining risks：本地合成CMS与Chromium模拟视口验证，不代表真实CMS、真机、Safari/Firefox或部署后效果；未连接真实CMS/数据库/线索、未发送真实询盘、未提交/推送/部署。Luna仅写本角色日志与ignored验收工具和证据，保留其他角色修改，交Nova复核。
+
+#### XYY-20261010-15 — R3：MCN 分组及华南地址定向复测
+
+Result：**PASS**。针对Nova新增的两个finding，待Sol最终冻结后独立执行 `service-redesign-live.test.ts` 与 `english-regional-service-groups.test.ts`，**2 files / 13 tests passed**，包括独立中英文MCN标签分组断言；`live-content.ts`、`SouthNetworkNodes.astro`、`service-redesign-live.test.ts` 三文件ESLint、Prettier、diff检查均exit0。既有R2报告和67项前轮检查证据保持，未重跑其余integration或完整页面矩阵。
+
+本地隔离模拟CMS复用4515/4516，华南英文/中文×1440/390共 **4/4 PASS**：英文桥头仓地址完整包含 `Changping Qiaotou, No. 2, Duobao Road, Qiaotou Town, Dongguan`；中文仍精确为“东莞市桥头镇多宝路2号常平桥头”。两种语言的地址文字Range均在视口可见范围内，无横向溢出；英文main无中文泄漏；HTTP200、blocked/pageerror/consoleerror均为0。亲看英文桌面与手机地址截图，四张截图均使用新 `south-qiaotou-address-*-r3.png` 文件名，未覆盖R2图片。12次模拟CMS请求全部GET，无真实系统访问。
+
+最终核对root R3冻结清单56文件全部匹配，manifest SHA-256 `212a4afcc7ab8ad979676548f3e61fa0e7381342b59abb60fbb38dda0757cd0f`；相对R2仅两份实现文件变化，清单新增本次修改的live测试文件。证据为 [R3 final-report.json](../output/english-services/xyy-20261010-15/luna/r3/final-report.json)、同目录 `gates.json`、`unit.log`、`browser-address.json` 及四张 [本轮地址截图](../output/playwright/xyy-20261010-15/)。已关闭本轮命名浏览器和4515/4516，原4321/4322保持；未改应用、测试实现或Git状态，未提交、推送或部署。限制仍为本地合成CMS与Chromium模拟视口。
+
+### XYY-20261010-16 — Luna main 提交前完整门禁
+
+Task ID：`XYY-20261010-16`；Result：**PASS（第一阶段，本次隔离候选）**。
+
+Tests performed：在数据盘ignored目录建立1565份源码/文档的独立候选，基线HEAD `0ff161f9cef3e124169d5ba2c0cd3b45c34affae`。不复制真实.env，以 `cp -a --reflink=auto` 复制既有node_modules并保留相对vendor链接，不安装或修改原依赖。使用最小显式环境、虚拟Token、loopback CMS/询盘地址、npm offline与阻断外部fetch的preload，实际执行本次完整 `CI=true npm run verify` 和全量 `npm run format:check`，两者exit **0**。
+
+verify于 `2026-10-10T13:29:11.204Z–13:30:32.853Z` 完成：Astro check **679 files / 0 errors / 0 warnings / 4 existing hints**；ESLint通过；maintainability **851 files**；公共/部署资源 **69/103**（扫描543源码文件）；本地cache patch通过；Vitest **127 files / 866 tests passed**；Astro SSR build输出 `Complete!`。全量格式检查于 `13:29:12.655Z–13:29:27.725Z` 完成，所有匹配文件符合Prettier。
+
+Capacity：沿用同设备66310的任务09真实成功峰值基线，preflight及verify/prebuild内容量门禁实际通过；可用59171520512 bytes、5663758 inodes，门槛3221225472 bytes、4798 inodes。未使用测量或跳过标志。候选all-files SHA-256为 `4d70ffb357d72381167485b4c53e93f76a75e0d153ae505386edd7200f9ad9eb`，runtime digest为 `6938451e58c5cfda77bbc65651ab67b346f7c2c8dbe51b0ec58d42daddc8c411`；结束后1565候选文件字节/mode与初始清单全部一致，当前工作区业务文件无漂移，仅并行 `docs/TERRA.md` 记录变化。本段日志在比对后追加。
+
+Evidence：[summary.json](../output/release/xyy-20261010-16/luna/summary.json)、[verify.log](../output/release/xyy-20261010-16/luna/verify.log)、[verify-result.json](../output/release/xyy-20261010-16/luna/verify-result.json)、[format.log](../output/release/xyy-20261010-16/luna/format.log)、[candidate-check.json](../output/release/xyy-20261010-16/luna/candidate-check.json)、[capacity-preflight.json](../output/release/xyy-20261010-16/luna/capacity-preflight.json)。实际命令、环境摘要及退出码保存在同目录对应command/result/exit文件。
+
+Remaining risks：仅证明当前main候选通过本次提交前门禁；任务15已有页面证据未额外重复。尚未执行原生集成、verify:release或最终原生制品构建；等待Sol交付独立原生候选。未改应用/测试/原依赖、真实环境或Git状态，未连接真实端、提交/推送/部署；原4321/4322仍为PID1548/30469。

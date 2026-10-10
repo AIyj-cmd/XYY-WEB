@@ -41,7 +41,7 @@ describe('contact conversion sources', () => {
     ).toBeNull()
   })
 
-  it('covers all 16 approved service routes with locale and service mappings', () => {
+  it('covers all 20 approved service routes with locale and service mappings', () => {
     const expected = [
       ['/xiefu-yuncang', 'zh-CN', 'cloud-warehouse'],
       ['/huadong-xiefu-yuncang', 'zh-CN', 'cloud-warehouse'],
@@ -54,13 +54,17 @@ describe('contact conversion sources', () => {
       ['/wuliu-shuzihua', 'zh-CN', 'logistics-cloud'],
       ['/yundao-zhineng-jijian', 'zh-CN', 'logistics-cloud'],
       ['/en/apparel-fulfillment', 'en', 'cloud-warehouse'],
+      ['/en/cross-border-fulfillment', 'en', 'cloud-warehouse'],
+      ['/en/south-china-fulfillment', 'en', 'cloud-warehouse'],
+      ['/en/east-china-fulfillment', 'en', 'cloud-warehouse'],
+      ['/en/livestream-fulfillment', 'en', 'cloud-warehouse'],
       ['/en/returns-inspection', 'en', 'quality-inspection'],
       ['/en/garment-care', 'en', 'quality-inspection'],
       ['/en/retail-distribution', 'en', 'cloud-warehouse'],
       ['/en/digital-operations', 'en', 'logistics-cloud'],
       ['/en/smart-shipping', 'en', 'logistics-cloud'],
     ] as const
-    expect(expected).toHaveLength(16)
+    expect(expected).toHaveLength(20)
     for (const [pathname, locale, service] of expected) {
       expect(getConversionSource(pathname)).toMatchObject({ pathname, locale, service })
       expect(contactHref(pathname, locale, 'hero')).toBe(

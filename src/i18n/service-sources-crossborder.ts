@@ -1,0 +1,98 @@
+import { CLAIM_TEXT as C } from '@/lib/claims'
+import type { EnglishServiceSource } from './service-sources'
+import {
+  CROSSBORDER_ENGLISH_CONTENT,
+  CROSSBORDER_ENGLISH_FAQS,
+} from './service-translations-crossborder'
+
+// Frozen reviewed source: changes to Chinese configuration must be reviewed separately.
+export const CROSSBORDER_ENGLISH_SOURCE: EnglishServiceSource = {
+  source: {
+    title: '跨境出海仓配服务｜国内仓储、质检与换标包装｜新亦源',
+    description:
+      '新亦源为跨境出海项目提供国内端仓储、按项目标准质检、换标换包装和退货整理，并可协同EMS及跨境专线资源；运输与清关责任以合同约定为准。',
+    eyebrow: '跨境出海仓配 · 国内端仓储与配套服务',
+    h1: '跨境出海鞋服仓配配套服务',
+    h1sub: '国内仓储 · 项目质检 · 换标换包装',
+    stats: [
+      {
+        stat: '千万件级',
+        label: '处理规模',
+        sub: 'Urbanic合作案例',
+      },
+      {
+        stat: `${C.returnTurnaround}`,
+        label: '国内仓退货处理',
+        sub: '质检与二次处理',
+      },
+      {
+        stat: 'AQL 1.0–6.5',
+        label: '合作QC团队',
+        sub: '按客户及目标市场标准执行',
+      },
+      {
+        stat: 'EMS等',
+        label: '物流资源协同',
+        sub: '含跨境专线资源',
+      },
+    ],
+    features: [
+      {
+        title: '跨境备货仓配',
+        desc: '支持天猫国际、Amazon、Shopee等跨境项目的国内备货、质检、换标和换包装，再按项目方案交接物流资源。',
+      },
+      {
+        title: '项目质检',
+        desc: '按客户及目标市场确认的质检标准执行；与广检集团合作QC团队按AQL 1.0–6.5开展抽检，并按项目约定输出质检报告。',
+      },
+      {
+        title: '换标换包装',
+        desc: '可按品牌提供并确认的目标市场规范，更换多语言洗水唛、外包装以及FNSKU/EAN等条码；合规责任边界以合同为准。',
+      },
+      {
+        title: '跨境退货处理',
+        desc: `包裹到达新亦源国内仓后，质检与二次处理${C.returnTurnaround}完成；具体分级与处置标准按跨境项目和客户要求确认。`,
+      },
+      {
+        title: '物流资源协同',
+        desc: '可协同EMS及跨境专线资源并回传可获得的物流轨迹；报关、清关与运输责任以项目合同约定为准。',
+      },
+      {
+        title: '跨境项目支持',
+        desc: '可结合境内备货、仓内包装和海外退货逆向需求设计项目流程，具体服务范围由双方确认。',
+      },
+    ],
+    breadcrumbLabel: '跨境云仓',
+    heroDesc:
+      '新亦源跨境云仓以广州华南总部为核心节点，支持天猫国际、Amazon等跨境电商平台的国内备货发货及跨境退货国内处理；Urbanic项目年处理1800万—2300万件。',
+    imgSrc: '/w-crossborder-cloud-hero.webp',
+    imgAlt: '跨境云仓 — 跨境电商仓储发货',
+    contentDesc:
+      '适合需要国内端仓储、质检、换标换包装和退货整理的跨境鞋服项目。新亦源以广州华南仓为核心提供仓内服务，可协同EMS及跨境专线资源；报关、清关和运输责任以项目合同约定为准。Urbanic项目为千万件级处理规模。',
+    featuresLabel: '跨境服务内容',
+  },
+  english: CROSSBORDER_ENGLISH_CONTENT,
+  sourceFaqs: [
+    {
+      q: '新亦源跨境云仓支持哪些跨境平台？',
+      a: '可按项目评估天猫国际、Amazon、Shopee、Lazada、速卖通、Temu等平台对应的国内仓储、备货和退货整理需求。平台接口、标签、包装和质检规则以平台当前要求及品牌提供的项目规范为准。',
+    },
+    {
+      q: '跨境退货从海外回来后怎么处理？',
+      a: `包裹到达新亦源国内仓后，可按项目完成拆包入库、订单与SKU核对、质检分级、修复分流和二次上架，质检与二次处理${C.returnTurnaround}完成。跨境运输、报关和清关不计入该仓内时效，责任以合同约定为准；具体分级与处置标准按跨境项目和客户要求确认。`,
+    },
+    {
+      q: '跨境换标换包装需要注意什么？',
+      a: '品牌应先提供目标市场、平台和商品对应的标签与包装规范。新亦源可按确认模板执行多语言洗水唛、FNSKU/EAN等条码和外包装作业，并记录处理结果；法规判断、商品合规和最终标签内容由合同约定的责任方负责。',
+    },
+    {
+      q: '跨境仓储费用和国内仓储有差异吗？',
+      a: '跨境仓储与国内仓储费用结构相同（按存储量+操作量计费），但跨境额外服务（多语言换标/AQL英文报告/跨境物流对接）有单独计费项。具体报价根据商品品类、处理量和服务组合定制，建议联系商务团队获取方案。',
+    },
+    {
+      q: '新亦源跨境云仓有实际合作案例吗？',
+      a: 'Urbanic（跨境快时尚，面向印度/英国市场）是新亦源公开的跨境服务案例。案例范围覆盖B2B+B2C仓储、质检、包装、上架、库存管理及发货打包；公开数据为年发货1800–2300万件、年质检800–1400万件、年包装1500–2000万件，具体统计口径以案例资料为准。',
+    },
+  ],
+  englishFaqs: CROSSBORDER_ENGLISH_FAQS,
+}

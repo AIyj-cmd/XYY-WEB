@@ -1,21 +1,25 @@
 ---
 import type { EastStatGroups } from './east-content'
+import type { SiteLocale } from '@/i18n/routes'
+import { eastUi } from './east-ui-copy'
 
 interface Props {
   stats: EastStatGroups
   contentDesc: string
+  locale?: SiteLocale
 }
-const { stats, contentDesc } = Astro.props
+const { stats, contentDesc, locale = 'zh-CN' } = Astro.props
+const copy = eastUi(locale)
 const sections = [
   {
-    title: '什么时候发',
+    title: copy.serviceSections[0][0],
     stats: stats.warehouse.concat(stats.other),
-    desc: '符合条件的订单按约定安排发出。华东主要城市可参考次日达，实际送达时间结合收货地址和承运线路确认。',
+    desc: copy.serviceSections[0][1],
   },
   {
-    title: '费用怎么计',
+    title: copy.serviceSections[1][0],
     stats: stats.fees,
-    desc: '仓储和作业费用结合货品、库存、订单及所需服务报价；接口实施、定制和增值服务费用另行说明。',
+    desc: copy.serviceSections[1][1],
   },
 ].filter(({ stats }) => stats.length > 0)
 ---
@@ -23,8 +27,8 @@ const sections = [
 <section class="east-service-info east-section" aria-labelledby="east-service-info-heading">
   <div class="redesign-shell">
     <header>
-      <p class="redesign-kicker">服务安排</p><h2 id="east-service-info-heading">
-        发货时间清楚，费用提前说明
+      <p class="redesign-kicker">{copy.serviceKicker}</p><h2 id="east-service-info-heading">
+        {copy.serviceHeading}
       </h2>{contentDesc && <p>{contentDesc}</p>}
     </header>
     {

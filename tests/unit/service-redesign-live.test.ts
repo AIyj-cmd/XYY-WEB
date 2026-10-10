@@ -72,6 +72,14 @@ const oldFaqs: FaqItem[] = [
 ]
 
 describe('live redesign grouping', () => {
+  it('groups standalone Chinese and English MCN labels as multi-brand services', () => {
+    const chinese = { title: 'MCN机构专属方案', desc: '按品牌管理' }
+    const english = { title: 'MCN agency plan', desc: 'Managed by brand' }
+
+    expect(groupLiveFeatures([chinese]).mcn).toEqual([chinese])
+    expect(groupLiveFeatures([english], 'en').mcn).toEqual([english])
+  })
+
   it('keeps semantic stage features and unknown content exactly once', () => {
     const unknown = '改名后的直播服务'
     const groups = groupLiveFeatures([

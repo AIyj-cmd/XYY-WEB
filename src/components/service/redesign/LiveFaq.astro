@@ -1,10 +1,14 @@
 ---
 import type { FaqItem } from '@/data/service'
+import type { SiteLocale } from '@/i18n/routes'
+import { liveUi } from './live-ui-copy'
 
 interface Props {
   faqs: FaqItem[]
+  locale?: SiteLocale
 }
-const { faqs } = Astro.props
+const { faqs, locale = 'zh-CN' } = Astro.props
+const copy = liveUi(locale)
 ---
 
 {
@@ -13,8 +17,8 @@ const { faqs } = Astro.props
       <div class="redesign-shell live-faq__grid">
         <header>
           <>
-            <p class="redesign-kicker">常见问题</p>
-            <h2 id="live-faq-heading">开始合作前，你可能还想了解</h2>
+            <p class="redesign-kicker">{copy.faqKicker}</p>
+            <h2 id="live-faq-heading">{copy.faqHeading}</h2>
           </>
         </header>
         <div>

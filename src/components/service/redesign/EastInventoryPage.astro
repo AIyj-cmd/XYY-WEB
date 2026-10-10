@@ -10,39 +10,45 @@ import EastServiceInfo from './EastServiceInfo.astro'
 import EastWarehouses from './EastWarehouses.astro'
 import { hasRedesignContent } from './content-presence'
 import { groupEastFeatures, groupEastStats } from './east-content'
+import type { SiteLocale } from '@/i18n/routes'
+import { eastUi } from './east-ui-copy'
 
 interface Props {
   content: ServicePageContent
   faqs: FaqItem[]
   videoSrc: string
   poster: string
+  locale?: SiteLocale
 }
-const { content, faqs, videoSrc, poster } = Astro.props
+const { content, faqs, videoSrc, poster, locale = 'zh-CN' } = Astro.props
+const copy = eastUi(locale)
 const available = hasRedesignContent(content, faqs.length)
-const groups = groupEastFeatures(content.features)
-const stats = groupEastStats(content.stats)
+const groups = groupEastFeatures(content.features, locale)
+const stats = groupEastStats(content.stats, locale)
 ---
 
-<article class:list={['east-page', { 'east-page--empty': !available }]}>
+<article class:list={['east-page', { 'east-page--empty': !available }]} data-locale={locale}>
   {
     available ? (
       <>
-        <EastHero {content} {videoSrc} {poster} />
-        <EastWarehouses {groups} {stats} />
+        <EastHero {content} {videoSrc} {poster} {locale} />
+        <EastWarehouses {groups} {stats} {locale} />
         {(groups.b2c.length > 0 ||
           groups.b2b.length > 0 ||
           groups.returns.length > 0 ||
-          stats.channels.length > 0) && <EastBusiness {groups} {stats} />}
-        {groups.collaboration.length > 0 && <EastCollaboration {groups} />}
+          stats.channels.length > 0) && <EastBusiness {groups} {stats} {locale} />}
+        {groups.collaboration.length > 0 && <EastCollaboration {groups} {locale} />}
         {(content.contentDesc ||
           stats.warehouse.length > 0 ||
           stats.fees.length > 0 ||
-          stats.other.length > 0) && <EastServiceInfo {stats} contentDesc={content.contentDesc} />}
-        <EastFaqContact {faqs} {groups} />
+          stats.other.length > 0) && (
+          <EastServiceInfo {stats} contentDesc={content.contentDesc} {locale} />
+        )}
+        <EastFaqContact {faqs} {groups} {locale} />
       </>
     ) : (
       <section class="redesign-empty">
-        <h1 id="lp-h1">服务内容暂不可用</h1>
+        <h1 id="lp-h1">{copy.unavailable}</h1>
       </section>
     )
   }

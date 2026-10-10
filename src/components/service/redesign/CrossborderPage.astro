@@ -3,27 +3,34 @@ import type { FaqItem } from '@/data/service'
 import type { ServicePageContent } from '@/lib/directus-content-queries'
 import ConversionCTA from '@/components/conversion/ConversionCTA.astro'
 import ContactLink from '@/components/conversion/ContactLink.astro'
+import type { SiteLocale } from '@/i18n/routes'
 import '@/styles/service-redesign.css'
 import CrossborderBoundary from './CrossborderBoundary.astro'
 import { hasRedesignContent } from './content-presence'
 import { groupCrossborderFeatures, groupCrossborderStats } from './crossborder-content'
 import CrossborderDocuments from './CrossborderDocuments.astro'
 import CrossborderReturn from './CrossborderReturn.astro'
+import { crossborderUi } from './crossborder-ui-copy'
 
 interface Props {
   content: ServicePageContent
   faqs: FaqItem[]
   videoSrc: string
   poster: string
+  locale?: SiteLocale
 }
 
-const { content, faqs, videoSrc, poster } = Astro.props
+const { content, faqs, videoSrc, poster, locale = 'zh-CN' } = Astro.props
 const available = hasRedesignContent(content, faqs.length)
-const features = groupCrossborderFeatures(content.features)
-const stats = groupCrossborderStats(content.stats)
+const features = groupCrossborderFeatures(content.features, locale)
+const stats = groupCrossborderStats(content.stats, locale)
+const copy = crossborderUi(locale)
 ---
 
-<article class:list={['crossborder-page', { 'crossborder-page--empty': !available }]}>
+<article
+  class:list={['crossborder-page', { 'crossborder-page--empty': !available }]}
+  data-locale={locale}
+>
   {
     available ? (
       <>
@@ -32,15 +39,22 @@ const stats = groupCrossborderStats(content.stats)
             <p class="redesign-kicker">{content.h1 || content.breadcrumbLabel}</p>
             <h1 id="lp-h1">
               <>
-                <span>把出海前的</span>
-                <span>国内仓配准备好</span>
+                <span>{locale === 'en' ? 'Prepare your domestic ' : '把出海前的'}</span>
+                <span>
+                  {locale === 'en' ? 'warehouse operations for export' : '国内仓配准备好'}
+                </span>
               </>
             </h1>
             {content.h1sub && <p class="crossborder-hero__sub">{content.h1sub}</p>}
             {content.heroDesc && <p class="crossborder-hero__desc">{content.heroDesc}</p>}
             <div class="mt-6">
-              <ContactLink sourcePath={Astro.url.pathname} entry="hero" class="redesign-button">
-                梳理跨境仓内方案
+              <ContactLink
+                sourcePath={Astro.url.pathname}
+                {locale}
+                entry="hero"
+                class="redesign-button"
+              >
+                {locale === 'en' ? 'Plan cross-border warehouse operations' : '梳理跨境仓内方案'}
               </ContactLink>
             </div>
           </div>
@@ -56,20 +70,23 @@ const stats = groupCrossborderStats(content.stats)
               width="1280"
               height="720"
               poster={poster}
-              aria-label={`${content.h1}服务视频`}
+              aria-label={`${content.h1}${locale === 'en' ? ' service video' : '服务视频'}`}
             >
               <source src={videoSrc} type="video/mp4" />
             </video>
           </div>
         </header>
-        <CrossborderBoundary {features} {stats} />
-        <CrossborderDocuments {features} {stats} />
-        <CrossborderReturn {features} {stats} />
+        <CrossborderBoundary {features} {stats} {locale} />
+        <CrossborderDocuments {features} {stats} {locale} />
+        <CrossborderReturn {features} {stats} {locale} />
         {(features.support.length > 0 ||
           features.other.length > 0 ||
           content.contentDesc ||
           stats.other.length > 0) && (
-          <section class="crossborder-support crossborder-section" aria-label="项目支持说明">
+          <section
+            class="crossborder-support crossborder-section"
+            aria-label={locale === 'en' ? 'Project support information' : '项目支持说明'}
+          >
             <div class="redesign-shell">
               {features.support.concat(features.other).map(({ title, desc }) => (
                 <p data-redesign-feature>
@@ -96,8 +113,14 @@ const stats = groupCrossborderStats(content.stats)
           <div class="redesign-shell">
             {faqs.length > 0 && (
               <div>
-                <p class="redesign-kicker">常见问题</p>
-                <h2 id="crossborder-faq-heading">项目交接前，先确认责任边界</h2>
+                <p class="redesign-kicker">
+                  {locale === 'en' ? 'Frequently asked questions' : '常见问题'}
+                </p>
+                <h2 id="crossborder-faq-heading">
+                  {locale === 'en'
+                    ? 'Confirm responsibilities before project handover'
+                    : '项目交接前，先确认责任边界'}
+                </h2>
                 {faqs.map(({ q, a }) => (
                   <details data-redesign-faq>
                     <summary>{q}</summary>
@@ -111,27 +134,32 @@ const stats = groupCrossborderStats(content.stats)
         <ConversionCTA
           className="crossborder-contact"
           headingId="crossborder-contact-heading"
-          eyebrow="沟通方案"
-          headingLines={['梳理你的跨境', '仓内方案']}
-          description="可先准备目标平台、商品规范、标签与包装模板、预计处理量和物流交接要求。"
-          actionLabel="梳理跨境仓内方案"
-          preparationItems={[
-            { label: '目标平台', detail: '主要销售平台与发货方向' },
-            { label: '商品规范', detail: '商品资料与处理要求' },
-            { label: '标签与包装模板', detail: '标签内容与包装样式' },
-            { label: '预计处理量', detail: '日常与活动处理预估' },
-            { label: '物流交接要求', detail: '物流交接方式与时间' },
-          ]}
+          eyebrow={copy.eyebrow}
+          headingLines={[...copy.lines]}
+          description={copy.description}
+          actionLabel={copy.action}
+          preparationAriaLabel={
+            locale === 'en' ? 'Information to prepare before consultation' : undefined
+          }
+          preparationItems={copy.preparationItems}
           secondaryLinks={[
-            { href: '/cases', label: '查看合作案例' },
-            { href: '/product', label: '查看全部仓配服务' },
+            {
+              href: locale === 'en' ? '/en/cases' : '/cases',
+              label: locale === 'en' ? 'View cases' : '查看合作案例',
+            },
+            {
+              href: locale === 'en' ? '/en/services' : '/product',
+              label: locale === 'en' ? 'Explore services' : '查看全部仓配服务',
+            },
           ]}
           reveal="service"
         />
       </>
     ) : (
       <section class="redesign-empty">
-        <h1 id="lp-h1">服务内容暂不可用</h1>
+        <h1 id="lp-h1">
+          {locale === 'en' ? 'Service content is currently unavailable.' : '服务内容暂不可用'}
+        </h1>
       </section>
     )
   }

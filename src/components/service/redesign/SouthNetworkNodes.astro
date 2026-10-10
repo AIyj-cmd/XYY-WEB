@@ -1,24 +1,66 @@
 ---
 import { SOUTH_WAREHOUSE_CITIES } from '@/data/service/south-network'
 import type { SouthFeatureGroups, SouthStatGroups } from './south-content'
+import type { SiteLocale } from '@/i18n/routes'
 
 interface Props {
   groups: SouthFeatureGroups
   stats: SouthStatGroups
+  locale?: SiteLocale
 }
-const { groups, stats } = Astro.props
+const { groups, stats, locale = 'zh-CN' } = Astro.props
+const englishCities = ['Guangzhou', 'Dongguan', 'Foshan', 'Zhaoqing'] as const
+const englishWarehouses = [
+  [
+    ['Huangpu warehouse', 'No. 2, Guoyuan 1st Road, Huangpu District, Guangzhou, Guangdong'],
+    ['Xingtai warehouse (Panyu)', 'No. 2, Huashan Road, Shilou Town, Panyu District, Guangzhou'],
+    ['Xintang warehouse', 'Address not published'],
+  ],
+  [
+    ['Zhigu warehouse', 'Changping Zhigu, No. 2, Duobao Road, Changping Town, Dongguan'],
+    [
+      'Langzhou warehouse',
+      'Hongtengyuan Industrial Park, Langzhou Village, Changping Town, Dongguan',
+    ],
+    ['Qiaotou warehouse', 'Changping Qiaotou, No. 2, Duobao Road, Qiaotou Town, Dongguan'],
+    ['Yungu warehouse', 'Address not published'],
+  ],
+  [
+    [
+      'Hongsheng warehouse (Foshan)',
+      'Yuan East 1st Road, Datang Industrial Park, Datang Town, Sanshui District, Foshan, Guangdong',
+    ],
+  ],
+  [
+    [
+      'Sihui warehouse (Zhaoqing)',
+      'No. 20 warehouse, VIP Logistics Park, Dongcheng Subdistrict, Sihui, Zhaoqing',
+    ],
+  ],
+] as const
 ---
 
 <section class="south-warehouses south-section" aria-labelledby="south-warehouses-heading">
   <div class="redesign-shell">
     <header class="south-section__heading">
-      <p class="redesign-kicker">仓库分布</p>
-      <h2 id="south-warehouses-heading">华南仓库分布</h2>
-      <p>广州、东莞、佛山、肇庆多仓布局，支持就近入仓、订单发货与退货质检。</p>
+      <p class="redesign-kicker">{locale === 'en' ? 'Warehouse locations' : '仓库分布'}</p>
+      <h2 id="south-warehouses-heading">
+        {locale === 'en' ? 'South China warehouse locations' : '华南仓库分布'}
+      </h2>
+      <p>
+        {
+          locale === 'en'
+            ? 'Warehouses in Guangzhou, Dongguan, Foshan and Zhaoqing support nearby receiving, order dispatch and returns inspection.'
+            : '广州、东莞、佛山、肇庆多仓布局，支持就近入仓、订单发货与退货质检。'
+        }
+      </p>
     </header>
     {
       stats.network.length > 0 && (
-        <div class="south-network-stats" aria-label="华南仓储服务">
+        <div
+          class="south-network-stats"
+          aria-label={locale === 'en' ? 'South China warehouse services' : '华南仓储服务'}
+        >
           {stats.network.map(({ stat, label, sub }) => (
             <p class="south-stat">
               <b>{stat}</b>
@@ -32,15 +74,21 @@ const { groups, stats } = Astro.props
     }
     <div class="south-warehouse-list">
       {
-        SOUTH_WAREHOUSE_CITIES.map(({ city, warehouses }) => (
+        SOUTH_WAREHOUSE_CITIES.map(({ city, warehouses }, cityIndex) => (
           <section class="south-warehouse-city" aria-labelledby={`south-warehouse-${city}`}>
-            <h3 id={`south-warehouse-${city}`}>{city}</h3>
+            <h3 id={`south-warehouse-${city}`}>
+              {locale === 'en' ? englishCities[cityIndex] : city}
+            </h3>
             <div class="south-warehouse-city__content">
               <ul>
-                {warehouses.map(({ name, address }) => (
+                {warehouses.map(({ name, address }, warehouseIndex) => (
                   <li>
-                    <b>{name}</b>
-                    <span>{address}</span>
+                    <b>
+                      {locale === 'en' ? englishWarehouses[cityIndex][warehouseIndex][0] : name}
+                    </b>
+                    <span>
+                      {locale === 'en' ? englishWarehouses[cityIndex][warehouseIndex][1] : address}
+                    </span>
                   </li>
                 ))}
               </ul>

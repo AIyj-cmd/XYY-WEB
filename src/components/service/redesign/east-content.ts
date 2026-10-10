@@ -1,4 +1,5 @@
 import type { FeatureItem, StatItem } from '@/data/service'
+import type { SiteLocale } from '@/i18n/routes'
 
 export interface EastFeatureGroups {
   network: FeatureItem[]
@@ -17,7 +18,11 @@ export interface EastStatGroups {
   other: StatItem[]
 }
 
-export function groupEastFeatures(features: readonly FeatureItem[]): EastFeatureGroups {
+export function groupEastFeatures(
+  features: readonly FeatureItem[],
+  locale: SiteLocale = 'zh-CN'
+): EastFeatureGroups {
+  const english = locale === 'en'
   const groups: EastFeatureGroups = {
     network: [],
     b2c: [],
@@ -27,25 +32,53 @@ export function groupEastFeatures(features: readonly FeatureItem[]): EastFeature
     support: [],
   }
   for (const feature of features) {
-    if (feature.title.includes('B2C') || feature.title.includes('电商')) groups.b2c.push(feature)
-    else if (feature.title.includes('B2B') || feature.title.includes('门店'))
+    const title = feature.title.toLowerCase()
+    if (
+      title.includes('b2c') ||
+      title.includes('电商') ||
+      (english && title.includes('e-commerce'))
+    )
+      groups.b2c.push(feature)
+    else if (
+      title.includes('b2b') ||
+      title.includes('门店') ||
+      (english && title.includes('store'))
+    )
       groups.b2b.push(feature)
-    else if (feature.title.includes('退货')) groups.returns.push(feature)
-    else if (feature.title.includes('协同')) groups.collaboration.push(feature)
-    else if (feature.title.includes('仓网') || feature.title.includes('仓库分布'))
+    else if (title.includes('退货') || (english && title.includes('return')))
+      groups.returns.push(feature)
+    else if (title.includes('协同') || (english && title.includes('inventory coordination')))
+      groups.collaboration.push(feature)
+    else if (
+      title.includes('仓网') ||
+      title.includes('仓库分布') ||
+      (english && (title.includes('warehouse network') || title.includes('warehouse locations')))
+    )
       groups.network.push(feature)
     else groups.support.push(feature)
   }
   return groups
 }
 
-export function groupEastStats(stats: readonly StatItem[]): EastStatGroups {
+export function groupEastStats(
+  stats: readonly StatItem[],
+  locale: SiteLocale = 'zh-CN'
+): EastStatGroups {
+  const english = locale === 'en'
   return stats.reduce<EastStatGroups>(
     (groups, stat) => {
-      if (stat.label.includes('截单')) groups.warehouse.push(stat)
-      else if (stat.label.includes('系统')) groups.fees.push(stat)
-      else if (stat.label.includes('仓配')) groups.channels.push(stat)
-      else if (stat.label.includes('仓网')) groups.network.push(stat)
+      const label = stat.label.toLowerCase()
+      if (label.includes('截单') || (english && label.includes('cut-off')))
+        groups.warehouse.push(stat)
+      else if (
+        label.includes('系统') ||
+        (english && (label.includes('system') || label.includes('fee')))
+      )
+        groups.fees.push(stat)
+      else if (label.includes('仓配') || (english && label.includes('fulfilment')))
+        groups.channels.push(stat)
+      else if (label.includes('仓网') || (english && label.includes('east china network')))
+        groups.network.push(stat)
       else groups.other.push(stat)
       return groups
     },

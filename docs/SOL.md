@@ -2450,3 +2450,19 @@ Limits：本轮限Chrome152模拟视口及离线/helper验证，空内容schema�
 - Luna在数据盘隔离候选实际执行完整 `npm run verify`。R1的node_modules整体软链接使cache-patch精确路径检查失败，未到单测/build；保留原始exit1，仅修正验收目录，复制已有依赖并保留相对vendor链接，未安装或改动项目实现。R2复用匹配设备的真实容量基线，两次容量门禁通过，没有使用绕过标志；最小环境使用loopback和虚拟凭据，fetch阻止外部访问，npm offline。
 - R2实际exit0：660类型文件0 errors/0 warnings/4既有hints，ESLint、832文件维护性、69/103资源与cache-patch通过，125文件836单测通过，SSR构建Complete。Sol另行完整 `npm run format:check` exit0。本轮只需Git同步，未运行verify:release或重复任务08已通过的24组浏览器；发布构建/上线验收不能由本次Git推送替代。
 - 候选评审和精确身份记录见本任务Nova日志及 `output/git-sync/xyy-20261010-09/`。最终提交、origin/main、GitHub main与干净工作树由推送后回读记录，不在提交内自指尚未生成的SHA；工作记录随候选一次归档，后续同步回读仅保存ignored证据。授权范围没有真实CMS/数据库/权限或新服务器部署，基础内容在新服务器上的初始化状态不因本次推送改变。
+
+### XYY-20261010-15 — 英文仓配详情本地修复
+
+- MEDIUM；用户在英文仓配入口诊断后明确要求修复。本地范围 `/home/yj/data/website`，起始 HEAD `0ff161f9cef3e124169d5ba2c0cd3b45c34affae`、工作树干净。合同 `docs/plans/xyy-20261010-15-english-service-details.md`；Graphify 旧图仅辅助定位，实施以当前代码和真实点击诊断为准。按独立文件所有权分工实施，再走 Luna 独立验证、Nova Review、Sol 验收。
+- 新增跨境、华南、华东、直播四套审核源快照、英文翻译及独立详情路由；复用原服务身份和素材。总览八项及页脚八项指向八个不同详情，第五项为华南独立内容；同步语言配对、Services 导航、联系来源、结构化数据、sitemap 和 llms。成功空 CMS 保持为空，变更后未审核内容不套用旧译文，中文默认行为保持。
+- 独立 integration 6 文件 / 43 测试通过，分组与中文页面回归 5 文件 / 24 测试通过；类型检查 679 文件、0 errors / 0 warnings / 4 既有 hints，范围 ESLint/Prettier、维护性 851 文件和 diff 检查通过。浏览器四新详情 × 1440/390 共 8 组合、40 次 FAQ、16 次联系入口、8 次语言往返及总览双端 16 次真实点击通过，第 1/5 项 URL、标题和正文不同，页脚和发现入口完整。
+- 真实缺陷均按原 ID 返工：英文华东分类与中文源不一致已用逐桶回归覆盖；跨境标题缺空格经 R2 双端复测修复；Nova 发现中文独立 MCN 标题分类回归及桥头镇地址漏译，R3 最小修复后独立 2 文件 / 13 测试、三文件静态检查及地址中英双端 4 组合通过。后两轮只复测受影响项，其余证据保留；原失败与工具修正均如实记录，不把重跑项叠加成独立测试数量。
+- Luna PASS、Nova 最终 APPROVED，未解决 finding 为 0。Sol 亲看跨境 R2 双端、华南地址 R3 手机及其他代表截图，最终 56 文件清单 SHA-256 为 `212a4afcc7ab8ad979676548f3e61fa0e7381342b59abb60fbb38dda0757cd0f`。证据位于 `output/english-services/xyy-20261010-15/` 和 `output/playwright/xyy-20261010-15/`，最终补测报告为 `luna/r3/final-report.json`，旧 R2 报告保留。
+- 仅本地合成 CMS、Chromium 模拟视口和只读请求；专用浏览器及 4515/4516 已关闭，原 4321/4322 保留。未访问真实 CMS/数据库/线索端、未提交表单、未删除数据、未改服务器配置、未提交/推送/部署；未运行完整 verify 或 verify:release，不宣称已上线。收尾只更新状态和合同/日志，检查新增 Markdown 及 diff，不格式化无关历史文档。
+
+### XYY-20261010-16 — 英文仓配修复 GitHub 推送与新服务器发布
+
+- HIGH；用户明确授权 GitHub main 推送及新 ECS `8.138.148.179` 原生 Web 更新，合同 `docs/plans/xyy-20261010-16-github-native-release.md`。main 起始 `0ff161f`，63 个既有候选路径为任务15的56个源/测试及状态、角色日志和两份合同；源码冻结指纹与任务15通过版本一致。远端 ls-remote/API 回读 main 同为 `0ff161f`，有 push 权限、仓库未归档；一次 HTTPS fetch 等待超过90秒后终止本次挂起的传输子进程，引用未变，失败如实记录。
+- 新建 `/home/yj/data/xyy-native-update-20261010-16`，分支 `deploy/native-update-20261010-16`，基于原生 `d92b0fd`；不重置原生任务10工作区及其既有脏文档。原生与main的依赖锁相同，可复用既有依赖，保留原生的运行兼容和运行时表单开关。
+- SSH只读核对主机 `l4`、机器标识与既有ECS一致，current为 `20261010T114608Z-d92b0fd`，四项服务active、Web/CMS/数据库内部监听，数据盘剩余182G。仅记录环境文件指纹与权限和明确非秘密的开关/公开URL，未读取输出令牌。现有健康偶发503，表现为contactStorage unreachable；使用服务器已配置令牌的三次只读线索健康请求均200/code0，耗时1101/2585/348ms，超过原1.5秒阈值的请求解释了波动。本次不调整超时或配置，不把既有波动隐藏为从未发生，切换仍要求双依赖ok。
+- Luna提交前独立隔离候选完整 `npm run verify` 及 `npm run format:check` 均exit0：679类型文件0 errors/0 warnings/4既有hints，127文件866单测，851维护性文件、69/103资源、cache patch和构建通过。1565候选文件内容/模式保持，运行源码指纹与当前工作区一致；不复制真实.env、不修改原依赖/4321/4322。此处只记录已完成的提交前门禁，原生完整发布验证及真实上线结果按后续证据收口。

@@ -1,0 +1,13 @@
+---
+import ServiceLanding from '@/layouts/ServiceLanding.astro'
+import { CROSSBORDER_ENGLISH_SOURCE } from '@/i18n/service-sources-crossborder'
+---
+
+<ServiceLanding
+  {...CROSSBORDER_ENGLISH_SOURCE.source}
+  locale="en"
+  presentation="crossborder"
+  slug="kuajing-yuncang"
+  variant="global-tower"
+  faqs={CROSSBORDER_ENGLISH_SOURCE.sourceFaqs}
+/>

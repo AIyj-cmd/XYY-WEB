@@ -1,0 +1,37 @@
+---
+import type { FaqItem } from '@/data/service'
+import type { SiteLocale } from '@/i18n/routes'
+
+interface Props {
+  faqs: FaqItem[]
+  locale?: SiteLocale
+}
+
+const { faqs, locale = 'zh-CN' } = Astro.props
+---
+
+<section
+  class="south-faq south-section"
+  aria-labelledby={faqs.length ? 'south-faq-heading' : undefined}
+>
+  <div class="redesign-shell">
+    {
+      faqs.length > 0 && (
+        <div>
+          <p class="redesign-kicker">
+            {locale === 'en' ? 'Frequently asked questions' : '常见问题'}
+          </p>
+          <h2 id="south-faq-heading">
+            {locale === 'en' ? 'Questions about choosing a warehouse' : '关于选仓，你可能还想了解'}
+          </h2>
+          {faqs.map(({ q, a }) => (
+            <details data-redesign-faq>
+              <summary>{q}</summary>
+              <p>{a}</p>
+            </details>
+          ))}
+        </div>
+      )
+    }
+  </div>
+</section>

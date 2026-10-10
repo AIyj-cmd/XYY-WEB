@@ -1,16 +1,16 @@
 ---
 import type { EastFeatureGroups } from './east-content'
+import type { SiteLocale } from '@/i18n/routes'
+import { eastUi } from './east-ui-copy'
 
 interface Props {
   groups: EastFeatureGroups
+  locale?: SiteLocale
 }
-const { groups } = Astro.props
+const { groups, locale = 'zh-CN' } = Astro.props
+const copy = eastUi(locale)
 const [primary, ...other] = groups.collaboration
-const items = [
-  ['统一看库存', '华东与华南库存统一查看，方便掌握可用货品。'],
-  ['按规则发货', '根据订单地区、库存和约定规则安排发货仓库。'],
-  ['跟进补货与对账', '围绕库存变化、补货节奏和订单状态持续跟进。'],
-] as const
+const items = copy.collaborationItems
 ---
 
 <section class="east-collaboration east-section" aria-labelledby="east-collaboration-heading">
@@ -27,8 +27,8 @@ const items = [
         ) : (
           <>
             <>
-              <h2 id="east-collaboration-heading">多仓库存，一起管理</h2>
-              <p>华东与华南库存统一查看，根据订单地区和约定规则安排发货仓库。</p>
+              <h2 id="east-collaboration-heading">{copy.collaborationFallbackHeading}</h2>
+              <p>{copy.collaborationFallbackDesc}</p>
             </>
           </>
         )

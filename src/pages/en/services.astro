@@ -29,6 +29,36 @@ const services = [
     countryName: 'China',
   },
   {
+    name: 'Cross-border fulfilment',
+    description:
+      'Domestic warehousing, inspection, relabelling and repacking for cross-border apparel projects.',
+    path: '/en/cross-border-fulfillment',
+    providerName: 'Guangzhou XINYIYUAN Supply Chain Management Co., Ltd.',
+    countryName: 'China',
+  },
+  {
+    name: 'South China fulfilment',
+    description: 'Apparel warehouse services across Guangzhou, Dongguan, Foshan and Zhaoqing.',
+    path: '/en/south-china-fulfillment',
+    providerName: 'Guangzhou XINYIYUAN Supply Chain Management Co., Ltd.',
+    countryName: 'China',
+  },
+  {
+    name: 'East China fulfilment',
+    description: 'Apparel warehouse services across Shanghai, Kunshan and Hefei.',
+    path: '/en/east-china-fulfillment',
+    providerName: 'Guangzhou XINYIYUAN Supply Chain Management Co., Ltd.',
+    countryName: 'China',
+  },
+  {
+    name: 'Livestream fulfilment',
+    description:
+      'Session capacity, inventory coordination, dispatch and returns for livestream commerce.',
+    path: '/en/livestream-fulfillment',
+    providerName: 'Guangzhou XINYIYUAN Supply Chain Management Co., Ltd.',
+    countryName: 'China',
+  },
+  {
     name: 'Retail distribution',
     description: 'Retail, B2B and store-replenishment distribution workflows for apparel brands.',
     path: '/en/retail-distribution',
@@ -45,7 +75,7 @@ const settings = await getEnglishSiteSettings()
 
 <EnglishLayout
   title="Apparel supply-chain services"
-  description="Explore apparel fulfilment, returns inspection, garment care and retail distribution services in China."
+  description="Explore apparel, cross-border, South China, East China and livestream fulfilment, returns inspection, garment care and retail distribution in China."
   jsonLd={[breadcrumbSchema, ...services.map(createServiceSchema)]}
   siteSettings={settings}
   showFooter={false}

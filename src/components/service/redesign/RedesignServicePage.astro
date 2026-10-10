@@ -29,14 +29,14 @@ const { presentation, content, faqs, videoSrc, poster, locale = 'zh-CN' } = Astr
   ) : presentation === 'repair' ? (
     <RepairPage {content} {faqs} {videoSrc} {poster} {locale} />
   ) : presentation === 'south' ? (
-    <SouthNetworkPage {content} {faqs} {videoSrc} {poster} />
+    <SouthNetworkPage {content} {faqs} {videoSrc} {poster} {locale} />
   ) : presentation === 'east' ? (
-    <EastInventoryPage {content} {faqs} {videoSrc} {poster} />
+    <EastInventoryPage {content} {faqs} {videoSrc} {poster} {locale} />
   ) : presentation === 'live' ? (
-    <LiveCommercePage {content} {faqs} {videoSrc} {poster} />
+    <LiveCommercePage {content} {faqs} {videoSrc} {poster} {locale} />
   ) : presentation === 'b2b' ? (
     <B2BAllocationPage {content} {faqs} {videoSrc} {poster} {locale} />
   ) : (
-    <CrossborderPage {content} {faqs} {videoSrc} {poster} />
+    <CrossborderPage {content} {faqs} {videoSrc} {poster} {locale} />
   )
 }

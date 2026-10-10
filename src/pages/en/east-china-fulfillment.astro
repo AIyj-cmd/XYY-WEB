@@ -1,0 +1,13 @@
+---
+import ServiceLanding from '@/layouts/ServiceLanding.astro'
+import { EAST_ENGLISH_SOURCE } from '@/i18n/service-sources-east'
+---
+
+<ServiceLanding
+  {...EAST_ENGLISH_SOURCE.source}
+  locale="en"
+  presentation="east"
+  slug="huadong-xiefu-yuncang"
+  variant="east-radius"
+  faqs={EAST_ENGLISH_SOURCE.sourceFaqs}
+/>

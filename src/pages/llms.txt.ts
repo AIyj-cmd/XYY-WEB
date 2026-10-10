@@ -103,6 +103,10 @@ ${whitepaperLinks}
 - [English home](${page('/en')}): English overview for apparel brands doing business in China.
 - [English services](${page('/en/services')}): Apparel fulfilment, returns inspection, garment care, cross-border warehousing, South China and East China apparel warehousing, live-commerce fulfilment and B2B retail distribution.
 - [English apparel fulfilment](${page('/en/apparel-fulfillment')}): Apparel warehousing, order fulfilment and systems integration.
+- [English cross-border fulfilment](${page('/en/cross-border-fulfillment')}): Domestic stock preparation, project inspection, relabelling, repacking and returns processing for cross-border apparel projects.
+- [English South China fulfilment](${page('/en/south-china-fulfillment')}): Apparel warehouse services across Guangzhou, Dongguan, Foshan and Zhaoqing.
+- [English East China fulfilment](${page('/en/east-china-fulfillment')}): Apparel warehouse services across Shanghai, Kunshan and Hefei.
+- [English livestream fulfilment](${page('/en/livestream-fulfillment')}): Session capacity, multi-platform inventory coordination, dispatch and returns workflows.
 - [English returns inspection](${page('/en/returns-inspection')}): Returns handling, inspection and disposition workflows.
 - [English garment care](${page('/en/garment-care')}): Apparel preparation, care and value-added handling.
 - [English retail distribution](${page('/en/retail-distribution')}): Retail, B2B and store-replenishment distribution.

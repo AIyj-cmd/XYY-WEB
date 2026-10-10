@@ -30,12 +30,13 @@ describe('English product video localization', () => {
       '/en/apparel-fulfillment',
       '/en/returns-inspection',
       '/en/garment-care',
-      '/en/services#04-cross-border',
-      '/en/apparel-fulfillment',
-      '/en/services#06-east-china',
-      '/en/services#07-live-commerce',
+      '/en/cross-border-fulfillment',
+      '/en/south-china-fulfillment',
+      '/en/east-china-fulfillment',
+      '/en/livestream-fulfillment',
       '/en/retail-distribution',
     ])
+    expect(new Set(ENGLISH_PRODUCT_VIDEO_COPY.map(({ href }) => href)).size).toBe(8)
     for (const section of ENGLISH_PRODUCT_VIDEO_COPY) {
       expect(section.label).toMatch(/[A-Za-z]/)
       expect(section.headingPrefix).toMatch(/[A-Za-z]/)

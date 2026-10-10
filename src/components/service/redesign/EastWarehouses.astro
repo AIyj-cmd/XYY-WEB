@@ -1,12 +1,15 @@
 ---
-import { EAST_WAREHOUSES } from '@/data/service/east-network'
 import type { EastFeatureGroups, EastStatGroups } from './east-content'
+import type { SiteLocale } from '@/i18n/routes'
+import { eastUi } from './east-ui-copy'
 
 interface Props {
   groups: EastFeatureGroups
   stats: EastStatGroups
+  locale?: SiteLocale
 }
-const { groups, stats } = Astro.props
+const { groups, stats, locale = 'zh-CN' } = Astro.props
+const copy = eastUi(locale)
 const [primaryNetwork, ...otherNetwork] = groups.network
 ---
 
@@ -14,7 +17,7 @@ const [primaryNetwork, ...otherNetwork] = groups.network
   <div class="redesign-shell">
     <header class="east-section__header">
       <div>
-        <p class="redesign-kicker">华东仓配服务</p>
+        <p class="redesign-kicker">{copy.warehouseKicker}</p>
         {
           primaryNetwork ? (
             <div data-redesign-feature>
@@ -25,8 +28,8 @@ const [primaryNetwork, ...otherNetwork] = groups.network
             </div>
           ) : (
             <>
-              <h2 id="east-warehouses-heading">华东仓库分布</h2>
-              <p>上海、昆山、合肥，按你的库存布局与订单需求安排仓配服务。各仓均具备质检能力。</p>
+              <h2 id="east-warehouses-heading">{copy.warehouseFallbackHeading}</h2>
+              <p>{copy.warehouseFallbackDesc}</p>
             </>
           )
         }
@@ -46,7 +49,7 @@ const [primaryNetwork, ...otherNetwork] = groups.network
     </header>
     <div class="east-warehouses__grid">
       {
-        EAST_WAREHOUSES.map(({ city, name, address }) => (
+        copy.warehouses.map(({ city, name, address }) => (
           <article>
             <>
               <p>{city}</p>

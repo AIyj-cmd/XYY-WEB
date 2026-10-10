@@ -1,0 +1,13 @@
+---
+import ServiceLanding from '@/layouts/ServiceLanding.astro'
+import { SOUTH_ENGLISH_SOURCE } from '@/i18n/service-sources-south'
+---
+
+<ServiceLanding
+  {...SOUTH_ENGLISH_SOURCE.source}
+  locale="en"
+  presentation="south"
+  slug="huanan-xiefu-yuncang"
+  variant="south-network"
+  faqs={SOUTH_ENGLISH_SOURCE.sourceFaqs}
+/>

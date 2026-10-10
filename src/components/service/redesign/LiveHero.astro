@@ -1,14 +1,18 @@
 ---
 import type { ServicePageContent } from '@/lib/directus-content-queries'
 import ContactLink from '@/components/conversion/ContactLink.astro'
+import type { SiteLocale } from '@/i18n/routes'
+import { liveUi } from './live-ui-copy'
 
 interface Props {
   content: ServicePageContent
   videoSrc: string
   poster: string
+  locale?: SiteLocale
 }
 
-const { content, videoSrc, poster } = Astro.props
+const { content, videoSrc, poster, locale = 'zh-CN' } = Astro.props
+const copy = liveUi(locale)
 const hasCopy = content.h1 || content.h1sub || content.heroDesc
 ---
 
@@ -25,15 +29,20 @@ const hasCopy = content.h1 || content.h1sub || content.heroDesc
           )}
           {!content.h1 && content.h1sub && <p class="live-hero__statement">{content.h1sub}</p>}
           {content.heroDesc && <p class="live-hero__description">{content.heroDesc}</p>}
-          <p class="live-hero__scenes" aria-label="适用场景">
+          <p class="live-hero__scenes" aria-label={copy.scenesLabel}>
             <>
-              <span>品牌自播</span>
-              <span>达人带货</span>
-              <span>MCN · 代播</span>
+              {copy.scenes.map((scene) => (
+                <span>{scene}</span>
+              ))}
             </>
           </p>
-          <ContactLink sourcePath={Astro.url.pathname} entry="hero" class="redesign-button">
-            咨询直播仓配
+          <ContactLink
+            sourcePath={Astro.url.pathname}
+            {locale}
+            entry="hero"
+            class="redesign-button"
+          >
+            {copy.contact}
           </ContactLink>
         </div>
       )
@@ -49,7 +58,7 @@ const hasCopy = content.h1 || content.h1sub || content.heroDesc
       width="1280"
       height="720"
       poster={poster}
-      aria-label={`${content.h1 || content.breadcrumbLabel}服务视频`}
+      aria-label={`${content.h1 || content.breadcrumbLabel} ${copy.serviceVideo}`}
     >
       <source src={videoSrc} type="video/mp4" />
     </video>

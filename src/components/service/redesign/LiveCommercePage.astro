@@ -11,17 +11,21 @@ import LiveMcn from './LiveMcn.astro'
 import LiveReturns from './LiveReturns.astro'
 import LiveStages from './LiveStages.astro'
 import LiveSync from './LiveSync.astro'
+import type { SiteLocale } from '@/i18n/routes'
+import { liveUi } from './live-ui-copy'
 
 interface Props {
   content: ServicePageContent
   faqs: FaqItem[]
   videoSrc: string
   poster: string
+  locale?: SiteLocale
 }
-const { content, faqs, videoSrc, poster } = Astro.props
+const { content, faqs, videoSrc, poster, locale = 'zh-CN' } = Astro.props
+const copy = liveUi(locale)
 const available = hasRedesignContent(content, faqs.length)
-const groups = groupLiveFeatures(content.features)
-const stats = groupLiveStats(content.stats)
+const groups = groupLiveFeatures(content.features, locale)
+const stats = groupLiveStats(content.stats, locale)
 const hasHero = Boolean(content.h1 || content.h1sub || content.heroDesc)
 const hasStages = Boolean(
   groups.before.length ||
@@ -34,23 +38,23 @@ const hasSync = Boolean(groups.sync.length || stats.sync.length)
 const hasPrimaryContent = Boolean(hasHero || content.features.length || content.stats.length)
 ---
 
-<article class:list={['live-page', { 'live-page--empty': !available }]}>
+<article class:list={['live-page', { 'live-page--empty': !available }]} data-locale={locale}>
   {
     available ? (
       <>
-        {hasHero && <LiveHero {content} {videoSrc} {poster} />}
-        {hasStages && <LiveStages {groups} {stats} />}
+        {hasHero && <LiveHero {content} {videoSrc} {poster} {locale} />}
+        {hasStages && <LiveStages {groups} {stats} {locale} />}
         {(hasSync || content.contentDesc) && (
-          <LiveSync {groups} {stats} contentDesc={content.contentDesc} />
+          <LiveSync {groups} {stats} contentDesc={content.contentDesc} {locale} />
         )}
-        <LiveReturns features={groups.returns} stats={stats.returns} />
-        <LiveMcn features={groups.mcn} support={groups.support} stats={stats.support} />
-        <LiveFaq {faqs} />
-        {hasPrimaryContent && <LiveCta />}
+        <LiveReturns features={groups.returns} stats={stats.returns} {locale} />
+        <LiveMcn features={groups.mcn} support={groups.support} stats={stats.support} {locale} />
+        <LiveFaq {faqs} {locale} />
+        {hasPrimaryContent && <LiveCta {locale} />}
       </>
     ) : (
       <section class="redesign-empty">
-        <h1 id="lp-h1">服务内容暂不可用</h1>
+        <h1 id="lp-h1">{copy.unavailable}</h1>
       </section>
     )
   }

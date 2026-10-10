@@ -2110,3 +2110,20 @@ Status: CODE DONE（待 Luna 独立验证与 Nova Review）
 - 自测先验证新模块缺失与 `data:null` 原有错误均为红灯，再实现。目标 Vitest 7文件67测试 PASS（基础初始化、CLI、admin、singleton、stable identity、setup及setup contract）；目标 Prettier、ESLint与 `check:maintainability`（832文件）PASS。测试完全使用内存 fake 请求/无凭据 CLI，没有执行真实 setup/init/sync、访问外部 CMS/服务器/数据库、读取环境秘密、提交或部署；未运行全量构建/verify/发布门禁，显示效果与独立故障测试交 Luna。
 
 - 同 ID R2（Luna FAIL 返工）：将单例未保存判定收紧为 `null` / `[]` 或显式 `id:null` 且安全空业务默认对象。缺少 `id` 或 `id:undefined` 的对象现以 `missing_record_id` 在全量读取预检时阻断，任何内容写入为零；已保存 id 和显式 null 的保护分支保持。Terra 新增两项测试先复现错误写入/假 ready，再修复；7文件69测试 PASS，目标 Prettier、ESLint、scoped diff PASS。测试基表名称改用 `Object.entries` 消除动态索引的 TS7053，类型复核交 Luna；未修改 Luna 独立测试、访问外部系统或执行真实工具。
+
+### XYY-20261010-15 — 四个英文仓配详情的内容绑定与入口集成
+
+Status: CODE DONE（待呈现集成、Luna 独立验证与 Nova Review）
+
+- 新增跨境、华南、华东、直播四组独立审核中文快照及完整英文正文/FAQ，中文快照为静态字面量，不从可变中文页面配置动态生成。已注册英文catalog并新增四个独立英文路由，复用对应既有CMS服务身份、presentation、variant和图片；注册指标通过CLAIM_TEXT/englishClaim呈现，其余数字忠实对应审核源，没有新造业务主张。
+- 英文总览八项与页脚八项现在指向八个不同详情；补齐四组双向语言配对、Services导航激活、总览Service结构化数据、sitemap与llms发现链接。联系来源白名单新增四条cloud-warehouse/en映射，保留from/entry及推荐服务语义。
+- 新增真实映射单测：以受审核初始CMS service_pages/faqs种子作为stub fetch响应，调用生产getServicePageContent/getFaqs和Claims插值后，逐一等于四份冻结源，再输出4项统计、6项能力和5组英文FAQ。四源分别验证HTTP503回退、成功空CMS不填补、已修改正文/FAQ拒绝过期译文，并验证8个唯一链接、路由身份、语言配对与发现路径。
+- 自检PASS：6个定向Vitest文件43测试、所有归属源文件/页面/测试的ESLint与Prettier；证据 `output/english-services/xyy-20261010-15/terra-integration.md`。没有改redesign组件和呈现代理文案文件；typecheck、全仓维护性和双端浏览器交独立Luna在呈现完成后运行，未冒称执行。未访问外部CMS/数据库/服务器、读取环境秘密、安装依赖、提交、推送或部署。
+
+- 同 ID 分组回归：新增 `english-regional-service-groups.test.ts`，把四服务中英文features/stats经各自locale分组后的条目映射回原始索引，逐bucket比较，并核对全部条目恰好覆盖一次；South归一化副本按不变desc定位。初跑8项中7 PASS、1 FAIL：华东第6项英文“Local team coordination”进入collaboration，中文对应项进入support；其余当前分组比较通过。失败证据 `output/english-services/xyy-20261010-15/grouping-r1.log`，新测试ESLint/Prettier PASS；只新增测试和本记录，未改呈现helper或已冻结翻译，已交Sol协调呈现代理修正。
+
+- 同 ID R3 与文案补全：新增单独中英文 MCN 分组断言后，中文 `MCN机构专属方案` 先复现为 `mcn` 空桶；仅恢复 `live-content.ts` 的既有大小写 `MCN` 识别，英文 lowercase `mcn` 保持，随后 focused `service-redesign-live` 与 `english-regional-service-groups` 共13项 PASS。华南英文仓点的桥头仓地址补齐源中已有的“桥头镇”为 `Changping Qiaotou, No. 2, Duobao Road, Qiaotou Town, Dongguan`；未核验或改变真实地址。证据：`output/english-services/xyy-20261010-15/terra-presentation-r3.md`。
+
+### XYY-20261010-16 — GitHub 推送与原生 Web 发布 runner
+
+- 依据任务10已验证的 `update-web.sh` 创建本地 Task16 Web-only runner。它固定 predecessor `20261010T114608Z-d92b0fd` 与 SHA、Sol 现场核对的 machine ID、package-lock 与 `web.env` SHA；保留 artifact/manifest/lock/env/current 检查、仅 `xyy-web` restart、严格 CMS 和 contactStorage 均为 `ok` 的20次就绪检查，以及切换失败后的 predecessor 回退验证。任务10隔离 harness 以新 predecessor、每例生成的 fixture env hash 和 `contactStorage:ok` mock 最小替换重放，9/9 PASS，覆盖成功、artifact/env/lock/current漂移、恶意archive、切换失败、信号后切换与已验证回退；结果 `output/release/xyy-20261010-16/ops-tests/results.json`。未连接服务器、读取环境、执行 CMS/数据库操作、推送或部署。

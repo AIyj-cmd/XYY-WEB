@@ -1,30 +1,34 @@
 ---
 import type { LiveFeatureGroups, LiveStatGroups } from './live-content'
+import type { SiteLocale } from '@/i18n/routes'
+import { liveUi } from './live-ui-copy'
 
 interface Props {
   groups: LiveFeatureGroups
   stats: LiveStatGroups
+  locale?: SiteLocale
 }
-const { groups, stats } = Astro.props
+const { groups, stats, locale = 'zh-CN' } = Astro.props
+const copy = liveUi(locale)
 const stages = [
   {
-    label: '开播前',
-    title: '货、包材与人手，提前安排',
-    lead: '根据场次计划核对预计订单、SKU 与库存，安排包材与人员。',
+    label: copy.stages[0][0],
+    title: copy.stages[0][1],
+    lead: copy.stages[0][2],
     features: groups.before,
     stageStats: stats.peak,
   },
   {
-    label: '集中出单',
-    title: '订单集中来，仓内有序做',
-    lead: '订单校验后，按波次组织拣货与出库复核。',
+    label: copy.stages[1][0],
+    title: copy.stages[1][1],
+    lead: copy.stages[1][2],
     features: groups.peak,
     stageStats: [],
   },
   {
-    label: '发货跟进',
-    title: '按约定发货，异常及时跟进',
-    lead: '安排截单、打包出库、异常跟进与状态回传。',
+    label: copy.stages[2][0],
+    title: copy.stages[2][1],
+    lead: copy.stages[2][2],
     features: groups.after,
     stageStats: stats.after,
   },
@@ -36,11 +40,11 @@ const stages = [
     <section class="live-stages live-section" aria-labelledby="live-stages-heading">
       <div class="redesign-shell">
         <header class="live-section-heading">
-          <p class="redesign-kicker">场次安排</p>
-          <h2 id="live-stages-heading">开播前准备好，出单后跟得上</h2>
+          <p class="redesign-kicker">{copy.stagesKicker}</p>
+          <h2 id="live-stages-heading">{copy.stagesHeading}</h2>
         </header>
         <div class="live-stages__tabs" data-live-stages>
-          <div role="tablist" aria-label="直播仓配阶段" aria-orientation="vertical">
+          <div role="tablist" aria-label={copy.stagesLabel} aria-orientation="vertical">
             {stages.map(({ label }, index) => (
               <button
                 type="button"

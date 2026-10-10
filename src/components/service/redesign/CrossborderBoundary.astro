@@ -1,12 +1,14 @@
 ---
 import type { CrossborderFeatureGroups, CrossborderStatGroups } from './crossborder-content'
+import type { SiteLocale } from '@/i18n/routes'
 
 interface Props {
   features: CrossborderFeatureGroups
   stats: CrossborderStatGroups
+  locale?: SiteLocale
 }
 
-const { features, stats } = Astro.props
+const { features, stats, locale = 'zh-CN' } = Astro.props
 ---
 
 <section
@@ -15,17 +17,33 @@ const { features, stats } = Astro.props
 >
   <div class="redesign-shell">
     <header>
-      <p class="redesign-kicker">国内仓内与外部交接</p>
-      <h2 id="crossborder-boundary-heading">从品牌输入，到按项目交接</h2>
+      <p class="redesign-kicker">
+        {locale === 'en' ? 'Domestic warehouse and external handover' : '国内仓内与外部交接'}
+      </p>
+      <h2 id="crossborder-boundary-heading">
+        {locale === 'en' ? 'From brand inputs to project handover' : '从品牌输入，到按项目交接'}
+      </h2>
     </header>
     <div class="crossborder-boundary__track">
       <article>
-        <strong>品牌 / 工厂输入</strong>
-        <span>备货生产与项目资料确认</span>
+        <strong>{locale === 'en' ? 'Brand / factory inputs' : '品牌 / 工厂输入'}</strong>
+        <span
+          >{
+            locale === 'en'
+              ? 'Stock preparation, production and project information confirmed'
+              : '备货生产与项目资料确认'
+          }</span
+        >
       </article>
       <article class="crossborder-boundary__warehouse">
-        <strong>国内仓内作业</strong>
-        <span>仓储、项目质检、换标换包装</span>
+        <strong>{locale === 'en' ? 'Domestic warehouse operations' : '国内仓内作业'}</strong>
+        <span
+          >{
+            locale === 'en'
+              ? 'Storage, project inspection, relabelling and repacking'
+              : '仓储、项目质检、换标换包装'
+          }</span
+        >
         {
           features.warehouse.map(({ title, desc }) => (
             <p data-redesign-feature>
@@ -38,8 +56,14 @@ const { features, stats } = Astro.props
         }
       </article>
       <article class="crossborder-boundary__external">
-        <strong>按项目交接物流资源</strong>
-        <span>外部物流衔接目标国消费者或海外仓接收方</span>
+        <strong>{locale === 'en' ? 'Project logistics handover' : '按项目交接物流资源'}</strong>
+        <span
+          >{
+            locale === 'en'
+              ? 'External logistics connect to destination-market customers or overseas warehouse recipients'
+              : '外部物流衔接目标国消费者或海外仓接收方'
+          }</span
+        >
         {
           features.logistics.map(({ title, desc }) => (
             <p data-redesign-feature>
@@ -62,7 +86,13 @@ const { features, stats } = Astro.props
             </p>
           ))
         }
-        <small>运输、报关和清关责任以合同约定为准。</small>
+        <small
+          >{
+            locale === 'en'
+              ? 'Transport, customs declaration and clearance responsibilities are defined by contract.'
+              : '运输、报关和清关责任以合同约定为准。'
+          }</small
+        >
       </article>
     </div>
   </div>

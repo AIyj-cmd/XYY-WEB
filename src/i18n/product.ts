@@ -51,8 +51,8 @@ export const ENGLISH_PRODUCT_VIDEO_COPY: readonly ProductVideoCopy[] = [
     description:
       'For cross-border apparel projects, we provide domestic warehousing, project inspection, relabelling, repacking and returns finishing. In-warehouse work follows confirmed product and packing requirements before handover to logistics resources under the project plan.',
     highlights: ['Domestic preparation', 'Project inspection', 'Relabelling and repacking'],
-    href: '/en/services#04-cross-border',
-    link: 'View related services',
+    href: '/en/cross-border-fulfillment',
+    link: 'Explore cross-border fulfilment',
   },
   {
     label: 'South China apparel fulfilment',
@@ -61,8 +61,8 @@ export const ENGLISH_PRODUCT_VIDEO_COPY: readonly ProductVideoCopy[] = [
     description:
       'For apparel brands in Guangzhou and the Pearl River Delta, we connect factory receiving, e-commerce dispatch, store replenishment and returns handling. Regional inventory and warehouse operations are organised around the project requirements to support South China operations.',
     highlights: ['Factory receiving', 'Regional fulfilment', 'Returns handling'],
-    href: '/en/apparel-fulfillment',
-    link: 'Explore apparel fulfilment',
+    href: '/en/south-china-fulfillment',
+    link: 'Explore South China fulfilment',
   },
   {
     label: 'East China apparel fulfilment',
@@ -71,8 +71,8 @@ export const ENGLISH_PRODUCT_VIDEO_COPY: readonly ProductVideoCopy[] = [
     description:
       'For inventory placement across the Yangtze River Delta and East China, we provide e-commerce dispatch, store replenishment and returns inspection. Inventory can be coordinated with the South China warehouse network by project to arrange regional fulfilment and returns flows.',
     highlights: ['Regional fulfilment', 'Store replenishment', 'Multi-warehouse coordination'],
-    href: '/en/services#06-east-china',
-    link: 'View related services',
+    href: '/en/east-china-fulfillment',
+    link: 'Explore East China fulfilment',
   },
   {
     label: 'Livestream commerce fulfilment',
@@ -81,8 +81,8 @@ export const ENGLISH_PRODUCT_VIDEO_COPY: readonly ProductVideoCopy[] = [
     description:
       'For brand-operated and agency-operated livestream teams, stock preparation and warehouse work are planned before each session. Multi-platform order coordination, wave picking and flexible capacity connect concentrated dispatch with returns handling after a session.',
     highlights: ['Session stock preparation', 'Flexible capacity', 'Returns handling'],
-    href: '/en/services#07-live-commerce',
-    link: 'View related services',
+    href: '/en/livestream-fulfillment',
+    link: 'Explore livestream fulfilment',
   },
   {
     label: 'B2B store distribution',

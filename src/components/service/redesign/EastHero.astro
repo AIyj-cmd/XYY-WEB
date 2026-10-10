@@ -1,13 +1,17 @@
 ---
 import type { ServicePageContent } from '@/lib/directus-content-queries'
 import ContactLink from '@/components/conversion/ContactLink.astro'
+import type { SiteLocale } from '@/i18n/routes'
+import { eastUi } from './east-ui-copy'
 
 interface Props {
   content: ServicePageContent
   videoSrc: string
   poster: string
+  locale?: SiteLocale
 }
-const { content, videoSrc, poster } = Astro.props
+const { content, videoSrc, poster, locale = 'zh-CN' } = Astro.props
+const copy = eastUi(locale)
 ---
 
 <header class="east-hero">
@@ -16,19 +20,21 @@ const { content, videoSrc, poster } = Astro.props
       <div class="east-hero__title">
         {content.eyebrow && <p class="redesign-kicker">{content.eyebrow}</p>}
         <h1 id="lp-h1">
-          <span class="east-hero__service">{content.h1 || '华东鞋服云仓'}</span>
-          <span class="east-hero__claim"><em>让发货，</em><em>更贴近你的市场</em></span>
+          <span class="east-hero__service">{content.h1 || copy.heroFallback}</span>
+          <span class="east-hero__claim"
+            ><em>{copy.heroClaim[0]}</em><em>{copy.heroClaim[1]}</em></span
+          >
         </h1>
-        <p class="east-hero__cities"><span>上海</span><span>昆山</span><span>合肥</span></p>
+        <p class="east-hero__cities">{copy.cities.map((city) => <span>{city}</span>)}</p>
       </div>
       <div class="east-hero__intro">
         {content.h1sub && <p class="east-hero__sub">{content.h1sub}</p>}
         {content.heroDesc && <p class="east-hero__description">{content.heroDesc}</p>}
         <div class="east-hero__actions">
-          <ContactLink sourcePath={Astro.url.pathname} entry="hero" class="redesign-button"
-            >咨询华东仓配</ContactLink
+          <ContactLink sourcePath={Astro.url.pathname} {locale} entry="hero" class="redesign-button"
+            >{copy.contact}</ContactLink
           >
-          <a href="#east-warehouses-heading">查看仓库分布</a>
+          <a href="#east-warehouses-heading">{copy.warehouseLink}</a>
         </div>
       </div>
     </div>
@@ -43,7 +49,7 @@ const { content, videoSrc, poster } = Astro.props
       width="1280"
       height="720"
       poster={poster}
-      aria-label={`${content.h1}服务视频`}
+      aria-label={`${content.h1 || copy.heroFallback} ${copy.serviceVideo}`}
     >
       <source src={videoSrc} type="video/mp4" />
     </video>

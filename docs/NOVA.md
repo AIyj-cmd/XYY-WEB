@@ -3289,3 +3289,37 @@ Handoff / Limits：允许Sol将精确31路径冻结入index，复核最终tree/p
 | LOW      | 0     | pass   |
 
 Verdict: APPROVE — 精确候选可正常提交并推送main，无阻断finding。
+
+### XYY-20261010-15 — 英文仓配详情补齐最终 Review
+
+Task ID：`XYY-20261010-15`（MEDIUM）；Result：**APPROVED — 仅本地修复验收**。
+
+Review Scope：审阅基线 `0ff161f9cef3e124169d5ba2c0cd3b45c34affae` 上四个英文详情、固定中文审核快照与译文、来源目录、八项总览入口、语言配对、咨询来源、发现信息，以及 Crossborder/South/East/Live 呈现组件、局部文案和分组 helper。核对 AGENTS、任务合同、Luna 原始单测与静态门禁、双端浏览器 JSON 和代表截图；Graphify 只查询已有旧索引，判断以当前源码为准。本轮仅追加本日志，未修改实现或测试、重跑测试、访问网络或真实 CMS/数据库，也未提交、推送或部署。
+
+Architecture / Content：PASS。四个新详情分别绑定既有 `kuajing-yuncang`、`huanan-xiefu-yuncang`、`huadong-xiefu-yuncang`、`zhibo-cangpei` 身份；英文内容通过独立固定中文快照审核，不从持续变化的中文配置动态生成审核源。真实 seed mapper 对照、503 回退匹配、成功空内容保持空和变更内容拒绝旧译文均有定向测试。既有 `translateReviewedService`、`ServiceLanding`、CMS mapper 和请求错误边界未改；呈现空内容门控保持，分组保持每项恰好一次。新增英文文案对应中文来源，Claims 引用与服务责任范围保持，没有新增依赖、数据写入或运行环境变更。
+
+Routing / UI：PASS。英文总览及页脚八项均指向八个不同的正确详情，第五项为独立华南服务。四组语言路由可双向切换，canonical/hreflang、站点地图、llms.txt 和咨询来源预选一致；hero 与 bottom 联系入口均进入英文联系页并选择既有仓配服务类别。四类详情的标题、说明、FAQ、按钮和辅助标签完成英文呈现，素材及中文默认行为保持。Nova 亲看跨境 R2 桌面首屏、华南手机首屏、华东桌面首屏、直播手机 FAQ 及华南 R3 手机地址截图，未发现裁切或横向溢出。
+
+Resolved Findings：本次初审发现 1 个 MEDIUM（中文仅含 MCN 的标题失去原分组触发）和 1 个 LOW（桥头仓英文地址漏译桥头镇）。R3 恢复原 `feature.title.includes('MCN')` 判断并新增中英文独立 MCN 标题回归测试；英文地址补齐 `Qiaotou Town`，中文地址保持。Luna 另发现跨境首屏 `domesticwarehouse` 缺空格，R2 最小修正后双端复测通过。失败与返工证据保留；当前无未解决 finding。
+
+Validation：Luna 首轮 integration 为 6 files / 43 tests PASS；分组与中文回归为 5 files / 24 tests PASS；类型检查 679 files、0 errors、0 warnings、4 个既有 hints，目标 ESLint/Prettier、851 文件维护性预算和 diff 检查通过。浏览器覆盖四个新英文详情 × 1440/390 共 8 组、40 次 FAQ 展开、16 次咨询跳转、8 次语言往返及中文页面回读，总览两视口共 16 次真实点击确认 8 个不同详情和第一/第五项不同。R2 只复测跨境首屏空格；R3 两个相关 suite 共 13 tests PASS，三文件 ESLint/Prettier/diff 通过，华南中英文 × 两视口四组地址完整、无横溢，blocked/pageerror/consoleerror 均为零。未以旧通过结果替代修正后的定向验证。
+
+Identity / Limits：Nova 独立重算 `output/english-services/xyy-20261010-15/source-freeze-r3.json`，SHA-256 为 `212a4afcc7ab8ad979676548f3e61fa0e7381342b59abb60fbb38dda0757cd0f`，56 个源码/测试文件全部匹配，0 漂移；Luna R3 冻结检查亦一致。本地隔离 CMS 和 Chromium 桌面/手机视口证据不代表真实 CMS、真机或外部站点已上线；没有真实询盘提交。完整 verify/release 门禁本轮未执行，当前任务不含提交或部署。证据位于 `output/english-services/xyy-20261010-15/luna/`（包括 `r3/`）及 `output/playwright/xyy-20261010-15/`，交 Sol 完成本地验收与状态记录。
+
+Record Validation：新增 Task 15 日志段经 Prettier 内存对照一致，`git diff --check` 通过。整份 NOVA 历史日志的 Prettier 检查仍报告既有空行/表格格式差异，格式差异全部位于本次新增段之前；本轮未改写这些历史内容，未将整文件格式检查记为通过。
+
+### XYY-20261010-16 — main 提交与推送阶段 Review
+
+Task ID：`XYY-20261010-16`（HIGH）；Result：**APPROVED_FOR_NORMAL_MAIN_COMMIT_AND_PUSH**。
+
+Review Scope：核对任务合同、AGENTS、Task 15 已批准的冻结源码、本次 Luna 完整门禁原始证据、精确候选路径，以及 DEV_STATE 和各角色本阶段记录。范围为 56 个源/测试文件与 7 份任务文档，共 63 路径，精确匹配 `output/release/xyy-20261010-16/candidate-paths.txt`；无缺失或额外路径。本轮仅追加本日志及 ignored Nova 证据，未改实现或测试、重跑应用测试、访问真实服务或执行 Git 写入。
+
+Identity / Scope：PASS。当前 HEAD、main 和 origin/main 均为 `0ff161f9cef3e124169d5ba2c0cd3b45c34affae`；远端 main 的实时只读核对与正常推送权限由 Sol 提供。Task 15 的 R3 manifest SHA-256 为 `212a4afcc7ab8ad979676548f3e61fa0e7381342b59abb60fbb38dda0757cd0f`，56 文件全部匹配。Nova 独立逐项核对 Luna 的 1565 文件候选及 mode，候选零差异，当前工作树 runtime 零差异；runtime digest 为 `6938451e58c5cfda77bbc65651ab67b346f7c2c8dbe51b0ec58d42daddc8c411`。门禁后仅 DEV_STATE、LUNA、SOL、TERRA 追加已完成事实及本 Nova 记录，未宣称推送或部署已发生；Terra 阶段记录已冻结，复核时文件 SHA-256 为 `0e805d37a47c2e6fc546bd2bef9cb478a6301bb2036c32221ed8ad52c9f2002e`。
+
+Security / Architecture：PASS。Task 15 已批准的来源审核、成功空内容保持、变化拒译、语言配对和服务分组结论继续有效，本轮无新增业务差异。候选不含环境文件、依赖、构建产物或 ignored 运维证据；新增 diff 与候选未跟踪文件的高置信私钥、GitHub、AWS、阿里云密钥模式零命中，未输出秘密正文。旧原生工作区和其既有记录保持；本批准不改变任何真实服务、配置或数据。
+
+Test Coverage Review：PASS。本次隔离候选实际执行 `npm run verify` exit 0：679 类型文件、0 errors、0 warnings、4 个既有 hints，127 files / 866 tests，ESLint、851 文件维护性、69/103 资源、cache patch 与 SSR build 全部通过；`npm run format:check` exit 0。真实容量门禁通过，未绕过检查。候选使用既有依赖的本地副本、最小显式环境、假 loopback CMS/线索地址和外网 fetch 阻断，原依赖及既有本地服务保持；构建中的 Directus 不可达使用既有获准网络回退，不代表真实 CMS 验证。没有重复 Task 15 已完成且源码未变的浏览器检查；原生候选的完整发布门禁尚待后续执行。
+
+Handoff / Limits：无 CRITICAL、HIGH、MEDIUM 或需返工的 LOW finding。允许 Sol 冻结精确 63 路径入 index，核对最终 tree 与唯一 parent 为上述基线后创建普通提交，并正常推送 GitHub `AIyj-cmd/XYY-WEB` 的 main；不允许 force、amend、夹带文件或忽略远端基线漂移。本结论是本阶段质量闸门，推送权限来自用户明确授权。推送后须实读 Git 引用、GitHub main、工作树和 CI 状态；目前不得记录为已成功推送。**原生部署批准仍待后续集成候选的完整 verify:release、最终制品身份、准确服务器与环境指纹、切换及回退脚本审核**；不得把本阶段批准扩大为部署门禁通过。
+
+Record Validation：本次新增日志段经 Prettier 内存对照一致，`git diff --check` 通过。未改写 NOVA 既有历史格式或其他角色文档。

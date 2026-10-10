@@ -1,11 +1,15 @@
 ---
 import type { EastFeatureGroups, EastStatGroups } from './east-content'
+import type { SiteLocale } from '@/i18n/routes'
+import { eastUi } from './east-ui-copy'
 
 interface Props {
   groups: EastFeatureGroups
   stats: EastStatGroups
+  locale?: SiteLocale
 }
-const { groups, stats } = Astro.props
+const { groups, stats, locale = 'zh-CN' } = Astro.props
+const copy = eastUi(locale)
 const services = [
   { features: groups.b2c, stats: stats.channels, primary: true },
   { features: groups.b2b, stats: [] },
@@ -16,8 +20,8 @@ const services = [
 <section class="east-business east-section" aria-labelledby="east-business-heading">
   <div class="redesign-shell">
     <header>
-      <p class="redesign-kicker">一份库存，多种订单</p><h2 id="east-business-heading">
-        一份库存，服务不同订单
+      <p class="redesign-kicker">{copy.businessKicker}</p><h2 id="east-business-heading">
+        {copy.businessHeading}
       </h2>
     </header>
     <div class="east-business__grid">

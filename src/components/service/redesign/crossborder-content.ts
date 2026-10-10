@@ -1,4 +1,5 @@
 import type { FeatureItem, StatItem } from '@/data/service'
+import type { SiteLocale } from '@/i18n/routes'
 
 export interface CrossborderFeatureGroups {
   warehouse: FeatureItem[]
@@ -19,23 +20,33 @@ export interface CrossborderStatGroups {
 }
 
 export function groupCrossborderFeatures(
-  features: readonly FeatureItem[]
+  features: readonly FeatureItem[],
+  locale: SiteLocale = 'zh-CN'
 ): CrossborderFeatureGroups {
+  const english = locale === 'en'
   return features.reduce<CrossborderFeatureGroups>(
     (groups, feature) => {
-      const target = feature.title.includes('退货')
-        ? 'returns'
-        : feature.title.includes('物流')
-          ? 'logistics'
-          : feature.title.includes('换标') || feature.title.includes('包装')
-            ? 'labeling'
-            : feature.title.includes('质检')
-              ? 'quality'
-              : feature.title.includes('项目')
-                ? 'support'
-                : feature.title.includes('仓')
-                  ? 'warehouse'
-                  : 'other'
+      const title = feature.title.toLowerCase()
+      const target =
+        title.includes('退货') || (english && title.includes('return'))
+          ? 'returns'
+          : title.includes('物流') || (english && title.includes('logistics'))
+            ? 'logistics'
+            : title.includes('换标') ||
+                title.includes('包装') ||
+                (english &&
+                  (title.includes('relabel') || title.includes('label') || title.includes('pack')))
+              ? 'labeling'
+              : title.includes('质检') ||
+                  (english && (title.includes('quality') || title.includes('inspection')))
+                ? 'quality'
+                : title.includes('项目') || (english && title.includes('project'))
+                  ? 'support'
+                  : title.includes('仓') ||
+                      (english &&
+                        (title.includes('warehouse') || title.includes('stock preparation')))
+                    ? 'warehouse'
+                    : 'other'
       groups[target].push(feature)
       return groups
     },
@@ -43,18 +54,27 @@ export function groupCrossborderFeatures(
   )
 }
 
-export function groupCrossborderStats(stats: readonly StatItem[]): CrossborderStatGroups {
+export function groupCrossborderStats(
+  stats: readonly StatItem[],
+  locale: SiteLocale = 'zh-CN'
+): CrossborderStatGroups {
+  const english = locale === 'en'
   return stats.reduce<CrossborderStatGroups>(
     (groups, stat) => {
-      const target = stat.label.includes('处理规模')
-        ? 'caseStudy'
-        : stat.label.includes('国内仓')
-          ? 'warehouse'
-          : stat.label.includes('QC')
-            ? 'quality'
-            : stat.label.includes('物流')
-              ? 'logistics'
-              : 'other'
+      const label = stat.label.toLowerCase()
+      const target =
+        label.includes('处理规模') ||
+        (english && (label.includes('handling scale') || label.includes('case')))
+          ? 'caseStudy'
+          : label.includes('国内仓') ||
+              (english &&
+                (label.includes('domestic warehouse') || label.includes('returns processing')))
+            ? 'warehouse'
+            : label.includes('qc') || (english && label.includes('quality'))
+              ? 'quality'
+              : label.includes('物流') || (english && label.includes('logistics'))
+                ? 'logistics'
+                : 'other'
       groups[target].push(stat)
       return groups
     },
