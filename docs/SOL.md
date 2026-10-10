@@ -2417,3 +2417,11 @@ Limits：本轮限Chrome152模拟视口及离线/helper验证，空内容schema�
 - 本次实时核对线上旧版本 `40591be` / `20261009T091340Z-40591be`、staging、schema `2026-10-cms-maintenance`；`/healthz` 两依赖 ok，current 指向相应 release，既有监听为 127.0.0.1:50031。容量预检：数据盘 device 66310 复用真实完整 verify:release 基线，通过；远端 device 64771 复用真实 npm ci 基线，通过。没有更新服务器配置或数据库。
 - Luna 独立 `npm run verify` exit 0：647 类型文件、0 errors/0 warnings/4 hints，119 文件/762 单测，819 维护性文件、资源/cache patch 和构建通过。初始九个源码/测试文件 SHA-256 复核保持；准备精确候选审查和本地提交，部署仍须运行标准脚本内完整 verify:release。
 - 当前证据 `output/release/xyy-20261010-05/`，此阶段尚未提交、部署或推送本任务；完成后另行补录实际发布和 Git 状态，不把计划记为已执行。
+
+- Nova 发布前批准精确 parent `af20f11`、tree `a1280c9db44f02c6c0118ce82cc0f47082d10721` 的 17 路径候选与既有 staging 调用。Sol 本地提交 `eb05b8fb95e87fbd8895224e67d9b3a3cd23e043`，parent/tree 与批准一致，干净工作区启动未修改的 deploy.sh。
+- deploy.sh 实际 exit 0：内置 verify:release 完成 647 类型文件、0 errors/0 warnings/4 hints、119 文件/762 单测、263 E2E/9 既有跳过、4 formal 及最终 build。远程安装 291 包、审计 293 包、0 vulnerabilities；新 release `20261010T071221Z-eb05b8f` 已生效，公网站点/health/CMS ping/robots/sitemap/llms/version 检查全部通过。启动等待内一次连接拒绝随后恢复，未触发回退；旧版仅生成两项清理预览，未执行删除。
+- Sol 独立回读 `/version` 精确为 eb05b8f、上述 release、staging、schema `2026-10-cms-maintenance`，`/healthz` 两依赖 ok。正在执行 Luna 上线双端验收及纯发布记录收口；本阶段未推送 GitHub，保持用户部署后推送的顺序。
+
+- Luna 上线终验 PASS：真实 staging 六路由 × 1440/390 共 12 组 HTTP 200、H1/主要内容可见、无横溢/pageerror、目标文案/模块/按钮/锚点为零；中英联系页联系方式与表单 4/4 保持，GET/HEAD-only 拦截器未观察到其他方法请求。Sol 已亲看线上手机首页和桌面联系页截图，服务内容完整、无删除残留空条；运行监听仍为 127.0.0.1:50031。
+- 纯发布结果记录提交前再次实际运行 `npm run verify`，exit 0：647 类型文件、0 errors/0 warnings/4 hints、119 文件/762 单测及 build 通过。README 仅更新本次实际部署日期/SHA/release 和已完成验证；其余业务文件与应用提交完全一致。当前记录为应用部署后的文档归档，线上应用身份仍绑定 eb05b8f；Nova 最终审查记录见同任务角色日志，最终 Git/CI 回读落在本任务 output 证据并于交付时实时说明。
+- 本轮未更改 CMS/数据库、环境文件、DNS/TLS/Nginx 或权限策略，未删除旧版本、未触碰正式站，未提交真实表单。验证边界为 Chromium 桌面/手机模拟视口；保留 9 个既有跳过和启动等待内短暂连接拒绝记录，不将其隐藏为从未发生。

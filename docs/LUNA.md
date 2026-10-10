@@ -5537,3 +5537,15 @@ Tests performed：按合同使用既有容量基线 `/home/yj/data/website/outpu
 Regression coverage：本次 `npm run verify` 覆盖当前候选的类型、Lint、维护性预算、公共资源、缓存语义、全量单测和生产构建；未运行额外全量 E2E。工作区回读未发现由 verify 产生的已跟踪构建/测试产物或范围外实现修改；既有任务修改与并行角色文档保持不变。未读取或打印真实 `.env`，未操作 4321/4322、CMS、数据库、真实表单或外部系统。
 
 Remaining risks：本次只证明本地隔离环境的提交前 verify，通过后仍需 Nova 发布前审查、标准部署脚本内 `npm run verify:release`、测试站部署及上线后独立浏览器 QA；未据此宣称已提交、部署或推送。
+
+### XYY-20261010-05 — Luna staging 上线后独立 QA
+
+Task ID：`XYY-20261010-05`；Result：**PASS**。
+
+Tests performed：针对 staging `https://wz.tomatopia.top`，核对应用 source SHA `eb05b8fb95e87fbd8895224e67d9b3a3cd23e043`、release `20261010T071221Z-eb05b8f`、schema `2026-10-cms-maintenance`。使用独立 Playwright CLI session，先以 `about:blank` 打开并 snapshot，再安装仅允许 GET/HEAD 的 route guard；只读检查 `/`、`/en`、`/product`、`/en/services`、`/contact`、`/en/contact` 的 1440×900 与 390×844，共 12 组。12/12 HTTP 200，12/12 H1 与主要内容可见，12/12 无文档横向溢出，目标文案/服务选择块/`#service-finder` 锚点均为 0，pageerror 为 0；非 GET/HEAD 请求拦截列表为空。中文/英文联系页 4/4 组合均看到 `form#contact-form` 与 `400-6865-156` 联系方式。首页截图等待图片/动画后滚动至第一段服务内容，联系页截图滚动至 `#contact-form`；代表桌面/移动截图已目视复核。
+
+证据：结构化结果见 [online-checks.json](../output/release/xyy-20261010-05/luna/online/online-checks.json)，CLI 原始输出及退出码见 [online-cli.log](../output/release/xyy-20261010-05/luna/online/online-cli.log) 与 [online-cli.exit](../output/release/xyy-20261010-05/luna/online/online-cli.exit)，12 张截图位于 [online evidence](../output/release/xyy-20261010-05/luna/online/)。本轮未提交表单、未执行真实 POST、未直接操作 CMS/数据库、未操作本地 4321/4322。
+
+Regression coverage：覆盖已发布移除服务选择入口的中英文首页、产品/服务页及联系页；目标按钮、文案、模块与锚点持续消失；联系信息与表单可见；桌面/移动 HTTP、H1、主内容、横溢和脚本异常均通过。此前提交前 `npm run verify` 的 647 文件 typecheck、119 files/762 tests 与 build 结果见本 Task ID 前一段及对应 `precommit-verify` 证据。
+
+Remaining risks：本轮仅验证 staging 公网只读页面，不覆盖真机、Safari/微信浏览器、生产站、真实表单提交或 CMS/数据库写入；未扩展到合同外路由或外部链接。

@@ -28,4 +28,8 @@
 
 - 已确认目标身份与初始 Git 基线，本地/远端容量预检通过，旧版健康正常。
 - Luna 发布前 `npm run verify` exit 0：647 类型文件、0 errors/0 warnings/4 hints，119 文件/762 单测，819 维护性文件、资源/cache patch 与 build 通过。
-- 初始九个源码/测试文件哈希保持；候选共 17 个约定路径。等待 Nova 候选和部署调用审查；此阶段尚未提交、部署或推送。
+- 初始九个源码/测试文件哈希保持；17 路径候选 tree `a1280c9db44f02c6c0118ce82cc0f47082d10721` 经 Nova 批准后，本地提交 `eb05b8fb95e87fbd8895224e67d9b3a3cd23e043`；parent 为 af20f11，部署启动时工作区干净。
+- 标准 deploy.sh exit 0，完整 verify:release 通过：762 单测、263 E2E/9 既有跳过、4 formal 和最终 build；remote npm ci 0 vulnerabilities。线上 release `20261010T071221Z-eb05b8f` 已生效，公开 `/version` 与 manifest 精确一致，健康两依赖 ok。
+- 启动时一次连接拒绝在标准就绪等待内恢复，未回退；旧版只生成两项清理预览，未删除。当前监听仍为 127.0.0.1:50031。
+- Luna 上线终验 PASS：六路由双端 12/12 HTTP 200、主要内容可见、无目标入口/锚点、无横溢/pageerror，联系页表单与联系方式保持；只读网络拦截无非 GET/HEAD 请求。Sol 已审线上截图。
+- 纯发布记录提交前另一次 npm run verify exit 0，762 单测及 build 通过；结果文档不改变应用代码，线上应用提交仍为 eb05b8f。Nova 终审见 docs/NOVA.md 同任务记录；GitHub 与本地最终身份、工作区及 CI 状态以本任务 output 中最终回读和交付时实读为准。

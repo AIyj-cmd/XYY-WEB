@@ -3215,3 +3215,25 @@ Result：**APPROVED**。无 CRITICAL、HIGH、MEDIUM 或需返工的 LOW finding
 Remaining Risks：浏览器证据来自本地 Chromium 模拟视口，未覆盖真机、Safari、微信浏览器、生产站或真实 CMS 延迟；未提交真实询盘。复用 4322 本地源码服务不证明其 SSR 数据源离线或为 mock，因此本 Review 仅确认未直接执行 CMS/数据库操作。这些是验证边界，不是当前差异缺陷。
 
 Handoff：交 Sol 最终验收。可声明本地源码已修改、定向测试与双端路由检查通过、Nova APPROVED；不得声明已提交、推送、部署、生产验证或真实 CMS/表单验证。
+
+### XYY-20261010-05 — 测试站部署与 GitHub 同步最终 Review
+
+Task ID：`XYY-20261010-05`（HIGH）。
+
+Review Scope：发布前审查冻结的 17 路径 index、Task 04 已批准业务差异、提交前 Luna `npm run verify`、既有 `scripts/deploy.sh` 和准确 staging 调用；上线后审查应用 commit/tree、完整 deploy 日志与退出码、release manifest 身份、公开 version/health、loopback listener、Luna 六路由双端只读 QA、最终记录前 `npm run verify`，以及五份发布结果文档。仅追加本日志和 ignored Nova 报告；未改实现/测试、未重跑测试、未部署、提交、推送或执行其他外部写入。
+
+Architecture：PASS。应用提交 `eb05b8fb95e87fbd8895224e67d9b3a3cd23e043` 的唯一 parent 为 `af20f11be11d1f5e8c3af0d982f7ccd8b79fa608`，tree 精确为预审批准的 `a1280c9db44f02c6c0118ce82cc0f47082d10721`。部署后相对该 commit 的 `src`、`tests`、`scripts`、`config`、`public`、package/server/runtime 文件差异为零；当前新增内容只有发布结果文档和本 Nova 日志。线上应用继续绑定 eb05b8f，后续纯文档提交不会被误写为已部署业务版本。
+
+Security：PASS。标准脚本只在完整 release 门禁通过后上传新 release、安装生产依赖、切换应用和重启既有 `xyy-web`；没有修改 `.env`、CMS/数据库、DNS/TLS/Nginx 或权限策略。外部检查为站点、health、CMS ping、robots、sitemap、llms 与 version 读取；Luna route guard 只允许 GET/HEAD，非 GET/HEAD 观察为零，没有真实询盘。远程生产依赖审计为 0 vulnerabilities，旧版本清理为 preview，两项候选均未删除。
+
+Maintainability：PASS。发布复用未修改的标准脚本及原回退/容量/身份门禁，没有引入一次性部署旁路。结果文档只更新已发生的日期、SHA、release、验证和限制；`DEV_STATE.md` 与 README 指向部署应用 SHA，合同和角色日志明确最终 Git/CI 要以 push 后实读为准。当前文档 `git diff --check` 通过；应用文件相对 eb05b8f 零差异。
+
+Contract Risks：PASS。准确目标为 `https://wz.tomatopia.top`、`root@47.82.105.103`、`/var/www/xyy-web`、staging、PM2 `xyy-web`、`127.0.0.1:50031`。公开 `/version` 返回完整 SHA eb05b8f、release `20261010T071221Z-eb05b8f`、staging 和 schema `2026-10-cms-maintenance`；`/healthz` 的 CMS 与 contact storage 均为 ok，current 指向对应 release，监听保持 loopback。未触碰正式站、CMS/DB schema/content、环境文件或旧版删除。部署时一次就绪前连接拒绝随后在标准等待内恢复，没有回退；记录未隐藏该事件。
+
+Test Coverage Review：PASS。发布脚本内 `npm run verify:release` exit 0：647 类型文件、0 errors、0 warnings、4 个既有 hints，119 files / 762 unit，263 E2E passed / 9 个既有 skip，4 formal 与最终 build 全部通过。相较历史 269 E2E，减少 6 次执行对应本次删除的 3 个旧 UI 测试在 chromium/mobile 两个 project 中各移除一次，不是漏跑。Luna staging QA 为六路由 × 1440/390 共 12/12 HTTP 200、H1/主要内容可见、无横溢、无 pageerror、目标文案/模块/锚点为零，联系页表单与电话 4/4 保留。结果文档写入后，Sol 再次执行 `npm run verify` exit 0，119 files / 762 tests 与 build 通过。构建中 `/404.html` 的 Directus timeout 使用既有获准网络超时回退；部署后 CMS ping 和公开健康均正常。
+
+Result：**APPROVED_FOR_FINAL_RECORD_COMMIT_AND_ORDINARY_MAIN_PUSH**。无 CRITICAL、HIGH、MEDIUM 或需返工的 LOW finding。该结论是质量闸门；部署与 push 的权限来自用户已给出的准确 staging/GitHub main 授权。最终提交只应包含 `DEV_STATE.md`、`README.md`、`docs/LUNA.md`、`docs/NOVA.md`、`docs/SOL.md`、`docs/plans/xyy-20261010-05-staging-release.md`，并作为 eb05b8f 之上的普通纯文档提交推送 `origin/main`，不得 amend、force 或夹带其他路径。
+
+Remaining Risks：线上浏览器证据为 Chromium 桌面/手机模拟视口，未覆盖真机、Safari、微信浏览器、生产站、真实询盘提交或 CMS/数据库写入；9 个既有 skip 保留。GitHub push 与 CI 在本 Review 时尚未发生，不能提前声明成功。推送后必须实读本地 HEAD、main、origin/main、GitHub main、工作区和 CI 状态；CI 运行中或失败须按真实状态报告，不能写成通过。
+
+Handoff：交 Sol 冻结六文档最终差异、创建普通记录提交并普通 push `origin/main`。上线应用身份仍为 eb05b8f；最终 Git SHA 预期是其纯文档子提交。push 后只需做 Git/CI/工作区最终回读并保存 ignored 证据；若六文档外出现差异、应用树改变、非快进或远端 main 漂移，本批准失效并停止推送。

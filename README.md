@@ -6,8 +6,8 @@
 - 正式域名：<https://56xyy.com>
 - 当前状态：[DEV_STATE.md](DEV_STATE.md)
 
-截至 2026-10-09，测试站已部署应用提交 `40591be`，Release ID 为
-`20261009T091340Z-40591be`，环境为 `staging`。本次部署的完整 `verify:release`、
+截至 2026-10-10，测试站已部署应用提交 `eb05b8f`，Release ID 为
+`20261010T071221Z-eb05b8f`，环境为 `staging`。本次部署的完整 `verify:release`、
 健康与版本核对，以及上线后的中英文桌面/移动端抽查均已通过。
 测试 CMS 使用 Directus 12.1.1 / PostgreSQL 16.15，模型版本为
 `2026-10-cms-maintenance`，验证状态为 `verified`。本次发布仅更新测试站，主站未作变更；
