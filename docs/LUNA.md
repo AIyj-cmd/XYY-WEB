@@ -5511,3 +5511,29 @@ Tests performed：针对 Release `40591be3f362e81eed13ccf7a129fa22efc55932/relea
 补证：仅对中文联系页桌面与英文联系页移动两组验证页脚二维码按钮打开、二维码图片在既有 5000ms 预算内完成加载、Esc 关闭；点击 `插入填写提纲` / `Insert enquiry outline` 后，textarea 分别包含 `日均发货单量`、`B2B还是B2C模式` / `Average daily shipments`、`Business model (B2B or B2C)`。两组均无 POST、无 pageerror。R1 原始时序探针与 R2 修正后 PASS 证据见 [qr-outline-supplement-r1.json](../output/release/xyy-20261009-01/luna-final/qr-outline-supplement-r1.json)、[qr-outline-supplement-r2.json](../output/release/xyy-20261009-01/luna-final/qr-outline-supplement-r2.json)。未提交表单、未点击外部社交链接、未写 CMS 或其他外部系统。
 
 Remaining risks：本轮为上线后公开页只读验证，覆盖指定 8 组及 2 组补证；不替代后台/CMS、真实表单提交、生产主站或数据库验证。此前 R1 `naturalWidth` 立即读取为 0 的记录保留，原因是探针时序；在既有 5000ms 图片加载等待内复测 R2 通过，未修改应用实现。
+
+### XYY-20261010-04 — Luna 移除服务选择入口独立验收
+
+Task ID：`XYY-20261010-04`；Result：**PASS**。
+
+Tests performed：按合同复用 4322 本地源码服务，执行 `PLAYWRIGHT_PORT=4322 PLAYWRIGHT_ARTIFACTS_DIR=output/playwright/xyy-20261010-04/e2e npx playwright test tests/e2e/consultation-service-finder.spec.ts --workers=1`。首轮 chromium 几何用例因 `page.evaluate` 时页面导航上下文被销毁而 exit 1（7 passed、1 failed）；mobile 4/4 通过。保留首轮失败 trace/screenshot 后，以相同命令重试（独立 `e2e-rerun` artifacts）exit 0，最终 **8 passed**（chromium 4/4、mobile 4/4）。失败提交保留字段与重试、案例上下文、填写提纲、1200 字上限及四宽几何均通过，所有提交请求由 spec route mock。
+
+独立 Playwright CLI session `xyy-20261010-04-luna7` 先 `open` 再 `snapshot`，随后检查 `/`、`/en`、`/product`、`/en/services`、`/contact`、`/en/contact` 的 1440×900 与 390×844，共 12 组：HTTP **12/12 200**、H1/主要内容 **12/12 可见**、文档无水平溢出 **12/12**、目标文案/服务选择块/`#service-finder` 锚点 **0/12**、pageerror **0**。首页手机在图片加载等待 3000ms、滚动到第一段服务 `h2[1]` 并再等待 2000ms 后补拍，中文/英文服务标题及内容清晰可见；联系页截图滚动至 `#contact-form`。六路由双端截图与结构化结果见 [page-checks.json](../output/playwright/xyy-20261010-04/luna/page-checks.json) 和 [output/playwright/xyy-20261010-04/luna](../output/playwright/xyy-20261010-04/luna/)。首轮/重试摘要见 [e2e-summary.txt](../output/playwright/xyy-20261010-04/luna/e2e-summary.txt)。
+
+独立执行 `npx vitest run tests/unit/conversion-source.test.ts`，exit 0（1 file、7 tests）；目标文件 `npx prettier --check ...` exit 0；目标 `git diff --check` exit 0。静态确认专属组件/样式已删除，目标文案、块和锚点在 scoped source 命中 0。Terra 提供的本次 typecheck 结果为 exit 0（647 files、0 errors、0 warnings、4 existing hints）。Luna 未修改应用实现或正式测试，仅写入本目录证据与本日志。
+
+Regression coverage：中英文首页、产品/服务页、联系页删除入口；联系页联系方式、表单、填写提纲、查询参数解析、案例上下文、失败保留输入与成功重试；四宽表单几何；桌面/移动主要内容可见、无水平溢出和无 pageerror；llms 目标失效链接及 scoped target scan 均无残留。
+
+Remaining risks：本地 Chromium 模拟视口，未覆盖真机、Safari/微信浏览器；未直接执行真实 CMS/数据库操作、未测试生产站，未提交真实表单，未部署/提交/推送。首轮导航上下文竞态已在同命令重试通过，原始失败证据保留，不代表当前实现回归。
+
+### XYY-20261010-05 — Luna 提交前 verify 独立门禁
+
+Task ID：`XYY-20261010-05`；Result：**PASS**。
+
+Tests performed：按合同使用既有容量基线 `/home/yj/data/website/output/release/xyy-20261009-01/luna/verify-release-capacity-r4.json`，隔离 `TMPDIR` 与 Playwright artifacts，并将 Directus/询盘地址指向本地无效测试地址，执行 `CI=true npm run verify`。命令 exit **0**，原始日志见 [precommit-verify.log](../output/release/xyy-20261010-05/luna/precommit-verify.log)，退出码见 [precommit-verify.exit](../output/release/xyy-20261010-05/luna/precommit-verify.exit)。
+
+本次门禁结果：Astro typecheck **647 files / 0 errors / 0 warnings / 4 hints**；ESLint 通过；maintainability **819 project files**；public/deployment assets **69/103** 检查通过；cache patch 检查通过；全量 Vitest **119 files / 762 tests passed**；capacity check、资源检查与 Astro server build 均通过，build 最终输出 `Complete!`。日志保留一行 `Terminated`，但随后 Vitest 汇总为全绿且总命令 exit 0，未将该诊断误报为失败。
+
+Regression coverage：本次 `npm run verify` 覆盖当前候选的类型、Lint、维护性预算、公共资源、缓存语义、全量单测和生产构建；未运行额外全量 E2E。工作区回读未发现由 verify 产生的已跟踪构建/测试产物或范围外实现修改；既有任务修改与并行角色文档保持不变。未读取或打印真实 `.env`，未操作 4321/4322、CMS、数据库、真实表单或外部系统。
+
+Remaining risks：本次只证明本地隔离环境的提交前 verify，通过后仍需 Nova 发布前审查、标准部署脚本内 `npm run verify:release`、测试站部署及上线后独立浏览器 QA；未据此宣称已提交、部署或推送。

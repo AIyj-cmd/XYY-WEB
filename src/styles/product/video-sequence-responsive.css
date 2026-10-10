@@ -8,15 +8,6 @@
   }
 }
 
-.product-video-sequence__copy .product-video-sequence__finder-link {
-  box-sizing: border-box;
-  align-items: center;
-  justify-content: center;
-  min-width: 2.75rem;
-  min-height: 2.75rem;
-  margin-left: 0;
-}
-
 @media (max-width: 600px) {
   .product-video-sequence__copy {
     padding: 5.25rem 4.75rem 1.5rem 1.25rem;

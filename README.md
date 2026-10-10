@@ -1,10 +1,17 @@
 # 新亦源供应链官网
 
-广州新亦源供应链管理有限公司官方网站。项目采用 Astro SSR、Directus CMS、PostgreSQL 16、PM2 与 Nginx，覆盖鞋服云仓、退货质检、瑕疵修复、数字化履约和智能寄件等业务。Oracle Database 19c 是后续独立数据库迁移目标，本轮验收站同步不切换数据库。
+广州新亦源供应链管理有限公司官方网站。项目采用 Astro SSR、Directus CMS、PostgreSQL 16、PM2 与 Nginx，覆盖鞋服云仓、退货质检、瑕疵修复、数字化履约和智能寄件等业务。
 
-- 当前验收入口：<https://wz.tomatopia.top>
-- 正式域名：<https://56xyy.com>（切换完成前仍需核对证书、DNS 与搜索引擎策略）
+- 测试站：<https://wz.tomatopia.top>（`47.82.105.103`）
+- 正式域名：<https://56xyy.com>
 - 当前状态：[DEV_STATE.md](DEV_STATE.md)
+
+截至 2026-10-09，测试站已部署应用提交 `40591be`，Release ID 为
+`20261009T091340Z-40591be`，环境为 `staging`。本次部署的完整 `verify:release`、
+健康与版本核对，以及上线后的中英文桌面/移动端抽查均已通过。
+测试 CMS 使用 Directus 12.1.1 / PostgreSQL 16.15，模型版本为
+`2026-10-cms-maintenance`，验证状态为 `verified`。本次发布仅更新测试站，主站未作变更；
+后续版本与验证结果以 `DEV_STATE.md` 为准。
 
 ## 技术栈
 
@@ -12,13 +19,16 @@
 | ---- | ------------------------------------------------------ |
 | 前端 | Astro 7 SSR、TypeScript、Tailwind CSS 4、页面级 CSS    |
 | 交互 | GSAP 3、Lenis、原生 IntersectionObserver               |
-| CMS  | Directus 12、PostgreSQL 16（Oracle 19c 迁移目标）      |
+| CMS  | Directus 12、PostgreSQL 16                             |
 | 服务 | Express 5、PM2、Nginx                                  |
 | 测试 | Astro Check、ESLint、Vitest、Playwright、Lighthouse CI |
 
 ## 本地开发
 
 Node.js 要求 `>=22.12.0`。
+
+首次安装前，先按 [容量维护说明](docs/RELEASE_CAPACITY_MAINTENANCE.md) 测量安装基线；
+构建和验证还需要对应的完整工作负载基线。以下命令适用于基线已配置的工作区。
 
 ```bash
 npm ci
@@ -48,6 +58,7 @@ npm run audit                # 生产依赖安全审计
 DEV_STATE.md         当前发布、验证结果和下一步任务的唯一实时记录
 config/
   cms-collections.mjs  CMS公开内容与私有集合的统一契约
+  cms-contract.mjs     集合生命周期、业务键和已验证模型版本
 src/
   components/          按业务职责拆分的首页、产品、服务、关于、案例、期刊和联系组件
   data/                页面级静态内容配置，与模板和交互解耦
@@ -68,10 +79,13 @@ scripts/
   setup-cms.mjs        Directus 集合初始化编排，模型与运行时分别维护
   sync-approved-cms-content.mjs  按语义业务键执行审核内容同步
 deploy/
-  nginx-56xyy.conf     正式域名迁移参考配置，当前未启用
-  oracle19c/           Oracle 安装、内容迁移、切换、回滚与备份脚本
+  nginx-56xyy.conf     正式域名迁移参考配置
+  postgresql/          PostgreSQL 备份与恢复验证脚本
+  uploads/             Directus 附件备份与恢复验证脚本
+  oracle19c/           历史 Oracle 迁移参考，当前测试站未使用
 docs/
   CMS_CONTENT_MODEL.md  Directus 内容、权限与迁移维护规则
+  RELEASE_CAPACITY_MAINTENANCE.md  容量基线、测试产物与版本清理
   MAINTAINABILITY.md    页面、组件、数据、脚本和后端维护边界
   MAIN_DOMAIN_CUTOVER.md  正式域名切换与回滚清单
   DESIGN_REFERENCE.md  明确设计任务使用的可选参考
@@ -83,14 +97,14 @@ tests/                 单元与端到端测试
 
 ## 数据来源
 
-| 内容                             | 来源                                              | 生效方式                     |
-| -------------------------------- | ------------------------------------------------- | ---------------------------- |
-| 首页统计、服务、案例、仓库、新闻 | Directus                                          | 后台保存后，下次页面请求读取 |
-| FAQ、案例详情、期刊目录          | Directus，审核源码作为故障回退                    | 后台发布后，下次请求读取     |
-| 服务专题、关于我们、全站设置     | Directus，审核源码作为故障回退                    | 后台发布后，下次请求读取     |
-| 品牌常量                         | `src/data/brand/`，由 `src/lib/brand.ts` 兼容导出 | 修改代码并部署               |
-| 官网统一运营口径                 | `src/lib/claims.ts`                               | 修改代码并部署               |
-| SEO 与结构化数据                 | 页面代码与 `src/lib/seo.ts`                       | 修改代码并部署               |
+| 内容                           | 来源                                              | 生效方式                     |
+| ------------------------------ | ------------------------------------------------- | ---------------------------- |
+| 服务、案例、仓库、新闻         | Directus                                          | 后台发布后，下次页面请求读取 |
+| FAQ、案例详情、期刊目录        | Directus，审核源码作为故障回退                    | 后台发布后，下次请求读取     |
+| 服务专题、关于我们、全站设置   | Directus，审核源码作为故障回退                    | 后台发布后，下次请求读取     |
+| 品牌常量                       | `src/data/brand/`，由 `src/lib/brand.ts` 兼容导出 | 修改代码并部署               |
+| 官网统一运营口径（含首页统计） | `src/lib/claims/`                                 | 修改代码并部署               |
+| SEO 与结构化数据               | 页面代码与 `src/lib/seo.ts`                       | 修改代码并部署               |
 
 Directus 成功返回空数据时页面保持为空；只有网络失败、超时或 HTTP 5xx 才使用审核版代码回退。401/403 和非法响应明确失败，不能用旧内容掩盖权限或数据问题。动态页面不缓存 CMS 内容并设置 `no-store`，发布环境继续把 CMS 健康检查作为门槛。CMS 图片和附件统一通过站内 `/api/cms-assets/{uuid}` 交付；代理只允许读取被已发布内容引用的文件，不向浏览器暴露 Directus 运行令牌。
 
@@ -118,20 +132,22 @@ Directus 成功返回空数据时页面保持为空；只有网络失败、超�
 
 ## 环境变量
 
-| 变量                        | 说明                                                                           |
-| --------------------------- | ------------------------------------------------------------------------------ |
-| `DIRECTUS_URL`              | 服务端 Directus 地址；服务器建议 `http://127.0.0.1:8055`                       |
-| `DIRECTUS_CONTENT_TOKEN`    | 仅可读取官网内容集合及文件元数据的运行令牌                                     |
-| `DIRECTUS_NEWS_WRITE_TOKEN` | 仅可写入 `news` 的独立 Directus 服务端令牌，不得复用内容读取令牌               |
-| `NEWS_PUBLISH_API_TOKEN`    | 仅允许受信任服务端调用批量 News 发布接口的 Bearer Token（至少 32 UTF-8 bytes） |
-| `XIANSUO_API_URL`           | XYY-xiansuo 服务端 HTTPS 根地址                                                |
-| `XIANSUO_INGEST_TOKEN`      | 仅用于官网服务端提交联系线索的 Integration Bearer Token                        |
-| `DIRECTUS_TOKEN`            | 仅供建模、迁移和权限维护脚本临时使用，不得作为 Web 运行凭据                    |
-| `PUBLIC_SITE_URL`           | 当前构建与 canonical 使用的站点地址                                            |
-| `PUBLIC_DIRECTUS_URL`       | 浏览器可访问的 CMS 地址                                                        |
-| `ENABLE_DOMAIN_REDIRECTS`   | 正式域名切换完成后才可设为 `true`                                              |
-| `LEGACY_DOMAINS`            | 正式切换后需要 301 的旧域名列表                                                |
-| `DEPLOY_ENVIRONMENT`        | 部署时显式指定 `staging` 或 `production`                                       |
+| 变量                        | 说明                                                                            |
+| --------------------------- | ------------------------------------------------------------------------------- |
+| `DIRECTUS_URL`              | 服务端 Directus 地址；服务器建议 `http://127.0.0.1:8055`                        |
+| `DIRECTUS_CONTENT_TOKEN`    | 仅可读取官网内容集合及文件元数据的运行令牌                                      |
+| `DIRECTUS_NEWS_WRITE_TOKEN` | 仅可写入 `news` 的独立 Directus 服务端令牌，不得复用内容读取令牌                |
+| `NEWS_PUBLISH_API_TOKEN`    | 仅允许受信任服务端调用批量 News 发布接口的 Bearer Token（至少 32 UTF-8 bytes）  |
+| `XIANSUO_API_URL`           | XYY-xiansuo 服务端 HTTPS 根地址                                                 |
+| `XIANSUO_INGEST_TOKEN`      | 仅用于官网服务端提交联系线索的 Integration Bearer Token                         |
+| `DIRECTUS_TOKEN`            | 仅供建模、迁移和权限维护脚本临时使用，不得作为 Web 运行凭据                     |
+| `PUBLIC_SITE_URL`           | 当前构建与 canonical 使用的站点地址                                             |
+| `PUBLIC_DIRECTUS_URL`       | 浏览器可访问的 CMS 地址                                                         |
+| `ENABLE_DOMAIN_REDIRECTS`   | 正式域名切换完成后才可设为 `true`                                               |
+| `LEGACY_DOMAINS`            | 正式切换后需要 301 的旧域名列表                                                 |
+| `DEPLOY_ENVIRONMENT`        | 部署时显式指定 `staging` 或 `production`                                        |
+| `HOST`                      | PM2 从 Release 根目录 `.env` 读取；测试站为 `127.0.0.1`，未配置时默认 `0.0.0.0` |
+| `TRUSTED_PROXY_CIDRS`       | 受信任代理网段；当前测试站为 `127.0.0.1/32`                                     |
 
 `.env`、`.env.production` 仅保存在本地和服务器，不提交 GitHub，也不由部署脚本上传。
 建模脚本使用的短期管理令牌不能写入 Web 运行环境。官网内容读取不会回退使用
@@ -151,9 +167,13 @@ Directus 12 Community 不提供自定义项目过滤和字段级权限时，内�
 
 新闻公开读取会将带偏移的时间按其真实时刻比较；Directus 返回无时区时间时，统一按 `Asia/Shanghai` 的后台编辑时间解释。因此“发布”且发布时间不晚于当前时刻的文章会立即显示，未来发布时间仍保持隐藏。
 
-## 部署
+## 测试站部署
 
 目标服务器必须已配置 SSH 公钥、Node.js、PM2、Nginx 和 `/var/www/xyy-web/.env`。
+部署前配置 `CAPACITY_BASELINE_FILE`（本地）及 `REMOTE_CAPACITY_BASELINE_FILE`（远端），
+并使 `TMPDIR`、`PLAYWRIGHT_ARTIFACTS_DIR` 与实际容量测量使用的目录一致。
+缺少实测基线或空间/inode不足时，部署脚本会停止；步骤见
+[发布容量与媒体维护](docs/RELEASE_CAPACITY_MAINTENANCE.md)。
 
 ```bash
 DEPLOY_HOST='root@47.82.105.103' \
@@ -162,25 +182,17 @@ SITE_URL='https://wz.tomatopia.top' \
 bash scripts/deploy.sh
 ```
 
-### 独立 Oracle 19c 数据库
-
-Directus 从 PostgreSQL 迁移至独立 Oracle Database 19c 的数据库安装、并行验证、
-数据迁移、切换、回滚和备份脚本见
-[`deploy/oracle19c/README.md`](deploy/oracle19c/README.md)。生产凭据只保存在应用服务器
-`/etc/xyy/oracle19c.env`（权限 `600`），不得提交到 Git。
-
-数据库备份不会包含 Directus 实际附件。无论当前使用 PostgreSQL 还是迁移到 Oracle，
-都必须同时安装 [`deploy/uploads/`](deploy/uploads/README.md) 中的附件备份任务，并完成
-数据库与附件的联合恢复演练。
-
 部署脚本会：
 
-1. 拒绝包含已修改、已暂存或未跟踪文件的工作区，并为当前 Git SHA 生成 Release Manifest；
+1. 拒绝包含已修改、已暂存或未跟踪文件的工作区，执行容量预检，并为当前 Git SHA 生成 Release Manifest；
 2. 以 `SITE_URL` 覆盖构建期公开地址并运行 `npm run verify:release`；
 3. 将 Manifest、应用与构建产物上传到同一独立版本目录，并安装生产依赖；
 4. 保留服务器现有 `.env`，通过 `current` 软链原子切换后重启 `xyy-web`；
 5. 用 `/healthz` 检查依赖就绪，用 `/version` 精确核对 Git SHA、Release ID、环境和 CMS 模型版本；任一不符即恢复上一软链并尽可能核对旧版本身份；
-6. 默认保留最近5个版本，便于人工回滚。
+6. 生成旧版本清理预览，默认保护最近5版及当前、回退、锁定版本；部署脚本不会自动删除旧版本，实际清理由独立维护操作使用已审阅的精确计划执行。
+
+当前测试站 Web 进程监听 `127.0.0.1:50031`，通过 Nginx 对外服务；PM2 的 `HOST`
+从 Release 根目录 `.env` 读取，运行环境中的 `TRUSTED_PROXY_CIDRS` 为 `127.0.0.1/32`。
 
 `/healthz` 只证明依赖是否就绪；`/version` 只返回可公开的不可变发布身份并禁止缓存。
 生产 Release 缺少或损坏 `release-manifest.json` 时，`/version` 返回503，不读取 Git、源码目录
@@ -188,6 +200,14 @@ Directus 从 PostgreSQL 迁移至独立 Oracle Database 19c 的数据库安装�
 输出 `legacy_previous_release_identity_unavailable`，不能声称旧版本身份已验证。
 
 在 `56xyy.com` DNS、证书与 Nginx 未切换到目标服务器前，不得启用旧域名跳转。迁移参考配置位于 `deploy/nginx-56xyy.conf`。
+
+### 数据库与附件备份
+
+测试站当前使用 PostgreSQL。数据库与附件的备份/恢复脚本分别见
+[`deploy/postgresql/`](deploy/postgresql/README.md) 和
+[`deploy/uploads/`](deploy/uploads/README.md)。数据库备份不包含实际附件，需要成对备份并联合恢复验证。
+2026-10-09 测试站已完成成对加密备份与隔离恢复验证；该记录不代表定时备份任务已启用。
+仓库中的 [`deploy/oracle19c/`](deploy/oracle19c/README.md) 为历史参考，本次发布未执行 Oracle 迁移。
 
 ## CMS
 
@@ -208,7 +228,7 @@ npm run cms:generate-content-seeds
 # 部署后核对 19 个业务集合与文件库
 npm run cms:verify
 
-# 部署人员配置两枚运行令牌后检查最小权限边界
+# 历史 Directus 留言双令牌模式的权限诊断（不适用于当前 Xiansuo 联系表单）
 npm run cms:verify-runtime-permissions
 
 # 预检审核内容同步

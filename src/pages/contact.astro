@@ -3,7 +3,6 @@ import Layout from '@/layouts/Layout.astro'
 import ContactHero from '@/components/contact/ContactHero.astro'
 import ContactInfo from '@/components/contact/ContactInfo.astro'
 import ContactForm from '@/components/contact/ContactForm.astro'
-import ServiceFinder from '@/components/service-finder/ServiceFinder.astro'
 import { BRAND } from '@/lib/brand'
 import { CASE_FALLBACKS } from '@/data/cases'
 import { DEFAULT_SITE_SETTINGS } from '@/data/site-settings'
@@ -53,7 +52,6 @@ const localBusinessSchema = {
   <ContactHero />
   <section class="py-16 bg-white" aria-label="联系方式与表单">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <ServiceFinder />
       <div class="lg:grid lg:grid-cols-5 lg:gap-14">
         <ContactInfo {settings} />
         <ContactForm {caseContext} />

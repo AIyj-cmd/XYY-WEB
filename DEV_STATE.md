@@ -1,6 +1,6 @@
 # DEV_STATE
 
-更新时间：2026-10-09
+更新时间：2026-10-10
 
 ## 协作记录约定
 
@@ -11,6 +11,12 @@
 
 ## 当前目标
 
+- `XYY-20261010-05`：用户已授权将当前改动部署到既有测试站 `wz.tomatopia.top`，随后推送 GitHub main 并同步 Git 状态。发布前独立 `npm run verify` exit 0：647 类型文件 0 errors/0 warnings、119 文件/762 单测及构建通过；本地/远端容量预检通过，目标旧版健康正常。当前尚未部署或推送本任务，等待候选最终审查和标准发布门禁。
+- `XYY-20261010-04`：已本地移除中英文联系页“按需求选择服务”模块、首页/产品页对应按钮及专属样式，清理 llms.txt 的失效链接与描述；咨询表单及旧查询参数兼容保持。类型检查 647 文件 0 errors/0 warnings、转换单测 7/7、受影响 E2E 最终 8/8、六路由桌面/手机 12/12 通过；首轮一项导航上下文竞态失败保留，复测通过。Luna PASS、Nova APPROVED，本地 4322 已生效；未提交、推送或部署。
+- `XYY-20261010-03`：已从当前目录启动本地 Astro 开发服务，访问地址为 `http://127.0.0.1:4322/`；原有 4321 监听保持。已核对 4322 监听进程 PID 30469、工作目录 `/home/yj/data/website`，首页 HTTP 200 且标题/H1 为本项目内容。本次仅启动本地服务并补充状态/日志，未修改业务代码、提交、推送或部署。
+- `XYY-20261010-01`：本地项目目录已从 `/home/yj/XYY-GEO/website` 移到 `/home/yj/data/website`，旧目录已不存在；迁移前后全部普通文件 SHA-256、路径/类型/权限/属主及软链接目标清单一致，Git HEAD、暂存区和原有未提交修改保持。仅补充本地迁移状态/日志，未提交、推送或部署。
+- `XYY-20261009-03`：README 已同步 2026-10-09 测试站发布版本、CMS/PostgreSQL 实际状态、HOST/代理配置、容量基线与旧版本清理预览流程；Oracle 改为历史参考，补正数据口径与历史双令牌诊断说明。README 格式、10 个本地链接及文档 diff 检查通过。仅更新 README 和本地状态/日志，保留上一任务记录；尚未新增提交、推送或部署。
+- `XYY-20261009-02`：已按用户明确要求删除 GitHub `release/xyy-20261007-01` 分支；API 删除返回 204，回读为 404。本地对应远端跟踪引用已同步清除；原分支提交 `6d0a781` 已包含在 main 中，GitHub main 仍为 `af20f11`。本次只更新本地状态记录，未新增提交或部署。
 - `XYY-20261009-01`：测试站 **https://wz.tomatopia.top 已部署成功**。应用提交 `40591be3f362e81eed13ccf7a129fa22efc55932` 已普通推送 GitHub main；线上 release 为 `20261009T091340Z-40591be`，environment=`staging`，CMS schema=`2026-10-cms-maintenance`。部署脚本及配套运行配置后验均 exit0，公网 `/version` 与候选精确一致，`/healthz` 的 cmsContent/contactStorage 均为 ok。
 - 本轮完整部署内 `npm run verify:release`（含 `npm run verify`）实际通过：648类型文件、0 errors/0 warnings/4 hints，119文件/762单测，269 E2E通过/9既有跳过，4 formal和最终build；远程运行依赖安装/审计0漏洞，首页/CMS ping/robots/sitemap/llms/version检查通过。此前单独最终verify R2和Luna最终19项发布定向复测亦通过；失败记录保留。
 - PM2 读取 release 根 `.env` 的 HOST 已生效；测试站仅监听 `127.0.0.1:50031`，`TRUSTED_PROXY_CIDRS=127.0.0.1/32`，实际PM2/socket/健康/版本均核对通过。旧应用版本保留为回退目标，完整字节的旧运行配置私有备份保留；部署末尾仅生成清理预览，没有再次删除保留版本。

@@ -12,7 +12,6 @@ interface Props {
 
 const { locale = 'zh-CN' } = Astro.props
 const labels = PRODUCT_SEQUENCE_LABELS[locale]
-const finderHref = `${locale === 'en' ? '/en/contact' : '/contact'}#service-finder`
 ---
 
 <section class="product-video-sequence" data-product-video-sequence data-locale={locale}>
@@ -61,11 +60,6 @@ const finderHref = `${locale === 'en' ? '/en/contact' : '/contact'}#service-find
                 ))}
               </ul>
               <a href={section.href}>{section.link}</a>
-              {index === 0 && (
-                <a class="product-video-sequence__finder-link" href={finderHref}>
-                  {locale === 'en' ? 'Find a service for your requirements' : '按需求选择服务'}
-                </a>
-              )}
             </div>
             <video
               id={id}

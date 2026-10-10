@@ -3193,3 +3193,25 @@ Task ID：`XYY-20261009-01`（HIGH）。**Result：APPROVED。** `cms-contract`�
 #### XYY-20261009-01 — staging deployment final Review
 
 Task ID：`XYY-20261009-01`（HIGH）。**Result：APPROVED。** 固定wrapper最终exit0；标准`verify:release`实际通过119 files/762 unit、269 E2E/9 skip、4 formal及最终build，本地与远端容量均ok，远端production install审计0漏洞。测试站部署为release `20261009T091340Z-40591be`、完整SHA `40591be3f362e81eed13ccf7a129fa22efc55932`；site、health、CMS ping、robots、sitemap、llms和version identity全部通过，runtime `verify-new`确认配套配置生效。首次PM2启动后一次loopback curl未ready随后在有界重试内恢复，最终后验全绿且未rollback；cleanup仅preview。Sol独立公网回读同release/SHA、staging及schema `2026-10-cms-maintenance`，health两依赖ok，并目视首页正常。Luna八组线上只读QA由Sol继续收口，不阻塞本固定部署执行Review；真实失败再沿同ID返工。正式站、额外CMS/DB写入、DNS/TLS、权限、真实询盘和新清理均未批准。完整报告：`output/release/xyy-20261009-01/nova/postdeploy-review.md`。
+
+### XYY-20261010-04 — 移除按需求选择服务最终 Review
+
+Task ID：`XYY-20261010-04`（MEDIUM）。
+
+Review Scope：审阅相对 HEAD `af20f11be11d1f5e8c3af0d982f7ccd8b79fa608` 的九个源码/测试文件最终差异、任务合同、`ContactForm` 与 `contact-source` 旧查询兼容路径、Terra/Luna 日志，以及 Luna 的 E2E 摘要、12 路由视口结构化检查和截图清单。业务差异为七个修改、两个删除；Nova 审阅取证时，三份既有脏文档的 SHA-256 与任务基线逐项一致，随后 Sol 按其文件所有权开始追加最终状态记录。仅追加本日志，未改实现/测试，未操作现有服务、真实 CMS/数据库/表单或外部系统，未提交、推送或部署。
+
+Architecture：PASS。首页和产品/服务页入口、中英文联系页渲染、专属组件与样式均沿既有组件边界移除；首页独占入口外层一并删除，没有遗留空容器。`ContactForm` 继续通过统一 `src/lib/conversion/contact-source.ts` 消费 `need`/`region`，没有复制解析、绕过统一数据源或触及 `src/lib/claims/`。`llms.txt` 只删除失效功能描述和 `#service-finder` 链接，保留现有咨询入口。
+
+Security：PASS。咨询 API、客户端提交逻辑、输入限制和 CMS 读取均未改。旧查询仍要求唯一且在固定枚举内，重复、未知和恶意值由原解析器拒绝；有效查询只形成受控服务预选和咨询上下文。E2E 的两次提交均由 route mock 拦截，未发生真实 POST。
+
+Maintainability：PASS。删除的组件和样式已成为孤立资产，连同唯一引用和专属产品响应式规则一起删除；没有新增依赖、兼容分支或不必要重构。`consultation-service-finder` 测试删除的三组断言只覆盖已移除的结果块、原生 GET 选择器和入口点击；案例上下文、填写提纲、1200 字限制、失败保留输入与重试、有效旧查询预选及四宽表单几何仍保留。目标 `git diff --check` 本轮复核通过。
+
+Contract Risks：PASS。六个约定路由的目标文案、选择块和 `#service-finder` 入口均移除；联系表单、联系方式、案例上下文与 `need`/`region` 兼容保持。未触及 API/CMS 契约、Directus、公开数字、导航或视频/动画逻辑。没有发现超 Scope 差异；Terra/Luna 仅各追加角色日志，Luna 最终限制表述准确为未直接执行真实 CMS/数据库操作、未测试生产站及未提交真实表单。
+
+Test Coverage Review：PASS。Luna 定向 E2E 最终 chromium 4/4、mobile 4/4，共 8 passed；首轮 7 passed / 1 failed 是导航期间 `page.evaluate` context destroyed，原失败 trace/screenshot 保留，同一最终源码整文件复跑通过，没有以放宽断言或改实现掩盖。六路由 × 1440/390 共 12 组均 HTTP 200、H1/主要内容可见、无水平溢出、目标残留 0、pageerror 0；首页手机最终以加载后截图复核。`conversion-source` 1 file / 7 tests、目标 Prettier、diff-check 均通过；Terra typecheck 647 files、0 errors、0 warnings、4 个既有 hints。现有证据覆盖本次实际风险，无具体新问题要求重复全量或浏览器采样。
+
+Result：**APPROVED**。无 CRITICAL、HIGH、MEDIUM 或需返工的 LOW finding；全部 AC 有对应代码或独立验证证据。
+
+Remaining Risks：浏览器证据来自本地 Chromium 模拟视口，未覆盖真机、Safari、微信浏览器、生产站或真实 CMS 延迟；未提交真实询盘。复用 4322 本地源码服务不证明其 SSR 数据源离线或为 mock，因此本 Review 仅确认未直接执行 CMS/数据库操作。这些是验证边界，不是当前差异缺陷。
+
+Handoff：交 Sol 最终验收。可声明本地源码已修改、定向测试与双端路由检查通过、Nova APPROVED；不得声明已提交、推送、部署、生产验证或真实 CMS/表单验证。

@@ -2089,3 +2089,12 @@ Status: CODE DONE（待 Luna 独立完整验证与 Nova Review）
 
 - 仅修改 `tests/unit/release-deployment.test.ts` 与 `tests/unit/ci-release-identity.test.ts`。两者的临时 fixture 在复制 config 后显式写入 `candidate_unverified`，因此保留 manifest 阻断和无产物检查，不再依赖根配置的将来状态。新增 verified fixture 断言可生成完整身份 manifest；CI identity CLI 同样从 fixture 执行并断言仅输出候选状态，不直接读取真实配置常量。
 - 自检 PASS：目标 Prettier、ESLint、`vitest` 两文件 19 tests 和 scoped diff。未改 CMS status、manifest gate、生产配置、E/G/capture 冻结包、部署或外部系统；等待 Sol 在真实 live 严格验证后再单独授权更改 status。
+
+### XYY-20261010-04 — 移除按需求选择服务
+
+Status: CODE DONE（待 Luna 独立验证与 Nova Review）
+
+- 删除中英文联系页的 `ServiceFinder` 渲染、首页与产品页入口、产品入口专属响应式样式、孤立组件/样式，以及 `llms.txt` 的两处失效 `#service-finder` 链接和对应功能描述。`ContactForm`、`contact-source`、旧 `need`/`region` 查询解析和预选服务逻辑均未改动。
+- `consultation-service-finder` E2E 移除结果、GET 选择器、入口和 finder 几何断言，保留案例上下文、用户需求模板、失败重试、旧查询参数预选和四宽表单无横溢覆盖。当前模板仍输出 `SKU/订单规模：`，故该断言未改。
+- 自检 PASS：目标文件 `npx prettier --check`、`npx vitest run tests/unit/conversion-source.test.ts`（1 file / 7 tests）及 `npm run typecheck`（647 files，0 errors / 0 warnings / 4既有hints）；目标 diff `git diff --check` 通过。未运行 E2E、浏览器或完整 verify，未启动/停止现有服务，未提交、推送、部署或产生外部写入。
+- 交 Luna：使用最终源码独立复核六路由的 1440/390 删除效果、联系表单和旧查询兼容，以及本 E2E 文件保留的模板/案例/重试/几何覆盖；交 Nova 审查删除范围与旧 URL 兼容未受影响。

@@ -2375,3 +2375,45 @@ Limits：本轮限Chrome152模拟视口及离线/helper验证，空内容schema�
 - GitHub应用提交CI `37909903788` 最终回读 completed/success；Sol亲看上线首页桌面截图，主要内容、图片与导航正常。
 
 - 上线后Luna独立8组中英文首页/联系页桌面/手机HTTP200、H1可见、无横溢/pageerror；两组联系页二维码实际加载/开关及最新中英文提纲补证R2 exit0，无非读取请求。R1在lazy图片visible后立即读取complete的探针时序失败已保留，仅在既定5秒内等待图片实际加载后复测，应用未修改。Sol亲看真实首页桌面与联系页手机截图，Nova部署终审APPROVED。当前无部署阻塞，三个既有未引用存储文件仍作为数据清单限制保留。
+
+### XYY-20261009-02 — 删除已合并的 GitHub 发布分支
+
+- LOW；用户明确授权删除 `AIyj-cmd/XYY-WEB` 的 `release/xyy-20261007-01`。Scope 为该远端分支及对应本地远端跟踪引用；Sol 负责引用操作和 DEV_STATE/docs/SOL 记录，不涉及代码、其他分支或部署。
+- 起始 HEAD 为 `af20f11`、工作区干净；目标分支为 `6d0a781021bd812832d57fd87c692badf2b2e1b9`，`git merge-base --is-ancestor` exit0，确认已包含在 main 中。删除 API 返回204，后续目标引用404；main 回读仍为 `af20f11be11d1f5e8c3af0d982f7ccd8b79fa608`。本地 tracking ref 按旧SHA限定删除，同名本地分支原不存在。
+- AC 已达成：指定 GitHub 分支不存在、main 身份保持、本地 tracking 状态同步。记录 diff/Markdown 结构与 `git diff --check` 验证；没有应用行为修改、提交或部署，未运行 npm verify/verify:release。无剩余阻塞。
+
+### XYY-20261009-03 — README 同步测试站发布事实
+
+- LOW 普通文档；Sol 负责 README.md、DEV_STATE.md、docs/SOL.md。Scope 为当前测试站版本和现有部署行为说明；排除应用修改、规则变更、提交/推送及服务器操作。起始 HEAD 为 `af20f11`，已有脏文件仅为上一任务的 DEV_STATE/docs/SOL 记录，完整保留。
+- 输入为当前部署脚本、PM2 配置、CMS 契约、容量维护文档及已完成的本轮部署证据；Graphify 现有索引仅辅助定位（查询预算1000 tokens，未重建），旧索引不能证明本次发布状态。README 补入测试站 source/release/schema、实际 PostgreSQL 和 HOST/代理配置，修正清理预览、Oracle 历史参考、数据口径及历史 Directus 双令牌诊断说明。
+- AC 已达成：README 的发布信息对应 `40591be` / `20261009T091340Z-40591be`，部署说明与当前脚本一致，10 个本地 Markdown 链接均存在，代码围栏闭合。已审阅全部文档差异，README Prettier check 与 `git diff --check` 通过。
+- 仅文档变更，未运行应用测试、npm verify 或 verify:release；没有新增提交、推送或部署，无文档更新阻塞。后续发布事实继续以 DEV_STATE 主状态为准。
+
+### XYY-20261010-01 — 本地项目目录迁移
+
+- LOW；用户明确授权将当前文件夹移动到 `/home/yj/data`。Sol 负责整目录迁移及 DEV_STATE.md、docs/SOL.md 记录；Scope 为 `/home/yj/XYY-GEO/website` → `/home/yj/data/website`，排除业务代码修改、提交/推送、部署、服务配置及外部系统操作。
+- 输入为本地完整目录与 Git 基线；HEAD 为 `af20f11be11d1f5e8c3af0d982f7ccd8b79fa608`，既有脏文件 DEV_STATE.md、README.md、docs/SOL.md 的内容和未提交差异均完整保留。目标原不存在，使用禁止覆盖的 mv 跨文件系统移动。
+- AC 已达成：新目录存在、旧目录不存在；迁移前后 67697 个普通文件逐一 SHA-256、7473 个目录与 1323 个软链接的路径/类型/权限/属主及链接目标清单一致；Git HEAD、暂存区和原工作区 diff 精确一致。完成验证后仅追加本次状态/日志。
+- 证据为本次 `python3 /tmp/xyy-20261010-01-move.py` 的内容清单和 Git 比对；最终审阅状态/日志新增 diff，检查 Markdown 结构及 `git diff --check`。目录迁移不改变应用行为，未运行应用测试或构建，未声称迁移后启动服务已验证。后续在新路径打开项目。
+
+### XYY-20261010-03 — 启动本地项目
+
+- LOW；用户明确要求启动本地项目。Sol 负责当前目录开发服务及 DEV_STATE.md、docs/SOL.md 记录；Scope 为本地启动、HTTP 与进程核对，排除业务代码/依赖修改、已有 4321 服务操作、提交/推送、部署及真实 CMS/数据库写入。输入为 package.json 的 dev 命令、现有依赖与本地环境；HEAD 为 `af20f11`，既有三份文档修改保留。
+- AC 已达成：`npm run dev -- --host 127.0.0.1 --port 4322` 成功启动；主机 `ss`、`ps`、`readlink /proc/30469/cwd` 确认 PID 30469 监听 127.0.0.1:4322，目录为 `/home/yj/data/website`。两次首页请求 HTTP 200，标题为“新亦源鞋服云仓｜鞋服仓储、质检、发货一体化服务”，H1 为“从入库质检到退货上架，鞋服仓配一次解决”。
+- 启动尚未就绪时首次请求连接失败，随后就绪验证通过。沙箱内 `astro dev status` 返回无服务，与实际 HTTP/端口结果不一致；已通过沙箱外只读核对确认后台进程，不把该状态命令记为通过。
+- 本次仅更新启动记录；审阅本次新增 diff、Markdown 结构与 `git diff --check`，核对 README 和既有文档内容保持。未修改页面或应用行为，未运行浏览器/全量测试、verify 或 verify:release；未提交、推送或部署。服务已保持运行，无启动阻塞。
+
+### XYY-20261010-04 — 移除按需求选择服务
+
+- MEDIUM；用户要求删除截图中的服务选择区块及首页按钮。合同 `docs/plans/xyy-20261010-04-remove-service-finder.md`，流程 Terra → Luna → Nova → Sol。HEAD `af20f11`；既有 DEV_STATE/README/SOL 三份脏文件以 `/tmp/xyy-20261010-04-baseline.json` 保存并核对保持。Graphify 旧图仅辅助定位，实际范围以当前源码为准。
+- Terra 在九个源码/测试文件中删除中英文联系页组件及其孤立样式、首页按钮及独占空容器、产品页按钮及专属样式，清理 llms.txt 的旧锚点与功能描述；删除仅针对已移除 UI 的 E2E 断言，保留咨询/案例/模板/mock 失败重试及四宽几何。ContactForm、contact-source、咨询 API、CMS、Claims 及视频动画均无修改。
+- 当前验证：目标 Prettier、diff check 通过；typecheck 647 files、0 errors、0 warnings、4 既有 hints；conversion-source 7/7。Luna 受影响 E2E 首轮 7 pass/1 导航执行上下文中断，保留证据并按同命令复测，最终 chromium 4/4、mobile 4/4 通过，无实现改动。六路由 × 1440/390 共 12 组 HTTP 200、H1/主要内容可见、目标入口/锚点为零、无横溢/pageerror，所有测试提交均由 route mock。
+- Sol 亲看首页删除前后截图、中文联系页桌面/手机及手机首页加载后补图，确认没有按钮独占空白条或布局回归；首版手机首页在图片/动画完成前截取，保留原图，最终以 `*-loaded.png` 为准。实际读取 `/llms.txt` HTTP 200 且目标文案/锚点为零，其他联系信息保留。Luna PASS、Nova APPROVED，无阻断 finding；Sol 验收本地结果。
+- 证据 `output/playwright/xyy-20261010-04/`。仅本地 Chromium 模拟视口，未测真机/Safari/微信或生产站，未直接执行真实 CMS/数据库操作或提交真实表单。仅补充本合同/状态/角色日志，审阅本次差异、Markdown 结构和 diff whitespace；未提交、推送或部署，因此未运行完整 verify/verify:release。4322 原有开发服务保持可访问。
+
+### XYY-20261010-05 — 测试站部署与 GitHub 同步
+
+- HIGH；用户明确要求部署后推送 GitHub、同步 Git 状态。准确目标为既有 `wz.tomatopia.top` / `root@47.82.105.103` / `/var/www/xyy-web` / staging，以及 GitHub `AIyj-cmd/XYY-WEB` main。合同 `docs/plans/xyy-20261010-05-staging-release.md`；初始本地/main/origin/main/GitHub SHA 均 `af20f11`，纳入任务 04 的九个源码/测试文件及既有普通说明/任务记录，共 17 个路径，不纳入凭据、依赖、构建或 output。
+- 本次实时核对线上旧版本 `40591be` / `20261009T091340Z-40591be`、staging、schema `2026-10-cms-maintenance`；`/healthz` 两依赖 ok，current 指向相应 release，既有监听为 127.0.0.1:50031。容量预检：数据盘 device 66310 复用真实完整 verify:release 基线，通过；远端 device 64771 复用真实 npm ci 基线，通过。没有更新服务器配置或数据库。
+- Luna 独立 `npm run verify` exit 0：647 类型文件、0 errors/0 warnings/4 hints，119 文件/762 单测，819 维护性文件、资源/cache patch 和构建通过。初始九个源码/测试文件 SHA-256 复核保持；准备精确候选审查和本地提交，部署仍须运行标准脚本内完整 verify:release。
+- 当前证据 `output/release/xyy-20261010-05/`，此阶段尚未提交、部署或推送本任务；完成后另行补录实际发布和 Git 状态，不把计划记为已执行。

@@ -2,7 +2,6 @@
 import ContactForm from '@/components/contact/ContactForm.astro'
 import ContactHero from '@/components/contact/ContactHero.astro'
 import ContactInfo from '@/components/contact/ContactInfo.astro'
-import ServiceFinder from '@/components/service-finder/ServiceFinder.astro'
 import { CASE_FALLBACKS } from '@/data/cases'
 import { getCasesResolution } from '@/lib/directus'
 import { getCaseContactKey } from '@/lib/conversion/contact-source'
@@ -28,7 +27,6 @@ const caseContext = selectedCase
 <ContactHero locale="en" />
 <section class="py-16 bg-white" aria-label="Contact details and enquiry form">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <ServiceFinder locale="en" />
     <div class="lg:grid lg:grid-cols-5 lg:gap-14">
       <ContactInfo {settings} locale="en" />
       <ContactForm locale="en" contactPhone={settings.phone} {caseContext} />
