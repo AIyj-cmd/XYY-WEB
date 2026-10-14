@@ -1,113 +1,52 @@
 .about-stage {
   position: relative;
   min-height: 100svh;
+  overflow: clip;
+  background: #f4f7fb;
+}
+
+.about-stage__frame {
+  position: relative;
+  width: calc(100% - var(--about-reveal-inset, 0px));
+  height: 100svh;
+  margin: 0 auto;
   overflow: hidden;
+  border-radius: var(--about-reveal-radius, 0px);
   background: #071427;
-  color: #fff;
+  isolation: isolate;
+  transition:
+    width 120ms linear,
+    border-radius 120ms linear;
 }
 
 .about-stage__media {
+  height: 112%;
   object-fit: cover;
-  object-position: center bottom;
+  object-position: center top;
 }
 
-.about-stage__shell {
-  position: relative;
-  z-index: 10;
-  width: min(100%, 100rem);
-  min-height: 100svh;
+.about-stage__caption {
+  position: absolute;
+  z-index: 1;
+  right: clamp(1.25rem, 4vw, 3rem);
+  bottom: clamp(1.25rem, 4vw, 2.5rem);
+  left: clamp(1.25rem, 4vw, 3rem);
   margin: 0 auto;
-  padding: 7.5rem 4rem 2.25rem;
-}
-
-.about-stage__intro {
-  width: min(31rem, 38vw);
-}
-
-.about-stage__eyebrow {
-  margin: 0 0 1.15rem;
-  color: #f16a2d;
-  font-size: 0.6875rem;
-  font-weight: 800;
-  letter-spacing: 0.4em;
-}
-
-.about-stage__title {
-  margin: 0;
-  font-size: clamp(3rem, 4.25vw, 4.75rem);
-  font-weight: 900;
-  line-height: 1.02;
-  letter-spacing: -0.045em;
-}
-
-.about-stage[data-locale='en'] .about-stage__title {
-  max-width: 9.5ch;
-  font-size: clamp(2.75rem, 4vw, 4.4rem);
-  letter-spacing: -0.04em;
-}
-
-.about-stage[data-locale='en'] .about-stage__brand {
-  max-width: 18rem;
-  font-size: 0.3em;
-  letter-spacing: 0.08em;
-  line-height: 1.2;
-}
-
-.about-stage__brand {
-  display: block;
-  margin-bottom: 0.65rem;
-  color: #f16a2d;
-  font-size: 0.42em;
-  letter-spacing: 0.03em;
-}
-
-.about-stage__accent {
-  color: #f16a2d;
-}
-
-.about-overview {
-  max-width: 29rem;
-  margin-top: 1.85rem;
-  padding-top: 1rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.22);
-}
-
-.about-overview__heading {
-  display: flex;
-  align-items: center;
-  gap: 1.25rem;
-}
-
-.about-overview h2 {
-  margin: 0;
   color: #fff;
-  font-size: 0.75rem;
-  font-weight: 800;
-  letter-spacing: 0.22em;
-}
-
-.about-overview__logo {
-  display: inline-block;
-}
-
-.about-overview__logo img {
-  display: block;
-  width: 5.9rem;
-  height: auto;
-}
-
-.about-overview p {
-  margin: 0.85rem 0 0;
-  color: rgba(255, 255, 255, 0.76);
-  font-size: 0.8125rem;
-  line-height: 1.85;
+  font-size: clamp(1.375rem, 2.5vw, 1.875rem);
+  font-weight: 700;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  text-align: center;
+  text-shadow: 0 0.125rem 0.75rem rgba(0, 0, 0, 0.9);
+  transition: opacity 160ms ease;
 }
 
 .about-stage__video-controls {
   position: absolute;
-  z-index: 30;
-  top: 1.25rem;
-  right: 3rem;
+  z-index: 2;
+  top: 6.25rem;
+  right: clamp(1.25rem, 3vw, 3rem);
 }
 
 .about-stage__video-controls #btn-label {
@@ -126,4 +65,101 @@
 .about-stage__video-controls #hero-mute-btn:hover {
   border-color: #f16a2d;
   background: #f16a2d;
+}
+
+.about-introduction {
+  background: #f4f7fb;
+  color: #0b1c36;
+}
+
+.about-introduction__shell {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: clamp(5.5rem, 10vw, 8rem) 2rem;
+}
+
+.about-introduction__header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(20rem, 0.9fr);
+  gap: clamp(3rem, 9vw, 8rem);
+  align-items: start;
+}
+
+.about-introduction__eyebrow {
+  margin: 0 0 1.15rem;
+  color: #e85d26;
+  font-size: 0.6875rem;
+  font-weight: 800;
+  letter-spacing: 0.4em;
+}
+
+.about-introduction__title {
+  margin: 0;
+  color: #0b1c36;
+  font-size: clamp(3rem, 3.6vw, 3.5rem);
+  font-weight: 900;
+  line-height: 1.1;
+  letter-spacing: -0.045em;
+}
+
+.about-introduction__brand {
+  display: block;
+  margin-bottom: 0.65rem;
+  color: #e85d26;
+  font-size: 0.42em;
+  letter-spacing: 0.03em;
+}
+
+.about-introduction__accent {
+  color: #e85d26;
+}
+
+.about-introduction__overview {
+  padding-left: clamp(1.5rem, 3vw, 2.5rem);
+  border-left: 1px solid rgba(11, 28, 54, 0.2);
+}
+
+.about-introduction__overview-heading {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.about-introduction__overview h2 {
+  margin: 0;
+  color: #0b1c36;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+}
+
+.about-introduction__logo {
+  display: inline-block;
+  padding: 0.55rem 0.85rem;
+  border-radius: 0.75rem;
+  background: #0b1c36;
+}
+
+.about-introduction__logo img {
+  display: block;
+  width: 5.9rem;
+  height: auto;
+}
+
+.about-introduction__overview p {
+  margin: 1rem 0 0;
+  color: rgba(11, 28, 54, 0.75);
+  font-size: 1rem;
+  line-height: 1.8;
+}
+
+.about-introduction__explorer {
+  margin-top: clamp(3.5rem, 7vw, 5.5rem);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-stage__frame {
+    transition: none;
+  }
 }

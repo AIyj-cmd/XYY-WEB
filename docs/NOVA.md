@@ -3337,3 +3337,291 @@ Validation / Public UI：PASS。本次 main verify 为 127 files / 866 tests；�
 Final Records / Limits：四文档只记录已发生事实，main 运行源码相对 8c75176 无差异；本次已完成的完整 verify 证据继续适用，没有新实现或失败依据要求重复测试。新增片段 Prettier 内存对照和 diff-check 通过，未改写历史文档格式。无 CRITICAL、HIGH、MEDIUM 或需返工的 LOW finding。允许 Sol 将精确四文档作为 8c75176 之上的普通记录提交并普通 push main；不得夹带源码、force 或 amend。提交后须实读最终 HEAD、origin/main、GitHub main、工作树及 CI 状态，不预报新文档提交的 CI 成功。该提交不改变已部署 e64db32 的身份，也不触发另一次部署。
 
 Remaining Risks：验证覆盖 Chromium 桌面/手机模拟视口及已列路径，不代表真机、其他浏览器或真实询盘链路验证。公开 URL 和 noindex 维持本次原生验收配置；既有线索接口偶发超过 1.5 秒引发健康 503 已在部署前记录，切换后一次双 ok 不代表该波动被修复。准入证据保存在原生工作区 `output/release/xyy-20261010-16/nova/`，部署与公网证据保存在主工作区同任务目录；最终只读审核证据位于主工作区 `nova/`。
+
+### XYY-20261011-01 — 本地移除 Oracle 19c 方案最终 Review
+
+Task ID：`XYY-20261011-01`（MEDIUM）；Result：**APPROVED — 仅本地移除与验收**。
+
+Review Scope：审阅 main 基线 `00318b57442903b7c28e5c541795a0dc05f91af8` 上的任务合同、27 个专属文件删除、4 个共享代码/测试文件及 6 份活跃说明修改，以及 Luna 实际测试证据与本任务记录。仅追加本日志和 ignored Nova 证据，未改实现或其他角色文件、重跑应用测试、提交、推送、部署或访问真实服务。沿用 Graphify 只读旧索引，词表只匹配 PostgreSQL；查询得到的 bootstrap 线索由当前源码核对，未重建索引或据旧索引判断删除完整性。
+
+Scope / Dependencies：PASS。删除精确为 `deploy/oracle19c/` 的 20 个专属文件、`deploy/production/backend/` 和 `database/` 的 4 个专属包装文件及 3 个 Oracle 单测文件，三个目录均已不存在。生产 backend 旧入口的 prepare/cutover/rollback 均依赖被删 Oracle 目录，删除未损失现有 PostgreSQL bootstrap 或 Web 发布入口。活动代码、部署说明与 package 范围无 Oracle 入口/驱动/错误码或被删路径引用；额外按被删文件名扫描，只命中仍存在的 PostgreSQL/uploads 同名 `install-backup-job.sh`，不是失效依赖。没有新增数据库替代方案、空壳实现或额外数据删除。
+
+Shared Guards / Preservation：PASS。维护预算只移除已删迁移文件的专属特例；共享部署测试只移除 Oracle 四个 case 和包装器断言，PostgreSQL/附件备份校验、隔离恢复、Web 原子发布、回退与 CI 保护保留。`news-publication-time.ts` 只泛化旧适配器注释，运行 token 一致；revision 测试保留完整内容传输、单次写入、data/delta 存储失败映射 502，以及数据库细节和三个虚拟令牌的脱敏断言。Nova 独立逐项核对 26 个 PostgreSQL/Web/uploads 脚本、运行配置与依赖文件，字节均与基线一致；锁文件、CI、治理限制、历史记录、白皮书与真实配置不在删除范围。
+
+References / Records：PASS。活跃 README、生产 Web、PostgreSQL/附件备份说明及维护矩阵已去掉旧方案依赖，12 个本地文档链接存在。残留 Oracle 文本属于角色/任务历史、治理禁止项、本轮记录或无关业务品牌；CI 和白皮书历史数据中的 `19c` 是校验值子串，保持原样。状态与角色记录只描述本地完成事实，未将本次删除写成已同步 GitHub、服务器或数据库变更。
+
+Validation / Identity：PASS。亲读 Luna 原始命令、隔离配置、日志和退出码：完整 Vitest 于 `2026-10-11T06:58:16.840Z–06:58:34.825Z` exit 0，124 files / 835 tests，其中部署契约 10、新闻时间 10、revision 保护 4 项通过；4 代码 ESLint、4 代码及 7 文档 Prettier、834 文件维护性与 diff-check 均通过，15 份 Shell 的 `bash -n` 全部 exit 0。测试使用既有依赖、虚拟 loopback 参数，禁用 envDir 和 loadEnvFile 并阻断外部 fetch。Nova 重算冻结 manifest SHA-256 `fae31cf6c6644459eb78aac2c453e796a15c5a639a37ca2e5bf12c942a505f60`，37 路径全部匹配，零漂移；新增本日志段格式与 diff-check 通过。
+
+Handoff / Limits：无 CRITICAL、HIGH、MEDIUM 或需返工的 LOW finding，交 Sol 完成本地状态收口。无 UI 或应用运行行为变化，本轮不提交部署，未重复完整 verify、build、verify:release、类型或浏览器门禁；后续若提交或部署仍需遵守对应门禁。本批准不包含外部同步、服务更新、真实 CMS/数据库、环境或备份操作。证据位于 `output/oracle-removal/xyy-20261011-01/luna/` 与 `nova/`。
+
+### XYY-20261011-03 — 新 ECS Nginx HTTP 配置应用前 Review
+
+Task ID：`XYY-20261011-03`（HIGH）；Result：**APPROVED_FOR_EXACT_HTTP_CONFIG_REPLACEMENT_AND_RELOAD**。
+
+Scope / Candidate：核对用户原始配置、HTTP 优先决定、合同、Terra 候选、Luna 独立检查和 Sol 现场证据。候选 SHA-256 `beb51fd97623a244090f3f360182bd9340a5069b90ba5f05e3f03705b5984c21` 精确匹配冻结值；相对原始配置仅注释 443 监听和两条证书指令，并改两行说明，其余字节相同。HTTP default server、任意 Host 入口、gzip、loopback 50031 反代、CMS 404 与隐藏路径拒绝均保持用户指定配置，没有新增访客 IP 白名单。指定两证书不存在，HTTPS 当前不启用。
+
+Backup / Syntax：PASS。目标为 `8.138.148.179`、主机 l4、机器标识已核对，实际 Nginx 1.26.3。旧配置 SHA-256 为 `48118607a2ef8f1c4ca89e9bfc30e81eb38f0aae179b8a8bcf7822c945af5597`，元数据 root:root 644；完整 `/etc/nginx` 归档和独立 nginx.conf 副本保存在 `/data/xyy/backups/nginx-20261011T071831Z-xyy-20261011-03/`。备份目录 0700、归档 0600，服务器校验和及 archive/live 比对通过；准确候选在目标机 `nginx -t -c` 返回语法和配置测试成功。Nova 读取本地保存的实际输出与 Luna 断言实现，没有自行 SSH 或重跑服务器检查。
+
+Apply / Recovery：计划在替换前重新核对旧配置与候选哈希，将原文件 `cp -a` 到 `/etc/nginx` 临时文件后写入候选，保留元数据并在同目录原子替换；仅在正式路径 `nginx -t` 成功后执行 `systemctl reload nginx`。语法、重载或后验任一步失败时恢复备份原配置，重新检查语法并重载，不能将失败记为成功。该流程不重启 Web、CMS 或 PostgreSQL，不变更应用 release、环境、DNS、防火墙、安全组或 Git；现有 Oracle 本地清理完整保留。
+
+Exact Runner：已补审 Sol 的 `apply.sh`，SHA-256 `2db4de669838c8b4af1ad659f957993b3998ff74dbc9fdba7ccbc537644336d2`，与上述计划一致。哈希及备份校验在首次修改前执行；EXIT trap 在替换后的非零退出时恢复旧文件并检查语法/重载，保留原失败退出码。实际路径配置、内网首页/CMS/隐藏路径状态、完整 version 内容、四服务 PID/启动时间以及最终候选哈希都受断言约束；没有应用或数据库重启命令。该准确脚本与候选共同纳入本次批准。
+
+Handoff / Limits：无未解决 finding，允许 Sol 按上述准确候选与恢复计划执行已授权配置变更。此为应用前批准，不代表替换、重载或公网验收已经完成；之后须核对首页 HTTP 200、任意 Host、gzip、CMS 404、隐藏路径 403、版本仍为 `e64db32b4bd7208502ef11727fa6573bffe9c053`，并对照服务 PID 与监听状态，明确 HTTPS 仍未启用。本任务仅配置 Nginx，没有应用制品发布，使用实际 Nginx 与 HTTP 验证，不新增应用全量测试。Nova 仅追加本日志及 ignored 证据；新增段格式和 diff-check 通过。
+
+#### XYY-20261011-03 — 临时 HTTPS 精确脚本 Review
+
+Result：**APPROVED_FOR_EXACT_TEMPORARY_HTTPS_APPLY**。用户后续明确要求启用临时 HTTPS，合同追加授权覆盖此前 HTTP 优先选择。审阅准确脚本、原始完整配置、独立静态检查及现场备份证据；Nova 仅追加本日志和 `https/nova/` ignored 证据，没有修改实施、SSH、生成或读取私钥、执行外部动作。
+
+Identity / Backup：PASS。完整候选与 `requested.conf` 逐字节相同，SHA-256 为 `9be5edd79dfda1b4aa06932e0bea9f12584dac9960ea213e5764d6d829c0b3d3`；批准脚本为 `enable-https.sh`，SHA-256 `ca27904a4cd6da09739f4eaefb076200a22e41990a92f2eebba82392f1220752`。现场主机和机器标识与准确新 ECS 一致，现有 HTTP 配置为 beb51fd9，证书目录及两文件不存在，443 无监听。本阶段完整备份位于 `/data/xyy/backups/nginx-20261011T072633Z-xyy-20261011-03-https/`，归档 SHA-256 `4006857725564d9781d0c41d5a69fc99d662b1228159f0a1c8be69bf2f0b5bc0`；副本校验和及归档/live 比对通过。
+
+Certificate / Recovery：PASS。脚本要求 root、备份齐全及旧/新配置哈希正确，拒绝覆盖既有证书或软链接；仅在服务器的 0700 临时目录生成 30 天 RSA3072/SHA256 自签名叶证书，SAN 精确为 IP `8.138.148.179`，CA:FALSE、serverAuth 与用途明确。私钥在发布到指定路径前设为 root:root 0600，公钥证书为 0644；只提取公开密钥进行匹配，不打印或下载私钥。证书属性、剩余期限、显式信任与准确候选 `nginx -t` 均在配置切换前检查。同目录原子替换后检查正式配置、仅 reload Nginx；失败 trap 恢复旧 HTTP 配置并保留生成的 TLS 文件，返回原失败状态。
+
+Verification / Handoff：Luna 对冻结脚本的 19 项独立静态断言和 `bash -n` 均通过；Nova 亲读脚本与检查结果，未重复测试。批准 Sol 在已核对的 `8.138.148.179` 上，以本次准确备份目录为唯一参数执行该冻结脚本。脚本使用 `--cacert` 与 `--resolve` 实际验证本机 HTTPS 的 IP 身份，没有跳过证书验证；HTTP/HTTPS 首页、CMS/隐藏路径、应用 version、四项服务主进程/启动时间及最终配置 hash 均须通过。独立公网 TLS 和 443 可达性验收随后执行，不提前记为成功；自签名证书仅覆盖该 IP，不表示浏览器默认信任。无未解决 finding，现有 Oracle 清理及所有并行修改保留；新增日志段格式与 diff-check 通过。
+
+### XYY-20261011-04 — ACME 路由与签发阶段 Review
+
+Result：**APPROVED_FOR_ACME_ROUTE_AND_ISOLATED_ISSUANCE**。核对合同、官方 IP 证书文档、准确 Nginx 候选、路由应用脚本、续期 hook/service/timer 和 Luna 独立证据；五个文件 SHA-256 均与 candidate-report.json 冻结值一致。Nova 仅写本日志及 ignored nova 证据，未 SSH、执行外部写入、读取私钥或修改实施文件；既有 Oracle 清理与 Task03 记录保持。
+
+Scope / Route：PASS。nginx.conf（9728e929…0569）相对用户完整原配置仅增加六行 ACME webroot location，使用 ^~ 跳过隐藏路径正则，缺失 token 返回 404，原 CMS/隐藏路径/反代/TLS/日志参数保持。apply-acme-route.sh（c51e9d28…e9c8）在修改前核对旧、新配置与备份，保留属性并同目录原子替换；语法、reload 或后验失败时恢复旧配置并返回失败。备份目录为 /data/xyy/backups/nginx-20261011T073946Z-xyy-20261011-04，现场记录显示归档/副本校验和及 live 比对通过、Certbot 5.8.0 与 pip check 通过、目标 Nginx 候选语法通过。
+
+Renewal Candidate：PASS。部署 hook（ea25fd44…134d）限定准确 lineage/archive，检查系统 CA、IP 身份、有效期和公私钥匹配，以 root 专属版本目录及单个 current 链接切换；nginx-t、reload、线上指纹或默认信任 HTTPS 失败时回退。service（d3fede99…0e76）在 renew 成功或无需续期后仍调用幂等部署，避免只签发未上线；timer（e6d707e2…5687）每天四次并随机延迟。亲读 Luna 两次 bash-n、精确最小 diff 和五个模拟结果：无效链拒绝、语法/重载/健康失败回退、current 已更新但旧证书仍在服务的重试均通过。模拟不代替真实 CA、权限和公网验收。
+
+Stage Boundary：本阶段无未解决 finding，允许 Sol 使用上述准确路由脚本完成路由，独立公网 token 验证通过后做隔离 staging dry-run，再以准确 IP、同一 webroot、required shortlived 和 RSA3072 正式签发。**首次 bootstrap 切换仍排除在批准外**：Luna 发现的恢复复制失败后继续 mv 问题尚待修正、独立复测和 Nova 后续批准；目前不允许据本记录启用首次证书切换或 timer。签发成功、公开信任、自动续期和业务服务保持均未提前记为已完成；本任务无应用制品发布，不重复应用全量门禁。新增日志片段格式与 diff-check 通过。
+
+#### XYY-20261011-04 — Bootstrap R2 与可信证书上线方案 Review
+
+Result：**APPROVED_FOR_EXACT_TRUSTED_IP_CERTIFICATE_SWITCH_AND_RENEWAL_SETUP**。独立审阅 bootstrap R2 全文及 Luna 定向报告，重算 SHA-256 为 51036b831ceece7b9717838419b101ba74e040ffc15b4d82ededc70f96817141，先前批准的 hook/service/timer 字节未变。R1 恢复函数在 if 条件中受到 errexit 抑制的问题已修正：mktemp、cp、mv 各自显式失败返回，复制失败不会继续用空临时文件覆盖原 TLS 文件。Luna bash-n 通过；准确恢复函数的正常恢复及三种命令失败四场景通过，测试未执行真实 bootstrap、密钥或服务操作。
+
+Integration / Recovery：PASS。首次脚本要求原证书/私钥仍为与备份逐字相同的普通文件，拒绝已有 bootstrap/current 状态；先建立受保护的自签名版本和 current 链接，再逐个将两个固定 SSL 路径原子换为链接。换链期间均指向原证书，nginx-t 后才调用已批准 hook；hook 校验正式链、IP 身份、有效期和密钥匹配，再原子切换同一个 current 并 reload。失败时 hook 回退旧 target，外层恢复原普通 TLS 文件；恢复失败明确报错并保持原失败退出码，不冒称恢复成功。
+
+Approved Sequence：允许 Sol 在已核对的新 ECS 8.138.148.179 上，正式签发后先完成系统 CA/IP SAN/剩余期限/密钥匹配检查及准确文件哈希回读，安装 root:root 0700 hook，执行本次准确 bootstrap。成功后将 config/renewal-hooks/deploy/10-xyy-nginx 链接至该 hook，将准确 service/timer 以 0644 安装于 /etc/systemd/system，通过 systemd-analyze verify 后 daemon-reload 并启用 timer。随后执行 renew --dry-run --run-deploy-hooks 及实际 oneshot；官方说明 dry-run 的部署钩子使用当前正式证书，不部署临时 staging 证书。续期 service 的 ExecStartPost 在未到续期时间时仍核对并重试部署，钩子错误通过服务失败显现。
+
+Limits / Handoff：无未解决 finding；批准限定准确四个冻结文件和上述步骤，不包含应用制品发布、业务服务重启、数据、环境、防火墙、DNS 或 Git 操作。路由和隔离 staging 成功由 Sol 已执行结果另行记录；本日志不预报正式签发、切换、公网默认信任、timer 或续期验收成功。切换后仍须独立公网默认 CA 验证、指纹/IP/有效期、HTTP/CMS/隐藏路径与版本保持、四项服务主进程/启动时间核对。Nova 仅追加本日志与 ignored 证据，新增片段格式及 diff-check 通过。
+
+#### XYY-20261011-04 — 可信 IP HTTPS 最终结果 Review
+
+Result：**APPROVED**。本次正式 CA 签发、准确证书切换、自动续期设置、失败后定向重试和独立公网默认信任验收均有实际证据。亲读 trusted-switch.txt、renewal-final.txt、Luna live/summary/public-report/certificate-report/browser-report 与浏览器检查脚本，并目视稳定帧截图；没有发现新的范围、安全或功能问题。Nova 仅追加本日志与 ignored nova 证据，未 SSH、访问私钥或执行外部动作。
+
+Certificate / Trust：PASS。正式叶证书由 Let's Encrypt YR2 签发，IP SAN 精确为 8.138.148.179，RSA3072、CA:false，SHA-256 指纹 BB896EB408E720453FDD0778477F87E969873455E0F7FCC39BA90336B2007358 与本机/公网一致；有效期为 2026-10-11 06:50:59 UTC 至 2026-10-17 22:50:58 UTC（北京时间 2026-10-18 06:50:58 到期）。本机系统 CA 与公私钥匹配检查通过，bootstrap 与部署 hook 实际返回成功，switch exit 0；指定 SSL 路径保持，私钥 root:root 0600。
+
+Independent Public Acceptance：PASS。Luna 从 ECS 外部执行八次 GET，真实参数中没有 -k、--cacert 或其他 TLS 绕过，最小环境无 CA 覆盖；七次 HTTPS 的 ssl_verify_result 均为 0。TLS1.2/TLS1.3 首页及 HTTP 首页 200，CMS 两路径 404、隐藏路径 403、缺失 ACME token 404，version 精确为 e64db32b4bd7208502ef11727fa6573bffe9c053。新建浏览器直接访问 HTTPS 返回 200，实际 TLS1.3/YR2、正常标题/H1 与首页画面，无证书拦截页；只允许目标 origin GET/HEAD，未提交表单，专用浏览器已关闭。
+
+Renewal / Failure Record：PASS（R2）。第一轮 renew --dry-run --run-deploy-hooks 实际失败：staging API 读取 45 秒超时，同时 staging directory 请求 15 秒连接超时；该失败保留，不能记为首轮通过。只重试该失败验证后，R2 全部模拟续期成功、deploy-hook 输出 TRUSTED_CERTIFICATE_DEPLOYMENT_OK、退出 0。另一次真实 systemd oneshot 为 Result=success / ExecMainStatus=0，证书尚未到续期时间、没有尝试新的生产签发，ExecStartPost 仍成功检查部署。timer 已 enabled/active，每日四次并随机延迟，最终观测下一次为 2026-10-11 18:03:46 CST；这证明设置与当前演练通过，不预报未来 CA/网络始终可用。
+
+Preservation / Limits：PASS。最终 Nginx、hook、service、timer 四个现场哈希精确匹配获批候选；Sol 实际比较记录四项服务 MainPID/启动时间和应用 version 均不变，只有 Nginx 平滑 reload，没有应用/CMS/PostgreSQL 重启。本轮只删除自有公开 preflight 探针并确认，不删除旧证书版本、备份或业务数据。保留原配置/自签名备份于 /data/xyy/backups/nginx-20261011T073946Z-xyy-20261011-04；Oracle 本地清理及此前记录保持。oneshot 日志的 worker_connections 超过进程文件资源上限警告不影响本次语法/证书检查，原用户参数未调整。证书覆盖该 IP；本次未发布应用制品、操作数据库/CMS/业务环境/DNS/防火墙或提交推送，也未重复无关全量应用测试。新增日志片段格式与 diff-check 通过。
+
+### XYY-20261011-05 — 同源公网 /admin 最终 Review
+
+Result：**APPROVED**。用户指定的 `https://8.138.148.179/admin` 已完成实际配置、运行资源修复和独立公网认证验收；旧 `/cms` 草稿没有应用。Nova 逐阶段审阅准确候选、备份和回退、实际操作输出、Luna 最终报告及退出检查实现，仅追加本日志与 ignored Nova 证据，未 SSH、读取真实凭据、修改实现、执行外部动作或重复测试。既有 Oracle 清理和并行修改保留。
+
+Exact Scope / Recovery：PASS。Nginx SHA-256 `d86ed014a68cb1e2463b791a5798d31da051f445e2e903b233bb08c87eb28057` 仅增加 36 个 Directus 首段命名空间的精准代理，保留网站根路径、ACME、隐藏路径拒绝及 TLS；后台 HTTP 固定跳转公网 HTTPS。R3 应用脚本 `147465d579d7303e27028765d2ce56e61667b47a0e523c47bb974d07f290c642` 只调整 PUBLIC_URL、两项 Secure Cookie 与 IP_TRUST_PROXY，原子替换、保留 root:xyy-cms 0640，失败恢复备份。原配置及当前公网 env 分别保存在 `/data/xyy/backups/public-cms-20261011T075934Z-xyy-20261011-05/`，实际校验、cmp 与候选语法通过；旧 a525/5fb 版本未获应用批准。
+
+Runtime Resource：PASS。初轮扩展入口 404 是真实 Directus 响应，直连与代理一致；不能解释为无扩展的正常结果，也未无依据标为既有。精确 v12.5.0 源码确认空扩展也应生成入口，读写均使用 TEMP_PATH/app-extensions。现场日志定位默认目录生成失败后，脚本 `7b96929d4448e2aa0545ab164cb8841755b302ce36b17d18f7771890b3de75cf` 经独立验收与批准，仅追加 TEMP_PATH 到现有可写范围 `/data/xyy/cms-home/tmp`，目录 xyy-cms:xyy-cms 0750，回退保留已生效的公网 env。实际 exit 0；219 字节真实生成文件、直连及代理响应逐字一致，独立公网默认 CA 验证为 0、JavaScript HTTP 200。没有修改程序包、伪造 JS、放宽服务保护或操作业务数据。
+
+Independent Acceptance：PASS。Luna Nginx 静态 261/261、R3 9/9 与在同一 R3 字节上执行的 40 项检查、TEMP_PATH 32/32（含 5 个 env 用例）证据真实，历史失败保留。公网 11 路由通过；1440/390 两视口登录、用户和集合元数据读取、session 刷新、重载读取及 API 退出后的 401 均通过，Cookie 为 Secure/HttpOnly/Lax/Path=/，没有横溢。TEMP_PATH 修复后按约定定向重验：登录、Cases 最小读取、刷新及重载读取 200，扩展资源三次 200，零扩展警告、零 pageerror、零守卫拦截；没有重新声称已重跑完整双端矩阵。
+
+Logout / Evidence Accuracy：PASS。真实 UI 打开确认框并点击 Sign Out，/auth/logout 返回 204，进入 `/admin/login?reason=SIGN_OUT`，随后受保护读取为 401。亲读退出脚本确认原末尾断言错误地要求 URL 无查询串；按同源和登录页 pathname 更正判据合理，原 false 记录保留，没有额外网络重跑。退出后残留 cookie 已不能认证，之后清空为 0，不把“服务器会话失效”写成“浏览器立即自动删除 cookie”。空会话 refresh 400、此前选择器/确认步骤、导航跟踪守卫及扩展资源失败均留证，不声称全流程零控制台错误。浏览器、临时桥和 SSH 已关闭；凭据临时文件删除与按实际密码扫描零泄露为 Sol 执行证据。
+
+Preservation / Limits：PASS。Sol 实际输出证明初次四键变更后其他 env 字节保持，后续仅追加 TEMP_PATH；Nginx/Web/PostgreSQL 主进程与启动时间保持，只有 Directus 重启，最终 PID 77359 且仅监听 127.0.0.1:8055。网站版本仍为 `e64db32b4bd7208502ef11727fa6573bffe9c053`，证书部署检查成功、续期 timer active。验证只读取内容和必要认证/自身导航元数据，没有更改业务内容、权限、账号密码、数据库或应用版本，也未提交推送。本次属于后台代理及运行配置变更，没有应用制品发布，未重复无关全量应用测试。新增日志片段格式与 scoped diff-check 通过；无剩余阻断 finding，交 Sol 完成状态收口。
+
+### XYY-20261012-02 — 关于页视频收边与介绍区 Review
+
+Task ID：`XYY-20261012-02`（MEDIUM）
+
+Review Scope：审阅冻结的 6 个实现文件、3 个 Luna 所有权测试文件、任务合同、Terra/Luna 本任务记录、About 既有视频/Explorer 交互以及生产 canonical middleware；目视 Luna 中英文 1440/768/390/360 顶部、中间态、介绍区、回顶和无 JS 截图。6 个实现文件 SHA-256 与 `output/playwright/xyy-20261012-02/source-freeze.sha256` **6/6 一致**。本任务差异均位于合同授权范围；基线记录中的 Oracle 清理、运维文档、新闻逻辑与角色日志等 37 份既有脏差异未被本任务改写。
+
+Architecture：**PASS**。`AboutHero` 保持原 props、slot、视频 source/poster、控件 ID 与 `.about-overview` 兼容类，只把视频 frame 与介绍内容拆成相邻正常文档流 section；唯一 H1、简介和四个 Explorer 入口完整移至浅色次屏。介绍容器准确复用首页 `1200px`、桌面 `32px`、移动 `20px` 与标题响应式字号。滚动模块只操作本地数值 CSS 变量，以 `requestAnimationFrame` 合并 scroll 更新；resize 重算上限，PRM change 即时清除/恢复变量，回顶归零。项目当前无 ClientRouter/ViewTransitions，模块一次初始化与现有 About 页面脚本生命周期一致；单一 frame 的宽度/圆角变化范围受限，没有新增依赖、重复数据源或跨层职责。
+
+Security：**PASS**。新增脚本不接受 URL、CMS 或用户输入，不生成 HTML、导航或网络请求；写入 style 的值全部来自经边界限制的 viewport/scroll 数值。CMS 文本仍由 Astro 转义，公开数字和 `src/lib/claims/` 均未触碰。没有 Secret、鉴权、外部资源、真实 CMS/数据库、环境或生产操作。
+
+Maintainability：**PASS**。新模块 55 行，职责单一；样式沿用 About BEM 命名和已有 Explorer 结构，没有引入全局行为或不必要组件抽象。目标 Prettier/ESLint、837 文件维护性检查与 `git diff --check` 均由 Luna 本次 exit 0 证据覆盖；Terra 对同一冻结候选执行 typecheck，672 files、0 errors、0 warnings、4 existing hints。Nova scoped `git diff --check` 亦无输出。若未来引入客户端路由，应把当前模块改为可重复初始化并清理监听；在当前整页导航架构下不是阻断风险。
+
+Contract Risks：**PASS**。页面仍有且仅有一个主 H1；视频、字幕、键盘控件、四弹窗 hash/Escape/焦点回归、图库 157 图和专用页脚契约保持。H1 从首屏移至介绍区后，Nova 在冻结 4322 候选上针对 `main h1` 独立读取英文 1440/768/390/360 文本 range：四宽度均 `violation=false`、document overflow=0，排除移位造成的实际裁切。生产 `server/request-policy.mjs` 仍将 `/en/about/` 301 到 `/en/about`；Luna 额外 English 全量尝试的 slash 200 来自 4322 未挂该 Express middleware，H1 strict locator 失败来自 Astro dev toolbar 注入，不能归为本任务实现缺陷。后续定向重跑清理了默认 `test-results`，本 Review 不声称首轮 trace/error-context 仍留存。
+
+Test Coverage Review：**PASS**。Luna 独立 Chromium：新增两文件 3 passed，覆盖中英文 1440×900、768×900、390×844、360×768 的顶部/收边/介绍/回顶几何、资源选择、控件可视、实时 PRM 切换、无 JS 正文、键盘播放/静音、四弹窗与深链；既有 `about-cases.spec.ts` 1 passed，About 单测 3 files/13 tests passed。32 张状态截图与 no-JS 截图可读，Sol 桌面/手机截图另有目视证据。English 组合命令的 5 passed/9 failed/2 skipped 被准确保留为开发预览环境限制，不被包装成全套通过；本任务真实英文 H1 风险由定向新 E2E、四宽度截图和 Nova 的 `main h1` range 检查补足。未重复无关 `npm run verify` / `verify:release`；当前未提交或部署，提交/发布前仍须执行对应门禁。
+
+Result：**APPROVED**。未发现 correctness、architecture、security、Scope、maintainability、API/CMS contract 或回归覆盖的阻断 finding。
+
+Remaining Risks：浏览器动态证据限定本地 Chromium 与模拟视口；未证明其他浏览器的逐帧视觉完全一致。CSS 以 width 驱动单个视频 frame，会触发布局，但更新经 rAF 合并、变化范围有限，现有测试与截图未见抖动或横溢，作为当前局部效果可接受。本结果仅批准本地候选，不表示已提交、推送或部署。
+
+Handoff：返回 Sol 做最终验收与状态收口。Nova 仅追加本日志，未修改实现或测试，未执行外部写入。
+
+#### XYY-20261012-02 R2 — 视频底部黑带裁切增量 Review
+
+Task ID：`XYY-20261012-02`（R2，MEDIUM）
+
+Review Scope：仅审阅 `src/styles/about-stage.css` 相对 `r2/about-stage.before.css` 的两项声明变化、`tests/e2e/about-cases.spec.ts` 的一项断言变化、R2 冻结/媒体哈希、Luna 视觉报告及 Sol/Luna 关键截图；未重复上一轮已批准的页面结构、交互、CMS 或英文路由审阅。Terra 文件名误写 1848×905、实际 PNG 为 1280×720 的记录已明确纠正，该图未作为目标尺寸验收证据。
+
+Architecture：**PASS**。`.about-stage__media` 只增加 `height: 112%` 并从 `center bottom` 改为 `center top`，继续由既有 frame 的 `overflow: hidden` 执行显示裁切；`object-fit: cover` 保持原画面比例，未改 DOM、source、poster、控件、滚动收边脚本或响应式结构。该局部 CSS 直接解决片源第约 646 行后的黑底字幕带，无新增实现分支、依赖或重复逻辑。
+
+Security：**PASS**。纯静态媒体显示样式，不增加输入、网络、脚本、外部资源或数据访问；未触及 CMS、API、claims、Secret、环境或生产系统。
+
+Maintainability：**PASS**。增量为两项清晰声明，既有测试只同步实际 `object-position` 契约为 `50% 0%`，没有为同一视觉事实增加镜像测试。Nova 复核目标 Prettier 与 scoped `git diff --check` 均通过；CSS 冻结 SHA-256 `690d5433c93e333cf12153aabd687d6f968699f99f71648ee68d696150fc634e` 与 manifest 一致。
+
+Contract Risks：**PASS**。用户已明确授权黑底内嵌字幕一并移出可视区，故优先级高于上一轮“字幕保持”要求。`introduce-desktop.mp4`、`introduce-540p.mp4`、`introduce-poster.jpg` 三项 SHA-256 与 R2 前置 manifest 逐项一致；没有通过重编码或替换素材实现。目视 Sol 真正 1848×905、390×844 和 Luna 1440 poster/390滚动态截图：画面充满 frame，底部黑带不可见，无新增黑边、拉伸或控件裁切，滚动态圆角/侧边收窄保持。
+
+Test Coverage Review：**PASS**。Luna 在冻结候选上执行两份既有 hero E2E 与 `about-cases`，Chromium **4 passed**；实际播放约 5.6–5.8 秒覆盖 1848×905、1440×900、390×844，三端 readyState=4、paused=false，并覆盖滚动态。阻断 MP4 后的 poster 路径为 readyState=0/currentTime=0/paused=true，截图同样无黑带。视觉报告的底部 86px 深色比例低且与截图一致；测试源冻结、三项媒体 cmp 与 scoped diff-check 均通过。R2 按合同未重复类型、构建、单测或 English 全量门禁。
+
+Result：**APPROVED**。未发现 correctness、architecture、security、Scope、maintainability、媒体契约或回归覆盖的阻断 finding。
+
+Remaining Risks：视觉证据限定本地 Chromium 和模拟视口；不同浏览器/GPU 的视频缩放采样可能有轻微像素差异，但 CSS 几何和 poster 回退不依赖媒体解码成功。R2 仍是本地候选，不表示已提交、推送或部署。
+
+Handoff：返回 Sol 记录 R2 状态并完成最终交付。Nova 仅追加本日志，未修改实现或测试，未执行外部写入。
+
+#### XYY-20261012-02 R3 — 时间轴字幕恢复与字号增量 Review
+
+Task ID：`XYY-20261012-02`（R3，MEDIUM）
+
+Review Scope：仅审阅 `AboutHero.astro` 相对 R3 基线新增的字幕空节点、`about-stage.css` 新增的局部字幕样式、用户补充的桌面30px/手机22px字号、两项源码冻结及六项保护哈希、Luna 定向报告和 Sol/Luna 最终截图；未重复 R1/R2 已批准的页面结构、媒体裁切、滚动、弹窗或 CMS 审阅。当前工作树另外 42 份既有差异保持，不归入 R3。
+
+Architecture：**PASS**。新增 `<p id="hero-caption" class="about-stage__caption opacity-0">` 位于既有 video frame 内，准确接回未改动 `video.ts` 的既有 `timeupdate` 文本/显隐路径；没有复制时间轴或新增同步状态机。caption z-index 1、控件 z-index 2，底部与两侧使用响应式安全边距，滚动收边时随 frame 一起裁切和移动。`clamp(1.375rem, 2.5vw, 1.875rem)` 在移动端为22px、桌面封顶30px，配合1.5行高和 `overflow-wrap:anywhere` 处理窄屏长句；没有通栏黑底或额外布局容器。
+
+Security：**PASS**。字幕只来自本地冻结的 `about-ui-captions.ts`，既有脚本使用 `textContent` 写入，不解析 HTML、URL 或 CMS 输入；本增量没有请求、依赖、外部资源或权限行为。未触及 claims、CMS/API、Secret、媒体字节、环境或生产系统。
+
+Maintainability：**PASS**。增量精确为1个空节点和17行局部 CSS，复用既有 ID、时间轴与脚本，职责边界清楚。默认节点为空且绝对定位，无 JS 时不制造空白；未设置 `aria-live`，不会持续触发读屏播报。目标 Prettier、ESLint 与 scoped `git diff --check` 有本次通过证据；Nova 复核目标 Prettier 和 scoped diff-check 同样通过。最终源码 SHA-256：`AboutHero.astro` 为 `0887ba15…ab98`、`about-stage.css` 为 `614fee51…37bf`，均与 R3 freeze 一致。
+
+Contract Risks：**PASS**。字幕数据、历史数据、原 `video.ts`、桌面/手机 MP4 与 poster 的六项 SHA-256 全部与 `preserved-before.sha256` 一致；R2 的112%/top裁切、滚动脚本和控件未变。最终截图中中文桌面30px、英文手机22px均清晰，无黑带；360px英文长句自然两行，滚动后 caption 仍在 frame 左右各约20px、底部约20px安全区内，未遮挡顶部控件或溢出页面。中文语言提示会把首屏 frame 下推，Luna 已准确记录，滚动截图验证字幕完整，属于既有页面提示布局而非 R3 裁切缺陷。
+
+Test Coverage Review：**PASS**。Luna 最终定向报告在中英 × 1440×900/390×844/360×768 六组合 **6/6 PASS**，覆盖稳定淡入后的暂停/恢复、7.15s 空档隐藏、首 cue 回环恢复、顶部/滚动态安全区及零横向溢出；完整文本采样覆盖186个 cue 与84个 gap。既有 About E2E 4 passed（exit 0），继续覆盖收边、控件、弹窗、PRM、无 JS、图库和页脚。两份早期报告均为 **FAIL**，原因是探针在160ms opacity 过渡完成前读取 gap 或暂停态；原报告保留，最终探针等待稳定 opacity 后通过，不能写成首次全绿，也没有用该探针问题掩盖实现返工。
+
+Result：**APPROVED**。未发现 correctness、architecture、security、Scope、maintainability、字幕/媒体契约或回归覆盖的阻断 finding。
+
+Remaining Risks：动态证据限定本地 Astro 4322 与 Chromium 模拟视口；不同浏览器字体栅格化可能产生轻微换行差异，但 390/360 最窄合同视口已有中英文几何和截图覆盖。本轮按合同未重复 typecheck、build、unit、English 全量或完整 verify；本结果仍为本地候选批准，不表示已提交、推送或部署。
+
+Handoff：返回 Sol 记录 R3 最终状态并完成交付。Nova 仅追加本日志，未修改实现或测试，未执行外部写入。
+
+#### XYY-20261012-02 R4 — 视频标题增量最终撤销 Review
+
+Task ID：`XYY-20261012-02`（R4 rollback，LOW）
+
+Review Scope：仅审阅 R4 最终撤销合同、R4 before 快照与当前候选的精确比较、残余引用、冻结/保护哈希、Sol rollback 检查、Luna 四组合报告及少量最终截图；被用户取消的主标题/小标题方案不再作为候选功能审阅。当前另外 43 份既有差异保持，不归入本次撤销。
+
+Architecture：**PASS**。`AboutHero.astro`、`about-ui.ts`、`AboutHeroMedia.astro`、`about-stage-responsive.css` 与各自 R4 起始快照 **4/4 逐字一致**；`about-stage.css` 仅删除两处空行，非空行内容完全一致，不改变 R3 字幕、R2 媒体裁切、收边或控件行为。临时 `about-hero-copy.css` 已删除，相关 import、节点、数据字段和标题文案残余搜索为空，没有留下死代码或重复样式。
+
+Security：**PASS**。最终候选恢复到已批准 R3 的本地视频与字幕路径，没有新增输入、网络、CMS/API、claims、依赖、权限或外部资源；未执行真实 CMS/数据库、环境或生产操作。
+
+Maintainability：**PASS**。撤销只移除可归属 R4 的节点、文案和样式；保留的两处空行删除使 stage CSS 满足行数预算且语义逐行一致。source-freeze **4/4**、保护 hash **6/6** 匹配；Sol `sol-rollback-check.json` 记录 `unexpected_changes=[]`、`css_nonblank_lines_identical=true`、新样式不存在。Nova scoped `git diff --check` 通过。
+
+Contract Risks：**PASS**。最终页面只保留原视频、R3 时间轴字幕与下一屏唯一 H1；被取消的中英文标题不在 DOM、文案源或 CSS 中。Luna 最终中英文桌面/手机截图显示字幕仍为30px/22px，收边圆角、控件、下一屏标题和零横向溢出保持。此次回退没有触碰字幕数据/脚本、原媒体、poster 或滚动逻辑。
+
+Test Coverage Review：**PASS**。Luna 在 `/about`、`/en/about` 的 1440×900 与390×844四组合 **4/4 PASS**，覆盖撤销文本/节点/样式、唯一下一屏 H1、locale 字幕与字号、播放/静音冒烟、顶部和滚动态安全区及无横溢。首轮四组合产品断言已通过，但末尾宽泛 `locator('h1')` 命中 Astro dev toolbar 的额外 H1 而使探针 FAIL；原报告保留，改用既有 `#about-hero-heading` 后同一有限范围通过，不能表述为首次全绿。按撤销合同未重复被取消方案矩阵或无关全量测试。
+
+Result：**APPROVED**。R4 标题增量已完整撤销，最终候选精确回到已批准的 R3 视频加时间轴字幕状态；无阻断 finding。
+
+Remaining Risks：浏览器证据限定本地 Astro 4322 与 Chromium 模拟视口；这是精确回退而非新行为，R1–R3 已记录的浏览器差异仍适用。本结果仅批准本地候选，不表示已提交、推送或部署。
+
+Handoff：返回 Sol 记录 R4 撤销并完成最终状态交付。Nova 仅追加本日志，未修改实现或测试，未执行外部写入。
+
+#### XYY-20261012-02 R5 — 视频退场持续收边增量 Review
+
+Task ID：`XYY-20261012-02`（R5，MEDIUM）
+
+Review Scope：仅审阅 `src/scripts/about/hero-reveal.ts` 的 `measure()` 两项表达式变化、既有 `tests/e2e/about-hero-reveal.spec.ts` 新增的后半程几何断言、R5 冻结/保护证据及 Luna 最终报告；未重复 R1–R4 已批准的页面结构、媒体裁切、字幕、控件、弹窗或 CMS 审阅。当前另外 44 份 tracked 差异保持，不归入 R5。
+
+Architecture：**PASS**。动画距离改为 stage 的实际高度，使进度 100% 准确对应视频 stage 底部离开视口顶部；最大总收边在小于 768px 时为 viewport 宽度的 20%，桌面为 `min(480px, viewport × 28%)`。1440/768/390/360 的最终目标宽度分别为 1037/553/312/288px，与公式及实测一致。既有 frame 高度、36px 圆角、单一 rAF 更新、被动 scroll 监听、resize 重算和 PRM 清理/恢复路径均未改变，没有引入新的状态、监听或跨组件职责。
+
+Security：**PASS**。两项计算只读取 stage 几何和 viewport 宽度，并继续把边界明确的数值写入本地 CSS 变量；没有新增用户输入、HTML、URL、网络请求、CMS/API、claims、Secret、权限或外部资源访问。
+
+Maintainability：**PASS**。实现增量集中在原 `measure()`，没有重复滚动算法或额外抽象。既有 E2E 增加稳定 frame 等待与按 stage 实际高度滚动的辅助函数，避免以固定延时误判，并在 186 行文件预算内覆盖关键行为。Terra typecheck 为 674 files、0 errors、0 warnings、4 existing hints，目标 format/lint 通过；实现 freeze 1/1 与九项保护 hash 全部匹配。
+
+Contract Risks：**PASS**。收边在 55%→85%→100% 持续增强，并在 100%→120% 保持钳制；1440 为 1218→1097→1037→1037，768 为 650→585→553→553，390 为 347→324→312→312，360 为 320→299→288→288。Sol 桌面/手机 55% 与85%截图可见侧边留白继续增加、圆角保持，字幕与控件仍在 frame 内，下一屏过渡自然。视频高度、R2 裁切、R3 字幕数据与同步、资源和无 JS/PRM 行为均由保护 hash 和定向验证保持。
+
+Test Coverage Review：**PASS**。Luna 最终报告覆盖中英文 × 1440/768/390/360，共 **8/8 PASS**；验证顶部全宽、55/85/100/120% 单调收窄与终点钳制、目标宽度、回顶、resize、实时 PRM、无 JS、字幕/控件边界和无横向溢出。两份目标 E2E 最终 **3 passed**，新增断言直接覆盖此次后半程风险。早期探针/测试 FAIL 已保留，原因分别为固定等待过短、stage 顶部坐标判断错误和恢复采样未稳定；改用稳定 frame 辅助后定向复测通过，本记录不表述为首次全绿。按合同未重跑无关浏览器矩阵或全量门禁。
+
+Result：**APPROVED**。未发现 correctness、architecture、security、Scope、maintainability、CMS/API contract 或回归覆盖的阻断 finding。
+
+Remaining Risks：动态证据限定本地 Chromium 与模拟视口；扩大 width 动画幅度仍会触发单一 frame 的布局计算，但更新继续由 rAF 合并，8 组目标视口与 resize/PRM 验证未见抖动、溢出或生命周期回归。当前结果只批准本地候选，不表示已提交、推送或部署。
+
+Handoff：返回 Sol 完成 R5 最终验收与状态收口。Nova 仅追加本日志，未修改实现或测试，未执行外部写入。
+
+#### XYY-20261012-02 R8 — 品牌影像志 Editorial Gallery Review
+
+Task ID：`XYY-20261012-02`（R8，MEDIUM）
+
+Review Scope：仅审阅 R8 合同指定的八项实现（7项最终源码与删除的 `src/scripts/about/gallery.ts`）、Luna 更新的3项测试、六图选材记录、桌面/手机最终截图、冻结/保护证据及独立验证结果；未重复审阅上方视频、R5收边、R7纯色入口或其他历史功能。当前另外45份 tracked 差异由 Sol preservation check 证明原样保留，不归入 R8。
+
+Architecture：**PASS**。图库现在是正常文档流中的单一带标签 `section`，包含一个H2、三个按01–03排列且各自由H3命名的子 `section`，阅读顺序与视觉顺序一致。六图元数据与双语文案分别集中在 `gallery-images.ts` 和 `about-gallery.ts`，ID联合类型使图片、分组、alt/caption保持穷尽对应；组件只负责分组渲染。旧157图随机墙、sticky copy、scroll/resize/rAF/GSAP入口及专用脚本均已移除，没有遗留 selector、重复状态或新交互。12列桌面和6列手机网格只使用静态CSS，PRM与无JS共用同一可读结构。
+
+Security：**PASS**。所有图片均为仓库内既有静态资源，路径、尺寸、alt与caption来自编译期类型数据；没有用户输入、动态HTML、URL拼接、外部请求、CMS/API、claims、鉴权、Secret或权限变化。旧脚本删除还减少了客户端执行面。本轮未访问真实CMS/数据库或外部系统。
+
+Maintainability：**PASS**。布局、内容与资源清单职责清楚，未添加灯箱、轮播、动画或不必要抽象。六图均有原始 `width`/`height`、`loading="lazy"`、`decoding="async"` 和低优先级提示，CSS以 `height:auto` 保留固有比例，无 `object-fit` 裁切、绝对定位、阴影卡片或隐藏动画。橙色小标 `#c64a19` 对白底实算对比度约4.78:1，13px caption和正文颜色亦有浏览器计算验证。类型检查为675 files、0 errors、0 warnings、4 existing hints；维护性838 files以及目标format/lint/diff-check均通过。
+
+Contract Risks：**PASS**。实际渲染顺序固定为 `/w-apparel.webp`、140、126、086、083、093；选材记录与目视证据一致，分别呈现挂装仓储、包装、熨烫、仓内沟通、货架前团队和同事互动，没有把活动贴纸、海报或大段文字图用作主视觉，原角落logo未改。中文“品牌影像志”与英文“Life at XINYIYUAN”、三组标题、导语以及六组具体alt/caption语义自然，没有虚构地点、年份、身份或公开数字。桌面主仓储图面积最大，辅助图错落；手机保持自然比例和少量宽度差异。目视最终桌面第三组及英文390px介绍/人物组截图，人物头手未被CSS裁切，标题、caption无横溢或遮挡。`about-ui.ts` 与 `about-page.ts` 仅删除旧gallery契约/入口，旧脚本已删除；13项保护源码、158项原媒体hash及Sol的 `unexpectedChanges=[]` 证明视频、字幕、弹窗、页脚和R7入口未被本轮改写。
+
+Test Coverage Review：**PASS**。Luna 独立探针在中英文 × 1440/768/390/360 为 **8/8 PASS**，逐组滚动确认六图加载、固定顺序、自然尺寸、主次面积、章节留白、文本边界及零横溢；PRM **2/2**、无JS **2/2**，六图/正文/三组标题和页脚结构可读可达。受影响 Chromium E2E **3 passed**，覆盖视频控件、四弹窗/Escape/焦点/深链及图库/页脚回归；英文UI单测 **3 passed**。源码freeze **7/7**、保护源码 **13/13**、媒体 **158/158**、测试freeze **3/3** 均由Nova复核匹配。首次截图使用内层layout作锚点，英文390px标题被固定导航部分遮住；产品断言当时仍通过，问题仅在QA取景，说明已保留，改用group header重拍后最终证据正常。首张全页图底部懒加载图片未全部解码，不能单独作为六图加载证据；逐组最终截图和 `complete/naturalWidth` 探针补足该限制。
+
+Result：**APPROVED**。未发现 correctness、architecture、security、Scope、maintainability、素材/双语语义、CMS/API contract 或回归覆盖的阻断 finding。
+
+Remaining Risks：动态证据限定本地Astro 4322与Chromium模拟视口，未覆盖真实设备、Safari或Firefox；懒加载在无JS路径验证的是SSR结构与内容可达，完整六图解码由启用JS后的逐组滚动验证。六张既有摄影资源未重编码，网络体积仍取决于原文件，但相较旧157图DOM与滚动逻辑，当前客户端和布局负担显著降低。本结果只批准本地候选，不表示已提交、推送或部署。
+
+Handoff：返回 Sol 完成 R8 最终视觉验收与状态收口。Nova 仅追加本日志，未修改实现或测试，未执行外部写入。
+
+#### XYY-20261013-02 R3 — 一屏五格照片墙与预览 Review
+
+Task ID：`XYY-20261013-02`（R3，MEDIUM）；Result：**APPROVED，0 findings**。独立 Nova 角色实际继承主会话模型，未参与实现或测试修改。审阅最终十项源码、四项测试、R2/R3 合同、任务增量 `r3/task-source.diff` 和 Luna 本次原始证据；R1 长网格与 R2 近均匀墙均不作为最终验收标准。Git HEAD 为 `00318b57442903b7c28e5c541795a0dc05f91af8`，暂存区为空，既有 Oracle/其他 About 差异不归入本任务。
+
+Architecture / Contract：**PASS**。85 图由固定本地清单经 SSR 生成一个 Grid，17 个五图节奏在桌面15×12、中屏12×15、手机9×21静态坐标中铺满，首组放大与手机末组加宽符合最终合同；没有运行时扫描、随机定位、分页或隐藏照片。共享 manual popover 使用原尺寸计算视口内位置，包含移入保持、延时离开、Escape、滚动/resize清理；原生 dialog 保留焦点、关闭后的滚动锁清理及 modified link 行为，Astro 换页会中止局部监听。无JS链接直接指向原图；无额外85图预加载。固定17组对应当前明确85图契约，不据未来扩图假设制造阻断。
+
+Security / Scope：**PASS**。图片、尺寸、场景文案与CSS数值来自受控本地数据，组件未引入HTML注入、外部URL、CMS/API/Claims写入、依赖或权限变化。Nova复算源码freeze **10/10**、保护源码 **16/16**、原媒体 **160/160** 均匹配；Sol提供的 `r3/unrelated-diff-audit.json` 记录另外48份tracked差异无变化。既有中英文调用点各渲染一次图库，原介绍弹窗与视频逻辑保持。
+
+Test / Visual Evidence：**PASS**。亲读 `r3/luna/gallery-report.json`：中英四视口 **8/8**、noJS **2/2**、PRM **2/2**，各85图已加载，网格无空洞/重叠/内部滚动/横溢。原始E2E日志分别证明初轮旧三项通过、第二轮触摸一项通过、最终几何/hover/键盘三项 **3/3 passed（1.7m）**，合计七项分轮通过；未称一次执行七项全绿。初轮并发decode、后续相对URL断言与导航load超时均有失败记录，修正只在测试helper。英文UI单测 **3/3**、类型 **680 files / 0 errors / 0 warnings / 4 hints**、维护性 **844 files**、最终目标格式/Lint通过。亲看 `en-390-wall-10s.png`、Sol桌面整墙/hover/手机dialog截图：85图完整绘制，大小层级清楚，预览原比例；早期灰块截图不作为最终视觉结论。
+
+Validation / Limits：Nova本轮 scoped `git diff --check` 通过，追加日志格式检查通过；仅重算现有证据与冻结hash，未重复已通过的浏览器矩阵、测试或全站门禁。动态证据限定本地4321与Chromium模拟视口，未证明真实手机、Safari/Firefox或公网首次绘制速度；原生popover兼容性仍受目标浏览器支持范围限制。本地候选可交 Sol 最终验收，没有提交、推送、部署、真实CMS/数据库或外部写入。
+
+#### XYY-20261013-05 — 157张照片组成56XYY与R2悬停关闭 Review
+
+Task ID：`XYY-20261013-05`（含R2，MEDIUM）；Result：**APPROVED，0 findings**。Nova独立审阅5项实现、1项测试增量、调用组件/图源/预览定位与样式、合同及Terra/Luna实际证据；实际继承会话模型，未宣称切换固定型号。HEAD为`00318b57442903b7c28e5c541795a0dc05f91af8`，暂存区为空；既有64份tracked差异中其他任务的内容不归入本次审阅。已有graphify查询未覆盖本次新About模块，审阅以任务前置快照和当前源码为准。
+
+Architecture / Contract：**PASS**。字形由5×7笔画格细分产生157个非零位置，桌面/平板横排56XYY、手机上56下XYY；SSR保留完整catalog与原顺序，未使用整体mask、筛图或运行时布局。白格保持留白，局部拱形/胶囊仅作用于缩略图边缘。数量不匹配会明确抛错，不静默漏图。亲看Sol桌面1440及英文390截图：字形清楚，单区留白与标题完整；Luna中英四视口八组合的157图、无重叠/内部滚动/横溢与一屏几何证据适用同一静态冻结版本。
+
+Interaction / Security：**PASS**。R2仅增加鼠标关闭状态与最近client坐标；Esc在打开的popover上设置暂停，静止指针暴露底层图时不会重开；真实坐标移动解除暂停，并对当前目标主动预览，覆盖同一缩略图内部移动。键盘focus显式绕过鼠标暂停，原dialog焦点/滚动锁/modified link逻辑保持。新document监听沿用AbortController，Astro换页会统一清理；无冷却定时器、外部输入、HTML生成、网络请求、依赖或权限变化。原图、视频、字幕、页脚、CMS/API及claims未改。
+
+Test Evidence：**PASS**。新增47行回归实际构造popover覆盖另一张照片的场景，验证Esc后静止260ms仍关闭、同tile内移动1px恢复对应原图、随后Tab和Esc可用；旧4项测试逐字保持。Luna用旧脚本的单页面临时路由复现原缺陷，红证记录gallery-042关闭后静止位置自动打开gallery-021，回归不是仅映射实现。初轮静态候选3通过/1真实交互失败促成R2；R2首轮3通过/1鼠标项30秒总预算耗尽，trace显示导航8.89秒与157图顺序decode18.35秒，已进入首图预览。相同鼠标测试仅以CLI90秒预算定向复测，16.5秒通过；四项行为分轮全部通过，不记录为一次全绿。类型680文件、0错误/0警告/4既有hints，目标format/lint/diff通过。
+
+Scope / Validation：Nova独立复算保护hash **180/180**、静态freeze **4/4**、脚本freeze **1/1**，仅脚本和测试两项按R2合同从原182保护中放开；preferredOrder与原测试内容均逐字保持，测试SHA为`b7dd5a2fab97e4448f9e2916dedf681de994d983a7781ceb3c6394fc2d8c7e9c`。Nova scoped `git diff --check`通过，证据写入`output/playwright/xyy-20261013-05/r2/nova/audit.json`；未重复全站测试或构建。没有正确性、安全、架构、维护性或范围方面的确定finding。
+
+Remaining Limits / Handoff：动态证据限本地4321、Chromium模拟视口；未验证真实设备、Safari/Firefox或公网首次加载性能。照片数量将来改变需同步调整静态字形分块，当前157张契约已满足。新增日志片段格式比对通过；整份NOVA日志的Prettier仍提示既有空行/表格问题，格式diff均位于本任务之前，保持原样。Nova只追加本日志和忽略的审阅证据，未改实现/测试、未提交推送部署或访问真实CMS/数据库；交Sol最终验收与更新状态。
+
+### XYY-20261014-02 — GitHub 同步候选最终独立 Review
+
+Task ID：`XYY-20261014-02`（MEDIUM）
+
+Review Scope：审阅基线 `00318b57442903b7c28e5c541795a0dc05f91af8` 上当前已暂存的 95 路径完整候选，覆盖既有 About 视频/157 照片字标/共享页脚、Oracle 专属方案清理、Google 验证文件、README/Git 状态记录及 R1–R3 门禁修正；核对 Luna 最终测试与失败保留证据。当前 staged binary patch SHA-256 `6f11beae5abf4039637e8028627e3b111defd64188cf85eaa02e55a338383220` 与冻结 patch 一致，95 路径清单哈希一致，78 项最终候选哈希零漂移；审阅期间未改实现、暂存、提交、推送或部署。
+
+Architecture：**PASS**。About Hero、Explorer、图库数据/布局/预览脚本与共享页脚仍按组件、编译期数据、交互控制器和局部样式分责；157 项 catalog 经 R1 拆分后可重建为拆分前逐字相同内容，图库位置数量不匹配会明确失败。Oracle 专属入口、包装器与专属测试删除后，PostgreSQL、Web、附件备份及现有 CMS bootstrap 路径保持；没有新增依赖、API 路由或重复数据源。`src/lib/claims/` 未改，CMS/API 读取实现未改。
+
+Security：**FAIL（1 项阻断 finding）**。目标 GitHub 仓库经只读回读确认为 `PUBLIC`；候选新增的 `docs/NOVA.md:3363` 明文包含新 ECS 的完整 32 位机器标识，而基线无该值。该值不是登录凭据，但属于稳定、无必要公开的主机唯一标识，常见凭据正则不会捕获；公开推送前应只保留“机器标识已核对”等非可逆结论。除此之外，65 个现存候选文件的既有凭据扫描和 Nova 对全部新增行的补充模式扫描均为零命中；未发现私钥、Token、Cookie 值、环境文件、备份、构建或验收产物入选。Google 文件准确为 53 字节，SHA-256 `d845e80bd2a399ebf7e2de2b6e0a692fa447eae7707c79e714408e4bc9c4bac9`，白名单只接受根目录准确文件名和逐字内容，并拒绝错误内容、嵌套同名及其他 HTML。
+
+Maintainability：**PASS**。R1 将 211 行 catalog 的类型/构造器分离，并将 259 行 E2E 按布局与交互职责拆分；未提高 180/220 行预算或删除原断言。最终维护预算覆盖 847 个项目文件，Prettier、ESLint、`git diff --check` 均有 exit 0 证据。README 的 10 个本地链接存在，当前说明准确区分历史部署身份、本次代码同步候选和“本轮未部署”。
+
+Contract Risks：**PASS（除上述公开标识 finding）**。候选没有触碰 Directus 查询、fallback 判定、API 契约或公开 claims；Oracle 清理只移除已批准废弃方案并保留活跃 PostgreSQL/Web/uploads 契约。R2 只将旧纯白背景预期同步为已验收的多层渐变，并将两处旧简版 footer 定位改为唯一 `contentinfo` 加 `site-footer` class。R3 只把不稳定的 CSS `:hover` 采样换成相同坐标的 `elementFromPoint(...).closest(...) === link` 实际命中检查，产品源码未随测试修改。
+
+Test Coverage Review：**PASS**。Luna 最终使用绝对 `TMPDIR` 执行 `npm run verify` exit 0：683 个类型文件 0 error/0 warning/4 既有 hints、847 文件维护预算、124 文件 837 单测及生产构建通过。页面首轮 18 passed/4 failed/10 skipped；R2 对旧背景与旧 footer 的三项定向复测 3/3 passed，R3 正式 headless Esc 回归 1/1 passed，因此 22 个不同页面用例最终分轮通过，10 项既有项目跳过。三次 headless 诊断均证明 Esc 后静止坐标实际命中露出缩略图且预览保持关闭，移动 1px 后恢复；`:hover` 为 false/true/false，故 R3 没有降低对静止关闭、真实移动恢复、预览内容、再次关闭和键盘路径的有效覆盖。初轮容量、旧断言、相对 TMPDIR 和测试伪类失败证据均保留。
+
+Result：**REJECTED**。唯一阻断项是公开候选中的完整机器标识；在该值从候选中最小脱敏并完成定向格式/diff/敏感标识复查前，不批准提交或推送。其余 correctness、architecture、Scope、maintainability、CMS/API contract 与回归覆盖未发现阻断问题。
+
+Remaining Risks：动态页面证据限本地 Chromium 模拟视口，未证明 Safari/Firefox、真机或公网部署后的表现；本任务没有运行 `verify:release`，且未执行网站部署、真实 CMS/数据库、权限、DNS/TLS/Nginx 或生产环境操作。候选文档还公开记录了用户已明确纳入 README/状态的公网地址、证书公有信息和运维路径；这些不是凭据，但会提供运维指纹，Sol 应在最终公开同步判断中继续按最小披露原则审视。
+
+Handoff：返回 Sol 做单点文档脱敏返工决策；建议只改 `docs/NOVA.md:3363` 的完整机器标识为不含原值的核对结论，沿用同一 Task ID，随后由 Luna 定向确认候选未再包含该值、格式与 diff 通过，再交 Nova 复审。Nova 仅追加本日志与 ignored `output/git-sync/xyy-20261014-02/nova/review.json`，没有修改候选实现、暂存区或执行外部写入。
+
+#### XYY-20261014-02 R4 — 公开候选历史记录脱敏增量 Review
+
+Task ID：`XYY-20261014-02`（R4，MEDIUM）
+
+Review Scope：仅复审初轮 REJECTED 后的单点脱敏、四个记录/合同路径增量和 Luna R4 证据；不重复审阅已通过的 95 路径业务候选、页面矩阵或 R1–R3。当前暂存候选仍为 95 路径，路径清单 SHA-256 `8ff9f828aae0af090a830924accc664586061e6bcf7c5f5147901b73bae6843c` 与批准清单一致；相对 Nova 原暂存快照的变化只在 `docs/NOVA.md`、`docs/SOL.md`、`docs/TERRA.md` 和本任务合同。
+
+Architecture：**PASS**。R4 没有应用、测试、配置、依赖或运行契约变化；78 项非记录候选按原 `final-candidate-hashes.json` 独立重算全部匹配，`mismatches=[]`。原 About、共享页脚、Oracle 清理、Google 文件、CMS/API 与 claims 审阅结论继续适用。
+
+Security：**PASS**。Nova 从原冻结 patch 提取阻断标识但不输出其值，独立确认原 patch 恰有 1 次，当前暂存 patch、当前 `docs/NOVA.md` 及五个 R4 记录/合同工作树文件均为 0 次。历史段只保留“机器标识已核对”的非可逆结论；R4 日志和证据没有复制原值。初轮公开主机唯一标识 finding 已解决。
+
+Maintainability：**PASS**。Terra 只替换指定历史行并追加自身记录，Sol 只扩展合同/状态记录；没有重写历史结论或顺手格式化整份长期日志。README/合同定向 Prettier、staged 与 worktree `git diff --check` 均 exit 0；本次新增 Nova 段单独格式检查通过。
+
+Contract Risks：**PASS**。初轮 `REJECTED` 记录作为审计历史保留，R4 仅消除公开候选中的敏感稳定标识，不改变此前证书、配置、备份或验收事实结论。README 仍明确最近部署为历史身份、本次仅同步代码且未部署；未扩大到真实服务、CMS、数据库、权限、DNS/TLS/Nginx 或生产环境操作。
+
+Test Coverage Review：**PASS**。Luna R4 对最终候选重新执行强制 `npm run verify`，实际 exit 0：683 个类型文件 0 error/0 warning/4 既有 hints、847 文件维护预算、124 文件 837 单测与 build Complete。应用和测试字节冻结，复用已通过的 22 个不同页面用例与 10 个既有项目 skip 合理；R4 只变更记录，不需要重复 E2E。Luna 的两份审计 JSON、格式/diff日志与 verify 终点相互一致，未将早期失败覆盖为首次全绿。
+
+Result：**APPROVED**。初轮唯一阻断 finding 已按精确 Scope 解决；当前候选在 correctness、architecture、security、Scope、maintainability、CMS/API contract 与回归覆盖方面无未解决阻断项，可以交 Sol 执行已获授权的提交与普通推送。
+
+Remaining Risks：浏览器证据仍限本地 Chromium 模拟视口，R4 未运行 `verify:release`、Safari/Firefox、真机或公网页面检查；这些是既有验证边界，不由单点日志脱敏扩大。当前结论只批准 Git 候选，不表示已经提交、推送或部署。
+
+Handoff：返回 Sol 完成最终暂存、提交、普通推送和远端 SHA/工作树回读；推送授权不包含网站部署或任何 CMS/数据库/权限/基础设施变更。Nova 仅追加本日志及 ignored `output/git-sync/xyy-20261014-02/nova/r4/review.json`，未修改其他文件、暂存、提交、推送或访问真实服务。

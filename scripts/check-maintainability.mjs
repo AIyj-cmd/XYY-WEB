@@ -55,7 +55,6 @@ function budgetFor(name, extension) {
   if (name.startsWith('src/pages/') && extension === '.astro') return 150
   if (name === 'scripts/setup-cms.mjs') return 100
   if (name === 'scripts/sync-approved-cms-content.mjs') return 140
-  if (name === 'deploy/oracle19c/migrate-directus-content.mjs') return 140
   return budgets[extension]
 }
 

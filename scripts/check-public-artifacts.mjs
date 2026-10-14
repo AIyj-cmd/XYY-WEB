@@ -1,8 +1,13 @@
-import { readdir } from 'node:fs/promises'
+import { Buffer } from 'node:buffer'
+import { readFile, readdir } from 'node:fs/promises'
 import { dirname, relative, resolve } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '../public')
+export const googleVerificationFileName = 'google4adb4e763f43adcd.html'
+export const googleVerificationContents = Buffer.from(
+  'google-site-verification: google4adb4e763f43adcd.html'
+)
 
 export async function findPublicHtmlArtifacts(directory = root) {
   const artifacts = []
@@ -14,7 +19,11 @@ export async function findPublicHtmlArtifacts(directory = root) {
       if (entry.isDirectory()) {
         await visit(path)
       } else if (/\.html?$/i.test(entry.name)) {
-        artifacts.push(relative(directory, path))
+        const artifact = relative(directory, path)
+        const content = await readFile(path)
+        const approvedGoogleVerification =
+          artifact === googleVerificationFileName && content.equals(googleVerificationContents)
+        if (!approvedGoogleVerification) artifacts.push(artifact)
       }
     }
   }

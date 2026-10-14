@@ -1,6 +1,6 @@
 # Directus PostgreSQL 备份与恢复验证
 
-这套脚本用于 Oracle 19C 正式切换前的现有 PostgreSQL 数据保护。仅把脚本加入仓库不等于已经建立备份；生产服务器必须安装定时任务，并完成至少一次恢复演练。
+这套脚本用于现有 Directus PostgreSQL 数据库的备份与恢复验证。仅把脚本加入仓库不等于已经建立备份；生产服务器必须安装定时任务，并完成至少一次恢复演练。
 
 ## 安装每日备份
 
@@ -23,10 +23,8 @@ sudo CONFIRM_BACKUP_JOB_ACTIVATION=YES bash deploy/postgresql/install-backup-job
 
 脚本会创建名称受限的临时数据库、恢复最新备份、读取核心集合数量，然后自动删除临时数据库。生产切换前应保存命令输出、备份校验值、执行日期和负责人。
 
-## Oracle 切换门槛
+## 备份验收条件
 
 - 最近一次PostgreSQL备份及SHA-256已同步到异机；
 - 恢复演练成功；
-- Oracle Data Pump与RMAN策略已启用；
-- 回滚脚本已在维护窗口前演练；
-- 未满足以上条件时不得执行正式切换。
+- 数据库与上传文件已成对备份，并完成联合恢复验证。

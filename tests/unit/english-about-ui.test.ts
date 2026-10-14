@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
+import { aboutGallery } from '@/i18n/about-gallery'
 import { aboutHeroCaptions } from '@/i18n/about-ui-captions'
 import { aboutUi } from '@/i18n/about-ui'
 
@@ -19,7 +20,26 @@ describe('English About UI copy', () => {
       'Credentials & honours',
       'Frequently asked questions',
     ])
-    expect(copy.gallery.statements).toHaveLength(5)
+    expect(aboutGallery.en).toMatchObject({
+      eyebrow: 'INSIDE 56XYY',
+      heading: 'XINYIYUAN, in every frame',
+      hint: 'Hover to preview · Click or tap to view',
+      dialogTitle: 'Photo viewer',
+      close: 'Close',
+    })
+    expect(aboutGallery.en).not.toHaveProperty('groups')
+    expect(aboutGallery.en.images.garments).toBe('Garments hanging in warehouse storage')
+    expect(aboutGallery.en.images.archive).toBe(
+      'Activity and everyday imagery from the original XINYIYUAN gallery'
+    )
+    expect(aboutGallery['zh-CN'].images.archive).toBe('新亦源原图库中的活动与日常影像')
+    expect(Object.keys(aboutGallery.en.images).sort()).toEqual(
+      Object.keys(aboutGallery['zh-CN'].images).sort()
+    )
+    for (const alt of Object.values(aboutGallery.en.images)) {
+      expect(alt.trim().length).toBeGreaterThan(0)
+      expect(alt).not.toMatch(/[\u4e00-\u9fff]/)
+    }
     expect(copy.footer.backToTop).toBe('Back to top')
   })
 

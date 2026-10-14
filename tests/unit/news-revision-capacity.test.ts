@@ -72,9 +72,9 @@ describe('News revision-capacity regression', () => {
   )
 
   it.each(['data', 'delta'])(
-    'maps an Oracle revision %s failure to a non-sensitive 502',
+    'maps a revision %s storage failure to a non-sensitive 502',
     async (column) => {
-      const rawError = `INSERT INTO "XYY_DIRECTUS"."directus_revisions" ("${column}") VALUES ('${callerToken}', '${writeToken}', '${contentToken}') failed: ORA-12899`
+      const rawError = `value too long for type character varying in directus_revisions.${column}: '${callerToken}' '${writeToken}' '${contentToken}'`
       const fetchMock = vi.fn<typeof fetch>(async () =>
         Response.json({ errors: [{ message: rawError }] }, { status: 500 })
       )
@@ -87,8 +87,8 @@ describe('News revision-capacity regression', () => {
 
       expect(response.status).toBe(502)
       expect(fetchMock).toHaveBeenCalledOnce()
-      expect(body).not.toContain('ORA-12899')
-      expect(body).not.toContain('XYY_DIRECTUS')
+      expect(body).not.toContain('value too long')
+      expect(body).not.toContain('directus_revisions')
       expect(body).not.toContain(callerToken)
       expect(body).not.toContain(writeToken)
       expect(body).not.toContain(contentToken)

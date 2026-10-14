@@ -174,7 +174,6 @@ test.describe('English acceptance route contract', () => {
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)
     expect(overflow).toBeLessThanOrEqual(0)
   })
-
   test('keeps the English shell usable at the four acceptance widths', async ({ page }) => {
     for (const width of [1440, 768, 390, 360]) {
       await page.setViewportSize({ width, height: width >= 768 ? 900 : 844 })
@@ -205,6 +204,7 @@ test.describe('English acceptance route contract', () => {
           }
         })
         await expect(page.locator('h1')).toHaveCSS('opacity', '1')
+        if (path === '/en/about') await page.locator('main h1').scrollIntoViewIfNeeded()
         const geometry = await page.evaluate(readVisibleH1Ranges)
         expect(geometry.error, `${path} ${width}px should have an H1`).toBe('')
         expect(geometry.visible, `${path} ${width}px H1 should be visible`).toBe(true)

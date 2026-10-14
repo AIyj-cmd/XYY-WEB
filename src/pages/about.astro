@@ -2,7 +2,6 @@
 import Layout from '@/layouts/Layout.astro'
 import PageFAQ from '@/components/PageFAQ.astro'
 import AboutHero from '@/components/about/AboutHero.astro'
-import AboutMinimalFooter from '@/components/about/AboutMinimalFooter.astro'
 import AboutScrollGallery from '@/components/about/AboutScrollGallery.astro'
 import AboutExplorer from '@/components/about/AboutExplorer.astro'
 import AboutHistory from '@/components/about/AboutHistory.astro'
@@ -77,7 +76,6 @@ const faqSchema = createFaqSchema(faqs)
   description={`广州新亦源供应链管理有限公司2011年成立，专注鞋服仓配、退货质检和瑕疵修复，服务${CLAIM_TEXT.partnerBrands}品牌。了解新亦源的发展历程、仓网与服务能力。`}
   jsonLd={[breadcrumbSchema, orgSchema, faqSchema]}
   {siteSettings}
-  showFooter={false}
   showFloatingContact={false}
 >
   <AboutHero overview={about.overview}>
@@ -101,12 +99,6 @@ const faqSchema = createFaqSchema(faqs)
     </AboutExplorer>
   </AboutHero>
   <AboutScrollGallery />
-  <AboutMinimalFooter
-    icp={siteSettings.icp}
-    phone={siteSettings.phone}
-    headquartersLabel={siteSettings.headquarters_label}
-    headquartersAddress={siteSettings.headquarters_address}
-  />
 </Layout>
 
 <script>

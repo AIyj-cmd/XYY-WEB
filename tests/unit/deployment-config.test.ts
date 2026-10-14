@@ -69,23 +69,6 @@ describe('production deployment contracts', () => {
     expect(restore).toContain('[[ ${temp_dir} == /tmp/xyy-pg-restore.*')
   })
 
-  it('protects Oracle Data Pump backups with locking, checksums and a gated timer', () => {
-    const backup = read('deploy/oracle19c/backup-oracle.sh')
-    const install = read('deploy/oracle19c/install-backup-job.sh')
-    const service = read('deploy/oracle19c/xyy-oracle-backup.service')
-    const timer = read('deploy/oracle19c/xyy-oracle-backup.timer')
-
-    expect(backup).toContain('flock -n')
-    expect(backup).toContain('sha256sum')
-    expect(backup).toContain('RETENTION_DAYS')
-    expect(backup).not.toContain('source "${CONFIG_FILE}"')
-    expect(install).toContain('CONFIRM_BACKUP_JOB_ACTIVATION')
-    expect(install).toContain('systemctl enable --now xyy-oracle-backup.timer')
-    expect(service).toContain('EnvironmentFile=/etc/xyy/oracle-database.env')
-    expect(service).toContain('ExecStart=/usr/local/sbin/xyy-backup-directus-oracle')
-    expect(timer).toContain('OnCalendar=')
-  })
-
   it('serves every static path from the atomic current release', () => {
     const nginx = read('deploy/nginx-56xyy.conf')
 
@@ -146,55 +129,11 @@ describe('production deployment contracts', () => {
     expect(deploy).toContain('legacy_previous_release_identity_unavailable')
   })
 
-  it('rolls Oracle startup and health failures back to PostgreSQL', () => {
-    const oracleRuntime = [
-      read('deploy/oracle19c/prepare-directus-oracle.sh'),
-      read('deploy/oracle19c/migrate-and-cutover.sh'),
-      read('deploy/oracle19c/rollback-to-postgresql.sh'),
-    ].join('\n')
-    const cutover = read('deploy/oracle19c/migrate-and-cutover.sh')
-
-    expect(cutover).toContain('rollback_to_postgresql()')
-    expect(cutover).toContain('PORT=${STAGING_PORT}')
-    expect(cutover.match(/rollback_to_postgresql/g)?.length).toBeGreaterThanOrEqual(3)
-    expect(cutover).toContain('PostgreSQL Directus rollback failed health check')
-    expect(cutover).toContain('pm2 stop "${WEB_PROCESS_NAME}"')
-    expect(cutover).toContain('resume_web')
-    expect(cutover).toContain('website failed health check after Oracle cutover')
-    expect(oracleRuntime).not.toContain('/server/health')
-    expect(oracleRuntime.match(/\/server\/ping/g)?.length).toBeGreaterThanOrEqual(4)
-  })
-
-  it('fails Oracle preparation when the installed Directus has no Oracle driver', () => {
-    const prepare = `${read('deploy/oracle19c/prepare-directus-oracle.sh')}\n${read('deploy/oracle19c/lib/prepare-runtime.sh')}`
-
-    expect(prepare).toContain('optionalDependencies.oracledb')
-    expect(prepare).toContain('does not declare an Oracle driver')
-    expect(prepare).toContain('if(!o.thin) process.exit(1)')
-  })
-
-  it('initializes an existing Oracle 19c without installing database software', () => {
-    const init = read('deploy/oracle19c/init-existing-oracle19c.sh')
-
-    expect(init).toContain("regexp_like(v_version, '^19\\\\.')")
-    expect(init).toContain("v_charset <> 'AL32UTF8'")
-    expect(init).toContain('create tablespace ${TABLESPACE_NAME}')
-    expect(init).toContain('create user ${DIRECTUS_DB_USER}')
-    expect(init).toContain('grant create session, alter session, create table')
-    expect(init).not.toContain('dnf install')
-    expect(init).not.toContain('localinstall')
-    expect(init).not.toContain('oracledb_ORCLCDB-19c configure')
-  })
-
-  it('keeps Web and Directus backend deployment entry points separate', () => {
+  it('keeps the Web deployment entry point separate from the CMS bootstrap path', () => {
     const web = read('deploy/production/web/deploy-web.sh')
-    const backend = read('deploy/production/backend/deploy-backend.sh')
 
     expect(web).toContain('exec bash scripts/deploy.sh')
     expect(web).toContain('SITE_URL="${SITE_URL:-https://56xyy.com}"')
-    expect(backend).toContain('prepare-directus-oracle.sh')
-    expect(backend).toContain('migrate-and-cutover.sh')
-    expect(backend).toContain('rollback-to-postgresql.sh')
   })
 
   it('bootstraps PostgreSQL Directus for the formal origin without SQL interpolation', () => {

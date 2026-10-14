@@ -7,6 +7,8 @@ import { afterEach, describe, expect, it } from 'vitest'
 import {
   assertNoPublicHtmlArtifacts,
   findPublicHtmlArtifacts,
+  googleVerificationContents,
+  googleVerificationFileName,
 } from '../../scripts/check-public-artifacts.mjs'
 
 const directories: string[] = []
@@ -44,5 +46,36 @@ describe('public artifact build gate', () => {
 
     await expect(findPublicHtmlArtifacts(directory)).resolves.toEqual([])
     await expect(assertNoPublicHtmlArtifacts(directory)).resolves.toBeUndefined()
+  })
+
+  it('allows only the approved root Google verification file byte-for-byte', async () => {
+    const directory = await publicDirectory()
+    await writeFile(join(directory, googleVerificationFileName), googleVerificationContents)
+    await mkdir(join(directory, 'nested'))
+    await writeFile(
+      join(directory, 'nested', googleVerificationFileName),
+      googleVerificationContents
+    )
+    await writeFile(join(directory, 'google4adb4e763f43adcd.HTML'), googleVerificationContents)
+    await writeFile(join(directory, 'review.html'), '<html></html>')
+
+    await expect(findPublicHtmlArtifacts(directory)).resolves.toEqual([
+      'google4adb4e763f43adcd.HTML',
+      'nested/google4adb4e763f43adcd.html',
+      'review.html',
+    ])
+    await expect(assertNoPublicHtmlArtifacts(directory)).rejects.toThrow(
+      'Public HTML artifacts are forbidden:\n- google4adb4e763f43adcd.HTML\n- nested/google4adb4e763f43adcd.html\n- review.html'
+    )
+  })
+
+  it('rejects a root Google verification file whose content differs', async () => {
+    const directory = await publicDirectory()
+    await writeFile(join(directory, googleVerificationFileName), `${googleVerificationContents}\n`)
+
+    await expect(findPublicHtmlArtifacts(directory)).resolves.toEqual([googleVerificationFileName])
+    await expect(assertNoPublicHtmlArtifacts(directory)).rejects.toThrow(
+      `Public HTML artifacts are forbidden:\n- ${googleVerificationFileName}`
+    )
   })
 })

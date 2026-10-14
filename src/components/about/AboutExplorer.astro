@@ -2,6 +2,7 @@
 import '@/styles/about-explorer.css'
 import '@/styles/about-dialog.css'
 import '@/styles/about-explorer-responsive.css'
+import { aboutExplorerCards } from '@/i18n/about-explorer-cards'
 import { aboutUi } from '@/i18n/about-ui'
 import type { SiteLocale } from '@/i18n/routes'
 
@@ -12,33 +13,44 @@ interface Props {
 const { locale = 'zh-CN' } = Astro.props
 const copy = aboutUi(locale)
 const entries = copy.explorer.entries
+const cards = aboutExplorerCards[locale]
 ---
 
 <section class="about-explorer" aria-label={copy.explorer.label} data-locale={locale}>
   <div class="about-explorer__viewport">
     <div class="about-explorer__track">
       {
-        entries.map(({ id, number, title, eyebrow }) => (
-          <button
-            type="button"
-            class="about-explorer__trigger"
-            data-about-explorer-open={id}
-            data-about-explorer-title={title}
-            aria-controls="about-explorer-dialog"
-            aria-haspopup="dialog"
-            aria-label={title}
-          >
-            <span class="about-explorer__copy">
-              <span class="about-explorer__meta">
-                <span class="about-explorer__number" aria-hidden="true">
-                  {number}
+        entries.map(({ id, number, title, eyebrow }) => {
+          const card = cards[id]
+
+          return (
+            <button
+              type="button"
+              class="about-explorer__trigger"
+              data-about-explorer-open={id}
+              data-about-explorer-title={title}
+              aria-controls="about-explorer-dialog"
+              aria-haspopup="dialog"
+              aria-label={title}
+            >
+              <span class="about-explorer__copy">
+                <span class="about-explorer__meta">
+                  <span class="about-explorer__number" aria-hidden="true">
+                    {number}
+                  </span>
+                  <span class="about-explorer__eyebrow">{eyebrow}</span>
                 </span>
-                <small>{eyebrow}</small>
+                <strong>{title}</strong>
+                <span class="about-explorer__footer">
+                  <small class="about-explorer__description">{card.description}</small>
+                  <span class="about-explorer__arrow" aria-hidden="true">
+                    →
+                  </span>
+                </span>
               </span>
-              <strong>{title}</strong>
-            </span>
-          </button>
-        ))
+            </button>
+          )
+        })
       }
     </div>
   </div>

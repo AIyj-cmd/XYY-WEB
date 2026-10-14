@@ -97,33 +97,6 @@ const en = {
     lightbox: 'Certificate image',
     closeLightbox: 'Close certificate image',
   },
-  gallery: {
-    field: 'XINYIYUAN team and operations images',
-    imageAlt: (id: number) => `XINYIYUAN team and operations image ${id}`,
-    eyebrow: 'FOR EVERY XINYIYUAN COLLEAGUE',
-    statements: [
-      {
-        title: 'Care in every step\nopens the way for every arrival.',
-        body: 'The everyday discipline that may go unseen is what becomes dependable for our clients.',
-      },
-      {
-        title: 'Doing ordinary work well\nis our shared expertise.',
-        body: 'We do not need to be seen first, and we do not take any trust for granted.',
-      },
-      {
-        title: 'Together, we make complexity\nreliable.',
-        body: 'We support and trust one another so every collaboration can go further.',
-      },
-      {
-        title: 'One more step today\nbrings more confidence tomorrow.',
-        body: 'There are no shortcuts to growth, but every step counts.',
-      },
-      {
-        title: 'XINYIYUAN’s next chapter\nis written by all of us.',
-        body: 'Stay committed and keep moving: a better answer is always ahead.',
-      },
-    ],
-  },
   footer: {
     label: 'About page footer',
     contact: 'XINYIYUAN contact information',
@@ -200,30 +173,6 @@ const zhCN = {
     heading: '资质与荣誉',
     lightbox: '证书大图',
     closeLightbox: '关闭证书大图',
-  },
-  gallery: {
-    field: '新亦源团队与工作影像',
-    imageAlt: (id: number) => `新亦源团队与工作现场影像 ${id}`,
-    eyebrow: '致每一位新亦源同行者',
-    statements: [
-      {
-        title: '每一次认真，\n都在为下一次抵达铺路。',
-        body: '那些看似平常的坚持，最终都会成为客户心里的可靠。',
-      },
-      {
-        title: '把普通的岗位做好，\n就是我们共同的专业。',
-        body: '不急于被看见，也不辜负每一份托付。',
-      },
-      {
-        title: '并肩时，\n我们把复杂变成可靠。',
-        body: '彼此补位、彼此信任，让每一次协作都更有力量。',
-      },
-      { title: '今天多走一步，\n明天就多一份底气。', body: '成长没有捷径，但每一步都算数。' },
-      {
-        title: '新亦源的下一程，\n由每一个我们共同写下。',
-        body: '保持热爱，继续向前；更好的答案，始终在路上。',
-      },
-    ],
   },
   footer: {
     label: '关于页页脚',

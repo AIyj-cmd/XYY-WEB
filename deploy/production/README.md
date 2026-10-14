@@ -1,10 +1,8 @@
 # 56xyy.com 生产部署包
 
-本目录把部署职责拆为三个独立部分：
+本目录提供 Web 应用的生产部署入口：
 
 ```text
-database/  已存在 Oracle Database 19c 的业务 Schema 初始化
-backend/   Directus 服务后端连接 Oracle、迁移、切换和回滚
 web/       Astro Web 前端构建、原子发布和 Nginx 配置
 ```
 
@@ -17,18 +15,15 @@ web/       Astro Web 前端构建、原子发布和 Nginx 配置
 ├─ Nginx
 ├─ xyy-web      0.0.0.0:50031
 └─ xyy-cms      127.0.0.1:8055
-        ↓ 私网 TCP 1521
-现有 Oracle Database 19c 服务器
-└─ ORCLPDB1 / DIRECTUS_APP
+        ↓
+现有 PostgreSQL 数据库
 ```
 
 ## 推荐执行顺序
 
-1. 数据库管理员阅读 `database/README.md`，在现有 Oracle 19c 服务器初始化独立表空间和 Schema 用户。
-2. 运维确认数据库监听服务和私网 1521 访问策略。
-3. 后端负责人阅读 `backend/README.md`，在应用服务器并行准备 Oracle 版 Directus。
-4. Web 负责人阅读 `web/README.md`，准备 Web 环境并部署正式域名构建。
-5. 在维护窗口迁移后台内容并切换 Directus。
-6. 验证后台、网站和联系表单后再切换 DNS/正式流量。
+1. 确认现有 Directus 与 PostgreSQL 服务可用，核对网站所需的内容只读权限。
+2. 按 [PostgreSQL 备份说明](../postgresql/README.md) 和 [附件备份说明](../uploads/README.md) 完成成对备份及恢复验证。
+3. Web 负责人阅读 [web/README.md](web/README.md)，准备 Web 环境并部署正式域名构建。
+4. 验证后台、网站和联系表单后再切换 DNS/正式流量。
 
 真实密码、Token和服务器密钥不得写入本目录或提交Git。

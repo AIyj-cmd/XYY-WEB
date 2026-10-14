@@ -2475,3 +2475,217 @@ Limits：本轮限Chrome152模拟视口及离线/helper验证，空内容schema�
 - 经现有SSH在准确ECS执行获批runner，exit0、DEPLOY_OK；current为 `/data/xyy/releases/20261010T135801Z-e64db32`。公网/version、/healthz、/en/services均200，版本/发布身份精确，健康CMS与contactStorage双ok。环境文件SHA及root:xyy-web 640保持，锁文件一致；仅Web服务启动时间变化，CMS/Nginx/PostgreSQL三项启动时间完全保持。旧release `20261010T114608Z-d92b0fd`保留，没有删除数据或版本、调整配置、导入内容或提交真实表单。
 - 现有线索健康1.5秒超时导致的间歇503在部署前已明确记录；本次切换前后严格双ok通过，不将一次健康成功解释为远端接口永不波动。主机root会话与SSH控制连接已正常退出；最终公开页面双端验收通过；事实文档另行审阅提交。主要证据 `output/release/xyy-20261010-16/`，最终文档单独提交，不改变此次已验证和部署的运行源码。
 - Luna 公网1440/390双端16次总览实际点击全部通过，每端八个不同详情，第1/5的地址、标题与正文不同；四新详情共8组合、40次FAQ、16次联系CTA预选和8次中英往返通过，英语正文/地址/标题空格、无横向溢出及页脚链接正常。浏览器独立版本身份一致，sitemap/llms四新路径齐全，无blocked请求、page或console错误；只使用GET/HEAD，未提交真实线索。Sol亲看第五项桌面、跨境标题双端、直播桌面FAQ及华南手机FAQ截图，无新问题。证据为本任务luna/live报告及 `output/playwright/xyy-20261010-16/`。
+
+### XYY-20261011-01 — 本地移除 Oracle 19c 方案
+
+- MEDIUM；用户明确要求删除本地 Oracle 19c 方案及相关代码。合同 `docs/plans/xyy-20261011-01-remove-oracle19c.md`，基线 main `00318b57442903b7c28e5c541795a0dc05f91af8`、工作树干净。Graphify现有索引缺少Oracle专属词汇，deploy查询只返回旧deploy.sh节点，实际依赖范围以当前Git源码扫描和独立实施梳理为准。
+- 删除27个专属文件：`deploy/oracle19c/`20个文件、`deploy/production/backend/`与`database/`4个文件、3个Oracle-only测试；仅用rmdir移除已空目录，不删除未跟踪或ignored文件。共享部署契约移除四个Oracle专属case、保留Web/PG/uploads断言；去掉已删文件的维护预算特例。新闻日期文件只改注释，revision测试改用通用存储错误示例，日期/时区和非敏感502保护逻辑保持。
+- 活跃README、生产Web入口说明、PostgreSQL/附件备份说明及维护矩阵同步清理旧方案。依赖锁、CI中的19c随机校验片段以及业务白皮书品牌不是Oracle驱动依赖；历史任务、治理限制与无关业务内容保留，不改写过去事实。当前src/server/scripts/deploy/tests及活跃README/维护说明的Oracle真实关键词和被删入口引用为零。
+- Terra定向自测3文件24项及保留Shell语法通过；Luna独立完整单测124文件835项实际通过，范围ESLint/格式、维护性834文件与diff检查通过。测试使用loopback虚拟环境并阻止真实环境文件加载，没有连接外部CMS或数据库。无需以完整verify/verify:release或浏览器验证重复未变的页面：本轮仅本地移除独立运维方案，不提交或部署，应用运行行为保持。
+- 精确冻结清单 `output/oracle-removal/xyy-20261011-01/source-freeze.json` 覆盖37个实施/活跃说明路径，后续角色日志和状态记录单独追加。Luna最终PASS、Nova最终APPROVED，无未解决finding；独立核对26个保护文件保持、15份Shell语法与12条相对文档链接通过，Sol验收本地结果；没有服务器、真实CMS/数据库、环境配置、旧工作区、数据备份、提交、推送或部署操作。
+
+### XYY-20261011-03 — 新 ECS Nginx 配置与备份
+
+- HIGH；用户明确要求先备份，再按所给 Nginx 配置更新 `8.138.148.179`。现场指定证书两文件均缺失，用户确认先应用 HTTP、HTTPS 等证书就绪后启用。只更新实际服务器 Nginx 配置，保留本地 Oracle 清理；未修改应用源码、CMS/数据库、环境变量、安全组/DNS或旧服务器，未提交/推送。
+- 已核对目标 l4、nginx1.26.3、原配置哈希 `48118607a2ef8f1c4ca89e9bfc30e81eb38f0aae179b8a8bcf7822c945af5597`。完整 `/etc/nginx` 归档含 ACL/xattrs/SELinux 属性，目录权限700，保存于 `/data/xyy/backups/nginx-20261011T071831Z-xyy-20261011-03/`；SHA校验与tar比较均通过，原配置副本与运行证据保留。
+- Terra 候选仅注释443监听及两项证书引用，其余指令保留；Luna精确字节变换验证PASS。候选SHA `beb51fd97623a244090f3f360182bd9340a5069b90ba5f05e3f03705b5984c21` 在目标Nginx实际语法验证通过。Nova批准准确候选及带前置哈希、原子替换、失败恢复的应用脚本 `2db4de669838c8b4af1ad659f957993b3998ff74dbc9fdba7ccbc537644336d2`。
+- Sol执行准确脚本exit0；保持root:root 644与原文件属性，正式nginx-t通过后只reload Nginx。内网首页200、CMS两路径404、dot路径403、version与四服务MainPID/启动时间逐字比较通过；配置回读SHA一致，80监听生效、443未启用，nginx主PID60141保持，reload status0。访问日志已实际出现rt/urt。
+- Luna从独立本地网络仅GET验收：公网首页/任意Host200、CMS404、dot403、应用SHA仍e64db32、指定Accept-Encoding:gzip的响应200且gzip解压成功。首轮自动协商br正常但测试仅接受gzip而报告FAIL，保留证据，单次定向压缩复测PASS；未修改服务或重复其余检查。最终全部AC通过，SSH已退出。
+- 证据 `output/nginx-config/xyy-20261011-03/`。本次为Nginx运维配置调整，未发布应用制品；验证采用实际语法、备份一致性、重载/监听、服务/版本比较及独立公网请求，没有运行无关的应用构建和发布测试。HTTPS待提供有效证书后再启用。
+
+### XYY-20261011-03 — 追加临时 HTTPS 启用
+
+- 用户后续明确要求“开临时的https用，配置就按照我给你的这个用”，覆盖此前暂缓HTTPS选择；沿用Task03，范围仅新ECS临时自签名证书与原始完整Nginx配置。现场确认目标l4、旧配置SHA beb51fd9…84c21、证书目录/文件不存在且443空闲；firewalld原已允许https，SELinuxDisabled，无需调整网络或安全配置。
+- 新备份 `/data/xyy/backups/nginx-20261011T072633Z-xyy-20261011-03-https/` 含完整etc/nginx归档/主配置副本与服务/版本证据，sha和tar比较通过。原HTTP阶段备份仍保留。Terra脚本首轮重复-ext会仅打印最后扩展的问题经本地公共CA证书实证修正为单次逗号列表；未将首轮脚本用于服务器。
+- 冻结脚本SHA `ca27904a4cd6da09739f4eaefb076200a22e41990a92f2eebba82392f1220752`，原始完整配置SHA `9be5edd79dfda1b4aa06932e0bea9f12584dac9960ea213e5764d6d829c0b3d3`。Luna独立bash-n/19静态项PASS，Nova准确脚本与唯一备份参数APPROVED后，Sol在服务器执行exit0；本地仅保留公开证书，不读取/下载私钥正文。
+- 服务器生成30天RSA3072/SHA256自签名叶证书，含IP SAN8.138.148.179、CAfalse、serverAuth与合适keyUsage；指定证书路径644 root:root、私钥600 root:root、公钥匹配通过。有效至2026-11-10 07:32:24 UTC（北京时间15:32:24），证书指纹SHA256 `9CE2FDDE397CE6EB7F6DB3F2FDA80DFA025770EA03E6BFD1F33AE033D02DBCFA`。保留原HTTP，完整原配置已原子替换、nginx-t和reload成功，未触发回退。
+- Nginx监听0.0.0.0:80与443，主PID60141保持；本机HTTP/HTTPS200、CMS两路404、dot403，应用version及四服务MainPID/启动时间逐字cmp通过。Luna独立公网7GET全部PASS：以--cacert显式信任公开证书且无-k，实际TLS1.2/1.3协商与证书校验成功、主页200、CMS404/dot403、HTTPS版本e64db32不变、HTTP200。没有连接超时或额外网络放行。
+- 结果验收完成，SSH退出；证据 `output/nginx-config/xyy-20261011-03/https/`。浏览器默认会提示自签名不受信任，不能把显式信任测试解释为公共CA信任。未改应用/CMS/数据库/环境变量/安全组/DNS，未运行应用发布/构建，未提交推送；既有Oracle清理保留。
+
+### XYY-20261011-04 — 可信 IP HTTPS 与自动续期
+
+- HIGH；用户在临时自签名引发浏览器警告后明确要求处理。官方资料确认 Let's Encrypt 已公开支持短期 IP 证书，Certbot webroot 5.4以上可签发。本次只针对新ECS 8.138.148.179，按合同完成配置/证书备份、独立客户端、ACME专用路径、正式签发、原子部署和自动续期；未改应用、CMS/数据库、业务环境、DNS、安全组、防火墙、旧服务器或Git远端。
+- 备份 `/data/xyy/backups/nginx-20261011T073946Z-xyy-20261011-04/` 包含完整etc/nginx归档、原配置/旧自签名证书及服务/版本证据，目录root700，SHA和tar比较通过；私钥从未输出或下载。隔离安装Certbot5.8.0至 `/data/xyy/tools/certbot`，pip check通过，所有ACME账户、证书、日志与部署版本位于数据盘。网络下载较慢但安装完成，无系统级依赖升级。
+- Terra候选经Luna独立五项hook模拟和四项bootstrap恢复模拟验证；bootstrap初版在if条件下复制失败仍可能替换空文件，R2显式失败返回后定向PASS，保留首轮失败证据。Nova按阶段批准准确路由/签发、首次上线及续期。Nginx仅增加 `^~ /.well-known/acme-challenge/` webroot例外，新SHA `9728e9294a13927ee390e201727df8dda53737b2789f2068990a70e891ac0569`，其余原始用户配置及两证书路径保持。
+- root应用路由exit0，独立公网精确校验文件200，隔离staging certonly dry-run成功后正式签发。证书issuer Let's Encrypt YR2、RSA3072、IP SAN8.138.148.179；有效期2026-10-11 06:50:59至2026-10-17 22:50:58 UTC，SHA256指纹 `BB896EB408E720453FDD0778477F87E969873455E0F7FCC39BA90336B2007358`。系统CA/IP身份验证、公私钥匹配和权限检查通过；私钥root600，公开证书644。
+- bootstrap R2 SHA `51036b831ceece7b9717838419b101ba74e040ffc15b4d82ededc70f96817141`、部署hook SHA `ea25fd44140704adad4b0fa5812353cb82b0a12dd9dbd7bf300d9310e46c134d` 上传回读一致。两既定TLS路径指向数据盘current，current单一原子切换至证书指纹目录；保留旧自签名版本用于回退。nginx-t、reload、实际握手指纹和无自定义CA的本机HTTPS均通过，bootstrap/hook exit0，未发生上线回退。
+- 自动续期服务和timer已安装并启用，四次每日检查且随机延迟20分钟以内，最终下一次2026-10-11 18:03:46 CST。续期目录部署hook及ExecStartPost确保新证书实际加载，证书已更新但此前重载失败时也会重试；验证不信任staging证书。实际oneshot Result=success、ExecMainStatus0，证书未到续期时间没有重复生产签发，posthook成功。首轮 `renew --dry-run --run-deploy-hooks` 遇测试CA读取超时，保留失败；同参数重试成功、hook实际运行且exit0。正常nginx语法信息输出在stderr，Certbot标红并不代表hook失败。
+- Luna独立公网默认系统CA（无-k/自定义cacert）8GET全部通过，TLS1.2/1.3首页200、HTTP200、CMS两路径404、隐藏路径403、缺失challenge404、版本精确e64db32。默认信任的命名浏览器实际打开正常首页，无证书错误页，0脚本错误/0阻断；Sol亲看最终截图，浏览器已关闭。root最终确认四服务MainPID/启动时间与/version逐字保持，证书/脚本/单元hash匹配、timer active；只清理本任务公开验证占位文件，SSH正常退出。
+- 证据 `output/trusted-https/xyy-20261011-04/`；DEV_STATE同步当前可信证书事实，Task03历史保留。此次为证书运维，没有应用制品发布或业务代码更改，不运行无关应用构建/发布测试；本地Oracle清理保持未提交状态。Luna PASS、Nova上线及实际结果APPROVED，Sol验收完成。
+
+### XYY-20261011-05 — 同源公网 /admin 后台
+
+- HIGH；用户要求后台使用同一公网地址，并明确直接使用 `/admin`。按合同只在新ECS8.138.148.179调整Nginx代理与Directus运行设置，备份位于 `/data/xyy/backups/public-cms-20261011T075934Z-xyy-20261011-05/`（root700）；原Nginx/env及已上线public env的独立副本均校验通过，没有输出或下载真实环境秘密。保留既有Oracle清理、应用版本、CMS内容、权限与密码，不提交推送。
+- 生效Nginx SHA `d86ed014a68cb1e2463b791a5798d31da051f445e2e903b233bb08c87eb28057`：36个实际Directus根命名空间按段边界代理至127.0.0.1:8055，后台HTTP308至固定公网HTTPS，保留全局隐藏路径拒绝、原/cms404、ACME校验、证书路径和网站根代理。四项Directus设置仅PUBLIC_URL、安全session/refresh Cookie、IP_TRUST_PROXY；其余env字节与root:xyy-cms640保持。R3应用脚本SHA `147465d579d7303e27028765d2ce56e61667b47a0e523c47bb974d07f290c642` 经Luna与Nova批准后实际exit0；早期脚本路径和自闭合base标签校验问题在上线前修正。重启等待的短暂连接拒绝、重载期间一次旧worker404保留，最终就绪通过。
+- 真实浏览器验收发现扩展JS404，直连和代理一致；Directus12.5.0默认临时缓存落在不可写node_modules路径，日志确认bundle生成失败。最小修复仅追加TEMP_PATH至现有ReadWritePaths内的 `/data/xyy/cms-home/tmp`，目录xyy-cms:xyy-cms750，不修改包代码或服务保护策略。精确脚本SHA `7b96929d4448e2aa0545ab164cb8841755b302ce36b17d18f7771890b3de75cf`，Luna32/32检查（含5env用例）、NovaAPPROVED，基于当前public env备份执行exit0；真实生成_virtual_entry.js219字节，文件/直连/代理字节cmp一致，独立公网默认CA返回200且JS类型正确。启动等待5次连接拒绝后成功，没有回退。
+- 最终Directus主PID77359，仅127.0.0.1:8055；Nginx60141、Web66796、PostgreSQL59786的MainPID/启动时间与原备份逐字保持，网站/version仍e64db32、证书部署hook验证通过、续期timeractive；runtime修复未再修改Nginx。SSH两层正常退出。此次是后台代理/运行配置变更，没有应用制品部署，不运行无关的应用构建与verify:release；实际验证覆盖Nginx语法、备份/环境精确比较、服务身份、TLS、公开资源和认证。
+- Luna最终PASS：11项独立公网路由；1440/390双端登录、refresh、重载读取、API退出204/随后401和Secure/HttpOnly/Lax/Path=/ Cookie属性通过。TEMP修复后一次定向浏览器登录/案例读取/刷新/重载通过，3次扩展JS请求均200，无扩展警告或pageerror；真实UI退出确认后204，回到/admin/login?reason=SIGN_OUT，受保护读取401。初轮扩展404、测试误拦self tracking、UI选择器/确认框问题及URL查询串断言失败均保留原始证据；退出后短暂保留失效Cookie不代表仍可认证，未登录refresh400和保护接口401属预期，不冒称全程零console消息。
+- Sol亲看手机列表、修复后无遮挡桌面6条案例及真实退出登录页截图。只通过Skip/Remind Later关闭许可证/owner提示，未填写、接受协议或修改设置；浏览器/loopback内存凭据桥均关闭，cookie/storage已清空。本任务全部evidence按临时密码值扫描0命中后删除精确600凭据文件，未保存Cookie或Token值。证据 `output/public-cms/xyy-20261011-05/`，Luna总表 `luna/live/summary.json`；历史文档格式保留，仅核对本任务新增段落格式与diff。
+- Nova总体最终APPROVED，无剩余阻断finding；Luna最终PASS，Sol依据实际证据验收完成。当前HEAD仍00318b5，工作树原有Oracle清理及历史任务记录保持；本次仅新增运维合同与角色/状态记录。本任务新增文档片段Prettier与git diff --check通过，不对历史表格做无关重排。
+
+### XYY-20261012-02 — 关于页视频收边与介绍区调整
+
+- MEDIUM；用户明确要求在本地关于页复用 Lassie 视频首屏滚动收边/大圆角效果，将截图的标题、简介和四入口放到下一段，尺寸统一首页。合同 `docs/plans/xyy-20261012-02-about-video-reveal.md`；起始HEAD `00318b57442903b7c28e5c541795a0dc05f91af8`，既有Oracle清理/运维记录保留。现有Graphify图仅定位，实施以当前源码为准；Terra → Luna → Nova → Sol顺序完成，未扩展真实外部操作。
+- 六个本地实现文件将中英共享AboutHero改为独立视频frame与浅色介绍区；保留唯一H1、原视频source/poster、CMS overview和Explorer插槽，原图库/页脚保持。内容盒子1200px，桌面32px/手机20px内边距，中文标题同首页；浅底Logo加深蓝底，视频左侧厚遮罩减为底部轻渐变。rAF按滚动内缩/圆角，回顶部还原；PRM实时变化停止样式更新，无JS正文保持可见。
+- Terra目标格式/Lint和typecheck通过（672文件0 errors/0 warnings/4既有hints）。Luna独立E2E3项覆盖中英1440/768/390/360几何、回顶、视频键盘、四弹窗/Escape/焦点/FAQ深链、PRM实时切换与无JS；既有about-cases1项、关于单测3文件13/13、目标格式/Lint/维护性837文件通过。首轮内部CSS变量断言与新测试行数预算经测试侧修正并拆分；没有修改维护性预算或减少实质断言。
+- 额外English组合5通过/9失败/2跳过不记为全绿：Astro dev toolbar注入shadow H1，且4322未挂生产Express canonical中间件；Sol核对 `server/request-policy.mjs` 实际有去尾斜线301逻辑。此为开发预览差异，不宣称生产故障；失败证据实际保存/清理范围按Luna日志记录。Nova APPROVED并独立复核英文四宽度H1文字range均无裁切、overflow0，未发现阻断问题。
+- Sol亲看桌面滚动/介绍、390中文与英文介绍、768中文和手机视频顶部截图；六实现文件与freeze SHA-256一致，37份既有非日志diff逐块比对无变化。证据 `output/playwright/xyy-20261012-02/`。本地4322独立预览因既有Astro后台锁与inotify数量上限，改用Astro API局部polling watcher，无项目/系统配置改动；CMS/线索均显式指向不可达loopback并使用非真实测试值，原4321未停止或修改。
+- 最终只更新本任务状态/合同/角色日志并检查新增Markdown与diff；未提交、推送、部署或访问真实CMS/数据库，未运行完整verify/release。Chromium模拟视口证据不等于所有真实设备；单frame width动画有有限布局成本，当前未见抖动/横溢。验收本地结果，预览保持在 `http://127.0.0.1:4322/about`，英文 `/en/about`。
+
+#### XYY-20261012-02 R2 — 裁掉视频底部黑底字幕带
+
+- 用户在本地预览截图中明确要求裁掉视频底部大黑边；沿用原Task，合同R2允许将该黑底字幕一并移出可见区域。Sol抽取5秒原始帧确认1280×720片源约第646行起为黑底字幕带，poster同构；没有改原媒体或引入新素材。
+- Terra最小修改 `.about-stage__media` 的height112%、object-position:center top，仍用cover和既有frame隐藏溢出。Luna仅将既有about-cases的定位断言更新为50% 0%，不新建镜像测试。首屏、次屏、滚动脚本、CMS与其他内容保持。
+- 本轮实际目标Prettier与diff-check通过；Luna在真实viewport1848×905、1440×900、390×844播放约5秒与滚动态目视无黑带/拉伸/新增空白，阻断MP4的readyState0 poster同样通过，现有4项E2E全部PASS。Nova增量APPROVED，Sol亲看自身真实1848×905及390×844截图；Terra自测文件名误标已改日志明确实际1280×720，未用该图冒充目标尺寸证据。
+- `r2/source-freeze.sha256`匹配CSS；原两MP4与poster三hash保持，42份其他既有非本轮diff逐块保持。证据 `output/playwright/xyy-20261012-02/r2/`。本轮未重跑与CSS无关的类型/构建/单测或English全量；无提交、推送、部署、真实CMS/数据库/系统配置操作。Sol验收本地修正，4322预览保留。
+
+
+#### XYY-20261012-02 R3 — 恢复时间轴字幕并放大字号
+
+- 用户授权复用已有时间轴叠加字幕，并在预览后要求约30号。仅在 `AboutHero.astro` 的视频frame内恢复默认空、`opacity-0` 的 `hero-caption`，`about-stage.css` 增加局部居中白字阴影、安全边距和自然换行；最终字号 `clamp(1.375rem, 2.5vw, 1.875rem)`，1440px桌面30px、390/360px手机22px。没有新增通栏黑底。
+- 复用现有31条中英文时间轴和 `video.ts` 的timeupdate/textContent同步；字幕数据、同步脚本、原双MP4/poster六项指纹不变，112%/center top裁切及滚动收边/控件保持。最终两源码与R3 freeze一致，42份其他既有diff保持。
+- Terra目标格式/Lint/diff自检通过；Luna独立最终中英文×1440/390/360六组合6/6 PASS，字幕文本矩阵186个cue及84个gap已覆盖，暂停恢复、空档隐藏、seek与loop reset、安全边距和无横溢通过；现有About定向E2E4项通过。两份早期FAIL为探针未等待160ms透明度过渡，已保留并定向修正等待条件复测，没有改实现掩盖失败。
+- Nova APPROVED，无阻断finding；Sol亲看最终 `sol-desktop-30px.png`、`sol-mobile-en-22px.png` 和Luna英文360px滚动态，字幕清楚、自然换行、无黑带/裁切/控件遮挡。证据 `output/playwright/xyy-20261012-02/r3/`，本地验收完成。
+- 仅本地修改，未提交、推送、部署或执行真实CMS/数据库操作；未运行与局部显示无关的全量verify/release。验证限Chromium模拟视口。4322预览保留，原4321未操作，Sol临时浏览器已关闭。
+
+
+#### XYY-20261012-02 R4 — 视频标题试版撤销
+
+- 用户先确认新增视频主/小标题，随后提出居中并最终明确“算了去掉吧”。最终仅撤销本轮标题功能，保留已验收R3的视频、收边、去黑带及中英文动态字幕；不交付被取消的标题或居中方案。
+- `AboutHero.astro`、`about-ui.ts`、`AboutHeroMedia.astro`、响应式CSS与R4 before四项逐字一致；新增标题CSS已删除，import/节点/双语文案字段均无残留。`about-stage.css`仅保留删除两处空行的预算修正，非空行逐行一致，现199行；43份其他既有diff保持。
+- Terra目标格式/diff及精确回退检查通过。Luna中英文×1440×900/390×844四组合4/4 PASS：新标题不存在，现有字幕按locale显示且字号30/22px，控件/滚动圆角/下一屏原H1保持，无横溢；source freeze四项及六保护hash全部匹配。首轮宽泛H1探针被Astro开发工具额外H1干扰，失败证据保留，限定原页面标题选择器复测通过，未修改产品掩盖测试失败。
+- Nova APPROVED，Sol亲看中文桌面和英文手机滚动截图，确认视频区域仅保留原字幕并自然衔接下一屏。证据 `output/playwright/xyy-20261012-02/r4/`，本轮最终状态为标题试版已撤销。
+- 只读本地Chromium模拟视口验证，无需重复已撤销方案的时间轴矩阵或无关全量测试；未提交、推送、部署或操作真实CMS/数据库。4322预览保留，原4321未操作，Sol临时浏览器已关闭。
+
+#### XYY-20261012-02 R5 — 收边加深并持续至视频退场
+
+- 用户要求继续向内收缩，并随滚动持续到视频完全离开视口。沿用同Task、MEDIUM；Terra仅修改 `hero-reveal.ts` 的两个测量表达式：用stage实际高度作进度距离，桌面两侧总内缩为宽度28%且上限480px，手机20%。无新增sticky或滚动空白，字幕、视频裁切、控件和下一屏保持，未恢复取消的主/小标题。
+- Terra目标格式/Lint及类型检查通过（674文件，0 errors/0 warnings/4既有hints）。Luna在既有reveal测试补后半程稳定几何断言，186行；中英文四视口8/8、3项相关E2E、目标格式/Lint/维护性通过。55%→85%→100%→120%阶段，1440px宽度为1218→1097→1037→1037，390px为347→324→312→312，确认后半程持续收窄且退场后钳制。回顶、同页resize、PRM动态切换、noJS、字幕/控件frame边界通过。
+- 初始探针/测试的固定等待、frame相对坐标与语言提示stageTop误判保留；只修测试等待和坐标后最终PASS，没有修改实现掩盖失败，不表述为首次全绿。Nova APPROVED，无阻断finding；Sol亲看自己的桌面/英文手机55%与85%截图，浅色介绍区衔接正常、手机长英文字幕自然换行。
+- 实现freeze1项与保护hash9项匹配，44份其他tracked diff逐块保持。证据 `output/playwright/xyy-20261012-02/r5/`；目标实现与测试之外仅更新合同、状态和角色日志。新增文档片段格式与diff检查通过后验收本地结果。
+- 浏览器验证限定Chromium模拟视口；不重复无关全量verify/release，无提交、推送、部署或真实CMS/数据库/系统变更。4322预览保持、原4321未操作，Sol临时浏览器已关闭。
+
+#### XYY-20261012-02 R6 — 介绍文字双栏与图片卡片
+
+- 用户参考图片卡片形式调整介绍屏并强调标题与说明排版。LOW静态结构/样式与装饰文案；按Terra → Luna → Sol完成，未改变业务交互或数据读取。原H1及完整CMS简介在桌面并排、手机堆叠，下方原四入口改为等高图片卡片；容器仍1200px、32px/20px边距。
+- 七个实现文件覆盖AboutHero/Explorer、四份对应CSS及新卡片双语元数据。使用既有总部/仓库/荣誉/质检照片，3px虚化和深色遮罩，顶部标签、中部居中标题、底部14px/450/1.6说明与箭头。桌面主标题约52px/简介16px，手机39px/15px；四卡在1440为269×400、768为342×368、390为350×340，分别四列/两列/一列。Sol首看后仅定向精修卡片标题居中和说明字号，不添加新事实或公开数字。
+- Terra格式/Lint/维护性838文件和类型675文件（0 errors/0 warnings/4既有hints）通过；CSS为既有ESLint忽略项，不冒称CSS Lint覆盖。Luna仅将原reveal测试的网格检查移至新header，保留1200px/内边距和视频几何断言；最终中英四尺寸8/8、noJS2/2、相关E2E3/3及目标格式/Lint通过。初始中文探针因非空标题长度阈值误判而FAIL，原报告保留，修正测试判断后通过，源码未变。
+- Sol亲看最终中文桌面整屏、英文平板/手机header与手机FAQ卡片，标题、简介及短说明完整、白字清晰、无横溢；固定导航覆盖截图的取景问题通过把header置于视口100px以下后重拍解决，没有改页面掩盖。视频section与dialog DOM逐字匹配before，freeze7项/保护hash9项匹配，41份其他tracked diff保持；静态增量审阅无阻断，按LOW路径完成验收。
+- 证据 `output/playwright/xyy-20261012-02/r6/`；新增合同/状态/日志片段格式及diff检查通过。仅本地Chromium模拟视口与隔离4322，原4321及媒体保持；未提交、推送、部署或访问真实CMS/数据库/系统配置。无关全量verify/release未运行，Sol临时浏览器已关闭。
+
+#### XYY-20261012-02 R7 — 四张卡片改为纯色
+
+- 用户要求每区块一种纯色；LOW静态呈现，Terra → Luna → Sol。三源码最小增量移除装饰img、八个双语image路径及图片类型字段，删除背景模糊、渐变和缩放样式；按原入口id设置深蓝#243a52、蓝绿#32656b、暖棕#795d44、灰紫#625b70，保留白字、圆角/网格、标题居中、14px说明、箭头及focus。
+- Terra目标格式/Lint/diff通过。Luna独立中英1440/390四组合4/4、既有键盘与四弹窗/Escape/焦点回归1/1通过；卡片无装饰img/背景URL/渐变、等高且文字无裁切横溢，白字实测对比度11.65/6.54/6.07/6.46。没有新建或修改仓库测试，未重复无关类型、构建或全量矩阵。
+- Sol审阅三文件before差异，亲看中文桌面整排及英文手机纯色截图，四种底色清楚区分且文字易读；source freeze3项、保护hash9项匹配，dialog DOM保持，46份其他tracked diff无变化。按LOW路径完成最终验收，新状态/日志/合同片段格式与diff检查通过。
+- 证据 `output/playwright/xyy-20261012-02/r7/`。仅移除卡片自己的图片使用，公共图片资源及原弹窗图片保持；不将其表述为全页面无图片请求。测试限本地4322 Chromium模拟视口，无提交、推送、部署、真实CMS/数据库或环境变更。
+
+#### XYY-20261012-02 R8 — 品牌影像志
+
+- 用户要求摄影编辑排版及真实干净选图；MEDIUM，按Terra → Luna → Nova → Sol完成。Sol目视157张图库缩略图与候选原图，精选挂装仓储、整理包装、熨烫、工作沟通、团队及同事互动六张；活动贴纸/海报不做主视觉。原158份相关媒体未编辑/删除，选材理由保存在r8/curation。
+- 八项实现变更覆盖AboutScrollGallery、两份gallery CSS、精选图数据、独立中英文文案、旧about-ui gallery删除、about-page入口清理与删除旧gallery脚本。现在为一个H2/三个H3/六个figure，1200px容器32px/20px边距，桌面12列主次错位、手机6列自然顺序和宽度差异，图外13px说明、白底深蓝字与深橙编号。仓储主图桌面844×474，团队从8列收至7列确保主图最大；橙色#c64a19对白底对比4.78。无新增动画、灯箱、假交互或外部数据读取。
+- Luna独立中英1440/768/390/360八组合8/8、PRM2/2、noJS2/2、受影响E2E3/3、English UI单测3/3通过；类型675文件0错误/0警告/4既有hints，维护性838及目标格式/Lint/diff通过。Terra首次typecheck的唯一错误是旧测试引用copy.gallery，由Luna在所属测试内更新后消除。首次取景被导航覆盖及Sol直接decode未触发懒加载均为探针问题，最终逐组滚动/加载确认和重拍补足；未改产品掩盖。无JS证据覆盖SSR结构及文字/页脚，完整加载与尺寸由启用JS探针逐图确认。
+- Nova APPROVED；Sol审阅八文件增量及三个测试before差异，亲看中文桌面、英文平板/手机各组与标题；无人物裁切/文本遮挡/横向溢出，章节留白符合预期。source freeze7项、test freeze3项、保护源码13项、原媒体158项保持，45份其他tracked diff无变化；about-ui和about-page仅删除旧图库部分，上方视频、字幕、介绍/纯色卡及弹窗保持。按合同验收完成。
+- 证据 `output/playwright/xyy-20261012-02/r8/`；状态/合同/日志新片段格式与最终diff检查通过。4322原预览进程中途退出，已按既有隔离参数恢复本地Astro API dev、polling监听及loopback9 CMS合成凭据；原4321未操作。Sol临时浏览器已关闭，预览保留供用户查看。验证限本地Chromium模拟视口，未运行无关全量verify/build，无提交、推送、部署、真实CMS/数据库或系统环境修改。
+
+#### XYY-20261013-01 — 启动本地项目
+
+- LOW本地运行动作，由Sol直接处理；Scope仅启动现有工作区开发服务并检查HTTP，文件所有权仅DEV_STATE/SOL日志和忽略的本地证据目录。AC为本地监听及首页、中文/英文关于页HTTP 200。HEAD00318b5和全部既有脏源码保持，不涉及业务实现、外部服务或发布。
+- 使用Astro API dev、127.0.0.1:4321、polling监听，沿用loopback9 CMS与合成凭据预览。首次nohup子进程未持续存在，HTTP检查连接拒绝；改用持续exec会话65060后成功。实际GET /、/about、/en/about均200，标题正确，后两者包含EDITORIAL GALLERY，监听及PID记录在output/local-preview/xyy-20261013-01。
+- 更新状态与日志，diff/新日志格式检查通过；没有源码修改，未运行应用回归或build/verify。使用审核静态内容；未改.env/依赖/真实CMS/数据库/系统配置，未提交、推送或部署。
+
+#### XYY-20261013-02 — 一屏五格照片墙与悬停预览
+
+- 用户最终确认“参考图五格比例缩小、连续拼在一屏，85张都直接可见，悬停放大”。R1长网格与R2近均匀墙为被取代的阶段候选，最终按R3验收；增加局部预览交互后风险为MEDIUM，完成Terra实施→Luna独立验证→Nova审阅→Sol。早期固定Terra无及时交付后已中断其写入；接续实施、独测、审阅均使用实际继承主会话模型的独立代理，未宣称切换为固定旧型号。
+- 10个图库源码覆盖组件、三份CSS、三份图片数据、双语文案和两个预览脚本。85张已筛选实拍在同一CSS Grid以17次参考五格节奏排列，桌面15×12、中屏12×15、手机9×21，间距6/4/3px；section为100svh，首组放大、手机末组加宽填满，无章节/分组大留白。位置由SSR静态元数据生成，无浏览器布局脚本；原始尺寸、lazy/async与真实场景alt保留。局部共享popover支持悬停/键盘/Escape，原生dialog支持点击/触摸、三种关闭和焦点恢复；无JS原图链接仍可用。
+- Luna最终PASS：中英1440×900、768×900、390×844、360×780共8/8，一屏85图唯一且加载、17组比例、无空洞/重叠/横溢或内部滚动；noJS2/2、PRM2/2；7项定向E2E分轮全通过、英文UI单测3/3、类型680文件0错误/0警告/4既有hints、维护性844、目标格式/Lint通过。仅修改三个旧测试受影响图库断言并新增193行gallery-preview测试；未声称一次七项全绿。并发decode、相对/绝对URL比较和视频load等待问题在测试helper定向修正，早期headless手机截图绘制暂态在完整绘制后复核全图显示，均未改产品掩盖失败。原始日志/trace保留。
+- Nova APPROVED、0 findings；Sol审阅任务before增量、亲看1440整墙/悬停原比例大图与360英文整墙/dialog，并复核页面布局符合用户最终选择。10实现冻结、16保护源码、160原媒体hash保持，48份其他tracked diff保持；原视频、字幕、介绍/入口/弹窗、页脚与媒体未改。证据 `output/playwright/xyy-20261013-02/r3/`，桌面整墙另见r2/sol-r3-desktop.png。
+- 已更新DEV_STATE与本日志，新增记录/合同格式及diff检查通过；当前预览 `http://127.0.0.1:4321/about` 保留运行，Sol浏览器已关闭。验证仅本地Chromium模拟视口及审核静态CMS回退，不承诺公网首次绘制速度或真机/Safari/Firefox表现。未运行无关全站verify/build；未提交、推送、部署、连接真实CMS/数据库或修改环境配置。
+
+
+#### XYY-20261013-02 R4 — 纠正图库图片来源
+
+- 用户指出未经要求混入其他页面图片，并未要求固定尺寸。此前Sol自定85张选图有误；本轮LOW静态修正，Terra → Luna → Sol，沿用实际继承模型的现有角色代理。只删除gallery-catalog的apparel/inspect/hq三条引用，gallery-mosaic重排82张既有原图库照片，首图128，末尾156/035按两张填满。不扩选凑数，不修改原图片文件。组件、CSS及hover/dialog脚本保持。
+- Terra目标格式/Lint/排位自检通过；Luna独立核对82图均属HEAD原图库且原尺寸正确，中文1440/英文390照片全部加载、无空位/重叠/横溢，hover/tap对应原图并可关闭。现有中英四视口布局E2E一次通过；综合结构测试首轮在非图库redirect检查耗尽30秒，保留失败，CLI临时90秒预算定向复测21秒通过，未改持久超时或产品代码。三个E2E仅更新82/原图来源/首图尺寸/末两张排位和尾索引，目标格式/Lint/diff通过；英文单测无需改动。
+- Sol审阅两源码及三测试的r4/before增量，亲看自有桌面截图与Luna手机/hover/tap截图，确认误借三图已移除、原仓储主图及大小错落保持。166项保护hash及其他tracked diff保持。证据output/playwright/xyy-20261013-02/r4/；未重复无关类型、build、字幕或全站回归。
+- 本轮只本地修改，4321预览保持，Sol浏览器已关闭。验证限Chromium模拟视口，未覆盖真机/公网性能；未提交、推送、部署或操作真实CMS/数据库/环境。
+
+
+#### XYY-20261013-02 R5 — 恢复全部157张原图库
+
+- 用户再次明确需要所有原图，R4只保留筛选后的82张仍未满足需求。Sol核对HEAD原gallery-images清单和public/about/gallery目录，二者同集157；本轮LOW静态数据/排版，Terra → Luna → Sol。恢复75张此前被筛掉的活动/贴纸/文字等图片，不再筛选；全部原文件保持。
+- 五源码：gallery-catalog补齐157条原尺寸，gallery-mosaic从完整catalog生成顺序，旧82名单仅控制排序；两份CSS适配全量网格及4/3/2px间距，about-gallery双语补中性alt。单一区域/大小错落和原hover/dialog保持，首图128、末图160。Root独立metadata比较确认157唯一、missing=[]、extra=[]且全部width/height与原清单一致。
+- Luna更新三E2E图库断言和英文UI单测；核心测试直接用文件目录作独立预期，不导入实现catalog自证，不再强制每五张的规整模板。中英四视口完整性/几何E2E一次通过（2.1m），中文1440/英文390冒烟2/2：157图全部加载、原82与恢复75全覆盖、无遗漏/多图/重叠/横溢，首图hover及恢复的末图tap可显示完整原图并关闭。英文UI单测3/3、类型680文件0错误/0警告/4既有hints、目标格式/Lint/diff通过。未执行跨页面about-cases综合测试，仅同步受影响断言；未扩大为全站verify/build。
+- Sol亲看r5/sol-desktop.png、Luna英文手机完整157图墙和gallery-160原图弹窗，确认新增照片可见且未混入外页图。审阅五源码和四测试增量，166项保护hash与其他tracked diff保持；原视频/字幕/介绍/交互脚本及图片文件未改。证据output/playwright/xyy-20261013-02/r5/，本轮全量结果覆盖R4选图结论。
+- 已本地验收，4321预览保持、Sol临时浏览器关闭。限Chromium模拟视口，未验证真机/公网加载性能；未提交、推送、部署或访问真实CMS/数据库、修改依赖/环境。
+
+
+#### XYY-20261013-03 — 首页整屏页脚与服务列间距
+
+- 用户连续要求放大首页页脚、入口hover下划线、达到首屏体量，以及仓配服务列右移。LOW静态呈现，Terra → Luna → Sol；复用实际继承模型的独立角色代理，不宣称切换型号。Scope仅中英首页Footer局部标记与新home-footer.css，原内容/链接/社交、其他页面及About157图库保持。
+- 最终主页页脚min-height:max(100svh,600px)，内部flex让主网格垂直居中、版权靠下；desktop上下96/48px、mobile64/32px，入口16px/1.75行高，hover与focus-visible下划线1px/offset4px。R3仅新增1024px以上1.2fr/.8fr/1fr/1fr列宽；1440服务左缘428→481.59，快速入口744/联系1060不变。手机自然高度，无固定高度裁内容。
+- Luna R1中英桌面/手机四组合、中文15/英文14入口逐项hover/Tab及恢复无位移、原href/text、手机微信开关和非首页样式边界通过。R2整屏五组合通过。R3独立中英1440×900/1280×720和中文390×844五组合通过，footer高度900/900/720/720/1418.23，无列间重叠、文字裁切或横溢；CSS格式/diff、组件与before一致及30保护hash通过。仅局部CSS变动，复用已通过的交互证据，未新增仓库测试或重复全站类型/build/verify。
+- Sol审阅Footer全部增量及CSS，亲看自有中文1440完整页脚和Luna英文1280截图，确认服务列间距更舒展、整屏体量保持；30保护hash与其他tracked差异不变，R3组件逐字保持。按LOW闸门最终验收。Luna记录英文1280右下悬浮控件覆盖ICP备案尾部，相关控件/底栏源码未变，本轮不扩展修复；不将该截图表述为所有浮动层完全无遮挡。
+- 证据output/playwright/xyy-20261013-03/，R3最终报告见r3/luna/report.json，Root审阅见r3/sol-audit.json。状态/日志/合同新增记录格式及scoped diff检查通过；本地4321预览保持，Sol临时浏览器关闭。限Chromium模拟视口，无提交、推送、部署、真实CMS/数据库或环境修改。
+
+
+#### XYY-20261013-04 — 全站统一首页页脚
+
+- 用户授权所有页面使用首页页脚；LOW静态组件接入，Terra → Luna → Sol。以HEAD00318b5及Task03最终工作树为基线，保留Oracle清理/About157图库等既有脏改动。盘点44个Astro页面文件：43个经Layout/EnglishLayout/ServiceLanding，1个旧期刊重定向；产品中英总览保留原内嵌Footer位置。
+- Footer取消isHome条件并恒用site-footer；home-footer.css更名为site-footer.css，仅替换选择器，数值/响应式/下划线规则反向替换后与before逐字相同。中英About移除简版Footer调用及showFooter=false，直接复用已传入siteSettings的Layout Footer；删除无调用的简版组件与专用CSS，旧文案字段不顺手清理。CMS/链接/社交/浮动控件/视频字幕/图库及产品滚动脚本不改。
+- Luna独立16组合通过：中英首页、About、联系、产品总览×1440/390，桌面900px、四列坐标一致，手机自然容纳，无横溢/文字裁切；8组桌面入口hover/键盘focus与恢复、两About手机微信开关通过。产品页逐栏与版权滚达，英文手机最终真实wheel达到scrollMax8909，版权底812.33px位于844px视口内。英文首页/About三次字体稳定采样一致，未改字体或滚动实现。
+- 唯一仓库测试改动是about-cases旧简版Footer断言更新。首轮旧RGB期望与共享Tailwind的oklch表示不符，改为共享浅底类契约后E2E定向复测1/1通过（29.8秒）；首轮证据保留。探针的底部padding误判、字体子集加载和snap瞬时采样均定向核实，未伪造首次全绿。类型679文件0错误/0警告/4既有hints，目标格式/Lint/diff通过，不新增镜像样式测试或扩展全站verify/build。
+- Sol审阅4源码最终增量/3个旧文件移除与1测试增量，亲看中文About完整桌面、英文About手机和产品手机最终底部截图；4冻结源码、188保护hash（含157原图）及其他tracked差异保持，按LOW闸门验收。预览首次连接拒绝，恢复原4321的Astro API dev/polling及loopback9合成CMS审核回退后HTTP200；未改环境文件或真实服务。
+- 证据output/playwright/xyy-20261013-04/，状态/日志/合同新增记录格式及diff通过。Sol临时浏览器已关闭，4321预览保持。验证限本地Chromium模拟视口；未提交、推送、部署、访问真实CMS/数据库或调整依赖/系统配置。
+
+#### XYY-20261013-05 — 全部原图拼成56XYY
+
+- 用户明确要求照片摆成56xyy并确认；最初LOW静态呈现，首轮mouse实际缺陷使R2升为MEDIUM，Terra → Luna → Nova → Sol。合同明确本轮5源码、1测试及角色记录所有权，保留HEAD00318b5下其他工作树改动；未借用外页图或恢复筛选限制。
+- 157张完整catalog及原排序不变，新增gallery-wordmark.ts，以5×7字形的66个笔画格细分为157个非零照片位置。desktop/tablet为116×28网格横排56XYY，mobile为68×60网格上56下XYY；两份图库CSS保持一屏、白色字腔、大小4:1及少量拱形/胶囊。照片没有整体mask或隐藏，hover/dialog继续查看完整原图。
+- 首轮Luna八组合中英完整性/几何、键盘、触摸通过，但mouse因Esc后静止指针触发下方另一图而失败。R2只改gallery-preview.ts，记录鼠标client坐标，Esc暂停鼠标预览直到真实移动，同一缩略图内部移动也能恢复；键盘focus绕过鼠标暂停。沿用AbortSignal注销，无任意冷却计时器；定位、原modal逻辑与其他页面不改。
+- Luna独立新增47行行为回归，原测试逐字保持；新Esc回归、keyboard、touch通过，原mouse首轮因导航8.89秒及157图顺序decode18.35秒耗尽30秒总预算，保留trace后仅该项以CLI90秒预算复测通过（测试16.5秒）。四类行为分轮全部实际通过，不宣称一次全绿。临时页面路由加载before脚本确实复现静止重开，路由已撤销，没有修改磁盘实现。复用静态freeze未变的八组合几何，未扩大为全站回归。
+- 类型680文件0错误/0警告/4既有hints、目标格式/Lint/diff通过；180原保护项（含157原图）、4静态freeze、R2脚本freeze及测试hash匹配。Nova APPROVED、0 findings；Sol审阅5源码/新增回归增量，亲看desktop与mobile拼字及原图预览截图，核对其他tracked diff无变化并最终验收。
+- 证据output/playwright/xyy-20261013-05/及r2/，合同/状态/新增日志格式和scoped diff检查通过。4321本地预览保持，关于页HTTP200，临时验证浏览器已关闭；只验证Chromium模拟视口，未覆盖真机/其他浏览器。无提交、推送、部署、真实CMS/数据库、依赖或环境修改，不运行无关全量verify/build。
+
+#### XYY-20261013-05 R3 — 放大56XYY照片拼字（2026-10-14）
+
+- 用户要求更大但保留56xyy，沿用Task05；本轮LOW纯CSS，Terra → Luna → Sol。仅about-gallery.css/about-gallery-responsive.css：shell最大1600px、桌面29/9；intro独立1136px维持阅读宽度；手机左右16px、17/20。未改157图源、排序、字形坐标、圆角、组件或R2悬停/弹窗逻辑。
+- Luna独立CLI中英1440×900、768×900、390×844、360×780八组合通过，临时注入before两CSS测量后移除：1440由1136×313.375变1376×427.03125（宽+21.13%、高+36.27%）；768高+12.49%；390高+27.86%、360高+28.12%。全部157图加载/可见/中心可达，无遮挡、叠放、横溢、内部滚动或标题重叠，维持一屏。桌面hover/Esc和英文手机真实tap原图contain/关闭抽查通过；184保护hash、2CSSfreeze及目标格式/diff通过，无新测试或无关类型/build/verify。
+- Sol审阅两CSS增量并亲看自有desktop/mobile截图；首张即时截图尚有解码后未绘制照片，等两帧后157图完整，最终截图已保存。其他tracked diff保持；合同/状态/本日志新增记录格式和scoped diff通过，按LOW闸门验收。证据output/playwright/xyy-20261013-05/r3/，本地4321服务此前已停止，本轮按既有loopback9合成CMS预览方式恢复并HTTP200，没有修改环境文件或真实服务。限Chromium模拟视口，无提交、推送、部署或真实CMS/数据库操作。
+
+#### XYY-20261013-05 R4 — 更新照片拼字文案（2026-10-14）
+
+- 用户希望更换现有图库文案，Sol以56XYY拼字与真实仓储/团队照片为方向拟定并展示新文案，LOW静态呈现，Terra → Luna → Sol。仅about-gallery.ts中英eyebrow/heading/introduction/hint四字段：INSIDE 56XYY／每一帧，都是新亦源／从仓储一线到团队日常，用真实影像，认识新亦源。／悬停放大 · 点击查看完整照片；英文同步。原图、排序、字形、R3尺寸、脚本、dialog/close及全部alt不变。
+- Luna仅同步既有英文单测3处字符串，原其他断言保持；单测3/3、目标格式/Lint/diff通过。CLI中英1440×900/360×780四组合新文案逐字生效、157图及一屏边界保持。首轮探针以桌面标题scrollHeight大于line-height误判裁切，定向核实h2/祖先overflow:visible、无clip且文字Range不与导航/相邻文案/照片相交后通过，原报告保留，未改实现或扩大验证。
+- Sol审阅四字段与三测试字符串增量，亲看中文桌面、英文窄屏截图并验收；185保护hash、文案freeze及其他tracked diff保持。新增记录格式/scoped diff通过，证据output/playwright/xyy-20261013-05/r4/。本地4321保持，仅Chromium模拟视口；无全量类型/build/verify、无提交推送部署或真实CMS/数据库/依赖/环境操作。
+
+#### XYY-20261013-05 R5 — 浅灰蓝柔光背景（2026-10-14）
+
+- 用户明确选择推荐背景方案且要求当前形状不动。本轮LOW静态CSS，Terra → Luna → Sol；仅about-gallery.css加入#f3f5f7基底、蓝/暖橙径向柔光、近白中心与文字区，以及顶底#f4f7fb/#f8fafc过渡。静态内嵌SVG噪声放在::before，低透明度并在前30%与底边淡出，pointer-events:none；shell只加relative/z-index，照片与文字位于装饰层上方，无动画/外部资源。
+- Luna独立CLI中英1440×900/360×780四组合通过；在原样式位置临时替换before并恢复，标题/网格/157照片相对section最大几何差均0px，图源/顺序/alt/圆角/字体保持，无遮挡/横溢/内滚，一屏保持。桌面hover/Esc与手机真实tap原图/关闭通过，186保护hash、CSSfreeze及目标格式/diff通过。仅背景/层叠变动，未新增仓库测试或跑无关类型/build/verify。
+- Sol审阅唯一CSS增量并亲看中文桌面与英文手机截图，背景层次克制、照片无染色、文字清楚，验收完成。橙色eyebrow旁背景局部采样桌面约4.738–4.770、手机约4.499–4.661；手机样本处于既有导航阴影，仅作邻近像素参考，不宣称完整对比度审计或因此扩大修改。其他tracked diff保持；新增记录格式/scoped diff通过。证据output/playwright/xyy-20261013-05/r5/，本地4321保持，限Chromium模拟视口，无提交、推送、部署或真实CMS/数据库/依赖/环境操作。
+
+#### XYY-20261013-05 R6 — 雾面玻璃与右下暖色（2026-10-14）
+
+- 用户要求图库背景改用模糊玻璃并继续保留右下少许颜色。本轮LOW静态CSS，Terra → Luna → Sol；唯一源码about-gallery.css，灰蓝/局部暖橙底色上增加半透明雾白玻璃、24px backdrop blur与斜向透光，细颗粒移至独立伪元素。装饰层低于内容且不接收指针；shell起的全部内容样式与before逐字相同，原图/字形/尺寸/文字及交互保持。
+- Luna独立中英1440×900/360×780四组合PASS，标题/网格/157图相对section几何差0px，全部原图加载可见且可命中，无新增模糊/溢出。桌面hover/Esc与手机tap原图关闭正常；中文桌面/英文手机临时禁用backdrop-filter后灰白背景和右下暖色保留，内容可读、几何差0px，随后恢复。186保护hash、CSSfreeze与目标格式/diff通过；未新增仓库测试或扩大类型/全量测试/build/verify。
+- Sol审阅本轮CSS增量并亲看中文桌面、英文手机截图，雾面斜光与局部暖色可见，文字/照片锐利；保护文件与无关tracked差异保持，验收完成。证据output/playwright/xyy-20261013-05/r6/，本地4321保持；限Chromium模拟视口，回退为禁用属性模拟，未作其他浏览器实机声明。未提交、推送、部署或操作真实CMS/数据库/依赖/环境。
+
+#### XYY-20261014-01 — Google Search Console验证文件（2026-10-14）
+
+- 用户指定本地下载文件并要求加入项目；LOW静态资源，Terra → Luna → Sol。将53字节文件逐字复制至public/google4adb4e763f43adcd.html；.gitignore在public/*.html后仅加准确文件例外，原文件和其余规则保持。HEAD00318b5及既有脏改动已记录，其他应用代码和配置未改。
+- Luna独立确认源/目标/HTTP响应字节及SHA256一致，本地GET根路径直接200、无Location/重定向或注入，Git能发现指定文件而其他public HTML仍忽略。冻结hash、scoped diff及无关tracked差异保持，Sol审阅最小增量后验收；合同和新增日志格式通过。无UI/逻辑变动，不对供应商原文件格式化，不新增测试/截图或运行无关全量build/verify。
+- 证据output/search-console/xyy-20261014-01/。验证限本地127.0.0.1:4321，未提交、推送、部署或操作Search Console/真实服务；后续随发布上线后才能完成线上所有权验证，本轮没有宣称线上验证成功。
+
+#### XYY-20261014-02 — GitHub 同步与 README 更新
+
+- 用户明确要求推送当前 GitHub 仓库并同步 Git 状态，随后追加 README 更新。目标 `AIyj-cmd/XYY-WEB` 的 `main`；fetch 后本地/远端基线均 `00318b57442903b7c28e5c541795a0dc05f91af8`、领先/落后 0/0，原暂存区为空，89 项既有路径变更已记录。任务 MEDIUM，普通文档由 Sol 直接更新，既有实现先交 Luna 独立验证。
+- README 已补充仓库主分支、About/157 图拼字/共用页脚/Google 验证文件/Oracle 清理的源码状态，以及两套环境最近已验收的发布身份与新 ECS 后台入口；明确本轮未部署。10 个本地链接全部存在，README/任务合同 Prettier 检查与 diff 检查通过。DEV_STATE 的过时“当前版本与环境”段落改标历史，新增本次 Git 状态段。
+- Luna 首轮 FAIL：verify 的类型680文件0错误/0警告/4既有提示及Lint通过，但图库数据211>180、图库预览测试259>220触发维护预算；E2E构建被Google HTML门禁拦截，尚未进入浏览器。原因与Git暂存状态无关，公共资源检查直接遍历目录；手动Astro构建仅是诊断，不替代正式verify或UI通过。
+- 按同ID增补R1精确返工合同交Terra：按职责分离图库类型/构造器与图片清单、布局测试与交互测试；公共HTML仅允许批准的根目录准确文件名及53字节内容。预算、原图片、顺序、测试断言、其他HTML拦截及真实服务边界保持。初轮证据位于 `output/git-sync/xyy-20261014-02/luna/`，待复测通过后交Nova审阅并由Sol执行提交/推送。
+
+- R1 源码按合同修复，Sol 将拆分后的图库类型/构造器与清单重新拼成原文件、将布局/预览/准备函数重新拼成原测试；完整 SHA 分别精确匹配起始快照 `e291e8ca…` / `b7dd5a2f…`，157 项原数据/顺序与当时全部断言逐字保留。公共 HTML 仅允许准确根文件名与原53字节内容，其他 HTML 拦截保持；4项门禁单测、维护预算和格式自测通过。
+- R1 独立完整 verify 已通过，但32项定向E2E为18通过/10既有项目跳过/4失败。R2只同步过时的纯白图库背景和旧简版Footer名称断言，Luna三项复测通过。Esc 失败经相同 headless Chromium 三次诊断确认：静止点始终实际命中原图，预览关闭，1px移动均恢复，但 CSS `:hover` 为 false/true/false。R3只将该采样改为实际 elementFromPoint 命中，保留等待/真实移动/键盘全套检查；正式 runner 单项1/1通过，没有修改产品交互来适应测试。
+- 最终R3完整 verify 使用数据盘绝对 TMPDIR，实际 exit0：683类型文件0错误/0警告/4既有提示、847维护预算、124文件837单测、资源/cache patch与构建通过。相对TMPDIR导致临时夹具测试失败的首次命令及此前/tmp容量阻塞均保留，不归因为产品缺陷，不修改应用掩盖；最终页面22个不同用例分轮实际通过、10既有项目跳过，未声称一次全绿或完整verify:release通过。
+- 当前候选共95路径；78项非记录候选中，R2/R3仅三个既有E2E测试文件变化，其余路径保持，冻结检查有证据。65个现存候选文件的常见凭据模式扫描0命中，仍交Nova作上下文审阅；无环境/备份/构建/验收产物纳入候选。实际提交/推送结果随后补录，当前证据 `output/git-sync/xyy-20261014-02/`。
+- Nova 初审发现新增历史日志含完整机器标识，因目标为公开仓库而 REJECTED；R4 由 Terra 仅改为“机器标识已核对”，原历史结论保留。Luna 独立确认当前95路径候选无原值、78项非记录hash保持；绝对TMPDIR完整verify再次exit0（124文件837单测及构建），格式与diff通过。Nova R4增量最终APPROVED，新增审阅记录未复制原值；Sol复核后验收提交候选。页面复用本任务22个通过用例及10既有skip，本次不执行网站部署或真实服务操作。

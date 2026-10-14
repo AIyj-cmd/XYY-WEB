@@ -1,25 +1,32 @@
 @media (max-width: 1199px) {
-  .about-explorer {
-    width: min(30rem, 43vw);
+  .about-explorer__track {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .about-explorer__trigger {
+    min-height: 23rem;
   }
 }
 
 @media (max-width: 767px) {
-  .about-explorer {
-    width: 100%;
-    margin-top: 1.5rem;
+  .about-explorer__track {
+    grid-template-columns: 1fr;
+    gap: 1rem;
   }
 
   .about-explorer__trigger {
-    width: auto;
+    min-height: 21.25rem;
+    padding: 1.5rem;
   }
 
-  .about-explorer[data-locale='en'] .about-explorer__track {
-    gap: 1rem 1.35rem;
+  .about-explorer__trigger strong {
+    font-size: clamp(1.6rem, 8vw, 2rem);
   }
 
   .about-explorer[data-locale='en'] .about-explorer__trigger strong {
-    font-size: clamp(0.88rem, 4.1vw, 1.15rem);
+    max-width: 12ch;
+    margin-inline: auto;
+    font-size: clamp(1.5rem, 7vw, 1.9rem);
   }
 
   .about-explorer-dialog {

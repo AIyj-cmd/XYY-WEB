@@ -7,7 +7,6 @@ import AboutWarehouseNetwork from '@/components/about/AboutWarehouseNetwork.astr
 import AboutWarehouseRegions from '@/components/about/AboutWarehouseRegions.astro'
 import AboutHonors from '@/components/about/AboutHonors.astro'
 import AboutScrollGallery from '@/components/about/AboutScrollGallery.astro'
-import AboutMinimalFooter from '@/components/about/AboutMinimalFooter.astro'
 import PageFAQ from '@/components/PageFAQ.astro'
 import { ABOUT_FAQS, ABOUT_HISTORY, groupWarehouses } from '@/data/about'
 import { HONORS, WAREHOUSES } from '@/lib/brand'
@@ -60,7 +59,6 @@ const faqSchema = createFaqSchema(faqItems)
   description="Learn about XINYIYUAN Supply Chain, an apparel supply-chain operator based in Guangzhou."
   jsonLd={faqSchema}
   siteSettings={settings}
-  showFooter={false}
   showFloatingContact={false}
 >
   <AboutHero {overview} locale="en">
@@ -77,13 +75,6 @@ const faqSchema = createFaqSchema(faqItems)
     </AboutExplorer>
   </AboutHero>
   <AboutScrollGallery locale="en" />
-  <AboutMinimalFooter
-    icp={settings.icp}
-    phone={settings.phone}
-    headquartersLabel={settings.headquarters_label}
-    headquartersAddress={settings.headquarters_address}
-    locale="en"
-  />
 </EnglishLayout>
 
 <script>

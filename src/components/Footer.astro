@@ -4,6 +4,7 @@ import type { SiteSettingsRecord } from '@/lib/directus'
 import { ENGLISH_NAVIGATION, ENGLISH_SERVICE_LINKS, type SiteLocale } from '@/i18n/routes'
 import { shellCopy } from '@/i18n/shell'
 import FooterSocialLinks from '@/components/FooterSocialLinks.astro'
+import '@/styles/site-footer.css'
 
 interface Props {
   settings: Omit<SiteSettingsRecord, 'id' | 'status' | 'key'>
@@ -18,10 +19,10 @@ const homePath = locale === 'en' ? '/en' : '/'
 const privacyPath = locale === 'en' ? '/en/privacy' : '/privacy'
 ---
 
-<footer class="border-t border-slate-200 bg-slate-50 pt-10 pb-6 text-navy-700">
+<footer class="site-footer border-t border-slate-200 bg-slate-50 pt-10 pb-6 text-navy-700">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <!-- Main grid -->
-    <div class="mb-8 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+    <div class="footer-main mb-8 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
       <!-- Brand column -->
       <div class="lg:col-span-1">
         <a href={homePath} class="inline-block mb-5" aria-label={copy.home}>
@@ -78,7 +79,10 @@ const privacyPath = locale === 'en' ? '/en/privacy' : '/privacy'
           {
             serviceLinks.map(({ href, label }) => (
               <li>
-                <a href={href} class="text-sm text-slate-600 transition-colors hover:text-navy-900">
+                <a
+                  href={href}
+                  class="footer-navigation-link text-sm text-slate-600 transition-colors hover:text-navy-900"
+                >
                   {label}
                 </a>
               </li>
@@ -96,7 +100,10 @@ const privacyPath = locale === 'en' ? '/en/privacy' : '/privacy'
           {
             navLinks.map(({ href, label }) => (
               <li>
-                <a href={href} class="text-sm text-slate-600 transition-colors hover:text-navy-900">
+                <a
+                  href={href}
+                  class="footer-navigation-link text-sm text-slate-600 transition-colors hover:text-navy-900"
+                >
                   {label}
                 </a>
               </li>

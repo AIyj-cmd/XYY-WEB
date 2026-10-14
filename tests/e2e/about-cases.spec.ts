@@ -29,7 +29,7 @@ test('refactored about, cases, publications and Yundao modules preserve their co
     .locator('#about-hero')
     .evaluate((element) => Math.round(element.getBoundingClientRect().height))
   expect(heroHeight).toBeGreaterThanOrEqual(718)
-  await expect(page.locator('body > footer')).toHaveCount(0)
+  await expect(page.locator('body > footer.site-footer')).toHaveCount(1)
   await expect(page.getByRole('heading', { name: '想了解更多合作详情？' })).toHaveCount(0)
   await expect(page.locator('[data-about-explorer-open]')).toHaveCount(4)
   await expect(page.locator('.about-stage__description')).toHaveCount(0)
@@ -40,73 +40,74 @@ test('refactored about, cases, publications and Yundao modules preserve their co
   )
   await expect(page.getByRole('heading', { name: '关于新亦源' })).toBeVisible()
   await expect(page.locator('.about-overview p')).toBeVisible()
-  const identity = page.getByRole('complementary', { name: '新亦源联系信息' })
-  await expect(identity).toBeVisible()
-  await expect(identity.getByRole('link', { name: '400-6865-156' })).toBeVisible()
-  await expect(identity.getByText('华南总部')).toBeVisible()
-  await expect(identity.getByText('广东省广州市黄埔区果园一路2号')).toBeVisible()
   await expect(page.locator('[data-about-gallery]')).toHaveCount(1)
-  const aboutFooter = page.getByRole('contentinfo', { name: '关于页页脚' })
+  const aboutFooter = page.locator('footer.site-footer')
   await expect(aboutFooter).toHaveCount(1)
-  await expect(aboutFooter.getByRole('complementary', { name: '新亦源联系信息' })).toBeVisible()
+  await expect(page.locator('.about-minimal-footer')).toHaveCount(0)
+  await expect(aboutFooter.getByRole('link', { name: '400-6865-156' })).toBeVisible()
+  await expect(aboutFooter.getByText('华南总部')).toBeVisible()
+  await expect(aboutFooter.getByText('广东省广州市黄埔区果园一路2号')).toBeVisible()
   await expect(page.locator('#about-hero [aria-label="新亦源联系信息"]')).toHaveCount(0)
-  await expect
-    .poll(() => aboutFooter.evaluate((footer) => getComputedStyle(footer).backgroundColor))
-    .toBe('rgb(248, 250, 252)')
-  await expect(aboutFooter.getByRole('link', { name: '返回顶部' })).toHaveAttribute(
+  await expect(aboutFooter).toHaveClass(/bg-slate-50/)
+  await expect(aboutFooter.getByRole('heading', { name: '仓配服务' })).toBeVisible()
+  await expect(aboutFooter.getByRole('heading', { name: '快速入口' })).toBeVisible()
+  await expect(aboutFooter.getByRole('link', { name: '关于我们', exact: true })).toHaveAttribute(
     'href',
-    '#about-hero'
+    '/about'
   )
-  await expect(page.locator('.about-gallery__frame img')).toHaveCount(157)
-  await expect(page.locator('[data-about-gallery-statement]')).toHaveCount(5)
+  await expect(page.locator('.about-gallery__figure img')).toHaveCount(157)
+  await expect(page.locator('[data-gallery-grid]')).toHaveCount(1)
+  await expect(page.locator('[data-gallery-grid] > figure')).toHaveCount(157)
+  await expect(page.locator('.about-gallery__group')).toHaveCount(0)
+  await expect(page.locator('.about-gallery__intro h2')).toHaveCount(1)
+  await expect(page.locator('[data-about-gallery] h3, [data-gallery-grid] section')).toHaveCount(0)
+  await expect(page.locator('.about-gallery__figure figcaption')).toHaveCount(0)
   await expect
     .poll(() =>
       page
         .locator('.about-stage__media')
         .evaluate((video) => getComputedStyle(video).objectPosition)
     )
-    .toBe('50% 100%')
+    .toBe('50% 0%')
   await expect
     .poll(() =>
       page
         .locator('[data-about-gallery]')
-        .evaluate((gallery) => getComputedStyle(gallery).backgroundColor)
+        .evaluate((gallery) => getComputedStyle(gallery).backgroundImage)
     )
-    .toBe('rgb(255, 255, 255)')
-  const fixedGalleryOrder = await page
-    .locator('.about-gallery__frame img')
-    .evaluateAll((images) => images.slice(0, 12).map((image) => image.getAttribute('src')))
-  const galleryImage = page.locator('[data-about-gallery-image]').nth(20)
-  await galleryImage.scrollIntoViewIfNeeded()
-  await expect
-    .poll(() => galleryImage.evaluate((image) => getComputedStyle(image).opacity))
-    .toBe('1')
-  await page.evaluate(() => {
-    const gallery = document.querySelector<HTMLElement>('[data-about-gallery]')
-    if (gallery) window.scrollTo(0, gallery.offsetTop + gallery.offsetHeight * 0.3)
-  })
-  const activeGalleryCopy = page.locator('[data-about-gallery-statement][data-active="true"]')
-  await expect(activeGalleryCopy).toHaveCount(1)
-  await expect
-    .poll(() => activeGalleryCopy.locator('h2').evaluate((copy) => getComputedStyle(copy).opacity))
-    .toBe('1')
-  await expect
-    .poll(() => activeGalleryCopy.locator('h2').evaluate((copy) => getComputedStyle(copy).color))
-    .toBe('rgb(255, 255, 255)')
+    .toContain('radial-gradient')
   await expect
     .poll(() =>
-      activeGalleryCopy
-        .locator('p')
-        .last()
-        .evaluate((copy) => getComputedStyle(copy).color)
+      page
+        .locator('[data-about-gallery]')
+        .evaluate((gallery) => getComputedStyle(gallery).backgroundImage)
     )
-    .toBe('rgb(255, 255, 255)')
+    .toContain('linear-gradient')
+  const fixedGalleryOrder = await page
+    .locator('.about-gallery__figure img')
+    .evaluateAll((images) => images.map((image) => image.getAttribute('src')))
+  expect(new Set(fixedGalleryOrder).size).toBe(157)
+  for (const src of fixedGalleryOrder) expect(src).toMatch(/^\/about\/gallery\/gallery-\d+\.webp$/)
+  expect(fixedGalleryOrder.slice(0, 5)).toEqual([
+    '/about/gallery/gallery-128.webp',
+    '/about/gallery/gallery-144.webp',
+    '/about/gallery/gallery-093.webp',
+    '/about/gallery/gallery-037.webp',
+    '/about/gallery/gallery-140.webp',
+  ])
+  expect(fixedGalleryOrder.at(-1)).toBe('/about/gallery/gallery-160.webp')
+  await expect(page.locator('.about-gallery__figure img').first()).toHaveAttribute(
+    'loading',
+    'lazy'
+  )
+  await expect(page.locator('.about-gallery__figure img').first()).toHaveAttribute('width', '1280')
+  await expect(page.locator('.about-gallery__figure img').first()).toHaveAttribute('height', '960')
   await page.reload()
-  await expect(page.locator('.about-gallery__frame img')).toHaveCount(157)
+  await expect(page.locator('.about-gallery__figure img')).toHaveCount(157)
   expect(
     await page
-      .locator('.about-gallery__frame img')
-      .evaluateAll((images) => images.slice(0, 12).map((image) => image.getAttribute('src')))
+      .locator('.about-gallery__figure img')
+      .evaluateAll((images) => images.map((image) => image.getAttribute('src')))
   ).toEqual(fixedGalleryOrder)
 
   const muteButton = page.locator('#hero-mute-btn')

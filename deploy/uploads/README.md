@@ -1,7 +1,7 @@
 # Directus 上传文件备份
 
-数据库备份只包含 `directus_files` 等元数据，不包含 `uploads/` 中的实际附件。无论
-Directus 使用 PostgreSQL 还是 Oracle 19c，都必须同时备份上传文件。
+数据库备份只包含 `directus_files` 等元数据，不包含 `uploads/` 中的实际附件。
+Directus 的 PostgreSQL 数据库与上传文件必须同时备份。
 
 在应用服务器执行：
 

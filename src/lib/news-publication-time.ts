@@ -66,8 +66,8 @@ function parseTimestamp(value: unknown): ParsedNewsTimestamp | null {
 }
 
 /**
- * Directus timestamp columns normally return an offset, but legacy Oracle
- * adapters can return a bare local datetime. Bare values are CMS editorial
+ * Directus timestamp columns normally return an offset, but legacy adapters
+ * can return a bare local datetime. Bare values are CMS editorial
  * time in Asia/Shanghai; interpreting them as the host timezone hides a
  * newly published article for eight hours on UTC servers.
  */

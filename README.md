@@ -4,14 +4,28 @@
 
 - 测试站：<https://wz.tomatopia.top>（`47.82.105.103`）
 - 正式域名：<https://56xyy.com>
+- GitHub：<https://github.com/AIyj-cmd/XYY-WEB>（主分支 `main`）
 - 当前状态：[DEV_STATE.md](DEV_STATE.md)
 
-截至 2026-10-10，测试站已部署应用提交 `eb05b8f`，Release ID 为
-`20261010T071221Z-eb05b8f`，环境为 `staging`。本次部署的完整 `verify:release`、
-健康与版本核对，以及上线后的中英文桌面/移动端抽查均已通过。
-测试 CMS 使用 Directus 12.1.1 / PostgreSQL 16.15，模型版本为
-`2026-10-cms-maintenance`，验证状态为 `verified`。本次发布仅更新测试站，主站未作变更；
-后续版本与验证结果以 `DEV_STATE.md` 为准。
+文档更新于 2026-10-14。本轮同步 GitHub 代码与文档，没有执行网站部署。
+最近一次已验收的部署记录如下；这些是历史发布身份，当前服务器状态以实际回读为准。
+
+| 环境                      | 最近部署记录         | 应用提交  | Release ID                 |
+| ------------------------- | -------------------- | --------- | -------------------------- |
+| 测试站 `wz.tomatopia.top` | 2026-10-10，staging  | `eb05b8f` | `20261010T071221Z-eb05b8f` |
+| 新 ECS `8.138.148.179`    | 2026-10-10，原生 Web | `e64db32` | `20261010T135801Z-e64db32` |
+
+新 ECS 的发布包含英文仓配详情修复；2026-10-11 的后台公网入口与 HTTPS 配置验收未改变应用版本。
+各次发布的验证证据、后续 Git 同步结果和实际环境变更见 [DEV_STATE.md](DEV_STATE.md)。
+
+## 最近代码更新
+
+- 中英关于页加入视频随滚动收边、介绍与四入口排版；完整保留 157 张原图库照片，拼成 `56XYY`，支持悬停预览、键盘与手机查看原图，背景使用雾白玻璃和局部暖色。
+- 全站共用四栏整屏页脚，中英关于页也使用统一组件；手机内容自然增高，导航入口支持悬停和键盘焦点下划线。
+- 新增 `public/google4adb4e763f43adcd.html`，供 Google Search Console 文件验证；仅加入文件不代表已上线或完成所有权验证。
+- 已删除 Oracle 19c 专属部署、迁移和备份方案及相关测试；保留 PostgreSQL、Web 发布与附件备份流程。
+
+这些源码更新须另行部署后才会影响线上页面。历史验收范围和本次提交前检查见当前状态记录。
 
 ## 技术栈
 
@@ -68,6 +82,8 @@ src/
   scripts/             按交互职责拆分的浏览器控制器
   styles/              全局与按业务模块/视觉族隔离的样式
 public/
+  about/gallery/       关于页原始图库的发布图片
+  google4adb4e763f43adcd.html  Google Search Console 文件验证
   images/services/     服务页已优化图片
 scripts/
   check-maintainability.mjs  源码与内联代码预算门禁
@@ -80,9 +96,9 @@ scripts/
   sync-approved-cms-content.mjs  按语义业务键执行审核内容同步
 deploy/
   nginx-56xyy.conf     正式域名迁移参考配置
+  production/web/      Web 生产部署入口
   postgresql/          PostgreSQL 备份与恢复验证脚本
   uploads/             Directus 附件备份与恢复验证脚本
-  oracle19c/           历史 Oracle 迁移参考，当前测试站未使用
 docs/
   CMS_CONTENT_MODEL.md  Directus 内容、权限与迁移维护规则
   RELEASE_CAPACITY_MAINTENANCE.md  容量基线、测试产物与版本清理
@@ -113,7 +129,7 @@ Directus 成功返回空数据时页面保持为空；只有网络失败、超�
 - 页面入口只负责取数、Schema、页面级配置与模块编排；
 - 静态业务内容进入 `src/data/`，组件、样式和浏览器控制器按职责隔离；
 - `npm run verify` 会执行可维护性预算和静态资源完整性检查；
-- 关于页Hero、联系表单、华南仓网、服务独有内容、Express运行时、字体生成和Oracle准备流程均已按变化原因拆分；
+- 关于页Hero、联系表单、华南仓网、服务独有内容、Express运行时和字体生成均已按变化原因拆分；
 - CSS上限200行、内容数据上限180行，Astro页面入口、API路由、自动化入口和部署脚本另有更严格的专项预算；具体测试数量和最新结果以 `DEV_STATE.md` 为准；
 - 公开规模、履约和质检数字统一从 `src/lib/claims/` 注册表读取，单元测试禁止在页面、组件和内容配置中重新手写同一口径；
 - 不为追求行数机械拆分事实注册表或原子请求；
@@ -125,7 +141,7 @@ Directus 成功返回空数据时页面保持为空；只有网络失败、超�
 
 - `/llms.txt` 由 `src/pages/llms.txt.ts` 生成，并使用 `PUBLIC_SITE_URL` 输出当前环境的绝对链接。
 - 新增、删除或重命名核心服务页、案例页后，必须同步更新 `llms.txt` 和 `src/pages/sitemap.xml.ts`。
-- 公开运营数据只从 `src/lib/claims.ts` 的已审核口径引用，不在发现文件中手写旧数据。
+- 公开运营数据只从 `src/lib/claims/` 的已审核口径引用，不在发现文件中手写旧数据。
 - `llms.txt` 是面向模型读取的社区约定，不是 W3C 强制标准；每季度以及重大业务调整后复核一次。
 - 当前不公开 `agent-permissions.json` 或 `mcp-actions.json`。只有在咨询、报价或查询动作具备授权、确认、防重复提交和审计机制后再设计 Agent 执行层。
 - `robots.txt` 区分搜索增强型与训练型爬虫；涉及训练授权的规则必须由业务负责人确认，不得因技术优化擅自修改。
@@ -207,12 +223,12 @@ bash scripts/deploy.sh
 [`deploy/postgresql/`](deploy/postgresql/README.md) 和
 [`deploy/uploads/`](deploy/uploads/README.md)。数据库备份不包含实际附件，需要成对备份并联合恢复验证。
 2026-10-09 测试站已完成成对加密备份与隔离恢复验证；该记录不代表定时备份任务已启用。
-仓库中的 [`deploy/oracle19c/`](deploy/oracle19c/README.md) 为历史参考，本次发布未执行 Oracle 迁移。
 
 ## CMS
 
-- 当前验收后台：<https://wz.tomatopia.top/cms/admin/>
-- Ping：<https://wz.tomatopia.top/cms/server/ping>
+- 测试站后台：<https://wz.tomatopia.top/cms/admin/>
+- 测试站 Ping：<https://wz.tomatopia.top/cms/server/ping>
+- 新 ECS 后台：<https://8.138.148.179/admin>（2026-10-11 已验收的同源 HTTPS 入口）。
 - 账号、Token、数据库口令和服务器路径由部署团队管理，不进入仓库。
 
 ```bash

@@ -18,38 +18,50 @@ const copy = aboutUi(locale)
 <section
   id="about-hero"
   class="about-stage"
-  aria-labelledby="about-hero-heading"
+  aria-label={copy.hero.eyebrow}
   data-locale={locale}
+  data-about-hero-reveal
 >
-  <AboutHeroMedia {locale} />
+  <div class="about-stage__frame">
+    <AboutHeroMedia {locale} />
+    <p id="hero-caption" class="about-stage__caption opacity-0"></p>
 
-  <div class="about-stage__video-controls">
-    <AboutHeroControls {locale} />
+    <div class="about-stage__video-controls">
+      <AboutHeroControls {locale} />
+    </div>
   </div>
+</section>
 
-  <div class="about-stage__shell">
-    <div class="about-stage__intro">
-      <p class="about-stage__eyebrow">{copy.hero.eyebrow}</p>
-      <h1 id="about-hero-heading" class="about-stage__title">
-        <span class="about-stage__brand">{copy.hero.brand}</span>
-        {
-          copy.hero.titleLines.map((line, index) => (
-            <>
-              <span
-                class:list={{ 'about-stage__accent': index === copy.hero.titleLines.length - 1 }}
-              >
-                {line}
-              </span>
-              {index < copy.hero.titleLines.length - 1 && <br />}
-            </>
-          ))
-        }
-      </h1>
-
-      <div class="about-overview" aria-labelledby="about-overview-heading">
-        <div class="about-overview__heading">
+<section class="about-introduction" aria-labelledby="about-hero-heading" data-locale={locale}>
+  <div class="about-introduction__shell">
+    <div class="about-introduction__header">
+      <div class="about-introduction__content">
+        <p class="about-introduction__eyebrow">{copy.hero.eyebrow}</p>
+        <h1 id="about-hero-heading" class="about-introduction__title">
+          <span class="about-introduction__brand">{copy.hero.brand}</span>
+          {
+            copy.hero.titleLines.map((line, index) => (
+              <>
+                <span
+                  class:list={{
+                    'about-introduction__accent': index === copy.hero.titleLines.length - 1,
+                  }}
+                >
+                  {line}
+                </span>
+                {index < copy.hero.titleLines.length - 1 && <br />}
+              </>
+            ))
+          }
+        </h1>
+      </div>
+      <div
+        class="about-introduction__overview about-overview"
+        aria-labelledby="about-overview-heading"
+      >
+        <div class="about-introduction__overview-heading">
           <a
-            class="about-overview__logo"
+            class="about-introduction__logo"
             href={locale === 'en' ? '/en' : '/'}
             aria-label={copy.hero.homeAria}
           >
@@ -61,6 +73,8 @@ const copy = aboutUi(locale)
       </div>
     </div>
 
-    <slot />
+    <div class="about-introduction__explorer">
+      <slot />
+    </div>
   </div>
 </section>

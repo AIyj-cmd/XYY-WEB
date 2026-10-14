@@ -1,58 +1,17 @@
 ---
 import '@/styles/about-gallery.css'
 import '@/styles/about-gallery-responsive.css'
-import { aboutGalleryImages, type AboutGalleryImage } from '@/data/about/gallery-images'
-import { aboutUi } from '@/i18n/about-ui'
+import '@/styles/about-gallery-preview.css'
+import { aboutGalleryImages } from '@/data/about/gallery-images'
+import { aboutGallery } from '@/i18n/about-gallery'
 import type { SiteLocale } from '@/i18n/routes'
-
-function fixedShuffle(values: AboutGalleryImage[]) {
-  const result = [...values]
-  let seed = 5615
-
-  for (let index = result.length - 1; index > 0; index -= 1) {
-    seed = (seed * 16807) % 2147483647
-    const target = seed % (index + 1)
-    ;[result[index], result[target]] = [result[target], result[index]]
-  }
-
-  return result
-}
-
-const shuffledImages = fixedShuffle(aboutGalleryImages)
-
-interface GalleryPosition {
-  x: number
-  y: number
-  width: number
-  height: number
-}
-
-function buildPositions(columns: number, mobile = false) {
-  const gutter: number = mobile ? 2.5 : 1.25
-  const columnHeights = Array.from({ length: columns }, () => gutter)
-  const positions = shuffledImages.map((image) => {
-    const width = (100 - gutter * (columns + 1)) / columns
-    const height = width / (image.width / image.height)
-    const column = columnHeights.indexOf(Math.min(...columnHeights))
-    const x = gutter + column * (width + gutter)
-    const y = columnHeights[column]
-    columnHeights[column] = y + height + gutter
-    return { x, y, width, height }
-  })
-
-  return { positions, height: Math.max(...columnHeights) + gutter }
-}
-
-const desktopLayout = buildPositions(4)
-const mobileLayout = buildPositions(2, true)
 
 interface Props {
   locale?: SiteLocale
 }
 
 const { locale = 'zh-CN' }: Props = Astro.props
-const copy = aboutUi(locale)
-const statements = copy.gallery.statements
+const copy = aboutGallery[locale]
 ---
 
 <section
@@ -60,59 +19,48 @@ const statements = copy.gallery.statements
   aria-labelledby="about-gallery-heading"
   data-about-gallery
   data-locale={locale}
-  style={`--gallery-height:${desktopLayout.height}vw;--gallery-height-mobile:${mobileLayout.height}vw`}
 >
-  <div class="about-gallery__stage">
-    <div class="about-gallery__field" aria-label={copy.gallery.field} data-about-gallery-field>
+  <div class="about-gallery__shell">
+    <header class="about-gallery__intro">
+      <p class="about-gallery__eyebrow">{copy.eyebrow}</p>
+      <h2 id="about-gallery-heading">{copy.heading}</h2>
+      <p>{copy.introduction}</p>
+      <p class="about-gallery__hint">{copy.hint}</p>
+    </header>
+
+    <div class="about-gallery__layout" data-gallery-grid>
       {
-        shuffledImages.map((image, index) => {
-          const desktop = desktopLayout.positions[index] as GalleryPosition
-          const mobile = mobileLayout.positions[index] as GalleryPosition
-          return (
-            <figure
-              class="about-gallery__frame"
-              data-about-gallery-image
-              style={`--gallery-x:${desktop.x}vw;--gallery-y:${desktop.y}vw;--gallery-width:${desktop.width}vw;--gallery-frame-height:${desktop.height}vw;--gallery-x-mobile:${mobile.x}vw;--gallery-y-mobile:${mobile.y}vw;--gallery-width-mobile:${mobile.width}vw;--gallery-frame-height-mobile:${mobile.height}vw`}
-            >
+        aboutGalleryImages.map((image) => (
+          <figure class="about-gallery__figure" style={image.positionStyle}>
+            <a class="about-gallery__thumbnail" href={image.src} data-gallery-thumbnail>
               <img
-                src={`/about/gallery/gallery-${String(image.id).padStart(3, '0')}.webp`}
-                alt={copy.gallery.imageAlt(image.id)}
+                src={image.src}
+                alt={copy.images[image.scene]}
                 width={image.width}
                 height={image.height}
                 loading="lazy"
                 decoding="async"
                 fetchpriority="low"
               />
-            </figure>
-          )
-        })
+            </a>
+          </figure>
+        ))
       }
-    </div>
-
-    <div class="about-gallery__copy">
-      <div class="about-gallery__statements">
-        {
-          statements.map((statement, index) => (
-            <article
-              class="about-gallery__statement"
-              data-about-gallery-statement
-              data-active={index === 0 ? 'true' : 'false'}
-              aria-hidden={index === 0 ? 'false' : 'true'}
-            >
-              {index === 0 && <p class="about-gallery__eyebrow">{copy.gallery.eyebrow}</p>}
-              <h2 id={index === 0 ? 'about-gallery-heading' : undefined}>
-                {statement.title.split('\n').map((line) => (
-                  <>
-                    {line}
-                    <br />
-                  </>
-                ))}
-              </h2>
-              <p>{statement.body}</p>
-            </article>
-          ))
-        }
-      </div>
     </div>
   </div>
 </section>
+
+<div class="about-gallery__preview" data-gallery-preview popover="manual" aria-hidden="true">
+  <img alt="" data-gallery-preview-image />
+</div>
+
+<dialog class="about-gallery__dialog" data-gallery-dialog aria-label={copy.dialogTitle}>
+  <button type="button" class="about-gallery__close" data-gallery-close>
+    {copy.close}<span aria-hidden="true">×</span>
+  </button>
+  <img alt="" data-gallery-dialog-image />
+</dialog>
+
+<script>
+  import '@/scripts/about/gallery-preview'
+</script>
