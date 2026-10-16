@@ -1,14 +1,20 @@
 import { resolve } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { URL, fileURLToPath } from 'node:url'
 
 import { validateReleaseIdentity } from '../config/release-contract.mjs'
 import { assertWebHealthPayload } from './lib/health-contract.mjs'
 import { isRootDisallowedForUserAgent } from './lib/robots-policy.mjs'
+import {
+  assertCanonicalTarget,
+  assertOperationTarget,
+  FORMAL_SITE_ORIGIN,
+} from './lib/remote-target-policy.mjs'
 
 const identityExpectationKeys = ['gitSha', 'releaseId', 'environment', 'cmsSchemaVersion']
 
 export async function checkReleaseVersion(baseUrl, expected = {}) {
-  const response = await fetch(`${baseUrl.replace(/\/+$/, '')}/version`, { redirect: 'manual' })
+  const target = assertOperationTarget(baseUrl, 'healthcheck_target')
+  const response = await fetch(`${target}/version`, { redirect: 'manual' })
   if (!response.ok) throw new Error(`version endpoint returned HTTP ${response.status}`)
   if (!response.headers.get('content-type')?.includes('application/json')) {
     throw new Error('version endpoint returned an unexpected content-type')
@@ -33,11 +39,13 @@ function expectedIdentity(env) {
 }
 
 export async function runHealthChecks(env = process.env) {
-  const baseUrl = (env.SITE_URL || env.PUBLIC_SITE_URL || 'https://wz.tomatopia.top').replace(
-    /\/+$/,
-    ''
+  if (!env.SITE_URL) throw new Error('healthcheck_site_url_required')
+  const baseUrl = assertOperationTarget(env.SITE_URL, 'healthcheck_target')
+  const canonicalOrigin = assertCanonicalTarget(
+    env.PUBLIC_SITE_URL || baseUrl,
+    'public_site_origin'
   )
-  const isFormalDomain = new globalThis.URL(baseUrl).hostname === '56xyy.com'
+  const isFormalDomain = new URL(canonicalOrigin).origin === FORMAL_SITE_ORIGIN
   const checks = [
     { name: 'site', url: `${baseUrl}/`, type: 'html', contentType: 'text/html' },
     {
@@ -137,7 +145,8 @@ export async function runHealthChecks(env = process.env) {
 
 const isCli = process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1])
 if (isCli) {
-  runHealthChecks().catch(() => {
+  runHealthChecks().catch((error) => {
+    console.error(error instanceof Error ? error.message : 'healthcheck_failed')
     process.exitCode = 1
   })
 }

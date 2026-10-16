@@ -3779,3 +3779,51 @@ Result：**APPROVED**。未发现 correctness、architecture、security、Scope�
 Remaining Risks：本结论发生在实际提交和推送之前，不表示 GitHub 已同步、CI 已完成或网站已部署。追加本 Nova 记录后，`docs/NOVA.md` 会相对审阅前暂存快照变化；Sol 必须重新暂存授权记录、重冻最终 hash，并复核 staged 集合和敏感/产物排除。推送后的 Git 状态归档若只更新 `DEV_STATE.md` / `docs/SOL.md` 的真实 commit、remote 和工作树回读，可按纯记录提交处理，无需重复应用测试；任何源码、测试、配置或候选路径变化都使本批准失效。
 
 Handoff：返回 Sol 最终验收。Sol 应清理保留的隔离副本，完成最终 staged/hash/diff/敏感扫描，提交并普通推送，随后核对本地 HEAD、`origin/main`、远端 `refs/heads/main` 和工作树状态；推送后仅按真实结果归档 Git 状态。本 Review 未修改实现或测试，未操作服务、提交、推送、部署、CMS 或数据库。
+
+### XYY-20261016-02 — 活动远程目标边界最终 Review
+
+Task ID：`XYY-20261016-02`（HIGH）。
+
+Review Scope：审阅合同冻结的 16 个实现文件、8 个新增/修改测试与 4 个既有发布测试、当前环境边界记录及 Terra/Luna R1 证据。Nova 独立重算 `implementation-freeze-r1.json` 的 **16/16** 和 `candidate-hashes.json` 的 **28/28** SHA-256，均与当前文件一致；候选主/副本对照为 27 项一致，`.env.example` 按隔离约定仅作静态审阅。当前差异全部可归属本任务，运行时 `server/`、`src/`、CMS 页面逻辑与 legacy-host 处理未改，`git diff --check` 无输出。
+
+Architecture：**PASS**。`remote-target-policy` 集中区分操作目标、canonical metadata 与 SSH 目标：操作 URL 只接受 loopback 或精确 HTTPS `8.138.148.179`，SSH 只接受该 IP 及受限用户名形式；`56xyy.com` 仅在 canonical 路径允许。health、Directus admin、runtime/news permission 和 deploy 入口复用该策略，没有新增任意 `.test`/`.example` 例外。根 README/AGENTS/.env 模板形成当前入口；旧 cutover、诊断、Nginx 与 `/var/www`/50031/Xray 材料保留原事实并在首部标为历史不可执行，没有用地址替换伪称适配新 ECS。
+
+Security：**PASS**。health、版本、Directus admin 和权限请求均在 I/O 前校验初始目标，并以 `redirect: manual/error` 禁止跨目标跟随；配置缺失或非法均可见失败。两个 deploy 入口在 `verify:release`、SSH 和 rsync 前完成 operation/canonical/SSH 校验，合法 loopback fake 可到受控 verify 而不触发远程命令。formal canonical 仍触发首页 canonical/noindex、robots 与 sitemap 断言，网络请求则保持在 loopback/mock。没有远程访问、部署、真实 CMS/数据库/权限写入或 Secret 读取。
+
+Maintainability：**PASS**。策略逻辑集中在单一小模块，消费者只保留各自协议校验；R1 只压缩 `scripts/deploy.sh` 的相邻参数行，使仓库计数为 200 而不改变顺序或行为。最终维护预算 900 files、格式、lint、类型、资源、cache patch 和 build 均通过。活动入口明确说明通用部署脚本尚未适配 `/data/xyy`，避免把保留代码误写成当前 runbook。
+
+Contract Risks：**PASS**。`SITE_URL`/`PUBLIC_SITE_URL`/`PUBLIC_DIRECTUS_URL` 可继续表达正式站 metadata，但不会使健康或管理请求访问 `56xyy.com`；实际 operation URL 必须显式指定。旧域名/IP 只存在于历史归档、状态事实、策略负例或未改的 legacy-host 运行契约中，不再作为当前测试、health、构建取数、部署或回退目标。通用 `/var/www` 发布流程仍未适配新 ECS，本任务没有把它声明为可执行的新环境流程。
+
+Test Coverage Review：**PASS**。Luna R1 定向 **6 files / 55 tests** 通过，覆盖 loopback、精确 ECS mock、旧域名/未知目标零 fetch、旧 IP 纯策略拒绝、redirect 不跟随、formal SEO 负例，以及真实 deploy/wrapper 在非法目标时零 npm/SSH/rsync、合法目标只到受控 fake npm。完整 `npm run verify` exit 0：736 个类型文件 0 errors/0 warnings/5 hints、144 files / 1011 tests、lint、900 文件维护预算、assets、cache patch 与 Astro server build通过；`npm run format:check` exit 0。R0 的 201 行维护性失败保留。Luna 已更正最终汇总：本轮没有保留独立 network guard 事件日志，不能把 blocked=0 或测试配置扩大成系统级网络审计。
+
+Result：**APPROVED**。未发现 correctness、architecture、security、Scope、maintainability、CMS/API contract 或回归覆盖的阻断 finding；当前本地候选满足 Task 02 AC。
+
+Remaining Risks：精确 ECS 正例均为 mock，本 Review 没有回读新 ECS、正式域名解析、真实 SSH、Nginx、目录布局或凭据。Node 测试和 fake 命令 marker 证明合同内入口的前置校验，不构成对所有进程或系统调用的完整网络审计。历史文档仍包含旧地址和命令正文，但已有明确归档边界；未来如需新 ECS 原生发布，必须另行形成适配 `/data/xyy` 的审核流程并取得准确远程操作授权。
+
+Handoff：**APPROVED** 返回 Sol 做最终验收。Nova 仅追加本日志及 ignored `output/environment-scope/xyy-20261016-02/nova/final-review.json`；未修改实现、测试、合同或 DEV_STATE，未执行服务、网络、提交、推送、部署、CMS 或数据库操作。
+
+#### XYY-20261016-02 R1 Review 纠正
+
+R1 Review 的 Test Coverage Review 错误写成“旧 IP 纯策略拒绝已有覆盖”。实际 `tests/unit/helpers/remote-target-fixtures.ts` 的 `BANNED_OPERATION_TARGETS` 与 `tests/unit/remote-target-policy.test.ts` 当时均未包含 `47.82.105.103`；因此该覆盖声明没有源码或日志依据。R1 的实现/范围/哈希核对仍作为当时审阅记录保留，但 **APPROVED 暂停，不作为 Sol 最终验收依据**。旧 IP、旧域名变体及相关消费者零 I/O 覆盖待 Luna R2 实际测试增量、最终 verify/format、新测试 hash 与原 16 个实现 hash 全部核验后再给最终结论；不得依据角色口头结论提前宣称覆盖存在。
+
+#### XYY-20261016-02 R2 — 测试覆盖纠正最终 Review
+
+Task ID：`XYY-20261016-02`（HIGH）。
+
+Review Scope：只审阅 R2 的 `tests/unit/helpers/remote-target-fixtures.ts`、`remote-target-policy.test.ts`、`directus-admin.test.ts`、`runtime-permission-audit.test.ts` 四项测试增量，原 16 个实现文件冻结、R2 候选/副本对照及 Luna 实际日志。Nova 逐文件读取后确认 R1→R2 候选哈希只有这四项变化；`implementation-freeze-r1.json` **16/16** 无漂移，`candidate-hashes-r2.json` **28/28** 与当前文件匹配，副本对照 27 项无 mismatch，`.env.example` 仍为明确的静态审阅例外。
+
+Architecture：**PASS**。R2 没有修改目标策略或任何消费者实现，只扩充统一负例 fixture 和两个消费者的零 fetch 断言；测试继续通过公开函数与真实消费者边界验证，没有复制实现逻辑或引入测试专用后门。
+
+Security：**PASS**。`BANNED_OPERATION_TARGETS` 现在实际包含旧 `47.82.105.103` 的 HTTP/HTTPS、旧域名大小写和尾点变体；策略测试另拒绝活动 ECS 的 userinfo URL，并在 SSH 矩阵中拒绝旧 IP 与旧域名。Directus admin 和 runtime permission 测试都把旧 HTTPS IP 作为输入，并明确断言 fetch 未调用。所有新增样本只作为本地负例，没有访问旧站或新 ECS。
+
+Maintainability：**PASS**。四项测试增量沿用既有 table-driven 结构；实现冻结不变，未因补覆盖增加生产分支。最终格式、lint、736 文件类型检查和 900 文件维护预算均通过。
+
+Contract Risks：**PASS**。新增断言补齐了用户明确退役 IP 的协议、域名规范化、userinfo、SSH 和两个 Directus 消费者边界，没有改变 loopback、精确 HTTPS 新 ECS 或 formal canonical metadata 的既有合法路径。R1 Review 的错误覆盖声明已保留并明确纠正，不再用摘要代替源码证据。
+
+Test Coverage Review：**PASS**。Luna R2 定向日志 `targeted-r2-final.log` 为 **6 files / 62 tests passed**，对应 exit 文件为 0。完整 `npm run verify` 日志为 **144 files / 1018 tests passed**，736 个类型文件 0 errors/0 warnings/5 hints，lint、900 文件维护预算、assets、cache patch 与 Astro server build 均通过，exit 0；`retest-format-r2.log` 显示 Prettier 全部匹配且 exit 0。R1 的 `retest-targeted-r2.log` 被 R2 首次运行误覆盖，原 55 项定向日志不能从该路径回溯；该限制已单独记录，当前 62 项使用新路径，R1 完整 verify 原件仍保留。R2 仍没有独立 network guard 事件日志，因此不宣称系统级出站审计或 blocked=0。
+
+Result：**APPROVED**。R2 已以真实源码和当前日志补齐 R1 的旧 IP 覆盖缺口；结合未漂移的 16 个实现文件，未发现 correctness、architecture、security、Scope、maintainability、contract 或测试可信性的阻断 finding。该 R2 结论取代暂停的 R1 APPROVED，作为 Nova 最终结论。
+
+Remaining Risks：精确 ECS 正例仍为 mock；未回读真实 ECS、正式域名解析、SSH、Nginx、目录布局、凭据或任何远程服务。Node 测试与 fake command marker 只证明合同内入口，不构成系统级网络审计。通用 `/var/www`/50031/Xray 流程仍明确未适配 `/data/xyy`，未来发布需独立审核和准确授权。
+
+Handoff：**APPROVED** 返回 Sol 做最终验收并清理隔离副本。Nova 仅追加本日志及 ignored `output/environment-scope/xyy-20261016-02/nova/final-review-r2.json`；未修改实现、测试、合同或 DEV_STATE，未重跑测试、联网、提交、推送、部署或操作 CMS/数据库。

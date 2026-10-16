@@ -1,7 +1,9 @@
 import { URL } from 'node:url'
 
+import { assertOperationTarget } from './remote-target-policy.mjs'
+
 export function createDirectusAdminClient({ baseUrl, token }) {
-  const normalizedUrl = baseUrl.replace(/\/+$/, '')
+  const normalizedUrl = assertOperationTarget(baseUrl, 'directus_target')
 
   if (!normalizedUrl || !token) {
     throw new Error('Directus base URL and token are required')
@@ -18,6 +20,7 @@ export function createDirectusAdminClient({ baseUrl, token }) {
       method,
       headers,
       body: body === undefined ? undefined : JSON.stringify(body),
+      redirect: 'error',
     })
     const text = await response.text()
     let payload = null

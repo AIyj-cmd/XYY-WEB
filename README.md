@@ -2,21 +2,18 @@
 
 广州新亦源供应链管理有限公司官方网站。项目采用 Astro SSR、Directus CMS、PostgreSQL 16、PM2 与 Nginx，覆盖鞋服云仓、退货质检、瑕疵修复、数字化履约和智能寄件等业务。
 
-- 测试站：<https://wz.tomatopia.top>（`47.82.105.103`）
-- 正式域名：<https://56xyy.com>
+- 活动远程环境：`8.138.148.179`（仅环境标识；不构成连接、部署或 CMS 操作授权）
+- 正式域名：<https://56xyy.com>（canonical metadata，不表示已确认指向活动远程环境）
 - GitHub：<https://github.com/AIyj-cmd/XYY-WEB>（主分支 `main`）
 - 当前状态：[DEV_STATE.md](DEV_STATE.md)
 
-文档更新于 2026-10-16。本轮同步 GitHub 代码与文档，没有执行网站部署。
-最近一次已验收的部署记录如下；这些是历史发布身份，当前服务器状态以实际回读为准。
+文档更新于 2026-10-16。本轮整理代码与文档，没有探测、部署或更改远程运行版本；Git 同步状态见 [DEV_STATE.md](DEV_STATE.md)。
 
-| 环境                      | 最近部署记录         | 应用提交  | Release ID                 |
-| ------------------------- | -------------------- | --------- | -------------------------- |
-| 测试站 `wz.tomatopia.top` | 2026-10-10，staging  | `eb05b8f` | `20261010T071221Z-eb05b8f` |
-| 新 ECS `8.138.148.179`    | 2026-10-14，原生 Web | `939e634` | `20261014T081032Z-939e634` |
+| 环境                         | 最近已验收发布记录   | 应用提交  | Release ID                 |
+| ---------------------------- | -------------------- | --------- | -------------------------- |
+| 活动远程环境 `8.138.148.179` | 2026-10-14，原生 Web | `939e634` | `20261014T081032Z-939e634` |
 
-新 ECS 的记录来自 2026-10-14 已验收的应用发布；本次 GitHub 同步没有重新探测或更改线上版本。
-各次发布的验证证据、后续 Git 同步结果和实际环境变更见 [DEV_STATE.md](DEV_STATE.md)。
+这是一条历史发布身份记录，当前服务器状态必须由获得授权后的实际回读确认。详情见 [DEV_STATE.md](DEV_STATE.md)。
 
 ## 最近代码更新
 
@@ -155,22 +152,22 @@ Directus 成功返回空数据时页面保持为空；只有网络失败、超�
 
 ## 环境变量
 
-| 变量                        | 说明                                                                            |
-| --------------------------- | ------------------------------------------------------------------------------- |
-| `DIRECTUS_URL`              | 服务端 Directus 地址；服务器建议 `http://127.0.0.1:8055`                        |
-| `DIRECTUS_CONTENT_TOKEN`    | 仅可读取官网内容集合及文件元数据的运行令牌                                      |
-| `DIRECTUS_NEWS_WRITE_TOKEN` | 仅可写入 `news` 的独立 Directus 服务端令牌，不得复用内容读取令牌                |
-| `NEWS_PUBLISH_API_TOKEN`    | 仅允许受信任服务端调用批量 News 发布接口的 Bearer Token（至少 32 UTF-8 bytes）  |
-| `XIANSUO_API_URL`           | XYY-xiansuo 服务端 HTTPS 根地址                                                 |
-| `XIANSUO_INGEST_TOKEN`      | 仅用于官网服务端提交联系线索的 Integration Bearer Token                         |
-| `DIRECTUS_TOKEN`            | 仅供建模、迁移和权限维护脚本临时使用，不得作为 Web 运行凭据                     |
-| `PUBLIC_SITE_URL`           | 当前构建与 canonical 使用的站点地址                                             |
-| `PUBLIC_DIRECTUS_URL`       | 浏览器可访问的 CMS 地址                                                         |
-| `ENABLE_DOMAIN_REDIRECTS`   | 正式域名切换完成后才可设为 `true`                                               |
-| `LEGACY_DOMAINS`            | 正式切换后需要 301 的旧域名列表                                                 |
-| `DEPLOY_ENVIRONMENT`        | 部署时显式指定 `staging` 或 `production`                                        |
-| `HOST`                      | PM2 从 Release 根目录 `.env` 读取；测试站为 `127.0.0.1`，未配置时默认 `0.0.0.0` |
-| `TRUSTED_PROXY_CIDRS`       | 受信任代理网段；当前测试站为 `127.0.0.1/32`                                     |
+| 变量                        | 说明                                                                           |
+| --------------------------- | ------------------------------------------------------------------------------ |
+| `DIRECTUS_URL`              | 服务端 Directus 地址；服务器建议 `http://127.0.0.1:8055`                       |
+| `DIRECTUS_CONTENT_TOKEN`    | 仅可读取官网内容集合及文件元数据的运行令牌                                     |
+| `DIRECTUS_NEWS_WRITE_TOKEN` | 仅可写入 `news` 的独立 Directus 服务端令牌，不得复用内容读取令牌               |
+| `NEWS_PUBLISH_API_TOKEN`    | 仅允许受信任服务端调用批量 News 发布接口的 Bearer Token（至少 32 UTF-8 bytes） |
+| `XIANSUO_API_URL`           | XYY-xiansuo 服务端 HTTPS 根地址                                                |
+| `XIANSUO_INGEST_TOKEN`      | 仅用于官网服务端提交联系线索的 Integration Bearer Token                        |
+| `DIRECTUS_TOKEN`            | 仅供建模、迁移和权限维护脚本临时使用，不得作为 Web 运行凭据                    |
+| `PUBLIC_SITE_URL`           | 当前构建与 canonical 使用的站点地址                                            |
+| `PUBLIC_DIRECTUS_URL`       | 浏览器可访问的 CMS 地址                                                        |
+| `ENABLE_DOMAIN_REDIRECTS`   | 正式域名切换完成后才可设为 `true`                                              |
+| `LEGACY_DOMAINS`            | 正式切换后需要 301 的旧域名列表                                                |
+| `DEPLOY_ENVIRONMENT`        | 部署时显式指定 `staging` 或 `production`                                       |
+| `HOST`                      | 运行进程绑定地址；local/CI 隔离验证使用 loopback                               |
+| `TRUSTED_PROXY_CIDRS`       | 受信任代理网段；需由实际部署拓扑单独核定                                       |
 
 `.env`、`.env.production` 仅保存在本地和服务器，不提交 GitHub，也不由部署脚本上传。
 建模脚本使用的短期管理令牌不能写入 Web 运行环境。官网内容读取不会回退使用
@@ -190,53 +187,23 @@ Directus 12 Community 不提供自定义项目过滤和字段级权限时，内�
 
 新闻公开读取会将带偏移的时间按其真实时刻比较；Directus 返回无时区时间时，统一按 `Asia/Shanghai` 的后台编辑时间解释。因此“发布”且发布时间不晚于当前时刻的文章会立即显示，未来发布时间仍保持隐藏。
 
-## 测试站部署
+## 远程环境与发布边界
 
-目标服务器必须已配置 SSH 公钥、Node.js、PM2、Nginx 和 `/var/www/xyy-web/.env`。
-部署前配置 `CAPACITY_BASELINE_FILE`（本地）及 `REMOTE_CAPACITY_BASELINE_FILE`（远端），
-并使 `TMPDIR`、`PLAYWRIGHT_ARTIFACTS_DIR` 与实际容量测量使用的目录一致。
-缺少实测基线或空间/inode不足时，部署脚本会停止；步骤见
-[发布容量与媒体维护](docs/RELEASE_CAPACITY_MAINTENANCE.md)。
+唯一活动远程环境是 `8.138.148.179`。本仓库中现有的通用 `/var/www`、50031、Xray 和历史 Nginx 脚本没有经过该环境的发布适配或远程核对；已验收记录对应的是 `/data/xyy` 原生 release 流程。不得通过替换 IP、域名或环境变量把这些通用脚本当作新环境的可执行发布指引。
 
-```bash
-DEPLOY_HOST='root@47.82.105.103' \
-DEPLOY_ENVIRONMENT='staging' \
-SITE_URL='https://wz.tomatopia.top' \
-bash scripts/deploy.sh
-```
+`scripts/deploy.sh` 只接受显式操作目标：SSH 与构建/健康检查初始地址会拒绝旧站、未知公网地址和缺失参数；health 与管理命令的请求禁止跟随重定向。`SITE_URL`、`PUBLIC_SITE_URL` 及 `PUBLIC_DIRECTUS_URL` 可作为构建 metadata；它们不确认正式域名已指向活动远程环境。健康检查的网络地址必须显式提供，canonical 语义可通过 `PUBLIC_SITE_URL` 单独核验。
 
-部署脚本会：
+远程操作遵循 [AGENTS.md](AGENTS.md) 的授权边界；已获授权范围内可连续执行。发布、CMS 写入与数据库等仍按原规则处理。本 README 不提供可直接执行的新环境发布命令。
 
-1. 拒绝包含已修改、已暂存或未跟踪文件的工作区，执行容量预检，并为当前 Git SHA 生成 Release Manifest；
-2. 以 `SITE_URL` 覆盖构建期公开地址并运行 `npm run verify:release`；
-3. 将 Manifest、应用与构建产物上传到同一独立版本目录，并安装生产依赖；
-4. 保留服务器现有 `.env`，通过 `current` 软链原子切换后重启 `xyy-web`；
-5. 用 `/healthz` 检查依赖就绪，用 `/version` 精确核对 Git SHA、Release ID、环境和 CMS 模型版本；任一不符即恢复上一软链并尽可能核对旧版本身份；
-6. 生成旧版本清理预览，默认保护最近5版及当前、回退、锁定版本；部署脚本不会自动删除旧版本，实际清理由独立维护操作使用已审阅的精确计划执行。
+### 历史记录
 
-当前测试站 Web 进程监听 `127.0.0.1:50031`，通过 Nginx 对外服务；PM2 的 `HOST`
-从 Release 根目录 `.env` 读取，运行环境中的 `TRUSTED_PROXY_CIDRS` 为 `127.0.0.1/32`。
-
-`/healthz` 只证明依赖是否就绪；`/version` 只返回可公开的不可变发布身份并禁止缓存。
-生产 Release 缺少或损坏 `release-manifest.json` 时，`/version` 返回503，不读取 Git、源码目录
-或开发者环境作为替代。第五阶段以前创建的旧 Release 没有 Manifest 时仍允许首次回滚，但只会
-输出 `legacy_previous_release_identity_unavailable`，不能声称旧版本身份已验证。
-
-在 `56xyy.com` DNS、证书与 Nginx 未切换到目标服务器前，不得启用旧域名跳转。迁移参考配置位于 `deploy/nginx-56xyy.conf`。
-
-### 数据库与附件备份
-
-测试站当前使用 PostgreSQL。数据库与附件的备份/恢复脚本分别见
-[`deploy/postgresql/`](deploy/postgresql/README.md) 和
-[`deploy/uploads/`](deploy/uploads/README.md)。数据库备份不包含实际附件，需要成对备份并联合恢复验证。
-2026-10-09 测试站已完成成对加密备份与隔离恢复验证；该记录不代表定时备份任务已启用。
+旧测试/验收站、旧 IP、Xray 和 `/var/www` 拓扑仅保留在历史文档中以解释过去的发布证据，不得作为当前测试、health、构建数据源、部署或回退目标。正式域名切换材料见 [MAIN_DOMAIN_CUTOVER.md](docs/MAIN_DOMAIN_CUTOVER.md)，该文件同样是历史不可执行记录。
 
 ## CMS
 
-- 测试站后台：<https://wz.tomatopia.top/cms/admin/>
-- 测试站 Ping：<https://wz.tomatopia.top/cms/server/ping>
-- 新 ECS 后台：<https://8.138.148.179/admin>（2026-10-11 已验收的同源 HTTPS 入口）。
+- `https://8.138.148.179/admin` 是 2026-10-11 已验收的活动远程环境入口记录；本轮未回读。
 - 账号、Token、数据库口令和服务器路径由部署团队管理，不进入仓库。
+- 以下命令需要独立确认目标、凭据与操作授权；安全本地模板默认只使用不可达 loopback，且不默认连接任何远程 CMS。
 
 ```bash
 # 首次创建模型、初始化基础内容并核验（仅使用短期管理级 Token）

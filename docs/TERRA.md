@@ -2476,3 +2476,17 @@ Status: CODE DONE（待 Luna 独立验证与 Nova Review）
 - Luna cleanup 测试错误调用全局 Astro dev stop，导致主 4321 预览停止；Sol 随后尝试恢复时，主仓的 Vite FSWatcher 因历史 `output/english-cases/...` 候选文件触发 `ENOSPC` 失败。该恢复失败保留于 `output/optimization/xyy-20261015-06/sol-preview-recovery.log`；未修改 `/proc/sys/fs/inotify/max_user_watches`，也不将恢复记为通过。
 - `dev:local` 的 inline `vite.server.watch.ignored` 现在使用 Chokidar 支持的函数，仅匹配脚本所属 project root 下的 `output` 目录及其子树。当前 Vite 8.1.3 的 `resolveChokidarOptions` 会将该函数与默认 `.git`、`node_modules`、`test-results` 和 cache 忽略列表合并；src、public 和 `output-backup` 均不匹配，strictPort、环境、Ready 与生命周期配置未改。
 - 自测 PASS：输出目录 matcher 5项（根/子树拒绝，src/public/相同前缀目录保留）、目标 Prettier、Node syntax、ESLint 与 scoped `git diff --check`。证据 `output/optimization/xyy-20261015-06/terra/r3-watch-ignore-selfcheck.json`。未启动、停止或信号任何服务，未重跑采样/build/浏览器/verify；交 Sol 恢复主预览并由 Luna 验证 output 不监听且源码/public HMR 正常。
+
+#### XYY-20261016-02 — 远程环境边界与历史部署资料整理
+
+- 新增 `remote-target-policy`：操作 URL 仅允许 loopback（含 `127/8` 与 `::1`）或精确 HTTPS `8.138.148.179`；拒绝旧站、未知公网、userinfo、query/hash 与非 HTTP(S)。SSH 仅允许该 IP 或受限 `用户名@IP` 形式。策略不提供远程默认值。
+- `deploy.sh`、健康检查、Directus 管理客户端及两类权限命令在任何 fetch/SSH/rsync 前使用同一策略；health 需要显式 `SITE_URL`，网络探针与 `PUBLIC_SITE_URL` canonical metadata 分离。formal canonical 的 noindex、robots 与 sitemap 断言继续由 `PUBLIC_SITE_URL=https://56xyy.com` 触发，实际网络探针不再访问旧正式域名。Directus 与权限请求禁止跟随重定向。
+- 根 README、环境模板、production-web 与旧 cutover/diagnostic/Nginx 材料明确活动环境边界或标记为历史不可执行。根 `.env.example` 默认仅不可达 loopback；没有配置活动或旧远程地址。通用 `/var/www`/50031/Xray 资料未被改写为新 ECS 发布流程。
+- 自测 PASS：目标 Node/Bash syntax、Prettier、ESLint、`git diff --check`；remote policy 16 条纯断言；四条旧目标拒绝路径的 fake fetch 计数为 0；news permission preview 仅对 loopback 输出且旧目标在 fetch 前失败；无 `SITE_URL` 的 health CLI 可见报 `healthcheck_site_url_required`。未运行完整 verify、Luna 测试或任何可能访问远程的 CLI；未发起网络、SSH、rsync、部署或 CMS/数据库操作。证据 `output/environment-scope/xyy-20261016-02/terra/self-check.md`。
+- 交 Luna 适配旧 `.test` mock 为 loopback，并独立覆盖 URL/SSH 拒绝、零 fetch/SSH/rsync、redirect fail、health formal metadata 与历史文档边界。
+
+#### XYY-20261016-02 R1 — deploy 脚本维护性行数修复
+
+- Luna 完整 `verify` 在 typecheck 通过后仅因 `scripts/deploy.sh: 201 lines exceeds 200` 停止。根因是维护性检查用 `content.split(/\r?\n/).length` 计数，末尾换行形成额外空段；`wc -l` 的 200 不能满足该规则。
+- 仅将同一 `remote-target-policy` 调用中相邻的两项 canonical 参数合并为一个物理行。目标校验、参数顺序、错误路径和所有网络动作前置位置均未改变；文件现在 `wc -l` 为 199，维护性规则计为 200。
+- 自测 PASS：`bash -n scripts/deploy.sh`、`git diff --check`、`npm run check:maintainability`（900 files）通过。未运行网络、SSH、rsync、部署、CMS/数据库或完整 verify。证据 `output/environment-scope/xyy-20261016-02/terra/r1-maintainability-self-check.md`；交 Luna 对冻结候选复测。

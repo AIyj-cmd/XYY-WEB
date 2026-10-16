@@ -1,4 +1,6 @@
-# Web 前端部署
+# 历史部署模板（不可执行）
+
+> 本文记录旧 `/var/www`、50031、Xray 与 Nginx 拓扑，不适用于已验收的 `/data/xyy` 原生 release 流程。不得替换 IP、域名或环境变量后执行；它不构成活动远程环境的部署、回退、Nginx、证书或 CMS 操作授权。当前环境边界见 [README](../../../README.md)。
 
 Web前端为 Astro SSR 应用，运行在应用服务器 `0.0.0.0:50031`，由 Nginx 提供静态资源并反向代理动态请求。
 
@@ -27,28 +29,9 @@ XYY-xiansuo。两端 Integration Token 必须相同；`WEBSITE_LEAD_OWNER_ID` �
 XYY-xiansuo 服务端。不得把 Directus 管理员 Token 或历史 `DIRECTUS_CONTACT_TOKEN` 用作
 当前 Web 运行配置；历史 Directus contact 权限审计不是当前联系写入的部署前置条件。
 
-## 2. 从构建机部署Web
+## 2. 历史构建机流程
 
-在项目Git仓库根目录执行：
-
-```bash
-DEPLOY_HOST='root@应用服务器IP' \
-  bash deploy/production/web/deploy-web.sh
-```
-
-如果使用桌面独立脚本包中的 `deploy-web.sh`，请在已克隆的 `XYY-WEB` 仓库根目录运行；
-也可以设置 `PROJECT_ROOT=/path/to/XYY-WEB`。Web源码和构建依赖仍以GitHub仓库为准，脚本包不重复包含整份源码。
-
-部署过程会运行完整发布校验、上传独立版本目录、原子切换 `current` 软链、重启 `xyy-web`，并在健康检查失败时恢复上一版本。
-
-如果DNS尚未切换，可明确设置构建数据源和验收地址：
-
-```bash
-DEPLOY_HOST='root@应用服务器IP' \
-BUILD_DIRECTUS_URL='https://wz.tomatopia.top/cms' \
-HEALTHCHECK_SITE_URL='https://wz.tomatopia.top' \
-  bash deploy/production/web/deploy-web.sh
-```
+这一节原先描述旧服务器的上传、原子切换及旧验收站 fallback。相关目标已退役，示例命令已删除，不能作为活动远程环境的可执行指引。任何新的构建机发布流程都必须先按当前 `/data/xyy` 原生 release 方式另行核对并取得准确目标授权。
 
 ## 3. Nginx和证书
 

@@ -31,10 +31,13 @@ if [[ -z "${DEPLOY_HOST:-}" ]]; then
 fi
 REMOTE_DIR="${REMOTE_DIR:-/var/www/xyy-web}"
 NODE_BIN="${NODE_BIN:-/opt/node-v22/bin}"
-SITE_URL="${SITE_URL:-https://wz.tomatopia.top}"
+SITE_URL="${SITE_URL:-}"
+[[ -n "$SITE_URL" ]] || { echo 'Error: SITE_URL is required for release metadata' >&2; exit 1; }
 PUBLIC_DIRECTUS_URL="${PUBLIC_DIRECTUS_URL:-$SITE_URL/cms}"
-BUILD_DIRECTUS_URL="${BUILD_DIRECTUS_URL:-$PUBLIC_DIRECTUS_URL}"
-HEALTHCHECK_SITE_URL="${HEALTHCHECK_SITE_URL:-$SITE_URL}"
+BUILD_DIRECTUS_URL="${BUILD_DIRECTUS_URL:-}"
+HEALTHCHECK_SITE_URL="${HEALTHCHECK_SITE_URL:-}"
+[[ -n "$BUILD_DIRECTUS_URL" ]] || { echo 'Error: BUILD_DIRECTUS_URL is required' >&2; exit 1; }
+[[ -n "$HEALTHCHECK_SITE_URL" ]] || { echo 'Error: HEALTHCHECK_SITE_URL is required' >&2; exit 1; }
 RELEASE_KEEP="${RELEASE_KEEP:-5}"
 WEB_PORT="${WEB_PORT:-50031}"
 [[ ${RELEASE_ID} =~ ^[A-Za-z0-9._-]+$ ]] || { echo "Error: invalid RELEASE_ID" >&2; exit 1; }
@@ -42,13 +45,15 @@ WEB_PORT="${WEB_PORT:-50031}"
 [[ ${WEB_PORT} =~ ^[1-9][0-9]{0,4}$ ]] || { echo "Error: WEB_PORT must be a valid TCP port" >&2; exit 1; }
 [[ ${REMOTE_DIR} =~ ^/[A-Za-z0-9._/-]+$ ]] || { echo "Error: REMOTE_DIR must be a safe absolute path" >&2; exit 1; }
 [[ ${NODE_BIN} =~ ^/[A-Za-z0-9._/-]+$ ]] || { echo "Error: NODE_BIN must be a safe absolute path" >&2; exit 1; }
+node scripts/lib/remote-target-policy.mjs \
+  --ssh "$DEPLOY_HOST" \
+  --operation-url "$BUILD_DIRECTUS_URL" \
+  --operation-url "$HEALTHCHECK_SITE_URL" \
+  --canonical-url "$SITE_URL" --canonical-url "$PUBLIC_DIRECTUS_URL"
 RELEASES_DIR="$REMOTE_DIR/releases"; RELEASE_DIR="$RELEASES_DIR/$RELEASE_ID"; CURRENT_LINK="$REMOTE_DIR/current"
-CAPACITY_BASELINE_FILE="${CAPACITY_BASELINE_FILE:-output/capacity-baseline.json}"
-REMOTE_CAPACITY_BASELINE_FILE="${REMOTE_CAPACITY_BASELINE_FILE:-$REMOTE_DIR/capacity-baseline.json}"
-PINNED_RELEASES="${PINNED_RELEASES:-}"
-RELEASE_CLEANUP_APPLY="${RELEASE_CLEANUP_APPLY:-false}"
-PINNED_RELEASES_FILE="${PINNED_RELEASES_FILE:-$REMOTE_DIR/pinned-releases.txt}"
-RELEASE_CLEANUP_PLAN_FILE="${RELEASE_CLEANUP_PLAN_FILE:-$REMOTE_DIR/maintenance/release-cleanup-$RELEASE_ID.json}"
+CAPACITY_BASELINE_FILE="${CAPACITY_BASELINE_FILE:-output/capacity-baseline.json}"; REMOTE_CAPACITY_BASELINE_FILE="${REMOTE_CAPACITY_BASELINE_FILE:-$REMOTE_DIR/capacity-baseline.json}"
+PINNED_RELEASES="${PINNED_RELEASES:-}"; RELEASE_CLEANUP_APPLY="${RELEASE_CLEANUP_APPLY:-false}"
+PINNED_RELEASES_FILE="${PINNED_RELEASES_FILE:-$REMOTE_DIR/pinned-releases.txt}"; RELEASE_CLEANUP_PLAN_FILE="${RELEASE_CLEANUP_PLAN_FILE:-$REMOTE_DIR/maintenance/release-cleanup-$RELEASE_ID.json}"
 REMOTE_BOOTSTRAP_DIR="$REMOTE_DIR/.capacity-preflight-$RELEASE_ID"
 [[ ${RELEASE_CLEANUP_APPLY} =~ ^(true|false)$ ]] || { echo "Error: RELEASE_CLEANUP_APPLY must be true or false" >&2; exit 1; }
 [[ "$RELEASE_CLEANUP_APPLY" == false ]] || { echo '[error] deploy.sh only creates an exact cleanup preview; apply the reviewed plan separately' >&2; exit 1; }
@@ -142,7 +147,7 @@ if ! verify_release_identity \"\$release_dir/release-manifest.json\"; then
   exit 1
 fi
 PATH='$NODE_BIN':\$PATH pm2 save"
-if ! SITE_URL="$HEALTHCHECK_SITE_URL" EXPECTED_GIT_SHA="$GIT_SHA" \
+if ! SITE_URL="$HEALTHCHECK_SITE_URL" PUBLIC_SITE_URL="$SITE_URL" EXPECTED_GIT_SHA="$GIT_SHA" \
   EXPECTED_RELEASE_ID="$RELEASE_ID" EXPECTED_ENVIRONMENT="$DEPLOY_ENVIRONMENT" \
   EXPECTED_CMS_SCHEMA_VERSION="$(node -e "import('./config/cms-contract.mjs').then(m=>process.stdout.write(m.CMS_SCHEMA_VERSION))")" \
   node scripts/health-check.mjs; then

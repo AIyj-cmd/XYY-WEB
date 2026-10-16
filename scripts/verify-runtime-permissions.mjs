@@ -2,6 +2,7 @@ import { pathToFileURL } from 'node:url'
 
 import { CMS_LEGACY_COLLECTIONS } from '../config/cms-collections.mjs'
 import { runRuntimePermissionCli } from './lib/runtime-permission-cli.mjs'
+import { assertOperationTarget } from './lib/remote-target-policy.mjs'
 import {
   ASSET_COLLECTIONS,
   CONTENT_COLLECTIONS,
@@ -33,6 +34,7 @@ async function fetchStatus(fetchImpl, directusUrl, token, path, label) {
   try {
     const response = await fetchImpl(`${directusUrl}${path}`, {
       headers: authorization(token),
+      redirect: 'error',
     })
     return response.status
   } catch {
@@ -45,6 +47,7 @@ async function readPermissions(fetchImpl, directusUrl, token, label) {
   try {
     response = await fetchImpl(`${directusUrl}/permissions/me`, {
       headers: authorization(token),
+      redirect: 'error',
     })
   } catch {
     throw new Error(`permission_verification_unreachable: ${label} permission map`)
@@ -73,10 +76,9 @@ export async function verifyRuntimePermissions({
   contactToken,
   fetchImpl = fetch,
 }) {
-  const normalizedUrl = (directusUrl || '').replace(/\/+$/, '')
-  if (!normalizedUrl || !contentToken || !contactToken) {
-    throw new Error('runtime_tokens_missing')
-  }
+  const suppliedUrl = typeof directusUrl === 'string' ? directusUrl.trim() : ''
+  if (!suppliedUrl || !contentToken || !contactToken) throw new Error('runtime_tokens_missing')
+  const normalizedUrl = assertOperationTarget(suppliedUrl, 'directus_target')
   if (contentToken === contactToken) throw new Error('runtime_tokens_must_be_distinct')
 
   const [contentPermissions, contactPermissions] = await Promise.all([

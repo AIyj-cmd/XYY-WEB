@@ -6675,3 +6675,34 @@ Task ID：`XYY-20261016-01`；Risk：HIGH；Result：**Luna PASS**。在隔离�
 - 首次 `verify-r1` 保留为无效环境证据：错误复制规则排除了依赖包内部 `node_modules/astro/dist`，导致 CLI 模块缺失；重建为仅排除根目录 `dist/output/.astro` 及缓存后，`verify-r2` 完整通过。该失败不指向产品实现。
 
 Parity 口径：快照后可见的差异均为文档记录（`README.md`、`DEV_STATE.md`、`docs/SOL.md` 及本段 Luna 日志）；README 的日期、历史部署身份和近期摘要变化已明确归档。实现/测试/配置路径无意外 mismatch，详见 [`post-doc-parity.json`](../output/git-sync/xyy-20261016-01/luna/post-doc-parity.json)。Luna 未修改应用实现、测试或配置，也未 commit/push；本结果只覆盖隔离副本的两个合同命令，后续 Git 同步仍由 Sol 按授权处理。
+
+#### XYY-20261016-02 — 独立目标策略验证 FAIL
+
+Task ID：`XYY-20261016-02`；Risk：HIGH；Result：**Luna FAIL**。Terra 的 16 个实现文件 freeze hash 与 `implementation-freeze.json` 一致；Luna 仅修改本任务授权的测试、helper、ignored evidence 与本段日志，未修改实现。
+
+定向消费者与策略测试：6 files / 51 tests，exit 0。覆盖 loopback、精确 ECS（全部 mock）、旧域名及未知目标在 fetch 前拒绝且调用计数为 0；旧 IP 由纯策略矩阵覆盖；Directus admin/runtime permission consumer；health `SITE_URL` 必填、formal canonical/robots/sitemap/noindex 断言、redirect:error；news loopback 正例和本地 302 不跟随；真实 `deploy.sh` 入口在 verify/SSH/rsync 前拒绝非法目标，fake 命令 marker 未创建。`astro check`：736 files，0 errors / 0 warnings / 5 hints，exit 0。
+
+最终隔离副本 `/home/yj/data/t1602/verify-snapshot` 使用显式 CI、loopback 与假 token，未复制 `.env`，依赖为独立副本且保留 `node_modules` 内部 dist；网络护栏仅在拦截事件时写日志，本轮未保留独立护栏事件日志，不将其表述为完整网络审计；无活动自有进程。首次副本缺 `output/capacity-baseline.json`、后续测试同步方向和测试类型问题均保留在独立失败日志中并已修正，不计为产品失败。
+
+FAIL：唯一最终 `npm run verify` 在 `check:maintainability` 退出 1，报告 `scripts/deploy.sh: 201 lines exceeds 200`（检查器按末尾换行计数；当前文件物理行数为 200）。因此未运行 `npm run format:check`，也未进入 build/test 阶段；不宣称本任务 PASS。证据：[`verify-isolated-final4.log`](../output/environment-scope/xyy-20261016-02/luna/verify-isolated-final4.log)、[`verify-isolated-final4.exit`](../output/environment-scope/xyy-20261016-02/luna/verify-isolated-final4.exit)、[`targeted-unit-final2.log`](../output/environment-scope/xyy-20261016-02/luna/targeted-unit-final2.log)、[`typecheck-isolated-r3.log`](../output/environment-scope/xyy-20261016-02/luna/typecheck-isolated-r3.log)、[`final-result.json`](../output/environment-scope/xyy-20261016-02/luna/final-result.json)。
+
+Expected：`npm run verify` 与 `npm run format:check` 均 exit 0。Actual：verify 在维护性预算阻断；无已证实目标策略业务回归。Likely affected area：`scripts/deploy.sh` 维护性预算，需 Sol/Terra 在实现范围内处理后按原 ID复测。Severity：HIGH（发布门禁未闭合）。
+
+#### XYY-20261016-02 R1 — 独立目标策略复测 PASS
+
+Task ID：`XYY-20261016-02`；Risk：HIGH；Result：**Luna PASS**。Terra R1 freeze 仅调整 `scripts/deploy.sh`，hash `475641bba351a5d9611f410a8baafaaca994b356055ab941af8f15d4370e12ba`；主仓与隔离副本 hash 一致。上轮 FAIL 原件已保存为 `failed-r0.json`，未覆盖。
+
+定向复测：6 files / 55 tests，PASS。loopback `localhost`、`127.0.0.2`、`::1` 与精确 ECS mock 通过；Directus admin/runtime permission consumer 旧域名及未知目标在 fetch 前拒绝且调用计数为 0。R1 原记录将旧 IP 写成“由纯策略矩阵覆盖”，该表述不完整；旧 IP consumer/SSH 边界由 R2 才实际补齐。health formal SEO 负例、version 零 fetch、news loopback 200 与本地 302 不跟随通过。两个真实 deploy 入口均验证：合法目标只到 fake npm 的受控 exit 99，SSH/rsync 未调用；缺失、旧域名、未知 URL/SSH 均在远程命令前拒绝，所有 marker 为 0。目标 Prettier check exit 0。
+
+隔离副本 `/home/yj/data/t1602/verify-snapshot` 使用显式 CI、loopback 与假 token，未复制 `.env`；网络护栏仅在拦截事件时写日志；本轮未保留独立护栏事件日志，因此不将其表述为完整网络审计；无活动自有进程。`npm run verify` exit 0：typecheck 736 files、0 errors/0 warnings/5 hints；Vitest 144 files / 1011 tests；lint、maintainability 900 files、assets、cache patch 与 Astro server build 全部通过。`npm run format:check` exit 0。证据：[`final-result-r1.json`](../output/environment-scope/xyy-20261016-02/luna/final-result-r1.json)、[`retest-targeted-r2.log`](../output/environment-scope/xyy-20261016-02/luna/retest-targeted-r2.log)、[`retest-verify-r1.log`](../output/environment-scope/xyy-20261016-02/luna/retest-verify-r1.log)、[`retest-format-check-r1.log`](../output/environment-scope/xyy-20261016-02/luna/retest-format-check-r1.log)。
+
+Regression coverage：目标策略、health/canonical SEO、Directus/news/runtime permission 入口、deploy.sh 与 deploy-web.sh 前置阻断、完整既有 Vitest、类型/Lint/维护性/资源检查和隔离 build。Remaining risks：exact ECS 仅 mock，未访问远程环境；网络护栏覆盖 Node fetch/net/tls 与 loopback，不能替代对非 Node 二进制的系统级审计；无生产/CMS/数据库/SSH/rsync 写入，无部署、commit 或 push。
+
+#### XYY-20261016-02 R2 — 旧目标边界证据更正复测
+
+Task ID：`XYY-20261016-02`；Risk：HIGH；Result：**Luna PASS**。本轮仅补测试证据，未修改实现；实现仍与 `implementation-freeze-r1.json` 一致。R1 中“旧 IP 由纯策略矩阵覆盖”的表述不完整，已在 R2 实际补入：旧 IP HTTP/HTTPS、旧域名大小写与尾点、带 userinfo 的 ECS URL、Directus admin/runtime consumer 旧 IP 零 fetch，以及 SSH 旧 IP/旧域名拒绝。
+
+- 定向测试：6 files / **62 tests passed**，exit 0；证据 [`targeted-r2-final.log`](../output/environment-scope/xyy-20261016-02/luna/targeted-r2-final.log)。目标格式检查 exit 0。
+- 隔离副本 `/home/yj/data/t1602/verify-snapshot` 的测试 hash 与主仓一致；依赖为独立副本，保留 `node_modules` 内部 dist，未复制 `.env`。`npm run verify` exit 0：typecheck 736 files、0 errors/0 warnings/5 hints；Vitest 144 files / 1018 tests；lint、maintainability 900 files、assets、cache patch 与 Astro server build 全部通过。`npm run format:check` exit 0。证据 [`final-result-r2.json`](../output/environment-scope/xyy-20261016-02/luna/final-result-r2.json)、[`retest-verify-r2.log`](../output/environment-scope/xyy-20261016-02/luna/retest-verify-r2.log)、[`retest-format-r2.log`](../output/environment-scope/xyy-20261016-02/luna/retest-format-r2.log)。
+- R1 定向日志路径被本轮复用覆盖；当前 62 项结果已另存为 `targeted-r2-final.log`，原 R1 55 项定向原始日志无法从该路径回溯。R1 full verify 证据未被覆盖，限制记录见 [`r1-targeted-log-overwrite-note.txt`](../output/environment-scope/xyy-20261016-02/luna/r1-targeted-log-overwrite-note.txt)。
+- 网络护栏仅在拦截事件时写记录；本轮未保留独立护栏事件日志，因此不将其表述为完整网络审计或以 `blocked=0` 作为全流量证明。请求配置为 loopback/mock；未访问 ECS、旧站、真实 CMS/数据库/SSH/rsync，未部署、提交或推送。

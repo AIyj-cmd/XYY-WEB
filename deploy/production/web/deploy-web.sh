@@ -20,14 +20,20 @@ if [[ -z ${PROJECT_ROOT:-} ]]; then
 fi
 
 [[ -n ${DEPLOY_HOST:-} ]] || {
-  echo "[error] DEPLOY_HOST is required, for example root@10.0.0.10" >&2
+  echo '[error] DEPLOY_HOST must be explicitly authorized for the approved remote target' >&2
   exit 1
 }
 
 cd "${PROJECT_ROOT}"
 export SITE_URL="${SITE_URL:-https://56xyy.com}"
 export PUBLIC_DIRECTUS_URL="${PUBLIC_DIRECTUS_URL:-https://56xyy.com/cms}"
-export BUILD_DIRECTUS_URL="${BUILD_DIRECTUS_URL:-${PUBLIC_DIRECTUS_URL}}"
-export HEALTHCHECK_SITE_URL="${HEALTHCHECK_SITE_URL:-${SITE_URL}}"
+[[ -n ${BUILD_DIRECTUS_URL:-} ]] || {
+  echo '[error] BUILD_DIRECTUS_URL must explicitly identify the approved remote CMS target' >&2
+  exit 1
+}
+[[ -n ${HEALTHCHECK_SITE_URL:-} ]] || {
+  echo '[error] HEALTHCHECK_SITE_URL must explicitly identify the approved remote web target' >&2
+  exit 1
+}
 
 exec bash scripts/deploy.sh

@@ -67,7 +67,7 @@ function auditFetch(
 }
 
 function auditOptions(fetchImpl: typeof fetch) {
-  return { directusUrl: 'https://directus.test', contentToken, contactToken, fetchImpl }
+  return { directusUrl: 'http://127.0.0.1:4399/cms', contentToken, contactToken, fetchImpl }
 }
 
 describe('runtime permission audit', () => {
@@ -75,7 +75,7 @@ describe('runtime permission audit', () => {
     const fetchMock = vi.fn()
     await expect(
       verifyRuntimePermissions({
-        directusUrl: 'https://directus.test',
+        directusUrl: 'http://127.0.0.1:4399/cms',
         contentToken: '',
         contactToken,
         fetchImpl: fetchMock,
@@ -83,12 +83,25 @@ describe('runtime permission audit', () => {
     ).rejects.toThrow('runtime_tokens_missing')
     await expect(
       verifyRuntimePermissions({
-        directusUrl: 'https://directus.test',
+        directusUrl: 'http://127.0.0.1:4399/cms',
         contentToken: 'same-token',
         contactToken: 'same-token',
         fetchImpl: fetchMock,
       })
     ).rejects.toThrow('runtime_tokens_must_be_distinct')
+    expect(fetchMock).not.toHaveBeenCalled()
+  })
+
+  it.each([
+    'https://wz.tomatopia.top',
+    'https://directus.test',
+    'https://8.138.148.180',
+    'https://47.82.105.103',
+  ])('rejects %s before permission probes', async (directusUrl) => {
+    const fetchMock = vi.fn()
+    await expect(
+      verifyRuntimePermissions({ directusUrl, contentToken, contactToken, fetchImpl: fetchMock })
+    ).rejects.toThrow(/directus_target_unapproved/)
     expect(fetchMock).not.toHaveBeenCalled()
   })
 

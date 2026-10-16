@@ -17,20 +17,33 @@ describe('Directus admin client', () => {
     )
     vi.stubGlobal('fetch', fetchMock)
     const client = createDirectusAdminClient({
-      baseUrl: 'https://cms.example.com///',
+      baseUrl: 'http://127.0.0.1:4399/cms///',
       token: 'test-token',
     })
 
     await expect(client.readCollection('services')).resolves.toEqual([{ id: 1 }])
-    expect(client.baseUrl).toBe('https://cms.example.com')
-    expect(client.endpointLabel).toBe('cms.example.com')
+    expect(client.baseUrl).toBe('http://127.0.0.1:4399/cms')
+    expect(client.endpointLabel).toBe('127.0.0.1:4399')
     expect(fetchMock).toHaveBeenCalledWith(
-      'https://cms.example.com/items/services?limit=-1&sort=sort',
+      'http://127.0.0.1:4399/cms/items/services?limit=-1&sort=sort',
       expect.objectContaining({
         method: 'GET',
         headers: expect.objectContaining({ Authorization: 'Bearer test-token' }),
       })
     )
+    expect(fetchMock.mock.calls[0][1]).toEqual(expect.objectContaining({ redirect: 'error' }))
+  })
+
+  it.each([
+    'https://wz.tomatopia.top',
+    'https://cms.example.com',
+    'https://8.138.148.180',
+    'https://47.82.105.103',
+  ])('rejects %s before any admin request', (target) => {
+    const fetchMock = vi.fn()
+    vi.stubGlobal('fetch', fetchMock)
+    expect(() => createDirectusAdminClient({ baseUrl: target, token: 'token' })).toThrow()
+    expect(fetchMock).not.toHaveBeenCalled()
   })
 
   it('serializes request bodies and can retain the Directus envelope', async () => {
@@ -41,7 +54,10 @@ describe('Directus admin client', () => {
       })
     )
     vi.stubGlobal('fetch', fetchMock)
-    const client = createDirectusAdminClient({ baseUrl: 'https://cms.example.com', token: 'token' })
+    const client = createDirectusAdminClient({
+      baseUrl: 'http://127.0.0.1:4399/cms',
+      token: 'token',
+    })
 
     await expect(
       client.request('POST', '/items/services', { name: '仓配' }, { unwrapData: false })
@@ -61,7 +77,10 @@ describe('Directus admin client', () => {
         })
       )
     )
-    const client = createDirectusAdminClient({ baseUrl: 'https://cms.example.com', token: 'token' })
+    const client = createDirectusAdminClient({
+      baseUrl: 'http://127.0.0.1:4399/cms',
+      token: 'token',
+    })
 
     await expect(
       client.request('POST', '/collections', {}, { allowStatuses: [409], unwrapData: false })
@@ -78,7 +97,10 @@ describe('Directus admin client', () => {
         })
       )
     )
-    const client = createDirectusAdminClient({ baseUrl: 'https://cms.example.com', token: 'token' })
+    const client = createDirectusAdminClient({
+      baseUrl: 'http://127.0.0.1:4399/cms',
+      token: 'token',
+    })
 
     await expect(client.request('GET', '/items/services')).rejects.toThrow(
       'GET /items/services: forbidden'
@@ -93,7 +115,7 @@ describe('Directus empty singleton envelopes', () => {
       vi.fn().mockResolvedValue(new Response('{"data":null}', { status: 200 }))
     )
     const client = createDirectusAdminClient({
-      baseUrl: 'https://cms.example.com',
+      baseUrl: 'http://127.0.0.1:4399/cms',
       token: 'test-token',
     })
     await expect(client.request('GET', '/items/homepage_content')).resolves.toBeNull()
@@ -105,7 +127,7 @@ describe('Directus empty singleton envelopes', () => {
       vi.fn().mockResolvedValue(new Response('{"unexpected":true}', { status: 200 }))
     )
     const client = createDirectusAdminClient({
-      baseUrl: 'https://cms.example.com',
+      baseUrl: 'http://127.0.0.1:4399/cms',
       token: 'test-token',
     })
     await expect(

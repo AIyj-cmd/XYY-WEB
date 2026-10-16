@@ -2787,3 +2787,18 @@ Limits：本轮限Chrome152模拟视口及离线/helper验证，空内容schema�
 - 代码推送后本地HEAD、origin/main、GitHub API main均同64ca9b9，领先/落后0/0，worktree干净。CI运行38857328980已触发，初次回读in_progress；不宣称远端CI已通过。后续仅DEV_STATE与本日志记录这些已发生事实，应用/测试/配置不变，复用本次提交前完整verify及独立Review，不重复无关测试。
 - Git HTTPS直连失败记录保留，经现有xray代理的单命令http.proxy配置普通推送，无force或持久配置修改。隔离验证副本在确认无活动进程后删除，日志与hash证据保留；本任务不部署、不操作真实CMS/数据库或生产配置，未启动/停止主预览。
 - 最终文档提交、远端精确回读、工作树和CI状态落盘于 `output/git-sync/xyy-20261016-01/final-result.json`；避免在文档中记录自身尚未产生的提交hash。最终状态以该证据与Git引用为准。
+
+#### XYY-20261016-02 — 新 ECS 环境边界与运维目标限制
+
+- 用户要求后续只保留新 ECS，旧测试站不再进行测试。本轮按 HIGH 完成 Terra → Luna → Nova → Sol，仅本地修改；基线 HEAD 为 `0f9405bd11847c9d3eca4148f9601cec05b41296`，开始时工作区干净。16 个实现/文档文件与 8 个测试文件在合同范围内，应用运行时 CMS、legacy-host、页面和生产配置保持。
+- README/AGENTS 明确当前环境，根模板改用 loopback，旧切域、诊断、Web/Nginx 模板归档，不把 `/var/www`、50031、Xray 流程冒充已适配的 `/data/xyy` 原生发布方案。新增命令目标策略；部署、health、管理与权限命令在操作前校验目标，health/管理请求禁止跟随重定向，formal canonical 元数据独立于实际探针地址。
+- R1 修复部署脚本末尾换行计数造成的 201 行门禁失败，仅调整参数排版。最终 R2 定向 6 文件/62 项、完整 verify 144 文件/1018 单测、736 类型文件 0 errors/0 warnings/5 hints、Lint、900 文件维护预算、资源/补丁检查、隔离 build 及 format:check 均通过。Nova R2 APPROVED；16 实现 hash 无漂移，28 候选中 27 个主/副本文件一致，`.env.example` 按隔离约定仅作静态审阅；12 个文档内部链接有效。
+- Sol 最终核对发现 R1 对旧 IP 覆盖的说明不实，暂停当轮批准并要求补齐；R2 已实际加入旧 IP、域名变体、userinfo、SSH 和消费者零 fetch 用例。R1 定向日志被 R2 覆盖，原始日志不能回溯；R1 完整 verify 和 R2 独立日志仍有效，未伪造恢复。缺少独立网络护栏事件日志，证据已改为有限的本地/mock 验证说明，不宣称系统级网络审计。此前副本/测试夹具失败及更正前汇总保留。
+- Sol 核对最终 diff、范围与证据后本地验收；确认无进程以验证副本为 cwd 后清理 `/home/yj/data/t1602/verify-snapshot`。未运行远程站点测试、提交、推送、部署或真实 CMS/数据库操作；实际 ECS 拓扑与原生发布适配未在本轮核验。最终索引 `output/environment-scope/xyy-20261016-02/final-result.json`，后续旧任务记录仅代表当时事实。
+
+#### XYY-20261016-03 — GitHub 同步预检
+
+- 用户明确授权将刚验收的项目改动推送至既有 `origin` / `AIyj-cmd/XYY-WEB` / `main` 并同步 Git 状态。范围为 Task02 的 29 个路径及普通状态文档，风险 HIGH；不部署、不测试远程站点、不操作真实 CMS/数据库，不强推或改写历史。
+- 已 fetch 现有 main，远端跟踪引用与本地 HEAD 均为 `0f9405bd11847c9d3eca4148f9601cec05b41296`，领先/落后 0/0。使用机器已有本地代理的单命令 Git 配置，TLS 验证保持，未改持久配置；未发现活动 Git hook，现有 CI 仅执行验证和产物归档，无自动部署。
+- 当前 29 路径均可归属于已验收范围，高置信敏感模式及禁止产物路径检查无命中；两个 `.env.example` 是已审阅模板，不包含真实凭据。README 仅把“同步本地”改为中性的文档整理说明，并指向 DEV_STATE 的 Git 状态。
+- Luna 只读核验当前应用/测试/配置与本会话刚执行的 Task02 R2 候选一致：完整 verify exit 0，144 文件/1018 单测、736 类型文件 0 errors/0 warnings/5 hints、900 文件维护预算、Lint、资源/补丁检查与构建通过，format exit 0，定向 62 项。遵循全绿且无代码变化不重复测试的规则，沿用准确候选的实际结果；本轮未重新运行全套。R1 定向日志覆盖及无独立网络护栏日志的限制保留。此处记录预检事实，提交/推送结果在后续条目与本任务证据中归档。
