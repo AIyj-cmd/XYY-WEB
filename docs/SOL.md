@@ -2829,3 +2829,10 @@ Limits：本轮限Chrome152模拟视口及离线/helper验证，空内容schema�
 - fetch 与远端 main 回读均确认基线 `3ce637a2aae6d5f654da1094534811f847f1a069`，本地与 origin/main 领先/落后 0/0。直连 25 秒超时后，通过机器已有本地代理的单命令配置完成 GitHub 连接，未改持久配置或 TLS 验证。当前没有活动 Git hook；CI 只执行验证和产物归档，没有自动部署。
 - Luna 提交前独立核对 PASS：5 个依赖/生成器/测试文件与本会话刚验收的 Task04 R3 freeze 完全一致，其他应用/测试/配置无漂移。沿用本次 R4 `verify:release`（含 `npm run verify`）的实际 exit 0：1020 单测、365 E2E 通过/17 既有跳过、6 formal 与构建；生产 audit 0 漏洞、format:check exit 0。仅状态文档增量做格式与 diff 检查，不重复全绿测试。
 - 10 个候选均可归属；新增 diff 高置信敏感模式与禁止产物路径检查无命中，不纳入环境文件、凭据、备份或 ignored 证据。此条为提交前事实，后续提交、推送及 CI 实际状态归档在本任务记录与 `output/git-sync/xyy-20261016-05/`。
+
+#### XYY-20261016-05 — 修复推送与 Git 状态归档
+
+- Luna PASS、Nova 对最终 10 项暂存内容 APPROVED 后，Sol 重新暂存本轮 Nova 日志，核对精确路径、暂存 blob hash、五个冻结实现/测试、增量文档格式与敏感模式。普通提交 `85f7db304cd1eb4749f89be6343123b48570bf2b`（`fix: upgrade sharp to patched 0.35.5`），推送现有 origin/main 成功；没有强推、改写历史或持久配置修改。
+- 代码推送后本地 HEAD、origin/main 和 GitHub 远端 main 均为上述提交，领先/落后 0/0、工作树干净。CI `38873519081` 已触发，首次回读为 in_progress；未将运行中或本地通过等同于远端 CI 通过。
+- 此后仅 DEV_STATE 与本日志归档实际同步事实，应用、测试、依赖和 CI 配置无变化，沿用刚通过的准确候选验证；文档增量检查格式与 diff，不重复完整测试。最终文档提交及 Git/CI 回读记录于 `output/git-sync/xyy-20261016-05/final-result.json`，最终提交身份以 Git 引用与该证据为准。
+- 本次只连接 GitHub，未访问远程业务站点/ECS、操作真实 CMS/数据库、部署或改变本地预览服务。推送不表示线上 Sharp 版本已经更新。
