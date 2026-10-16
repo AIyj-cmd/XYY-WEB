@@ -2780,3 +2780,10 @@ Limits：本轮限Chrome152模拟视口及离线/helper验证，空内容schema�
 - 只读预检确认120候选均可归属，未纳入环境文件、真实凭据、备份或构建产物；CI只有验证，无自动部署。GitHub HTTPS直连超时，改用机器已有本地代理的单命令Git配置后fetch/ls-remote成功，未改持久Git/系统配置或关闭TLS验证。当前本地、origin/main、GitHub API/refs均为9ad4fe0，领先/落后0/0。
 - 本次隔离 `npm run verify` exit0：729类型文件0错误0警告5提示、140测试文件970单测、Lint、维护预算、资源/缓存补丁检查与构建通过，完整format:check通过。首轮副本漏复制依赖内部dist，修正副本后完整重跑成功；原失败保留，不归因于产品代码。README只更新日期、已验收代码摘要及DEV_STATE已有历史部署身份。
 - Luna PASS、Nova最终APPROVED（0阻断），当前等待提交推送，不表示已推送。证据 `output/git-sync/xyy-20261016-01/`。本次只读检查时4321无监听，未启动或停止预览，也未访问生产站点。
+
+#### XYY-20261016-01 — 代码推送与 Git 状态归档
+
+- 在用户准确目标授权与Luna/Nova闸门通过后，120个路径提交为 `64ca9b9b4118683cdc39f368105005a12c6c70be`，普通推送现有origin/main成功。提交前重冻暂存blob hash、精确路径集合及高置信敏感模式，源码相对本次验证无漂移，仅5份已归属文档更新；未纳入.env、构建产物或ignored证据。
+- 代码推送后本地HEAD、origin/main、GitHub API main均同64ca9b9，领先/落后0/0，worktree干净。CI运行38857328980已触发，初次回读in_progress；不宣称远端CI已通过。后续仅DEV_STATE与本日志记录这些已发生事实，应用/测试/配置不变，复用本次提交前完整verify及独立Review，不重复无关测试。
+- Git HTTPS直连失败记录保留，经现有xray代理的单命令http.proxy配置普通推送，无force或持久配置修改。隔离验证副本在确认无活动进程后删除，日志与hash证据保留；本任务不部署、不操作真实CMS/数据库或生产配置，未启动/停止主预览。
+- 最终文档提交、远端精确回读、工作树和CI状态落盘于 `output/git-sync/xyy-20261016-01/final-result.json`；避免在文档中记录自身尚未产生的提交hash。最终状态以该证据与Git引用为准。

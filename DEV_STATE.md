@@ -11,7 +11,7 @@
 
 ## 当前目标
 
-- `XYY-20261016-01`：用户已授权将当前已验收工作提交并推送到 GitHub `AIyj-cmd/XYY-WEB` 的 `main`，同步 Git 状态；不部署网站。冻结候选 120 个路径，基线 HEAD 为 `9ad4fe0fa92bb14ee23fa2e6c7b79836c2798c80`，远端拉取及 API/refs 回读一致，领先/落后 0/0。隔离副本的本次 `npm run verify` exit 0：729 文件类型 0 errors/0 warnings/5 hints、140 单测文件/970 项、Lint、维护预算、资源/补丁检查及构建通过，完整 format:check 通过。首轮副本漏复制依赖内部 dist 导致失败，修正复制后通过，原失败保留；无主应用源码修正。Luna PASS、Nova APPROVED；当前等待提交推送，尚不能视为已同步。证据 `output/git-sync/xyy-20261016-01/`。
+- `XYY-20261016-01`：代码与文档已提交为 `64ca9b9b4118683cdc39f368105005a12c6c70be`，并普通推送至 GitHub `AIyj-cmd/XYY-WEB` 的 `main`；120 个路径包含此前安全修复、正文默认可见及四项优化，README已同步近期更新与历史部署身份。代码推送后本地HEAD、origin/main、GitHub API main三方一致，领先/落后0/0、工作树干净。Luna本次完整verify exit0：729类型文件0错误0警告5提示、140测试文件970单测、893文件维护预算、Lint、资源/补丁检查及构建通过，完整format:check通过；Nova最终APPROVED。首轮隔离依赖复制错误已修正并保留失败；最终应用/测试/配置hash一致。Git直连超时通过机器已有代理的单命令配置解决，未改持久配置；隔离副本已清理。此后仅归档真实同步状态，最终文档提交与CI回读见本任务证据及Git引用；CI已触发，未将运行中视为通过。本次无网站部署或真实CMS/数据库写入。下方旧任务的“未提交/推送”为当时状态，本轮纳入内容以此记录为准。证据 `output/git-sync/xyy-20261016-01/`。
 
 - `XYY-20261015-06`：第四阶段已本地验收，四项优化全部完成；Luna PASS、Nova APPROVED。新增 `npm run dev:local`，固定 development/ci/loopback 与假依赖，校验页面和进程身份后就绪或复用，严格端口、有界退出，并只排除本项目 output 监听以解决实际 ENOSPC。最终 19 单测、729 文件类型 0 errors/0 warnings/5 hints、Lint/格式、893 文件维护预算通过；冷暖六次均就绪、清理并满足冻结预算，mode、错误身份、端口占用、生命周期负例、同页 HMR、public HTML 监听及复用通过。旧后台测试曾误停原 PID 20029，原保持判据失败保留；具体 root/lock 来源未证实。现已恢复 `http://127.0.0.1:4321/`、PID 289258，中英 GET 200、复用保持新 PID。前后后台运行状态不同，不声明严格因果提速。6 实现 hash 与范围核对通过，临时测试副本已清理，原始失败及有效复测均保留。未提交、推送、部署或真实业务写入；最终候选未重跑完整 verify/release。证据 `output/optimization/xyy-20261015-06/final-result.json`。
 
@@ -485,11 +485,11 @@
 - Luna PASS、Nova最终增量APPROVED，Sol已复核桌面/手机/中文截图、167路径hash及本地10页200/英文真实404/语言/canonical。首审发现的退货页nowrap裁切已通过仅英文换行样式修复，原失败证据保留。既有1147保护路径内容（本文件仅新增此段）与四角色日志原始内容均保留。
 - 仅本地验收，未Git提交、推送、部署或写真实CMS/数据库/线索；原HEAD仍为`4a5bb2a`，线上版本不受本任务影响。预览`http://127.0.0.1:4524/en`使用离线CMS与假线索配置。验证限Chromium模拟视口和离线/mock依赖，未覆盖真实设备、Safari/Firefox或真实CMS/线索；未运行`verify:release`。证据：`output/english/xyy-20260927-04/sol-final-acceptance.json`；合同与验收记录见`docs/plans/xyy-20260927-04-english.md`。
 
-## Git 与环境状态（2026-10-14 同步任务）
+## Git 与环境状态（2026-10-16 同步任务）
 
-- 当前仓库为 `AIyj-cmd/XYY-WEB`，主分支 `main`；本次代码与README同步提交 `a67a89df9b3fb433eb9efd73ebbe2bb9dbd4a6f4` 已普通推送成功，包含关于页、全站页脚、Oracle 专属方案清理、Google 验证文件和工作记录。代码推送后本地HEAD、origin/main和GitHub main三方一致，领先/落后0/0、工作树干净；后续提交仅归档本次状态，仓库最新身份以Git引用及本任务最终回读证据为准。
-- 最近已验收的应用部署记录：测试站 `wz.tomatopia.top` 为 `eb05b8f` / `20261010T071221Z-eb05b8f`；新 ECS `8.138.148.179` 为 `e64db32` / `20261010T135801Z-e64db32`。2026-10-11 的 HTTPS 与公网后台入口调整没有改变新 ECS 应用版本。
-- 本次只执行 GitHub 同步与本地记录更新，没有部署网站或重新探测线上环境。历史环境版本不等于当前 Git HEAD；精确提交、远端回读和 CI 状态以本任务证据及顶部最新记录为准。
+- 仓库为 `AIyj-cmd/XYY-WEB`，主分支 `main`；代码与README同步提交 `64ca9b9b4118683cdc39f368105005a12c6c70be` 已普通推送成功，包含安全与发布兼容修复、正文默认可见、图库加载、手机咨询和本地启动优化，以及对应工作记录。代码推送后的本地HEAD、origin/main与GitHub API main一致，领先/落后0/0、工作树干净；后续文档提交仅归档这次已完成的同步，仓库最新身份以Git引用及本任务最终回读证据为准。
+- 最近已验收的应用部署记录：测试站 `wz.tomatopia.top` 为 `eb05b8f` / `20261010T071221Z-eb05b8f`；新 ECS `8.138.148.179` 为 `939e634` / `20261014T081032Z-939e634`，记录来自2026-10-14的原生Web发布。以上是历史部署身份，本次没有重新探测线上状态。
+- 本次只执行GitHub同步与本地记录更新，没有部署网站、修改生产配置或真实CMS/数据库写入。GitHub CI由push触发，运行中不等于通过；最终提交、远端回读和CI状态见 `output/git-sync/xyy-20261016-01/`。应用部署版本不等于当前Git HEAD。
 
 ## 2026-09-28 版本与环境历史
 
