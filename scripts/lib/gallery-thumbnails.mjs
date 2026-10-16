@@ -111,7 +111,7 @@ export async function generateGalleryThumbnails({
   outputDirectory,
 }) {
   const sharpVersion = sharp.versions?.sharp
-  if (sharpVersion !== '0.35.4') throw new Error(`gallery_thumbnail_sharp_version:${sharpVersion}`)
+  if (sharpVersion !== '0.35.5') throw new Error(`gallery_thumbnail_sharp_version:${sharpVersion}`)
   await mkdir(outputDirectory, { recursive: true })
   const previous = await readManifest(join(outputDirectory, manifestFile))
   const entries = {}

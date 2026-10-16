@@ -2490,3 +2490,22 @@ Status: CODE DONE（待 Luna 独立验证与 Nova Review）
 - Luna 完整 `verify` 在 typecheck 通过后仅因 `scripts/deploy.sh: 201 lines exceeds 200` 停止。根因是维护性检查用 `content.split(/\r?\n/).length` 计数，末尾换行形成额外空段；`wc -l` 的 200 不能满足该规则。
 - 仅将同一 `remote-target-policy` 调用中相邻的两项 canonical 参数合并为一个物理行。目标校验、参数顺序、错误路径和所有网络动作前置位置均未改变；文件现在 `wc -l` 为 199，维护性规则计为 200。
 - 自测 PASS：`bash -n scripts/deploy.sh`、`git diff --check`、`npm run check:maintainability`（900 files）通过。未运行网络、SSH、rsync、部署、CMS/数据库或完整 verify。证据 `output/environment-scope/xyy-20261016-02/terra/r1-maintainability-self-check.md`；交 Luna 对冻结候选复测。
+
+#### XYY-20261016-04 — Sharp GHSA-wq5f-xc86-pv6w lock remediation
+
+- 将 direct devDependency `sharp` 从精确 `0.35.4` 升级为精确 `0.35.5`。只通过 npm 官方 registry 查询元数据，并以 `npm install --package-lock-only --save-dev --save-exact sharp@0.35.5 --ignore-scripts --no-audit --no-fund` 定向更新 lock；未运行应用脚本、构建或站点请求。
+- lock 的 28 个变更记录仅包含 root direct pin、Sharp 与 26 个 `@img/sharp*` 原生平台包；Sharp 解析为 `0.35.5`，对应 libvips 包为 `1.3.4`。没有无关依赖漂移。主 `node_modules` 仍为 0.35.4，这是 lock-only 命令的预期结果，后续由已授权依赖同步或 Luna 的隔离 `npm ci` 使用新 lock。
+- 自测 PASS：JSON parse、锁差异白名单、Sharp/native 版本断言、`git diff --check`；`npm audit --omit=dev --json` exit 0、零漏洞且没有 Sharp advisory。证据 `output/security/xyy-20261016-04/terra/`。未运行 clean install、gallery 生成、build、完整 verify、远程网站/ECS/旧站、CMS/DB、SSH、部署、提交或推送；交 Luna 做独立 clean install、原图/缩略图与完整 release 门禁验证。
+
+- 补充依赖同步：首次两次禁脚本 `npm install` 均报 up-to-date，但实际 Sharp 目录仍为 0.35.4；隐藏 `node_modules/.package-lock.json` 已记录 0.35.5，内部原因未进一步证实。该不满足运行时验证的证据已保留。随后按补充授权运行 `npm ci --ignore-scripts --no-audit --no-fund --registry=https://registry.npmjs.org/`，重建主依赖树且 package/lock SHA-256 前后完全一致；运行时 `sharp.versions` 为 Sharp 0.35.5、librsvg 2.63.2，`npm ls sharp --omit=dev` 解析 Astro 的 Sharp 为 0.35.5。此过程仅访问 npm 官方 registry，没有业务站点/ECS/旧站/CMS/DB/SSH 请求；npm 的既有 transitive deprecation warnings 已记录但不在本次范围。
+
+#### XYY-20261016-04 R2 — gallery Sharp gate and local font artifact recovery
+
+- 将图库生成器的严格 Sharp 门禁由 `0.35.4` 更新为修复版本 `0.35.5`，不改缩略图 profile、catalog 或公共 API。单测同步更新期望，并新增两项回归：易受影响的 0.35.4 在处理图片前明确拒绝；旧版本 manifest 即使图片有效也不会命中缓存，而是重新生成并写回 0.35.5。
+- 自测 PASS：`npx vitest run tests/unit/gallery-thumbnails.test.ts`（8项）、目标 Prettier、ESLint、Node syntax 与 `git diff --check`。未执行 157 图生成、build、完整 verify 或站点请求；交 Luna 做独立图库和完整门禁验证。
+- 主 `npm ci --ignore-scripts` 会移除未被 npm 包管理的 `cn-font-split` native artifact。首次按 CI 固定 GitHub URL 恢复在连接超时后停止，未写入文件。随后按 Sol 授权复用 Luna 本轮隔离副本中已经由官方流程验证的缓存 artifact；复制前后均验证 6,145,760 bytes 和 SHA-256 `db4690e3b9c4b04f6dfa5965792585c389914038f6a4c90fbe73baaf16bbf19c`，并通过 `cn-font-split` import 与 `ldd`。此恢复仅写本地 `node_modules`，不改 tracked 配置；未新增外部业务站点/ECS/旧站/CMS/DB/SSH 请求。
+
+#### XYY-20261016-04 R3 — mobile optional details touch test repair
+
+- Luna trace 证实收起 native `details` 后先前取得的 summary bounding box 已过期，原始坐标触摸命中 checkbox。仅将 mobile 分支的四行 raw coordinate touch 改为 `await summary.tap()`；Playwright 现在在当前可操作的 summary 上完成真实触摸并执行滚动、稳定与命中检查。原有 keyboard/open/layout 断言未变，未改产品源码。
+- 自测 PASS：目标 Prettier、Node syntax 与 `git diff --check`。未运行浏览器或完整 release gate，保留 Luna R2 的失败与诊断证据，交 Luna 用原定向场景独立复测。

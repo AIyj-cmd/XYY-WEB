@@ -2814,3 +2814,18 @@ Limits：本轮限Chrome152模拟视口及离线/helper验证，空内容schema�
 
 - 代码 CI `38863463902` 随后结束为 failure，实际 job log 显示 `npm audit --omit=dev` exit 1：sharp `<0.35.5` 的 1 项 high 漏洞，GHSA-wq5f-xc86-pv6w / CVE-2026-96889；日志建议的 `0.35.5` 超出当前声明范围。格式与发布身份检查通过，完整 release 验证、容量门禁与 Lighthouse 因前序失败跳过，不能称为发布验证通过。
 - 本轮代码及状态提交均未修改依赖清单、lock 或 CI 审计步骤。仅记录真实阻塞，未执行自动依赖升级或放宽审计；依赖修复及兼容性验证属于后续独立范围。Git 推送已成功，远端 CI 失败不等于推送失败。Nova 只读复核与原始 job log 保存在本任务 ignored 证据中。
+
+#### XYY-20261016-04 — Sharp 漏洞本地修复验收
+
+- 用户明确授权修复 Sharp 高危漏洞，按 HIGH 完成 Terra → Luna → Nova → Sol；基线 HEAD `3ce637a2aae6d5f654da1094534811f847f1a069`、工作树干净。范围为依赖精确补丁升级、图库版本门禁及必要回归测试，不涉及业务页面或远程环境。最终 Luna PASS、Nova APPROVED，五个实现/测试文件与 R3 freeze 和隔离验证副本一致。
+- Sharp `0.35.4` → `0.35.5`，lock 仅 28 个预期记录变化；原生 libvips 包 `1.3.4`，实际 vips `8.18.7`、librsvg `2.63.2`。全新隔离 `npm ci`、生产依赖 audit 均 exit 0，漏洞总数 0。主工作区也已同步修复版本；两次 install 报 up-to-date 但实际旧目录未更新的失败保留，随后禁脚本 npm ci 成功。被移除的 cn-font native 产物通过隔离环境缓存恢复，固定官方 hash、大小、ldd/import 均核验；不把缓存核验或超时下载记作成功的新下载。
+- R1 图库门禁仍固定旧版导致失败，已同步为严格 `0.35.5` 并新增处理前拒绝旧版、旧 manifest 实际重建两项测试。157 张派生图重新生成并 raw decode，157 原图 hash 不变。R2 完整 release 的 8 项失败来自测试端口 4520 与 helper 4399 错配，纠正为默认端口；另 1 项手机测试因过期 raw 坐标命中 checkbox，R3 仅改为 `summary.tap()`，保留原键盘、open、布局和溢出断言。原始失败与 R3 定向 31 通过/1 失败日志保留，未用最终通过覆盖失败记录。
+- R4 最终完整 `npm run verify:release` exit 0：736 类型文件 0 errors/0 warnings/5 hints、144 单测文件/1020 项、365 E2E 通过/17 既有条件跳过/0 失败、6 formal、Lint/900 文件维护预算/资源与补丁检查及构建通过；`npm run format:check` exit 0。定向真实触摸 2/2、图库/catalog 10/10 通过。Sol 核对原始退出码、摘要、冻结 hash、157 原图与范围；未因文档归档重跑已通过的完整测试。
+- 本轮仅使用本地 loopback/mock；Node 网络护栏不等同系统级全流量审计。未访问 ECS、旧业务站点或真实 CMS/数据库，未提交、推送、部署或改变主预览进程；GitHub CI 仍是修复前状态，不能宣称已重新通过。最终范围、文档增量检查与隔离目录清理结果归档于 `output/security/xyy-20261016-04/final-result.json`，线上版本未验证或改变。
+
+#### XYY-20261016-05 — Sharp 修复 GitHub 同步预检
+
+- 用户明确授权将已验收的 Sharp 修复推送至既有 `origin` / `AIyj-cmd/XYY-WEB` / `main` 并同步 Git 状态；范围为 Task04 的 10 个路径与本轮普通状态记录，风险 HIGH。没有新的应用实现任务，不部署、不访问远程业务站点或真实 CMS/数据库。
+- fetch 与远端 main 回读均确认基线 `3ce637a2aae6d5f654da1094534811f847f1a069`，本地与 origin/main 领先/落后 0/0。直连 25 秒超时后，通过机器已有本地代理的单命令配置完成 GitHub 连接，未改持久配置或 TLS 验证。当前没有活动 Git hook；CI 只执行验证和产物归档，没有自动部署。
+- Luna 提交前独立核对 PASS：5 个依赖/生成器/测试文件与本会话刚验收的 Task04 R3 freeze 完全一致，其他应用/测试/配置无漂移。沿用本次 R4 `verify:release`（含 `npm run verify`）的实际 exit 0：1020 单测、365 E2E 通过/17 既有跳过、6 formal 与构建；生产 audit 0 漏洞、format:check exit 0。仅状态文档增量做格式与 diff 检查，不重复全绿测试。
+- 10 个候选均可归属；新增 diff 高置信敏感模式与禁止产物路径检查无命中，不纳入环境文件、凭据、备份或 ignored 证据。此条为提交前事实，后续提交、推送及 CI 实际状态归档在本任务记录与 `output/git-sync/xyy-20261016-05/`。

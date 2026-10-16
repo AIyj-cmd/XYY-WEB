@@ -6706,3 +6706,62 @@ Task ID：`XYY-20261016-02`；Risk：HIGH；Result：**Luna PASS**。本轮仅�
 - 隔离副本 `/home/yj/data/t1602/verify-snapshot` 的测试 hash 与主仓一致；依赖为独立副本，保留 `node_modules` 内部 dist，未复制 `.env`。`npm run verify` exit 0：typecheck 736 files、0 errors/0 warnings/5 hints；Vitest 144 files / 1018 tests；lint、maintainability 900 files、assets、cache patch 与 Astro server build 全部通过。`npm run format:check` exit 0。证据 [`final-result-r2.json`](../output/environment-scope/xyy-20261016-02/luna/final-result-r2.json)、[`retest-verify-r2.log`](../output/environment-scope/xyy-20261016-02/luna/retest-verify-r2.log)、[`retest-format-r2.log`](../output/environment-scope/xyy-20261016-02/luna/retest-format-r2.log)。
 - R1 定向日志路径被本轮复用覆盖；当前 62 项结果已另存为 `targeted-r2-final.log`，原 R1 55 项定向原始日志无法从该路径回溯。R1 full verify 证据未被覆盖，限制记录见 [`r1-targeted-log-overwrite-note.txt`](../output/environment-scope/xyy-20261016-02/luna/r1-targeted-log-overwrite-note.txt)。
 - 网络护栏仅在拦截事件时写记录；本轮未保留独立护栏事件日志，因此不将其表述为完整网络审计或以 `blocked=0` 作为全流量证明。请求配置为 loopback/mock；未访问 ECS、旧站、真实 CMS/数据库/SSH/rsync，未部署、提交或推送。
+
+#### XYY-20261016-04 R1 — Sharp 0.35.5 独立安全复测 FAIL
+
+Task ID：`XYY-20261016-04`；Risk：HIGH；Result：**Luna FAIL，返回 Sol/Terra 处理图库版本门禁后再复测**。候选 freeze 的 `package.json`/`package-lock.json` hash 与 Terra 证据一致；Luna 未修改实现、测试或依赖。
+
+- 全新隔离副本 `/home/yj/data/t1604/verify-snapshot` 排除了 `.git`、全部 `.env*`（含 `.env.example`）、`.astro`、`dist`、`output` 和旧 `node_modules`。官方 registry clean `npm ci` exit 0，加入 776 packages；`npm audit --omit=dev` exit 0，生产漏洞总数 0。
+- 依赖解析实际为 Sharp `0.35.5`、全部 Sharp native `0.35.5`、libvips native `1.3.4`；运行时 Sharp `0.35.5`、vips `8.18.7`、librsvg `2.63.2`。证据见 `output/security/xyy-20261016-04/luna/sharp-runtime-r1-corrected.json`。
+- 删除隔离副本中复制来的旧 `gallery-thumbnails` 后，定向命令 `npx vitest run tests/unit/gallery-thumbnails.test.ts tests/unit/gallery-catalog-source.test.ts` exit 1：catalog 2 项通过，thumbnail 6 项全部失败。`scripts/lib/gallery-thumbnails.mjs:114` 仍要求 `sharp.versions.sharp === '0.35.4'`，实际为 `0.35.5`，因此在生成/解码前抛出 `gallery_thumbnail_sharp_version:0.35.5`。
+
+Expected：Sharp 0.35.5 应被生成器接受并完成 157 张派生图重新生成与解码。Actual：版本门禁拒绝候选依赖。Likely affected area：图库缩略图生成器及其版本断言。Severity：HIGH。完整 `verify:release`、157 图重生成/解码和 `format:check` 已按失败即停规则未运行。原始失败见 [`gallery-unit-r1.log`](../output/security/xyy-20261016-04/luna/gallery-unit-r1.log)，汇总见 [`final-result-r1.json`](../output/security/xyy-20261016-04/luna/final-result-r1.json)。本轮未访问远程站点/ECS/旧站、CMS、数据库或生产环境，未部署、提交或推送。
+
+补充只读核验：Terra 同步后的主仓 `node_modules` 中 Sharp/runtime 为 `0.35.5`、vips `8.18.7`、librsvg `2.63.2`；`@fontpkg/alibaba-puhuiti-3-0` 的 regular/heavy TTF 文件存在，但 `cn-font-split` import 返回后触发 `ERR_FFI`，缺少 `node_modules/cn-font-split/dist/libffi-x86_64-unknown-linux-gnu.so`，主仓 native font import 不判通过。该检查未启动构建或服务，证据见 [`main-native-readonly-r2.json`](../output/security/xyy-20261016-04/luna/main-native-readonly-r2.json)。
+
+#### XYY-20261016-04 R2 — 隔离依赖与 release 环境准备
+
+Task ID：`XYY-20261016-04`；Risk：HIGH；Result：**准备完成，未运行 R2 release**。R1 图库版本门禁失败及其原始日志保持不变；等待 Terra R2 四文件 freeze 与哈希核对后才执行 release。
+
+- 隔离副本 `/home/yj/data/t1604/verify-snapshot` 已补齐 CI 规定的 `cn-font-split` native artifact：`6145760` bytes，SHA256 `db4690e3b9c4b04f6dfa5965792585c389914038f6a4c90fbe73baaf16bbf19c`；`ldd` 和 `require('cn-font-split/dist/node/index.js')` 均 exit 0。证据见 [`cn-font-native-prepare-r2.json`](../output/security/xyy-20261016-04/luna/cn-font-native-prepare-r2.json)、[`cn-font-native-ldd-r2.log`](../output/security/xyy-20261016-04/luna/cn-font-native-ldd-r2.log)、[`cn-font-native-import-r2.log`](../output/security/xyy-20261016-04/luna/cn-font-native-import-r2.log)。隔离环境中已有缓存产物与 CI 固定的官方 release hash 一致；本次 prepare 未重新下载，仅写入隔离副本，未修改主仓依赖。
+- 已建立 release 环境清单与 Node egress guard：loopback 假 Directus/Xiansuo、CI/development 环境、唯一本地测试端口和短 `TMPDIR`；formal origin 仅作为 metadata，浏览器/代理仍使用本地端口。guard 自检允许 loopback HTTP，并在连接前拒绝 `8.8.8.8` 的 HTTP/TCP；这不是系统级全流量审计。证据见 [`release-environment-r2.json`](../output/security/xyy-20261016-04/luna/release-environment-r2.json)、[`release-network-guard-r2.cjs`](../output/security/xyy-20261016-04/luna/release-network-guard-r2.cjs)、[`release-network-guard-selfcheck-r2.exit`](../output/security/xyy-20261016-04/luna/release-network-guard-selfcheck-r2.exit)。
+- 尚未执行 `npm run verify:release`、`npm run format:check`、157 张图库重新生成/解码或浏览器 formal 测试；这些属于 R2 freeze 后的单次验证。
+
+#### XYY-20261016-04 R2 — 独立安全复测 FAIL
+
+Task ID：`XYY-20261016-04`；Risk：HIGH；Result：**Luna FAIL，返回 Sol**。R2 四文件 freeze 与 4/4 哈希一致；未修改实现或测试。
+
+- 定向图库/catalog：10/10 PASS。旧 `sharpVersion: 0.35.4` manifest 实际触发重建；生成 157 张、157/157 metadata/raw decode、原图 157 张 hash 不变、无临时文件；最终 manifest 为 Sharp 0.35.5。
+- 初次完整 `npm run verify:release` 使用 4520 端口，exit 1：unit `144 files / 1020 tests passed`；E2E `356 passed / 9 failed / 17 skipped`。其中 8 项 `content-visibility` 因 helper 默认固定 `127.0.0.1:4399` 与本次 4520 webServer 不一致而 connection refused，另有 1 项 mobile optional-details touch 失败；formal/build 未到达，format 未运行。原始证据 [`verify-release-r2.log`](../output/security/xyy-20261016-04/luna/verify-release-r2.log)。
+- 按默认 4399 修正环境后，两份受影响 spec 定向为 `31 passed / 1 failed`；所有 content-visibility 通过，contact mobile 唯一失败稳定复现于 `contact-mobile.spec.ts:43`：键盘关闭 details 后复用旧 `summary.boundingBox()` 做 raw `touchscreen.tap`，实际命中 checkbox，`details[open]` 未打开。trace/screenshot 已保存；这属于测试交互定位问题，未据此判定应用实现缺陷，当前合同禁止 Luna 修改测试。
+- 网络护栏本次仅记录 Node 子进程安装事件，`blocked` 事件为 0；loopback 假依赖与不可达本地端口均已配置。该护栏不是系统级全流量审计。主仓 Sharp/native/rsvg 只读复核 exit 0。
+
+Expected：`verify:release`、`format:check` exit 0 且 E2E 无失败。Actual：完整门禁 exit 1；R2 不通过。证据汇总见 [`final-result-r2.json`](../output/security/xyy-20261016-04/luna/final-result-r2.json)。R1 失败与首个汇总脚本路径误判原件均保留。
+
+#### XYY-20261016-04 R4 — Sharp 安全修复最终独立验收
+
+Task ID：`XYY-20261016-04`；Risk：HIGH；Result：**Luna PASS**。R3 五文件 freeze 与隔离副本 5/5 哈希一致；Luna 未修改应用实现或受控测试逻辑，保留 R1/R2/R3 全部失败证据。
+
+- 修正后的 native optional details 定向用例：chromium/mobile `2 passed`，默认 4399；证据 [`targeted-r4.log`](../output/security/xyy-20261016-04/luna/targeted-r4.log)。
+- `npm run verify:release`：exit `0`。Unit `144 files / 1020 tests passed`；常规 Playwright E2E `365 passed / 17 skipped / 0 failed`；formal contract `6 passed`；最终 build 日志含 `Complete!`。证据 [`verify-release-r4.log`](../output/security/xyy-20261016-04/luna/verify-release-r4.log)、[`verify-release-r4.exit`](../output/security/xyy-20261016-04/luna/verify-release-r4.exit)。17 项为既有条件 skip，未被改为通过。
+- `npm run format:check`：exit `0`，证据 [`format-check-r4.log`](../output/security/xyy-20261016-04/luna/format-check-r4.log)。
+- 复用并核对图库证据：10/10 定向测试；旧 Sharp 0.35.4 manifest 实际重建；157/157 派生图 raw decode；157 张原图 hash 不变、无临时文件。最终原图复核 [`original-gallery-hash-final-r4.json`](../output/security/xyy-20261016-04/luna/original-gallery-hash-final-r4.json)。
+- 主仓只读复核：Sharp `0.35.5`、vips `8.18.7`、librsvg `2.63.2`；cn-font native `6145760` bytes、SHA256 `db4690…bbf19c`，import exit 0。证据 [`main-native-readonly-r4.json`](../output/security/xyy-20261016-04/luna/main-native-readonly-r4.json)。clean `npm ci` 与生产 audit 的 exit0 证据沿用 R1，因 package/lock 未变未重复运行。
+- R3 计数按实际日志分列：`targeted-r3.log` 为两 spec 合计 `31 passed / 1 failed`；此前 mobile-only `contact-mobile-r2.log` 为 `12/12 passed`，未合并成单一数字。R2 初始完整 run 的 `356/9 failed/17 skipped` 保留为失败证据。
+- R4 隔离服务端口 4399、4401、4402 均已释放；主 4321 未启动或触碰。网络护栏记录 Node 安装事件、blocked `0`；业务依赖均为 loopback 假服务，护栏不是系统级全流量审计。
+
+Regression coverage：Sharp/native/libvips/librsvg 版本与审计、图库缓存失效与 157 张实际生成/解码、完整 unit/E2E/formal/build、桌面/移动 contact details、no-JS、CMS fallback、SEO/formal origin 与格式门禁。
+
+Remaining risks：17 项既有条件 skip；正式 ECS/旧站/CMS/数据库未访问，未执行部署或外部写入；网络护栏不能替代系统级 egress 审计。隔离快照及 artifacts 保留给 Nova Review，尚未清理。最终汇总见 [`final-result-r4.json`](../output/security/xyy-20261016-04/luna/final-result-r4.json)。
+
+#### XYY-20261016-05 — Sharp 修复提交前独立验证
+
+Task ID：`XYY-20261016-05`；Risk：HIGH；Result：**Luna PASS（仅提交前验证，未执行 Git 写操作）**。
+
+- 当前工作树状态路径恰为合同列出的 10 个候选路径，无额外 tracked 状态路径；5 个应用/依赖/测试候选（`package.json`、`package-lock.json`、`scripts/lib/gallery-thumbnails.mjs`、`tests/unit/gallery-thumbnails.test.ts`、`tests/e2e/contact-mobile.spec.ts`）与 Task04 R3 freeze **5/5 SHA-256 一致**。其余 5 个为 DEV_STATE 与角色文档增量，已单独完成 `git diff --check`，无格式错误。
+- 沿用本会话已实际完成的 Task04 R4 门禁证据，未重跑无漂移的全量测试：`npm run verify:release` exit 0，144 files/1020 unit、365 E2E passed/17 个既有条件 skip/0 failed、6 formal、最终 build Complete；`npm run format:check` exit 0。生产依赖 audit 与 clean `npm ci` 的 exit 0 证据因 package/lock 哈希不变而复用。
+- Task04 的 R1/R2/R3 失败原件仍由原任务证据保留；本轮未把历史失败改写为通过，也未访问站点、ECS、CMS、数据库或执行部署。未发现候选状态中新增的密钥/私钥/真实环境文件；文档中的 `.env`/URL 仅为历史验证说明。
+
+Regression coverage：Sharp 0.35.5 依赖与锁文件、图库 157 项生成/解码与原图哈希、完整 unit/E2E/formal/build、格式门禁均由 Task04 R4 实际证据覆盖。
+
+Remaining risks：Luna 未检查远端分支 divergence、未 commit/push，也未重跑 CI；Sol 仍需在 Nova APPROVED 后执行合同授权的 Git 提交、推送和状态回读。隔离副本与 Task04 证据按 Sol/Nova 生命周期保留。

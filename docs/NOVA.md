@@ -3827,3 +3827,47 @@ Result：**APPROVED**。R2 已以真实源码和当前日志补齐 R1 的旧 IP 
 Remaining Risks：精确 ECS 正例仍为 mock；未回读真实 ECS、正式域名解析、SSH、Nginx、目录布局、凭据或任何远程服务。Node 测试与 fake command marker 只证明合同内入口，不构成系统级网络审计。通用 `/var/www`/50031/Xray 流程仍明确未适配 `/data/xyy`，未来发布需独立审核和准确授权。
 
 Handoff：**APPROVED** 返回 Sol 做最终验收并清理隔离副本。Nova 仅追加本日志及 ignored `output/environment-scope/xyy-20261016-02/nova/final-review-r2.json`；未修改实现、测试、合同或 DEV_STATE，未重跑测试、联网、提交、推送、部署或操作 CMS/数据库。
+
+### XYY-20261016-04 — Sharp 漏洞修复最终 Review
+
+Task ID：`XYY-20261016-04`（HIGH）。
+
+Review Scope：只审阅冻结的 `package.json`、`package-lock.json`、`scripts/lib/gallery-thumbnails.mjs`、`tests/unit/gallery-thumbnails.test.ts`、`tests/e2e/contact-mobile.spec.ts`，以及本任务合同、Terra/Luna 记录和原始验证证据。Nova 重算当前主仓与保留验证副本的 SHA-256，均与 `candidate-freeze-r3.json` **5/5 匹配**；基线 HEAD 为 `3ce637a2aae6d5f654da1094534811f847f1a069`。追加本日志前的 tracked 差异只包含这 5 个候选及 Terra/Luna 各自日志，`git diff --check` 无输出。
+
+Architecture：**PASS**。根 `sharp` 依赖从精确 `0.35.4` 升为精确 `0.35.5`，Astro 的生产 optional `^0.35.4` 在 clean install 中去重解析到 `0.35.5`。锁文件结构化对比恰有 28 个 package 记录变化：root、`node_modules/sharp` 和 26 个 `@img/sharp*` 平台/libvips 记录；没有其他 package 记录或顶层 lock 字段变化。图库生成器仅更新既有严格版本门禁，catalog、尺寸、质量、输出路径和原图契约未改。contact 改动仅修复测试的过期原始坐标，产品实现未变。
+
+Security：**PASS**。最终锁中 Sharp 及各平台 Sharp 包均为 `0.35.5`，libvips 平台包均为 `1.3.4`；clean runtime 为 Sharp `0.35.5`、vips `8.18.7`、librsvg `2.63.2`。`npm audit --omit=dev` exit 0、生产漏洞总数 0；官方证据记录受影响范围为 `<0.35.5`。生成器在创建输出目录或处理图像前拒绝任意非 `0.35.5` 运行时，0.35.4 负例还断言 Sharp 未被调用。候选没有 Secret、环境文件、业务站点配置或生产操作增量；依赖下载仅用于已授权本地/隔离安装。Node guard 只有进程内覆盖，不能扩大为系统级零出站审计。
+
+Maintainability：**PASS**。版本约束保持单点明确；旧 manifest 的 `sharpVersion` 继续参与现有 cache key，没有复制缓存逻辑。新增单测直接验证拒绝旧运行时与旧 cache 强制重建，且用 `finally` 恢复 spy。Playwright 改用 `summary.tap()`，由 locator 在当前可操作位置执行真实触摸，避免复用关闭 details 前取得的陈旧 bounding box；原键盘、open 状态、字段数量、无横向溢出和 H1 布局断言均保留。最终格式、lint、736 文件类型检查和 900 文件维护预算通过。
+
+Contract Risks：**PASS**。图库重新生成实际得到 157 个 manifest 条目和 157 个可 metadata/raw 解码 WebP，旧 `sharpVersion: 0.35.4` cache 被重建为 `0.35.5`；157 张原图 SHA-256 全部不变且无临时文件残留。本地主依赖已同步到 patched runtime；`cn-font-split` 本地 native artifact 按既有 CI 固定 SHA-256 恢复并通过 `ldd`/import，没有进入 tracked 候选。未改变 CMS/API、claims、图片清单、公开资源路径或部署配置。
+
+Test Coverage Review：**PASS**。Luna clean `npm ci` exit 0，`npm ls` 显示 Astro 与根依赖共同解析 Sharp `0.35.5`；图库/catalog 定向 **10/10** 通过。R4 定向 native-details 为 Chromium/mobile **2/2**；完整 `npm run verify:release` exit 0，包含 **144 files / 1020 unit tests**、常规 E2E **365 passed / 17 existing conditional skipped / 0 failed**、formal **6/6** 及最终 build `Complete!`；`npm run format:check` exit 0。R1 的旧门禁拒绝 0.35.5、R2 的 8 项端口错误加 1 项陈旧触摸失败、R3 的 `31 passed / 1 failed` 均保留并未计入 PASS；R4 日志与当前 5 文件冻结哈希一致。
+
+Result：**APPROVED**。未发现 correctness、architecture、security、Scope、maintainability、CMS/API contract 或回归覆盖阻断项；最终本地候选满足 Task 04 AC。
+
+Remaining Risks：本结论只覆盖本地候选和隔离验证。17 项既有条件 skip 仍存在；Node guard 与 Playwright route 不是系统级网络审计。本轮未访问业务站点、新/旧 ECS、真实 CMS 或数据库，也未提交、推送或部署；本任务没有改变或核验线上运行版本，后续推送或部署仍需准确授权及相应门禁。
+
+Handoff：**APPROVED** 返回 Sol 做最终验收、状态更新和隔离副本清理。Nova 仅追加本日志及 ignored `output/security/xyy-20261016-04/nova/final-review.json`；未修改实现、测试或其他角色日志，未启动服务、联网、提交、推送或部署。
+
+### XYY-20261016-05 — Sharp 修复 GitHub 同步提交前 Review
+
+Task ID：`XYY-20261016-05`（HIGH）。
+
+Review Scope：审阅 Git index 中待提交的 10 个路径：Task 04 的 5 个实现/测试文件与 `DEV_STATE.md`、四份角色日志；以 `git diff --cached` 为候选，不审阅 ignored 证据或其他历史文件。基线 HEAD、`origin/main` 与远端回读均为 `3ce637a2aae6d5f654da1094534811f847f1a069`，分叉为 0/0，当前分支为 `main`，目标为既有 `origin` / `AIyj-cmd/XYY-WEB` / `main`。
+
+Architecture：**PASS**。暂存集合与合同 `candidatePaths` 精确相同，无新增、缺失、重命名、模式变化或 workflow 修改。`package.json`、`package-lock.json`、图库版本门禁及两项测试的 index blob SHA-256 与 Task 04 `candidate-freeze-r3.json` **5/5 匹配**，因此上轮 Nova APPROVED 与同候选 Luna 完整验证可以复用。其余 5 个 Markdown 只归档 Task 04 的实现、失败历史、最终验收和 Task 05 提交前事实，没有改变运行契约。
+
+Security：**PASS**。候选路径不含 `.env`、Secret、私钥、备份、构建产物、ignored output 或 native artifact；新增行的高置信敏感模式无命中。现有 Git hook 没有活动脚本，`core.hooksPath` 未配置。`.github/workflows/ci.yml` 未进入候选，当前 workflow 权限为 `contents: read`，只执行安装、格式、release identity、生产依赖审计、完整 release/Lighthouse 验证及 artifact 上传，没有 SSH、rsync 或部署步骤。批准仅覆盖用户明确授权的普通非 force push，不覆盖业务站点、ECS、CMS、数据库、SSH 或部署。
+
+Maintainability：**PASS**。暂存 diff whitespace 检查通过；Task 04 完整 `format:check` exit 0。Task 05 没有新的应用、依赖或 CI 改动，文档明确区分本地修复已验收、尚未提交/推送、CI 尚未重新触发、线上版本未改变或核验。Sol 新增的 Task 05 预检段只记录授权、目标、基线、同候选验证复用和候选安全检查，没有把计划写成结果。
+
+Contract Risks：**PASS**。普通 push 会触发现有 GitHub CI，但仓库没有自动部署副作用；推送成功、远端一致、CI 状态和部署状态仍是相互独立的事实。直连 GitHub fetch 的 25 秒超时已保留，随后仅用机器既有本地代理的单命令 Git 配置完成 fetch/ls-remote，未改持久配置或关闭 TLS 验证。当前三方基线一致且无分叉，允许 Sol 在追加本 Nova 日志后重新暂存同一 10 路径、复核 index，再普通提交和推送。
+
+Test Coverage Review：**PASS**。Luna 提交前核验确认 5 个代码/依赖/测试文件无漂移，并复用本会话同候选的 Task 04 R4 证据：clean `npm ci`、`npm audit --omit=dev` 0 漏洞、完整 `npm run verify:release` exit 0（144 files / 1020 unit、365 E2E passed / 17 existing skipped / 0 failed、6 formal、最终 build 完成）及 `npm run format:check` exit 0。由于只有状态文档增量且实现哈希未变，未重复运行已绿门禁符合验证规则；R1–R3 失败证据继续保留。
+
+Result：**APPROVED**。未发现 Scope、架构、安全、维护性、契约或证据可信性的提交/普通推送阻断项。当前候选可以交 Sol 做最终 index 复核、提交和用户已授权的普通 push。
+
+Remaining Risks：本结论发生在提交和推送前，不表示 commit、push、远端 CI 或部署已完成。GitHub CI 实际结果必须在推送后回读；即使 push 成功，也不能提前记录 CI 通过或线上版本变化。候选追加本 Nova 日志后，`docs/NOVA.md` 会产生预期的 unstaged 增量；Sol 应只重暂存该授权日志并重算最终 10 路径/hash/diff/敏感检查，任何其他源码、测试、依赖、workflow 或候选路径变化都会使本批准失效。
+
+Handoff：**APPROVED** 返回 Sol。Nova 仅追加本日志和 ignored `output/git-sync/xyy-20261016-05/nova/final-review.json`；未修改 index、实现、测试或其他角色日志，未运行测试、联网、提交、推送、部署或操作任何业务环境。

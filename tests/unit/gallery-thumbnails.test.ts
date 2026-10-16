@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 
 import sharp from 'sharp'
-import { afterEach, describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import { readGalleryCatalog } from '../../scripts/lib/gallery-catalog.mjs'
 import {
@@ -42,7 +42,7 @@ describe('gallery thumbnail generation', () => {
       sourceDirectory,
       outputDirectory,
     })
-    expect(result).toMatchObject({ count: 2, sharpVersion: '0.35.4' })
+    expect(result).toMatchObject({ count: 2, sharpVersion: '0.35.5' })
     const manifest = JSON.parse(await readFile(join(outputDirectory, 'manifest.json'), 'utf8'))
     expect(manifest.profile).toEqual(galleryThumbnailProfile)
     for (const entry of entries) {
@@ -73,6 +73,48 @@ describe('gallery thumbnail generation', () => {
     await expect(
       sharp(join(outputDirectory, entries[0].filename)).metadata()
     ).resolves.toMatchObject({ format: 'webp' })
+  })
+
+  it('rejects vulnerable Sharp before processing an image', async () => {
+    const vulnerableSharp = Object.assign(vi.fn(), { versions: { sharp: '0.35.4' } })
+    const outputDirectory = await mkdtemp(join(tmpdir(), 'xyy-gallery-unit-'))
+    workspaces.push(outputDirectory)
+    await expect(
+      generateGalleryThumbnails({
+        sharp: vulnerableSharp,
+        catalog: [entries[0]],
+        sourceDirectory,
+        outputDirectory,
+      })
+    ).rejects.toThrow('gallery_thumbnail_sharp_version:0.35.4')
+    expect(vulnerableSharp).not.toHaveBeenCalled()
+  })
+
+  it('regenerates instead of reusing a cache written by vulnerable Sharp', async () => {
+    const outputDirectory = await mkdtemp(join(tmpdir(), 'xyy-gallery-unit-'))
+    workspaces.push(outputDirectory)
+    await generateGalleryThumbnails({
+      sharp,
+      catalog: [entries[0]],
+      sourceDirectory,
+      outputDirectory,
+    })
+    const manifestPath = join(outputDirectory, 'manifest.json')
+    const manifest = JSON.parse(await readFile(manifestPath, 'utf8'))
+    await writeFile(manifestPath, JSON.stringify({ ...manifest, sharpVersion: '0.35.4' }))
+    const toFile = vi.spyOn(sharp.prototype, 'toFile')
+    try {
+      await generateGalleryThumbnails({
+        sharp,
+        catalog: [entries[0]],
+        sourceDirectory,
+        outputDirectory,
+      })
+      expect(toFile).toHaveBeenCalledTimes(1)
+    } finally {
+      toFile.mockRestore()
+    }
+    expect(JSON.parse(await readFile(manifestPath, 'utf8')).sharpVersion).toBe('0.35.5')
   })
 
   it('fails visibly when a catalog source is missing', async () => {

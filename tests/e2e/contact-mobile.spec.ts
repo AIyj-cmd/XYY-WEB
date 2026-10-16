@@ -61,9 +61,7 @@ test('native optional details support keyboard and touch without changing primar
   await summary.press('Space')
   await expect(optional(page)).not.toHaveAttribute('open', '')
   if (testInfo.project.name === 'mobile') {
-    const box = await summary.boundingBox()
-    if (!box) throw new Error('missing_optional_summary_box')
-    await page.touchscreen.tap(box.x + box.width / 2, box.y + box.height / 2)
+    await summary.tap()
     await expect(optional(page)).toHaveAttribute('open', '')
   }
   await expectNoHorizontalOverflow(page)
