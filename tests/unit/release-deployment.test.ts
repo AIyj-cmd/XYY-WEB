@@ -84,15 +84,10 @@ describe('deployment release identity', () => {
     ]) {
       expect(deployScript).not.toContain(shellSensitiveTemplate)
     }
-    for (const requiredIdentityCheck of [
-      '/version',
-      'gitSha',
-      'releaseId',
-      'environment',
-      'cmsSchemaVersion',
-    ]) {
-      expect(deployScript).toContain(requiredIdentityCheck)
-    }
+    expect(deployScript).toContain('scripts/local-release-probe.mjs')
+    expect(deployScript).toContain('--health')
+    expect(deployScript).toContain('--version')
+    expect(deployScript).toContain('RELEASE_MANIFEST')
   })
 
   it.each(['modified', 'staged', 'untracked'])(

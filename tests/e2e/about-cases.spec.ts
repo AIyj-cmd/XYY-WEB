@@ -1,5 +1,4 @@
 import { expect, test } from '@playwright/test'
-
 test('refactored about, cases, publications and Yundao modules preserve their contracts', async ({
   page,
 }, testInfo) => {
@@ -84,8 +83,8 @@ test('refactored about, cases, publications and Yundao modules preserve their co
     )
     .toContain('linear-gradient')
   const fixedGalleryOrder = await page
-    .locator('.about-gallery__figure img')
-    .evaluateAll((images) => images.map((image) => image.getAttribute('src')))
+    .locator('[data-gallery-thumbnail]')
+    .evaluateAll((links) => links.map((link) => link.getAttribute('href')))
   expect(new Set(fixedGalleryOrder).size).toBe(157)
   for (const src of fixedGalleryOrder) expect(src).toMatch(/^\/about\/gallery\/gallery-\d+\.webp$/)
   expect(fixedGalleryOrder.slice(0, 5)).toEqual([
@@ -102,12 +101,16 @@ test('refactored about, cases, publications and Yundao modules preserve their co
   )
   await expect(page.locator('.about-gallery__figure img').first()).toHaveAttribute('width', '1280')
   await expect(page.locator('.about-gallery__figure img').first()).toHaveAttribute('height', '960')
+  await expect(page.locator('.about-gallery__figure img').first()).toHaveAttribute(
+    'src',
+    /\/about\/gallery-thumbnails\/gallery-\d+\.webp$/
+  )
   await page.reload()
   await expect(page.locator('.about-gallery__figure img')).toHaveCount(157)
   expect(
     await page
-      .locator('.about-gallery__figure img')
-      .evaluateAll((images) => images.map((image) => image.getAttribute('src')))
+      .locator('[data-gallery-thumbnail]')
+      .evaluateAll((links) => links.map((link) => link.getAttribute('href')))
   ).toEqual(fixedGalleryOrder)
 
   const muteButton = page.locator('#hero-mute-btn')

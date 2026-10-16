@@ -79,20 +79,12 @@ previous_target=''
 if [[ -f "\$release_dir/.previous_target" ]]; then
   previous_target=\$(cat "\$release_dir/.previous_target")
 fi
+probe_local_health() {
+  LOCAL_PROBE_URL="http://127.0.0.1:$WEB_PORT" PATH='$NODE_BIN':\$PATH node "\$release_dir/scripts/local-release-probe.mjs" --health
+}
 verify_release_identity() {
   local manifest=\"\$1\"
-  if [[ ! -f \"\$manifest\" ]]; then
-    echo 'legacy_previous_release_identity_unavailable' >&2
-    return 2
-  fi
-  RELEASE_MANIFEST=\"\$manifest\" WEB_PORT='$WEB_PORT' PATH='$NODE_BIN':\$PATH node -e \"
-    const fs=require('node:fs'),expected=JSON.parse(fs.readFileSync(process.env.RELEASE_MANIFEST,'utf8'));
-    fetch('http://127.0.0.1:' + process.env.WEB_PORT + '/version').then(async response=>{
-      if(!response.ok) throw new Error('version HTTP ' + response.status);
-      const actual=await response.json();
-      for(const key of ['gitSha','releaseId','environment','cmsSchemaVersion'])
-        if(actual[key]!==expected[key]) throw new Error('release identity mismatch: ' + key);
-    }).catch(error=>{console.error(error.message);process.exit(1)});\"
+  LOCAL_PROBE_URL="http://127.0.0.1:$WEB_PORT" RELEASE_MANIFEST=\"\$manifest\" PATH='$NODE_BIN':\$PATH node "\$release_dir/scripts/local-release-probe.mjs" --version
 }
 restore_previous() {
   PATH='$NODE_BIN':\$PATH pm2 delete xyy-web >/dev/null 2>&1 || true
@@ -105,7 +97,7 @@ restore_previous() {
   fi
   PATH='$NODE_BIN':\$PATH pm2 save
   for _ in {1..30}; do
-    if curl -fsS http://127.0.0.1:$WEB_PORT/healthz >/dev/null; then
+    if probe_local_health; then
       if [[ -f \"\$previous_target/release-manifest.json\" ]]; then
         verify_release_identity \"\$previous_target/release-manifest.json\"
       else
@@ -133,8 +125,7 @@ if ! PATH='$NODE_BIN':\$PATH pm2 start \"\$current_link/ecosystem.config.cjs\" -
 fi
 healthy=0
 for _ in {1..30}; do
-  health_payload=\"\$(curl -fsS http://127.0.0.1:$WEB_PORT/healthz || true)\"
-  if [[ \"\$health_payload\" == *'\"cmsContent\":\"ok\"'* && \"\$health_payload\" == *'\"contactStorage\":\"ok\"'* ]]; then
+  if probe_local_health; then
     healthy=1
     break
   fi
@@ -174,13 +165,17 @@ mv -Tf \"\$current_link.rollback\" \"\$current_link\"
 PATH='$NODE_BIN':\$PATH pm2 delete xyy-web >/dev/null 2>&1 || true
 PATH='$NODE_BIN':\$PATH pm2 start \"\$current_link/ecosystem.config.cjs\" --update-env
 PATH='$NODE_BIN':\$PATH pm2 save
+probe_local_health() {
+  LOCAL_PROBE_URL="http://127.0.0.1:$WEB_PORT" PATH='$NODE_BIN':\$PATH node "\$release_dir/scripts/local-release-probe.mjs" --health
+}
+verify_release_identity() {
+  local manifest=\"\$1\"
+  LOCAL_PROBE_URL="http://127.0.0.1:$WEB_PORT" RELEASE_MANIFEST=\"\$manifest\" PATH='$NODE_BIN':\$PATH node "\$release_dir/scripts/local-release-probe.mjs" --version
+}
 for _ in {1..30}; do
-  if curl -fsS http://127.0.0.1:$WEB_PORT/healthz >/dev/null; then
+  if probe_local_health; then
     if [[ -f \"\$previous_target/release-manifest.json\" ]]; then
-      RELEASE_MANIFEST=\"\$previous_target/release-manifest.json\" WEB_PORT='$WEB_PORT' PATH='$NODE_BIN':\$PATH node -e \"
-        const fs=require('node:fs');const e=JSON.parse(fs.readFileSync(process.env.RELEASE_MANIFEST));
-        fetch('http://127.0.0.1:' + process.env.WEB_PORT + '/version').then(async r=>{const a=await r.json();
-        if(!r.ok||['gitSha','releaseId','environment','cmsSchemaVersion'].some(k=>a[k]!==e[k]))process.exit(1)})\"
+      verify_release_identity \"\$previous_target/release-manifest.json\"
     else
       echo 'legacy_previous_release_identity_unavailable' >&2
     fi

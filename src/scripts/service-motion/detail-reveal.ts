@@ -15,7 +15,7 @@ const clearTarget = (target: DetailRevealTarget, animation?: Animation) => {
 }
 
 const reveal = (target: DetailRevealTarget, animations: Map<HTMLElement, Animation>, delay = 0) => {
-  if (!target.element.hasAttribute(pendingAttribute) || animations.has(target.element)) return
+  if (animations.has(target.element)) return
 
   const keyframes: Keyframe[] =
     target.kind === 'media'
@@ -27,22 +27,29 @@ const reveal = (target: DetailRevealTarget, animations: Map<HTMLElement, Animati
           { opacity: 0, translate: DETAIL_REVEAL_TIMING.copyDistance },
           { opacity: 1, translate: '0' },
         ]
-  const animation = target.element.animate(keyframes, {
-    duration: DETAIL_REVEAL_TIMING.duration,
-    delay,
-    easing: DETAIL_REVEAL_TIMING.easing,
-    fill: 'both',
-  })
-
-  animations.set(target.element, animation)
-  animation.addEventListener(
-    'finish',
-    () => {
-      clearTarget(target, animation)
-      animations.delete(target.element)
-    },
-    { once: true }
-  )
+  let animation: Animation | undefined
+  try {
+    animation = target.element.animate(keyframes, {
+      duration: DETAIL_REVEAL_TIMING.duration,
+      delay,
+      easing: DETAIL_REVEAL_TIMING.easing,
+      fill: 'both',
+    })
+    target.element.setAttribute(pendingAttribute, target.kind)
+    animations.set(target.element, animation)
+    animation.addEventListener(
+      'finish',
+      () => {
+        clearTarget(target, animation)
+        animations.delete(target.element)
+      },
+      { once: true }
+    )
+  } catch (error) {
+    clearTarget(target, animation)
+    animations.delete(target.element)
+    throw error
+  }
 }
 
 const isVisibleSoon = (element: HTMLElement) => {
@@ -88,19 +95,24 @@ const initialize = () => {
   let pointerDownTarget: EventTarget | null = null
   const observer = new IntersectionObserver(
     (entries) => {
-      const visibleTargets = entries
-        .filter((entry) => entry.isIntersecting)
-        .sort(
-          (left, right) =>
-            (targetOrder.get(left.target as HTMLElement) ?? 0) -
-            (targetOrder.get(right.target as HTMLElement) ?? 0)
-        )
-        .flatMap((entry) => {
-          observer.unobserve(entry.target)
-          const target = targetByElement.get(entry.target as HTMLElement)
-          return target ? [target] : []
-        })
-      revealInOrder(visibleTargets, animations)
+      try {
+        const visibleTargets = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort(
+            (left, right) =>
+              (targetOrder.get(left.target as HTMLElement) ?? 0) -
+              (targetOrder.get(right.target as HTMLElement) ?? 0)
+          )
+          .flatMap((entry) => {
+            observer.unobserve(entry.target)
+            const target = targetByElement.get(entry.target as HTMLElement)
+            return target ? [target] : []
+          })
+        revealInOrder(visibleTargets, animations)
+      } catch (error) {
+        revealAll()
+        throw error
+      }
     },
     {
       threshold: DETAIL_REVEAL_TIMING.threshold,
@@ -113,23 +125,27 @@ const initialize = () => {
     animations.clear()
   }
 
-  targets.forEach((target) => {
-    target.element.setAttribute(pendingAttribute, target.kind)
-    if (!isVisibleSoon(target.element)) observer.observe(target.element)
-  })
-  revealInOrder(
-    targets.filter((target) => isVisibleSoon(target.element)),
-    animations
-  )
+  try {
+    targets.forEach((target) => {
+      if (!isVisibleSoon(target.element)) observer.observe(target.element)
+    })
+    revealInOrder(
+      targets.filter((target) => isVisibleSoon(target.element)),
+      animations
+    )
 
-  const anchor = hashTarget()
-  if (anchor) {
-    targets
-      .filter((target) => target.element.contains(anchor))
-      .forEach((target) => {
-        clearTarget(target, animations.get(target.element))
-        animations.delete(target.element)
-      })
+    const anchor = hashTarget()
+    if (anchor) {
+      targets
+        .filter((target) => target.element.contains(anchor))
+        .forEach((target) => {
+          clearTarget(target, animations.get(target.element))
+          animations.delete(target.element)
+        })
+    }
+  } catch (error) {
+    revealAll()
+    throw error
   }
   const clearPointerDownTarget = () => {
     pointerDownTarget = null

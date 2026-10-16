@@ -59,12 +59,21 @@ export function createCanonicalRedirect(config) {
   return (req, res, next) => {
     const requestHost = req.hostname.toLowerCase()
     const requestProtocol = res.locals?.requestProtocol ?? req.protocol
+    const method = (req.method || 'GET').toUpperCase()
+    const publicSiteOrigin = config.publicSiteOrigin || config.formalOrigin
     const query = req.originalUrl.includes('?')
       ? req.originalUrl.slice(req.originalUrl.indexOf('?'))
       : ''
     const originRelativePath = normalizeOriginRelativePath(req.path)
     const mappedPath = LEGACY_PATH_REDIRECTS.get(originRelativePath) || originRelativePath
     const normalizedPath = normalizeCanonicalPath(mappedPath)
+
+    if (requestProtocol !== 'https' && publicSiteOrigin.startsWith('https://')) {
+      if (method === 'GET' || method === 'HEAD') {
+        return res.redirect(308, `${publicSiteOrigin}${normalizedPath}${query}`)
+      }
+      return res.status(400).type('text/plain').send('HTTPS Required')
+    }
 
     const isFormalHost =
       requestHost === config.formalHost || requestHost === `www.${config.formalHost}`
@@ -95,12 +104,13 @@ export function createSecurityHeaders(config) {
         "base-uri 'self'",
         "form-action 'self'",
         "frame-ancestors 'self'",
-        "script-src 'self' 'unsafe-inline'",
+        "object-src 'none'",
+        "script-src 'self'",
         "style-src 'self' 'unsafe-inline'",
         "img-src 'self' data: https:",
         "font-src 'self' data:",
         "media-src 'self'",
-        `connect-src 'self' ${config.publicSiteOrigin || config.formalOrigin}`,
+        "connect-src 'self'",
       ].join('; ')
     )
     next()

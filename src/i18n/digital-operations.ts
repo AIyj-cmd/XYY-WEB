@@ -1,3 +1,7 @@
+export const DIGITAL_OPERATIONS_CHINESE = {
+  breadcrumb: '物流数字化能力',
+} as const
+
 export const DIGITAL_OPERATIONS_ENGLISH = {
   title: 'Logistics digital operations | Order, inventory and fulfilment coordination',
   description:

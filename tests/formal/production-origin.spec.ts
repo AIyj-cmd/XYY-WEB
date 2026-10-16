@@ -2,6 +2,42 @@ import { expect, test } from '@playwright/test'
 import { getClaimText } from '../../src/lib/claims'
 
 const formalOrigin = 'https://56xyy.com'
+const directAppOrigin = process.env.PLAYWRIGHT_FORMAL_APP_ORIGIN
+
+test('formal loopback proxy provides HTTPS health and version paths', async ({ request }) => {
+  const health = await request.get('/healthz', { maxRedirects: 0 })
+  expect(health.status()).toBe(503)
+  await expect(health.json()).resolves.toEqual({
+    status: 'degraded',
+    dependencies: { cmsContent: 'unreachable', contactStorage: 'unreachable' },
+  })
+
+  const version = await request.get('/version', { maxRedirects: 0 })
+  expect(version.status()).toBe(503)
+  await expect(version.json()).resolves.toEqual({
+    status: 'unavailable',
+    error: 'release_identity_unavailable',
+  })
+})
+
+test('formal direct cleartext requests cannot use the proxy route', async ({ playwright }) => {
+  expect(directAppOrigin).toBeTruthy()
+  const direct = await playwright.request.newContext({ baseURL: directAppOrigin })
+  try {
+    const get = await direct.get('/healthz', { maxRedirects: 0 })
+    expect(get.status()).toBe(308)
+    expect(get.headers().location).toBe(`${formalOrigin}/healthz`)
+
+    const head = await direct.head('/version', { maxRedirects: 0 })
+    expect(head.status()).toBe(308)
+    expect(head.headers().location).toBe(`${formalOrigin}/version`)
+
+    const unsafe = await direct.post('/contact', { maxRedirects: 0 })
+    expect(unsafe.status()).toBe(400)
+  } finally {
+    await direct.dispose()
+  }
+})
 
 test('formal-domain build publishes indexable canonical pages', async ({ page }) => {
   const paths = [
@@ -84,8 +120,7 @@ test('formal server normalizes www, legacy domains and legacy paths', async ({ r
     maxRedirects: 0,
   })
   expect(legacyPath.status()).toBe(301)
-  // Direct clients cannot authenticate X-Forwarded-Proto; canonical redirects use the formal origin.
-  expect(legacyPath.headers().location).toBe(`${formalOrigin}/?source=old`)
+  expect(legacyPath.headers().location).toBe('/?source=old')
 })
 
 test('formal whitepaper routes preserve query redirects and reject unknown issues', async ({

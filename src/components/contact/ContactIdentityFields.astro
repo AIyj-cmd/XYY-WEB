@@ -2,94 +2,132 @@
 import type { SiteLocale } from '@/i18n/routes'
 import { CONTACT_FIELD_MAX_LENGTHS } from '@/lib/contact/validation'
 
-const { locale = 'zh-CN' } = Astro.props as { locale?: SiteLocale }
+const { locale = 'zh-CN', group = 'primary' } = Astro.props as {
+  locale?: SiteLocale
+  group?: 'primary' | 'optional'
+}
 const english = locale === 'en'
+const inputClass =
+  'w-full rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none transition-colors focus:border-navy-400 focus:ring-2 focus:ring-navy-100'
 ---
 
-<div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
-  <div>
-    <label for="name" class="mb-1.5 block text-sm font-semibold text-gray-700">
-      {english ? 'Your name' : '您的姓名'}
-      <span class="text-brand-orange" aria-hidden="true">*</span>
-    </label>
-    <input
-      type="text"
-      id="name"
-      name="name"
-      required
-      maxlength="80"
-      autocomplete="name"
-      placeholder={english ? 'Enter your name' : '请输入您的姓名'}
-      class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none transition-colors focus:border-navy-400 focus:ring-2 focus:ring-navy-100"
-    />
-  </div>
-  <div>
-    <label for="company" class="mb-1.5 block text-sm font-semibold text-gray-700"
-      >{english ? 'Company or brand' : '公司/品牌名称'}</label
-    >
-    <input
-      type="text"
-      id="company"
-      name="company"
-      maxlength="120"
-      autocomplete="organization"
-      placeholder={english ? 'Enter a company or brand' : '请输入公司或品牌名称'}
-      class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none transition-colors focus:border-navy-400 focus:ring-2 focus:ring-navy-100"
-    />
-  </div>
-</div>
+{
+  group === 'primary' && (
+    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+      <div>
+        <label for="name" class="mb-1.5 block text-sm font-semibold text-gray-700">
+          {english ? 'Your name' : '您的姓名'}
+          <span class="text-brand-orange" aria-hidden="true">
+            *
+          </span>
+        </label>
+        <input
+          type="text"
+          id="name"
+          name="name"
+          required
+          maxlength="80"
+          autocomplete="name"
+          placeholder={english ? 'Enter your name' : '请输入您的姓名'}
+          class={inputClass}
+        />
+      </div>
+      {english ? (
+        <div>
+          <label for="email" class="mb-1.5 block text-sm font-semibold text-gray-700">
+            Email
+            <span class="text-brand-orange" aria-hidden="true">
+              *
+            </span>
+          </label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            required
+            maxlength={CONTACT_FIELD_MAX_LENGTHS.email}
+            autocomplete="email"
+            placeholder="Enter your email address"
+            class={inputClass}
+          />
+        </div>
+      ) : (
+        <div>
+          <label for="phone" class="mb-1.5 block text-sm font-semibold text-gray-700">
+            联系电话
+            <span class="text-brand-orange" aria-hidden="true">
+              *
+            </span>
+          </label>
+          <input
+            type="tel"
+            id="phone"
+            name="phone"
+            required
+            maxlength={CONTACT_FIELD_MAX_LENGTHS.phone}
+            autocomplete="tel"
+            placeholder="请输入您的手机号"
+            class={inputClass}
+          />
+        </div>
+      )}
+    </div>
+  )
+}
 
-<div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
-  <div>
-    <label for="phone" class="mb-1.5 block text-sm font-semibold text-gray-700">
-      {english ? 'Phone number (optional)' : '联系电话'}
-      {
-        !english && (
-          <span class="text-brand-orange" aria-hidden="true">
-            *
-          </span>
-        )
-      }
-    </label>
-    <input
-      type="tel"
-      id="phone"
-      name="phone"
-      required={!english}
-      maxlength={CONTACT_FIELD_MAX_LENGTHS.phone}
-      autocomplete="tel"
-      placeholder={english ? '+1 (555) 123-4567' : '请输入您的手机号'}
-      aria-describedby={english ? 'phone-help' : undefined}
-      class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none transition-colors focus:border-navy-400 focus:ring-2 focus:ring-navy-100"
-    />
-    {
-      english && (
-        <p id="phone-help" class="mt-1.5 text-xs text-gray-500">
-          If provided, include + and the country or region code. Spaces, hyphens, and parentheses
-          are accepted.
-        </p>
-      )
-    }
-  </div>
-  <div>
-    <label for="email" class="mb-1.5 block text-sm font-semibold text-gray-700"
-      >{english ? 'Email' : '邮箱'}{
-        english && (
-          <span class="text-brand-orange" aria-hidden="true">
-            *
-          </span>
-        )
-      }</label
-    >
-    <input
-      type="email"
-      id="email"
-      name="email"
-      required={english}
-      maxlength={CONTACT_FIELD_MAX_LENGTHS.email}
-      autocomplete="email"
-      placeholder={english ? 'Enter your email address' : '选填，用于接收方案'}
-      class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none transition-colors focus:border-navy-400 focus:ring-2 focus:ring-navy-100"
-    />
-  </div>
-</div>
+{
+  group === 'optional' && (
+    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+      <div>
+        <label for="company" class="mb-1.5 block text-sm font-semibold text-gray-700">
+          {english ? 'Company or brand' : '公司/品牌名称'}
+        </label>
+        <input
+          type="text"
+          id="company"
+          name="company"
+          maxlength="120"
+          autocomplete="organization"
+          placeholder={english ? 'Enter a company or brand' : '请输入公司或品牌名称'}
+          class={inputClass}
+        />
+      </div>
+      {english ? (
+        <div>
+          <label for="phone" class="mb-1.5 block text-sm font-semibold text-gray-700">
+            Phone number (optional)
+          </label>
+          <input
+            type="tel"
+            id="phone"
+            name="phone"
+            maxlength={CONTACT_FIELD_MAX_LENGTHS.phone}
+            autocomplete="tel"
+            placeholder="+1 (555) 123-4567"
+            aria-describedby="phone-help"
+            class={inputClass}
+          />
+          <p id="phone-help" class="mt-1.5 text-xs text-gray-500">
+            If provided, include + and the country or region code. Spaces, hyphens, and parentheses
+            are accepted.
+          </p>
+        </div>
+      ) : (
+        <div>
+          <label for="email" class="mb-1.5 block text-sm font-semibold text-gray-700">
+            邮箱
+          </label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            maxlength={CONTACT_FIELD_MAX_LENGTHS.email}
+            autocomplete="email"
+            placeholder="选填，用于接收方案"
+            class={inputClass}
+          />
+        </div>
+      )}
+    </div>
+  )
+}

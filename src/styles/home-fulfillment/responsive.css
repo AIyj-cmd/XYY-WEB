@@ -2,12 +2,6 @@
   .fulfillment-track::after {
     transition: none;
   }
-
-  .fulfillment-step {
-    opacity: 1;
-    transform: none;
-    transition: none;
-  }
 }
 
 @media (max-width: 1024px) {

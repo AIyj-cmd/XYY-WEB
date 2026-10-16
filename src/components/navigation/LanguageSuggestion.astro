@@ -11,6 +11,13 @@ interface Props {
 }
 
 const { locale, pathname, localePair } = Astro.props
+const normalizedPathname = pathname === '/' ? pathname : pathname.replace(/\/+$/, '')
+const languageLayout =
+  normalizedPathname === '/' ||
+  normalizedPathname === '/xiefu-yuncang' ||
+  (locale === 'zh-CN' && normalizedPathname === '/contact')
+    ? 'overlay'
+    : undefined
 const routePair =
   localePair && matchesLocalePath(localePair, locale, pathname)
     ? localePair
@@ -26,6 +33,7 @@ const hasEnglishPair = Boolean(routePair)
   id="language-suggestion"
   class="language-suggestion"
   data-current-locale={locale}
+  data-language-layout={languageLayout}
   hidden
   lang="en"
   aria-label="Language preference"

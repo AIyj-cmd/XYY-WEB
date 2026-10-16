@@ -27,6 +27,7 @@ export type EnglishNewsFixtureRecord = {
 type FixtureState = { mode: EnglishNewsFixtureMode; records: EnglishNewsFixtureRecord[] }
 
 const appRoot = resolve(import.meta.dirname, '../..')
+const buildOrigin = `http://127.0.0.1:${process.env.PLAYWRIGHT_PORT ?? '4399'}`
 
 async function listen(server: Server) {
   server.listen(0, '127.0.0.1')
@@ -124,11 +125,12 @@ async function startAppServer(directusUrl: string) {
     cwd: appRoot,
     env: {
       ...process.env,
+      DEPLOY_ENVIRONMENT: 'ci',
       DIRECTUS_URL: directusUrl,
       DIRECTUS_CONTENT_TOKEN: 'english-news-fixture-token',
       ENABLE_DOMAIN_REDIRECTS: 'false',
       HOST: '127.0.0.1',
-      PUBLIC_SITE_URL: 'http://127.0.0.1',
+      PUBLIC_SITE_URL: buildOrigin,
       XIANSUO_API_URL: 'http://127.0.0.1:1',
       XIANSUO_INGEST_TOKEN: 'english-news-fixture-token',
       PORT: String(appPort),
@@ -141,27 +143,36 @@ async function startAppServer(directusUrl: string) {
   child.stderr?.on('data', onData)
   await new Promise<void>((resolveReady, reject) => {
     let finished = false
-    const timeout = setTimeout(() => {
+    let retry: ReturnType<typeof setTimeout> | undefined
+    const finish = (callback: () => void) => {
+      if (finished) return
       finished = true
-      reject(new Error(`fixture app did not start: ${output.join('')}`))
-    }, 20_000)
+      clearTimeout(timeout)
+      if (retry) clearTimeout(retry)
+      callback()
+    }
+    const timeout = setTimeout(
+      () => finish(() => reject(new Error(`fixture app did not start: ${output.join('')}`))),
+      20_000
+    )
+    const retryCheck = () => {
+      if (!finished) retry = setTimeout(check, 20)
+    }
     const check = async () => {
       if (finished) return
       try {
-        const response = await fetch(`http://127.0.0.1:${appPort}/en/news`)
-        if (!response.ok) return setTimeout(check, 20)
+        const response = await fetch(`http://127.0.0.1:${appPort}/en/news`, {
+          redirect: 'manual',
+        })
+        if (response.status !== 200) return retryCheck()
       } catch {
-        return setTimeout(check, 20)
+        return retryCheck()
       }
-      finished = true
-      clearTimeout(timeout)
-      resolveReady()
+      finish(resolveReady)
     }
     check()
     child.once('exit', (code) => {
-      finished = true
-      clearTimeout(timeout)
-      reject(new Error(`fixture app exited ${code}: ${output.join('')}`))
+      finish(() => reject(new Error(`fixture app exited ${code}: ${output.join('')}`)))
     })
   }).catch(async (error) => {
     if (child.exitCode === null) child.kill('SIGTERM')

@@ -5,17 +5,6 @@
   min-width: 0;
   max-width: 220px;
   padding: 0 0.75rem 0 0;
-  opacity: 0;
-  transform: translateY(28px);
-  transition:
-    opacity 0.7s ease,
-    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
-  transition-delay: calc(var(--i) * 0.13s + 0.2s);
-}
-
-.s-fulfillment.is-visible .fulfillment-step {
-  opacity: 1;
-  transform: translateY(0);
 }
 
 .fulfillment-connector {

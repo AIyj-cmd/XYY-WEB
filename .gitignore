@@ -49,6 +49,8 @@ public/fonts/
 public/about/history/2018.png
 # Legacy honor thumbnails are not referenced by the site or CMS seeds.
 public/about/honor/*.png
+# Generated gallery display thumbnails; original gallery assets remain tracked.
+public/about/gallery-thumbnails/
 
 # Sensitive / non-repo assets
 public/Omission/

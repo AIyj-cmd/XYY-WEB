@@ -2,6 +2,26 @@
 
 返回 [Sol 调度入口](SOL.md)。
 
+### XYY-20261014-04 — 安全修复候选独立验证（首轮）
+
+Task ID: XYY-20261014-04
+
+Result: FAIL
+
+Expected: 候选通过合同范围内安全单测、类型检查及 `npm run verify`，并完成公开 origin、CSP、SEO 与中英桌面/移动页面验证。
+
+Actual: 定向安全单测 3 文件 32/32 通过，公开 HTTPS origin 构建、staging+loopback 构建拒绝、HTTP/HEAD/POST、Host/XFP 伪造、可信代理、manifest 缺失/错配启动拒绝，以及 12 组浏览器页面检查通过；但集中 `npm run verify` 在 `astro check` 阶段退出码 1，报告 2 errors、0 warnings、4 既有 hints：`tests/unit/request-policy.test.ts:199` 的 `publicSiteOrigin` 不在 `config` 推断类型中，`:219` 的 `directive` 为隐式 `any`。
+
+Reproduction: `TMPDIR=/home/yj/data/t1404 DEPLOY_ENVIRONMENT=production PUBLIC_SITE_URL=https://8.138.148.179 DIRECTUS_URL=http://127.0.0.1:1 DIRECTUS_CONTENT_TOKEN=luna-fake-content XIANSUO_API_URL=http://127.0.0.1:1 XIANSUO_INGEST_TOKEN=luna-fake-ingest PUBLIC_DIRECTUS_URL=http://127.0.0.1:1 npm run verify`
+
+Evidence: `output/security/xyy-20261014-04/luna/public-origin-browser.json`；截图位于 `output/security/xyy-20261014-04/luna/screenshots/`，其中 `desktop-settled-home.png` 为等待 hero 动画完成后的补拍；定向命令输出见本轮终端记录；Terra 自测见 `output/security/xyy-20261014-04/terra/self-test.md`。
+
+Likely affected area: Terra 修改的 `tests/unit/request-policy.test.ts` 类型推断与回调参数类型；属于测试门禁问题，尚未判定为业务实现错误。
+
+Severity: HIGH（安全修复候选未通过强制 `npm run verify`，不能进入最终验收）。
+
+Handoff: 已返回 Sol → Terra 返工；Luna 未修改应用实现、Terra 所有权测试、CMS、数据库、部署或外部环境。浏览器服务、假 CMS 与 Playwright 已清理。返工后沿原 Task ID 复测。
+
 ## Role
 
 Independent QA / Test Engineer。
@@ -6151,3 +6171,507 @@ Regression coverage：应用和测试冻结，本轮复用已完成的 **22个�
 Evidence：[`staged-vs-nova-audit.json`](../output/git-sync/xyy-20261014-02/luna/r4/staged-vs-nova-audit.json)、[`final-hash-and-redaction-audit.json`](../output/git-sync/xyy-20261014-02/luna/r4/final-hash-and-redaction-audit.json)、[`readme-contract-format.log`](../output/git-sync/xyy-20261014-02/luna/r4/readme-contract-format.log)、[`gates-summary.log`](../output/git-sync/xyy-20261014-02/luna/r4/gates-summary.log)、[`staged-diff-check.log`](../output/git-sync/xyy-20261014-02/luna/r4/staged-diff-check.log)、[`verify.log`](../output/git-sync/xyy-20261014-02/luna/r4/verify.log)。
 
 Remaining risks：未重跑 E2E、`verify:release`、真实 CMS/生产环境；本轮只证明当前公开候选的脱敏增量和提交前 verify 通过，不代表已提交或推送。Nova 增量 APPROVED 与 Sol 后续提交/推送仍是必要阶段。
+
+#### XYY-20261014-04 R2 — 安全修复候选独立复测
+
+Task ID：`XYY-20261014-04`；Risk：HIGH；Result：**Luna FAIL，返回 Sol 处理门禁失败后再复测**。未修改应用实现；仅更新本日志与忽略目录 `output/security/xyy-20261014-04/luna/` 的测试 harness/证据。
+
+Expected：R2 候选在显式公开 HTTPS 环境及 loopback 假服务下通过 `npm run verify`，并满足公开 origin、请求策略、CSP/SEO、启动 manifest、双语桌面/手机和交互 AC。Actual：配置 fixture、定向单测、构建/启动负例、浏览器补充检查均取得独立证据；最终 `npm run verify` **exit 1**，在 `check:maintainability` 停止，报 `tests/unit/request-policy.test.ts: 232 lines exceeds 220`。因此本任务整体不能报告 PASS，且 verify 后的依赖性复测不继续。
+
+Reproduction：
+
+```text
+TMPDIR=/home/yj/data/t1404 DEPLOY_ENVIRONMENT=production \
+PUBLIC_SITE_URL=https://8.138.148.179 \
+DIRECTUS_URL=http://127.0.0.1:1 DIRECTUS_CONTENT_TOKEN=luna-fake-content \
+XIANSUO_API_URL=http://127.0.0.1:1 XIANSUO_INGEST_TOKEN=luna-fake-ingest \
+PUBLIC_DIRECTUS_URL=http://127.0.0.1:1 npm run verify
+```
+
+Evidence：[`verify-r2.log`](../output/security/xyy-20261014-04/luna/verify-r2.log)（完整 stdout/stderr 与 `LUNA_EXIT_CODE=1`）；R2 定向单测为 **3 files / 36 tests passed**，日志见 [`r2-targeted-unit.log`](../output/security/xyy-20261014-04/luna/r2-targeted-unit.log)。隔离 mode fixture 的 `--mode development`、`--mode=development` 和进程环境优先级均 exit 0，manifest 分别为 loopback 与 `https://env.example`，日志见 [`mode-fixture`](../output/security/xyy-20261014-04/mode-fixture/)。构建/启动/HTTP、Host/XFP、staging invalid、manifest missing/mismatch 原始结构化证据见 [`runtime-negative.json`](../output/security/xyy-20261014-04/luna/runtime-negative.json) 与 [`runtime-negative.mjs`](../output/security/xyy-20261014-04/luna/runtime-negative.mjs)。
+
+浏览器既有 12 组合结果保留于 [`public-origin-browser.json`](../output/security/xyy-20261014-04/luna/public-origin-browser.json)，最新补充检查 exit 0，覆盖 `/`、`/contact`、`/about` 的 OG:image/JSON-LD origin、真实中英入口导航、桌面图库 hover/Enter/Escape、手机 tap/Escape；原始报告见 [`browser-supplement.json`](../output/security/xyy-20261014-04/luna/browser-supplement.json)，桌面/手机截图见 [`screenshots`](../output/security/xyy-20261014-04/luna/screenshots/)。harness readiness 使用 `redirect: 'manual'` 与可信测试 XFP，所有浏览器及 API 请求仅允许 loopback；本轮 `blockedExternalRequests=0`，无真实写入。此前修订前的 browser 计数仅能代表浏览器 route 拦截，不能证明 readiness 未跟随公网重定向，已保留该限制记录。
+
+Likely affected area：`tests/unit/request-policy.test.ts` 的新增安全策略断言使文件超过维护性预算；属于候选测试门禁问题，非环境阻塞。Severity：**HIGH**，因为强制提交前门禁 `npm run verify` 未达成，不能进入 Nova 最终审阅或 Sol 验收。
+
+Regression coverage：typecheck 已实际完成 687 files、0 errors、0 warnings、4 hints；lint 已通过后才在 maintainability 处停止。构建与运行时负例、请求策略、CSP/SEO、公开 origin 双设备浏览器补充和 12 组合已有证据；由于 verify FAIL，未将其升级为完整 PASS，也未声称 `npm run verify` 的 test/build 阶段已执行。无生产写入；最终验证使用本地 Chromium、loopback 假 CMS/API 和合成 fixture。首轮 readiness 使用默认重定向跟随，可能跟随到公开 HTTPS health GET，现有证据不能证明全部历史请求零外连；后续 harness 已改为 `redirect: 'manual'` 与 local guard。未部署、提交或推送。
+
+Remaining risks：需 Sol 按原 Task ID 处理测试文件维护性预算失败后，由 Luna 重新运行 `npm run verify` 及适用复测；Nova review 尚未执行。运行中的本轮 app/fake 服务已清理。
+
+#### XYY-20261014-04 R3 — 安全修复候选最终独立复测
+
+Task ID：`XYY-20261014-04`；Risk：HIGH；Result：**Luna PASS，返回 Sol，交 Nova 最终 Review**。R3 相对 R2 仅拆分测试文件：`tests/unit/request-policy.test.ts` 208 行、`tests/unit/request-policy-security.test.ts` 24 行；未修改应用实现、维护性预算或既有 R2 行为证据。
+
+Tests performed：
+
+- 4 个定向单测文件共 **36/36 passed**，exit 0，见 [`r3-targeted-unit.log`](../output/security/xyy-20261014-04/luna/r3-targeted-unit.log)。
+- 完整 `npm run verify` 使用短 `TMPDIR=/home/yj/data/t1404`、公开 HTTPS `PUBLIC_SITE_URL=https://8.138.148.179`、loopback 假 CMS/API 与显式测试令牌，exit 0。typecheck：**688 files，0 errors、0 warnings、4 hints**；lint 通过；maintainability：**852 files**；assets/cache checks 通过；Vitest：**127 test files、861 tests passed**；最终 Astro build Complete。完整 stdout/stderr 见 [`verify-r3.log`](../output/security/xyy-20261014-04/luna/verify-r3.log)，退出码旁证见 [`verify-r3.exit`](../output/security/xyy-20261014-04/luna/verify-r3.exit)，日志末尾含 `LUNA_EXIT_CODE=0`。
+- `git diff --check` exit 0；R3 工作树测试差异仅为上述拆分文件，未扩大到实现文件。
+
+Regression coverage：复用 R2 已实际通过且实现未变的证据：隔离 `--mode development`/`--mode=development`/进程环境优先级 fixture（[`mode-fixture`](../output/security/xyy-20261014-04/mode-fixture/)）、构建与启动 manifest/HTTP/Host/XFP/staging invalid 负例（[`runtime-negative.json`](../output/security/xyy-20261014-04/luna/runtime-negative.json)）、公开 origin 12 组合浏览器矩阵（[`public-origin-browser.json`](../output/security/xyy-20261014-04/luna/public-origin-browser.json)）及补充 SEO、JSON-LD、OG:image、真实语言导航和图库交互（[`browser-supplement.json`](../output/security/xyy-20261014-04/luna/browser-supplement.json)）。R3 未重复这些无关浏览器/fixture检查；本轮新增门禁覆盖为测试拆分后的 36 项定向单测与最终完整 verify。
+
+Remaining risks：本轮最终验证使用本地 Chromium、loopback 假服务与显式 fixture，无生产写入；首轮 readiness 可能跟随公开 HTTPS health GET，现有证据不能证明全部历史请求零外连，后续 harness 已改为手动重定向和 local guard。未部署、提交或推送；`verify:release`、真实浏览器/真机及 Nova Review 仍是后续阶段。verify 和定向测试结束后无本轮服务进程残留。
+
+#### XYY-20261014-05 R1 — 内容默认可见修复独立复测
+
+Task ID：`XYY-20261014-05`；Risk：MEDIUM；Result：**Luna FAIL，返回 Sol 处理实现缺陷后再复测**。仅新增本任务测试/helper、同步 `service-motion` 断言及 ignored 证据；未修改应用实现、Task04 文件、预算、环境、CMS、数据库、提交或部署。
+
+Expected：中英首页及纳入范围的服务正文在正常、禁用/阻断脚本、reduced-motion 和动画初始化异常后保持祖先链有效可见；部分创建后的 GSAP/WAAPI 异常应清理已建动画并立即恢复正文，后续采样不再回写透明；无外部浏览器请求。
+
+Actual：R1 显式 CI loopback 构建 exit 0，manifest 为 `http://127.0.0.1:4399`。主 Playwright 定向套件 **6/6 passed**，覆盖中文桌面/手机 no-JS、正常/阻断脚本/reduced-motion、部分 WAAPI、observer、18 条中英服务路由、12 条代表页及既有 service-motion。补充 harness 的英文桌面/手机 no-JS/正常、服务手机正常/reduced、CTA 本地导航、detail WAAPI 部分失败和 CSP/网络 guard 均通过，`blockedExternal=[]`。
+
+精确 GSAP 故障 harness 对本地构建的 `ServiceLanding...Cdblpyw3.js` 中 `reveal-copy.fromTo(targets)` 做 post-registration、pre-assignment 抛错，仅当 trigger 匹配 `.service-detail__header` 时触发，确认注入错误命中目标（2 targets）。R1 catch 的 `killTweensOf(i)` 和 `set(i,{clearProps:"transform,opacity,visibility,filter"})` 均实际执行；插桩记录 kill 前后该 tween 均为 `active:true,parent:true`。早期及 900ms 后 target 仍 `inlineOpacity:"0"`、computed opacity `0`，后期 tween 虽 inactive 仍保持透明。因此发现真实实现缺陷：部分创建后的 shared GSAP 异常后正文仍被隐藏。
+
+Reproduction：
+
+```text
+TMPDIR=/home/yj/data/t1404 DEPLOY_ENVIRONMENT=ci PUBLIC_SITE_URL=http://127.0.0.1:4399
+DIRECTUS_URL=http://127.0.0.1:1 PUBLIC_DIRECTUS_URL=http://127.0.0.1:1
+DIRECTUS_CONTENT_TOKEN=luna-ci-token XIANSUO_API_URL=https://127.0.0.1:1
+XIANSUO_INGEST_TOKEN=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa HOST=127.0.0.1 PORT=4399
+TRUSTED_PROXY_CIDRS=127.0.0.1/32 npm run build
+env -u CI PLAYWRIGHT_BASE_URL=http://127.0.0.1:4399 node output/diagnostics/xyy-20261014-05/luna/repair/gsap-fault-r1.mjs
+```
+
+Evidence：[`build-r1.log`](../output/diagnostics/xyy-20261014-05/luna/repair/build-r1.log)、[`e2e-r1b.log`](../output/diagnostics/xyy-20261014-05/luna/repair/e2e-r1b.log)、[`supplement-r1.json`](../output/diagnostics/xyy-20261014-05/luna/repair/supplement-r1.json)、[`gsap-fault-r1.json`](../output/diagnostics/xyy-20261014-05/luna/repair/gsap-fault-r1.json)、截图目录 [`repair`](../output/diagnostics/xyy-20261014-05/luna/repair/)。暂停前 R0 的 RAF 采样失败及中断日志保留为历史工具输出，不计入本轮结果。
+
+静态与回归门禁：`npm run typecheck` exit 0（690 files、0 errors/0 warnings/4 hints）；`npm run lint` exit 0；`npm run check:maintainability` exit 0（854 files）；`npm run test` exit 0（127 files、861 tests passed）；R1 `npm run build` exit 0；主 E2E exit 0；精确 GSAP 故障复现 exit 1。所有浏览器 route 仅允许 localhost/127.0.0.1，补充 harness `blockedExternal=[]`；本轮无生产写入，服务已清理。
+
+Likely affected area：`src/scripts/motion/reveal-copy.ts` 的异常清理路径及其共享 ServiceLanding 滚动正文 target；需 Terra/Sol 按原 Task ID 修复后由 Luna 重测。Severity：**MEDIUM**，因为 AC 要求故障后正文不永久隐藏，当前真实复现失败，不能进入 Nova APPROVED 或 Sol 验收。
+
+Regression coverage：正常/禁用 JS、脚本阻断、reduced-motion、手机/桌面、中英首页、受影响服务矩阵、代表页、CTA 导航、detail WAAPI、observer、CSP/本地网络 guard 和正常 service-motion 均有实际通过证据；精确 post-registration GSAP 清理为 FAIL。Remaining risks：需处理实现缺陷后沿用同一 Task ID 进行 Luna 复测；本轮未运行 `verify:release`，未访问真实 CMS/数据库/咨询 API，未部署、提交或推送。
+
+#### XYY-20261014-05 R2 — 故障 harness 判定修正准备
+
+Task ID：`XYY-20261014-05`；Risk：MEDIUM；Result：**R2 harness 已准备，等待 Terra 冻结，未运行候选验证**。保留 R1 `gsap-fault-r1.mjs` 与 `gsap-fault-r1.json`，新增 [`gsap-fault-r2.mjs`](../output/diagnostics/xyy-20261014-05/luna/repair/gsap-fault-r2.mjs)。
+
+R2 判定已修正为：必须分别覆盖 `reveal-copy` 滚动正文与 `reveal-entrance` 首屏路径，恰好捕获对应预期 pageerror、无意外 pageerror/外连/harness error、命中实际 target；不再要求调用某个具体 GSAP API，而检查已创建 timeline/child 不活动且脱离 parent、早期及 900ms 后 opacity 大于 0.95。当前仅执行 `node --check` 与 Prettier，均 exit 0；未启动服务、未构建、未运行候选实现。证据：[`gsap-fault-r2-framework.log`](../output/diagnostics/xyy-20261014-05/luna/repair/gsap-fault-r2-framework.log)。
+
+#### XYY-20261014-05 R2 — 内容默认可见修复最终独立复测
+
+Task ID：`XYY-20261014-05`；Risk：MEDIUM；Result：**Luna PASS，返回 Sol，交 Nova 最终 Review**。仅更新本日志及本任务 ignored 证据；未修改应用实现或 Task04 文件。
+
+Tests performed：
+
+- 显式 `DEPLOY_ENVIRONMENT=ci`、`PUBLIC_SITE_URL=http://127.0.0.1:4399`、loopback 假 CMS/API 与 HTTPS-form 本地咨询 URL 执行 `npm run build`，exit 0；manifest 为 `{"origin":"http://127.0.0.1:4399"}`，见 [`build-r2.log`](../output/diagnostics/xyy-20261014-05/luna/repair/build-r2.log) 与 [`build-r2.manifest.json`](../output/diagnostics/xyy-20261014-05/luna/repair/build-r2.manifest.json)。R2 16 个冻结实现 hash **16/16 匹配**。
+- `gsap-fault-r2.mjs` 双路径实际运行 exit 0：`reveal-copy` 与 `reveal-entrance` 均捕获恰好预期 post-registration 错误，命中目标；早期/900ms 后 opacity 均为 1，timeline/child 均 inactive 且脱离 parent，`blockedExternal=[]`。证据见 [`gsap-fault-r2.json`](../output/diagnostics/xyy-20261014-05/luna/repair/gsap-fault-r2.json)。
+- 受影响页面 no-JS 回归：18 条中英服务路由 **1/1 passed**；正常 service-motion 与 reduced-motion **2/2 passed**。见 [`e2e-service-nojs-r2b.log`](../output/diagnostics/xyy-20261014-05/luna/repair/e2e-service-nojs-r2b.log) 与 [`e2e-service-motion-r2b.log`](../output/diagnostics/xyy-20261014-05/luna/repair/e2e-service-motion-r2b.log)。R1 已通过的中英首页桌面/手机、脚本阻断、reduced-motion、代表页、CTA、WAAPI/observer、CSP 与截图证据复用，未重复无关矩阵。
+- 独立静态门禁：`npm run typecheck` exit 0（690 files、0 errors/0 warnings/4 hints）、`npm run lint` exit 0、`npm run check:maintainability` exit 0（854 files）、本任务文件 Prettier exit 0。完整 861 项 Vitest 沿用 R1 未改实现范围证据，未重复运行。
+
+Regression coverage：R2 新增验证覆盖两个真实修改 helper 的异常路径、目标命中、错误重抛、延迟可见性、无外连和服务清理；R1 的首页/代表页/交互/CSP/WAAPI/observer 证据保持有效。所有本轮本地服务已停止，未访问真实 CMS、数据库或咨询写接口，未部署、提交或推送。
+
+Remaining risks：本轮未运行 `verify:release`，也未覆盖 Safari/Firefox、真机或生产环境；Nova Review 与 Sol 最终验收仍是后续阶段。
+
+#### XYY-20261015-03 R2 — 发布兼容性独立复测
+
+Task ID：`XYY-20261015-03`；Risk：HIGH；Result：**Luna FAIL，返回 Sol 处理门禁预算后再复测**。未修改应用实现；仅新增/适配本任务单测、`docs/LUNA.md` 与 ignored evidence。formal R2 冻结 `scripts/formal-test-server.mjs` SHA-256：`ad9337d4493370a45671b902e2bba6ee384b48a99b45c9dbabf46fc453b5a23c`。
+
+Expected：隔离 staging/production 父环境可启动并通过本地兼容性矩阵；formal readiness、正常 SIGTERM、启动失败均有界且无 proxy/child 残留；`npm run verify:release` exit 0。
+
+Actual：
+
+- 定向 Vitest **7 files / 70 tests passed**，包括 local probe、release compatibility、旧 deployment consumers、runtime/public-site/health contracts；本任务测试侧 `astro check` exit 0（695 files、0 errors、0 warnings、4 hints），Prettier 与 `git diff --check` 通过。
+- staging 隔离 hard-link worktree build/runtime exit 0：origin manifest `https://staging.example`；trusted home/version 200、health 503、CMS 空结果 404、HTTP GET 308、明文 POST 400。
+- production 隔离 build/runtime exit 0：origin manifest `https://56xyy.com`；home/version 200、health 503、CMS 空结果 404、HTTP GET 308、明文 POST 400；缺失 release manifest 的 `/version` 为 503；origin mismatch 启动 exit 1。
+- R2 唯一 fixture readiness SIGTERM 复测通过：同一 fixture 以旧 guard 前文本先复现 `proxy_seen_during_shutdown=1` 且 parent 超时，再以 R2 文本得到 `readiness_request_seen=1`、`proxy_seen_during_shutdown=0`、parent exit 0；正常 shutdown exit 0 且无残留，启动失败非零且无 proxy/残留。证据见 [`formal-readiness-r2-valid-summary.json`](../output/optimization/xyy-20261015-03/luna/formal-readiness-r2-valid-summary.json)、[`formal-readiness-r1.process`](../output/optimization/xyy-20261015-03/luna/formal-readiness-r1.process)、[`formal-readiness-r2.process`](../output/optimization/xyy-20261015-03/luna/formal-readiness-r2.process)、[`formal-normal-shutdown.process`](../output/optimization/xyy-20261015-03/luna/formal-normal-shutdown.process) 与 [`formal-start-failure.process`](../output/optimization/xyy-20261015-03/luna/formal-start-failure.process)。早期带旧 marker 的 R2 采样已标为无效并保留，不计结果；唯一 runId fixture、控制器及脚本已归档于 [`formal-readiness-r2-valid`](../output/optimization/xyy-20261015-03/luna/formal-readiness-r2-valid/)，污染样本记录见 [`formal-readiness-sigterm-r2-invalid-marker.json`](../output/optimization/xyy-20261015-03/luna/formal-readiness-sigterm-r2-invalid-marker.json)。
+- 最终 `npm run verify:release` 实际启动但在 `check:maintainability` 停止，exit 1；未进入 assets、cache、Vitest、build、普通 E2E 或 formal contract 阶段。本次失败为维护性预算：`scripts/deploy.sh` **203 行 > 200**，`tests/e2e/contracts.spec.ts` **227 行 > 220**。二者均属 Terra 文件所有权，Luna 未修改。完整原始日志见 [`verify-release-r2-final.log`](../output/optimization/xyy-20261015-03/luna/verify-release-r2-final.log)，首轮测试类型失败另见 [`verify-release-r2.log`](../output/optimization/xyy-20261015-03/luna/verify-release-r2.log)。
+
+Reproduction：
+
+```text
+env -i PATH=/home/yj/.local/bin:/home/yj/data/website/node_modules/.bin:/usr/bin:/bin \
+HOME=/home/yj TMPDIR=/home/yj/data/t1503 CI=1 NODE_ENV=test \
+DEPLOY_ENVIRONMENT=ci PUBLIC_SITE_URL=http://127.0.0.1:4399 \
+DIRECTUS_URL=http://127.0.0.1:1 PUBLIC_DIRECTUS_URL=http://127.0.0.1:1 \
+DIRECTUS_CONTENT_TOKEN=luna-release-content-check \
+XIANSUO_API_URL=https://127.0.0.1:1 \
+XIANSUO_INGEST_TOKEN=luna-release-xiansuo-check-token-012345678901234567890123 \
+PLAYWRIGHT_PORT=4399 PLAYWRIGHT_FORMAL_PORT=4401 PLAYWRIGHT_FORMAL_APP_PORT=4402 \
+PLAYWRIGHT_ARTIFACTS_DIR=/home/yj/data/website/output/optimization/xyy-20261015-03/luna/verify-playwright-final \
+PLAYWRIGHT_FORMAL_ARTIFACTS_DIR=/home/yj/data/website/output/optimization/xyy-20261015-03/luna/verify-playwright-formal-final \
+npm run verify:release
+```
+
+Evidence：矩阵原始日志与结构化结果在 [`matrix`](../output/optimization/xyy-20261015-03/luna/matrix/)，定向测试在 [`r2-test-fix-targeted.log`](../output/optimization/xyy-20261015-03/luna/r2-test-fix-targeted.log)，R2 typecheck 在 [`r2-test-fix-typecheck.log`](../output/optimization/xyy-20261015-03/luna/r2-test-fix-typecheck.log)。所有本任务 app/fixture 服务均已清理；主 4321 预览未停止。测试仅使用本地 loopback 假 CMS/咨询依赖与隔离 worktree，未执行生产写入、CMS/数据库写入、部署、提交或推送。
+
+Likely affected area：`scripts/deploy.sh` 与 `tests/e2e/contracts.spec.ts` 的维护性预算回归。Severity：**HIGH**，因为强制发布门禁未完成，不能进入 Nova 最终审阅或 Sol 验收。
+
+Remaining risks：需 Terra/Sol 在原 Task ID 处理上述预算后，由 Luna 重跑 `npm run verify:release`；当前 release gate 的后续 tests/build/E2E/formal 阶段没有本轮 exit 证据。staging/production 矩阵和 R2 生命周期行为已独立通过，但不能替代完整门禁。
+
+#### XYY-20261015-03 R3 — 发布兼容性最终独立复测
+
+Task ID：`XYY-20261015-03`；Risk：HIGH；Result：**Luna FAIL，返回 Sol 处理旧消费者测试契约后再复测**。R3 Terra 变更仅为 `scripts/deploy.sh`、`tests/e2e/contracts.spec.ts` 与新增 `tests/e2e/helpers/contract-server.ts`；当前行数分别为 194、190、39，冻结 hash：`f0d2effea49c660207dc429163776d1aeb3b7065ecdee3a5c422e7d33b912b85`、`5df78d39b327d10cf9d2dbfef854244acda3f9080ecb4115d64c45ef7bb788ca`、`eb50d97c991b00cfc542ba285c94a0dc2b04d02a170ce9c61656835250bd50eb`；formal server R2 hash 保持 `ad9337d4493370a45671b902e2bba6ee384b48a99b45c9dbabf46fc453b5a23c`。
+
+Expected：R3 维护性修复后完整 `npm run verify:release` exit 0，既有部署消费者与全量 Vitest 保持通过。
+
+Actual：
+
+- R3 受影响核对通过：`bash -n scripts/deploy.sh`、contracts/helper Prettier、`git diff --check` 均 exit 0；相关 Vitest 2 files / 19 tests passed。
+- 完整 `npm run verify:release` 实际进入 typecheck、lint、maintainability、assets、cache check 和全量 Vitest；typecheck 为 696 files、0 errors、0 warnings、4 hints，维护性阶段通过。
+- 全量 Vitest 129 files / 883 tests 中 **126 files / 880 tests passed，3 files / 3 tests failed**，因此 gate exit 1，未进入本次 gate 的 build、普通 E2E、formal contract 或末尾 build。
+- 两项既有 CMS 测试因默认 5 秒超时失败：单独将 `--testTimeout=30000` 后分别通过（`cms-initial-case-content`: 18/18；`cms-initialization-acceptance-cli`: 9/9），故归类为并行全量测试时序/资源限制，不是实现失败。
+- 唯一稳定失败为 `tests/unit/deployment-capacity.test.ts` 的 `deploys through an isolated release and switches the current symlink`：它要求旧的 `curl -fsS http://127.0.0.1:$WEB_PORT/healthz` 和 `health_payload/cmsContent/contactStorage` 文本；R3 已将部署健康/identity 检查提取为 `scripts/local-release-probe.mjs`。该测试不在 Luna 本任务授权适配文件范围内，未修改或弱化。
+
+Reproduction：
+
+```text
+env -i PATH=/home/yj/.local/bin:/home/yj/data/website/node_modules/.bin:/usr/bin:/bin \
+HOME=/home/yj TMPDIR=/home/yj/data/t1503 CI=1 NODE_ENV=test \
+DEPLOY_ENVIRONMENT=ci PUBLIC_SITE_URL=http://127.0.0.1:4399 \
+DIRECTUS_URL=http://127.0.0.1:1 PUBLIC_DIRECTUS_URL=http://127.0.0.1:1 \
+DIRECTUS_CONTENT_TOKEN=luna-release-r3-content \
+XIANSUO_API_URL=https://127.0.0.1:1 \
+XIANSUO_INGEST_TOKEN=luna-release-r3-xiansuo-check-token-012345678901234567890123 \
+PLAYWRIGHT_PORT=4399 PLAYWRIGHT_FORMAL_PORT=4401 PLAYWRIGHT_FORMAL_APP_PORT=4402 \
+npm run verify:release
+```
+
+稳定复现旧消费者：
+
+```text
+npx vitest run tests/unit/deployment-capacity.test.ts
+```
+
+Evidence：完整日志 [`verify-release-r3.log`](../output/optimization/xyy-20261015-03/luna/verify-release-r3.log)、exit [`verify-release-r3.exit`](../output/optimization/xyy-20261015-03/luna/verify-release-r3.exit)；失败分类及单独复测日志见 [`r3-failed-tests-diagnosis.json`](../output/optimization/xyy-20261015-03/luna/r3-failed-tests-diagnosis.json)、[`r3-deployment-capacity-diagnosis.log`](../output/optimization/xyy-20261015-03/luna/r3-deployment-capacity-diagnosis.log)、[`r3-cms-case-diagnosis.log`](../output/optimization/xyy-20261015-03/luna/r3-cms-case-diagnosis.log) 与 [`r3-cms-cli-diagnosis.log`](../output/optimization/xyy-20261015-03/luna/r3-cms-cli-diagnosis.log)。此前 staging/production 矩阵仍以 `https://staging.example` 与 `https://56xyy.com` origin 通过；本次 CI gate 的预期 origin 为 `http://127.0.0.1:4399`，但未到末尾 build 产出新的 final-origin 证据。
+
+Likely affected area：`tests/unit/deployment-capacity.test.ts` 的旧部署脚本静态契约，与 R3 release-local probe 重构不一致。Severity：**HIGH**，因为强制 `verify:release` 未完成，不能进入 Nova 最终审阅或 Sol 验收。
+
+Remaining risks：需 Sol/Terra 按原 Task ID 决定并适配该旧消费者测试后，由 Luna 重跑完整 `npm run verify:release`；不得将单独通过的两项超时诊断或 R2/R3 矩阵通过替代完整 gate。所有本轮 app/fixture 进程已清理，4321 主预览未停止；未部署、提交、推送或写入真实 CMS/数据库/咨询系统。
+
+#### XYY-20261015-03 R3 consumer adaptation — independent gate rerun
+
+Task ID：`XYY-20261015-03`；Risk：HIGH；Result：**Luna FAIL，返回 Sol 处理既有 E2E fixture origin 契约后再复测**。按新增授权仅修改 [`tests/unit/deployment-capacity.test.ts`](../tests/unit/deployment-capacity.test.ts)，将旧 `curl/health_payload` 静态检查替换为 `local-release-probe`、`assertWebHealthPayload`、`cmsContent`/`contactStorage` 双依赖成功和单次轮询断言；未修改应用实现或其他测试。
+
+Tests performed：该消费者测试 **3/3 passed**；Prettier check、typecheck（696 files，0 errors/0 warnings/4 hints）和 maintainability（860 files）均通过。两项 CMS 默认超时定向重测也通过：18/18 与 9/9，未改变测试超时或实现。
+
+完整门禁使用 `CI=1`、`DEPLOY_ENVIRONMENT=ci`、`PUBLIC_SITE_URL=http://127.0.0.1:4399`、loopback 假依赖、短 `TMPDIR` 和 `VITEST_MAX_WORKERS=2` 启动。Vitest **129 files / 883 tests passed**。Playwright 在 296 项、CI 单 worker 下运行至第 105 项后确认系统性 fixture 启动失败并停止：**100 passed、7 failed、1 interrupted、188 did not run**，受控中断 exit 130；未进入 formal contract 或最终 build。
+
+Expected：完整 `npm run verify:release` exit 0，E2E fixture 使用与构建一致的 loopback origin。Actual：`tests/helpers/english-news-fixture.ts` 与 `tests/helpers/english-whitepapers-fixture.ts` 的 fixture 子进程固定 `PUBLIC_SITE_URL=http://127.0.0.1`，而 Playwright 构建 origin 为 `http://127.0.0.1:4399`；`server.mjs` 的 `assertBuildPublicSiteOrigin` 因 mismatch 退出 1。news/whitepaper 多个测试因此在 fixture 启动阶段失败。另 language suggestion 两项在页面已渲染后各超时 30s，待 fixture 契约修复后再判断是否独立问题。
+
+Reproduction：
+
+```text
+env -i PATH=/home/yj/.local/bin:/home/yj/data/website/node_modules/.bin:/usr/bin:/bin \
+HOME=/home/yj TMPDIR=/home/yj/data/t1503 CI=1 NODE_ENV=test \
+DEPLOY_ENVIRONMENT=ci PUBLIC_SITE_URL=http://127.0.0.1:4399 \
+DIRECTUS_URL=http://127.0.0.1:1 PUBLIC_DIRECTUS_URL=http://127.0.0.1:1 \
+PLAYWRIGHT_PORT=4399 VITEST_MAX_WORKERS=2 npm run verify:release
+```
+
+Evidence：[`verify-release-r3-rerun.command`](../output/optimization/xyy-20261015-03/luna/verify-release-r3-rerun.command)、[`verify-release-r3-rerun.log`](../output/optimization/xyy-20261015-03/luna/verify-release-r3-rerun.log)、[`verify-release-r3-rerun.exit`](../output/optimization/xyy-20261015-03/luna/verify-release-r3-rerun.exit)；失败上下文在 [`verify-playwright-r3-rerun/test-results`](../output/optimization/xyy-20261015-03/luna/verify-playwright-r3-rerun/test-results/)，定向结果见 [`r3-cms-case-rerun.log`](../output/optimization/xyy-20261015-03/luna/r3-cms-case-rerun.log)、[`r3-cms-cli-rerun.log`](../output/optimization/xyy-20261015-03/luna/r3-cms-cli-rerun.log) 和 [`r3-deployment-capacity-rerun.log`](../output/optimization/xyy-20261015-03/luna/r3-deployment-capacity-rerun.log)。
+
+Likely affected area：既有 `tests/helpers/english-news-fixture.ts`、`tests/helpers/english-whitepapers-fixture.ts` 与新的 build/runtime public-origin contract 不一致；本次未获授权修改它们。Severity：**HIGH**，因为完整发布门禁未完成，不能进入 Nova 最终审阅或 Sol 验收。
+
+Remaining risks：需 Sol 决定是否授权适配上述既有 fixture 并复测 language suggestion；本轮所有测试服务已清理，主 4321 预览未停止，未访问真实 CMS/数据库/咨询系统，未部署、提交或推送。
+
+#### XYY-20261015-03 R4 — language suggestion timeout diagnosis
+
+Task ID：`XYY-20261015-03`；Risk：HIGH；Result：**Luna FAIL，返回 Sol 处理测试组织/预算问题后再复测**。未修改实现或受控测试；仅复用已构建的 `http://127.0.0.1:4399` dist，新增 ignored trace/诊断证据。
+
+原样定向命令（Chromium、原 30 秒测试预算）两个失败用例均再次 exit 1。`persists keep, close, Escape, and manual switch choices` 在前三个 action context 累计约 25.95s 后，manual 段完成 `/about` 2.25s、语言切换点击 0.44s、URL 断言 0.94s，随后第二次 `page.goto('/about')` 未返回；trace 记录未完成的本地图集请求 `gallery-079.webp`。`handles malformed, denied, and fallback storage safely` 在四个前置 context 累计约 28.27s 后进入 denied 场景，`/about` 2.20s，关闭按钮已解析、可见并进入 performing click，但测试预算耗尽；没有 expect 断言失败。新鲜 context 下同 denied-storage click 独立诊断 151ms 返回，未证明业务 handler 死锁。
+
+两组 trace 请求均只到 `127.0.0.1:4399`（分别 414/176 条，外部 0）。诊断结论为测试用例在 30 秒预算内累计多次完整 About 导航和 157 张图库资源，停在导航/点击动作而非断言。建议拆分为独立用例或每个动作独立 context，保留全部动作与断言，不提高 timeout、不删覆盖。
+
+Evidence：[`language-timeout-diagnosis.json`](../output/optimization/xyy-20261015-03/luna/r4-language/language-timeout-diagnosis.json)、[`targeted.log`](../output/optimization/xyy-20261015-03/luna/r4-language/targeted.log)、[`targeted.exit`](../output/optimization/xyy-20261015-03/luna/r4-language/targeted.exit)、[`persist trace`](../output/optimization/xyy-20261015-03/luna/r4-language/playwright/test-results/language-suggestion-behavi-6cbb2-e-and-manual-switch-choices-chromium/trace.zip)、[`fallback trace`](../output/optimization/xyy-20261015-03/luna/r4-language/playwright/test-results/language-suggestion-behavi-29541-and-fallback-storage-safely-chromium/trace.zip)。本轮我启动的 4399 服务已停止；主 4321 PID 20029 仍在监听。未构建、未访问真实 CMS/数据库/咨询系统、未部署、提交或推送。
+
+#### XYY-20261015-03 R4 — language suite split and release gate
+
+Task ID：`XYY-20261015-03`；Risk：HIGH；Result：**Luna FAIL，返回 Sol 处理 R5 测试消费者适配后再复测**。本轮仅修改已授权的语言 E2E 文件与本日志，未修改应用实现或 Terra 文件。
+
+Tests performed：
+
+- `tests/e2e/language-suggestion-behavior.spec.ts` 将原先累计 5 个入口 context 拆为 5 个独立 test，保留原 URL、可见性、导航、刷新、焦点、Escape、manual 和 no-JS 动作；新增 [`tests/e2e/helpers/language-suggestion.ts`](../tests/e2e/helpers/language-suggestion.ts) 与 [`tests/e2e/language-suggestion-storage.spec.ts`](../tests/e2e/language-suggestion-storage.spec.ts) 保留 storage/denied/malformed 场景。三文件均 ≤220 行，Prettier、`git diff --check`、typecheck/lint/maintainability 均通过。
+- 独立语言双端定向命令 exit 0：**32/32 passed**（Chromium 16、mobile 16），日志与退出码见 [`r4-language-final`](../output/optimization/xyy-20261015-03/luna/r4-language-final/)。Terra 5 个 English news/whitepaper fixture 自测报告 30/30 passed，复用其冻结结果。
+- 完整 `npm run verify:release` 使用 `CI=1`、`VITEST_MAX_WORKERS=2`、短 `TMPDIR=/home/yj/data/t1503`、loopback 假 CMS/API 与 `PUBLIC_SITE_URL=http://127.0.0.1:4399`，实际 exit 1。Vitest **129 files / 883 tests passed**；E2E **299 passed、2 failed、17 skipped**，失败均为同一 repair 注入 test 的 Chromium/mobile 两个项目。因 npm 链在 E2E 非零停止，formal contract 与末次 build 未执行。原始日志、命令和 exit 见 [`verify-release-r4`](../output/optimization/xyy-20261015-03/luna/verify-release-r4/)。
+
+Failure：`tests/e2e/service-redesign-repair.spec.ts:111` 仍以 `src/scripts/repair-workshop.ts` 或含 `data-repair-workshop` 的内联 script 为故障注入目标；当前构建已外置为同源 `/_astro/RepairWorkshop.astro_astro_type_script_index_0_lang.-NnKJOVC.js`。因此两路计数均为 0，断言 Expected 1 / Received 0；页面三个 workshop panel 仍存在且可见，controls 保持隐藏，邻近 normal/no-JS repair 与全部其他 E2E 通过。该失败是测试注入入口与当前构建产物不一致，尚未证明产品退化。
+
+定向证据：忽略测试修改的本地 probe 对 Chromium 1440 与 mobile 390 均实际阻断上述外置模块恰好 1 次，三个 panel 全部可见、controls hidden、无 page error、无外部请求，结果见 [`repair-injection-diagnosis/probe.json`](../output/optimization/xyy-20261015-03/luna/repair-injection-diagnosis/probe.json)；失败原始 error-context 与 trace 见 [`verify-release-r4/playwright/test-results`](../output/optimization/xyy-20261015-03/luna/verify-release-r4/playwright/test-results/)。完整 gate 失败后所有 4399/fake 服务已清理，主 4321 PID 20029 保持运行。
+
+Likely affected area：`tests/e2e/service-redesign-repair.spec.ts` 故障注入选择器；按 R5 将仅把故障目标扩展为当前确切外置同源 module，同时保留 legacy/dev 与内联 fallback、恰好一次阻断及所有原可见性断言。Severity：**HIGH**，因为 `verify:release` 未完成；当前失败归因于测试适配，不是已证实业务回归。
+
+Remaining risks：formal contract、末次 build 和 R5 适配后的完整 gate 尚未有本轮 PASS。验证使用本地 Chromium/loopback 假依赖、无生产写入；服务端日志显示应用 dotenv loader 注入了 1 项环境（未读取或输出其值），因此不宣称未加载任何 `.env`。未部署、提交或推送。
+
+#### XYY-20261015-03 R5 — final release compatibility gate and parent-environment matrix
+
+Task ID：`XYY-20261015-03`；Risk：HIGH；Result：**Luna PASS，返回 Sol，交 Nova 最终 Review**。本轮仅更新授权测试、该日志与 ignored evidence；未修改应用实现、发布脚本或 4321 预览。R5 候选冻结 hash 与 [`r5-candidate-hashes.json`](../output/optimization/xyy-20261015-03/r5-candidate-hashes.json) 对照 **19/19 匹配**，无范围外漂移。
+
+Tests performed：
+
+- R5 故障注入定向 Chromium/mobile **2/2 passed**；静态 Prettier、scoped ESLint、typecheck（698 files、0 errors/0 warnings/4 hints）、maintainability（862 files）和 diff check 均 exit 0。证据见 [`r5-repair`](../output/optimization/xyy-20261015-03/luna/r5-repair/)。
+- 最终 `npm run verify:release` 使用 `CI=1`、`DEPLOY_ENVIRONMENT=ci`、loopback 假 CMS/API、短 `TMPDIR=/home/yj/data/t1503`，exit 0：Vitest **129 files / 883 tests passed**；E2E **301 passed / 17 skipped**；formal contract **6 passed**；末次 CI loopback build 成功。完整原始命令、stdout/stderr 与退出码见 [`verify-release-r5`](../output/optimization/xyy-20261015-03/luna/verify-release-r5/)。
+- 父环境矩阵均为实际 Playwright/formal 执行，子构建/启动显式 `DEPLOY_ENVIRONMENT=ci`，依赖均指向 loopback：staging normal contracts **2/2 passed，exit 0**（health closed 与 CMS-empty case 404，origin `http://127.0.0.1:4491`）；staging formal **6/6，exit 0**（formal metadata origin `https://56xyy.com`）；production normal CMS-empty/health 定向 **2/2，exit 0**（origin `http://127.0.0.1:4493`）；production formal **6/6，exit 0**（formal metadata origin `https://56xyy.com`）。结构化汇总与四组日志见 [`parent-matrix`](../output/optimization/xyy-20261015-03/luna/parent-matrix/)。
+- 独立 production metadata build 使用 `DEPLOY_ENVIRONMENT=production` 与 `PUBLIC_SITE_URL=https://8.138.148.179`，loopback 假依赖，`npm run build` exit 0；`dist/server/public-site-origin.json` 实际为 `{"origin":"https://8.138.148.179"}`。证据见 [`production-build-r5`](../output/optimization/xyy-20261015-03/luna/production-build-r5/)。该包是 origin 核验包，不等同于 CI loopback 门禁包。
+- 在隔离 dist 副本删除 `dist/server/public-site-origin.json` 后以 production origin 启动，进程 exit 1 且端口 4511 无 listener，错误为 `Missing build public-origin manifest`；证据见 [`public-site-manifest-missing-r5`](../output/optimization/xyy-20261015-03/luna/public-site-manifest-missing-r5/)。这与既有 release-manifest 缺失导致 `/version` 503 的证据分开记录。
+
+矩阵早期一次错误样本标为 `INVALID_SAMPLE`，分类证据见 [`invalid-sample.json`](../output/optimization/xyy-20261015-03/luna/parent-matrix/staging-formal/invalid-sample.json)：`npm exec --no-install` 将 `--config` 当 npm 配置，启动了普通 318-test 配置；该进程已停止，未计入结果。该首次原始 run.log 随同路径纠正重跑被覆盖，现只保留实际观察到的分类记录，未重构原始日志。正确重跑命令使用 `npx --no-install playwright test --config=playwright.formal.config.ts`，日志开头明确 `Running 6 tests`。
+
+Regression coverage：完整 CI release gate、R5 外置 RepairWorkshop module 故障注入、staging/production 父环境的 normal CMS-empty/health 与 formal 6-test consumers、production HTTPS origin manifest、public-site manifest 缺失启动保护均有本次实际证据。所有测试服务已清理；主 4321 PID 20029 持续监听且未被停止。测试仅使用本机 loopback 假依赖与显式占位令牌，无生产写入、部署、提交、推送、真实 CMS/数据库/咨询 API 操作。应用 dotenv loader 可能加载环境文件，但本轮未读取或输出其内容。
+
+Remaining risks：矩阵子构建使用 CI loopback origin，不能代替真实部署；production HTTPS build 只验证构建元数据与本地代码路径，不访问 `8.138.148.179`。正式发布仍需 Nova Review 与 Sol 最终验收。
+
+#### XYY-20261015-04 第一部分 — Lighthouse 隔离工具独立单测
+
+Task ID：`XYY-20261015-04`；Risk：MEDIUM；Result：**Luna FAIL，返回 Sol/Terra 修复 workspace 外链隔离后再复测**。本轮仅修改授权的 Lighthouse 测试与 helper，未修改实现；未运行 build、typecheck、lint、format、maintainability 或 48 次 Lighthouse 采样。
+
+Tests performed：迁移旧 runner fixture 到真实复制的 runner/helpers、隔离项目根、本地假 `npm` 构建与假 LHCI CLI；新增 workspace、command-runner 生命周期及失败 raw 证据覆盖。定向 Vitest 命令共 4 files / 18 tests：**16 passed、2 failed**。runner 的 8 条路由/3 次采样、原生 median、运行/HTTP/final-origin/assert/build failure 路径，command runner 正常失败和 TERM→KILL 路径均通过；两个 workspace 外链负例失败。
+
+Failure：`tests/unit/lighthouse-workspace.test.ts` 的 `rejects a src symlink that resolves outside the fixture` 与 `rejects a public symlink that resolves outside the fixture` 均实际观察到 workspace 被接受。测试在 fixture 的 `src/escape-link` 或 `public/escape-link` 创建指向 fixture 外临时文件的 symlink，然后调用 `createLighthouseWorkspace({ projectRoot, temporaryRoot: /home/yj/data/t1504 })`；实际 `accepted=true`，预期应拒绝。
+
+Evidence：原始日志 [`lighthouse-targeted-unit-r3.log`](../output/optimization/xyy-20261015-04/luna/lighthouse-targeted-unit-r3.log)、退出码 [`lighthouse-targeted-unit-r3.exit`](../output/optimization/xyy-20261015-04/luna/lighthouse-targeted-unit-r3.exit)、结构化失败 [`first-part-failure.json`](../output/optimization/xyy-20261015-04/luna/first-part-failure.json)。旧 fixture 曾误启动真实隔离采样，已中断并单独保留 [`initial-lighthouse-unit.log`](../output/optimization/xyy-20261015-04/luna/initial-lighthouse-unit.log)，不计入结果。
+
+Likely affected area：`scripts/lib/lighthouse-workspace.mjs` 的 `assertContainedSymlinks` 当前只递归检查 `node_modules`，没有验证复制后的 `src`/`public` 内部 symlink 是否回链到 workspace 外。Severity：**HIGH for isolation contract**。按合同已停止后续门禁与采样；4321 PID 20029 保持，未访问外部服务、未写 CMS/数据库、未部署或推送。
+
+#### XYY-20261015-04 R2 — Lighthouse 与图库基线独立复测
+
+Task ID：`XYY-20261015-04`；Risk：MEDIUM；Result：**Luna PASS（第一部分与基线采样）**。本轮未修改应用实现；仅保留已授权测试/helper、该日志与 ignored 证据。R2 实现 workspace hash 与 Terra 记录一致；R1 外部 `src/public` symlink 失败已保留，未覆盖。
+
+Tests performed：定向 Vitest **4 files / 24 tests passed**，命令与原始日志见 [`lighthouse-targeted-unit-r2-final-rerun.log`](../output/optimization/xyy-20261015-04/luna/lighthouse-targeted-unit-r2-final-rerun.log) 与 [`lighthouse-targeted-unit-r2-final-rerun.exit`](../output/optimization/xyy-20261015-04/luna/lighthouse-targeted-unit-r2-final-rerun.exit)。`astro check`（704 files，0 errors/0 warnings/4 hints）、scoped Prettier、ESLint、maintainability（868 files）和 `git diff --check` 均 exit 0；对应证据均在本任务 `luna/` 目录。
+
+48LHR 基线使用单次 `npm run test:lhci:all`，`TMPDIR=/home/yj/data/t1504`、Chrome `/usr/bin/google-chrome`（155.0.8059.39）、隔离 workspace `/home/yj/data/t1504/xyy-lhci-OGkNdA`、本地假依赖和 loopback origin。一次 build 后 desktop/mobile 各 8 路由×3 次，**24+24 reports、7 commands 全部 exit 0**，`failure:null`、`rawReports:true`、`workspaceRemoved:true`、无 cleanup failure；summary 的 requested/final origin 均为 `http://127.0.0.1:4400`。原始 run/summary 及每份 report 见 [`lighthouse-all-index.json`](../output/optimization/xyy-20261015-04/luna/lighthouse-all-index.json) 与 [`output/lighthouse/2026-10-15T09-44-04-970Z-296f0278`](../output/lighthouse/2026-10-15T09-44-04-970Z-296f0278)；命令、退出码见 [`lighthouse-all-command.txt`](../output/optimization/xyy-20261015-04/luna/lighthouse-all-command.txt) / [`lighthouse-all.exit`](../output/optimization/xyy-20261015-04/luna/lighthouse-all.exit)。LHCI 有 warning：本地 SEO 多为 0.69，about 桌面一次 LCP 6238.62ms，about 移动 LCP 31169.83–38526.41ms 且 TBT 最高 1528ms，product 移动 LCP 约 4153ms；这些未导致命令失败，需在资源方案中作为波动/预算输入，不能当作稳定归因。
+
+图库正式基线使用一次新的隔离 build/start（`PUBLIC_SITE_URL=http://127.0.0.1:4412`），不把 4321 开发页初样当作冻结传输预算。ZH/EN × desktop 1440/mobile 390 × `not-in-viewport`、`gallery-wall`、`dialog` 共 **12/12**，同一 context 按 A→B→C 顺序采样；Chrome 155.0.8059.39、DPR 1、CDP `Network.setCacheDisabled`，以 `Network.loadingFinished.encodedDataLength` 记账，并记录 response status/MIME/cache source、失败与 redirect。正式证据、逐图几何/currentSrc/anchor href、截图和每阶段全网络/图库增量见 [`gallery-cdp-baseline.json`](../output/optimization/xyy-20261015-04/luna/gallery-baseline/cdp/gallery-cdp-baseline.json)。A 四组合原图请求均为 0；自然进入图墙后四组合均加载 157 张现有原图，encoded bytes 均 16,998,686（派生路径 `/about/gallery-thumbnails/` 当前为 0）；C dialog 均严格 decode 成功并读取 `http://127.0.0.1:4412/about/gallery/gallery-128.webp`。非本地 origin 阻断计数为 0，隔离 workspace 已清理；开发页初样及修订前无效 CDP 证据均保留并明确标记，不纳入正式预算。
+
+Regression coverage：R2 workspace 递归 symlink/复制失败清理、all 模式单次 build 与双端同 origin、production parent 隔离/enforce 透传、collect/upload raw、assert summary、7 metric median、缺输入清理及 command lifecycle 已由 24 项独立测试覆盖；48 LHR 和正式 CDP 12 组合图库数据形成后续资源优化前基线。首轮后台采样的 SIGTERM 失败 run [`2026-10-15T09-28-24-217Z-2d797d60`](../output/lighthouse/2026-10-15T09-28-24-217Z-2d797d60) 保留且未计入本 PASS。
+
+Remaining risks：Lighthouse 是本地 loopback/fake dependency 基线，不能代表生产真实网络或 INP；SEO warning 可能受本地 CI 条件影响。当前图库仍展示原图，12 组合记录的是改动前请求/字节基线；资源生成与实施候选尚未验证。无部署、提交、推送或外部写入。
+
+#### XYY-20261015-04 资源实施前准备
+
+Task ID：`XYY-20261015-04`；Result：**准备完成，等待 Terra 交接**。已读取合同资源实施冻结段、`performance-budgets.json`、图库既有 E2E/helper 和 Terra 设计记录；未启动构建、Lighthouse、浏览器重测或资源实施。
+
+已将 ignored CDP sampler 的输出目录改为 `GALLERY_OUTPUT` 参数，并保留每阶段 blocked 快照，避免后测覆盖有效基线。有效基线未重跑；48 LHR 与 CDP A/B/C 仍分别指向既有证据。修正 `lighthouse-all-index.json` 的 externalWrites 为“受保护上下文实际未观测到非本地请求、未执行 CMS/API 提交；该观察不证明上下文外请求不存在”。经 `pgrep`/`fuser` 确认无活跃归属后，仅清理旧失败 workspace `xyy-lhci-YpcoRo`，证据见 [`stale-workspace-cleanup.txt`](../output/optimization/xyy-20261015-04/luna/stale-workspace-cleanup.txt)；未触碰 4321。
+
+实施后定向验证将保留 157 原图 hash/顺序/alt/anchor，新增派生 URL `/about/gallery-thumbnails/gallery-NNN.webp` 的完整性、可解码、缺失/损坏/cache/source/AST 失败及原图保护；E2E 覆盖中英 1440/768/390/360、DPR 2/3、hover/keyboard/touch/no-JS/关闭焦点。后测仍使用冻结 `performance-budgets.json`，并重新执行 48 LHR 与隔离 CDP A/B/C；当前基线源 hash 见 [`source-freeze-hash.json`](../output/optimization/xyy-20261015-04/luna/gallery-baseline/source-freeze-hash.json)。
+
+视觉限制：有效 CDP gallery-wall 截图包含若干浅灰/空白样式 tile，尽管 DOM `complete`/`naturalWidth` 与严格 decode 检查通过；原因未判定，记录见 [`visual-observation.txt`](../output/optimization/xyy-20261015-04/luna/gallery-baseline/visual-observation.txt)。这不构成当前实现缺陷结论；后测需确认实际绘制与 DPR 2/3 清晰度。
+
+#### XYY-20261015-04 R4 — contact overlay、clean build 与 contact-only 性能复测
+
+Task ID：`XYY-20261015-04`；Risk：MEDIUM；Result：**Luna PASS**。本轮未修改应用实现；只更新了授权测试/helper、ignored harness/证据与本日志。R4 候选三项实现 hash 与冻结记录一致：`LanguageSuggestion.astro` `2a5a1d…ea31d8`、`ContactHero.astro` `79f7ee…266bd6`、`scripts/lib/lighthouse-summary.mjs` `1eebfa…e2b673`。
+
+Tests performed：
+
+- 定向 Chromium 隔离 E2E **24 passed / 24**（desktop/mobile）：中文 contact 360/390/430/1440 的 overlay、header/kicker/H1 矩形与关闭后 hero 稳定性，English/no-JS，home/footwear scroll/resize，以及非目标 product/about 保持 `position:relative` 均通过。隔离 workspace、假 Directus/Xiansuo 与 loopback server 已清理；截图见 `gallery-after-r4/e2e/screenshots/`，日志见 `gallery-after-r4/e2e/stdout-stderr.log`。
+- clean checkout build **exit 0**：删除派生目录后实际构建生成 manifest + **157/157** 图片，全部由 Sharp 解码；结果见 `gallery-after-r4/clean-build/result.json`，workspace 已清理。
+- Lighthouse summary 单测 **6/6 passed**，覆盖 first/later missing `total-byte-weight` audit、missing/non-numeric/null/string numeric value 与有效 median；日志见 `gallery-after-r4/summary-unit-r4-final2.log`。
+- 最终补跑 Lighthouse 工具单测（config、runner、command-runner、workspace）与 summary 单测：**5 files / 30 tests passed，exit 0**；日志见 `gallery-after-r4/lighthouse-tools-and-summary-final.log`，退出码见同名 `.exit`。
+- 使用修复后的 summary helper 对已保留的 baseline、R1、R3 三个 48-report run 重新汇总：desktop/mobile 各 **8 routes × 3 samples**，共 6 summaries，`allAuditsFinite:true`、`finalOrigins:[http://127.0.0.1:4400]`，与原已落盘 summary 的 metrics/结构逐项一致；证据见 [`summary-recheck-baseline-r1-r3.json`](../output/optimization/xyy-20261015-04/luna/gallery-after-r4/summary-recheck-baseline-r1-r3.json)。
+- R3→R4 非 contact HTTP 对照与浏览器实际资源闭包均通过：`/`、`/product`、`/about`、`/xiefu-yuncang`、`/b2b-mendian-cangpei`、`/houzheng-xiufu` 的 CSS/JS pathname+query 集合稳定，入口及传递资源 body hash 一致、均 2xx；结果见 `gallery-after-r4/noncontact-compare/comparison.json` 与 `gallery-after-r4/browser-assets/result.json`。这组闭包检查用于支持复用 R3 非 contact 性能证据。
+- R4 contact-only LHCI **12/12 samples**（`/contact`、`/en/contact` × desktop/mobile × 3）完整通过：构建、desktop/mobile collect、upload、assert 全 exit 0，`failure:null`、`rawReports:true`、`cleanupFailures:[]`、`workspaceRemoved:true`。冻结逐路预算 **4/4 route-device groups、32/32 metric checks pass**；结构化实际值与限制见 [`budget-comparison.json`](../output/optimization/xyy-20261015-04/luna/gallery-after-r4/contact-lhci/budget-comparison.json)，原始报告见其 run 目录。桌面 `/contact` LCP 1123.15ms、mobile `/contact` LCP 2579.30ms，均低于各自冻结上限。
+- 静态/类型：scoped Prettier、ESLint 和 `git diff --check` exit 0；最终 `npm run typecheck` **712 files，0 errors/0 warnings/5 hints，exit 0**，日志见 `gallery-after-r4/typecheck-r4-final.log`。
+
+回归覆盖：复用 R1–R3 已接受的图库单测、157 派生图 CDP A/B/C、DPR1/2/3 视觉证据与非 contact 48-route baseline；R4 只补 contact 相关行为和 12 个冻结预算样本，未重跑无关矩阵。R3 的 mobile `/contact` CLS 超限样本仍保留，R4 contact-only 复测在同一冻结预算下通过，未放宽阈值或择优重跑。
+
+证据限制：contact runner 曾有两次 harness-only 失败，分别为初版配置生成的 `ReferenceError` 与构建后 `Unexpected end of input`，均发生在性能采样前，原始证据保留在 `gallery-after-r4/contact-lhci/invalid-config-before-sampling/` 及旧 run 目录，未计入 12 samples；修正为复制已验证 `config/lighthouse.cjs` 后仅替换 routes，并通过 `node --check` 后得到上述有效 run。所有 R4 构建与浏览器只使用短 TMPDIR、本机 loopback 假依赖和占位 token；没有生产写入、真实 CMS/数据库/咨询 API、部署、提交或推送，主 4321 预览未停止。Lighthouse 仍是本地模拟网络，不能代表真实生产网络或 INP；最终验收仍需 Nova Review 与 Sol 决定。
+
+
+#### XYY-20261015-04 资源实施 R1 — 独立功能/性能复测
+
+Task ID：`XYY-20261015-04`；Risk：MEDIUM；Result：**Luna FAIL，返回 Sol/Terra 处理冻结性能预算失败后再复测**。本轮未修改应用实现；仅修改授权测试、ignored harness/证据及本日志。候选实现仍以 `output/optimization/xyy-20261015-04/resource-candidate-hashes.json` 为冻结依据。
+
+Tests performed：
+
+- 定向 unit：`tests/unit/gallery-catalog-source.test.ts` 与 `tests/unit/gallery-thumbnails.test.ts`，**2 files / 8 tests passed**，退出码 0；覆盖实际 157 原图集合、固定小图不放大、缺源/坏图/非法尺寸、缓存失效与失败清理。
+- 隔离 E2E：候选独立 workspace build/start，About gallery/cases/layout/preview 共 **6 passed / 6 skipped**（mobile 项目按既有配置 skip），退出码 0；保留 157 顺序/alt、派生展示 src、原图 anchor、预览 decode/focus/touch 路径。证据见 `gallery-r1/e2e-r1/`。
+- 静态：最终 typecheck **709 files，0 errors/0 warnings/4 hints**；format、lint、maintainability（873 files）均 exit 0。隔离 E2E 已包含候选 build exit 0。
+- no-JS / reduced-motion 本地补充：中英 `/about` 在 390px 视口均 HTTP 200，H1 与图墙可见，157 缩略图节点存在，原图 anchor 在禁 JS 下原生导航到本地 `/about/gallery/gallery-128.webp`；reduced-motion 中英 H1/图墙可见，0 observed blocked external request。About 没有 `[data-service-section]`，该字段在 JSON 标为 selector 不适用，未作为服务正文结论。证据见 `gallery-after-r1/nojs-reduced-motion.json`。
+- 图库 CDP：DPR1 after 四组合和 DPR2/3 补充八组合均完成 A/B/C；DPR1 每组 wall 为 157 display/0 original、display encoded bytes 1,742,456、0 blocked/0 loadingFailed，几何与 baseline 最大差异 0 CSS px；DPR2/3 同为 157/157 display decode，抽查 DPR3 中文手机图墙实际绘制清晰。workspace 均已清理。证据见 `gallery-after-r1/cdp-dpr1/`、`gallery-after-r1/cdp/`；唯一一次全量补采中的 `ERR_ABORTED` 仅发生在 zh 1440 DPR3 dialog，单独重跑为 0 failure，证据保留在 `cdp-retry-zh1440-dpr3/`。
+- 48 条 after LHCI：desktop/mobile 各 8 routes × 3，隔离 build、CI/loopback 假依赖、`LHCI_MODE=enforce` 和冻结阈值 JSON；runner 7 commands 全部 exit 0，raw reports、summary、workspace cleanup 均成功。原始证据见 `output/lighthouse/2026-10-15T10-50-43-794Z-dd3c6347/` 与 `gallery-after-r1/lhci-after.*`。桌面 24/24 route budgets 通过。
+
+Failure：
+
+- mobile `/`：CLS **0.1194460900473934**，冻结上限 **0.10194928142524501**；其余该 route 的 LCP 3639.61ms、TBT 221ms、resourceBytes 591,534、requestCount 21 及分数均在预算内。原始 3 samples 的 layout-shifts 均定位到 `body.bg-white > main > section#s-hero`，最大 shift 0.119446；before samples 为 0.091949、0.000717、0.091949，说明现有测量有显著运行波动，但本次 after median 仍未达冻结上限。
+- mobile `/xiefu-yuncang`：TBT **263.9999999999998ms**，冻结上限 **249ms**；LCP 2722.98ms、CLS 0.091949、resourceBytes 3,724,425、requestCount 18 及分数均在预算内。原始 after TBT samples 为 264、342、166ms；before 为 5、199、197ms。long-task 来源主要是该页 document（1059–1174ms）以及 LanguageSuggestion bundle（163–194ms）；网络资源集合和 transfer bytes 在 before/after 三轮均相同（18 requests、3,724,425 bytes，未请求图库/缩略图），因此未发现图库资源身份变化可解释该项。
+- 程序化逐 route 比较结果为 **18 checks，2 failed**，未放宽预算、未择优重跑或覆盖失败证据；详见 `gallery-after-r1/after-budget-comparison.json`。只读布局/长任务/资源审计详见 `gallery-after-r1/mobile-budget-failure-diagnostic.json`。LHCI native enforce 通过不替代上述 route-specific budget comparison。
+
+Expected：冻结 `performance-budgets.json` 中所有 device/route 的 afterMedianMaximum 与 afterMedianMinimum 均满足，并保持图库 157 display/0 original/几何上限。Actual：两项 mobile route-specific budget failure 如上。
+
+Reproduction：
+
+```text
+env TMPDIR=/home/yj/data/t1504 LHCI_CHROME_PATH=/usr/bin/google-chrome ASTRO_TELEMETRY_DISABLED=1 LHCI_MODE=enforce LHCI_ENFORCE_THRESHOLDS="$(cat output/optimization/xyy-20261015-04/lhci-enforce-thresholds.json)" npm run test:lhci:all
+node output/optimization/xyy-20261015-04/luna/gallery-after-r1/compare-after-budgets.mjs
+```
+
+Likely affected area：mobile Lighthouse measurement/budget envelope for unchanged home hero layout and shoe-fulfillment page main-thread scheduling；the xiefu resource identity is unchanged, and the candidate's gallery files are not requested on that route. This evidence does not establish a specific application defect versus baseline noise; it does establish that this after sample fails the frozen route budgets. Severity：**MEDIUM**，because the resource candidate cannot be accepted against the frozen performance AC until Sol decides the permitted diagnostic/retest path.
+
+Evidence/cleanup：候选隔离 workspace、LHCI server 与 CDP workspace 已清理；主 4321 PID 20029 仍监听且 cwd 为 `/home/yj/data/website`。本轮仅本机 loopback 与假依赖，未执行真实 CMS/咨询/数据库写入、部署、提交或推送；未读取或输出 secret。
+
+
+#### XYY-20261015-04 R2 — language suggestion layout FAIL
+
+Task ID：`XYY-20261015-04`；Risk：MEDIUM；Result：**Luna FAIL，停止 R2 后续 48 条性能复测，返回 Sol/Terra 处理实现后再复测**。本轮未修改实现或测试。
+
+Tests performed：
+
+- 定向 Chromium：`language-suggestion-behavior.spec.ts` 与 `language-suggestion-storage.spec.ts` 通过，连同 layout 已完成 **17 passed / 1 failed**。
+- 失败用例为 `tests/e2e/language-suggestion-layout.spec.ts:57` 的 `keeps the strip, header and headings inside the viewport`。
+- 失败发生于中文 `/contact`、390px 视口：`headingUnderHeader` Expected `true`，Actual `false`。截图显示 language suggestion 在顶部后，站点 header 覆盖联系页 hero 标题区域；该结果直接违反 R2 “桌面/手机提示条与导航互不遮挡、代表路由标题可见” AC。
+- 证据：`output/optimization/xyy-20261015-04/luna/gallery-after-r2/existing/test-results/language-suggestion-layout-8936b-eadings-inside-the-viewport-chromium/test-failed-1.png`、同目录 `error-context.md` 与 `trace.zip`；原始命令与 exit 见 `existing/language-targeted.log/.exit`。
+
+Expected：提示条显现时，contact hero 标题与 header 不相交且位于可见区域。
+Actual：390px 中文 `/contact` 的标题与 header 相交，断言失败。
+
+Reproduction：
+
+```text
+env CI=1 TMPDIR=/home/yj/data/t1504 ASTRO_TELEMETRY_DISABLED=1 PLAYWRIGHT_PORT=4419 PLAYWRIGHT_ARTIFACTS_DIR=output/optimization/xyy-20261015-04/luna/gallery-after-r2/existing npx playwright test tests/e2e/language-suggestion-layout.spec.ts tests/e2e/language-suggestion-behavior.spec.ts tests/e2e/language-suggestion-storage.spec.ts --config=playwright.config.ts --project=chromium
+```
+
+Likely affected area：`src/styles/language-suggestion.css` 的 absolute 顶部定位与 contact hero/header 的空间补偿关系。Severity：**MEDIUM**，因为共享 CSS 的 R2 AC 未达成，不能启动或宣称 48 条 R2 after 性能复测通过。
+
+范围限制：本次 Playwright 配置从主 cwd 自动 build，实际将主 `dist/server/public-site-origin.json` 写为 `http://127.0.0.1:4419`；该范围偏差已记录，未将其称为隔离 E2E。主 4321 预览未停止。未执行真实 CMS/数据库/咨询写入、部署、提交或推送；R1 FAIL 与其证据保留。
+
+
+证据口径补充：R1 图库 E2E 的 6 skipped 来自 `about-gallery-layout.spec.ts` 明确的 `test.skip(testInfo.project.name !== 'chromium', 'Gallery contract runs in Chromium')`，即 mobile 项目按该测试设计跳过，不是运行阻塞。DPR3 retry 由 zh 1440 DPR3 dialog 阶段唯一一次 CDP `Network.loadingFailed`（`net::ERR_ABORTED`, `canceled:true`）触发；仅重跑该组合后 3 个 A/B/C 状态 exit 0、0 failure，原始样本仍保留。R1 no-JS JSON 的 `serviceTextVisible:false` 对应 About 页面不存在 `[data-service-section]`，应解释为 `NOT_APPLICABLE/selector_missing`，不能作为服务正文不可见结论。
+
+#### XYY-20261015-04 R3 — language suggestion layout and fixed 48-route after gate
+
+Task ID：`XYY-20261015-04`；Risk：MEDIUM；Result：**Luna FAIL，返回 Sol；未放宽预算、未择优重跑、未修改应用实现**。Terra 的 R3 候选实现 hash 与 [`resource-r3-candidate-hashes.json`](../output/optimization/xyy-20261015-04/resource-r3-candidate-hashes.json) 一致：`LanguageSuggestion.astro` `9f248f…550484`、`language-suggestion.css` `b0064b…3b493b0`。本轮仅修改授权测试/helper、该日志与 ignored evidence。
+
+Tests performed：
+
+- 隔离 Chromium E2E **14/14 passed**，包括既有 language layout（home/footwear desktop/mobile、scroll/resize）与 R3 stability（实际延迟 `LanguageSuggestion*.js`、SSR overlay 属性、显现前后 hero 坐标、header/h1 不遮挡、关闭恢复、English/no-JS）；原始日志与退出码见 [`gallery-after-r3/e2e-final`](../output/optimization/xyy-20261015-04/luna/gallery-after-r3/e2e-final/)。主 4321 补拍中文首页桌面/手机与联系页手机稳定截图均 HTTP 200、`heroY=0`、标题可读且无遮挡：[`settled-screenshots`](../output/optimization/xyy-20261015-04/luna/gallery-after-r3/settled-screenshots/)。
+- Prettier、scoped ESLint exit 0；`npm run typecheck` 完整结果 **711 files，0 errors/0 warnings/5 hints**，退出码 0。早期修正前 hidden 类型错误的失败工具输出不计当前结果；修正版完整日志见 [`gallery-after-r3/typecheck-r3.log`](../output/optimization/xyy-20261015-04/luna/gallery-after-r3/typecheck-r3.log)。
+- 唯一一次 R3 `npm run test:lhci:all` 使用 `TMPDIR=/home/yj/data/t1504`、Chrome `/usr/bin/google-chrome`、`CI=1`、loopback 假依赖和 `LHCI_MODE=enforce` 冻结阈值。隔离 runner 7 commands 全部 exit 0，`failure:null`、`rawReports:true`、`workspaceRemoved:true`、`cleanupFailures:[]`；桌面/移动各 8 routes×3（24+24）内置 assertions 全通过。原始证据见 [`lhci-r3-after.log`](../output/optimization/xyy-20261015-04/luna/gallery-after-r3/lhci-r3-after.log)、[`lhci-r3-after.exit`](../output/optimization/xyy-20261015-04/luna/gallery-after-r3/lhci-r3-after.exit)、[`output/lighthouse/2026-10-15T11-37-22-904Z-84e01ad6`](../output/lighthouse/2026-10-15T11-37-22-904Z-84e01ad6)。
+
+Failure：冻结 [`performance-budgets.json`](../output/optimization/xyy-20261015-04/performance-budgets.json) 的逐 route 比较共 18 checks，**1 failed**：`mobile:/contact` 的 CLS median **0.1194460900473934**，上限 **0.10194928142524501**；其余 LCP/TBT/resource/request 与分数满足该 route 预算，其他 route 也通过。该 route 三份原始样本 CLS 为 `0.1194460900473934 / 0.1194460900473934 / 0.09194928142524501`，所以按冻结中位数规则判 FAIL；原始 layout shift 节点为 `body.bg-white > main`，见 `output/lighthouse/2026-10-15T11-37-22-904Z-84e01ad6/mobile/*contact*report.json`。程序化结果与完整 actual/limit 见 [`after-budget-comparison.json`](../output/optimization/xyy-20261015-04/luna/gallery-after-r3/after-budget-comparison.json)。
+
+Expected：所有 device/route 均满足冻结 after median 最大/最小预算，并保持既有图库 DPR1 对照。Actual：`mobile:/contact` CLS median 超限；R3 复用已接受的 gallery DPR1 对照（4 cases，157 display/0 original、1,742,456 encoded bytes、最大几何差 0），该对照在本次比较中通过。
+
+Likely affected area：contact 页面在移动 Lighthouse 采样期间的 `LanguageSuggestion`/页面主内容布局位移；R3 E2E 的接触页视觉与布局断言通过，但该性能预算仍未达成，现有三样本不足以把波动归因到单一应用节点。Severity：**MEDIUM**，因为 route-specific frozen performance AC 未完成。
+
+限制与清理：LHCI 使用隔离 workspace、loopback 假 Directus/咨询依赖及显式占位令牌；未访问真实 CMS/数据库/咨询 API、未生产写入、未部署/提交/推送。主 4321 预览未停止；隔离 workspace 已清理。图库 CDP、资源 unit/E2E 与 R1 已通过证据按合同复用，未因 R3 重复采样。
+
+#### XYY-20261015-05 — 移动端联系表单独立验证
+
+Task ID：`XYY-20261015-05`；Risk：MEDIUM；Result：**Luna PASS**。本轮未修改应用实现；仅新增/维护授权测试、ignored 隔离 runner/证据与本日志。8 个冻结实现文件实际 SHA256 与 [`implementation-r1-hashes.json`](../output/optimization/xyy-20261015-05/implementation-r1-hashes.json) 一致。
+
+Tests performed：
+
+- Vitest 相关回归：首轮 5 files / **71 passed**，覆盖 20 个中英文来源、当前 locale 文案、冲突/重复/非法参数，以及中英主/选填字段校验；日志见 [`unit-r1-final4.log`](../output/optimization/xyy-20261015-05/luna/unit-r1-final4.log)。随后在同一 service-context 文件补入“有效 `from` + 非法 finder 保留”和“`from`+finder 同服务一致”两例，最终定向 **25/25 passed**，见 [`unit-context-final.log`](../output/optimization/xyy-20261015-05/luna/unit-context-final.log)；合并后新增 2 项，唯一测试数为 **73**。
+- 隔离 Chromium/mobile E2E：排除已独立通过的长 timeout 用例后 **74/74 passed**；覆盖中英 360/390/430/1440、四个主可见字段与六个业务控件（排除 honeypot/hidden locale）、横向溢出、native details 键盘/触摸、可选字段值保留、SSR 来源文案、no-JS native details 与本地原图/页面结构、English 响应矩阵、既有 contract API 400 case。日志、构建输出、client catalog scan 和 workspace 清理见 [`e2e-r1-final-nontimeout2`](../output/optimization/xyy-20261015-05/luna/e2e-r1-final-nontimeout2/)。
+- 实际 15 秒 pending fetch：中英 × Chromium/mobile **4/4 passed**；首请求在真实 15 秒 abort 后保留六字段、第二次本地 mock 成功并 reset，证据见 [`timeout-r1`](../output/optimization/xyy-20261015-05/luna/timeout-r1/)。English 非法可选 phone 的折叠 details 展开适配定向重测 **2/2 passed**，见 [`english-invalid-r1`](../output/optimization/xyy-20261015-05/luna/english-invalid-r1/)。该 2/2 已包含在 74/74 的最终套件覆盖中，属于修正后的定向复核，不重复计数。
+- 格式、类型、lint 与维护性：scoped Prettier、`npm run typecheck`（719 files，0 errors/0 warnings/5 hints）、`npm run lint`、`npm run check:maintainability`（883 files）均 exit 0；证据见本任务 `luna/format-final.log`、`typecheck-final3.log`、`lint-final2.log`、`maintainability-final.log`。E2E 隔离 runner 已实际 build/start 并 exit 0，未改主 dist。
+
+Regression coverage：覆盖 ZH phone / EN email 必填、ZH optional email / EN optional phone 非法时 details 自动展开并聚焦、400/503/network 错误值保留与 summary focus、成功 reset、服务预选保值、来源与 finder 组合、no-JS 与本地 route mock。业务依赖与提交 mock 均使用 loopback；浏览器测试对非 loopback 请求设置了阻断，但未将此观察表述为全流量审计。Directus/咨询依赖使用不可达 loopback 和占位令牌，未发送真实咨询、未访问生产 CMS/数据库或外部 API。主 4321 PID 20029 保持监听，所有自有 4525/临时 workspace 已清理。
+
+Remaining risks：15 秒“响应头已到但 body 延迟”的流式分支未另起浏览器 mock；当前 timeout 测试覆盖的是完整 pending fetch，body-abort 分支由现有 `contact-page.ts` 同一 AbortController/JSON 路径源码覆盖，未将其伪称为独立行为证据。此前一次隔离 runner 因漏拷 `contract-server.ts`、一次因字段定位 `getByLabel(... exact)`、一次因折叠 optional phone 产生的失败均保留在 `e2e-r1-invalid-before-fix/`、`e2e-r1-locator-failure/`、`e2e-r1-final-nontimeout-partial-before-optional-fix/`，均为测试编排问题，未计入 PASS；这些中断副本保留了 HTML/error-context/test-results，未形成完整的当轮 stdout，不将其称为完整原始日志；端口冲突记录见 `smoke-r2/`，修正后的 smoke 为 `smoke-r3/`。代表截图已由 Playwright CLI 在现有本地 4321 预览只读保存为 [`contact-zh-desktop.png`](../output/optimization/xyy-20261015-05/luna/contact-zh-desktop.png)、[`contact-en-mobile.png`](../output/optimization/xyy-20261015-05/luna/contact-en-mobile.png) 及表单专用的中英 390 收起/展开与中文桌面表单截图（见本目录 `contact-zh390-*`、`contact-en390-*`、`contact-zh-desktop-form.png`）。中文 390 收起状态另将提交按钮滚动到视口中央，中心 `elementFromPoint` 命中 `#submit-btn`，证据见 `zh390-collapsed-submit-hit.txt` 与 `contact-zh390-collapsed-button-centered.png`；Astro toolbar 的设置面板只提供终端级隐藏命令，未改配置，故该截图保留工具栏但按钮中心未被遮挡。命令见 `screenshots-command.txt` 与 `form-screenshots-command.txt`；仅读取本地预览，无提交或外部导航。未运行全量 `npm run verify`/`verify:release`，本任务仅执行合同规定的相关 unit/E2E、隔离 build、type/lint/format/maintainability。
+
+#### XYY-20261015-06 — 旧入口最终成对采样（采样器无效，待复核）
+
+本轮按固定副本 `/home/yj/data/t1506/xyy-lhci-M2XO8E`、固定 loopback 端口执行了旧 `npm run dev -- --host 127.0.0.1 --port P --mode development` 的 3 冷 + 3 暖采样；六次均在 60 秒内取得中文/英文页面、当前项目 logo hash 与 Vite client 响应。原始启动时间为冷 `24459.0 / 19604.9 / 20248.8ms`、暖 `18901.0 / 19843.1 / 20816.7ms`，但该轮结果标记 **INVALID_SAMPLER**，不作为验收或性能基线：公式错误地硬编码了早期数据，Vite 只检查 HTTP 200，且清理即时快照未证明每轮整个进程组静默（一次有活动脱离子进程，五次为僵尸记录；僵尸不代表仍执行，但采样器未等待组内状态稳定）。原始证据见 [`final-old-six`](../output/optimization/xyy-20261015-06/luna/final-old-six/)，结果见 [`old-six-results.json`](../output/optimization/xyy-20261015-06/luna/final-old-six/old-six-results.json)。
+
+已新增修正采样器 [`final-old-six-sampler-r2.py`](../output/optimization/xyy-20261015-06/luna/final-old-six-sampler-r2.py)，仅完成 `py_compile`，尚未运行；它改为动态计算当前六次数据的中位数/最大值、校验 Vite JavaScript 特征与 MIME、确认监听 PID 属于本轮进程组，并等待活动子进程与端口监听清零后再进入下一轮。等待 Root/Nova 只读核对后再复测。主 4321 预览未触碰。
+
+#### XYY-20261015-06 — R3 旧入口采样（汇总脚本 FAIL）
+
+R3 按冻结脚本执行了固定副本 `/home/yj/data/t1506/xyy-lhci-M2XO8E` 的旧 `npm run dev -- --host 127.0.0.1 --port P --mode development`，固定端口 `45089`，3 冷 + 3 暖六轮均在 60 秒内就绪。每轮中英页面、无重定向、监听 inode→PID/PGID/CWD 归属、Vite `text/javascript` 与 `createHotContext`、同次 logo `image/png` hash 均通过；六轮 `cleanup_ok=true`，无活动进程或监听残留。
+
+本轮 **Result: FAIL（采样器汇总故障，非应用故障）**。六个单轮 JSON 已保留在 [`final-old-six-r3`](../output/optimization/xyy-20261015-06/luna/final-old-six-r3/)；耗时冷 `20811.4 / 20464.6 / 21054.7ms`、暖 `20700.9 / 20131.0 / 21047.0ms`。脚本在最终 `parity_from_index()` 将既有 index 的 `indexes.code` 列表按字典处理，抛出 `TypeError`，exit 1，未生成最终 `old-six-results.json`，因此不代入预算或宣称 PASS。原始 stdout 与错误见 [`final-old-six-r3-runner.log`](../output/optimization/xyy-20261015-06/luna/final-old-six-r3-runner.log)。
+
+Expected：单一脚本在六轮成功且清理通过后生成动态中位数/最大值与后续预算。Actual：六轮数据已完成，但 parity 汇总异常阻断最终 JSON。Likely affected area：Luna 采样器的 workspace index 读取；Severity：MEDIUM（测试证据阻断）。主 4321 未触碰，无外部业务请求、源码/依赖/环境文件修改。
+
+XYY-20261015-06 R3 事后汇总恢复：未重跑样本、未修改 R3 六个原始 JSON/日志。独立只读脚本 [`recover-old-six-summary.py`](../output/optimization/xyy-20261015-06/luna/recover-old-six-summary.py) 严格读取固定六文件并正确展开 index 的 list/dict 结构，生成 [`recovered-summary.json`](../output/optimization/xyy-20261015-06/luna/final-old-six-r3-recovery/1792072913-631d4df6ab/recovered-summary.json)。六文件同 runId、固定端口 `45089`、同副本、ready/监听归属/清理均通过；source、packages、fonts、gallery 原图/缩略图 parity index 全部 equal。冷 `20811.4 / 20464.6 / 21054.7ms`（median `20811.4`，max `21054.7`），暖 `20700.9 / 20131.0 / 21047.0ms`（median `20700.9`，max `21047.0`）；按冻结公式得到后续新入口参考上限冷 median `25973.68ms`、冷 max `27318.375ms`、暖 median `25841.08ms`、暖 max `27308.75ms`。结果标为 **RECOVERED_SUMMARY_ONLY**：原 R3 runner exit 1、`TypeError` 与未生成原 summary 的 provenance 均保留，不改写为原脚本 PASS。
+
+#### XYY-20261015-06 — `dev:local` 新入口六次采样首轮 FAIL
+
+Task ID：`XYY-20261015-06`；Risk：MEDIUM；Result：**Luna FAIL，首轮即停止后续采样与行为测试**。仅将 Terra 冻结的六个实现文件同步到隔离副本 `/home/yj/data/t1506/xyy-lhci-M2XO8E`，其余索引 scope 无差异；实现 hash 与 [`implementation-r1-hashes.json`](../output/optimization/xyy-20261015-06/implementation-r1-hashes.json) 一致。主 4321 未触碰。
+
+Expected：`npm run dev:local -- --port 45089` 在外部完整身份检查成功后输出严格 `LOCAL_DEV_READY` JSON（固定 origin、真实 listener PID、`identityVerified:true`、`reused:false`），首轮成功后继续完成冷 3 + 暖 3，并满足冻结四项预算。
+
+Actual：仅 `cold-1` 启动。采样器的四路外部身份探针曾取得中文/英文 HTML、Vite `text/javascript`、logo `image/png` 与正确 hash，listener 当时为本轮 PGID/CWD；但启动器随后记录 `local_dev_failed:local_dev_owner_check:free` 并以 exit 1 退出，未输出严格 Ready marker。样本状态为 `process_exit_before_ready`，`cleanup_ok:true`；后续五轮未启动，预算不计算，结果为 FAIL。
+
+Reproduction：
+
+```text
+env HOME=/home/yj LANG=C.UTF-8 TMPDIR=/home/yj/data/t1404 NODE_ENV=development DEPLOY_ENVIRONMENT=ci PUBLIC_SITE_URL=http://127.0.0.1:45089 DIRECTUS_URL=http://127.0.0.1:1 PUBLIC_DIRECTUS_URL=http://127.0.0.1:1 XIANSUO_API_URL=https://127.0.0.1:1 ASTRO_TELEMETRY_DISABLED=1 ASTRO_DISABLE_UPDATE_CHECK=true HOST=127.0.0.1 PORT=45089 /home/yj/.local/bin/npm run dev:local -- --port 45089
+```
+
+Evidence：[`new-six-runner.log`](../output/optimization/xyy-20261015-06/luna/new-six-runner.log)、[`cold-1.stdout.log`](../output/optimization/xyy-20261015-06/luna/final-new-six/cold-1.stdout.log)、[`cold-1.json`](../output/optimization/xyy-20261015-06/luna/final-new-six/cold-1.json)、[`new-six-results.json`](../output/optimization/xyy-20261015-06/luna/final-new-six/new-six-results.json)。
+
+Likely affected area：`scripts/local-dev.mjs` 在 `dev()` 返回后调用 `inspectLocalDevPort({ expectedPid: process.pid })` 的 owner-check 控制流；现有证据显示该检查返回 `free`，随后启动器失败，需 Terra/Sol 定位监听归属与检查时序。Severity：**MEDIUM**，因为新入口未达到 Ready 契约，不能进入六次预算或后续测试。
+
+清理与限制：45089 已无监听或自有进程残留，主 4321 PID 20029 保持；未访问真实 CMS/咨询/数据库、未执行外部写入、部署、提交或推送。R3 旧六次恢复摘要仍保留，未覆盖。
+
+#### XYY-20261015-06 R2 — identity 单测 FAIL
+
+R2 新入口六次采样 **PASS** 后，Luna 开始授权的独立 identity 行为测试；首个文件 **1 passed / 1 failed**，发现真实实现缺陷后停止其余夹具与行为验证，未修改实现。
+
+Task ID：`XYY-20261015-06`；Result：**FAIL**。
+
+Expected：`verifyLocalDevIdentity` 必须确认品牌出现在 `<title>` 内容中；正文其他位置出现品牌不能满足标题身份契约。
+
+Actual：中文响应为 `<title>Wrong title</title>`，正文另有 `新亦源正文品牌`，函数仍 resolve `{ origin, logoHash }`。
+
+Reproduction：
+
+```text
+TMPDIR=/home/yj/data/t1504 ASTRO_TELEMETRY_DISABLED=1 npm test -- --run tests/unit/local-dev-identity.test.ts
+```
+
+Evidence：[`local-dev-identity-r2.log`](../output/optimization/xyy-20261015-06/luna/local-dev-identity-r2.log)、[`local-dev-identity.test.ts`](../tests/unit/local-dev-identity.test.ts)。
+
+Likely affected area：`scripts/lib/local-dev-identity.mjs` 的 `requirePageIdentity`，当前用整段 body 的 `includes(expected.brand)` 代替对 `<title>` 文本的精确检查。Severity：**MEDIUM**，因为错误页面身份可能被新入口误判为可信 Ready。
+
+限制：R2 六次采样原始结果仍为 6/6 Ready、6/6 cleanup、四项预算通过；本次单测 FAIL 后未运行其他 local-dev 单测、child 生命周期、隔离环境、HMR、background 或主 4321 reuse。
+
+#### XYY-20261015-06 R3 — 新入口独立复测收口（环境清理事故，主 reuse 未完成）
+
+Task ID：`XYY-20261015-06`；Risk：MEDIUM；Result：**Luna INCOMPLETE_FAIL**。Terra R3 六个实现文件保持冻结，Luna 未修改应用实现；本轮受控测试文件仅增加 stop-timeout 分支与 TypeScript 类型适配。
+
+已完成并有本轮证据：
+
+- 新入口六次 R3 采样复用 [`final-new-six-r3/new-six-results.json`](../output/optimization/xyy-20261015-06/luna/final-new-six-r3/new-six-results.json)：冷 `22750.7 / 21782.1 / 21981.6ms`，暖 `20718.4 / 20672.0 / 22152.6ms`；6/6 严格 `LOCAL_DEV_READY`、身份/端口归属、清理和四项冻结预算通过。
+- 受控 local-dev 单测最终 **4 files / 12 passed**，覆盖 title/body 品牌误判、redirect/语言/Vite/logo、相对入口、占用端口、参数尾随 `=`、pending、stop rejection、stop timeout 与未 attach 失败；证据 [`local-dev-unit-r3-final5.log`](../output/optimization/xyy-20261015-06/luna/local-dev-unit-r3-final5.log)。格式、scoped lint、完整 typecheck（729 files，0 errors/0 warnings/5 hints）和 maintainability（893 files）均 exit 0。
+- 实际隔离子进程 [`real-child-r3/result.json`](../output/optimization/xyy-20261015-06/luna/real-child-r3/result.json)：`45139` 在 19.678s 输出严格 Ready，中英 HTML、Vite marker、logo MIME/hash 通过，SIGTERM 后 5s 内端口释放。占用端口负例 [`negative-occupied-r3/result.json`](../output/optimization/xyy-20261015-06/luna/negative-occupied-r3/result.json) 以 exit 1 拒绝且 foreign HTTP 仍 200。
+- production 父哨兵 + 异 cwd 实际启动 [`env-cwd-r3/result.json`](../output/optimization/xyy-20261015-06/luna/env-cwd-r3/result.json) 仍输出 loopback origin；合成 `.env.development/.env.production` 与 parent sentinel 实际启动 [`fake-env-r3/result.json`](../output/optimization/xyy-20261015-06/luna/fake-env-r3/result.json) 首页 200、无 sentinel 泄漏，假文件已删除。
+- 同一已打开 headless Chromium 页面实际看到 HMR marker 后恢复原文，源文件 SHA 已恢复；记录 [`hmr-r3/edit.json`](../output/optimization/xyy-20261015-06/luna/hmr-r3/edit.json)，截图 [`hmr-marker.png`](../output/playwright/xyy-20261015-06/hmr-marker.png)。headed 模式因无 X server 启动失败，未将其计为产品失败。
+- 新 `scripts/local-dev.mjs --background` 明确 exit 1 拒绝，证据 [`background-r3/result.json`](../output/optimization/xyy-20261015-06/luna/background-r3/result.json)。旧 `npm run dev -- ... --background` 实际启动了隔离 Astro daemon、父命令 exit 0，证据 [`background-legacy-r3/result.json`](../output/optimization/xyy-20261015-06/luna/background-legacy-r3/result.json)。该旧入口清理存在环境事故：误用 `astro dev stop --port 45142` 时共享 Astro lock 指向主 4321，命令报告停止 PID 20029；45142 daemon 随后已仅按核验 `/proc/286628/cwd` 的自有 PID 直接 TERM/KILL 清理。完整影响与命令见 [`cleanup-incident.json`](../output/optimization/xyy-20261015-06/luna/background-legacy-r3/cleanup-incident.json)。
+
+未完成/不能宣称：主 4321 reuse 未执行，因上述事故后主 PID 20029 已不存在且 4321 无 listener；Luna 未重启或再操作主预览。readiness 失败真实夹具第一次注入仍含模板追加的品牌词，达到 Ready，已标记无效并清理自有 `45145`，不能作为失败行为证据。自有服务、45139/45140/45141/45142/45143/45144/45145、浏览器和隔离源临时修改均已清理；主 4321 的恢复由 Sol 决定。
+
+Expected：完成全部 local-dev 行为验证并保留主 4321 最终 reuse。Actual：新入口与大部分行为证据通过，但主 reuse 被环境清理事故阻断。Likely affected area：测试环境共享 Astro lock/旧 background daemon 清理路径，非已证实的应用实现回归。Severity：MEDIUM（验证合同未闭合；不将本轮称为完整 PASS）。本轮未访问真实 CMS/数据库/咨询、未写生产、未部署/提交/推送。
+
+#### XYY-20261015-06 — 复核口径补充
+
+后续复核确认：`real-child-r3` 只实测了正常启动、四路身份响应和正常 SIGTERM/端口释放；pending API/body timeout、真实 stop rejection/timeout 尚未以真实子进程执行，当前仅由 `local-dev-unit-r3-final5.log` 的 12 项单测覆盖。`fake-env-r3` 证明的是合成 `.env.development` 与 `.env.production` 同时存在时无 sentinel 泄漏和 loopback origin，不足以证明 development 文件被实际读取或 production 文件未读取，mode-specific precedence 标为 **NOT_MEASURED**。HMR 为同一已打开页面先观察 marker、再还原原文，各显式等待 3000ms；未记录 wall-clock elapsed，证据为 `output/optimization/xyy-20261015-06/luna/hmr-r3/edit.json` 与 `output/playwright/xyy-20261015-06/hmr-marker.png`。
+
+readiness 失败夹具 [`identity-failure-r3/cleanup-incident.json`](../output/optimization/xyy-20261015-06/luna/identity-failure-r3/cleanup-incident.json) 无效：只改首页 title prop，Layout 仍追加“新亦源供应链”，所以实际 Ready；该结果不计失败证据。未来有效夹具应改变隔离副本的品牌 suffix 或最终渲染响应，且尚未执行。旧 background 清理事故的完整命令、cwd、时间和影响仍以 [`background-legacy-r3/cleanup-incident.json`](../output/optimization/xyy-20261015-06/luna/background-legacy-r3/cleanup-incident.json) 为准；不能写成主 4321 保持未受影响。
+
+#### XYY-20261015-06 — lifecycle helper 真实负例小批次 A
+
+Task ID：`XYY-20261015-06`；Risk：MEDIUM；Result：**Luna PASS（仅 lifecycle helper 负例批次）**。未启动 Astro、未修改 COPY、未触碰主 4321；每个 child 直接 import 实际 `scripts/lib/local-dev-lifecycle.mjs`，各自监听随机 `127.0.0.1` TCP 端口。
+
+命令：`node output/optimization/xyy-20261015-06/luna/lifecycle-negative-r4/lifecycle-negative-r4.mjs`；exit 0。6/6 case 通过并可追溯：未 attach ready timeout→1、未 attach startup reject→1、attached stop reject→1、attached stop timeout→1、未 attach SIGINT→130、attached stop pending 后第二信号→130。每项错误日志匹配预期，listener 均在 5s 内消失；最终无 child 或对应端口残留。结果与逐 case 原始日志见 [`lifecycle-negative-r4`](../output/optimization/xyy-20261015-06/luna/lifecycle-negative-r4/)。
+
+口径限制：这是 lifecycle helper 的真实子进程/真实 TCP 清理验证，不是 Astro pending 或真实 API body timeout 验证；短 timeout 仅通过 `createLocalDevLifecycle` 的测试注入参数设置，产品默认 60s/5s 未改。
+
+
+#### XYY-20261015-06 — R4 最终独立验证收口
+
+Task ID：`XYY-20261015-06`；Risk：MEDIUM；Result：**Luna PASS（R4合同范围）**。未修改应用实现；本轮受控测试仅维护 local-dev 生命周期/launcher 测试与 helper。主预览最终由 Sol 恢复为 `127.0.0.1:4321`、PID `289258`，本轮仅复用核验，未停止或重启。
+
+- R4 新入口六次采样：固定隔离副本 `/home/yj/data/t1506/xyy-lhci-M2XO8E`、端口 `45089`、同一份冻结公式；3 冷 + 3 暖均严格 Ready、外部身份/监听 PID-CWD 归属、logo/Vite 身份、清理与 parity 通过。冷 `15079.3 / 15070.4 / 15213.9ms`，median `15079.3ms`、max `15213.9ms`；暖 `14733.7 / 14931.4 / 15583.4ms`，median `14931.4ms`、max `15583.4ms`。原始结果见 [`new-six-results.json`](../output/optimization/xyy-20261015-06/luna/final-new-six-r4/new-six-results.json)，运行日志见 [`new-six-r4-runner.log`](../output/optimization/xyy-20261015-06/luna/new-six-r4-runner.log)，采样器 SHA 为 `c51b3a5e4c842e26ebd4cca42d22f5a69f511ff659b73f05726aac8e82929494`。
+- B1 mode sentinel：隔离 COPY 同时放入合成 `.env.development`/`.env.production` 与临时探针页，父环境为 production；真实 `dev:local -- --port 45091` 页面读到 `development-file`，未读到 production sentinel，child 与端口已清理。首个下划线路由 404 的无效样本保留在 [`mode-r4/invalid-underscore-route.json`](../output/optimization/xyy-20261015-06/luna/mode-r4/invalid-underscore-route.json)；有效结果见 [`mode-r4/result.json`](../output/optimization/xyy-20261015-06/luna/mode-r4/result.json)。
+- B2 readiness 失败：临时最小 HTML 的错误 title/identity 真实启动 exit 1、未输出 Ready、端口在清理期限内消失，原 `index.astro` 已精确恢复；证据见 [`readiness-failure-r4/result.json`](../output/optimization/xyy-20261015-06/luna/readiness-failure-r4/result.json)。
+- B3 HMR：在隔离端口 `45094` 保持同一已打开 headless Chromium 页面，source marker `HMR_R4_TRUE_SOURCE` edit 后同页 DOM 观察到，未调用 `page.goto`；edit 到观察的 wall-clock 为 `14265ms`，同页轮询命中耗时 `51ms`。还原后同页观察原文，edit 到观察 `2272ms`、轮询命中 `41ms`。证据见 [`hmr-r4b/result.json`](../output/optimization/xyy-20261015-06/luna/hmr-r4b/result.json)。此前 public 文本探针仅作为静态读取记录，未计作 watcher 证明。服务、浏览器和临时源文件均已清理；主 4321 未触碰。
+- Public watcher 补测：固定隔离端口 `45104`，同一已打开 Playwright 页面连接 Vite WebSocket；唯一 public HTML 修改后 15ms 收到 `event.payload={type:"full-reload",path:"/public/luna-public-watch-final.html"}`，随后 loopback GET 仍 200 且字节由 102 变为 101、hash 改变。fixture 删除、child 退出、端口释放均通过。原子脚本、SHA、日志与结果见 [`public-watch-html-final`](../output/optimization/xyy-20261015-06/luna/public-watch-html-final/)。此前 CSS/public 时序 harness 失败保留在 `public-watch-r5*`，不计入 PASS；该失败是测试编排问题，未作为产品失败。
+- 主复用：`npm run dev:local -- --port 4321` 在显式本地假依赖环境下 exit 0，输出 `LOCAL_DEV_READY` 且 `reused:true`、PID `289258`；命令前后监听 PID/CWD 均一致。证据见 [`main-reuse-r4.log`](../output/optimization/xyy-20261015-06/luna/main-reuse-r4.log)。
+- 质量检查：相关 Vitest **4 files / 19 passed**；scoped Prettier、ESLint、完整 `npm run typecheck`（729 files，0 errors/0 warnings/5 hints）和 `npm run check:maintainability`（893 files）均 exit 0。日志与 exit 文件见 [`quality-r4`](../output/optimization/xyy-20261015-06/luna/quality-r4/)。受控改动文件为 [`local-dev-process.ts`](../tests/helpers/local-dev-process.ts)、[`local-dev-fixtures.ts`](../tests/helpers/local-dev-fixtures.ts)、[`local-dev-lifecycle.test.ts`](../tests/unit/local-dev-lifecycle.test.ts)、[`local-dev-launcher.test.ts`](../tests/unit/local-dev-launcher.test.ts)。
+
+Regression coverage：新入口的六次真实 cold/warm 身份与清理、development mode 文件优先级、错误身份 readiness 拒绝、source 同页 HMR edit/restore、output watcher matcher、六个真实 lifecycle child 负例、主 4321 reuse。Sol 既有 watch 观测 [`sol-preview-watch-count.json`](../output/optimization/xyy-20261015-06/sol-preview-watch-count.json) 是 PID 289258 的 inotify 计数（3614），不是系统级逐路径审计；本轮不把它扩大解释为全量 watcher 证明。
+
+Remaining risks：旧冻结基线时主预览为 PID 20029，后因测试清理事故由 Sol 恢复为 PID 289258；R4 与旧 `20.8/20.7s` 数据的差异受运行时/监听状态变化影响，不能宣称为入口改动的严格因果提速。R4 采样使用本地 fallback/loopback 假依赖，未访问真实 CMS、咨询、数据库或外部写入；该限制不等于对所有历史请求做过全流量外连审计。B3 的 corrected 证据只证明 source HMR 同页可见更新；早先 public 静态探针结果已明确不作为 watcher 证明。
+
+
+#### XYY-20261016-01 — Git 同步前独立门禁
+
+Task ID：`XYY-20261016-01`；Risk：HIGH；Result：**Luna PASS**。在隔离副本 `/home/yj/data/t1601/verify-snapshot` 中按白名单注入 CI、loopback origin、不可达本地依赖和假 token，未读取或复制 `.env`，未启动主预览或执行外部写入。
+
+- `npm run verify`：exit `0`；`140` test files / `970` tests passed；typecheck `729 files, 0 errors, 0 warnings, 5 hints`；维护性检查覆盖 `893` 文件；public asset、cache patch、字体/157 张图库派生资源和 Astro server build 均通过。
+- `npm run format:check`：exit `0`，所有受检文件符合 Prettier。证据：[`verify-r2.log`](../output/git-sync/xyy-20261016-01/luna/verify-r2.log)、[`verify-r2.exit`](../output/git-sync/xyy-20261016-01/luna/verify-r2.exit)、[`format-check.log`](../output/git-sync/xyy-20261016-01/luna/format-check.log)、[`format-check.exit`](../output/git-sync/xyy-20261016-01/luna/format-check.exit)、[`snapshot-parity.json`](../output/git-sync/xyy-20261016-01/luna/snapshot-parity.json)。冻结候选 `120` 个文件 parity 为 true，禁止复制项与 `.env` 均未进入副本。
+- 首次 `verify-r1` 保留为无效环境证据：错误复制规则排除了依赖包内部 `node_modules/astro/dist`，导致 CLI 模块缺失；重建为仅排除根目录 `dist/output/.astro` 及缓存后，`verify-r2` 完整通过。该失败不指向产品实现。
+
+Parity 口径：快照后可见的差异均为文档记录（`README.md`、`DEV_STATE.md`、`docs/SOL.md` 及本段 Luna 日志）；README 的日期、历史部署身份和近期摘要变化已明确归档。实现/测试/配置路径无意外 mismatch，详见 [`post-doc-parity.json`](../output/git-sync/xyy-20261016-01/luna/post-doc-parity.json)。Luna 未修改应用实现、测试或配置，也未 commit/push；本结果只覆盖隔离副本的两个合同命令，后续 Git 同步仍由 Sol 按授权处理。

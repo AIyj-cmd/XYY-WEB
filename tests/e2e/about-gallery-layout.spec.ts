@@ -8,6 +8,9 @@ const originalSources = readdirSync(new URL('../../public/about/gallery/', impor
   .filter((name) => /^gallery-\d+\.webp$/.test(name))
   .map((name) => `/about/gallery/${name}`)
   .sort()
+const thumbnailSources = originalSources.map((source) =>
+  source.replace('/about/gallery/', '/about/gallery-thumbnails/')
+)
 
 test('keeps all 157 original files in one visible grid with varied image sizes', async ({
   page,
@@ -29,7 +32,11 @@ test('keeps all 157 original files in one visible grid with varied image sizes',
       const sources = await page
         .locator(`${thumbnails} img`)
         .evaluateAll((images) => images.map((image) => image.getAttribute('src')).sort())
-      expect(sources).toEqual(originalSources)
+      const anchors = await page
+        .locator(thumbnails)
+        .evaluateAll((links) => links.map((link) => link.getAttribute('href')).sort())
+      expect(sources).toEqual(thumbnailSources)
+      expect(anchors).toEqual(originalSources)
       expect(new Set(sources).size).toBe(157)
       const geometry = await page.locator('[data-about-gallery]').evaluate((gallery) => {
         const rect = gallery.getBoundingClientRect()

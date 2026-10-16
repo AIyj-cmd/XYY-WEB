@@ -26,6 +26,7 @@ export type GalleryImageScene =
 export interface GalleryImage {
   id: string
   src: string
+  thumbnailSrc: string
   width: number
   height: number
   scene: GalleryImageScene
@@ -39,6 +40,7 @@ export const gallery = (
 ): GalleryImage => ({
   id: `gallery-${String(id).padStart(3, '0')}`,
   src: `/about/gallery/gallery-${String(id).padStart(3, '0')}.webp`,
+  thumbnailSrc: `/about/gallery-thumbnails/gallery-${String(id).padStart(3, '0')}.webp`,
   width,
   height,
   scene,

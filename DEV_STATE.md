@@ -1,6 +1,6 @@
 # DEV_STATE
 
-更新时间：2026-10-14
+更新时间：2026-10-16
 
 ## 协作记录约定
 
@@ -10,6 +10,28 @@
 - 不记录密码、Token、API Key、私钥、Cookie、真实 `.env` 内容或其他敏感信息。
 
 ## 当前目标
+
+- `XYY-20261016-01`：用户已授权将当前已验收工作提交并推送到 GitHub `AIyj-cmd/XYY-WEB` 的 `main`，同步 Git 状态；不部署网站。冻结候选 120 个路径，基线 HEAD 为 `9ad4fe0fa92bb14ee23fa2e6c7b79836c2798c80`，远端拉取及 API/refs 回读一致，领先/落后 0/0。隔离副本的本次 `npm run verify` exit 0：729 文件类型 0 errors/0 warnings/5 hints、140 单测文件/970 项、Lint、维护预算、资源/补丁检查及构建通过，完整 format:check 通过。首轮副本漏复制依赖内部 dist 导致失败，修正复制后通过，原失败保留；无主应用源码修正。Luna PASS、Nova APPROVED；当前等待提交推送，尚不能视为已同步。证据 `output/git-sync/xyy-20261016-01/`。
+
+- `XYY-20261015-06`：第四阶段已本地验收，四项优化全部完成；Luna PASS、Nova APPROVED。新增 `npm run dev:local`，固定 development/ci/loopback 与假依赖，校验页面和进程身份后就绪或复用，严格端口、有界退出，并只排除本项目 output 监听以解决实际 ENOSPC。最终 19 单测、729 文件类型 0 errors/0 warnings/5 hints、Lint/格式、893 文件维护预算通过；冷暖六次均就绪、清理并满足冻结预算，mode、错误身份、端口占用、生命周期负例、同页 HMR、public HTML 监听及复用通过。旧后台测试曾误停原 PID 20029，原保持判据失败保留；具体 root/lock 来源未证实。现已恢复 `http://127.0.0.1:4321/`、PID 289258，中英 GET 200、复用保持新 PID。前后后台运行状态不同，不声明严格因果提速。6 实现 hash 与范围核对通过，临时测试副本已清理，原始失败及有效复测均保留。未提交、推送、部署或真实业务写入；最终候选未重跑完整 verify/release。证据 `output/optimization/xyy-20261015-06/final-result.json`。
+
+- `XYY-20261015-05`：四项优化第三阶段已本地验收，Luna PASS、Nova APPROVED。联系页 SSR 显示白名单服务短名称，首层业务字段 6 → 4，原生选填分组保持中英必填差异；错误展开聚焦、失败保值、15 秒超时与重试完成。8 实现 hash 和范围核对通过，73 个唯一单测、74 常规 E2E、4 实际超时 E2E、719 文件类型 0 errors/0 warnings/5 hints、Lint/格式、883 文件维护预算及隔离构建通过。已亲看中英手机/桌面表单与提交按钮可见性。仅响应头后延迟 body 分支未单独浏览器实测；中断测试部分 stdout 未保留，不计为通过证据。第四阶段 `XYY-20261015-06` 进入最终成对基线采样；主 4321 保持，无提交、推送、部署或真实业务写入。证据 `output/optimization/xyy-20261015-05/final-result.json`。
+
+- `XYY-20261015-04`：四项优化第二阶段已本地验收，Luna PASS、Nova APPROVED。隔离 LHCI 工具、157 张派生展示图及语言提示条布局修复完成；图墙同条件传输 16,998,686 → 1,742,456 bytes，下降 89.75%，原图 hash 和布局保持。最终 30 工具单测、8 图库单测、6 图库 E2E（6 既有跳过）、24 语言布局 E2E、clean build 157 张可解码、类型 712 文件 0 errors/0 warnings 与 876 文件维护预算通过。R3 非联系页加 R4 联系页共 16 组性能全部满足原冻结预算，联系页手机 CLS 0.01248；复用结果有资源与 SSR 等价证据。19 实现 hash 核对通过，已亲看双端截图。历史失败未择优替换；R2 曾重建主 ignored dist、R3 首次 typecheck 仅保留失败 note 的限制如实归档。第三阶段已随后验收，第四阶段进入成对基线采样。主 4321 保持，未提交、推送、部署或真实服务写入；本地性能不代表生产 INP。证据 `output/optimization/xyy-20261015-04/final-result.json`。
+
+- `XYY-20261015-03`：四项优化第一阶段发布兼容性已本地验收，Luna PASS、Nova APPROVED。完整 CI 隔离 `verify:release` exit 0：883 单测、301 E2E / 17 既有跳过、6 formal 及构建通过；staging/production 父环境普通/formal 矩阵、production HTTPS manifest 及缺 manifest 启动负例通过。19 候选 hash 核对一致。真实生产代理信任配置仍须发布前核对，错误 formal 命令的被覆盖日志已标无效样本；最终证据 `output/optimization/xyy-20261015-03/final-result.json`。未提交、推送、部署或真实服务写入。
+
+- `XYY-20261015-02`：已根据用户确认的四个方向整理优化方案 `docs/plans/xyy-20261015-02-optimization-roadmap.md`，依次为发布稳定性、图片视频与加载、手机咨询、本地开发效率。包含三个既有 P1 的消费者修复方向、Lighthouse 构建隔离、原图与表单契约保护，以及各阶段范围、依赖、可观察验收和交付物；Nova 文档 Review APPROVED。方案格式、diff 与既有文件 hash 核对通过；仅新增计划并更新本状态和 Sol 日志，未改应用或执行测试、构建、提交、部署。性能收益、启动根因及生产代理条件仍待相应阶段测量/核对，不能视为已修复；当前本地预览未操作。证据 `output/planning/xyy-20261015-02/`。
+
+- `XYY-20261015-01`：已按用户要求启动当前项目的本地 Astro 开发服务，地址 `http://127.0.0.1:4321/`，后台 PID `20029`、cwd `/home/yj/data/website`、loopback 监听均已核对。中英首页 `/`、`/en` 独立 GET 均 HTTP 200，title/H1 正确，无 Location 或外部跳转。显式 development 与本地公开 origin，CMS/咨询指向不可达 loopback，页面使用既有审核静态回退；未修改源码或环境文件。首轮启动器 30 秒超时记录保留，实际进程完成首次依赖优化后就绪，复测 PASS；服务保持运行。仅更新本状态与启动日志，无提交、推送、部署或真实 CMS/数据库操作；证据 `output/local-preview/xyy-20261015-01/`。
+
+- `XYY-20261014-05`：首页文案默认可见修复已本地验收。中英首页的标题、说明、数据、服务介绍、履约步骤与 CTA 默认由 HTML/CSS 显示，动画仅作渐进增强；另修复云道及 8 组服务专题共 18 个中英入口的动画初始化失败隐藏风险。其他页面已作针对性盘点，产品/About/联系/案例/新闻等未发现同类静态正文隐藏，菜单/弹窗/非活动标签页保持原交互。共 16 个动画/样式实现文件及 3 个 E2E 文件变更；R1 精确 GSAP 故障暴露残留透明后，R2 两 helper 改为预先持有时间轴并在异常时清空、停止和回显，错误继续抛出。独立验证与审阅通过：主定向 E2E 6/6、补充中英双端及 CTA/WAAPI/observer 检查、R2 两条精确 GSAP 故障 2/2（早期及 900ms 后 opacity=1、无残留活动动画）、18 个服务入口无 JS 及正常/reduced-motion 回归通过；最终类型 690 文件 0 errors/0 warnings/4 既有 hints、Lint、854 文件维护预算、格式及构建通过，861 单测沿用同任务 R1 通过结果。16 项最终冻结 hash 及 1571 文件基线范围核对通过，已检查桌面/手机截图；Luna PASS、Nova APPROVED、Sol 验收。证据 `output/diagnostics/xyy-20261014-05/`，限本地 Chromium 模拟视口和假服务；临时验证服务已清理，未提交、推送或部署，未运行 `verify:release`。
+
+- `XYY-20261014-04`：安全报告的本地修复已验收，HIGH 流程 Luna PASS、Nova APPROVED（0 阻断）。公开 HTTPS origin 下 HTTP GET/HEAD 固定跳转、明文非安全方法在业务前拒绝；脚本 CSP 仅同源，字体加载外移；构建/运行共用公开 origin 校验并通过 SSR manifest 防止错配，修复最终包混入 loopback 的入口。完整 `npm run verify` exit 0：688 类型文件 0 错误/0 警告/4 既有 hints、852 维护预算文件、127 单测文件/861 项与构建通过；12 组中英首页/联系/About 桌面手机、4 次本地模拟表单、SEO/CSP/图库/语言及运行负例通过。初轮类型、mode 与文件行数问题已闭环，失败证据保留；仅本地 Chromium 和模拟服务验证，首轮 readiness 可能跟随公开 health GET，不宣称全部历史请求零外连。当前改动未提交、推送或部署，无生产写入；线上五项尚未关闭。Nginx/公开 URL、管理员本人 MFA 绑定及策略、Directus 限流的准确候选与条件见 `docs/operations/security-remediation-20261014.md`；生产动作须独立授权，发布前仍须 `verify:release`。证据 `output/security/xyy-20261014-04/`，既有 Task 03 修改与原生工作区保持。
+
+- Task 04 后续审阅补充：用户提供的 Review 指出三个待处理发布兼容性回归——HTTPS origin 下本机 HTTP 健康探针/formal 被重定向、临时端口契约测试覆盖构建 origin、loopback E2E 继承 staging/production 环境。Task 05 未修改这些消费者或放宽安全契约；此前本地验收与本次页面验证均不表示当前完整发布门禁已通过。
+
+- `XYY-20261014-03`：已按用户要求更新新 ECS `8.138.148.179` 的 Web 应用，包含 GitHub main `9ad4fe0fa92bb14ee23fa2e6c7b79836c2798c80`；原生兼容合并提交 `939e634c238c8ba51aec14f93e70879fbc74c94b`，当前 release `20261014T081032Z-939e634`，2026-10-14 16:18 CST 切换成功。当前完整 verify:release R2 exit0：867 单测、271 E2E/17既有跳过、4 formal及构建通过；9项发布/回退验证及独立发布前终审通过。公网版本精确匹配，health连续3次双依赖ok，Google验证文件200且精确53字节；16个中英页面/视口、四组157图加载与预览交互、页脚及语言实际导航通过，后台登录页可见但未登录。配置字节和权限保持，CMS/Nginx/PostgreSQL未重启，旧release保留；只重启Web，无CMS/数据库写入或GitHub推送。源码工作区 `/home/yj/data/xyy-native-update-20261014-03` 干净，主仓仅新增运维记录；完整证据 `output/release/xyy-20261014-03/`。首轮测试失败及短TMPDIR修正后的定向、完整复测结果均保留；后台自动刷新请求被只读保护拦截、匿名translations403作为未认证验收边界记录，不宣称验证了登录后的后台功能。
 
 - `XYY-20261014-02`：代码与 README 已提交为 `a67a89df9b3fb433eb9efd73ebbe2bb9dbd4a6f4`，并普通推送至 GitHub `AIyj-cmd/XYY-WEB` 的 `main`。95个路径包含此前 About/全站页脚/Oracle 清理/Google 验证文件及工作记录；README 已补充近期功能、仓库与历史部署身份，10个本地链接及格式通过。推送后本地 HEAD、origin/main、GitHub main 回读一致，领先/落后0/0、工作树干净。Luna 最终完整verify exit0：683类型文件0错误/0警告/4既有提示、847维护预算文件、124文件837单测及构建；22个不同页面用例分轮通过、10项既有项目跳过。Nova 最终APPROVED，公开日志中的完整机器标识已移除，首轮失败和临时目录问题证据保留。此后仅归档推送状态，最终文档提交与CI回读见 ignored `output/git-sync/xyy-20261014-02/` 及Git引用；本次没有网站部署或真实CMS/数据库操作。下方旧任务的“未提交/推送”为当时历史状态，本轮纳入内容以此记录为准。
 

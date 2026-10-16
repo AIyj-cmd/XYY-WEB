@@ -43,7 +43,6 @@
   font-weight: 700;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  opacity: 0;
 }
 
 .hero-title {
@@ -61,7 +60,6 @@
 .hero-title .hl {
   display: block;
   font-weight: 900;
-  opacity: 0;
 }
 
 .hero-punctuation {
@@ -83,7 +81,6 @@
   font-weight: 700;
   letter-spacing: 0.05em;
   line-height: 1.2;
-  opacity: 0;
 }
 
 .hero-sub {
@@ -92,7 +89,6 @@
   color: #cbd5e1;
   font-size: clamp(1rem, 1.5vw, 1.2rem);
   line-height: 1.7;
-  opacity: 0;
 }
 
 .hero-data {
@@ -101,5 +97,4 @@
   font-size: clamp(0.88rem, 1.2vw, 1rem);
   font-variant-numeric: tabular-nums;
   line-height: 1.7;
-  opacity: 0;
 }

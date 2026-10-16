@@ -4,6 +4,7 @@ import LogisticsDigitalChain from '@/components/digital/LogisticsDigitalChain.as
 import LogisticsDigitalHero from '@/components/digital/LogisticsDigitalHero.astro'
 import LogisticsDigitalModules from '@/components/digital/LogisticsDigitalModules.astro'
 import LogisticsDigitalProof from '@/components/digital/LogisticsDigitalProof.astro'
+import { DIGITAL_OPERATIONS_CHINESE } from '@/i18n/digital-operations'
 import { createBreadcrumbSchema, createServiceSchema } from '@/lib/seo'
 import '@/styles/logistics-digital.css'
 
@@ -25,11 +26,11 @@ const CHAIN = [
 const breadcrumbSchema = createBreadcrumbSchema([
   { name: '首页', path: '/' },
   { name: '产品服务', path: '/product' },
-  { name: '物流数字化能力', path: '/wuliu-shuzihua' },
+  { name: DIGITAL_OPERATIONS_CHINESE.breadcrumb, path: '/wuliu-shuzihua' },
 ])
 
 const serviceSchema = createServiceSchema({
-  name: '物流数字化能力',
+  name: DIGITAL_OPERATIONS_CHINESE.breadcrumb,
   description:
     '新亦源以物流服务中台连接订单、库存、仓内作业、物流轨迹与签收数据，为品牌提供可查询、可追溯的履约协同能力。',
   path: '/wuliu-shuzihua',

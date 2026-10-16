@@ -2340,3 +2340,139 @@ Status: CODE DONE（待 Luna 独立验证与 Nova Review）
 
 - 仅在 `docs/NOVA.md` 的指定历史段，将完整机器标识替换为“机器标识已核对”；未改 Nova 审阅结论、其他记录或任何应用/测试/环境文件。写后标签化标识扫描为0，且78项非记录候选哈希保持一致；审计见 `output/git-sync/xyy-20261014-02/terra/r4/non-record-hash-audit.json` 与 `identifier-scan.json`。
 - scoped `git diff --check` 与替换行独立 Prettier check 均 exit 0。`docs/NOVA.md` 全文件 Prettier check 仍报告既有历史格式问题，本轮未整份格式化或重写；该结果记录于 `r4/format-check.log`。按合同不运行完整 verify 或页面测试，交 Luna 独立验证；未提交、推送、部署或访问外部服务/CMS/数据库。
+
+#### XYY-20261014-04 — F-01/F-04/F-05 本地安全修复
+
+- 新增 `config/public-site.mjs` 作为 Astro 构建与 Express 运行时共用的公开 origin 校验器：`staging`/`production` 必须显式为可路由 HTTPS origin，拒绝空值、HTTP、路径、localhost/尾点 localhost、IPv4/IPv6 loopback、未指定及私有地址；本地与 CI 明确允许 loopback。构建把已校验 origin 用 Vite define 注入页面，并在 `dist/server/public-site-origin.json` 写入 manifest；运行时在发布环境拒绝缺失、非法或与 runtime origin 不同的 manifest。原 `56xyy.com` 域名迁移及 `isProductionDomain` 判定保持不变。
+- `request-policy` 对已配置 HTTPS public origin 的 HTTP GET/HEAD（包括未知 Host）固定 308 到该 origin 并保留规范化路径/查询；HTTP 非安全方法在业务处理前返回 400。CSP 的 `script-src` 限为 `'self'`、`connect-src` 限为 `'self'`，移除 public/loopback origin 注入。`DocumentHead` 的两处内联 `onload` 改为同源编译脚本；Astro `assetsInlineLimit: 0` 使已处理小模块保持外部资源，避免 CSP 阻断语言建议、header 等交互模块。
+- 自测 PASS：3 个相关单测文件共 32 项、目标 Prettier、ESLint、`git diff --check`；以显式 `https://8.138.148.179` 加 loopback 假 CMS/Xiansuo 输入的 `npm run build` 通过。构建 manifest、实际本地首页 CSP/无内联 module 脚本、固定未知 Host 重定向均已核对。staging+loopback public origin 在启动前按预期失败。证据见 `output/security/xyy-20261014-04/terra/self-test.md`。
+- `npm run typecheck` 在本工具 30 秒窗口内只输出四项既有 warning，未收到完成状态；不将其记为通过。交 Luna 独立运行 typecheck/verify、构建/页面与 CSP 负例；未提交、推送、部署或写入真实 CMS/数据库。
+
+#### XYY-20261014-04 R2 — request-policy 类型与 Astro mode 回归修复
+
+- 仅修正 `tests/unit/request-policy.test.ts` 的测试配置类型与 CSP directive 回调参数类型，保持全部断言和产品实现不变；Luna 所报两项 `astro check` 错误已消除。
+- Sol 复现的 `astro build --mode development` mode 漂移通过 `resolveViteMode(process.argv)` 修复：支持 `--mode development`、`--mode=development`，无显式 mode 的 `astro dev` 使用 development，其他命令回退 production；Astro config 因此不再从 `NODE_ENV` 推断 Vite env 文件。新增单测覆盖四个 CLI 输入。
+- 自测 PASS：目标 Prettier、ESLint、`git diff --check`；3 个相关单测文件共36项通过。按指定假环境 `npm run typecheck` 完整退出0，687 files、0 errors、0 warnings、4既有 hints。证据 `output/security/xyy-20261014-04/terra/r2-typecheck.md`。未运行浏览器、完整 verify、提交、推送、部署或真实 CMS/数据库操作；交 Luna 按 fixture 独立复测 mode/build 与后续闸门。
+
+#### XYY-20261014-04 R3 — request-policy 测试维护预算修复
+
+- 仅将既有 CSP 安全头断言从 `tests/unit/request-policy.test.ts` 移至新增的 `tests/unit/request-policy-security.test.ts`，并移除原文件不再使用的 import；测试断言语义、业务实现和总测试数均未改变。原文件由231行降为208行，新文件24行，符合220行维护预算。
+- 自测 PASS：4 个定向单测文件共36项、目标 Prettier、ESLint、`git diff --check` 及 `npm run check:maintainability`（852项目文件）均退出0。证据 `output/security/xyy-20261014-04/terra/r3-maintainability.md`。未重复浏览器、typecheck、完整 verify、提交、推送、部署或真实 CMS/数据库操作；冻结交 Luna 最终完整 verify。
+
+#### XYY-20261014-05 — 内容默认可见与渐进动画
+
+- 首页 hero、核心服务和履约步骤移除 CSS 初始透明/位移规则，默认 SSR/CSS 保持正文与 CTA 可读。JS 在非 reduced-motion 时才以 `fromTo` 或 WAAPI 施加短暂入场状态；履约步骤、hero、服务动画的同步构造失败会先终止已创建动画、清除临时样式后重新抛出，不以吞错或超时回退掩盖问题。
+- 共享云道 reveal 改为仅在 ScrollTrigger 实际进入时创建动画；详情页 reveal 不再给全部目标提前加 pending 属性或由 CSS 隐藏，单元素、首屏初始化与 observer 回调异常均取消已有动画、移除 pending 后继续抛出。首页 capability 的 stat card/tenure 先暂停并完整构造 timeline，随后才设置起始态；构造失败会 kill timeline 并清除卡片、数字及装饰的临时属性。`flow-motion.ts`、有意交互隐藏内容、数据、布局与业务逻辑均未改。
+- 自测 PASS：16 个目标实现文件 Prettier、`git diff --check`、假本地服务输入下的 `npm run typecheck`（688 files，0 errors，0 warnings，4既有 hints）均 exit 0；目标 ESLint 无错误，CSS 文件按项目配置报告为 ignored warning。未写正式测试、未运行浏览器、完整 verify 或 build；源码冻结交 Luna 独立覆盖中英首页、云道及服务详情的无 JS/脚本失败/正常/reduced-motion 行为。未提交、推送、部署或访问真实 CMS/数据库。
+
+#### XYY-20261014-05 R1 — GSAP 部分构造异常回显
+
+- 仅在 `reveal-copy.ts` 与 `reveal-entrance.ts` 的既有异常路径中，于 `tween?.kill()` 后增加 `gsap.killTweensOf(targets)`。若 `fromTo` 已注册全局 tween 但返回赋值前抛错，清除内联属性前会终止该未绑定 tween，随后仍以原有 `clearProps` 回显并重抛错误。
+- 自测 PASS：两文件 Prettier、ESLint 与 scoped `git diff --check`；按合同不重复 typecheck、build 或浏览器测试。源码冻结交 Luna 注入故障验证；未提交、推送、部署或访问真实 CMS/数据库。
+
+#### XYY-20261014-05 R2 — GSAP 部分注册异常残留修复
+
+- 复核 Luna 的 `gsap-fault-r1.mjs/.json`：它在 `fromTo` 返回、外层赋值前只对 `.service-detail__header` 两个 target 抛错，catch 的 `killTweensOf` 与 `clearProps` 均命中，仍出现早期/900ms 后 opacity 0；注入位置忠实，且“清理调用后目标仍透明、动画仍 active”为实证结论。本地 `node_modules/gsap/gsap-core.js:2450-2457` 的 `killTweensOf` 含跳过 `_overwritingTween` 的条件；将该条件与部分注册状态关联是本轮源码推断，未对运行时 `_overwritingTween` 值作直接插桩取证。
+- 两个 helper 改为先创建并持有 `gsap.timeline({ paused: true })`，再以原 `fromTo` 参数构造并 `play(0)`。部分构造异常时先 `clear()` 脱离 child/startAt、再 `kill()` 终止持有 timeline，随后原有 `clearProps` 回显并重抛。正常路径的 duration、stagger、delay、ease 与触发条件均保持；未改其他14项实现、测试或布局。
+- 自测 PASS：两文件 Prettier、ESLint、`git diff --check`；假本地输入下 `npm run typecheck` 完整输出690 files、0 errors、0 warnings、4既有 hints。未自行覆盖 Luna 的真实浏览器故障注入、build 或完整 verify；冻结交 Luna 按可见性和无残留动画状态复测。未提交、推送、部署或访问真实 CMS/数据库。
+
+#### XYY-20261015-03 第一阶段 — 发布兼容性消费者修复
+
+- 两个 Playwright child environment 显式设为 DEPLOY_ENVIRONMENT=ci，且将线索服务地址改为 https://127.0.0.1:1；不再依赖外部测试域名。临时 CMS-empty Astro 子进程仅改变监听端口，PUBLIC_SITE_URL 固定使用其已构建消费者的 base origin，避免与 build manifest 漂移。
+- formal contract 改由 scripts/formal-test-server.mjs 启动：应用仅监听内部 loopback，外层 loopback proxy 强制写入 HTTPS forwarded headers，并以有界 upstream/request 超时、socket 清理和 child TERM/KILL 清理处理启动失败或终止。formal 测试覆盖代理正常 health/version 的预期 degraded/unavailable 响应，以及绕过代理的原始 HTTP GET/HEAD 308 和非安全请求 400；可信代理下的 legacy path 规范化断言相应为相对 Location。
+- scripts/local-release-probe.mjs 与 scripts/lib/local-probe.mjs 统一健康/版本本地探针：仅接受无凭据、无 query/hash 的 127.0.0.1 HTTP base 和 origin-relative path，固定可信代理头，手工重定向、Abort timeout，并完整校验健康依赖与 release identity。deploy.sh 的新版本健康/版本检查和两个回退分支均调用候选 release_dir 中的 helper，故回退至尚未带 helper 的旧 release 时仍可验证其服务；未改变远端 proxy 信任配置，若其缺失/不匹配导致重定向，probe 会失败并触发既有回退。
+- 自测 PASS：目标 Prettier、ESLint、Node/Bash syntax、git diff --check；local-only 旧 release 无 helper fixture 验证 health/version 成功且 308、超时、绝对路径和凭据 base 均被拒绝。formal Playwright 6项通过，normal temporary-port CMS-empty Chromium contract 通过（mobile 为既有 skip）。证据与源码 SHA-256 位于 output/optimization/xyy-20261015-03/terra/self-test.md。未运行完整 verify/verify:release，未提交、推送、部署、连接远端、写 CMS/数据库或变更 .env；交 Luna 独立完整门禁。
+
+#### XYY-20261015-03 R1 — 消费者环境与 probe origin 精确修正
+
+- 临时 CMS-empty child 显式覆盖 DEPLOY_ENVIRONMENT=ci，避免从 staging/production Playwright 父进程继承 release 环境后以 loopback public origin 启动失败。
+- local probe 在 WHATWG URL 解析后比较请求与严格 loopback base 的 origin；因此以 slash-backslash 改写为其他 host 的路径会拒绝，原有 origin-relative、双 slash、凭据 base 限制保持。
+- 自测 PASS：slash-backslash 与双 slash 跨 origin 路径负例、Node syntax、目标 Prettier/ESLint、git diff --check；重新冻结 SHA-256 记录于 output/optimization/xyy-20261015-03/terra/self-test.md。未重复 build、浏览器或完整门禁，交 Luna 独立验证。
+
+#### XYY-20261015-03 R2 — formal shutdown ready-return guard
+
+- formal harness 在 waitForApp 返回后、createServer/listen 前再次检查 shuttingDown、child exitCode 与 signalCode；若就绪 fetch 等待期间收到终止，后续不再开放 proxy port。既有 shutdown 幂等，已由信号请求的成功退出码不被 catch 改写。
+- 自测 PASS：Node syntax、目标 Prettier/ESLint、git diff --check；SHA-256 为 ad9337d4493370a45671b902e2bba6ee384b48a99b45c9dbabf46fc453b5a23c，记录于 output/optimization/xyy-20261015-03/terra/self-test.md。未运行 build/浏览器，交 Luna 做真实延迟200与信号场景验证。
+
+#### XYY-20261015-03 R3 — 发布消费者维护预算修复
+
+- 将 contracts 本地 server 的 listen、reservePort、waitForOrigin 原样迁至新增 tests/e2e/helpers/contract-server.ts；contracts 保留 Directus mock 和所有消费者断言，文件从226行降至190行。
+- deploy 的两个 verify_release_identity helper 移除重复 manifest 存在检查：新 release 调用已由发布内容保证 manifest，两个回退调用仍在调用点显式检查并保留 legacy_previous_release_identity_unavailable 警告；版本 identity 探针、健康探针和两条回退分支均未改变。
+- 自测 PASS：bash -n、目标 Prettier/ESLint、git diff --check、2个相关单测共19项、npm run typecheck（696 files，0 errors，0 warnings，4既有 hints）与 npm run check:maintainability（860 files）均退出0。源码 SHA-256 及命令结果见 output/optimization/xyy-20261015-03/terra/self-test.md。未运行 deploy、build、浏览器或完整 verify，未提交、推送、连接远端、写 CMS/数据库或修改 .env；冻结交 Luna 继续完整门禁。
+
+#### XYY-20261015-03 R4 — English fixture 公开 origin 消费者修复
+
+- 两个 English fixture child 显式使用 DEPLOY_ENVIRONMENT=ci，并从 PLAYWRIGHT_PORT 派生构建 public origin；随机端口仅作 loopback 监听，避免与共享 dist manifest 不匹配或继承 staging/production。普通 Playwright build/start 环境也显式设 HOST=127.0.0.1。
+- 两个 fixture readiness 改为 redirect: manual 且只接受 HTTP 200。news 的重试计时器随完成/失败清理；whitepaper 同步补足 finished guard、重试计时器及 timeout/child-exit 清理，避免终止后继续轮询。CMS mock 数据、空结果和错误语义未改。
+- 静态自测 PASS：目标 Prettier、ESLint、git diff --check、npm run typecheck（696 files，0 errors，0 warnings，4既有 hints）及 npm run check:maintainability（860 files）。5个 fixture spec 首次运行前4399无监听，输出显示 `[WebServer]`，因此进入了配置的额外 build/start；该次被中止（exit 130，18项通过、4项中断），不作为成功证据。第二次运行实际得到30/30通过；该结果单独记录为自测通过，不能替代 Luna 独立门禁。`/healthz` 的503不能解释 Playwright readiness，因为配置使用根 `testOrigin`；本次未独立核实后续进程归属或第二次是否重启 webServer，故不作该等断言。原4321预览未停止。未运行完整 verify/verify:release、部署、提交、推送或真实 CMS/数据库操作；源码冻结交 Luna 独立复测。
+
+#### XYY-20261015-04 第一部分 — 隔离 Lighthouse 工具
+
+- `test:lhci:all` 改为单个 runner：在 `TMPDIR` 所指、主仓外的临时目录复制 src/public/config/server/scripts、根构建配置、本地 node_modules 和容量基线；不复制 `.env*`、`.git`、dist 或 `.astro`，并清理副本 Vite/Astro 缓存。复制根及 node_modules 内部 symlink 均验证解析后仍在工作区，完成或失败后均删除工作区，不触及主 dist、缓存或4321预览。
+- runner 固定 CI/offline loopback 假服务环境，build 与 runtime 使用相同 public origin；`all` 只 build 一次，在 4400 顺序采集 desktop/mobile。仅调用副本本地 `lhci` binary，缺失明确失败，不使用 npx 下载。LHCI mode、enforce 阈值与 Chrome 路径经过校验后才透传；SIGINT/SIGTERM 先终止自有子进程组，5秒未退出再 KILL；命令正常退出也会回收同组残留。命令状态、已生成 `.lighthouseci` raw 报告和失败信息先保留，再清理副本。
+- 保留8路由×3与 native median assertions，新增 requested/final origin guard；summary 记录 LCP/TBT/CLS、`total-byte-weight` 资源字节、`network-requests.details.items.length` 请求数及浏览器、节流、form factor、屏幕、storage reset 元数据。filesystem 报告写入 `output/lighthouse/<run-id>/<device>`。
+- 自测 PASS：隔离副本创建、根目录非软链与清理；目标 Prettier、ESLint、Node syntax、scoped diff；现有 lighthouse config 单测3项与维护预算检查（865 files）均退出0。未运行48次采样、build、完整 verify/verify:release或浏览器；旧 runner unit fixture 依赖 cwd/npx 回退，已不符合新隔离契约，交 Luna 迁移。证据和源码 hash 见 `output/optimization/xyy-20261015-04/terra/first-part-self-test.md`；未提交、推送、部署或访问真实 CMS/数据库。
+
+#### XYY-20261015-04 R2 — workspace 软链逃逸修复
+
+- Luna 发现 workspace 只递归检查 node_modules，导致 src/public 内解析到副本外的软链可通过。现在对整个已复制 workspace 递归检查：所有复制输入目录和根输入中的任意 symlink 若 realpath 位于 workspace 外即失败；副本内的相对依赖和 `.bin` 链接仍合法。输入改为顺序复制，故任一 copy 失败后没有并行写入继续与清理竞争；创建失败路径保留根因并递归删除临时目录。
+- 自测 PASS：Luna 指定4个单测文件共18项、目标 Prettier/ESLint、Node syntax、`npm run check:maintainability`（868 files）及 scoped diff 均退出0。未运行 build、LHCI采样、浏览器或完整 verify；hash `3d6ec80c7894718c63251a78dbd81de84516eee0883807408316f078a584840b`，证据 `output/optimization/xyy-20261015-04/terra/r2-workspace-self-test.md`。冻结交 Luna 独立复测。
+
+#### XYY-20261015-04 第二部分 — 图库展示缩略图
+
+- 新增严格 TypeScript AST 读取器，只接受 `galleryCatalog` 内直接的 `gallery(数字 ID、宽、高、scene 字面量)` 调用并拒绝重复或动态值；生成器据此逐项读取原图，不以目录遍历决定清单。它校验原图 WebP、声明尺寸与完整解码，使用冻结的 Sharp 0.35.4 / 192×192 / `fit: outside` / `withoutEnlargement` / quality 78 / effort 4 写入忽略的 `public/about/gallery-thumbnails/gallery-NNN.webp`。输入 SHA-256、profile、实际 Sharp 版本和派生 SHA-256 写入同目录 manifest；缓存缺件/无效会重建，临时文件与 manifest 均原子替换，全部派生图在结束前再次解码。
+- `GalleryImage` 新增缩略图 URL；图库墙仅把 `<img>` 切到派生 URL，原 anchor 仍保留原图 URL。悬浮预览和 dialog 由 anchor `href` 读取原图，原图顺序、alt、尺寸、比例、样式和文案均未改。`predev`、`precheck:assets` 与 `prebuild:local-preview` 会保证派生图存在；Sharp 作为精确 `0.35.4` devDependency 加入，`package-lock.json` 仅按该版本的 Sharp 平台/libvips 家族更新。
+- 自测 PASS：严格 AST 当前157项、重复/动态 ID/空清单/语法错误拒绝，157源图与全部派生图解码，缓存缺件重建一致、缺源明确失败；100×80 小源图保持 100×80 未放大。生成总 1,622,906 bytes，低于冻结 gallery wall 4,249,671 bytes，157原图 SHA-256 与基线一致。`npm run check:assets`、目标格式/ESLint/Node syntax/scoped diff、`npm run typecheck`（707 files、0 errors、0 warnings、4既有 hints）和 `npm run check:maintainability`（871 files）均通过。详细证据 `output/optimization/xyy-20261015-04/terra/gallery-thumbnail-self-test.md`。未运行浏览器/CDP、48次 Lighthouse、build、verify/verify:release；4321预览未停止，交 Luna 独立验证后测、原图请求/预览与 DPR2/3 视觉。
+
+#### XYY-20261015-04 R2 — 语言提示条 CLS 修复
+
+- 根据 Nova 的移动首页 CLS 诊断，仅将 `language-suggestion.css` 的提示条从正常流 `position: relative` 改为文档顶部的 `position: absolute; top: 0; left: 0`。该元素是 body 的直接子节点，因此显现/关闭不再推移 main/hero，页面滚动时仍随文档离开；无 JS 时原有 `[hidden]` 继续不占空间。
+- 未修改 header 或提示条脚本：它继续以 `min(height, bottom)` 写入 `--language-suggestion-visible-height`，固定 header 仍随可见提示条高度补偿，保存语言选择、键盘关闭和无 JS 语义保持。z-index、宽度、视觉样式未改。
+- 自测 PASS：目标 Prettier、scoped `git diff --check` 与静态 out-of-flow 契约检查；目标 ESLint 对 CSS 报既有“无 matching configuration”warning、0 errors。证据 `output/optimization/xyy-20261015-04/terra/r2-language-suggestion-self-test.md`。未运行浏览器、Lighthouse、build、verify/verify:release；交 Luna 验证 hero 坐标、提示条/header/标题无重叠、滚动/缩放/关闭补偿、无 JS 空白和冻结48样本后测。
+
+#### XYY-20261015-04 R3 — 收窄语言提示条 overlay
+
+- R2 的全站 absolute 使联系页 390px 导航遮挡标题。现在 `LanguageSuggestion` 在 SSR 阶段仅对 `/` 与 `/xiefu-yuncang`（尾斜杠同样归一）输出 `data-language-layout="overlay"`；其他路由省略该属性。CSS 默认恢复 `position: relative`，只以准确属性值匹配把两条目标路由设为 document-top absolute，不使用依赖下游 DOM 的 `:has()`。
+- header offset 脚本、提示条存储/键盘/无 JS 行为、页面或 header 均未改。这样目标首页与鞋服页继续避免提示条插入推移 hero，其余页面保留原 flow 布局，待 Luna 验证联系页 390px 标题及各路由实际渲染。
+- 自测 PASS：SSR 路由映射（`/`、鞋服及尾斜杠 overlay；联系/英文代表路径省略）、目标 Prettier 与 scoped `git diff --check`；CSS ESLint 仍为无 matching configuration warning、0 errors。证据 `output/optimization/xyy-20261015-04/terra/r3-language-suggestion-self-test.md`。未运行浏览器、Lighthouse、build、verify/verify:release；冻结交 Luna 验证并在布局通过后执行合同规定的固定48样本复测。
+
+#### XYY-20261015-04 R4 — 联系页首屏与 Lighthouse 汇总完整性
+
+- `LanguageSuggestion` 仅为中文 `/contact`（尾斜杠同样归一）增加 SSR `data-language-layout="overlay"`；首页与鞋服云仓既有 overlay 保持，英文联系页和其余路由仍省略属性并使用默认 flow。
+- `ContactHero` 仅为中文增加 `chinese-contact-hero`：移动端静态 `padding-top: 9rem`，既有 `lg` 断点（64rem）为 `8rem`。英文 class 与其 7rem/35rem 样式保持不变。该 Hero 内留白不依赖提示条状态。
+- Lighthouse summary 的 `total-byte-weight` 改为全部报告均要求有限数值，移除可选 metric 与首样本 null 过滤；缺失、null 或非法值都会抛出 `invalid_total-byte-weight`，正常三样本 median 口径不变。
+- 轻量自测 PASS：三个目标文件 Prettier、ESLint、summary Node syntax、scoped diff；临时目录 summary 正常三样本 `resourceBytes` median 为 200，随后将其中一份设为 null 后准确报 `invalid_total-byte-weight`。证据 `output/optimization/xyy-20261015-04/terra/r4-self-test.md`。未运行浏览器、Lighthouse、build、完整 verify 或采样；交 Luna 独立验证页面矩形/无 JS/非目标 flow、summary 全缺项矩阵和 clean checkout 构建。
+
+#### XYY-20261015-05 — 手机咨询表单
+
+- 联系页服务上下文现在将既有 `from` 来源与 `need`/`region` finder 先合并再同时提供来源短标签与服务预选：当前语言分别使用既有 `SERVICE_PAGE_CONFIG`/`ENGLISH_SERVICE_SOURCES` 面包屑，数字化页面复用提取出的既有中文短名。有效来源与有效 finder 冲突时，两者均为空；单独来源和无效 finder 时仍保留来源预选。未新增重复英文路由表。
+- 联系表单首层保留姓名、当前语言必填联系方式、服务与需求四项；公司及另一个选填联系方式移至需求之后的原生 `details`。所有原有 id、name、maxlength、autocomplete、required、payload 字段不变。客户端校验以稳定字段键定位，选填字段出错时展开 details 后聚焦；未知 API 错误聚焦结果摘要。
+- 每次提交新建 AbortController，15 秒计时覆盖 fetch 与 body 解析；处理中拒绝重复提交，finally 恢复按钮和 busy 状态。只有 JSON `{ success: true }` 调用原生 reset，失败与超时保留六项字段和隐私勾选；英文既有 email/phone 文案继续复用。
+- 自测 PASS：目标 Prettier、ESLint、scoped `git diff --check`；既有 conversion/contact 单测 20 项；ignored 服务上下文与稳定字段键 self-test 2 项；`npm run typecheck` 714 files、0 errors、0 warnings、5 既有 hints；`npm run check:maintainability` 878 files。证据 `output/optimization/xyy-20261015-05/terra/r5-self-test.md`。未运行浏览器、build、完整 verify/verify:release 或真实 API/CMS；冻结实现 SHA-256 与 `implementation-r1-hashes.json` 一致，交 Luna 独立验证 20来源、details/focus、真实超时、400/503 保留和 success reset。
+
+#### XYY-20261015-06 — 本地开发公开 API 入口
+
+- 新增 `dev:local`/`predev:local`，复用图库准备步骤而不修改既有 `dev` 或发布门禁。入口在动态 import Astro 前推导项目 root、固定 development mode/argv，覆盖为 CI + loopback public origin 与不可达本机依赖，并禁用 telemetry/更新检查。公开 Astro `dev()` 使用 `logLevel: error`、loopback host 和 `vite.server.strictPort`。
+- Linux 端口 helper 仅信任精确 IPv4 loopback socket、单一 PID、项目真实 cwd/uid、当前 Node executable 及项目内 Astro CLI 或 local-dev 入口；`server.mjs`、IPv6/wildcard/未知占用均明确失败且不发送信号。身份 helper 以 manual redirect + 有界请求核验中英 HTML lang、语言品牌 title、非空 H1、Vite client MIME/特征和当前 logo PNG MIME/SHA-256；瞬时连接、超时和 5xx 在 60 秒就绪期限内重试。
+- 生命周期在动态 import 前安装信号处理；得到 DevServer 后才可 stop，ready/失败/信号均有界，停止 deadline 为5秒。仅在自身端口 owner 与 HTTP 身份均通过后输出精确单行 `LOCAL_DEV_READY` 协议；可信复用输出同协议后自然退出、不接管已有服务。
+- 自测 PASS：目标 Prettier、ESLint、Node syntax、scoped diff、`npm run check:maintainability`（887 files）；CLI/env/port-owner/logo-hash 导出接口断言与 fake-server failure stop 断言通过。共享4321完整 HTTP identity probe 在5秒单次及10秒 retry窗口超时，未据此宣称行为通过，也未启动/停止/信号该服务。未运行 build、浏览器、六次采样、verify 或真实 API/CMS；证据 `output/optimization/xyy-20261015-06/terra/r6-self-check.md`，交 Luna 在隔离固定45089执行全生命周期、身份/HMR和成对基线验证。
+
+#### XYY-20261015-06 R1 — npm Node argv 端口归属误判修复
+
+- Luna 固定 45089 的首个冷样本中，外部中英页面、Vite 与 logo 身份均已通过，但启动器在输出 Ready 前报 `local_dev_owner_check:free`；后续五样本按合同停止。根因是端口 helper 对 `/proc/<pid>/cmdline` 的首项字面 `node` 调用 `realpath()`，在 npm 启动形式下该相对名称解析失败，外层把任意 `ENOENT` 误作监听已消失。
+- 端口 helper 继续使用已核验的 `/proc/<pid>/exe` 比对 Node；命令识别不再解析 argv 首项，而以被检查进程的真实 cwd 解析 local-dev/Astro 入口。入口不存在只返回 `command` 占用；仅在检查失败后再次确认目标 `/proc/<pid>` 实际消失时才报告 `free`，其余错误保留并使启动器可见失败。忽略目录 selfcheck 覆盖字面 `node` 的 local-dev/Astro argv，以及 server/missing entrypoint 拒绝。
+- README 改为中文说明并推荐 `npm run dev:local`，保留原 `npm run dev` 的既有开发用途；未改启动脚本、生命周期、身份核验、4321 或采样副本。
+- 自测 PASS：ignored argv selfcheck 4项、四个 mjs 的 Node syntax、目标 ESLint、Prettier、scoped `git diff --check` 与 `npm run check:maintainability`（887 files）均退出0。证据 `output/optimization/xyy-20261015-06/terra/r1-port-command-selfcheck.json`。未启动服务、重跑六次采样、build、浏览器、verify 或真实 API/CMS；交 Luna 在隔离固定45089复测实际 npm 生命周期、Ready、退出与六次成对采样。
+
+#### XYY-20261015-06 R2 — title 身份与参数尾随值拒绝
+
+- Luna 六个新入口样本均真实就绪并完成清理（冷 22518.5/22363.5/21830.2ms，暖 22259.1/21474.7/21190.2ms），四项预算通过；这是非提速结果。随后独立 identity 测试发现错误 title 而正文含品牌时仍被接受。
+- `requirePageIdentity` 现在仅从实际 `<title>` 内容检查对应语言品牌，保留语言、非空 H1、Vite 与 logo 检查；因此标题其他正常文案可变，但正文品牌文本不能冒充标题身份。
+- `parseLocalDevArguments` 改为按首个 `=` 切分并保留其余完整值；`--port=4321=invalid` 与 `--mode=development=invalid` 分别按既有端口/mode 校验拒绝，未改其他参数或启动流程。
+- 自测 PASS：Luna 新增的 title 回归测试 2项、纯导出参数 selfcheck（两条尾随垃圾拒绝及正常 inline 参数接受）、两文件 Prettier/Node syntax/ESLint/scoped `git diff --check`。证据 `output/optimization/xyy-20261015-06/terra/r2-argument-selfcheck.json`。未启动服务、重跑六次采样、build、浏览器、verify 或真实 API/CMS；冻结交 Luna 补充 title/参数与现有生命周期复测。
+
+#### XYY-20261015-06 R3 — 本地输出目录 watcher 排除
+
+- Luna cleanup 测试错误调用全局 Astro dev stop，导致主 4321 预览停止；Sol 随后尝试恢复时，主仓的 Vite FSWatcher 因历史 `output/english-cases/...` 候选文件触发 `ENOSPC` 失败。该恢复失败保留于 `output/optimization/xyy-20261015-06/sol-preview-recovery.log`；未修改 `/proc/sys/fs/inotify/max_user_watches`，也不将恢复记为通过。
+- `dev:local` 的 inline `vite.server.watch.ignored` 现在使用 Chokidar 支持的函数，仅匹配脚本所属 project root 下的 `output` 目录及其子树。当前 Vite 8.1.3 的 `resolveChokidarOptions` 会将该函数与默认 `.git`、`node_modules`、`test-results` 和 cache 忽略列表合并；src、public 和 `output-backup` 均不匹配，strictPort、环境、Ready 与生命周期配置未改。
+- 自测 PASS：输出目录 matcher 5项（根/子树拒绝，src/public/相同前缀目录保留）、目标 Prettier、Node syntax、ESLint 与 scoped `git diff --check`。证据 `output/optimization/xyy-20261015-06/terra/r3-watch-ignore-selfcheck.json`。未启动、停止或信号任何服务，未重跑采样/build/浏览器/verify；交 Sol 恢复主预览并由 Luna 验证 output 不监听且源码/public HMR 正常。

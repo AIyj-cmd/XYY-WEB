@@ -23,26 +23,38 @@ export const revealOnLoad = ({
 }: EntranceRevealOptions) => {
   if (!targets.length) return
 
-  gsap.fromTo(
-    targets,
-    {
-      autoAlpha: 0,
-      x,
-      y,
-      scale,
-      filter: `blur(${blur}px)`,
-    },
-    {
-      autoAlpha: 1,
-      x: 0,
-      y: 0,
-      scale: 1,
-      filter: 'blur(0px)',
-      duration,
-      stagger,
-      delay,
-      ease: 'power3.out',
-      clearProps: CLEARED_REVEAL_PROPS,
-    }
-  )
+  let timeline: gsap.core.Timeline | undefined
+
+  try {
+    timeline = gsap.timeline({ paused: true })
+    timeline
+      .fromTo(
+        targets,
+        {
+          autoAlpha: 0,
+          x,
+          y,
+          scale,
+          filter: `blur(${blur}px)`,
+        },
+        {
+          autoAlpha: 1,
+          x: 0,
+          y: 0,
+          scale: 1,
+          filter: 'blur(0px)',
+          duration,
+          stagger,
+          delay,
+          ease: 'power3.out',
+          clearProps: CLEARED_REVEAL_PROPS,
+        }
+      )
+      .play(0)
+  } catch (error) {
+    timeline?.clear()
+    timeline?.kill()
+    gsap.set(targets, { clearProps: CLEARED_REVEAL_PROPS })
+    throw error
+  }
 }

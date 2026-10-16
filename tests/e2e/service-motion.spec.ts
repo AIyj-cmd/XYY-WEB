@@ -1,6 +1,11 @@
 import { expect, test } from '@playwright/test'
+import { expectEffectivelyVisible, installLocalGuard } from './helpers/content-visibility'
 
 const dropdownServiceRoutes = ['/yundao-zhineng-jijian', '/b2b-mendian-cangpei']
+
+test.beforeEach(async ({ page }) => {
+  await installLocalGuard(page.context())
+})
 
 test('all service dropdown pages share the same prompt scroll reveal', async ({
   page,
@@ -26,10 +31,7 @@ test('all service dropdown pages share the same prompt scroll reveal', async ({
 
     const detail = page.locator('.service-detail__header')
     const heading = detail.locator('h2')
-    expect(
-      Number(await heading.evaluate((element) => getComputedStyle(element).opacity)),
-      `${path} should prepare below-fold content for the shared reveal`
-    ).toBeLessThan(0.05)
+    await expectEffectivelyVisible(page, ['.service-detail__header h2'])
 
     await detail.scrollIntoViewIfNeeded()
     await expect(detail).toBeInViewport()

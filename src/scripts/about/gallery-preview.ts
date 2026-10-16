@@ -26,8 +26,12 @@ function initGalleryPreview() {
     if (preview.matches(':popover-open')) preview.hidePopover()
     active = null
   }
-  const fillImage = (target: HTMLImageElement, source: HTMLImageElement) => {
-    target.src = source.currentSrc || source.src
+  const fillImage = (
+    target: HTMLImageElement,
+    link: HTMLAnchorElement,
+    source: HTMLImageElement
+  ) => {
+    target.src = link.href
     target.alt = source.alt
     target.width = Number(source.getAttribute('width'))
     target.height = Number(source.getAttribute('height'))
@@ -39,7 +43,7 @@ function initGalleryPreview() {
     cancelClose()
     active = link
     keyboardPreview = fromKeyboard
-    fillImage(previewImage, image)
+    fillImage(previewImage, link, image)
     positionGalleryPreview(preview, link, image)
     if (!preview.matches(':popover-open')) preview.showPopover()
   }
@@ -57,7 +61,7 @@ function initGalleryPreview() {
     suppressPreview = true
     hidePreview()
     opener = link
-    fillImage(dialogImage, image)
+    fillImage(dialogImage, link, image)
     dialog.showModal()
     document.documentElement.classList.add('about-gallery-dialog-open')
     closeButton.focus()

@@ -8,20 +8,33 @@ const config = {
   legacyHosts: new Set<string>(),
   enableDomainRedirects: false,
 }
+type RequestPolicyConfig = typeof config & {
+  publicSiteOrigin?: string
+  isProductionDomain?: boolean
+}
 
 function runCanonicalRedirect(
   path: string,
   originalUrl = path,
-  requestConfig = config,
-  request: Partial<{ hostname: string; protocol: string; forwardedProto: string }> = {}
+  requestConfig: RequestPolicyConfig = config,
+  request: Partial<{
+    hostname: string
+    method: string
+    protocol: string
+    forwardedProto: string
+  }> = {}
 ) {
   const redirect = vi.fn()
   const next = vi.fn()
+  const send = vi.fn()
+  const type = vi.fn().mockReturnThis()
+  const status = vi.fn().mockReturnThis()
   const middleware = createCanonicalRedirect(requestConfig)
 
   middleware(
     {
       hostname: request.hostname ?? requestConfig.formalHost,
+      method: request.method ?? 'GET',
       protocol: request.protocol ?? 'https',
       path,
       originalUrl,
@@ -29,12 +42,15 @@ function runCanonicalRedirect(
     },
     {
       redirect,
+      send,
+      status,
+      type,
       locals: { requestProtocol: request.forwardedProto ?? request.protocol ?? 'https' },
     },
     next
   )
 
-  return { redirect, next }
+  return { redirect, next, send, status, type }
 }
 
 describe('canonical redirect policy', () => {
@@ -150,5 +166,43 @@ describe('canonical redirect policy', () => {
         hostname: 'legacy.example',
       }).redirect
     ).toHaveBeenCalledWith(301, 'https://56xyy.com/product?source=legacy')
+  })
+
+  it('redirects HTTP safe requests to the configured HTTPS origin without using Host', () => {
+    const httpsConfig = {
+      ...config,
+      publicSiteOrigin: 'https://8.138.148.179',
+      formalOrigin: 'https://8.138.148.179',
+      formalHost: '8.138.148.179',
+    }
+
+    for (const method of ['GET', 'HEAD']) {
+      const { redirect, next } = runCanonicalRedirect(
+        '/contact',
+        '/contact?source=http',
+        httpsConfig,
+        {
+          hostname: 'attacker.example',
+          method,
+          protocol: 'http',
+        }
+      )
+      expect(redirect).toHaveBeenCalledWith(308, 'https://8.138.148.179/contact?source=http')
+      expect(next).not.toHaveBeenCalled()
+    }
+  })
+
+  it('rejects HTTP unsafe methods before they can reach business middleware', () => {
+    const { next, redirect, send, status } = runCanonicalRedirect(
+      '/api/contact',
+      '/api/contact',
+      { ...config, publicSiteOrigin: 'https://8.138.148.179' },
+      { method: 'POST', protocol: 'http', hostname: 'attacker.example' }
+    )
+
+    expect(redirect).not.toHaveBeenCalled()
+    expect(status).toHaveBeenCalledWith(400)
+    expect(send).toHaveBeenCalledWith('HTTPS Required')
+    expect(next).not.toHaveBeenCalled()
   })
 })

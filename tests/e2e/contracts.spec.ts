@@ -1,42 +1,9 @@
 import { expect, test } from '@playwright/test'
-import { spawn, type ChildProcess } from 'node:child_process'
+import { spawn } from 'node:child_process'
 import { randomBytes } from 'node:crypto'
-import { createServer, type Server } from 'node:http'
-import type { AddressInfo } from 'node:net'
+import { createServer } from 'node:http'
 import { getClaimText } from '../../src/lib/claims'
-
-async function listen(server: Server): Promise<number> {
-  await new Promise<void>((resolve, reject) => {
-    server.once('error', reject)
-    server.listen(0, '127.0.0.1', resolve)
-  })
-  return (server.address() as AddressInfo).port
-}
-
-async function reservePort(): Promise<number> {
-  const server = createServer()
-  const port = await listen(server)
-  await new Promise<void>((resolve, reject) =>
-    server.close((error) => (error ? reject(error) : resolve()))
-  )
-  return port
-}
-
-async function waitForOrigin(origin: string, child: ChildProcess) {
-  const deadline = Date.now() + 10_000
-  while (Date.now() < deadline) {
-    if (child.exitCode !== null)
-      throw new Error(`isolated Astro server exited with ${child.exitCode}`)
-    try {
-      const response = await fetch(origin)
-      if (response.status > 0) return
-    } catch {
-      // The child process may still be binding its port.
-    }
-    await new Promise((resolve) => setTimeout(resolve, 100))
-  }
-  throw new Error(`isolated Astro server did not start at ${origin}`)
-}
+import { listen, reservePort, waitForOrigin } from './helpers/contract-server'
 
 test('core pages and discovery endpoints preserve SEO and AEO contracts', async ({
   page,
@@ -175,16 +142,20 @@ test('case detail returns HTTP 404 when the available CMS has no published slug'
   const directusPort = await listen(directus)
   const appPort = await reservePort()
   const origin = `http://127.0.0.1:${appPort}`
+  const buildOrigin = testInfo.project.use.baseURL!
   const app = spawn(process.execPath, ['server.mjs'], {
     cwd: process.cwd(),
     env: {
       ...process.env,
+      DEPLOY_ENVIRONMENT: 'ci',
       DIRECTUS_URL: `http://127.0.0.1:${directusPort}`,
       DIRECTUS_CONTENT_TOKEN: 'cms-empty-contract-token',
-      XIANSUO_API_URL: 'https://xiansuo-integration.test',
+      XIANSUO_API_URL: 'https://127.0.0.1:1',
       XIANSUO_INGEST_TOKEN: randomBytes(32).toString('base64url'),
       PUBLIC_DIRECTUS_URL: `http://127.0.0.1:${directusPort}`,
-      PUBLIC_SITE_URL: origin,
+      // This temporary process changes only its listening port; its public origin must match
+      // the already-built server manifest that the Playwright consumer is exercising.
+      PUBLIC_SITE_URL: buildOrigin,
       ENABLE_DOMAIN_REDIRECTS: 'false',
       HOST: '127.0.0.1',
       PORT: String(appPort),
@@ -205,15 +176,19 @@ test('case detail returns HTTP 404 when the available CMS has no published slug'
 })
 
 test('contact form shows API validation errors', async ({ page }) => {
+  await page.route('**/api/contact', (route) =>
+    route.fulfill({ status: 400, json: { error: 'server validation', code: 'validation_failed' } })
+  )
   await page.goto('/contact')
 
   await expect(page.locator('#form-result')).toHaveAttribute('role', 'status')
   await expect(page.locator('#form-result')).toHaveAttribute('aria-live', 'polite')
   await page.getByLabel(/您的姓名/).fill('测试')
-  await page.getByLabel(/联系电话/).fill('abc')
+  await page.getByLabel(/联系电话/).fill('13800138000')
   await page.getByLabel(/需求描述/).fill('想了解仓配一体服务')
   await page.getByRole('checkbox').check()
   await page.getByRole('button', { name: '提交咨询' }).click()
 
-  await expect(page.locator('#form-result')).toContainText('请输入有效的手机号或座机号')
+  await expect(page.locator('#form-result')).toContainText('server validation')
+  await expect(page.locator('#form-result')).toBeFocused()
 })

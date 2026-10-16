@@ -14,6 +14,40 @@
   color: #9a3412;
 }
 
+.contact-service-context {
+  margin: -0.5rem 0 1.25rem;
+  color: #475569;
+  font-size: 0.875rem;
+  line-height: 1.55;
+}
+
+.contact-service-context strong {
+  color: #132b50;
+}
+
+.contact-optional-fields {
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  background: #f8fafc;
+}
+
+.contact-optional-fields summary {
+  cursor: pointer;
+  padding: 0.875rem 1rem;
+  color: #334155;
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.contact-optional-fields__content {
+  border-top: 1px solid #e2e8f0;
+  padding: 1rem;
+}
+
+.contact-optional-fields:focus-within {
+  border-color: #94a3b8;
+}
+
 .contact-enquiry-template {
   display: flex;
   align-items: center;

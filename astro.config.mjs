@@ -1,6 +1,19 @@
 import { defineConfig } from 'astro/config'
 import node from '@astrojs/node'
 import tailwindcss from '@tailwindcss/vite'
+import { loadEnv } from 'vite'
+import {
+  createPublicSiteOriginManifestPlugin,
+  resolvePublicSiteConfig,
+  resolveViteMode,
+} from './config/public-site.mjs'
+
+const mode = resolveViteMode(process.argv)
+const fileEnv = loadEnv(mode, process.cwd(), ['PUBLIC_SITE_URL', 'DEPLOY_ENVIRONMENT'])
+const publicSite = resolvePublicSiteConfig({
+  PUBLIC_SITE_URL: process.env.PUBLIC_SITE_URL ?? fileEnv.PUBLIC_SITE_URL,
+  DEPLOY_ENVIRONMENT: process.env.DEPLOY_ENVIRONMENT ?? fileEnv.DEPLOY_ENVIRONMENT,
+})
 
 export default defineConfig({
   output: 'server',
@@ -11,9 +24,18 @@ export default defineConfig({
     routing: { prefixDefaultLocale: false, redirectToDefaultLocale: false },
   },
   integrations: [],
-  site: process.env.PUBLIC_SITE_URL ?? 'https://56xyy.com',
+  site: publicSite.origin,
   server: { port: 4321, host: '0.0.0.0' },
   vite: {
-    plugins: [tailwindcss()],
+    plugins: [tailwindcss(), createPublicSiteOriginManifestPlugin(publicSite.origin)],
+    define: {
+      // Keep client/SSR metadata on the same checked origin used to create the build manifest.
+      'import.meta.env.PUBLIC_SITE_URL': JSON.stringify(publicSite.origin),
+    },
+    build: {
+      // Astro emits processed scripts below this limit inline. Keep executable code external so
+      // the runtime CSP can safely allow only same-origin scripts.
+      assetsInlineLimit: 0,
+    },
   },
 })

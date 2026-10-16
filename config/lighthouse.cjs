@@ -10,21 +10,33 @@ const routes = [
 ]
 
 const offlineEnvironment =
-  'ENABLE_DOMAIN_REDIRECTS=false DIRECTUS_URL=http://127.0.0.1:9 DIRECTUS_CONTENT_TOKEN= XIANSUO_API_URL= XIANSUO_INGEST_TOKEN='
+  'CI=1 DEPLOY_ENVIRONMENT=ci ENABLE_DOMAIN_REDIRECTS=false DIRECTUS_URL=http://127.0.0.1:9 DIRECTUS_CONTENT_TOKEN=local-fake-content PUBLIC_DIRECTUS_URL=http://127.0.0.1:9 XIANSUO_API_URL=http://127.0.0.1:9 XIANSUO_INGEST_TOKEN=local-fake-ingest'
 
-function createConfig({ device, port }) {
+function createConfig({
+  device,
+  port,
+  origin: configuredOrigin,
+  outputDirectory: configuredOutput,
+} = {}) {
   const mobile = device === 'mobile'
+  const activePort = Number(port ?? process.env.LHCI_PORT ?? (mobile ? 4401 : 4400))
+  if (!Number.isInteger(activePort) || activePort < 1 || activePort > 65535)
+    throw new Error('invalid_lhci_port')
+  const origin = configuredOrigin ?? `http://127.0.0.1:${activePort}`
+  const outputDirectory =
+    configuredOutput ?? process.env.LHCI_REPORT_DIRECTORY ?? `./output/lighthouse/${device}`
   const mode = process.env.LHCI_MODE ?? 'observe'
   if (!['observe', 'enforce'].includes(mode)) throw new Error('invalid_lhci_mode')
   const calibrated = mode === 'enforce' ? parseThresholds() : null
   const collect = {
-    startServerCommand: `HOST=127.0.0.1 PORT=${port} ${offlineEnvironment} npm run start`,
+    startServerCommand: `HOST=127.0.0.1 PORT=${activePort} PUBLIC_SITE_URL=${origin} ${offlineEnvironment} npm run start`,
     startServerReadyPattern: 'Server started',
     startServerReadyTimeout: 30000,
-    url: routes.map((route) => `http://127.0.0.1:${port}${route}`),
+    url: routes.map((route) => `${origin}${route}`),
     numberOfRuns: 3,
     settings: {
       chromeFlags: '--headless=new --no-sandbox',
+      disableStorageReset: false,
       ...(mobile
         ? {
             formFactor: 'mobile',
@@ -49,7 +61,7 @@ function createConfig({ device, port }) {
       },
       upload: {
         target: 'filesystem',
-        outputDir: `./output/lighthouse/${device}`,
+        outputDir: outputDirectory,
       },
     },
   }

@@ -4,11 +4,11 @@ import ContactInquiryFields from './ContactInquiryFields.astro'
 import ContactPrivacyConsent from './ContactPrivacyConsent.astro'
 import type { SiteLocale } from '@/i18n/routes'
 import {
-  getRecommendedContactService,
   getServiceFinderContext,
   type ServiceFinderNeed,
   type ServiceFinderRegion,
 } from '@/lib/conversion/contact-source'
+import { getContactServiceContext } from '@/lib/contact/service-context'
 import '@/styles/contact-enquiry.css'
 
 interface Props {
@@ -19,7 +19,8 @@ interface Props {
 
 const { locale = 'zh-CN', caseContext } = Astro.props
 const english = locale === 'en'
-const preselectedService = getRecommendedContactService(Astro.url)
+const serviceContext = getContactServiceContext(Astro.url, locale)
+const preselectedService = serviceContext.preselectedService
 const finderContext = getServiceFinderContext(Astro.url)
 const finderNeeds: Record<ServiceFinderNeed, string> = english
   ? {
@@ -65,6 +66,17 @@ const enquiryContext = [
       </aside>
     )
   }
+  {
+    serviceContext.sourceLabel && (
+      <aside
+        class="contact-service-context"
+        aria-label={english ? 'Service page context' : '服务页面来源'}
+      >
+        <strong>{english ? 'Service page: ' : '服务页面：'}</strong>
+        {serviceContext.sourceLabel}
+      </aside>
+    )
+  }
   <form
     id="contact-form"
     action="/api/contact"
@@ -86,8 +98,18 @@ const enquiryContext = [
       {english && <input name="locale" type="hidden" value="en" />}
     </div>
 
-    <ContactIdentityFields {locale} />
+    <ContactIdentityFields {locale} group="primary" />
     <ContactInquiryFields {locale} {preselectedService} />
+    <details class="contact-optional-fields" data-contact-optional-fields>
+      <summary
+        >{
+          english ? 'Add company or phone details (optional)' : '补充公司或备用联系方式（选填）'
+        }</summary
+      >
+      <div class="contact-optional-fields__content">
+        <ContactIdentityFields {locale} group="optional" />
+      </div>
+    </details>
     <ContactPrivacyConsent {locale} />
 
     <button
@@ -96,7 +118,15 @@ const enquiryContext = [
       class="w-full sm:w-auto px-8 py-3.5 bg-brand-orange hover:bg-brand-orange-dark text-white font-bold rounded-xl text-base transition-colors shadow-lg shadow-orange-900/20 disabled:opacity-60 disabled:cursor-not-allowed"
       >{english ? 'Submit enquiry' : '提交咨询'}</button
     >
-    <div id="form-result" class="hidden" role="status" aria-live="polite" aria-atomic="true"></div>
+    <div
+      id="form-result"
+      class="hidden"
+      role="status"
+      aria-live="polite"
+      aria-atomic="true"
+      tabindex="-1"
+    >
+    </div>
   </form>
 </div>
 

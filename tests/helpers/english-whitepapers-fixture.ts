@@ -24,6 +24,7 @@ export type WhitepaperFixtureRecord = {
 }
 type State = Record<Collection, { mode: WhitepaperFixtureMode; records: unknown[] }>
 const root = resolve(import.meta.dirname, '../..')
+const buildOrigin = `http://127.0.0.1:${process.env.PLAYWRIGHT_PORT ?? '4399'}`
 
 async function listen(server: Server) {
   server.listen(0, '127.0.0.1')
@@ -112,11 +113,12 @@ async function appServer(directusUrl: string) {
     cwd: root,
     env: {
       ...process.env,
+      DEPLOY_ENVIRONMENT: 'ci',
       DIRECTUS_URL: directusUrl,
       DIRECTUS_CONTENT_TOKEN: 'whitepaper-fixture-token',
       ENABLE_DOMAIN_REDIRECTS: 'false',
       HOST: '127.0.0.1',
-      PUBLIC_SITE_URL: 'http://127.0.0.1',
+      PUBLIC_SITE_URL: buildOrigin,
       XIANSUO_API_URL: 'http://127.0.0.1:1',
       XIANSUO_INGEST_TOKEN: 'whitepaper-fixture-token',
       PORT: String(port),
@@ -131,27 +133,37 @@ async function appServer(directusUrl: string) {
   child.stdout?.on('data', capture)
   child.stderr?.on('data', capture)
   await new Promise<void>((resolveReady, reject) => {
+    let finished = false
+    let retry: ReturnType<typeof setTimeout> | undefined
+    const finish = (callback: () => void) => {
+      if (finished) return
+      finished = true
+      clearTimeout(timeout)
+      if (retry) clearTimeout(retry)
+      callback()
+    }
     const timeout = setTimeout(
-      () => reject(new Error(`fixture app did not start: ${output.join('')}`)),
+      () => finish(() => reject(new Error(`fixture app did not start: ${output.join('')}`))),
       20_000
     )
+    const retryCheck = () => {
+      if (!finished) retry = setTimeout(check, 30)
+    }
     const check = async () => {
+      if (finished) return
       try {
-        if ((await fetch(`http://127.0.0.1:${port}/en/supply-chain-whitepapers`)).ok) {
-          clearTimeout(timeout)
-          resolveReady()
-          return
-        }
+        const response = await fetch(`http://127.0.0.1:${port}/en/supply-chain-whitepapers`, {
+          redirect: 'manual',
+        })
+        if (response.status === 200) return finish(resolveReady)
       } catch {
-        setTimeout(check, 30)
-        return
+        return retryCheck()
       }
-      setTimeout(check, 30)
+      retryCheck()
     }
     check()
     child.once('exit', (code) => {
-      clearTimeout(timeout)
-      reject(new Error(`fixture app exited ${code}: ${output.join('')}`))
+      finish(() => reject(new Error(`fixture app exited ${code}: ${output.join('')}`)))
     })
   }).catch(async (error) => {
     if (child.exitCode === null) child.kill('SIGTERM')

@@ -3625,3 +3625,157 @@ Result：**APPROVED**。初轮唯一阻断 finding 已按精确 Scope 解决；�
 Remaining Risks：浏览器证据仍限本地 Chromium 模拟视口，R4 未运行 `verify:release`、Safari/Firefox、真机或公网页面检查；这些是既有验证边界，不由单点日志脱敏扩大。当前结论只批准 Git 候选，不表示已经提交、推送或部署。
 
 Handoff：返回 Sol 完成最终暂存、提交、普通推送和远端 SHA/工作树回读；推送授权不包含网站部署或任何 CMS/数据库/权限/基础设施变更。Nova 仅追加本日志及 ignored `output/git-sync/xyy-20261014-02/nova/r4/review.json`，未修改其他文件、暂存、提交、推送或访问真实服务。
+
+### XYY-20261014-04 — 安全报告本地修复最终 Review
+
+Task ID：`XYY-20261014-04`（HIGH）
+
+Review Scope：只审阅基线 `9ad4fe0fa92bb14ee23fa2e6c7b79836c2798c80` 上 Task 04 归属的公开 origin、HTTP/CSP、构建运行一致性实现及相关测试、合同、运维候选和 Luna R3 最终证据；既有 `DEV_STATE.md` / `docs/SOL.md` 增量及未跟踪 Task 03 计划不纳入候选结论。Nova 记录了 14 项实现、测试、合同及运维文档 SHA-256，所有实现/测试修改时间均早于 Luna 最终 verify 日志；R3 仅拆分测试文件。未修改实现或测试。
+
+Architecture：**PASS**。`config/public-site.mjs` 统一解析、规范化并校验公开 origin，Astro 的 `site`、编译期 `import.meta.env.PUBLIC_SITE_URL`、SSR origin manifest 与 Express runtime 使用同一来源；release 缺失/HTTP/loopback origin 及 manifest 缺失或构建运行不一致均明确失败，本地/CI 显式 loopback 保持可用。HTTP gate 位于 health、静态资源、业务与 SSR 之前；GET/HEAD 固定 308 到已校验 HTTPS origin，unsafe method 在进入业务前 400。formal domain 重定向、临时 IP 站点 noindex 与公开 origin 继续分责，`src/lib/claims/`、Directus 读取和 CMS/API fallback 契约未改。
+
+Security：**PASS**。重定向目的地不读取客户端 Host，路径先去除连续正反斜杠再拼接，查询保留；`X-Forwarded-Proto` 仅在既有 trusted-peer 判定后接受，且只接受规范化后的单个 `http` / `https`，伪造或链式值失败关闭。CSP 的 `script-src` 与 `connect-src` 均仅 `'self'`，不再允许 executable inline script 或 loopback；Astro `assetsInlineLimit: 0` 与外移的字体加载器保持脚本同源外部化。浏览器证据确认无 executable inline script、CSP violation、console/page error 或最终 harness 外部请求。
+
+Maintainability：**PASS**。共享配置集中在单一模块，runtime、Astro 与站点元数据没有各自复制校验；字体行为为 10 行独立脚本。R3 将新增 CSP 断言拆为 24 行测试，原 request-policy 测试降至 208 行，没有调高 220 行预算或改变业务实现。当前全工作树 `git diff --check` exit 0，Luna 的 852 文件维护预算通过。
+
+Contract Risks：**PASS**。F-02 文档明确 `enforce_tfa` 属于 Policy，启用前须枚举直接或经角色继承该策略的全部活跃用户；主管理员本人和不同人员持有的第二管理员均须各自绑定 TOTP 并以新会话验证，且在强制前具备可执行恢复路径。文档不声称 Directus 有原生恢复码，也未替用户生成或保管秘钥。F-03 候选五参数与 Directus 官方 per-IP 默认一致：`RATE_LIMITER_ENABLED=true`、`STORE=memory`、`POINTS=50`、`DURATION=1`、`GLOBAL_ENABLED=false`；它明确这是单进程、可信代理链核实后的起点，不是容量结论或登录专用防线，并区分报告中的应用限流关闭、旧仓库模板和仍未知的当前 Nginx/云 WAF。独立 port 80 Nginx 候选使用固定 HTTPS origin、保留 ACME、避免共享 80/443 server 的 HTTPS 循环；所有生产动作仍标为待授权，未写成已修复。
+
+Test Coverage Review：**PASS**。Luna R3 `npm run verify` exit 0：688 个类型文件 0 errors/0 warnings/4 hints，lint、852 文件维护预算、assets/cache、127 test files / 861 tests 与 Astro build 全部通过；4 个定向文件 36/36 tests、exit 0。复用的 R2 证据与冻结实现一致：12 组中英文三路由桌面/手机浏览器矩阵、4 次本地 mock 提交、SEO/JSON-LD/OG 与真实语言导航/图库交互，以及真实 runtime 的 HTTP/Host/XFP、invalid staging build、manifest missing/mismatch 负例均通过。mode fixture 实际证明 `--mode development`、`--mode=development` 和显式进程环境优先级。首轮 readiness 可能跟随公网 health 的历史边界已保留，最终 harness 使用 manual redirect 和本地拦截；本结论不把最终 `blockedExternalRequests=0` 扩写为全部历史请求从未访问公网。
+
+Result：**APPROVED**。未发现 correctness、architecture、security、Scope、maintainability、CMS/API contract 或回归覆盖的阻断 finding；本地修复候选满足 Task 04 AC，可交 Sol 做最终本地验收。
+
+Remaining Risks：证据限定本地 Chromium 模拟桌面/手机、loopback 假 CMS/API 与显式环境 fixture；未运行本阶段未要求的 `verify:release`，也未验证真实生产 Nginx、云 WAF、代理链、Directus 实例拓扑或用户 TOTP 状态。F-02/F-03 与 Nginx 候选仍需针对准确生产目标的独立授权、现场配置回读、用户参与、防锁死/回退准备及变更后验证。没有执行生产环境、CMS、数据库、账号/权限、部署、提交或推送。
+
+Handoff：返回 Sol 完成本地候选验收与状态收口。若用户后续授权生产操作，须分别核对应用发布/Nginx、Administrator Policy MFA 和 Directus 限流的目标、动作与环境；本次 APPROVED 不包含这些动作。Nova 仅追加本日志及 ignored `output/security/xyy-20261014-04/nova/review.md`。
+
+### XYY-20261014-05 — 内容默认可见修复最终 Review
+
+Task ID：`XYY-20261014-05`（MEDIUM）
+
+Review Scope：只审阅基线 `9ad4fe0fa92bb14ee23fa2e6c7b79836c2798c80` 上本任务 16 个实现文件、3 个测试/helper、合同、Terra/Luna 本任务记录及原始证据；Task 03/04 既有差异与 Task 04 三项发布兼容问题不归入本结论。Nova 独立重算 `repair-source-freeze-r2.json` 的实现 **16/16 匹配**；根范围审计无 unexpected 文件，三个测试的当前字节均早于最终 R2 构建及故障注入。
+
+Architecture：**PASS**。首页 hero、service 与 fulfillment 删除静态初始透明/位移，SSR、无 JS、完整脚本阻断时正文、数据与 CTA 默认可见；正常 JS 仅在非 reduced-motion 时于触发点施加入场状态。capability 的 stat card/tenure 先构建 paused timeline，再写卡片/数字起始态并播放，构造失败会终止 timeline 并清除临时属性；`flow-motion.ts` 的装饰/部分透明与计数终值未改。shared copy/visual 只在 ScrollTrigger `onEnter` 时增强，below-fold 等待期保持可读；R2 的 copy/entrance 以 paused timeline 持有 child，异常时 `clear()`、`kill()`、`clearProps` 后重抛。ServiceDetailMotion 不再预先隐藏全页目标，WAAPI 成功后才加 pending marker，CSS marker 仅保留 `will-change`；单目标、首屏初始化或 observer callback 异常都会 cancel、移除 marker、断开 observer并重抛。
+
+Security：**PASS**。变更只处理本地动画和样式状态，没有 HTML 注入、导航、外部输入、依赖、网络或权限变化；业务文案、CMS/API 查询与 fallback、`src/lib/claims/`、安全头及公开 origin 契约均未改。浏览器 harness 只允许 loopback，最终相关证据均无外连。
+
+Maintainability：**PASS**。失败清理位于对应状态所有者中，没有全局隐藏标记、任意 timeout 或吞错回退；错误继续可见且可定位。Service motion 测试将旧“滚动前必须透明”改为默认有效可见与进入后完成，符合新渐进增强契约，并保留最终 opacity 断言。Nova scoped `git diff --check` 无输出；Luna Prettier、ESLint 与 854 文件维护预算均 exit 0。
+
+Contract Risks：**PASS**。详情 target 收集仍排除 `[hidden]`、`aria-hidden=true`、`details` 与 tabpanel；菜单、弹窗、字幕、非活动 panel 等有意隐藏交互没有被改为常显。产品旧 `data-reveal`、About 及鞋服/直播/后整渐进 tabs 保持原契约。未改页面数据源、CMS/Claims、安全或布局职责。
+
+Test Coverage Review：**PASS**。Luna R1 主 E2E 最终 **6/6 passed**，覆盖中文首页桌面/手机无 JS、正常 JS、完整脚本阻断、reduced motion、首页 WAAPI/observer fault、18 条中英文服务和 12 条代表入口、云道滚动与鞋服移动；supplement 另覆盖英文首页桌面/手机、CTA、英文服务 normal/reduced motion、详情 WAAPI 部分失败。R1 精确 GSAP 红证记录 post-registration 后清理调用已发生但 early/900ms opacity 仍为 0、child active；R2 最终 `gsap-fault-r2b.exit=0`，copy/entrance 从相同位置各得到一次预期错误，early/900ms opacity 均为 1，timeline 无 parent、无 active child。早期 `gsap-fault-r2.exit=1` 与 `gsap-fault-final.exit=1` 的 harness 失败仍保留，未包装为首次通过。R2 服务 no-JS **1/1**、service-motion/reduced-motion **2/2** 通过；类型检查 690 files、0 errors、0 warnings、4 hints，lint、预算、build PASS；R1 Vitest 127 files / 861 tests passed。Nova 亲看中英文 no-JS/正常与英文服务手机截图，正文及 CTA 可读。
+
+Result：**APPROVED**。未发现 correctness、architecture、security、Scope、maintainability、CMS/API contract 或测试可信性的阻断 finding；本地候选满足 Task 05 AC。
+
+Remaining Risks：首页 fulfillment 主 E2E 没有单独断言第二次 `animate` 注入标志，但详情同类 WAAPI 注入有明确命中，且 fulfillment 已返回动画的 cancel 路径可由源码直接核验，结合页面最终可见性不构成阻断。动态证据限定本地 Chromium 与模拟视口，未覆盖 Safari/Firefox、真机或生产；GSAP `_overwritingTween` 内部关联仍为源码推断，但相同精确注入点已有 R1/R2 红绿外部行为实证。本轮未运行 `verify:release`。
+
+Handoff：返回 Sol 做最终验收与状态收口。本结果只批准 Task 05 本地候选，不表示已提交、推送或部署。Nova 仅追加本日志及 ignored `output/diagnostics/xyy-20261014-05/nova/review.md`，未修改实现、测试、合同或 DEV_STATE，未执行外部写入。
+
+### XYY-20261015-03 — 发布兼容性最终 Review
+
+Task ID：`XYY-20261015-03`（HIGH）
+
+Review Scope：只审阅 `output/optimization/xyy-20261015-03/r5-candidate-hashes.json` 冻结的 19 个实现/测试文件及 `r5-candidate.diff`；`server/request-policy.mjs`、`server/runtime-config.mjs`、`server.mjs`、`config/public-site.mjs` 和 release/health contract 仅作为保护边界输入。Nova 独立重算候选 SHA-256，**19/19 匹配**，scoped `git diff --check` 无输出；未改实现、测试、合同、DEV_STATE 或运行中的 4321。
+
+Architecture：**PASS**。普通 Playwright 的 build/start 都显式使用 `DEPLOY_ENVIRONMENT=ci`、同一 loopback public origin、loopback 依赖和监听地址；临时 CMS-empty server 只更换监听端口，继续使用当前已构建 manifest 的 origin。English news/whitepaper fixture 同样从 `PLAYWRIGHT_PORT` 取得 build origin，随机端口只用于监听，并以 manual redirect、HTTP 200、终止/超时清理判定就绪。formal 将公开 `https://56xyy.com` 元数据与两个本地端口分离：应用只监听 loopback，代理只监听 loopback并覆盖为固定 HTTPS/XFF 头；应用只信任准确的 `127.0.0.1/32` peer。R2 在 readiness 返回后、proxy listen 前再次检查 shutdown 与 child exit/signal，保留幂等 TERM、5 秒 KILL、socket 销毁和有界 request/upstream timeout。
+
+Security：**PASS**。formal 代理不接受客户端自选转发协议或地址，固定上游为 `127.0.0.1`；直接访问应用的 GET/HEAD 仍为固定公开 HTTPS 308，POST 仍为 400。既有不可信 XFP、恶意 Host/路径、manifest 缺失/错配安全测试继续进入完整门禁，没有修改或绕过安全 middleware。发布探针只接受无凭据、无 path/query/hash 的 IPv4 loopback HTTP origin和不改变 origin 的相对 path，固定 manual redirect 与 AbortSignal timeout；308、非 2xx、非法/不完整 JSON、依赖非健康和版本 identity 不符都会失败。探针通过候选 `release_dir` helper 执行，没有扩大 loopback HTTPS 豁免或自动更改生产代理信任配置。
+
+Maintainability：**PASS**。健康与版本请求集中到 `scripts/lib/local-probe.mjs`，CLI 只负责参数/env 适配；deploy 新版本、启动失败回退及公网检查失败回退复用同一候选 helper。旧 release 不含 helper 时仍由候选 helper检查旧服务，旧 release 缺 manifest 保留明确告警。`deploy.sh` 为 194 行，contracts 为 190 行；测试拆分没有提高 200/220 行预算。语言建议 helper 只抽取原 context/storage 辅助，原语言优先级、导航、刷新、焦点、存储拒绝和 no-JS 断言均保留并拆为更小用例；RepairWorkshop 故障注入新增当前外置 module 精确匹配，仍要求恰好一次命中并验证三工位可读及增强控件隐藏。
+
+Contract Risks：**PASS**。实现未改 CMS/API、fallback、claims、表单或正文可见性契约；CI 子进程显式覆盖 staging/production 父环境，真正 production 构建仍要求公开 HTTPS origin。build 与 runtime 的 public-site manifest 比较没有跳过开关；production 缺 manifest 在 listener 建立前失败的隔离证据有效。版本响应和期望 manifest 都经 `validateReleaseIdentity` 验证，部署沿用既有 `gitSha`、`releaseId`、`environment`、`cmsSchemaVersion` 匹配键；`buildTime` 受结构校验但不是部署匹配键，这是基线已有语义，不是本任务新增放宽。
+
+Test Coverage Review：**PASS**。Luna R5 完整 `npm run verify:release` 在明确 CI 父环境中 exit 0：698 个类型文件 0 errors/0 warnings/4 hints、862 文件维护预算、129 files / 883 单测、301 E2E passed / 17 既有 skipped、6 formal 及末次 build PASS。staging/production 父环境的 normal/formal 四组正确重跑分别为 2/2、6/6、2/2、6/6，日志均显示目标配置和 exit 0；staging formal 首次 `npm exec` 误选普通配置的样本明确标为 `INVALID_SAMPLE` 且未计入，原始日志被同路径正确重跑覆盖的限制已如实记录。production + `https://8.138.148.179` build exit 0，回读 manifest 准确；隔离 dist 删除 public-site manifest 后 production 启动 exit 1 且端口无 listener。R1 readiness race 红证与 R2 绿证显示 shutdown 期间 proxy 可见次数从 1 降为 0；R5 RepairWorkshop 双端 2/2 通过。没有新增 skip、超时放宽或阈值降低。
+
+Result：**APPROVED**。19 文件候选满足三个 P1、补充 fixture 消费者、formal 生命周期和保护边界 AC；未发现 correctness、architecture、security、Scope、maintainability、CMS/API contract 或回归覆盖的阻断 finding。
+
+Remaining Risks：本地证据只验证 loopback可信代理与假依赖；尚未回读生产 Nginx/IPv4/IPv6、`TRUSTED_PROXY_CIDRS`、监听地址及其是否覆盖客户端传入 XFP。若这些前提缺失，发布探针会把重定向视为失败并进入既有回退，而不会自动修复配置。production HTTPS build 只验证本地构建与 manifest，没有访问目标公网；本 Review 不表示已提交、推送或部署，也未执行真实 CMS、数据库或咨询写入。
+
+Handoff：返回 Sol 做 XYY-20261015-03 最终验收。任何后续部署仍须用户对准确目标、动作和环境明确授权，并在当次最终候选上重新执行发布门禁及核对生产可信代理前提。Nova 仅追加本日志与 ignored `output/optimization/xyy-20261015-03/nova/review.json`。
+
+### XYY-20261015-04 — 图片、图库与加载优化最终 Review
+
+Task ID：`XYY-20261015-04`（MEDIUM）
+
+Review Scope：只审阅 `final-implementation-hashes.json` 冻结的 19 个实现文件、`sol-final-scope-precheck.json` 中本任务 12 个新增/修改测试与 helper、任务合同及 Terra/Luna/Sol 最终证据；既有 Task 03 发布兼容和 Task 05 内容可见性差异不归入本结论。Nova 独立重算实现 SHA-256，**19/19 匹配**；157 张 `public/about/gallery/` 原图逐项重算与任务前清单一致，scoped `git diff --check` 无输出。
+
+Architecture：**PASS**。Lighthouse runner 只复制固定的 `config/server/scripts/src/public/node_modules`、必要根配置和容量基线到仓库外短 TMPDIR，不复制 `.env*`、`.git` 或旧 dist；build、desktop/mobile collect/upload/assert 共用一次 CI loopback build/origin，并只调用已复制的本地 LHCI。工作区 symlink 逃逸、命令失败、信号清理、raw report 保存和最终删除均明确失败或记录。图库生成器以 `galleryCatalog` 的 TypeScript 字面量调用为唯一清单，验证源文件格式、声明尺寸和完整解码，以 Sharp 0.35.4 和固定 profile 生成可解码 192×192 outside/WebP 派生图；原图 href 保持，缩略图只用于网格显示，hover、键盘、触摸 dialog 继续通过 anchor 读取原图。prepare 生命周期覆盖 dev、build/check:assets 和 local-preview。语言提示 overlay 仅由 SSR 对 `/`、`/xiefu-yuncang` 和中文 `/contact` 输出；其余路由保持 normal flow。中文 contact hero 的静态内部上边距吸收提示条，英文既有间距保持。
+
+Security：**PASS**。性能工具显式覆盖 production/staging 父环境为 `DEPLOY_ENVIRONMENT=ci`、固定 loopback public origin、不可达 loopback CMS/咨询端点与占位 token；summary 同时拒绝 requested/final origin 漂移、runtime/HTTP 错误和非有限指标。没有真实 CMS、数据库、咨询提交、外部上传或生产写入。图库路径由受限数值 ID 构造，没有接受任意路径或 HTML；页面仍以普通 anchor 提供原图，脚本只把同一 link href 赋给预览图片。未改 claims、CMS/API fallback、安全头或发布契约。
+
+Maintainability：**PASS**。工作区、命令执行、summary 和图库 catalog/生成职责分离，失败不被 fallback 或日志掩盖；缓存同时绑定 Sharp 版本、profile、源 hash、目标可解码性和目标 hash，缺源、非法尺寸/字节、损坏目标或生成失败均可定位。Sharp 精确声明为 devDependency 0.35.4，lock 更新未引入无关依赖升级。summary 将 `total-byte-weight` 与其他必需指标统一为有限数值校验，旧 baseline/R1/R3 六份 summary 重算与已落盘结果逐项一致。最终 scoped Prettier、ESLint、typecheck（712 files，0 errors/0 warnings/5 hints）通过；Luna 最终轮未单独保留 maintenance 日志，Sol 在候选未再改动后实际运行维护预算，876 files、exit 0，记录来源未误归给 Luna。
+
+Contract Risks：**PASS**。157 原图 hash、catalog 顺序、宽高、双语 alt、CSS 布局及原图放大链接保持；clean checkout 删除整个派生目录后真实 build 生成 manifest 和 157/157 可解码缩略图。四组 DPR1 图墙从 16,998,686 bytes 降至 1,742,456 bytes，下降约 89.75%，几何差 0，进入图墙只请求 157 个 display 资源和 0 个原图；DPR2/3、无 JS、关闭/焦点返回由既有定向证据覆盖。R4 仅改变 contact CSS/SSR 标记；六个非 contact 路由的 SSR layout/status、入口资源 URL/body hash及浏览器实际 CSS/JS 闭包在 desktop/mobile 均稳定一致，因此复用 R3 的非 contact 性能样本有充分范围依据。
+
+Test Coverage Review：**PASS**。Luna 的工具最终补测为 **5 files / 30 tests passed**，覆盖一次 build/同 origin、production 父环境隔离、route/sample/runtime/HTTP/final-origin/assert/build/collect/upload 失败、raw report 和进程组清理，并包含 summary 必需资源字节负例。图库 unit 为 8 tests、定向 E2E 为 6 passed，覆盖严格 catalog、缺失/损坏/尺寸/profile/cache、原图链接与缩略图、双语多视口、hover/keyboard/touch/no-JS/焦点；clean build 157/157 解码通过。R4 语言 E2E **24/24 passed**，覆盖360/390/430/1440中文 contact、English/no-JS、目标页稳定、非目标 relative、scroll/resize/关闭。最终 contact LHCI 有效 run 为12 samples，build及6个 desktop/mobile collect/upload/assert 命令均 exit 0，32/32 冻结指标通过；与资源闭包证明合并后的16个 device/route 组全部通过。两次 harness 配置错误均发生采样前，原始失败保留且未计入有效样本；R1预算失败、R2 contact布局失败、R3 mobile contact CLS失败也均保留，未放宽预算或择优替换。
+
+Result：**APPROVED**。未发现 correctness、architecture、security、Scope、maintainability、CMS/API contract 或测试可信性的阻断 finding；本地候选满足 Task 04 AC。
+
+Remaining Risks：Lighthouse 是本地 Chromium 模拟网络，TBT 不等于 INP，不能代表生产真实用户性能。非 contact 的 R4结论依赖 R3 三样本资源集合稳定、相同内容哈希 URL/入口字节与未变源码的等价证明，而不是重新采样；当前闭包检查满足该前提。早期 R2 从主工作区重建 dist 与 R3 typecheck 修正前失败已如实保留，最终有效证据均来自隔离候选。本 Review 不表示已提交、推送或部署。
+
+Handoff：**APPROVED** 返回 Sol 做 Task 04 最终验收并决定进入阶段 05。Nova 仅追加本日志和 ignored `output/optimization/xyy-20261015-04/nova/final-review.json`，未修改实现、测试、合同或 DEV_STATE，未启动服务、构建、浏览器或外部请求。
+
+### XYY-20261015-05 — 移动端咨询路径最终 Review
+
+Task ID：`XYY-20261015-05`（MEDIUM）
+
+Review Scope：只审阅 `implementation-r1-hashes.json` 冻结的 8 个实现文件、Sol 授权的 7 个测试/helper、任务合同及 Terra/Luna/Sol 的本任务证据；Task 03 发布兼容、Task 04 图片性能及其他并行差异不归入本结论。Nova 独立重算实现 SHA-256，**8/8 匹配**；`sol-scope-precheck.json` 无缺失文件，scoped `git diff --check` 无输出。
+
+Architecture：**PASS**。`getContactServiceContext()` 在 SSR 层复用既有 20 项 `contact-source` 白名单、现有服务配置/breadcrumb 与语言路由映射，统一决定来源短名称和预选服务；合法来源与非法 finder 保留来源，同服务组合保留，合法冲突同时取消短名称与预选，finder-only 不伪造来源。服务数据只在 Astro frontmatter 路径使用，构建后客户端脚本扫描未发现服务 catalog 标识。表单把中英文各自的姓名和主要联系方式留在首层，将公司与备用联系方式放入原生 `details`；无 JS 仍可展开，不引入新状态框架或重复 API 数据模型。
+
+Security：**PASS**。来源、finder、服务值和服务端返回的 field 都经既有白名单或固定字段白名单解析；来源文本由 Astro 转义，服务端错误通过 `textContent` 写入，没有 HTML 注入。咨询提交仍使用原 `/api/contact`、既有 payload 与隐私字段；实现未改服务端校验、存储、反滥用、CMS、claims、凭据或权限。独立 E2E 对咨询 POST 使用本地 route mock，新增 contact mobile suites 还主动阻断非 loopback 浏览器请求；现有 English/contract suites 没有完整流量审计，因此本 Review 不扩大为“所有测试进程请求均经审计”。
+
+Maintainability：**PASS**。客户端校验抽成 84 行纯 helper并复用现有长度、邮箱及中英文电话规则；提交控制仍集中在 `contact-page.ts`。每次提交新建 AbortController，15 秒 timer 覆盖 `fetch` 和 `response.json()`，`finally` 统一清 timer、busy/disabled 与重入标志。错误聚焦只接受稳定字段 ID，选填字段先展开 details；无字段时聚焦可访问摘要。失败路径没有 reset，成功使用原生 `form.reset()`，因此 service 回到 SSR 初始 selected 选项。最终 Prettier、typecheck（719 files，0 errors/0 warnings/5 hints）、lint 和 883 文件维护预算均 exit 0。
+
+Contract Risks：**PASS**。20 个中英文来源在当前 contact locale 下使用当前语言短名称，数字化服务中文名称提取后继续回接原 breadcrumb/schema 文案，没有改变公开名称。中文保持 phone 必填/email 选填，英文保持 email 必填/phone 选填；字段 name、maxlength、autocomplete、隐私与 API payload 不变。案例语境和 finder 提纲仍独立生成，冲突只影响来源短名称与 service 预选。`contracts.spec.ts` 仅将最后一项改为合法客户端输入加本地 400，以继续覆盖 API 错误摘要和焦点；被替代的本地非法 phone 行为已有新 validation unit/E2E 覆盖。English 测试只在填写选填 phone 前展开 details，原响应矩阵与保值断言保持。
+
+Test Coverage Review：**PASS**。Luna 相关 unit 首轮为 5 files / 71 passed；随后只给 service-context 增加两项组合边界并定向得到 25/25，因此最终独特断言口径为 **73 项、分两次执行**，不是 71+25 个新增测试。隔离 Chromium/mobile 常规 E2E **74/74 passed**，覆盖中英 360/390/430/1440、四个首层字段、六个业务控件、native details 键盘/触摸、no-JS、来源 SSR 文案、API 400/503/network、English 完整响应矩阵和失败保值。另有中英 × Chromium/mobile **4/4** 用例实际等待 15 秒 pending fetch 被 abort，验证六字段/隐私保留、可重试及成功 reset；这不是用普通网络错误替代 timeout。400/503/network 均验证六字段、service 和隐私逐项保留，非法中英文选填项验证自动展开及焦点。中文 390 收起截图中的底部橙线经补充只读探针确认只是按钮位于原视口外；滚动居中后按钮为 358×52px，中心 `elementFromPoint` 准确命中 `#submit-btn`，details 保持收起。E2E runner 实际执行隔离 build/start，两个 workspace 均删除。已有中断 runner 的原始 stdout 并非全部保留，HTML/error-context 与失败目录只作为失败历史，不计入 PASS。
+
+Result：**APPROVED**。未发现 correctness、architecture、security、Scope、maintainability、CMS/API contract 或测试可信性的阻断 finding；冻结本地候选满足 Task 05 AC。
+
+Remaining Risks：15 秒浏览器证据覆盖完整 pending fetch；“响应头已到而 body 持续延迟”的流式分支未单独浏览器模拟，只能由 timer 在 `await response.json()` 期间仍存活的源码路径支持。动态证据限本地 Chromium/模拟 mobile；真实设备、Safari/Firefox及生产网络未测。截图仅为代表视口，最终视觉取舍由 Sol 收口。本任务未运行全量 `npm run verify` 或 `verify:release`，也不表示已提交、推送或部署。
+
+Handoff：**APPROVED** 返回 Sol 做 Task 05 最终视觉验收与状态收口。Nova 仅追加本日志及 ignored `output/optimization/xyy-20261015-05/nova/final-review.json`，未修改实现、测试、合同或 DEV_STATE，未启动服务、浏览器、构建或外部请求。
+
+### XYY-20261015-06 — 本地开发启动最终 Review
+
+Task ID：`XYY-20261015-06`（MEDIUM）
+
+Review Scope：只审阅 `implementation-r4-hashes.json` 冻结的 6 个实现文件、4 个 local-dev 单测、2 个测试 helper、阶段合同及 Terra/Luna/Sol 的本任务证据；前三阶段优化与仓库其他并行差异不归入本结论。Nova 独立重算实现 SHA-256，**6/6 匹配**；`sol-scope-r4.json` 的 existing/new 清单无 unexpected 或 missing，scoped `git diff --check` 无输出。
+
+Architecture：**PASS**。`scripts/local-dev.mjs` 只编排参数、固定环境、端口状态、公开 Astro `dev()` API、身份确认与生命周期；端口归属、HTTP 身份和停止状态分别在三个小型 helper 中实现。入口先切换到脚本推导的项目 root，再把 mode 固定为 development、部署环境固定为 CI、监听和公开 origin 固定为 loopback，并通过 inline Vite `strictPort` 防止自动换号。可信复用要求单一 IPv4 loopback listener、同 UID、真实 cwd、Node executable、允许的 Astro/local-dev 命令以及中英页面、Vite client 和当前 logo hash共同成立；复用路径不 attach/stop 既有 server。未知或不完整归属明确失败，不发送终止信号。
+
+Security：**PASS**。启动器覆盖父进程 production/staging、远程 CMS/咨询地址和 token 为不可达 loopback及固定占位值，不读取或输出真实凭据；身份请求固定 `127.0.0.1`、manual redirect、逐请求超时，并拒绝非 200、错误 MIME、错误语言/title/H1、无 Vite 特征或 logo hash 不符。端口检查只接受精确 loopback和当前项目进程；竞争导致 PID 或地址不符时失败，由公开 `DevServer.stop()` 只清理自己持有的实例。未改生产 server、发布、安全头、CMS/API、claims、权限或数据库契约。
+
+Maintainability：**PASS**。四个实现模块均低于 200 行，参数解析拒绝重复、缺值、非 development 和未知参数；Ready 为固定 `LOCAL_DEV_READY` JSON 协议，只在完整身份核验后输出。60 秒 ready timer 从启动编排开始，5 秒 stop 上限覆盖正常 stop、拒绝和 pending；第二信号可有界退出。`output/` matcher只匹配项目 output 根及后代。Vite 8.1.3 会把该函数追加到默认 `.git`、`node_modules`、`test-results`、cache/outDir ignore 后，因此默认规则、`src/` 与 `public/` 未被覆盖。最终 Prettier、ESLint、完整 typecheck（729 files、0 errors、0 warnings、5 hints）和 893 文件维护预算均 exit 0。
+
+Contract Risks：**PASS**。`dev:local` 复用既有图库准备步骤，原 `dev`、build、verify/release、发布配置和生产运行入口保持。真实 production 父环境与异 cwd 启动仍得到 development/CI/loopback；独立 mode sentinel 实际读取 development 文件且未读 production sentinel。主 4321 的最终复用输出 `reused:true`、PID 289258，命令前后 PID/CWD/监听一致。source 同页 HMR 的真实 edit/restore可见时间为 14265/2272ms；51/41ms 只是轮询命中耗时，未被写成 HMR 总时长。public CSS 不被误设为 HMR 契约；最终 public HTML 修改得到精确 WebSocket `full-reload` path且 GET 字节变化，证明 public watcher 仍工作。
+
+Test Coverage Review：**PASS**。Luna 最终相关单测 **4 files / 19 tests passed**，覆盖参数/env/watch范围、title身份、redirect/语言/Vite/logo拒绝、相对入口、server.mjs/外来 listener拒绝，以及 timeout、startup/stop rejection、stop pending和信号退出。真实负例验证错误 identity 不输出 Ready且端口 5 秒内释放，外来占用使 launcher exit 1且 foreign HTTP继续 200；6 个 lifecycle child均按预期非零/信号码退出且 listener 消失。R4 冻结副本在端口45089完成冷3+暖3：6/6 严格 Ready、身份/PID-CWD归属、逐轮 cleanup 和精确6文件 parity通过；冷 median/max 15079.3/15213.9ms，暖14931.4/15583.4ms，四项均低于冻结非退化上限。src HMR、public HTML watcher、mode、readiness failure及主实例复用均有独立最终有效证据；早期无效 fixture、public CSS错误预期及 harness 脚本问题均保留且未计入 PASS。
+
+Result：**APPROVED**。未发现 correctness、architecture、security、Scope、maintainability、CMS/API contract 或测试可信性的候选阻断 finding；事故补救与证据限制不阻止验收当前本地候选。
+
+Remaining Risks：旧后台路径测试曾错误执行 `astro dev stop --port 45142` 并停止原主 PID 20029，原“保持 PID”判据真实失败，后续恢复新 PID不能抹掉该事故。安装源码证实 Astro stop 忽略 port、按解析 root 的 lock停止 PID；本次具体为何定位到20029的 root/lock 来历仍未证实。Sol 已在不修改系统限制的情况下恢复新 PID 289258、中英 GET 200，Luna随后只做复用核验并保持新 PID。R4 与旧基线运行时和主 watcher 状态不同，因此只能证明冻结预算内非退化，不能宣称纯由新入口带来的严格提速。pending Astro API/body timeout 与 stop rejection/timeout 的部分分支由实际 helper child和源码覆盖，不全部等同于真实 Astro 内部故障注入。所有动态证据均为本机 Linux、loopback和假依赖；本轮没有运行全量 `npm run verify` 或 `verify:release`，也不表示已提交、推送或部署。
+
+Handoff：**APPROVED** 返回 Sol 做 Task 06 最终验收与四阶段状态收口。Nova 仅追加本日志及 ignored `output/optimization/xyy-20261015-06/nova/final-review.json`，未修改实现、测试、合同或 DEV_STATE，未启动/停止服务、浏览器、构建或外部请求。
+
+### XYY-20261016-01 — GitHub 同步候选最终 Review
+
+Task ID：`XYY-20261016-01`（HIGH）。
+
+Review Scope：审阅基线 `9ad4fe0fa92bb14ee23fa2e6c7b79836c2798c80` 上已暂存的 120 个候选路径、1618 文件冻结、前序已验收任务归属、Luna 本次隔离验证、GitHub CI 行为及敏感信息/产物边界。Nova 独立确认暂存路径顺序和集合均与 `pre-review-staged.json` 相同，120 个 index blob 的 SHA-256 全匹配；暂存前 `before.diff` 与 tracked diff 逐字同 SHA-256。验证快照之后只有 `DEV_STATE.md`、`README.md`、`docs/LUNA.md`、`docs/SOL.md` 四份记录发生变化，当前实现、测试和配置与验证快照一致。
+
+Architecture：**PASS**。120 个候选全部可归属到 `XYY-20261014-03/04/05`、`XYY-20261015-03/04/05/06` 的已验收实现、测试、计划和角色记录，没有候选外脏路径或未解释实现。README 的日期、近期功能摘要和 2026-10-14 历史 release 身份来自现有已验收状态；它明确说明本次同步未重新探测或更改线上版本。四份验证后记录没有运行时行为、依赖、API/CMS 或 Claims 变化，因此复用同一实现验证结果合理。
+
+Security：**PASS**。候选不含 `.env`、私钥/证书、Token、备份、`dist`、`output`、`node_modules`、`.astro`、大文件或 symlink。高置信敏感扫描无真实 Secret；唯一规则命中位于 `tests/unit/local-probe.test.ts:69`，是明确验证拒绝 URL userinfo 的负例夹具。GitHub workflow 只有验证和 CI artifact 上传，顶层权限为 `contents: read`，未发现自动部署或写权限。批准仅覆盖现有 `origin/main` 的普通非 force push，不包含网站部署、真实 CMS/数据库、DNS、权限或生产配置操作。
+
+Maintainability：**PASS**。暂存 diff 和工作树 diff 的 whitespace 检查均 exit 0，没有文件模式变化或生成资源入选。Luna 的完整 `npm run format:check` exit 0；当前四份验证后记录增量经逐字审阅，内容与实际阶段一致。Luna 最终汇总曾误称 README 已进入验证快照，现已修正为验证后文档增量；原测试结果未因此重跑或改写。
+
+Contract Risks：**PASS**。本次只把已验收本地候选及记录同步 Git，不新增应用行为，也不将历史生产事实写成当前探测。公开 origin、请求策略、性能、咨询与本地启动契约沿用各自已通过的 Nova Review。推送会触发 `.github/workflows/ci.yml` 验证，但不会触发仓库内自动部署。当前本地 HEAD、`origin/main` 与远端回读在提交前均为基线 SHA、领先/落后 0/0；提交后的远端一致性仍须由 Sol 实际回读。
+
+Test Coverage Review：**PASS**。Luna 在独立 rsync 副本中以显式 CI、loopback origin、不可达本地依赖和假 token 执行本次 `npm run verify`，最终 `verify-r2` exit 0：729 个类型文件 0 errors/0 warnings/5 hints、140 个测试文件/970 tests、Lint、893 文件维护预算、资源与 patch 检查、157 张派生图库准备及 Astro server build 全部通过；`npm run format:check` exit 0。120 个候选在有效验证快照中 parity 为 true；副本常规文件 inode 与源不同，55 个保留 symlink 均未逃出副本。首轮错误复制依赖内部 `dist` 的失败作为 `INVALID_ENVIRONMENT_SAMPLE` 保留，不计入产品失败或 PASS。
+
+Result：**APPROVED**。未发现 correctness、architecture、security、Scope、maintainability、CMS/API contract 或回归覆盖阻断项；可以交 Sol 对当前授权候选执行提交和现有 `origin/main` 的普通非 force push。
+
+Remaining Risks：本结论发生在实际提交和推送之前，不表示 GitHub 已同步、CI 已完成或网站已部署。追加本 Nova 记录后，`docs/NOVA.md` 会相对审阅前暂存快照变化；Sol 必须重新暂存授权记录、重冻最终 hash，并复核 staged 集合和敏感/产物排除。推送后的 Git 状态归档若只更新 `DEV_STATE.md` / `docs/SOL.md` 的真实 commit、remote 和工作树回读，可按纯记录提交处理，无需重复应用测试；任何源码、测试、配置或候选路径变化都使本批准失效。
+
+Handoff：返回 Sol 最终验收。Sol 应清理保留的隔离副本，完成最终 staged/hash/diff/敏感扫描，提交并普通推送，随后核对本地 HEAD、`origin/main`、远端 `refs/heads/main` 和工作树状态；推送后仅按真实结果归档 Git 状态。本 Review 未修改实现或测试，未操作服务、提交、推送、部署、CMS 或数据库。

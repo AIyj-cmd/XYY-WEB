@@ -1,8 +1,10 @@
+import { resolvePublicSiteConfig } from '../config/public-site.mjs'
+
 const FORMAL_ORIGIN = 'https://56xyy.com'
 const FORMAL_HOST = '56xyy.com'
 
 export function getRuntimeConfig(env = process.env) {
-  const publicSiteOrigin = (env.PUBLIC_SITE_URL ?? '').replace(/\/+$/, '')
+  const publicSite = resolvePublicSiteConfig(env)
   const legacyHosts = new Set(
     (env.LEGACY_DOMAINS || 'wz.tomatopia.top')
       .split(',')
@@ -15,9 +17,10 @@ export function getRuntimeConfig(env = process.env) {
     host: env.HOST || '0.0.0.0',
     formalOrigin: FORMAL_ORIGIN,
     formalHost: FORMAL_HOST,
-    publicSiteOrigin,
+    publicSiteOrigin: publicSite.origin,
     legacyHosts,
     enableDomainRedirects: env.ENABLE_DOMAIN_REDIRECTS === 'true',
-    isProductionDomain: publicSiteOrigin === FORMAL_ORIGIN,
+    isReleaseEnvironment: publicSite.isReleaseEnvironment,
+    isProductionDomain: publicSite.origin === FORMAL_ORIGIN,
   }
 }

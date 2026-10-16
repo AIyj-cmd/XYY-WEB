@@ -6,7 +6,10 @@ const english = locale === 'en'
 ---
 
 <section
-  class:list={['relative py-16 lg:py-20 overflow-hidden', english && 'english-contact-hero']}
+  class:list={[
+    'relative py-16 lg:py-20 overflow-hidden',
+    english ? 'english-contact-hero' : 'chinese-contact-hero',
+  ]}
   aria-labelledby="contact-hero-heading"
 >
   <img
@@ -43,6 +46,16 @@ const english = locale === 'en'
 </section>
 
 <style>
+  .chinese-contact-hero {
+    padding-top: 9rem;
+  }
+
+  @media (min-width: 64rem) {
+    .chinese-contact-hero {
+      padding-top: 8rem;
+    }
+  }
+
   .english-contact-hero {
     padding-top: 7rem;
   }

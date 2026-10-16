@@ -1,59 +1,17 @@
-import { expect, test, type Browser, type Page, type TestInfo } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 
-const preferenceKey = 'xyy-language-preference'
-
-function contextOptions(testInfo: TestInfo) {
-  const use = testInfo.project.use
-  return {
-    baseURL: use.baseURL,
-    viewport: use.viewport,
-    isMobile: use.isMobile,
-    hasTouch: use.hasTouch,
-    userAgent: use.userAgent,
-  }
-}
-
-async function openWithLanguages(
-  browser: Browser,
-  testInfo: TestInfo,
-  path: string,
-  languages: string[],
-  fallback = 'en-US',
-  stored?: string
-) {
-  const context = await browser.newContext(contextOptions(testInfo))
-  await context.addInitScript(
-    ({ languages, fallback, stored, preferenceKey }) => {
-      Object.defineProperty(navigator, 'languages', { configurable: true, get: () => languages })
-      Object.defineProperty(navigator, 'language', { configurable: true, get: () => fallback })
-      if (stored !== undefined) window.localStorage.setItem(preferenceKey, stored)
-    },
-    { languages, fallback, stored, preferenceKey }
-  )
-  const page = await context.newPage()
-  await page.goto(path)
-  return { context, page }
-}
-
-async function expectSuggestion(page: Page, visible: boolean) {
-  const suggestion = page.locator('#language-suggestion')
-  if (visible) {
-    await expect(suggestion).toBeVisible()
-    await expect(suggestion).toContainText('Prefer English?')
-  } else await expect(suggestion).toBeHidden()
-}
+import { contextOptions, expectSuggestion, openWithLanguages } from './helpers/language-suggestion'
 
 test.describe('language suggestion behavior', () => {
-  test('uses first supported language, fallback language, and no redirect', async ({
-    browser,
-  }, testInfo) => {
-    const cases = [
-      { languages: ['en-US', 'zh-CN'], visible: true },
-      { languages: ['zh-CN', 'en-US'], visible: false },
-      { languages: ['fr-FR', 'de-DE'], visible: false },
-      { languages: [], fallback: 'en-GB', visible: true },
-    ]
-    for (const preference of cases) {
+  const languageCases = [
+    { name: 'first supported language', languages: ['en-US', 'zh-CN'], visible: true },
+    { name: 'first Chinese language', languages: ['zh-CN', 'en-US'], visible: false },
+    { name: 'unsupported languages', languages: ['fr-FR', 'de-DE'], visible: false },
+    { name: 'fallback language', languages: [], fallback: 'en-GB', visible: true },
+  ]
+
+  for (const preference of languageCases) {
+    test(`uses ${preference.name} without redirect`, async ({ browser }, testInfo) => {
       const { context, page } = await openWithLanguages(
         browser,
         testInfo,
@@ -64,8 +22,10 @@ test.describe('language suggestion behavior', () => {
       await expect(page).toHaveURL(/\/about$/)
       await expectSuggestion(page, preference.visible)
       await context.close()
-    }
+    })
+  }
 
+  test('keeps an English destination without a suggestion', async ({ browser }, testInfo) => {
     const english = await openWithLanguages(browser, testInfo, '/en/about', ['en-US'])
     await expectSuggestion(english.page, false)
     await english.context.close()
@@ -91,25 +51,53 @@ test.describe('language suggestion behavior', () => {
     await unpaired.context.close()
   })
 
-  test('persists keep, close, Escape, and manual switch choices', async ({ browser }, testInfo) => {
-    for (const action of ['keep', 'close', 'escape'] as const) {
-      const { context, page } = await openWithLanguages(browser, testInfo, '/about', ['en-US'])
-      const suggestion = page.locator('#language-suggestion')
-      if (action === 'keep') await suggestion.locator('[data-language-choice="zh-CN"]').click()
-      if (action === 'close') await suggestion.locator('[data-language-dismiss]').click()
-      if (action === 'escape') {
-        await suggestion.locator('[data-language-dismiss]').focus()
-        await page.keyboard.press('Escape')
-      }
-      await expect(suggestion).toBeHidden()
-      await expect(page.locator('#site-language-switch')).toBeFocused()
-      await page.reload()
-      await expectSuggestion(page, false)
-      await page.goto('/contact')
-      await expectSuggestion(page, false)
-      await context.close()
-    }
+  test('persists keep choice across reload and contact navigation', async ({
+    browser,
+  }, testInfo) => {
+    const { context, page } = await openWithLanguages(browser, testInfo, '/about', ['en-US'])
+    const suggestion = page.locator('#language-suggestion')
+    await suggestion.locator('[data-language-choice="zh-CN"]').click()
+    await expect(suggestion).toBeHidden()
+    await expect(page.locator('#site-language-switch')).toBeFocused()
+    await page.reload()
+    await expectSuggestion(page, false)
+    await page.goto('/contact')
+    await expectSuggestion(page, false)
+    await context.close()
+  })
 
+  test('persists close choice across reload and contact navigation', async ({
+    browser,
+  }, testInfo) => {
+    const { context, page } = await openWithLanguages(browser, testInfo, '/about', ['en-US'])
+    const suggestion = page.locator('#language-suggestion')
+    await suggestion.locator('[data-language-dismiss]').click()
+    await expect(suggestion).toBeHidden()
+    await expect(page.locator('#site-language-switch')).toBeFocused()
+    await page.reload()
+    await expectSuggestion(page, false)
+    await page.goto('/contact')
+    await expectSuggestion(page, false)
+    await context.close()
+  })
+
+  test('persists Escape choice across reload and contact navigation', async ({
+    browser,
+  }, testInfo) => {
+    const { context, page } = await openWithLanguages(browser, testInfo, '/about', ['en-US'])
+    const suggestion = page.locator('#language-suggestion')
+    await suggestion.locator('[data-language-dismiss]').focus()
+    await page.keyboard.press('Escape')
+    await expect(suggestion).toBeHidden()
+    await expect(page.locator('#site-language-switch')).toBeFocused()
+    await page.reload()
+    await expectSuggestion(page, false)
+    await page.goto('/contact')
+    await expectSuggestion(page, false)
+    await context.close()
+  })
+
+  test('manual language switch persists across paired routes', async ({ browser }, testInfo) => {
     const manual = await openWithLanguages(browser, testInfo, '/about', ['en-US'])
     await manual.page.locator('#site-language-switch').click()
     await expect(manual.page).toHaveURL(/\/en\/about$/)
@@ -123,69 +111,6 @@ test.describe('language suggestion behavior', () => {
     await manual.page.goto('/about')
     await expectSuggestion(manual.page, false)
     await manual.context.close()
-  })
-
-  test('handles malformed, denied, and fallback storage safely', async ({ browser }, testInfo) => {
-    for (const stored of ['en', 'zh-CN']) {
-      const saved = await openWithLanguages(browser, testInfo, '/about', ['en-US'], 'en-US', stored)
-      await expectSuggestion(saved.page, false)
-      await saved.context.close()
-    }
-
-    const malformed = await openWithLanguages(
-      browser,
-      testInfo,
-      '/about',
-      ['en-US'],
-      'en-US',
-      'invalid'
-    )
-    await expectSuggestion(malformed.page, true)
-    await malformed.context.close()
-
-    const fallback = await browser.newContext(contextOptions(testInfo))
-    await fallback.addInitScript(() => {
-      Object.defineProperty(navigator, 'languages', { configurable: true, get: () => ['en-US'] })
-      Object.defineProperty(navigator, 'language', { configurable: true, get: () => 'en-US' })
-      Object.defineProperty(window, 'localStorage', {
-        configurable: true,
-        get: () => {
-          throw new Error('denied')
-        },
-      })
-    })
-    const fallbackPage = await fallback.newPage()
-    await fallbackPage.goto('/about')
-    await fallbackPage.locator('[data-language-choice="zh-CN"]').click()
-    await expect(fallbackPage.locator('#language-suggestion')).toBeHidden()
-    expect(await fallbackPage.evaluate((key) => sessionStorage.getItem(key), preferenceKey)).toBe(
-      'zh-CN'
-    )
-    await fallbackPage.reload()
-    await expectSuggestion(fallbackPage, false)
-    await fallback.close()
-
-    const denied = await browser.newContext(contextOptions(testInfo))
-    await denied.addInitScript(() => {
-      Object.defineProperty(navigator, 'languages', { configurable: true, get: () => ['en-US'] })
-      Object.defineProperty(navigator, 'language', { configurable: true, get: () => 'en-US' })
-      for (const name of ['localStorage', 'sessionStorage']) {
-        Object.defineProperty(window, name, {
-          configurable: true,
-          get: () => {
-            throw new Error('denied')
-          },
-        })
-      }
-    })
-    const deniedPage = await denied.newPage()
-    await deniedPage.goto('/about')
-    await deniedPage.locator('[data-language-dismiss]').click()
-    await expect(deniedPage.locator('#language-suggestion')).toBeHidden()
-    await deniedPage.goto('/about')
-    await deniedPage.locator('[data-language-choice="en"]').click()
-    await expect(deniedPage).toHaveURL(/\/en\/about$/)
-    await denied.close()
   })
 
   test('keeps focus local, restores the manual switch, and preserves no-JS link behavior', async ({

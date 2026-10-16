@@ -6,11 +6,12 @@ const testOrigin = `http://127.0.0.1:${testPort}`
 const artifactDirectory = process.env.PLAYWRIGHT_ARTIFACTS_DIR ?? 'output/playwright'
 const integrationToken = randomBytes(32).toString('base64url')
 const testEnvironment =
+  `DEPLOY_ENVIRONMENT=ci ` +
   `DIRECTUS_URL=http://127.0.0.1:1 ` +
   `DIRECTUS_CONTENT_TOKEN=playwright-content-check-only ` +
-  `XIANSUO_API_URL=https://xiansuo-integration.test XIANSUO_INGEST_TOKEN=${integrationToken} ` +
+  `XIANSUO_API_URL=https://127.0.0.1:1 XIANSUO_INGEST_TOKEN=${integrationToken} ` +
   `PUBLIC_DIRECTUS_URL=http://127.0.0.1:1 ` +
-  `PUBLIC_SITE_URL=${testOrigin} ENABLE_DOMAIN_REDIRECTS=false PORT=${testPort}`
+  `PUBLIC_SITE_URL=${testOrigin} ENABLE_DOMAIN_REDIRECTS=false HOST=127.0.0.1 PORT=${testPort}`
 
 export default defineConfig({
   testDir: './tests/e2e',

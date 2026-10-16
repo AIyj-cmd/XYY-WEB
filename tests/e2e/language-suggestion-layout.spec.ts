@@ -112,7 +112,9 @@ test.describe('language suggestion layout', () => {
     expect(english.overflow).toBeLessThanOrEqual(0)
 
     if (testInfo.project.name === 'chromium') {
-      const screenshotDir = 'output/language-suggestion/xyy-20260927-05/luna/screenshots'
+      const screenshotDir =
+        process.env.LANGUAGE_R3_SCREENSHOTS ??
+        'output/language-suggestion/xyy-20260927-05/luna/screenshots'
       await page.screenshot({ path: `${screenshotDir}/en-about-390.png` })
       for (const [name, path, width] of [
         ['zh-home-1440', '/', 1440],

@@ -5,6 +5,7 @@ import express from 'express'
 import compression from 'compression'
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
+import { readFileSync } from 'fs'
 import { handler as ssrHandler } from './dist/server/entry.mjs'
 import { healthHandler } from './server/health.mjs'
 import { createVersionHandler } from './server/release-info.mjs'
@@ -14,6 +15,7 @@ import {
   resolveRequestProtocol,
 } from './server/request-policy.mjs'
 import { getRuntimeConfig } from './server/runtime-config.mjs'
+import { assertBuildPublicSiteOrigin, PUBLIC_SITE_ORIGIN_MANIFEST } from './config/public-site.mjs'
 import {
   ForwardedAddressError,
   parseTrustedProxyCidrs,
@@ -23,6 +25,18 @@ import {
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const clientDir = join(__dirname, 'dist/client')
 const runtime = getRuntimeConfig()
+const publicSiteManifestPath = join(__dirname, 'dist/server', PUBLIC_SITE_ORIGIN_MANIFEST)
+let publicSiteManifest = null
+try {
+  publicSiteManifest = readFileSync(publicSiteManifestPath, 'utf8')
+} catch (error) {
+  if (error?.code !== 'ENOENT') throw error
+}
+assertBuildPublicSiteOrigin({
+  manifest: publicSiteManifest,
+  runtimeOrigin: runtime.publicSiteOrigin,
+  required: runtime.isReleaseEnvironment,
+})
 const trustedProxyCidrs = parseTrustedProxyCidrs(process.env.TRUSTED_PROXY_CIDRS)
 
 const app = express()

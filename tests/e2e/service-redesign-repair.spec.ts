@@ -111,12 +111,19 @@ test.describe('repair redesign on mobile without JavaScript', () => {
 test('keeps workshop figures readable when the enhancement module is unavailable', async ({
   page,
 }) => {
-  let blockedDevelopmentModuleRequests = 0
+  let blockedEnhancementModuleRequests = 0
   let removedInlineModuleScripts = 0
   await page.route('**/src/scripts/repair-workshop.ts*', async (route) => {
-    blockedDevelopmentModuleRequests += 1
+    blockedEnhancementModuleRequests += 1
     await route.abort()
   })
+  await page.route(
+    /\/_astro\/RepairWorkshop\.astro_astro_type_script_index_0_lang\.[^/]+\.js$/,
+    async (route) => {
+      blockedEnhancementModuleRequests += 1
+      await route.abort()
+    }
+  )
   await page.route('**/houzheng-xiufu', async (route) => {
     const response = await route.fetch()
     const body = await response.text()
@@ -130,7 +137,7 @@ test('keeps workshop figures readable when the enhancement module is unavailable
   await page.setViewportSize({ width: 390, height: 844 })
   await page.goto('/houzheng-xiufu')
 
-  expect(blockedDevelopmentModuleRequests + removedInlineModuleScripts).toBe(1)
+  expect(blockedEnhancementModuleRequests + removedInlineModuleScripts).toBe(1)
   const workshopControls = page.locator('[data-repair-workshop-controls]')
   await expect(workshopControls).toBeHidden()
   await expect(workshopControls).not.toHaveAttribute('role', 'tablist')
