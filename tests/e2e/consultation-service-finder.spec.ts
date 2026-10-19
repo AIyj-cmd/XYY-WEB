@@ -88,7 +88,7 @@ test.describe('consultation enquiry protection', () => {
       name: 'QA 保留输入',
       phone: '13800138000',
       message: '原始需求',
-      service: 'quality-inspection',
+      service: '退货质检',
       privacyConsent: 'on',
     })
     expect(payloads[0]).not.toHaveProperty('locale')

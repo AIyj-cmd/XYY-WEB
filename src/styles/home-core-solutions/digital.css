@@ -92,7 +92,7 @@
 }
 
 @media (max-width: 768px) {
-  #svc-logistics-cloud[data-locale='en'] .svc-media {
+  #svc-logistics-cloud .svc-media {
     flex-direction: column;
     align-items: stretch;
     justify-content: flex-start;
@@ -100,18 +100,18 @@
     padding: 1rem;
   }
 
-  #svc-logistics-cloud[data-locale='en'] .svc-num-badge--solution {
+  #svc-logistics-cloud .svc-num-badge--solution {
     position: static;
     order: -1;
     align-self: flex-start;
   }
 
-  #svc-logistics-cloud[data-locale='en'] .svc-dashboard-frame {
+  #svc-logistics-cloud .svc-dashboard-frame {
     width: 100%;
     flex: none;
   }
 
-  #svc-logistics-cloud[data-locale='en'] .svc-media-caption {
+  #svc-logistics-cloud .svc-media-caption {
     position: static;
     align-self: flex-start;
     max-width: 100%;

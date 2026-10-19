@@ -31,6 +31,8 @@ interface Props {
 
 const { cases, cardMeta, caseDetails, partnerBrands, locale = 'zh-CN' } = Astro.props
 const copy = homeUi(locale).cases
+const heading = copy.heading(partnerBrands)
+const headingBrandIndex = heading.indexOf(partnerBrands)
 const displayCases =
   locale === 'en'
     ? cases.flatMap((item) => {
@@ -47,7 +49,19 @@ const displayGallery = locale === 'en' ? displayCases.length > 0 : true
 <section id="s-cases" class="s-cases" aria-labelledby="cases-heading" data-locale={locale}>
   <div class="cases-head">
     <p class="section-tag">{copy.tag}</p>
-    <h2 id="cases-heading" class="section-title">{copy.heading(partnerBrands)}</h2>
+    <h2 id="cases-heading" class="section-title">
+      {
+        headingBrandIndex >= 0 ? (
+          <>
+            {heading.slice(0, headingBrandIndex)}
+            <span class="cases-heading-number">{partnerBrands}</span>
+            {heading.slice(headingBrandIndex + partnerBrands.length)}
+          </>
+        ) : (
+          heading
+        )
+      }
+    </h2>
     <p class="section-sub">{copy.intro}</p>
   </div>
   {
@@ -104,3 +118,7 @@ const displayGallery = locale === 'en' ? displayCases.length > 0 : true
 </section>
 
 {displayGallery && <HomeCaseModal caseDetails={caseDetails} {locale} />}
+
+<script>
+  import '@/scripts/home-cases-pointer-scroll'
+</script>

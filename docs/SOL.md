@@ -33,6 +33,15 @@ XYY-WEB 已运行于正式环境，当前处于稳定维护阶段。仓库根目
 
 | Task            | Risk   | Owner | Status    |
 | --------------- | ------ | ----- | --------- |
+| XYY-20261019-10 | HIGH | Sol → Terra → Luna → Nova | READY（完整 verify/format PASS，待 Review 与 GitHub 同步） |
+| XYY-20261019-09 | MEDIUM | Sol → Terra → Luna → Nova | CLOSED（R2 鼠标移动跟随案例滑动，保留橙色数字与手机单卡；Luna PASS / Nova APPROVED） |
+| XYY-20261019-08 | LOW | Sol → Terra → Luna | CLOSED（本地首页中文手机数字化标签遮挡修复；Luna PASS） |
+| XYY-20261019-07 | MEDIUM | Sol → Terra → Luna → Nova | CLOSED（本地行业动态与白皮书 FAQ 统一；Luna PASS / Nova APPROVED） |
+| XYY-20261019-06 | MEDIUM | Sol → Terra → Luna → Nova | CLOSED（本地案例 FAQ 与首页统一；Luna PASS / Nova APPROVED） |
+| XYY-20261019-05 | LOW | Sol → Terra → Luna | CLOSED（本地案例选择理由区重设计；Luna PASS） |
+| XYY-20261019-04 | LOW | Sol → Terra → Luna | CLOSED（本地案例首屏按钮圆角；Luna PASS） |
+| XYY-20261019-03 | LOW | Sol → Terra → Luna | CLOSED（本地案例背景改为服饰团队协作；Luna PASS） |
+| XYY-20261019-02 | MEDIUM | Sol → Terra → Luna → Nova | CLOSED（本地下拉八项名称；Luna PASS / Nova APPROVED） |
 | XYY-20261002-01 | LOW | Sol | CLOSED（4322本地开发预览已恢复） |
 | XYY-20261001-06 | MEDIUM | Sol → Terra → Luna → Nova | CLOSED（报告与统计已移除，保留咨询预选；本地） |
 | XYY-20261001-05 | LOW | Sol | CLOSED（本地开发预览运行中） |
@@ -2836,3 +2845,94 @@ Limits：本轮限Chrome152模拟视口及离线/helper验证，空内容schema�
 - 代码推送后本地 HEAD、origin/main 和 GitHub 远端 main 均为上述提交，领先/落后 0/0、工作树干净。CI `38873519081` 已触发，首次回读为 in_progress；未将运行中或本地通过等同于远端 CI 通过。
 - 此后仅 DEV_STATE 与本日志归档实际同步事实，应用、测试、依赖和 CI 配置无变化，沿用刚通过的准确候选验证；文档增量检查格式与 diff，不重复完整测试。最终文档提交及 Git/CI 回读记录于 `output/git-sync/xyy-20261016-05/final-result.json`，最终提交身份以 Git 引用与该证据为准。
 - 本次只连接 GitHub，未访问远程业务站点/ECS、操作真实 CMS/数据库、部署或改变本地预览服务。推送不表示线上 Sharp 版本已经更新。
+
+#### XYY-20261016-06 — 新 ECS 最新代码发布与公网核验
+
+- 用户明确授权连接 `8.138.148.179` 并部署 `AIyj-cmd/XYY-WEB` 最新代码，按 HIGH 完成原生候选集成、独立完整验证和发布前 Review。主仓起始干净，GitHub main 为 `59cf9a5545e0ab26a76c41b2baa484eecfb58632`，上线后回读未变化。原生合并提交 `d67a48335e75a90c1aca9051c2e6e99fde56a56e` 的父节点为旧原生 `939e634` 和 main；相对 main 仅保留 3 个 Directus 读取适配及 6 个测试路径，其他新功能、依赖与安全修复一致。原生工作区干净，未推送 GitHub。
+- 首轮维护预算因多一空行失败，最小修正后 R2 完整 `npm run verify:release` exit 0：738 类型文件 0 错误/0 警告/5 既有提示、1030 单测、365 E2E 通过/17 既有条件跳过/0 失败、6 formal、Lint/902 文件预算/资源与补丁检查/构建通过；1627 个源文件验证前后 hash 一致。准确 HTTPS 最终构建另行通过，未将 loopback QA 构建用于线上。原失败证据保留，Node 网络护栏不代表系统级全流量审计。
+- Nova 核对候选、987 个包文件与制品 hash，14 项发布/失败/回退模拟通过并发布前 APPROVED。制品 SHA256 `e869a8e58aa0e949188ae3fca09cc710835408e4ca1820b3151d3e205be88568`，发布为 `20261016T090823Z-d67a483`；服务端校验、临时 loopback 版本/健康/8 页面检查通过，2026-10-16 17:18:53 CST 完成 current 原子切换并仅重启 Web，实际退出码 0。原生 Sharp 0.35.5/librsvg 2.63.2 已核验。
+- 最新 main 要求 staging 的 PUBLIC_SITE_URL 为公网 HTTPS，故将旧隧道 origin 同步为 `https://8.138.148.179`；备份在 `/data/xyy/ops/update-20261016-06-20261016T090823Z-d67a483/web.env.before`，逐字节核对仅此变更，权限属主保持。旧 release `20261014T081032Z-939e634` 保留，脚本具配置与版本成对回退。CMS/Nginx/PostgreSQL 进程 PID/启动时间、相关配置 hash 保持，临时验收单元已清理；无 CMS/数据库写入、DNS/TLS/Nginx 修改、旧站访问或 GitHub 推送。
+- 公网完整版本 manifest 精确匹配，连续三次 health 双依赖 ok，8 个中英主要页面、后台入口和 Google 验证文件均 200；Google 文件精确 hash、HTTP 308 至同机 HTTPS、script-src self 与 staging/noindex 均通过。首轮本地 GET 汇总脚本误用 Google 制品路径导致读取失败，修正真实 dist/client 路径后的完整检查通过；首轮未保存的 GET 采样不计入有效证据。基线曾有一次外部线索健康超时 503，后续恢复，不宣称永久可用。线上 16 组中英桌面/手机、四组 157 图及 hover/Escape/tap/关闭/滚动恢复、四组联系预选和手机提交按钮无遮挡均通过；后台空输入未认证入口可见，自动 refresh POST 被拦截，匿名 translations 403 按验收边界记录。两个浏览器已关闭，Sol 亲看四图；Luna PASS、Nova 最终 APPROVED（0 findings），Sol 最终验收，证据根目录 `output/release/xyy-20261016-06/`。
+- GitHub 最新 main CI `38873686436` 的发布验证与生产依赖审计步骤成功，唯一失败为 Lighthouse 报告准备阶段缺少 `output/capacity-baseline.json`；尚未产生该轮性能报告，不能称 CI 全绿或已实测性能。Nova 复核为独立 CI 报告流程问题，未阻断已通过完整本地门禁的应用发布；本任务未顺带修复 CI。
+
+#### XYY-20261019-01 — 新 ECS 最新代码核对
+
+- 用户授权连接 `8.138.148.179` 并更新 `AIyj-cmd/XYY-WEB` 最新代码。本次 SSH 使用既有本地连接记录，GitHub 经既有本地代理完成 `ls-remote` 与 `fetch main`，未更改持久网络配置。远端/FETCH_HEAD 均为 `59cf9a5545e0ab26a76c41b2baa484eecfb58632`，Git 祖先检查通过；线上 `d67a48335e75a90c1aca9051c2e6e99fde56a56e` 已包含该 main，原生候选工作区干净，无需重复发布。
+- 现场 release、完整版本与四服务 active 已核对；Web/CMS/Nginx 配置 hash 与上次发布后记录一致。独立公开 GET 验证精确版本、8 个前台页面及后台入口，共 9 个 GET 均 200、默认 CA TLS 与无重定向通过。三次健康检查为 503/200/200，首次 `contactStorage=unreachable` 且 CMS 正常，随后恢复双依赖正常；Luna 健康连续通过判据 FAIL，失败原件保留。最近 15 分钟 Web journal 无输出；源码 1.5 秒超时及多种失败均映射 unreachable，根因不能确定，未将历史相似现象当作本次根因证据。
+- 没有待发布代码，未执行部署、重启、源码变更或完整 verify:release；未操作 CMS/数据库、DNS/TLS/Nginx、权限、生产配置或 Git 推送。保留主工作区此前 `DEV_STATE.md`、`docs/SOL.md` 及上次发布计划改动，仅追加本轮记录。最新代码已确认，但健康检查并非全绿；最终审阅及证据见 `output/release/xyy-20261019-01/`。
+
+#### XYY-20261019-02 — 联系页仓配服务下拉名称
+
+- 用户授权将联系我们页“咨询服务”改成截图中八个仓配页面名称，并明确不附带链接。按 MEDIUM 定义最小合同（`output/contact/xyy-20261019-02/contract.md`），三处实现及八处受影响测试由 Terra 完成；原生 select 保留空占位，八项名称和顺序准确，英文显示对应译名、提交具体中文名。已有来源预选兼容同步，通用 conversion-source、API 和存储实现不变，未新增链接或选择跳转。
+- 起始 HEAD 为 `59cf9a5545e0ab26a76c41b2baa484eecfb58632`；保留已有 DEV_STATE、Sol 日志及上次原生发布计划的脏状态。实现/测试 R2 共 11 文件 hash 在独立验证、Review 和最终验收时一致；本次只追加角色与主状态记录。
+- Luna 独立行为 PASS：48 单测、首次限定 E2E 127 passed / 4 failed / 1 skipped；其中联系页中文 API 400 的时序失败经低并发单例及完整恢复套件桌面/手机 20/20 复测通过。另三项是未修改数字化页面用例受开发工具栏 shadow h1 干扰，不宣称首轮全绿，失败截图/trace 保留。独立 CLI 验证八项/译名/中文值、零链接、选择不跳转及手机无溢出、提交按钮可见；Sol 另亲看桌面展开下拉和手机选中态截图。
+- 初始类型检查发现新增测试 evaluateAll 元素类型未收窄，按同 Task ID 返回 Terra 单点修复，仅增加 HTMLOptionElement 类型断言。Sol R2 `npm run typecheck` exit 0：737 文件，0 errors、0 warnings、5 既有 hints；增量 ESLint、Prettier、修复文件独立格式/Lint 与 git diff --check 均通过。Nova R2 APPROVED，0 findings；Sol 确认 AC 达成并完成本地验收。首轮失败及最终证据均在 `output/contact/xyy-20261019-02/`，截图另在 `output/playwright/xyy-20261019-02/`。
+- 本地隔离预览通过 `npm run dev:local -- --port 4321` 启动，PID 24357、loopback 假依赖与身份检查通过，仍可查看 `/contact`。未提交、推送、部署、访问远程业务环境或操作真实 CMS/数据库/线索；外部 Xiansuo 对中文服务值的展示/分类未实测，mock 仅证明本地字符串协议透传。本轮无提交/部署，未运行完整 verify/verify:release；日志与状态只做增量文档审阅和 diff/格式检查，不因此重复产品测试。
+
+#### XYY-20261019-03 — 合作案例页背景替换
+
+- 用户要求网上找图下载并替换 `/cases` 首屏，随后明确否定仓库题材。沿用同一 Task ID 的 R2 合同，LOW 按 Terra → Luna → Sol 完成；最终采用 Ron Lach / Pexels 的服饰工作室团队围桌协作照片，保留现有渐变、布局、文案及按钮。共享 `/en/cases` 同步替换，图片为装饰，不标识为真实客户或代言。
+- 实现仅为 `CasesHero.astro` 的图片引用与实际尺寸、新增 `public/cases-collaboration-hero.webp` 和 `docs/cases-hero-image.md` 来源记录。新图 2400×1600、151,880 B，SHA-256 `a1f3821edeb185a446d463494a3a697aa633e02f27b353f4878f855aa62fb012`；被否定的本任务仓库候选已移出 public 并在 ignored output 留档，原 `w-apparel.webp` 保持。起始 HEAD `59cf9a5545e0ab26a76c41b2baa484eecfb58632`，保留全部既有脏状态及联系页任务 11 文件 hash。
+- Terra 元数据/解码、Prettier 与 diff 检查通过。Luna R2 PASS：限定 `cases-overview.spec.ts` 响应式测试 1/1 通过，覆盖 1440/768/390/360；中英 1440/390/360 六组首屏截图及几何检查通过，本地页面/图片 HTTP 200，无第三方图片运行时请求、横向溢出或导航遮标题。Sol 亲看中文桌面/手机及英文 360 截图，核对候选 hash、原图与前任务实现保持，AC 达成。
+- 证据位于 `output/cases/xyy-20261019-03/` 与 `output/playwright/xyy-20261019-03/`，本地预览 `http://127.0.0.1:4321/cases`。本轮只做静态图替换与相称验证，未提交、推送、部署、访问远程业务站点或操作真实 CMS/数据库；未运行完整 verify/verify:release。状态与角色日志按实际增量审阅、格式和 diff 检查，不扩张产品测试。
+
+#### XYY-20261019-04 — 案例首屏按钮圆角
+
+- 按用户截图要求，LOW 走 Terra → Luna → Sol；仅在 `src/styles/cases-overview-base.css` 的 `.cases-hero__actions a` 增加 `border-radius: 0.75rem`，与首页按钮保持同一值。文字、箭头、尺寸、颜色、链接和新背景不变，中英案例页同步生效。合同与基线位于 `output/cases/xyy-20261019-04/`，HEAD 仍为 `59cf9a5`，保留既有全部修改。
+- 目标 CSS Prettier 和 `git diff --check` 通过，CSS hash 为 `fbfcdf1c76c9031a4e05136d982f6d84dcea3f1342114484ae80a47a7012a54f`。Luna 独立 PASS：中英 1440/390/360 六组计算圆角均为 12px，与首页一致，文案/箭头/href 保持且无横向溢出。Sol 亲看桌面/手机截图，复核精确一行 diff、当前候选及前两任务 14 个候选文件 hash，验收完成。
+- 仅本地静态样式变更，未新增测试或执行业务/全量测试，未提交、推送、部署或访问远程业务环境；使用现有 loopback 4321。普通状态/日志仅检查本次增量格式及 diff。截图在 `output/playwright/xyy-20261019-04/luna/`，独立结果在 `output/cases/xyy-20261019-04/luna/final-result.json`。
+
+#### XYY-20261019-05 — 案例选择理由区视觉重设计
+
+- 用户明确要求重新设计“为什么品牌选择新亦源”区域，LOW 按 Terra → Luna → Sol 完成；所有权限于 `CasesValueProps.astro`、`cases-values.css` 与角色记录。将三栏细线文字改为桌面左深蓝主卡、右两浅卡，使用圆角、橙色点缀与纯装饰线性 SVG；保留原双语内容、claims、三项顺序和 h2/aria 关联。899px 及以下单列，480px 及以下浅卡顶行序号/图形、正文下一行全宽，无新增交互或外部素材。
+- Sol 视觉评审后沿用同一 Task ID 精修：收紧首轮过大的留白，服饰图形改为清晰 T 恤轮廓；修正 Grid 自动放置导致正文掉行与手机窄列的问题。最终 R3 中文桌面卡组高480px，左卡跨两行、右卡各228px；亲看桌面与390手机截图，视觉和内容完整性符合要求。
+- Luna R3 PASS：中英1440/768/390/360八组检查，原 h2、三项标题/正文逐字一致，三个装饰SVG、无新增链接/按钮/图片，响应式两列/单列及无横溢/截断通过。目标 Prettier、组件 ESLint、diff检查通过；组件71行、CSS200行满足预算。R3候选 hash、数据/原首屏保护清单及前任务联系页/图片候选均保持，基线 HEAD 仍为 `59cf9a5`，其他既有修改保留。
+- 最终证据 `output/cases/xyy-20261019-05/luna/final-result.json`，Sol截图 `output/cases/xyy-20261019-05/r3-desktop.png` 与 `r3-mobile.png`；现有本地4321可预览。本轮无业务逻辑变化，未新增测试或运行业务/全量门禁；验证限本地Chromium。未提交、推送、部署、访问远程业务环境或操作真实CMS/数据库。主状态和日志仅审阅本次增量并做格式/diff检查。
+
+#### XYY-20261019-06 — 案例 FAQ 与首页统一
+
+- 用户要求合作案例页 FAQ 与首页一样，MEDIUM 按 Terra → Luna → Nova → Sol 完成。范围为共享 `HomeFAQ.astro`、中英案例页面与既有 `cases-overview.spec.ts`；合同、起始 Git 状态及旧页面保存在 `output/cases/xyy-20261019-06/`。HEAD 仍为 `59cf9a5`，保留其他既有修改。
+- 组件新增可选标题、标题 ID 与附带 CTA 开关，默认维持首页原表现；案例复用原首页样式与脚本，显示左侧标题说明、右侧编号折叠列表，首项默认展开且切换互斥。案例传入原标题与 ID、关闭组件内首页 CTA，保留自身唯一 CTA；标题使用平衡换行。原双语 7 条问答、顺序、CMS 读取/过滤/翻译、JSON-LD 均保持，未改其他 PageFAQ 调用方。
+- Terra 目标格式/Lint/diff 通过，限定 E2E 双项目 6/6；首次未传端口连接未启动的 4399 失败，改为当前 4321 后通过，未将失败视为通过。Luna 独立 Chromium 定向 E2E 3/3，中英案例 1440/390/360 及首页 1440/390 检查通过，覆盖默认首项、鼠标/键盘互斥、no-JS 原生 details、原问答与 JSON-LD 一致、样式相同、CTA 唯一、无横溢及浏览器无外部请求；格式/Lint/diff 与行数预算通过。
+- Nova APPROVED、无阻断项，核对 4 个候选 hash 与冻结 diff 一致，保护文件及前任务候选保持。Sol 亲看中文桌面/手机与英文桌面，核对内容基线并验收。独立测试见 `output/cases/xyy-20261019-06/luna/final-result.json`，审阅见 `nova/final-review.json`，截图见 `output/playwright/xyy-20261019-06/luna/`。
+- 仅本地 loopback Chromium 验证；固定导航、聊天按钮和开发工具栏仍为既有视口层。未运行完整 typecheck/verify/release 或无关套件，未提交、推送、部署、访问远程业务系统或操作真实 CMS/数据库。预览保持 `http://127.0.0.1:4321/cases#s-faq`；本次状态和日志增量审阅并检查格式/diff。
+
+#### XYY-20261019-07 — 行业动态与白皮书 FAQ 统一
+
+- 用户要求行业动态与供应链白皮书 FAQ 同样统一为首页样式，MEDIUM 按 Terra → Luna → Nova → Sol 完成。仅修改行业动态中文版、白皮书中英文三页的 FAQ 组件调用，新增 `tests/e2e/content-faq.spec.ts`。合同、Git 基线与改前 HTML/问答见 `output/content-faq/xyy-20261019-07/`；HEAD 仍为 `59cf9a5`，全部既有修改保留。
+- 三页复用已验收的 HomeFAQ，保持原标题与 page-faq-heading、各 8 条问答、顺序、CMS 读取/翻译/空内容、JSON-LD 和自身唯一 CTA；英文白皮书保留非空渲染条件和英文 locale。首页附带 CTA 关闭，共享组件、样式及脚本均未改；英文行业动态原无 FAQ，本轮未新增内容。
+- Terra 有限自测 2/2、目标格式/Lint/diff 及 12 份保护文件 hash 通过。Luna 独立定向 Chromium E2E 2/2，三页 1440/390/360 布局、默认首项、鼠标/键盘互斥、no-JS 原生展开、24 条问答与基线/JSON-LD 逐字一致、首页样式相同、CTA 唯一及无横溢检查通过；英文 news 无 FAQ、浏览器无外部请求。三页面 89/106/84 行、新测试 70 行满足预算。
+- Nova APPROVED、无阻断项，候选 4/4 hash、冻结 diff、保护文件及 Task02～06 候选均保持。Sol 亲看行业动态桌面、中文白皮书手机及英文白皮书桌面截图，复核当前候选并验收；独立证据见 `luna/final-result.json`，审阅见 `nova/final-review.json`，截图位于 `output/playwright/xyy-20261019-07/luna/`。
+- 验证限本地 loopback Chromium，固定导航/聊天/开发工具栏为既有视口层；未运行全量 typecheck/verify/release 或旧 dist fixture，未提交、推送、部署、访问远程业务环境或操作真实 CMS/数据库。本地 4321 预览保持，状态/日志仅做本次增量审阅与格式/diff 检查。
+
+#### XYY-20261019-08 — 首页中文手机数字化标签遮挡修复
+
+- 首轮只读诊断确认中文第三方案标签仍为 absolute、z-index auto，被 dashboard 的 z-index 1 覆盖；英文 <=768px 专用规则将标签置于图片上方。浏览器临时实验验证修复方向后，用户明确授权修复。沿用 Task08，LOW 按 Terra → Luna → Sol 完成；起始目标 CSS 干净，HEAD 仍为 `59cf9a5`，其他既有修改保留。
+- 实现仅在 `src/styles/home-core-solutions/digital.css` 的最后媒体规则中，删除四个选择器上的英文 locale 条件。中英文共用纵向布局、静态标签与底部说明；所有属性声明、断点及桌面规则原样保持，CSS 仍为 119 行。Sol 将最终文件与改前文件仅做四次指定替换的结果逐字比较，一致。
+- Luna PASS：中英 360/390/480/768 标签完整可见，badge 在截图上方、caption 在截图下方，无相交、截断和横溢；769/1440 保持 badge absolute 与 media row，第一、二方案不受影响。Prettier/diff、准确候选 hash、7 份保护文件及 Task02～07 候选均通过。初始 diff 字符串比较输出 false，后续规范化断言与整文件对照通过，原日志保留；无实现返工。
+- Sol 亲看最终中文 390/768 截图并验收，独立结果见 `output/playwright/xyy-20261019-08/luna/final-result.json`，合同为同目录 `repair-contract.md`；初始截图和临时 CSS 实验与真实修复证据分开保存。当前本地 4321 预览保持。
+- 验证限本地 Chromium；固定导航及开发工具栏为既有视口层。按纯 CSS 范围未新增测试或执行业务 E2E/typecheck/verify/release，未提交、推送、部署、访问外部业务系统或操作真实 CMS/数据库。本次状态和日志增量已审阅并检查格式/diff。
+
+#### XYY-20261019-09 — 首页案例数字橙色与手机单卡展示
+
+- 用户要求“150+”改为橙色、手机每次完整展示一个案例。LOW 按 Terra → Luna → Sol 完成，范围仅 `HomeCases.astro`、`home-cases/section.css`、`home-cases/responsive.css`；HEAD 仍为 `59cf9a5`，保留全部既有修改。标题从现有完整译文拆出动态 `partnerBrands` 并用 Astro 转义文本包装，数字使用品牌橙色 `#c2410c`，全文与 claims 来源保持。
+- 768px 及以下画廊跟随内容宽度，每张卡片宽 100%、逐张 snap；卡片高 28rem，正文 0.8rem/1.6，左右留白约 1.2rem，移除相邻分隔线。原 <=900px 整块规则与基线逐字一致，769px 以上多卡及桌面 hover 保持；没有修改案例数据、图片、链接或弹窗脚本。
+- Luna PASS：限定既有 E2E 4/4；中英 360/390/480/768/769/900/1440 检查通过。手机逐卡停靠只显示一张，中英 390px 各五次真实触摸横滑到第六张，弹窗始终隐藏且 URL 保持首页；360px 六卡正文、指标及文本 Range 均在卡片边界内。no-JS 滚动与原 href、桌面 hover、弹窗与 Escape、查看全部链接正常。目标格式/Lint/diff、14 份保护文件及 Task02～08 候选 hash 通过，组件/CSS 为 120/64/80 行。
+- Sol 亲看中文标题与 UR 首卡、中英手机末卡和桌面截图并验收，复核冻结 hash、实际测试日志与触摸补证。首次矩阵使用程序滚动，补充真实触摸与边界检查后才完成验收。Sol 自有截图尝试等待未进入视口的懒加载图片，被主动终止，未作为测试结果；最终视觉证据采用 Luna 截图，未改实现或预览服务。
+- 证据位于 `output/home-cases/xyy-20261019-09/` 与 `output/playwright/xyy-20261019-09/luna/`；预览 `http://127.0.0.1:4321/#s-cases`。验证限本地 Chromium，未新增测试或运行全量 typecheck/verify/release，未提交、推送、部署或访问真实 CMS/数据库。状态与日志只审阅本次增量并做格式/diff 检查。
+
+#### XYY-20261019-09 R2 — 案例跟随鼠标移动
+
+- 用户澄清需要鼠标左右移动带动案例滑动，不需要按住鼠标。沿用 Task09 并升级 MEDIUM，完成 Terra → Luna → Nova → Sol；R2 基线保留前轮橙色动态数量、手机整卡及全部既有修改，HEAD 仍为 `59cf9a5`。新增 `home-cases-pointer-scroll.ts`，由 HomeCases 引入；新增有限 E2E。CSS、案例内容、图片、href、claims 与 Modal 保持。
+- 仅在画廊有水平溢出时响应无按键 mouse pointermove，首次移入记录位置，实际横向移动后映射到案例停靠点；rAF 合并更新，原生平滑滚动，减少动态时直接切换。移出取消未执行的请求，当前目标可以完成；忽略 touch/pen，普通点击和键盘仍可打开案例。最终组件 124 行、脚本 57 行、测试 119 行，均在预算内。
+- 初稿自测未交付，Luna 独立接管测试，按明确授权修正测试的窄视口和 scrollTo 重载类型转发；首轮测试类型错误原件保留，修正后 typecheck 为 740 文件、0 errors、0 warnings、5 个既有 hints。新 E2E 首轮两项失败暴露真实快速反向竞态：旧 smooth 尚未离开起点，新目标被 proximity 提前返回忽略。Sol 定位后 Terra 精确删除该行，保留目标索引去重；修后同一测试 6/6、原首页与六案例弹窗定向 4/4 通过。
+- Luna PASS：中英 390/768 鼠标无按键移动到首/中/末卡、768 移出后稳定、769/900 多卡移动、1440 hover、点击/Enter/Escape 和实际 touch 通过。最初 CLI 读数过早的记录保留，以最终目标到位及边界补证为准；英文 broad touch 只证明到末，后续短滑稳定到 1→2→3，补齐中间案例可达证据。格式/Lint/diff、R2 10 份保护文件及前任务候选通过；本轮未修改业务逻辑之外的共享区域。
+- Nova APPROVED，三个最终候选 hash 和准确 R2 diff 一致，无阻断项。Sol 亲测鼠标无按键 0→1710→0 往返，核对弹窗始终隐藏、URL 保持，并亲看最终中英中间卡及首末截图；验收完成。证据 `output/home-cases/xyy-20261019-09/r2/`，浏览器日志 `output/playwright/xyy-20261019-09/r2/luna/`。
+- 验证限本地 loopback Chromium，其他浏览器 smooth/snap 时序未验证；未运行完整 verify/verify:release，未提交、推送、部署或访问真实 CMS/数据库。原 4321 预览保持；状态和日志仅审阅本轮增量并检查格式/diff。
+
+#### XYY-20261019-10 — 页面改动 GitHub 同步候选
+
+- 用户明确要求“推送到github上，同步一下git的状态信息”。范围为既有 origin `https://github.com/AIyj-cmd/XYY-WEB.git` 的 main；起始本地 HEAD、origin/main 与远端回读均为 `59cf9a5545e0ab26a76c41b2baa484eecfb58632`，无分叉，暂存区为空。原 37 个修改/新增路径均归属前序页面任务及记录，保留既有原生发布计划作为历史归档，不执行其中部署动作；本次无部署授权。
+- 完整检查 R1 在 cases-values 201/200 行预算失败，Terra 仅删一空白行，反向补回可精确恢复旧 hash。R2 的 1029 单测有一项旧 PageFAQ 字符串断言失败；Terra 只在 publication-copy 测试中提取 HomeFAQ 块并校验原标题与 faqs，CMS/JSON-LD/内容断言保持。最终共 38 个路径，未更改有效 CSS 或页面内容；两次原始失败证据保留。
+- Luna R3 PASS：在 CI/loopback 隔离配置下完整 `npm run verify` exit 0，740 类型文件 0 errors/0 warnings/5 hints、Lint、904 文件维护预算、资源/缓存检查、144 测试文件与 1029 单测全部通过，server build 完成；完整 `npm run format:check` exit 0。32 份功能候选身份匹配，前序已通过的桌面/手机页面验证沿用，未重复扩展 E2E。当前开发预览保留，未使用真实 CMS/线索端。
+- Sol 核对新增内容、38 路径范围及高置信凭据/产物扫描；仓库无活动 Git hook，唯一 workflow 只运行 CI，无自动部署步骤。当前等待 Nova 对冻结候选与 Git 同步范围 Review；普通提交/推送及最终提交编号将在完成后另作事实补录。证据 `output/git-sync/xyy-20261019-10/`；无强推、生产、数据库、权限或其他外部业务写入。

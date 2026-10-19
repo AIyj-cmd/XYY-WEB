@@ -15,17 +15,36 @@ interface Props {
   items: FaqItem[]
   phone: string
   locale?: SiteLocale
+  heading?: string
+  headingId?: string
+  showConversionCta?: boolean
 }
 
-const { items, locale = 'zh-CN' } = Astro.props
+const {
+  items,
+  locale = 'zh-CN',
+  heading,
+  headingId = 'faq-heading',
+  showConversionCta = true,
+} = Astro.props
 const copy = homeUi(locale).faq
 ---
 
-<section id="s-faq" class="s-faq" aria-labelledby="faq-heading" data-locale={locale}>
+<section id="s-faq" class="s-faq" aria-labelledby={headingId} data-locale={locale}>
   <div class="faq-inner">
     <aside class="faq-intro">
       <p class="section-tag">{copy.tag}</p>
-      <h2 id="faq-heading" class="faq-title">{copy.heading[0]}<br />{copy.heading[1]}</h2>
+      <h2 id={headingId} class="faq-title" style={heading ? 'text-wrap: balance' : undefined}>
+        {
+          heading ?? (
+            <>
+              {copy.heading[0]}
+              <br />
+              {copy.heading[1]}
+            </>
+          )
+        }
+      </h2>
       <p class="faq-intro-copy">{copy.intro}</p>
     </aside>
     <div class="faq-content">
@@ -52,19 +71,23 @@ const copy = homeUi(locale).faq
   </div>
 </section>
 
-<ConversionCTA
-  headingId="home-conversion-cta-heading"
-  eyebrow={copy.cta.eyebrow}
-  headingLines={[...copy.cta.heading]}
-  description={copy.cta.description}
-  actionLabel={copy.cta.action}
-  actionHref={locale === 'en' ? '/en/contact' : '/contact'}
-  preparationTitle={copy.cta.preparationTitle}
-  preparationItems={copy.cta.preparation.map(([label, detail]) => ({ label, detail }))}
-  condition={copy.cta.condition}
-  reveal="product"
-  className="home-conversion-cta"
-/>
+{
+  showConversionCta && (
+    <ConversionCTA
+      headingId="home-conversion-cta-heading"
+      eyebrow={copy.cta.eyebrow}
+      headingLines={[...copy.cta.heading]}
+      description={copy.cta.description}
+      actionLabel={copy.cta.action}
+      actionHref={locale === 'en' ? '/en/contact' : '/contact'}
+      preparationTitle={copy.cta.preparationTitle}
+      preparationItems={copy.cta.preparation.map(([label, detail]) => ({ label, detail }))}
+      condition={copy.cta.condition}
+      reveal="product"
+      className="home-conversion-cta"
+    />
+  )
+}
 
 <script>
   import '@/scripts/home-faq'

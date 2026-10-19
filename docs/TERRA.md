@@ -2509,3 +2509,82 @@ Status: CODE DONE（待 Luna 独立验证与 Nova Review）
 
 - Luna trace 证实收起 native `details` 后先前取得的 summary bounding box 已过期，原始坐标触摸命中 checkbox。仅将 mobile 分支的四行 raw coordinate touch 改为 `await summary.tap()`；Playwright 现在在当前可操作的 summary 上完成真实触摸并执行滚动、稳定与命中检查。原有 keyboard/open/layout 断言未变，未改产品源码。
 - 自测 PASS：目标 Prettier、Node syntax 与 `git diff --check`。未运行浏览器或完整 release gate，保留 Luna R2 的失败与诊断证据，交 Luna 用原定向场景独立复测。
+
+#### XYY-20261019-02 — 联系页仓配服务选项
+
+- 联系页原生 `select` 现保留空占位，并按指定顺序提供八个仓配页面名：鞋服云仓、退货质检、后整修复、跨境云仓、华南鞋服云仓、华东鞋服云仓、直播电商仓配、B2B门店仓配；英文显示对应译名，所有选项提交值均为同一中文页面名。未添加链接、页面入口或导航行为。
+- 精确预选只在 `contact/service-context` 解析：八个中英文服务页来源各自映射到对应中文提交值；来源存在时优先其精确项，原有 conversion-source 通用分类和 source/finder 分类冲突保护保持。finder-only 按既有需求和区域选择具体项；数字化来源保留纯文本来源说明但保持空选项。
+- 同步命中 E2E/helper 断言，并新增服务上下文的中英精确来源、数字化空选、finder 区域映射覆盖；八个值均经现有 API 验证器和 mock 线索存储请求原样透传。旧通用值兼容测试与 conversion-source 通用分类测试未改。
+- 自测 PASS：`npx vitest run tests/unit/contact-service-context.test.ts tests/unit/contact-integration.test.ts`（2 文件、48 项）；目标 `npx prettier --check` 与 scoped `git diff --check` 通过。曾启动较宽 typecheck/E2E 后按 Sol 指令终止，未将其结果作为通过证据；未执行完整 `verify`/`verify:release`、真实线索请求、CMS/数据库操作、提交、推送或部署。候选冻结交 Luna 独立验证中英文 SSR/no-JS、桌面/移动布局、选项提交与失败/成功表单回归；mock 只证明本地 API 透传，不代表外部线索系统已验证。
+
+#### XYY-20261019-02 R2 — E2E option value 类型收窄
+
+- Sol 本次 `typecheck` 确认 `Locator.evaluateAll` 推断元素为 `HTMLElement | SVGElement`，不能直接读取 `.value`。仅将既有 option 列表断言中的元素显式收窄为 `HTMLOptionElement`；读取的选项值、断言顺序和浏览器行为未变。
+- 自测 PASS：该 E2E 文件的 Prettier、ESLint 与 scoped `git diff --check`。不重跑 typecheck、E2E 或完整门禁；交 Sol 重跑已在进行的 typecheck，Luna 继续独立回归。
+
+#### XYY-20261019-03 — 合作案例页首屏背景替换
+
+- 新增本地 `public/cases-warehouse-hero.webp`，并仅把共享 `CasesHero` 的装饰图引用替换为该文件；原渐变、布局、标题、正文、按钮、`alt=""` 与 `aria-hidden` 均保持，新增实际图片宽高 2400 × 836 以稳定版面。旧 `w-apparel.webp` 未改动或删除；中英文案例页因共享组件同步使用本地图片。
+- 选定 Jacques Dillies 的 Unsplash 货架/托盘仓库照片，仅作装饰，不声明为新亦源仓库或客户案例。来源、摄影师、Unsplash 许可页、2026-10-19 下载日期、同图 q=60 WebP URL、尺寸、体积及 SHA-256 已记录到 `docs/cases-hero-image.md`。初始 q=80 与 q=75 分别为 641,860 B、641,844 B，超过合同 600 KB；同图 q=60 为 527,372 B，满足预算。
+- 自测 PASS：目标 Prettier、图片 WebP 解码/2400 × 836/527,372 B/SHA-256 校验、旧 `w-apparel.webp` 基线 hash 复核及 scoped `git diff --check`。按合同不重做 CSS、标题、CTA、测试、类型检查或完整门禁。交 Luna 独立核对中英文 1440/390/360 首屏、图片本地 HTTP 200/无第三方运行时请求、标题可读与无横溢。
+
+#### XYY-20261019-03 R2 — 用户否定仓库题材后的素材替换
+
+- 用户否定 R1 仓库题材，R1 不是可验收候选。已将仅本任务新增的仓库 WebP 原样复制到 ignored `output/cases/xyy-20261019-03/rejected-cases-warehouse-hero.webp` 留档后移除；旧 `w-apparel.webp` 保持未改。
+- 共享 `CasesHero` 现仅改为本地 `cases-collaboration-hero.webp` 及实际 2400 × 1600 尺寸。图片为 Ron Lach/Pexels 的服饰工作室团队协作照片，默认 `object-position` 保持；CSS、渐变、文案、按钮、布局与装饰性 `alt`/`aria-hidden` 均未改。来源、许可、下载参数、用途限制、尺寸、体积和 hash 已重写到 `docs/cases-hero-image.md`，不把图中人物或品牌表述为客户、员工或代言。
+- 自测 PASS：目标 Prettier、新图 WebP 解码/2400 × 1600/151,880 B/SHA-256 校验、旧 `w-apparel.webp` 基线 hash 复核及 scoped `git diff --check`。按 R2 合同不运行全量测试、类型检查或完整门禁。交 Luna 独立核对中英文 1440/390/360 本地加载、无第三方运行时请求、可读性和无横溢。
+
+#### XYY-20261019-04 — 案例首屏按钮圆角
+
+- 仅在 `.cases-hero__actions a` 增加 `border-radius: 0.75rem`，使中英文案例首屏的两个 CTA 与首页同值圆角矩形一致；未改颜色、尺寸、背景、文案、箭头、链接或布局。
+- 自测 PASS：目标 CSS/日志 Prettier 与 scoped `git diff --check`。按合同不新增测试或运行全量检查。交 Luna 独立核对中英文 1440/390/360 圆角、文字/箭头/href 与无横向溢出。
+
+#### XYY-20261019-05 — 案例页选择理由区视觉重设计
+
+- 仅重做 `CasesValueProps` 与 `cases-values.css`：原有 WHY XYY、双语 h2、三项标题/正文、claims、顺序及 aria 关系保持。三个 article 现在为 1440 下左侧深蓝 5/12 主卡与右侧上下两张浅色卡；900px 以下改为单列，不设截断高度或交互。
+- 每卡新增纯装饰 `aria-hidden` 内联线性 SVG：服饰、资源调配和项目协作意象。没有图表、数值、新承诺、链接、按钮、JS、外部资源或 hover 位移；深蓝卡使用浅灰正文，浅卡序号为深橙，卡片圆角、边框、阴影及留白按合同实现。
+- 自测 PASS：目标 Prettier、组件 ESLint、scoped `git diff --check`；组件 73 行、CSS 172 行，均在维护预算内。`protected.sha256` 的 `value-props.ts`、前任务 CTA CSS 和 `CasesHero` 三项均保持。未运行浏览器、测试、类型检查或全量门禁；交 Sol 目视候选后由 Luna 独立检查中英 1440/768/390/360 的内容、SVG 装饰语义与响应式无溢出。
+
+#### XYY-20261019-05 R3 — 卡片紧凑排版修正
+
+- 根据实际截图，将浅色卡显式固定为同一 grid 行的序号、正文和右侧图标，避免 DOM 顺序触发自动放置而把正文推到下一行；两张浅卡以内容高度自然撑开，主卡最小高度降为 30rem，图形居中于上段且内容靠下。服饰图标改为有领口、短袖和衣身的 T 恤轮廓；浅卡图标采用深橙线与浅橙底。
+- 480px 及以下，浅卡顶行保留序号与图标，正文独占第二行全宽；深蓝主卡的既有三行网格覆盖保持。h2 使用平衡换行并收窄手机字号，避免中文末字孤行。未改内容、claims、SVG 的装饰语义或其他范围。
+- 自测 PASS：目标 Prettier、组件 ESLint 与 scoped `git diff --check`；最终组件 71 行、CSS 200 行，满足预算。未运行浏览器、测试、类型检查或全量门禁；冻结交 Sol 目视后由 Luna 独立验收。
+
+#### XYY-20261019-06 — 案例页 FAQ 复用首页组件
+
+- `HomeFAQ` 新增可选 `heading`、`headingId` 和 `showConversionCta`：默认仍使用首页标题、`faq-heading` 与首页转化 CTA。传入案例标题时仅在该 h2 使用 `text-wrap: balance`，使中文标题自然换行；FAQ 的既有样式与互斥展开脚本未改。
+- 中英文案例页均复用该组件，保留原 FAQ 标题、数据和 `page-faq-heading`，传入 `BRAND.phone.toll`；关闭组件内首页 CTA，并继续保留各自的案例 CTA。未改 FAQ 数据、CMS 读取、JSON-LD、过滤或共享 CSS/JS。
+- 更新 cases overview E2E：适配首项默认展开的键盘切换，并在首页/英文首页/中英文案例页确认 FAQ 始终单项展开、首页 CTA 数量；案例页进一步逐项比对页面问题与答案和 FAQPage JSON-LD。自测 PASS：目标 Prettier、ESLint、scoped `git diff --check`；`PLAYWRIGHT_PORT=4321 npx playwright test tests/e2e/cases-overview.spec.ts --workers=1`（6 passed，59.5s）。首次未指定端口的同一命令因默认 4399 未启动而 6 项 `ERR_CONNECTION_REFUSED`，未作为通过证据。未运行全量 `verify`/`verify:release`、类型检查、外部访问或写入、提交、推送或部署；冻结交 Luna 独立验证。
+
+#### XYY-20261019-07 — 行业动态与白皮书 FAQ 统一
+
+- 仅将行业动态、中英文供应链白皮书三页的 `PageFAQ` 换为已验收的 `HomeFAQ`：保留原 h2、八条 FAQ 数据和 `page-faq-heading`，传入 `BRAND.phone.toll` 并关闭组件内首页 CTA。英文白皮书继续保留 `faqs.length > 0` 条件及 `locale="en"`；每页原有 CTA 保持。未改共享组件、FAQ 样式/脚本、CMS、JSON-LD、翻译、英文新闻或其他页面。
+- 新增有限 `content-faq` E2E（70 行）：三条路由逐项验证默认首项展开、鼠标与键盘切换后的唯一展开、无首页 CTA 和各自唯一 CTA，以及页面问题/答案与 FAQPage JSON-LD 一致；另在 1440/390/360 检查 FAQ 可见且无横向溢出。
+- 自测 PASS：目标 Prettier、ESLint、scoped `git diff --check`；`PLAYWRIGHT_PORT=4321 npx playwright test tests/e2e/content-faq.spec.ts --project=chromium --workers=1`（2 passed，15.0s）。合同保护清单 12/12 SHA-256 均通过。未运行全量 `verify`/`verify:release`、类型检查、旧 dist fixture、外部访问或写入、提交、推送或部署；冻结交 Luna 独立验证。
+
+#### XYY-20261019-08 — 首页手机数字化方案标签修复
+
+- 仅移除 `digital.css` 最后一个 `max-width: 768px` 媒体块中四个 `#svc-logistics-cloud` 选择器的 `[data-locale='en']` 条件。原有纵向媒体布局、静态 badge、dashboard 宽度与静态 caption 声明、断点和桌面规则均未改，因此该既有英文手机规则现在同样作用于中文。
+- 自测 PASS：目标 Prettier、scoped `git diff --check`；精确 diff 为 4 行删/4 行增，文件保持 119 行；合同保护文件 7/7 SHA-256 均通过。按合同未运行浏览器、测试、类型检查或全量门禁，未停止 4321、访问外部系统、提交、推送或部署；冻结交 Luna 独立验证中英文手机及桌面布局。
+
+#### XYY-20261019-09 — 首页合作案例数字与手机单卡展示
+
+- `HomeCases` 仍由 `copy.heading(partnerBrands)` 生成完整双语标题，只以现有 `partnerBrands` 在完整字符串中的位置分段，并包裹专用 span；没有硬编码数字、改动 claims 或翻译。该 span 在 section 样式中使用品牌橙 `#c2410c`，其他标题文字保持原色。
+- 仅在 768px 及以下将案例画廊改为 section 内 100% 宽、28rem 高和一张 100% 宽的原生滚动 snap 卡片，增加 `scroll-snap-stop: always` 并移除相邻卡左边线；详情左右 1.2rem、无最大宽度，正文为 0.8rem/1.6。769px 以上的多面板、hover、链接、modal 和数据均未改。
+- 自测 PASS：目标 Prettier、组件 ESLint、scoped `git diff --check`；组件 120 行、section/responsive CSS 为 64/80 行，均在预算内；合同保护文件 14/14 SHA-256 均通过。按合同未运行浏览器、测试、类型检查或全量门禁，未停止 4321、访问外部系统、提交、推送或部署；冻结交 Luna 独立验证中英文手机单卡、桌面多面板和既有首页回归。
+
+#### XYY-20261019-09 R2 — 案例指针快速反向竞态修正
+
+- 按 Sol 定位的快速反向竞态，仅删除 `home-cases-pointer-scroll.ts` 中以当前 `scrollLeft` 接近目标而跳过 `scrollTo` 的提前返回。保留 `requestedIndex` 去重，因此新的反向目标会发起 `scrollTo` 以取消尚未离开旧起点的 smooth 动画；其余指针、触摸和动画逻辑未改。
+- 自测仅限本次精确 diff、Prettier、ESLint 与 scoped `git diff --check`；未运行浏览器或完整门禁。真实快速反向鼠标 QA 待 Luna 独立复测；未停止 4321、访问外部系统、提交、推送或部署。
+
+#### XYY-20261019-10 R1 — cases-values 维护预算空白行修复
+
+- 仅删除 `src/styles/cases-values.css` 原第 5 行的一行空白；全部有效 CSS token、格式和页面行为保持。修复前候选 SHA-256 为 `957aed6a6deb1f4b21c15ac65a08d3ff163ab9f24dcbb83b41d5c645757bc2f1`，新候选为 `fcf3b9db40a811b768df15f18cae3e2f7b0cb8fb0a73dc8ddba50ae6f24dd7dd`，后者替换 Task05 旧候选；将该空行补回可精确恢复旧哈希。
+- 自测 PASS：`npm run check:maintainability`、目标 `npx prettier --check src/styles/cases-values.css` 和 scoped `git diff --check`；修复后物理 199 行、维护脚本的 `split('\\n')` 计数 200，其他业务基线 hash 复核 0 差异。完整 `npm run verify` 待 Luna 独立复测；未提交、推送、部署或访问外部系统。证据见 `output/git-sync/xyy-20261019-10/terra/cases-values-blank-line-fix.md`。
+
+#### XYY-20261019-10 R2 — 白皮书 FAQ 调用断言修复
+
+- 仅更新 `publication-copy.test.ts` 中仍硬编码旧 `PageFAQ` 单行调用的断言。现在先从 `HomeFAQ` 调用块提取源码，再在该同一块内断言 `heading="供应链白皮书常见问题"` 与 `items={faqs}`；`getFaqs('senlinqikan', PUBLICATION_FAQS)`、`createFaqSchema(faqs)` 及全部 FAQ 文案/种子/hero 断言保持原样。页面实现未改。
+- 自测 PASS：目标 Vitest（1 文件、3 测试）、Prettier、ESLint 与 scoped `git diff --check`；修改前副本 SHA-256 为 `863d9c55df745394e28b4280b374eb9250152cda6e0b2f5c1f78d2313f66edd7`，新测试候选为 `8a91325d00fdd44d9985690de753bae089df26cc97d0eb26fda2214fbd4c2216`，冻结业务基线 hash 复核 0 差异，`cases-values.css` 保持 `fcf3b9db40a811b768df15f18cae3e2f7b0cb8fb0a73dc8ddba50ae6f24dd7dd`。完整 `npm run verify` 待 Luna R3 独立复测；未提交、推送、部署或访问外部系统。证据见 `output/git-sync/xyy-20261019-10/terra/publication-copy-r2.md`。

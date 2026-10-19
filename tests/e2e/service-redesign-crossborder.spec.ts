@@ -43,6 +43,6 @@ test.describe('crossborder redesign without JavaScript', () => {
     )
     await heroLink.click()
     await expect(page).toHaveURL(/\/contact\?from=%2Fkuajing-yuncang&entry=hero#contact-form$/)
-    await expect(page.locator('select[name="service"]')).toHaveValue('cloud-warehouse')
+    await expect(page.locator('select[name="service"]')).toHaveValue('跨境云仓')
   })
 })

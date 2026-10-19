@@ -79,7 +79,9 @@ describe('supply-chain whitepapers copy contract', () => {
   it('keeps the visible FAQ and JSON-LD on the same CMS-aware FAQ object', () => {
     expect(pageSource).toContain("getFaqs('senlinqikan', PUBLICATION_FAQS)")
     expect(pageSource).toContain('const faqSchema = createFaqSchema(faqs)')
-    expect(pageSource).toContain('<PageFAQ heading="供应链白皮书常见问题" items={faqs} />')
+    const visibleFaqBlock = pageSource.match(/<HomeFAQ\b[\s\S]*?\/>/)?.[0]
+    expect(visibleFaqBlock).toContain('heading="供应链白皮书常见问题"')
+    expect(visibleFaqBlock).toContain('items={faqs}')
   })
 
   it('keeps the approved reader-focused hero and metadata copy', () => {

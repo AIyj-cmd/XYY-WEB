@@ -3871,3 +3871,113 @@ Result：**APPROVED**。未发现 Scope、架构、安全、维护性、契约�
 Remaining Risks：本结论发生在提交和推送前，不表示 commit、push、远端 CI 或部署已完成。GitHub CI 实际结果必须在推送后回读；即使 push 成功，也不能提前记录 CI 通过或线上版本变化。候选追加本 Nova 日志后，`docs/NOVA.md` 会产生预期的 unstaged 增量；Sol 应只重暂存该授权日志并重算最终 10 路径/hash/diff/敏感检查，任何其他源码、测试、依赖、workflow 或候选路径变化都会使本批准失效。
 
 Handoff：**APPROVED** 返回 Sol。Nova 仅追加本日志和 ignored `output/git-sync/xyy-20261016-05/nova/final-review.json`；未修改 index、实现、测试或其他角色日志，未运行测试、联网、提交、推送、部署或操作任何业务环境。
+
+### XYY-20261019-02 — 联系页八项仓配服务最终 Review
+
+Task ID：`XYY-20261019-02`（MEDIUM）。
+
+Review Scope：审阅冻结的 11 个实现/测试文件、任务合同、相关联系表单/API 边界及 Terra/Luna R2 证据。Nova 重算 `candidate-r2.sha256`，当前文件 **11/11** 匹配；`candidate-r2.diff` 包含 10 个 tracked 文件，新增 `src/lib/contact/service-options.ts` 已按要求单独逐行审阅并由同一哈希清单覆盖。基线 HEAD 为 `59cf9a5545e0ab26a76c41b2baa484eecfb58632`；DEV_STATE 与角色日志增量及既有未跟踪计划文件不属于本候选实现。
+
+Architecture：**PASS**。8 项名称、英文展示名、slug 与中文提交值集中在单一类型化目录，原生 `select` 直接渲染纯文字 `option`，保留空占位。精确预选只在 `contact/service-context` 把既有白名单来源转换为具体页面名；`conversion-source` 的通用分类、入口白名单、语言切换和冲突比较未改。finder-only 映射按需求与华东/华南区域细分；来源与 finder 同属旧分类时来源优先，旧分类冲突时仍清空预选和来源说明。数字化来源没有匹配项时保持空选项并可显示来源说明，职责边界清楚。
+
+Security：**PASS**。选项是源码内静态字符串并由 Astro 转义，没有 HTML、URL、链接、跳转或客户端导航逻辑。`from`、`entry`、`need`、`region` 仍须经过既有封闭白名单，查询参数不能直接成为选项值。候选未触及 Secret、鉴权、CMS、claims、API、存储、数据库、依赖或部署配置，也未访问远端或发送真实询盘。
+
+Maintainability：**PASS**。产品选项数据没有在组件和映射层重复，`ContactServiceValue` 由常量推导，finder 映射对现有联合类型显式穷举。R2 只在测试断言处收窄 `HTMLOptionElement` 类型，不改变运行行为。未发现超 Scope 重构、重复业务实现或不必要复杂度；候选 `git diff --check` 通过。
+
+Contract Risks：**PASS（本地协议范围）**。中文下拉恰为合同顺序的 8 项：鞋服云仓、退货质检、后整修复、跨境云仓、华南鞋服云仓、华东鞋服云仓、直播电商仓配、B2B门店仓配；英文只改变可见标签，提交值仍为中文页面名。8 个值均满足现有 80 字符字符串验证并通过原有 `/api/contact` 到 mock storage 的 JSON 原样透传；API 与存储实现未改。真实外部 Xiansuo 对新中文值的展示或分类未做请求验证，因此只确认本地 string contract 兼容，不把外部行为写成已验证事实。
+
+Test Coverage Review：**PASS**。Luna 定向单测 **2 files / 48 passed**，覆盖 20 个中英来源在两种联系页语言下的标签/精确预选、finder 区域映射、非法/重复/冲突为空及 8 个中文值经现有验证器和 mock storage 原样透传。限定 Chromium/mobile 首轮为 **127 passed / 4 failed / 1 skipped**：唯一联系相关失败是并发 dev preview 下中文 API 400 用例未及时出现结果；单例低并发复测通过，完整恢复套件随后 **20/20 passed**。另 3 项为未改 `english-digital-details` 被 Astro dev toolbar 的 shadow `h1` 干扰，业务截图仅一个 `h1`，不归因于本候选。loopback CLI 另确认中英文选项、中文 value、选项内零链接、选择后 URL 不变、桌面与 390px 移动无横向溢出及提交按钮可见。Sol 的 R2 `npm run typecheck` 为 **737 files / 0 errors / 0 warnings / 5 existing hints**；增量 ESLint、Prettier、Terra 对类型收窄文件的独立 lint/格式及 diff check 均通过。本 Review 未重复全量测试。
+
+Result：**APPROVED**。未发现 correctness、architecture、security、Scope、maintainability、CMS/API contract、数据边界或回归覆盖的阻断 finding；当前冻结候选满足 Task 02 AC。
+
+Remaining Risks：没有真实调用外部 Xiansuo，因此下游对 8 个中文字符串的显示/分类仍是未验证外部行为；本地 API/string 透传已有证据。3 个未改英文数字化详情用例在 dev-toolbar 环境下的 `h1` 断言仍会受干扰，本任务未处理。按合同未运行完整 `npm run verify` / `verify:release`；结论不表示已提交、推送、部署或验证生产、CMS、数据库。
+
+Handoff：**APPROVED** 返回 Sol 做最终验收。Nova 仅追加本日志及 ignored `output/contact/xyy-20261019-02/nova/final-review-r2.json`；未修改实现、测试、合同或 DEV_STATE，未运行服务、浏览器、网络、提交、推送、部署、CMS 或数据库操作。若 11 文件候选任一哈希变化，本批准失效。
+
+### XYY-20261019-06 — 案例 FAQ 复用首页组件最终 Review
+
+Task ID：`XYY-20261019-06`（MEDIUM）。
+
+Review Scope：审阅冻结的 `HomeFAQ.astro`、中英文案例页与 `cases-overview.spec.ts` 四个文件，以及合同、共享 FAQ 脚本/CSS、原 `PageFAQ` 边界和 Terra/Luna 证据。Nova 重算候选哈希 **4/4** 一致；当前四文件生成的 diff 与 `candidate.diff` 逐字相同，SHA-256 为 `9aa8075e…17c6`。共享 FAQ 数据、翻译、脚本、CSS、原 `PageFAQ` 及 XYY-20261019-03/04/05 前任务候选哈希均通过。基线 HEAD 为 `59cf9a5545e0ab26a76c41b2baa484eecfb58632`；其他既有脏文件不属于本候选。
+
+Architecture：**PASS**。`HomeFAQ` 只新增可选 `heading`、`headingId`、`showConversionCta`，默认仍为首页标题结构、`faq-heading` 和显示首页 CTA；首页中英文调用方未传新参数。案例中英文页复用同一 `#s-faq` DOM、样式和 `home-faq` 互斥脚本，传原案例标题与 `page-faq-heading`，并仅关闭组件附带的首页 CTA；两页原有案例 CTA 保持。FAQ 数据获取、成功空结果、过滤、英文翻译和 JSON-LD 生成均未移动或修改，其他 `PageFAQ` 消费者不受影响。
+
+Security：**PASS**。自定义标题与 Q&A 仍作为 Astro 转义文本渲染，没有 `set:html`、动态 URL、链接或外部请求逻辑。候选未触及 CMS/API、claims、数据库、Schema、Secret、依赖或部署配置。共享脚本只监听当前页面 `#s-faq .faq-item` 的原生 `toggle`，打开一项时关闭其余项；禁用 JavaScript 时仍由原生 `details` 展示内容。
+
+Maintainability：**PASS**。实现复用一个既有组件和既有脚本/CSS，没有复制 FAQ DOM、样式或交互逻辑，也没有借机重构 `PageFAQ`。默认值在组件入口集中，案例差异由三个明确 props 表达。候选行数为 94/82/90/174，均在合同预算内；Prettier、ESLint 与 `git diff --check` 通过。
+
+Contract Risks：**PASS**。中英文案例页仍从原 CMS/审核数据链得到相同 7 条 Q&A，过滤、顺序和文本未改；浏览器渲染与冻结 `baseline-faqs.json` 一致，DOM 问答与唯一 `FAQPage` JSON-LD 逐项相等。案例只保留一个 `cases-conversion-cta-heading`，没有 `home-conversion-cta-heading`；首页中英文各自仍保留一个首页 CTA。`headingId` 与 section `aria-labelledby` 同步，未引入重复案例 CTA 或 schema。
+
+Test Coverage Review：**PASS**。Luna 的限定 Chromium E2E 为 **3/3 passed**，覆盖案例响应式基线、首项默认展开、键盘关闭/重开，以及首页中英和案例中英四路由的单项互斥、CTA 与 DOM/schema 契约。独立 loopback 浏览器检查覆盖案例中英 1440/390/360、首页中英 1440/390，点击第二项关闭第一项、Enter 关闭、无 JS 下 7 个原生 details/7 个答案/首项 open、summary/answer 计算样式一致、无横向溢出和案例唯一 CTA。Nova 抽查中文桌面、中文 390px 与英文桌面截图，版式与上述证据一致。Terra 首次未传 4321 端口导致连接 4399 拒绝的运行保留为失败记录，不计入 PASS；其后指定端口的自测为 6/6。按合同未重复完整套件。
+
+Result：**APPROVED**。未发现 correctness、architecture、security、Scope、maintainability、CMS/API contract、数据边界或回归覆盖的阻断 finding；当前冻结候选满足 Task 06 AC。
+
+Remaining Risks：验证限本地 loopback Chromium；未运行完整 typecheck、`npm run verify`、`verify:release` 或无关业务套件。固定导航、聊天控件与开发工具栏会在部分滚动截图覆盖视口区域，属于既有视口层且本候选未改。没有访问生产、远程 CMS、数据库或外部业务系统，也未提交、推送或部署。
+
+Handoff：**APPROVED** 返回 Sol 最终验收。Nova 仅追加本日志及 ignored `output/cases/xyy-20261019-06/nova/final-review.json`；未修改实现、测试、合同、DEV_STATE 或其他角色日志，未执行服务、网络、提交、推送、部署、CMS 或数据库操作。若四个候选文件任一哈希变化，本批准失效。
+
+### XYY-20261019-07 — 行业动态与白皮书 FAQ 统一最终 Review
+
+Task ID：`XYY-20261019-07`（MEDIUM）。
+
+Review Scope：审阅冻结的中文行业动态页、中英文供应链白皮书页和新增 `content-faq.spec.ts` 四个文件，以及合同、共享 HomeFAQ 边界、页面 FAQ 数据链与 Terra/Luna 证据。Nova 重算候选哈希 **4/4** 一致；三个 tracked 页面 diff 加新测试的 `--no-index` diff 可逐字重构 `candidate.diff`，SHA-256 为 `fd1aaff4…1476`。共享 HomeFAQ/脚本/CSS、原 PageFAQ、英文新闻页、相关 FAQ 数据/翻译及 Task 02–06 候选哈希均通过。基线 HEAD 为 `59cf9a5545e0ab26a76c41b2baa484eecfb58632`；其他既有脏文件不属于本候选。
+
+Architecture：**PASS**。三个页面只把 `PageFAQ` import/调用替换为已验收 `HomeFAQ`，传原标题、`page-faq-heading`、原 `faqs`、品牌电话并关闭组件附带的首页 CTA；英文白皮书继续传 `locale="en"` 并保留 `faqs.length > 0` 条件。共享 HomeFAQ、CSS、互斥脚本、CMS 获取、中文白皮书目录、英文翻译和 schema 创建代码均未改。英文新闻页受保护且仍没有 FAQ 或新增 CMS 读取。
+
+Security：**PASS**。标题和问答仍由 Astro 作为转义文本渲染，没有 `set:html`、动态 URL、链接或新增网络逻辑。候选未触及 CMS/API、claims、数据库、Schema、Secret、依赖、导航或部署配置。页面只消费原有审核/CMS 数据，成功空内容和失败边界没有被静态回退或新逻辑覆盖。
+
+Maintainability：**PASS**。实现复用既有组件与脚本/CSS，没有复制 FAQ DOM、样式或交互，也没有修改不相关消费者。新增 E2E 以三路由表驱动验证共享行为，70 行；候选页面为 89/106/84 行，均在合同预算内。Prettier、ESLint 与 `git diff --check` 通过。
+
+Contract Risks：**PASS**。三页浏览器 DOM 均与冻结 baseline 的原 8 条 Q&A、顺序和值逐字一致，且与唯一 `FAQPage` JSON-LD 逐项相等。中文行业动态、中文白皮书和英文白皮书分别只保留 `news-conversion-cta-heading`、`publications-conversion-cta-heading`、`english-whitepapers-conversion-cta-heading`，均无 `home-conversion-cta-heading`。英文新闻在三个宽度下仍为 0 FAQ details、0 FAQPage 条目；英文白皮书空 FAQ 时仍不渲染 FAQ 区或 schema。
+
+Test Coverage Review：**PASS**。Luna 限定 Chromium E2E **2/2 passed**，覆盖三路由的 8 项、首项默认展开、点击互斥、键盘关闭/重开、heading/aria、DOM/schema 等值、CTA 唯一及 1440/390/360 无横向溢出。独立 loopback 检查进一步确认三页 Q&A 与冻结 baseline 完全一致、英文新闻无 FAQ、无 JS 时各 8 个原生 details/首项 open/答案可展开、FAQ summary/answer 计算样式与首页一致，FAQ 场景没有外部请求。Nova 抽查行业动态桌面、中文白皮书 390px 与英文白皮书桌面截图，版式与证据一致。候选、protected、Task 06 及前任务哈希全部通过；按合同未重复全量套件或旧 dist fixture。
+
+Result：**APPROVED**。未发现 correctness、architecture、security、Scope、maintainability、CMS/API contract、数据边界或回归覆盖的阻断 finding；当前冻结候选满足 Task 07 AC。
+
+Remaining Risks：验证限本地 loopback Chromium；未运行完整 typecheck、`npm run verify`、`verify:release` 或无关业务套件。固定导航、聊天控件与开发工具栏会在部分滚动截图覆盖视口区域，属于既有视口层且本候选未改。没有访问生产、远程 CMS、数据库或外部业务系统，也未提交、推送或部署。
+
+Handoff：**APPROVED** 返回 Sol 最终验收。Nova 仅追加本日志及 ignored `output/content-faq/xyy-20261019-07/nova/final-review.json`；未修改实现、测试、合同、DEV_STATE 或其他角色日志，未执行服务、旧 dist fixture、网络、提交、推送、部署、CMS 或数据库操作。若四个候选文件任一哈希变化，本批准失效。
+
+### XYY-20261019-09 R2 — 首页案例鼠标跟随最终 Review
+
+Task ID：`XYY-20261019-09`（R2，MEDIUM）。
+
+Review Scope：只审阅冻结的 `HomeCases.astro` 脚本引入、新增 `home-cases-pointer-scroll.ts`、新增 `home-cases-pointer-scroll.spec.ts`，以及 R2 合同、现有画廊结构/CSS/Modal 边界与 Luna 独立证据。Nova 重算三项 SHA-256 为 `b629f9a3…2740`、`87836675…296a`、`873202c9…f3c3`，均与 `candidate.sha256` 一致；`candidate.diff` 可对当前三文件反向检查，10 项 CSS、Modal 和中英文 UI 保护文件全部匹配。基线 HEAD 为 `59cf9a5545e0ab26a76c41b2baa484eecfb58632`；其他已有脏文件不属于本候选。
+
+Architecture：**PASS**。组件只引入单一小脚本；脚本对既有首页唯一案例画廊做空值安全绑定，不改变渲染和无 JS 路径。交互仅接受 `pointerType=mouse`、`buttons=0`、横向实际溢出且相对进入点移动至少 8px 的事件，按光标横向比例映射六个卡片停靠点；目标位置按当前 panel/画廊几何计算并 clamp 到末端。`requestAnimationFrame` 合并高频事件，同一请求索引去重；离开时清除进入状态、待处理索引和未执行帧，已经发出的原生 smooth 可自然结束。删除旧的“当前 scrollLeft 接近新目标即返回”判断后，快速反向到首卡不会再被尚未离开起点的旧 smooth 竞态吞掉。reduced-motion 使用 `auto`，无溢出的 1440px 画廊不滚动。
+
+Security：**PASS**。候选只读取本地 DOM 几何并调用原生滚动 API，不读取或拼接用户内容，不执行 HTML 注入、网络、存储、权限、依赖或外部写入。没有 Secret、CMS、数据库、部署或环境配置变化；pointermove 本身不触发链接或 Modal。
+
+Maintainability：**PASS**。生产脚本 57 行、定向 E2E 119 行，无新依赖、定时器轮播、控件或重复画廊实现。状态职责清楚，事件过滤、停靠计算、请求合并和离开清理集中在单一模块；现有 touch、点击、键盘及 Modal 实现保持原职责。目标 Prettier、ESLint、类型检查和 diff whitespace 均通过。
+
+Contract Risks：**PASS**。R2 没有修改 CSS、案例数据/图片/文案、公开数字来源、`src/lib/claims/`、href、CMS/API 或 Modal 契约；10 项保护 hash 证明前轮橙色 `150+`、≤768px 单卡、既有样式与中英文 UI 未漂移。鼠标移动不需要 down/click，不处理 touch/pen，不阻断普通点击、Enter/Escape 或原生触摸横滑。769/900px 保留三卡可见的多卡布局并可随鼠标横移，1440px 保留 hover 展开且 scrollLeft 为 0。
+
+Test Coverage Review：**PASS**。Luna 新 E2E 在 Chromium 与 mobile 两项目共 **6/6 passed**，覆盖中英文 390/768 首/中/末停靠、无按键移动、无误开 Modal、URL/页面横溢、reduced-motion `auto`、点击开关和 1440 hover；原首页加载/案例 Modal 定向回归 **4/4 passed**。`astro check` 为 740 文件、0 errors、0 warnings、5 个既有 hints。首次测试真实暴露 768px 快速反向竞态并以 2 failures 保留，精确删去错误 proximity return 后同套件转绿。补充 loopback CLI 覆盖 769/900、多语言首中末、pointerleave、点击/Enter/Escape；真实 CDP touch 的宽范围烟测到达中英文末卡，英文短滑另稳定到达 1→2→3，modal hidden、URL 不变、外部请求为空。早期 `browser-r2-final.log` 在 768px 首卡 smooth 尚未结束时记录了瞬时 9/18px 与 leave 后继续收敛，不作为稳定性结论；`browser-r2-boundary-final.log` 在中间停靠完成后离开，前后均为 2160px，补齐“离开后不自动切换”证据。Nova 抽查中文首/中/末及英文中间卡截图，单卡版式、橙色标题与证据一致。
+
+Result：**APPROVED**。未发现 correctness、architecture、security、Scope、maintainability、CMS/API contract、数据边界或回归覆盖的阻断 finding；当前冻结 R2 候选满足用户“鼠标左右移动即跟随滑动，不按住、不点击、非自动轮播，并保留橙色 150+ 与手机单卡”的 AC。
+
+Remaining Risks：验证限本地 loopback Chromium/移动仿真及合同指定套件，其他浏览器的原生 smooth/snap 动画节奏未实测；按合同未运行完整 `npm run verify`、`verify:release` 或无关业务套件。没有提交、推送、部署，也没有访问远程、CMS 或数据库。
+
+Handoff：**APPROVED** 返回 Sol 最终验收。Nova 仅追加本日志及 ignored `output/home-cases/xyy-20261019-09/r2/nova/final-review.json`；未修改实现、测试、合同、DEV_STATE 或其他角色日志，未重跑已绿套件，未执行网络、提交、推送、部署、CMS 或数据库操作。若三项候选或任一保护文件哈希变化，本批准失效。
+
+### XYY-20261019-10 — 页面改动 GitHub 同步提交前 Review
+
+Task ID：`XYY-20261019-10`（HIGH）。
+
+Review Scope：审阅从基线 `59cf9a5545e0ab26a76c41b2baa484eecfb58632` 到当前 index 的 38 个暂存路径、Task02～09 已验收身份、R3 冻结 manifest、安全边界、Git 目标/分叉、CI/Hook 行为，以及本轮 `cases-values.css` 空白行修正和 `publication-copy.test.ts` 断言更新。合同与暂存路径集合 **38/38 精确相同**；暂存 diff 与 `candidate-staged.diff` 逐字一致，SHA-256 为 `1188e985…f50e`。`frozen-content-r3.sha256` 的 33 项 index blob 全匹配，Luna R3 对其中 32 份功能候选完成前序身份核对；第 33 项为明确归档的历史原生发布计划。全部 index blob 与 `staged-candidate.json` 匹配，无未暂存实现差异。
+
+Architecture：**PASS**。本轮没有新增产品架构或改变既有页面职责；38 路径均可归属 Task02～09 的已验收页面、测试、素材和状态记录。唯一实现侧收口是从 `cases-values.css` 删除一行空白：补回该空行可精确恢复修正前 SHA-256 `957aed6a…bc2f1`，非空行 hash 前后同为 `e82b159b…aa79`，有效 CSS token 与页面效果不变。新增 `publication-copy.test.ts` 变更只把过期 `PageFAQ` 字符串断言更新为当前 `HomeFAQ` 调用块断言，未改页面实现。历史部署计划含过去现场事实，但由 Task10 状态明确作为归档，当前同步不执行其中动作。
+
+Security：**PASS**。38 个路径均为普通文件；没有 symlink、模式变化、`.env`、依赖目录、构建/coverage/output、备份、数据库文件、私钥、Token 或高置信凭据命中。新增 WebP 为 2400×1600、151,880 bytes，hash/来源/许可与素材说明一致。`origin` fetch/push 均为 `https://github.com/AIyj-cmd/XYY-WEB.git`，分支 `main`；预检时本地 HEAD、`origin/main`、远端 main 均为 `59cf9a5`，ahead/behind 0/0。无活动 Git Hook；唯一未改 workflow 仅做 CI 验证和 artifact 上传，权限为 `contents: read`，没有部署步骤。批准只覆盖普通非 force 提交/推送，不包含网站部署、ECS、CMS、数据库、DNS、TLS、权限或生产配置操作。
+
+Maintainability：**PASS**。当前候选保持前序模块边界，没有为同步任务引入重构或重复实现。CSS 空白修正把物理行数从 200 降为 199、`split('\\n')` 计数从 201 降为 200，维护预算恢复且可逆证明内容未变。白皮书测试仍保留 FAQ 审核内容/稳定身份/顺序/seed 全量断言，只在同一 `HomeFAQ` 块内核对标题和 `items={faqs}`，比独立全文字符串匹配更精确。38 路径 `git diff --cached --check` 通过，完整 Prettier 检查通过。
+
+Contract Risks：**PASS**。白皮书测试继续分别锁定 `getFaqs('senlinqikan', PUBLICATION_FAQS)`、`createFaqSchema(faqs)`，并要求可见 `HomeFAQ` 使用相同 `faqs`，CMS 与 JSON-LD 同源保证没有削弱。候选没有改 CMS/API、claims、数据库、依赖、CI 或部署契约。`DEV_STATE.md` / `docs/SOL.md` 当前只描述“提交前候选、等待 Review”，没有把本地验证写成已推送、远端 CI 成功或网站已部署；历史任务的阶段性“未推送”说明由 Task10 当前状态明确接管。
+
+Test Coverage Review：**PASS**。Luna R3 对准确候选执行完整 `npm run verify`，exit 0：740 个类型文件 0 errors、0 warnings、5 个既有 hints，ESLint、904 文件维护预算、69 个引用资源/103 个部署资源、cache patch、144 测试文件/1029 tests 及 Astro server build 全部通过；`npm run format:check` exit 0。R1 的 `cases-values.css` 201/200 行失败和 R2 的旧 `PageFAQ` 断言 1/1029 失败均保留，没有覆盖或计入 PASS；R3 在两项精确收口后完整重跑。R3 Vitest 段有一行子进程 `Terminated` 提示，但同一父命令随后报告 144/144、1029/1029 通过，继续完成 build 且最终 exit 0；未发现候选漂移或被中断的门禁阶段。本 Review 按合同未重复全量测试或浏览器验证。
+
+Result：**APPROVED**。未发现 correctness、architecture、security、Scope、maintainability、CMS/API contract、数据边界、Git 同步边界或回归覆盖的阻断 finding；当前冻结候选可由 Sol 在重新暂存本 Nova 日志、重冻并复核后普通提交和推送现有 `origin/main`。
+
+Remaining Risks：本结论发生在实际提交和推送之前，不表示 GitHub 已同步、远端 CI 已触发/完成或网站已部署。CI 会在 main push 后运行完整 release/Lighthouse 流程，其结果必须按实际状态记录；本地 `npm run verify` 不能替代远端 CI。历史发布计划保留旧现场地址与操作背景，仅作为归档，不构成本轮部署授权或当前 runbook。
+
+Handoff：**APPROVED** 返回 Sol 最终验收。追加本日志后，Sol 必须把 `docs/NOVA.md` 重新暂存，确认仍恰为原 38 路径、除 Nova 日志外 33 项 manifest/业务 hash 不变，并重做暂存 diff/hash、whitespace 与敏感/产物排除检查；纯日志增量不要求重跑已绿应用门禁。首次应用提交普通推送后，可按合同只修改 `DEV_STATE.md` 与 `docs/SOL.md`，记录应用提交 SHA、实际远端 readback、ahead/behind 与当时 CI 状态；不得把运行中写成成功。第二个文档提交前须确认仅两份文档变化、业务 hash 不变并做 diff/敏感检查；该文档提交自身 SHA 及最终本地/`origin/main`/远端一致性写入 ignored `final-result.json`，避免自引用尚未生成的提交。任何实现、测试、配置、workflow、目标远端或强推变化都使本批准失效并需重新审阅。Nova 未执行 git add/commit/push、部署、远程业务访问、CMS 或数据库操作。

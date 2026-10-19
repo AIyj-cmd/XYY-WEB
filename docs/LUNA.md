@@ -6765,3 +6765,185 @@ Task ID：`XYY-20261016-05`；Risk：HIGH；Result：**Luna PASS（仅提交前�
 Regression coverage：Sharp 0.35.5 依赖与锁文件、图库 157 项生成/解码与原图哈希、完整 unit/E2E/formal/build、格式门禁均由 Task04 R4 实际证据覆盖。
 
 Remaining risks：Luna 未检查远端分支 divergence、未 commit/push，也未重跑 CI；Sol 仍需在 Nova APPROVED 后执行合同授权的 Git 提交、推送和状态回读。隔离副本与 Task04 证据按 Sol/Nova 生命周期保留。
+
+#### XYY-20261019-02 — 联系页八项仓配服务独立验证
+
+Task ID：`XYY-20261019-02`；Risk：MEDIUM；Result：**Luna PASS（独立行为验收；R2 类型门禁由 Sol/Terra 收敛）**。未修改应用实现；当前候选 R2 哈希与 `output/contact/xyy-20261019-02/candidate-r2.sha256` 一致，产品三文件 hash 保持不变。
+
+Tests performed：
+
+- `npx vitest run tests/unit/contact-service-context.test.ts tests/unit/contact-integration.test.ts` exit `0`，2 files / **48 passed**，覆盖 16 个中英来源、finder 区域映射、非法/冲突保持空，以及八个中文值经 mock API 原样透传。
+- 首轮限定 Chromium/mobile E2E 共 132 项：127 passed、4 failed、1 skipped。唯一联系相关失败为 Chromium 中文 API 400 恢复用例在并发开发预览时 `#form-result` 未出现；同一用例 workers=2 复测 1/1 passed，完整 `contact-mobile-recovery.spec.ts` 双项目 workers=2 最终 **20/20 passed**。三项 `english-digital-details` 失败来自 4321 开发服务注入 dev toolbar 的额外 shadow `h1`（业务截图仅一个 h1），文件未改且与本候选选项行为无关，原始截图/trace 保留在 `output/contact/xyy-20261019-02/luna/e2e/`。
+- Playwright CLI loopback 视觉/交互证据：中文下拉为占位加精确八项，英文显示对应译名且提交值均为中文；选择 `跨境云仓` 后 URL 仍为 `/contact`；选项内链接数为 0；移动 390px `scrollWidth > innerWidth` 为 false，提交按钮滚动后可见。截图见 [desktop](../.playwright-cli/page-2026-10-19T06-38-57-697Z.png) 与 [mobile](../.playwright-cli/page-2026-10-19T06-41-36-597Z.png)。
+- 初始候选 `npm run typecheck` exit `1`，仅报 `tests/e2e/conversion-contact.spec.ts:106` 的 `HTMLElement | SVGElement` 无 `.value`；Terra 已按授权进行测试代码元素类型收窄，R2 复跑由 Sol 负责。首轮增量 Prettier 与 ESLint 均 exit `0`，未运行完整 `verify`/`verify:release`。
+
+Regression coverage：八项顺序、占位、中文提交值、16 个中英来源预选、finder-only 区域映射、非法/冲突空选、SSR/no-JS、桌面/390px 移动端无溢出、选择不导航、失败保值/成功反馈/API 400/503/network/15 秒重试均有单测或相关 E2E 覆盖。主预览 PID `24357` 仍监听 `127.0.0.1:4321`，所有请求为 loopback/mock；未访问生产、CMS、数据库或外部业务 API，未发送真实询盘，未部署、提交或推送。
+
+Remaining risks：Sol/Terra R2 typecheck 结果是本轮 AC5 收口条件；4321 dev toolbar 干扰的未改 `english-digital-details` 既有断言未在本轮修复或改写。
+
+#### XYY-20261019-03 R2 — 合作案例页非仓库主题首屏独立验证
+
+Task ID：`XYY-20261019-03`；Risk：LOW；Result：**Luna PASS**。R2 候选为 Ron Lach / Pexels 服饰设计团队围桌协作照片；R1 仓库题材仅保留为历史失败候选，未作为本次结论。未修改实现；R2 三个候选文件 hash 与 [`candidate-r2.sha256`](../output/cases/xyy-20261019-03/candidate-r2.sha256) 一致。
+
+Tests performed：
+
+- 静态检查：`public/cases-collaboration-hero.webp` 为 WebP，ImageMagick 解码成功，尺寸 `2400×1600`、`151880` bytes（≤600KB），SHA-256 `a1f3821e…62fb012`；`/cases`、`/en/cases`、图片 URL 在 loopback 均 HTTP 200。旧 `public/w-apparel.webp` hash 检查通过，未删除或覆盖；`git diff --check` exit 0。
+- `PLAYWRIGHT_PORT=4321 ... npx playwright test tests/e2e/cases-overview.spec.ts --project=chromium --workers=1 --grep 'keeps its responsive'` exit `0`，1/1 passed，覆盖 1440、768、390、360 的标题、正文、CTA、导航、图片自然尺寸、渐变、无溢出与导航遮挡。
+- Playwright CLI 补充中英 `/cases`、`/en/cases` 首屏：1440/390/360 截图均显示新图，标题、正文、按钮可读；390/360 几何检查自然宽 `2400`、无横溢出、标题与导航不重叠；中英文 CTA href 保持 `#cases-grid` 与 `/contact`、`/en/contact`。请求列表全部为 `127.0.0.1:4321`，未见第三方图片运行时请求。
+- 截图证据：[`cases-zh-1440.png`](../output/playwright/xyy-20261019-03/luna-r2/cases-zh-1440.png)、[`cases-zh-390.png`](../output/playwright/xyy-20261019-03/luna-r2/cases-zh-390.png)、[`cases-zh-360.png`](../output/playwright/xyy-20261019-03/luna-r2/cases-zh-360.png)、[`cases-en-1440.png`](../output/playwright/xyy-20261019-03/luna-r2/cases-en-1440.png)、[`cases-en-390.png`](../output/playwright/xyy-20261019-03/luna-r2/cases-en-390.png)、[`cases-en-360.png`](../output/playwright/xyy-20261019-03/luna-r2/cases-en-360.png)。汇总证据见 [`final-result.json`](../output/cases/xyy-20261019-03/luna-r2/final-result.json)。
+
+Regression coverage：仅验证本合同指定的静态资源、双语共享 CasesHero、1440/390/360 首屏裁切、文字/按钮/导航几何、旧图片保留及无第三方图片运行时请求；未运行全量 typecheck、verify/release 或无关业务测试。
+
+Remaining risks：验证限本地 `127.0.0.1:4321` dev preview 与 Chromium；未访问生产、CMS、数据库或外部业务环境，未部署、提交或推送。
+
+#### XYY-20261019-05 — 案例选择理由区 R3 独立验证
+
+Task ID：`XYY-20261019-05`；Risk：LOW；Result：**Luna PASS**。R3 两个候选文件 hash 与冻结清单一致，前任务受保护的 `value-props.ts`、案例首屏 CSS/组件 hash 均通过；未修改实现。
+
+Tests performed：
+
+- Playwright CLI loopback 检查中英 `/cases`、`/en/cases` 的 1440/768/390/360 共 8 组：h2 与 3 篇 h3/正文逐字匹配数据；3 个 article 顺序保持；3 个内联 SVG 均位于 `aria-hidden="true"` 图形容器；section `aria-labelledby` 正确指向 h2；无链接、按钮或外部图片；无横向溢出。
+- 1440 桌面两列几何：左深蓝主卡 `497×480` 跨两行，右侧两张 `695×228` 浅色卡上下排列；768/390/360 均为单列且三卡有可见尺寸。中文桌面/手机截图见 [`values-zh-1440.png`](../output/playwright/xyy-20261019-05/luna/values-zh-1440.png)、[`values-zh-390.png`](../output/playwright/xyy-20261019-05/luna/values-zh-390.png)。
+- 目标格式与质量检查：Prettier exit `0`、组件 ESLint exit `0`、`git diff --check` exit `0`；汇总证据见 [`final-result.json`](../output/cases/xyy-20261019-05/luna/final-result.json)。固定导航/开发工具层在 section 截图顶部出现，未计作内容遮挡。
+
+Regression coverage：仅覆盖本次静态组件/CSS 的中英四视口内容完整性、两列/单列响应式布局、装饰语义、无外部交互和目标格式检查；未运行业务 E2E、全量 typecheck、verify 或 release。
+
+Remaining risks：验证限本地 `127.0.0.1:4321` dev preview 与 Chromium；未访问生产、CMS、数据库或外部业务环境，未部署、提交或推送。
+
+#### XYY-20261019-04 — 案例首屏按钮圆角独立验证
+
+Task ID：`XYY-20261019-04`；Risk：LOW；Result：**Luna PASS**。候选 CSS hash `fbfcdf1c76c9031a4e05136d982f6d84dcea3f1342114484ae80a47a7012a54f` 与冻结清单一致；未修改实现。
+
+Tests performed：Playwright CLI loopback 检查中英 `/cases` 与 `/en/cases` 的 1440、390、360 视口：两个 CTA 计算 `border-radius` 均为 `12px`（0.75rem），与首页首个 `.btn-solid/.btn-ghost` 的 `12px` 一致；中文 href 保持 `#cases-grid`、`/contact`，英文保持 `#cases-grid`、`/en/contact`；六组均无横向溢出。中文桌面/手机截图见 [`cases-zh-1440.png`](../output/playwright/xyy-20261019-04/luna/cases-zh-1440.png)、[`cases-zh-390.png`](../output/playwright/xyy-20261019-04/luna/cases-zh-390.png)，汇总见 [`final-result.json`](../output/cases/xyy-20261019-04/luna/final-result.json)。
+
+Regression coverage：仅覆盖本任务一行 CSS 的中英文 CTA 圆角、文案箭头可读性、href 与 1440/390/360 几何；未运行业务 E2E、全量 typecheck、verify 或 release。
+
+Remaining risks：验证限本地 `127.0.0.1:4321` dev preview 与 Chromium；未访问生产、CMS、数据库或外部业务环境，未部署、提交或推送。
+
+#### XYY-20261019-06 — 案例 FAQ 复用首页组件独立验证
+
+Task ID：`XYY-20261019-06`；Risk：MEDIUM；Result：**Luna PASS**。未修改应用实现或测试；四个候选文件与 `output/cases/xyy-20261019-06/candidate.sha256` 4/4 一致，受保护文件及 XYY-20261019-03/04/05 前任务候选 hash 全部通过。完整证据见 [`final-result.json`](../output/cases/xyy-20261019-06/luna/final-result.json)。
+
+Tests performed：
+
+- `PLAYWRIGHT_PORT=4321 PLAYWRIGHT_ARTIFACTS_DIR=output/playwright/xyy-20261019-06/luna/cases-overview npx playwright test tests/e2e/cases-overview.spec.ts --project=chromium --workers=1` exit `0`：3/3 passed，覆盖响应式、FAQ 首项默认展开/键盘互斥及 `/`、`/en`、`/cases`、`/en/cases` 四路由 CTA/DOM/JSON-LD 回归。
+- Playwright CLI 仅访问 `http://127.0.0.1:4321`：中英案例 `/cases`、`/en/cases` 在 1440/390/360，首页 `/`、`/en` 在 1440/390 均检查；案例均 7 条问答、初始仅第 1 条展开、无横溢，案例仅保留自身 CTA，首页仅保留首页 CTA。中文与英文案例 Q&A 渲染值与 `baseline-faqs.json` 逐项一致，目标 E2E 的 JSON-LD/DOM 等值断言通过。
+- 独立交互检查：点击第 2 项关闭第 1 项；键盘 Enter 可关闭第 2 项；案例 FAQ 与首页 FAQ 的 summary/answer 计算字体、行高、颜色、间距、内边距和边框样式一致；案例区未发现外部运行时请求。
+- JavaScript 禁用浏览器上下文：中英案例均保留 7 个原生 `details`、第 1 项 `open`、7 个答案节点、`page-faq-heading` 和案例唯一 CTA，原生内容可读。
+- 目标 Prettier、ESLint、`git diff --check` 均 exit `0`；行数为 HomeFAQ 94、中文案例页 82、英文案例页 90、目标 E2E 174，均在合同上限内。截图：[`faq-section-zh-1440.png`](../output/playwright/xyy-20261019-06/luna/faq-section-zh-1440.png)、[`faq-section-zh-390.png`](../output/playwright/xyy-20261019-06/luna/faq-section-zh-390.png)、[`faq-section-zh-360.png`](../output/playwright/xyy-20261019-06/luna/faq-section-zh-360.png)、[`faq-section-en-1440.png`](../output/playwright/xyy-20261019-06/luna/faq-section-en-1440.png)、[`faq-section-en-390.png`](../output/playwright/xyy-20261019-06/luna/faq-section-en-390.png)、[`faq-section-en-360.png`](../output/playwright/xyy-20261019-06/luna/faq-section-en-360.png)。
+
+Regression coverage：共享 FAQ 组件默认首页 props/CTA、案例双语原问题与 JSON-LD、heading/aria 关系、原生 no-JS details、鼠标/键盘互斥、桌面/390/360 几何、前任务首屏/选择理由/按钮候选 hash 均已核对；未运行全量 typecheck、verify/release 或无关业务套件。
+
+Remaining risks：证据限本地 loopback dev preview 与 Chromium；固定导航和现有开发工具栏在部分 section 截图滚动位置会覆盖视口层，未计作 FAQ 内容遮挡；未访问生产、CMS、数据库或外部业务环境，未部署、提交或推送。等待 Nova Review 与 Sol 最终验收。
+
+#### XYY-20261019-07 — 行业动态与供应链白皮书 FAQ 独立验证
+
+Task ID：`XYY-20261019-07`；Risk：MEDIUM；Result：**Luna PASS**。未修改应用实现或测试；三页面及目标 E2E 候选 hash 4/4 一致，protected 12/12、一项 Task06 候选及 XYY-20261019-02～05 候选 hash 全部通过。完整证据见 [`final-result.json`](../output/content-faq/xyy-20261019-07/luna/final-result.json)。
+
+Tests performed：
+
+- `PLAYWRIGHT_PORT=4321 PLAYWRIGHT_ARTIFACTS_DIR=output/playwright/xyy-20261019-07/luna/content-faq npx playwright test tests/e2e/content-faq.spec.ts --project=chromium --workers=1` exit `0`：2/2 passed，原三页 FAQ 的默认首项、鼠标/键盘互斥、问答与 JSON-LD、CTA 和响应式溢出回归均通过。原始日志见 [`content-faq-e2e.log`](../output/content-faq/xyy-20261019-07/luna/content-faq-e2e.log)。
+- Playwright CLI loopback 矩阵覆盖 `/news`、`/supply-chain-whitepapers/`、`/en/supply-chain-whitepapers`、`/en/news` 的 1440/390/360；前三页均 8 条问答、初始仅第一项展开、无横溢、各保留自身唯一 CTA，英文 news 始终无 FAQ。临时基线 HTTP 仅绑定 loopback，三页 Q&A 与 `baseline-faqs.json` 逐项相等，FAQPage JSON-LD 逐项相等；英文 news 的空 FAQ 也相等。原始矩阵见 [`browser-matrix.log`](../output/content-faq/xyy-20261019-07/luna/browser-matrix.log)、[`baseline-compare.log`](../output/content-faq/xyy-20261019-07/luna/baseline-compare.log)。
+- 独立交互/no-JS 检查：等待 toggle 事件后点击第二项关闭第一项，Enter 可关闭/重开；JS 禁用时三页保留 8 个原生 `details`，点击第二项后答案可读；FAQ summary/answer 计算样式与首页一致；业务页面无外部运行时请求。见 [`interaction-check.log`](../output/content-faq/xyy-20261019-07/luna/interaction-check.log)。
+- 目标 Prettier、ESLint、`git diff --check` 均 exit `0`；页面/测试行数为 89/106/84/70，均在合同上限内。静态原始日志见 [`static-checks.log`](../output/content-faq/xyy-20261019-07/luna/static-checks.log)。三页 1440/390/360 截图见 [`faq-news-1440.png`](../output/playwright/xyy-20261019-07/luna/faq-news-1440.png)、[`faq-news-390.png`](../output/playwright/xyy-20261019-07/luna/faq-news-390.png)、[`faq-news-360.png`](../output/playwright/xyy-20261019-07/luna/faq-news-360.png)、[`faq-whitepapers-zh-1440.png`](../output/playwright/xyy-20261019-07/luna/faq-whitepapers-zh-1440.png)、[`faq-whitepapers-zh-390.png`](../output/playwright/xyy-20261019-07/luna/faq-whitepapers-zh-390.png)、[`faq-whitepapers-zh-360.png`](../output/playwright/xyy-20261019-07/luna/faq-whitepapers-zh-360.png)、[`faq-whitepapers-en-1440.png`](../output/playwright/xyy-20261019-07/luna/faq-whitepapers-en-1440.png)、[`faq-whitepapers-en-390.png`](../output/playwright/xyy-20261019-07/luna/faq-whitepapers-en-390.png)、[`faq-whitepapers-en-360.png`](../output/playwright/xyy-20261019-07/luna/faq-whitepapers-en-360.png)。
+
+Regression coverage：覆盖三页 HomeFAQ 复用、原中英文 8 条问答/顺序/JSON-LD、heading/aria、唯一自身 CTA、原生 no-JS details、鼠标/键盘互斥、1440/390/360 无横溢、英文 news 无 FAQ、首页样式对照，以及前任务 XYY-20261019-02～06 候选 hash 保持。
+
+Remaining risks：证据限本地 loopback dev preview 与 Chromium；固定导航和既有开发工具栏在部分 section 截图滚动位置会覆盖视口层，未计作 FAQ 内容遮挡；未访问生产、CMS、数据库或外部业务环境，未部署、提交或推送。等待 Nova Review 与 Sol 最终验收。
+
+#### XYY-20261019-08 — 首页数字化方案移动标签修复独立验证
+
+Task ID：`XYY-20261019-08`；Risk：LOW；Result：**Luna PASS**。未修改实现；`src/styles/home-core-solutions/digital.css` 与冻结 `repair-candidate.sha256` 一致，严格为最后移动媒体规则内 4 个 selector 去除 `[data-locale='en']` 条件，声明、断点和其他字节保持不变。protected 7/7 及 XYY-20261019-02～07 前任务候选 hash 全部通过。完整证据见 [`final-result.json`](../output/playwright/xyy-20261019-08/luna/final-result.json)。
+
+Tests performed：
+
+- Playwright CLI 仅访问现有 `http://127.0.0.1:4321/` 与 `/en/`，检查 360/390/480/768、769/1440。中英文移动四宽度第三方案 badge 完整可见，`badge.bottom <= dashboard.frame.top`，caption 位于 frame 下方且无相交/截断，页面和 section 无横溢；769/1440 保持 badge absolute 与 media row；第一、二方案 badge/media 规则未受匹配。
+- 严格 diff 核对：候选 diff `cmp` exit `0`；before/current 归一化比较为恰好 4 个 selector 替换。`npx prettier --check src/styles/home-core-solutions/digital.css` 与 `git diff --check` 均 exit `0`；CSS 行数 119。原始日志见 [`browser-matrix.log`](../output/playwright/xyy-20261019-08/luna/browser-matrix.log)、[`static-checks.log`](../output/playwright/xyy-20261019-08/luna/static-checks.log)。
+- 截图证据：[`digital-zh-390.png`](../output/playwright/xyy-20261019-08/luna/digital-zh-390.png)、[`digital-zh-768.png`](../output/playwright/xyy-20261019-08/luna/digital-zh-768.png)、[`digital-en-390.png`](../output/playwright/xyy-20261019-08/luna/digital-en-390.png)。固定导航/开发工具栏属于既有视口层，未作为候选内容遮挡判定。
+
+Regression coverage：覆盖中英文第三方案的四个移动宽度、两个桌面边界、badge/frame/caption 几何、页面横溢、第一二方案 selector 边界、候选/protected hash、Prettier 和 diff 格式门禁；未运行业务 E2E、typecheck、verify 或 release。
+
+Remaining risks：验证限本地 loopback Chromium；未访问生产、CMS、数据库或外部业务环境，未部署、提交或推送。等待 Sol 最终验收。
+
+#### XYY-20261019-09 — 首页案例画廊响应式独立验证
+
+Task ID：`XYY-20261019-09`；Risk：LOW；Result：**Luna PASS**。未修改实现或测试；三项候选与 `candidate.sha256` 一致，14 项 protected 文件、XYY-20261019-02～08 候选 hash 均保持一致。完整汇总见 [`final-result.json`](../output/home-cases/xyy-20261019-09/luna/final-result.json)。
+
+Tests performed：
+
+- 定向既有 E2E：`PLAYWRIGHT_PORT=4321 PLAYWRIGHT_ARTIFACTS_DIR=output/playwright/xyy-20261019-09/luna/homepage npx playwright test tests/e2e/home-product.spec.ts --grep 'homepage (loads|case dialogs)' --workers=1` exit `0`，Chromium/移动项目共 **4 passed**；证据 [`home-product-e2e.log`](../output/playwright/xyy-20261019-09/luna/home-product-e2e.log)。
+- Playwright CLI loopback 矩阵覆盖中英文 `/`、`/en/` 的 360/390/480/768/769/900/1440：移动端六张卡每次滚动停一张，卡片宽与 gallery 相等（312/342/432/720px），无页面横溢、正文截断或导航跳转；769/900/1440 保留多面板布局。标题完整，`150+` 为 `rgb(194, 65, 12)`；中英文所有卡片 href 和全文保持。证据 [`browser-matrix.log`](../output/playwright/xyy-20261019-09/luna/browser-matrix.log)。
+- 390px JavaScript 禁用补查：gallery `342px`、scrollWidth `2052px`，6 张卡各 `342px`；原生首卡导航到 `/cases/ur` 与 `/en/cases/ur`，外部请求为空。1440px 中英文 hover 均为首卡 flex-grow `2.7`、其余 `0.72`，首卡 detail 显示且其余隐藏。证据 [`nojs-focused.log`](../output/playwright/xyy-20261019-09/luna/nojs-focused.log)、[`hover-check.log`](../output/playwright/xyy-20261019-09/luna/hover-check.log)。
+- Modal 点击首卡后 URL 保持首页路径，Escape 可关闭；目标 Prettier、组件 ESLint、`git diff --check`、candidate/protected/prior hash 和 candidate diff 检查均 exit `0`。静态证据 [`static-checks.log`](../output/home-cases/xyy-20261019-09/luna/static-checks.log)。
+- 截图：[`home-cases-zh-390-initial.png`](../output/playwright/xyy-20261019-09/luna/home-cases-zh-390-initial.png)（橙色 `150+` 标题与首张 UR 卡）、[`home-cases-zh-390.png`](../output/playwright/xyy-20261019-09/luna/home-cases-zh-390.png)、[`home-cases-en-390.png`](../output/playwright/xyy-20261019-09/luna/home-cases-en-390.png)、[`home-cases-zh-1440.png`](../output/playwright/xyy-20261019-09/luna/home-cases-zh-1440.png)。
+
+Regression coverage：覆盖中英文案例全文/顺序/href、150+ 橙色标记、360～768 单卡原生滚动与 snap、769～1440 桌面多面板/hover、modal/Escape、no-JS 原生 href、移动端长英文正文、页面无横溢与 loopback-only 网络；前任务候选与受保护文件 hash 均复核。
+
+Remaining risks：证据限本地 `127.0.0.1:4321` dev preview 与 Chromium；按合同未运行全量 typecheck、verify/release 或无关套件。固定导航/开发工具栏属于既有视口层，未计作页面内容遮挡；未访问生产、CMS、数据库或外部业务环境，未部署、提交或推送。
+
+XYY-20261019-09 补充边界证据：390px touch-enabled Chromium 通过 CDP `Input.dispatchTouchEvent` 对中英文首页各执行 5 次真实横滑，停止点依次为 1/2/3/4/5，单次仅 1 张卡可见，modal 始终 hidden、URL 始终保持首页路径，外部请求为空；原始证据 [`touch-swipe-390.log`](../output/playwright/xyy-20261019-09/luna/touch-swipe-390.log)，终点截图为 [`touch-zh-390-final.png`](../output/playwright/xyy-20261019-09/luna/touch-zh-390-final.png) 与 [`touch-en-390-final.png`](../output/playwright/xyy-20261019-09/luna/touch-en-390-final.png)。360px 中英文六张卡的 `.cg-detail`、正文、指标节点及正文 Range 文本矩形均在各自卡片边界内（0.75px 容差），无页面横溢，证据 [`bounds-360.log`](../output/playwright/xyy-20261019-09/luna/bounds-360.log)。补证仍为 PASS，未修改实现。
+
+#### XYY-20261019-09 R2 — 首页案例跟随鼠标独立复测
+
+Task ID：`XYY-20261019-09`；Risk：MEDIUM；Result：**Luna PASS**。R2 最终业务候选为 `HomeCases.astro` + `home-cases-pointer-scroll.ts`；hash 分别为 `b629f9a3…2740`、`87836675…296a`，与 [`implementation.sha256`](../output/home-cases/xyy-20261019-09/r2/implementation.sha256) 一致；10 项 protected hash 与 XYY-20261019-02～08 前任务候选均通过。Luna 仅修改授权 E2E 测试的 390px reduced-motion 视口和 `Element.scrollTo` overload 转发类型，未修改业务/CSS。完整汇总见 [`final-result-r2.json`](../output/home-cases/xyy-20261019-09/r2/luna/final-result-r2.json)。
+
+Tests performed：
+
+- 首轮新 E2E 原始失败已保留：Chromium/mobile 各在快速反向移动时出现 `720px` 偏差；CLI 复现显示旧 smooth 动画继续到末卡。根因是 R1 `scrollToPanel` 在新目标接近当前 `scrollLeft` 时提前 return，忽略了旧动画后的新目标。证据 [`pointer-e2e.log`](../output/playwright/xyy-20261019-09/r2/luna/pointer-e2e.log)、[`pointer-race-cli.log`](../output/playwright/xyy-20261019-09/r2/luna/pointer-race-cli.log)。Terra 仅删除该提前 return 后重新冻结业务。
+- 修复后 `PLAYWRIGHT_PORT=4321 PLAYWRIGHT_ARTIFACTS_DIR=output/playwright/xyy-20261019-09/r2/luna npx playwright test tests/e2e/home-cases-pointer-scroll.spec.ts --project=chromium --project=mobile --workers=1` exit `0`，**6 passed**；原 `home-product.spec.ts --grep 'homepage (loads|case dialogs)'` 同配置 exit `0`，**4 passed**。证据 [`pointer-e2e-r1.log`](../output/playwright/xyy-20261019-09/r2/luna/pointer-e2e-r1.log)、[`home-product-e2e.log`](../output/playwright/xyy-20261019-09/r2/luna/home-product-e2e.log)。
+- `npm run typecheck` exit `0`：740 files、0 errors、0 warnings、5 个既有 hints；证据 [`typecheck-r2.log`](../output/home-cases/xyy-20261019-09/r2/luna/typecheck-r2.log)。目标 Prettier、ESLint、`git diff --check` 均 exit `0`；测试文件最终 119 行，指针脚本 57 行。
+- CLI loopback-only 补证：中英 390/768 鼠标移动到中/末/首，390/768 均单卡对齐、URL 首页、modal hidden；768 在目标动画稳定后 pointerleave 保持位置。中英 769/900 scrollLeft 可改变且保留 3 卡可见；1440 hover 展开且 scrollLeft 保持 0。真实 CDP touch 390 中英各 5 次横滑均到达末卡，modal hidden、URL 不变；该序列只证明末卡可达，不宣称每个中间索引均被访问。补充的英文短横滑在预期位置稳定后再继续，明确到达索引 1→2→3。普通 click/Enter 打开 modal，Escape 关闭。证据 [`browser-r2-final.log`](../output/playwright/xyy-20261019-09/r2/luna/browser-r2-final.log)、[`browser-r2-boundary-final.log`](../output/playwright/xyy-20261019-09/r2/luna/browser-r2-boundary-final.log)、[`touch-en-390-index3.log`](../output/playwright/xyy-20261019-09/r2/luna/touch-en-390-index3.log)。
+- 截图：[`mouse-zh-390-mid.png`](../output/playwright/xyy-20261019-09/r2/luna/mouse-zh-390-mid.png)、[`mouse-en-390-mid.png`](../output/playwright/xyy-20261019-09/r2/luna/mouse-en-390-mid.png)；Sol 首末截图 [`sol-mouse-first.png`](../output/home-cases/xyy-20261019-09/r2/sol-mouse-first.png)、[`sol-mouse-last.png`](../output/home-cases/xyy-20261019-09/r2/sol-mouse-last.png)。
+
+Regression coverage：覆盖无按键鼠标指针移动、快速反向竞态、pointerleave 不自动轮播、390/768 单卡、769/900 多卡、1440 hover、真实 touch、普通点击、键盘 Enter/Escape、modal/URL、前任务保护 hash 和 loopback-only 网络。失败原件未覆盖，最终实现与测试结果均已复核。
+
+Remaining risks：验证限本地 `127.0.0.1:4321` Chromium 和合同指定定向套件；未运行全量 verify/release 或无关测试。未访问生产、CMS、数据库，未部署、提交或推送。等待 Nova Review 与 Sol 最终验收。
+
+#### XYY-20261019-10 — Git 同步前完整门禁独立验证（R1）
+
+Task ID：`XYY-20261019-10`；Result：**FAIL**。未修改业务、测试、配置或 Git 状态；4321 既有开发进程保持运行。按指定 `DEPLOY_ENVIRONMENT=ci`、loopback Directus/Xiansuo、假 token、`PUBLIC_SITE_URL=http://127.0.0.1:4399`、关闭域名重定向和 Astro 更新检查的隔离环境执行。
+
+Expected：当前 37 路径候选的 `npm run verify` 与 `npm run format:check` 均 exit `0`，随后才能交付 Git 同步门禁。
+
+Actual：`npm run verify` exit `1`，在 `check:maintainability` 阶段停止：`src/styles/cases-values.css` 为 **201 行**，超过 **200 行**预算。此前 `preverify` capacity check、`typecheck`（740 files，0 errors、0 warnings、5 hints）和 `lint` 已完成；未执行 unit test、build，因此没有本次 unit/build 计数。按 Sol 要求继续执行的 `npm run format:check` exit `0`（All matched files use Prettier code style）。
+
+Reproduction：在仓库根目录运行 `npm run verify`，并注入合同指定隔离环境变量；命令在 `check:maintainability` 报告 `src/styles/cases-values.css: 201 lines exceeds 200` 后退出。原始日志与退出码见 [`npm-verify.log`](../output/git-sync/xyy-20261019-10/luna/npm-verify.log)、[`npm-verify.exit`](../output/git-sync/xyy-20261019-10/luna/npm-verify.exit)。格式门禁见 [`npm-format-check.log`](../output/git-sync/xyy-20261019-10/luna/npm-format-check.log)、[`npm-format-check.exit`](../output/git-sync/xyy-20261019-10/luna/npm-format-check.exit)。
+
+Evidence：容量检查通过；维护性失败为当前可观察阻断。原始身份核对见 [`identity-report.json`](../output/git-sync/xyy-20261019-10/luna/identity-report.json)，其 R1 结果为 29/31；补全映射见 [`identity-report-r1-complete.json`](../output/git-sync/xyy-20261019-10/luna/identity-report-r1-complete.json)：09 旧候选中的 `home-cases/section.css` 与 `home-cases/responsive.css` 仍有效，只有 `HomeCases.astro` 由 09/r2 替代，因此 R1 候选映射为 31/31，37 个 baseline 路径均与 baseline 一致。补全文件明确是 R1 快照，不是 Terra 修复后的 verify 结果；身份核对不替代完整 verify。
+
+Likely affected area：`src/styles/cases-values.css` 的维护性预算/候选文件身份，属于本次 Git 同步前质量门禁阻断；未自行修复或放宽断言。
+
+Severity：HIGH（完整 verify 未通过，不能宣称候选可同步；format 已通过）。Remaining risks：unit、build 未运行；未访问生产、CMS、数据库或外部写入，未部署、提交或推送。等待 Terra 最小修复后按同一 Task ID 复测。
+
+#### XYY-20261019-10 — Git 同步前完整门禁独立验证（R2）
+
+Task ID：`XYY-20261019-10`；Result：**FAIL**。按 Sol 交接的 Terra 修复 hash `fcf3b9db40a811b768df15f18cae3e2f7b0cb8fb0a73dc8ddba50ae6f24dd7dd`，使用同一 CI/loopback 隔离环境重跑；未修改业务、测试、配置或 Git 状态，R1 证据保持不变。
+
+Expected：当前候选完整 `npm run verify` 与 `npm run format:check` 均 exit `0`，unit 与 build 完成后再交付 Git 同步门禁。
+
+Actual：`npm run verify` exit `1`，Vitest 统计 **144 test files：1 failed、143 passed；1028 passed、1 failed（1029 total）**。唯一失败为 `tests/unit/publication-copy.test.ts > supply-chain whitepapers copy contract > keeps the visible FAQ and JSON-LD on the same CMS-aware FAQ object`：断言仍要求 `<PageFAQ heading="供应链白皮书常见问题" items={faqs} />`，实际 `src/pages/supply-chain-whitepapers.astro` 使用 `<HomeFAQ ... />`。本轮未执行 build；R2 `format:check` 因 verify 失败按失败即回报规则未运行，R1 format:check 已 exit 0。
+
+Reproduction：按 R2 合同环境执行 `npm run verify`，在 Vitest 复现上述断言失败后退出。原始证据见 [`npm-verify-r2.log`](../output/git-sync/xyy-20261019-10/luna/npm-verify-r2.log)、[`npm-verify-r2.exit`](../output/git-sync/xyy-20261019-10/luna/npm-verify-r2.exit)。
+
+Evidence：R2 已通过 capacity check、typecheck（740 files，0 errors、0 warnings、5 hints）、lint、maintainability、assets、cache patch；Vitest 仅上述 1 项失败。Terra 修复说明见 [`cases-values-blank-line-fix.md`](../output/git-sync/xyy-20261019-10/terra/cases-values-blank-line-fix.md)。
+
+Likely affected area：`tests/unit/publication-copy.test.ts` 的旧组件断言与 `src/pages/supply-chain-whitepapers.astro` 当前 HomeFAQ 实现之间的契约不一致；Luna 未自行修改断言或业务实现。
+
+Severity：HIGH（完整 verify 未通过，不能宣称候选可同步）。Remaining risks：build 与 R2 format:check 未运行；未访问生产、CMS、数据库或外部写入，未部署、提交或推送。等待 Sol/Terra 处理后按同一 Task ID复测。
+
+#### XYY-20261019-10 — Git 同步前完整门禁独立验证（R3）
+
+Task ID：`XYY-20261019-10`；Result：**PASS**。R1/R2 失败日志与证据保留；R3 仅包含 Terra 已交接的 `tests/unit/publication-copy.test.ts` 修复（hash `8a91325d00fdd44d9985690de753bae089df26cc97d0eb26fda2214fbd4c2216`）及此前冻结的 31 个候选身份。未修改业务实现、测试、配置或 Git 状态。
+
+Tests performed：
+
+- 指定隔离环境 `DEPLOY_ENVIRONMENT=ci`、Directus/Xiansuo loopback、假 token、`PUBLIC_SITE_URL=http://127.0.0.1:4399`、`ENABLE_DOMAIN_REDIRECTS=false`、Astro 更新检查/遥测关闭、任务目录 `TMPDIR` 下运行 `npm run verify`，exit `0`。capacity check、typecheck（740 files，0 errors、0 warnings、5 hints）、lint、maintainability（904 project files）、assets、cache patch 均通过。
+- Vitest：**144 test files passed，1029 tests passed**。无新增 E2E；按交接要求未扩张测试范围。
+- `npm run build`：exit `0`；Astro server build 完成，loopback CMS fallback 仅产生预期 `/404.html` 网络失败回退日志。
+- `npm run format:check`：exit `0`，所有文件通过 Prettier。
+
+证据：[`npm-verify-r3.log`](../output/git-sync/xyy-20261019-10/luna/npm-verify-r3.log)、[`npm-verify-r3.exit`](../output/git-sync/xyy-20261019-10/luna/npm-verify-r3.exit)、[`npm-format-check-r3.log`](../output/git-sync/xyy-20261019-10/luna/npm-format-check-r3.log)、[`npm-format-check-r3.exit`](../output/git-sync/xyy-20261019-10/luna/npm-format-check-r3.exit)、[`identity-report-r3.json`](../output/git-sync/xyy-20261019-10/luna/identity-report-r3.json)。R3 身份核对为 **32/32 matched**，其中 `cases-values.css` 使用 Terra 修复后 hash，`HomeCases.astro` 使用 09/r2，新增 publication-copy 测试使用 R3 hash。
+
+Regression coverage：完整 typecheck、lint、maintainability、资源/缓存检查、Vitest 全量 144/1029、生产 server build、全量 Prettier；Task02/r2、03/r2、04、05/r3、06、07、08、09/r2 候选与冻结页面/CSS/资源身份均已复核。4321 既有开发进程未被停止或替换。
+
+Remaining risks：验证仅限本地 CI 隔离依赖与构建，未访问真实 CMS、Xiansuo、生产、数据库或外部写入；未部署、提交或推送。工作区仍保留并行 Agent 修改，Git 同步及最终主分支状态由 Sol 负责。

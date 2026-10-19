@@ -1,5 +1,5 @@
 ---
-import PageFAQ from '@/components/PageFAQ.astro'
+import HomeFAQ from '@/components/home/HomeFAQ.astro'
 import ConversionCTA from '@/components/conversion/ConversionCTA.astro'
 import EnglishLayout from '@/components/en/EnglishLayout.astro'
 import EnglishPublicationsDirectory from '@/components/publications/EnglishPublicationsDirectory.astro'
@@ -49,7 +49,18 @@ const collectionSchema = {
 >
   <EnglishPublicationsHero latest={whitepapers[0]} />
   <EnglishPublicationsDirectory {whitepapers} />
-  {faqs.length > 0 && <PageFAQ heading="Supply-chain whitepaper FAQs" items={faqs} />}
+  {
+    faqs.length > 0 && (
+      <HomeFAQ
+        heading="Supply-chain whitepaper FAQs"
+        headingId="page-faq-heading"
+        items={faqs}
+        phone={BRAND.phone.toll}
+        locale="en"
+        showConversionCta={false}
+      />
+    )
+  }
   <ConversionCTA
     headingId="english-whitepapers-conversion-cta-heading"
     eyebrow="START A CONVERSATION"

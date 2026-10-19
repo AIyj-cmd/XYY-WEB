@@ -32,27 +32,35 @@
   }
 }
 
-@media (max-width: 560px) {
+@media (max-width: 768px) {
   .cases-head {
     margin-bottom: 2rem;
   }
 
   .cases-gallery {
-    width: calc(100vw - 2rem);
-    height: 25rem;
+    width: 100%;
+    height: 28rem;
   }
 
   .cg-panel {
-    flex-basis: 76%;
+    flex-basis: 100%;
+    scroll-snap-stop: always;
+  }
+
+  .cg-panel + .cg-panel {
+    border-left: 0;
   }
 
   .cg-detail {
+    right: 1.2rem;
     bottom: 1.25rem;
     left: 1.2rem;
+    max-width: none;
   }
 
   .cg-detail > p {
-    font-size: 0.68rem;
+    font-size: 0.8rem;
+    line-height: 1.6;
   }
 }
 
@@ -69,11 +77,4 @@
 [data-locale='en'] .cg-detail p,
 [data-locale='en'] .cg-detail small {
   overflow-wrap: anywhere;
-}
-
-@media (max-width: 390px) {
-  [data-locale='en'] .cg-detail > p {
-    font-size: 0.72rem;
-    line-height: 1.45;
-  }
 }

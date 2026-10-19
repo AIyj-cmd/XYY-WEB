@@ -12,11 +12,26 @@ const serviceRoutes = [
   '/wuliu-shuzihua',
   '/yundao-zhineng-jijian',
   '/en/apparel-fulfillment',
+  '/en/cross-border-fulfillment',
+  '/en/south-china-fulfillment',
+  '/en/east-china-fulfillment',
+  '/en/livestream-fulfillment',
   '/en/returns-inspection',
   '/en/garment-care',
   '/en/retail-distribution',
   '/en/digital-operations',
   '/en/smart-shipping',
+] as const
+
+const serviceOptions = [
+  ['鞋服云仓', 'Apparel fulfilment'],
+  ['退货质检', 'Returns inspection'],
+  ['后整修复', 'Garment care and repair'],
+  ['跨境云仓', 'Cross-border fulfilment'],
+  ['华南鞋服云仓', 'South China fulfilment'],
+  ['华东鞋服云仓', 'East China fulfilment'],
+  ['直播电商仓配', 'Livestream fulfilment'],
+  ['B2B门店仓配', 'Retail distribution'],
 ] as const
 
 const requiredEntries = ['hero', 'bottom', 'floating'] as const
@@ -47,10 +62,10 @@ test('SSR selection, language preservation, and customer reselection work withou
 }) => {
   await page.goto('/contact?from=%2Fxiefu-yuncang&entry=hero#contact-form')
   const service = page.locator('select[name="service"]')
-  await expect(service).toHaveValue('cloud-warehouse')
-  await service.selectOption('other')
+  await expect(service).toHaveValue('鞋服云仓')
+  await service.selectOption('退货质检')
   await page.reload()
-  await expect(service).toHaveValue('cloud-warehouse')
+  await expect(service).toHaveValue('鞋服云仓')
 
   const switchLink = page.locator('#site-language-switch')
   await expect(switchLink).toHaveAttribute(
@@ -59,12 +74,45 @@ test('SSR selection, language preservation, and customer reselection work withou
   )
   await switchLink.click()
   await expect(page).toHaveURL(/\/en\/contact\?from=%2Fxiefu-yuncang&entry=hero#contact-form$/)
-  await expect(page.locator('select[name="service"]')).toHaveValue('cloud-warehouse')
+  await expect(page.locator('select[name="service"]')).toHaveValue('鞋服云仓')
 
   await page.goto('/contact?from=constructor&entry=hero#contact-form')
   await expect(page.locator('select[name="service"]')).toHaveValue('')
   await page.goto('/contact#contact-form')
   await expect(page.locator('select[name="service"]')).toHaveValue('')
+
+  await page.goto('/contact?from=%2Fwuliu-shuzihua&entry=hero#contact-form')
+  await expect(page.locator('select[name="service"]')).toHaveValue('')
+  await page.goto(
+    '/contact?from=%2Ftuihuo-zhijian&entry=hero&need=ecommerce-fulfilment&region=any#contact-form'
+  )
+  await expect(page.locator('select[name="service"]')).toHaveValue('')
+})
+
+test('renders exactly eight page-name options in both languages and preserves Chinese submission values', async ({
+  page,
+}) => {
+  for (const [path, labels] of [
+    ['/contact', serviceOptions.map(([zh]) => zh)],
+    ['/en/contact', serviceOptions.map(([, en]) => en)],
+  ] as const) {
+    await page.goto(path)
+    const options = page.locator('select[name="service"] option')
+    await expect(options).toHaveCount(9)
+    await expect(options).toHaveText([
+      path.startsWith('/en/') ? 'Select a service' : '请选择您感兴趣的服务',
+      ...labels,
+    ])
+    expect(
+      await options.evaluateAll((items) =>
+        items.slice(1).map((item) => (item as HTMLOptionElement).value)
+      )
+    ).toEqual(serviceOptions.map(([zh]) => zh))
+    for (const [value] of serviceOptions) {
+      await page.locator('select[name="service"]').selectOption(value)
+      await expect(page.locator('select[name="service"]')).toHaveValue(value)
+    }
+  }
 })
 
 test('no-JS keeps source links and SSR service preselection usable', async ({ browser }) => {
@@ -75,7 +123,7 @@ test('no-JS keeps source links and SSR service preselection usable', async ({ br
     page.locator('a[href="/contact?from=%2Fxiefu-yuncang&entry=hero#contact-form"]')
   ).toHaveCount(1)
   await page.goto('/contact?from=%2Fxiefu-yuncang&entry=hero#contact-form')
-  await expect(page.locator('select[name="service"]')).toHaveValue('cloud-warehouse')
+  await expect(page.locator('select[name="service"]')).toHaveValue('鞋服云仓')
   await expect(page.locator('#contact-form')).toBeVisible()
   await context.close()
 })

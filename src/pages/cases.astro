@@ -1,6 +1,6 @@
 ---
 import Layout from '@/layouts/Layout.astro'
-import PageFAQ from '@/components/PageFAQ.astro'
+import HomeFAQ from '@/components/home/HomeFAQ.astro'
 import CasesHero from '@/components/cases/CasesHero.astro'
 import CasesGrid from '@/components/cases/CasesGrid.astro'
 import CasesLogoWall from '@/components/cases/CasesLogoWall.astro'
@@ -58,7 +58,13 @@ const faqSchema = createFaqSchema(faqs)
   <CasesGrid cases={displayCases} />
   <CasesLogoWall />
   <CasesValueProps />
-  <PageFAQ heading="合作案例常见问题" items={faqs} />
+  <HomeFAQ
+    heading="合作案例常见问题"
+    headingId="page-faq-heading"
+    items={faqs}
+    phone={BRAND.phone.toll}
+    showConversionCta={false}
+  />
 
   <ConversionCTA
     headingId="cases-conversion-cta-heading"

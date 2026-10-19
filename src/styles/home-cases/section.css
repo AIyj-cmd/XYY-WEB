@@ -25,6 +25,10 @@
   line-height: 1.2;
 }
 
+.cases-heading-number {
+  color: #c2410c;
+}
+
 .section-sub {
   max-width: 58rem;
   margin: 1rem auto 0;

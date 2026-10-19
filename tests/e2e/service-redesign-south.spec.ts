@@ -199,7 +199,7 @@ test.describe('south network redesign without JavaScript', () => {
     )
     await heroLink.click()
     await expect(page).toHaveURL(/\/contact\?from=%2Fhuanan-xiefu-yuncang&entry=hero#contact-form$/)
-    await expect(page.locator('select[name="service"]')).toHaveValue('cloud-warehouse')
+    await expect(page.locator('select[name="service"]')).toHaveValue('华南鞋服云仓')
   })
 })
 

@@ -58,7 +58,13 @@ for (const heroCase of heroCases) {
     await expect(page).toHaveURL(
       new RegExp(`${heroCase.href.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`)
     )
-    await expect(page.locator('select[name="service"]')).toHaveValue('cloud-warehouse')
+    await expect(page.locator('select[name="service"]')).toHaveValue(
+      heroCase.source === '/kuajing-yuncang'
+        ? '跨境云仓'
+        : heroCase.source === '/huanan-xiefu-yuncang'
+          ? '华南鞋服云仓'
+          : '华东鞋服云仓'
+    )
     expect(statisticRequests).toEqual([])
     expect(errors).toEqual([])
   })

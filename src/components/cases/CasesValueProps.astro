@@ -33,10 +33,36 @@ const values =
     <div class="case-values__list">
       {
         values.map(({ title, desc }, index) => (
-          <article class="case-value-item">
+          <article class:list={['case-value-item', `case-value-item--${index + 1}`]}>
             <span>{String(index + 1).padStart(2, '0')}</span>
-            <h3>{title}</h3>
-            <p>{desc}</p>
+            <div class="case-value-item__icon" aria-hidden="true">
+              {index === 0 && (
+                <svg viewBox="0 0 96 96" fill="none" focusable="false">
+                  <path d="M33 27h12l3 6h0l3-6h12l8 13-10 8v29H35V48l-10-8 8-13Z" />
+                  <path d="M45 27c0 5 6 7 6 7s6-2 6-7M35 77h26M35 48l9-5m17 5-9-5" />
+                </svg>
+              )}
+              {index === 1 && (
+                <svg viewBox="0 0 96 96" fill="none" focusable="false">
+                  <rect x="17" y="23" width="26" height="22" rx="4" />
+                  <rect x="53" y="51" width="26" height="22" rx="4" />
+                  <path d="M43 34h10m0 0-5-5m5 5-5 5M43 62H29m0 0 5-5m-5 5 5 5" />
+                  <circle cx="67" cy="27" r="8" />
+                </svg>
+              )}
+              {index === 2 && (
+                <svg viewBox="0 0 96 96" fill="none" focusable="false">
+                  <circle cx="29" cy="30" r="9" />
+                  <circle cx="68" cy="32" r="9" />
+                  <circle cx="48" cy="67" r="9" />
+                  <path d="m36 36 7 22m17-20-7 21M38 30h20" />
+                </svg>
+              )}
+            </div>
+            <div class="case-value-item__content">
+              <h3>{title}</h3>
+              <p>{desc}</p>
+            </div>
           </article>
         ))
       }

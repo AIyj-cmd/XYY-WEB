@@ -1,9 +1,10 @@
 ---
 import type { SiteLocale } from '@/i18n/routes'
+import { CONTACT_SERVICE_OPTIONS, type ContactServiceValue } from '@/lib/contact/service-options'
 
 const { locale = 'zh-CN', preselectedService } = Astro.props as {
   locale?: SiteLocale
-  preselectedService?: string
+  preselectedService?: ContactServiceValue | null
 }
 const english = locale === 'en'
 ---
@@ -20,17 +21,13 @@ const english = locale === 'en'
     <option value="" selected={!preselectedService}
       >{english ? 'Select a service' : '请选择您感兴趣的服务'}</option
     >
-    <option value="cloud-warehouse" selected={preselectedService === 'cloud-warehouse'}
-      >{english ? 'Apparel fulfilment' : '鞋服云仓'}</option
-    >
-    <option value="quality-inspection" selected={preselectedService === 'quality-inspection'}
-      >{english ? 'Inspection and garment care' : '后整质检修复'}</option
-    >
-    <option value="logistics-cloud" selected={preselectedService === 'logistics-cloud'}
-      >{english ? 'Logistics cloud' : '物流云'}</option
-    >
-    <option value="all">{english ? 'End-to-end solution' : '全链路解决方案'}</option>
-    <option value="other">{english ? 'Other' : '其他'}</option>
+    {
+      CONTACT_SERVICE_OPTIONS.map((option) => (
+        <option value={option.value} selected={preselectedService === option.value}>
+          {english ? option.english : option.value}
+        </option>
+      ))
+    }
   </select>
 </div>
 

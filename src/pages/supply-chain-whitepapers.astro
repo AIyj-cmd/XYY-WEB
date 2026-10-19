@@ -1,6 +1,6 @@
 ---
 import Layout from '@/layouts/Layout.astro'
-import PageFAQ from '@/components/PageFAQ.astro'
+import HomeFAQ from '@/components/home/HomeFAQ.astro'
 import PublicationsHero from '@/components/publications/PublicationsHero.astro'
 import PublicationsDirectory from '@/components/publications/PublicationsDirectory.astro'
 import ConversionCTA from '@/components/conversion/ConversionCTA.astro'
@@ -82,7 +82,13 @@ const faqSchema = createFaqSchema(faqs)
   </section>
 
   <PublicationsDirectory {whitepapers} {pdfOnlyIssues} />
-  <PageFAQ heading="供应链白皮书常见问题" items={faqs} />
+  <HomeFAQ
+    heading="供应链白皮书常见问题"
+    headingId="page-faq-heading"
+    items={faqs}
+    phone={BRAND.phone.toll}
+    showConversionCta={false}
+  />
 
   <ConversionCTA
     headingId="publications-conversion-cta-heading"

@@ -13,6 +13,16 @@ const lead = {
   privacyConsent: 'on',
 }
 const integrationToken = randomBytes(32).toString('base64url')
+const currentServiceValues = [
+  '鞋服云仓',
+  '退货质检',
+  '后整修复',
+  '跨境云仓',
+  '华南鞋服云仓',
+  '华东鞋服云仓',
+  '直播电商仓配',
+  'B2B门店仓配',
+] as const
 
 function request(body: Record<string, unknown>) {
   const payload = JSON.stringify(body)
@@ -52,6 +62,26 @@ describe('contact Xiansuo integration', () => {
       })
     )
   })
+
+  it.each(currentServiceValues)(
+    'accepts and forwards the selected %s page name unchanged',
+    async (service) => {
+      const fetchMock = vi.fn(async () =>
+        Response.json({ code: 0, data: { id: 1, duplicate: false } })
+      )
+      vi.stubGlobal('fetch', fetchMock)
+
+      const response = await POST({ request: request({ ...lead, service }) } as any)
+
+      expect(response.status).toBe(200)
+      expect(fetchMock).toHaveBeenCalledWith(
+        'https://xs.test/api/integrations/website-leads',
+        expect.objectContaining({
+          body: JSON.stringify({ ...lead, service, privacyConsent: undefined }),
+        })
+      )
+    }
+  )
 
   it('keeps an English locale marker out of the six-field integration payload', async () => {
     const fetchMock = vi.fn(async () =>

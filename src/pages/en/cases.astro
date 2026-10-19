@@ -3,7 +3,7 @@ import CasesGrid from '@/components/cases/CasesGrid.astro'
 import CasesHero from '@/components/cases/CasesHero.astro'
 import CasesLogoWall from '@/components/cases/CasesLogoWall.astro'
 import CasesValueProps from '@/components/cases/CasesValueProps.astro'
-import PageFAQ from '@/components/PageFAQ.astro'
+import HomeFAQ from '@/components/home/HomeFAQ.astro'
 import ConversionCTA from '@/components/conversion/ConversionCTA.astro'
 import EnglishLayout from '@/components/en/EnglishLayout.astro'
 import { CASE_FAQS, CASE_FALLBACKS } from '@/data/cases'
@@ -59,7 +59,14 @@ const caseListSchema = {
   <CasesGrid {cases} locale="en" />
   <CasesLogoWall locale="en" />
   <CasesValueProps locale="en" />
-  <PageFAQ heading="Frequently asked questions about our cases" items={faqs} />
+  <HomeFAQ
+    heading="Frequently asked questions about our cases"
+    headingId="page-faq-heading"
+    items={faqs}
+    phone={BRAND.phone.toll}
+    locale="en"
+    showConversionCta={false}
+  />
   <ConversionCTA
     headingId="cases-conversion-cta-heading"
     eyebrow="START A CONVERSATION"

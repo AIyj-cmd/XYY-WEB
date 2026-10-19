@@ -1,6 +1,6 @@
 ---
 import Layout from '@/layouts/Layout.astro'
-import PageFAQ from '@/components/PageFAQ.astro'
+import HomeFAQ from '@/components/home/HomeFAQ.astro'
 import NewsEmptyState from '@/components/news/NewsEmptyState.astro'
 import NewsGrid from '@/components/news/NewsGrid.astro'
 import NewsLandingIntro from '@/components/news/NewsLandingIntro.astro'
@@ -65,7 +65,13 @@ const faqSchema = createFaqSchema(faqs)
   }
 
   <!-- FAQ -->
-  <PageFAQ heading="行业内容使用与更新说明" items={faqs} />
+  <HomeFAQ
+    heading="行业内容使用与更新说明"
+    headingId="page-faq-heading"
+    items={faqs}
+    phone={BRAND.phone.toll}
+    showConversionCta={false}
+  />
 
   <ConversionCTA
     headingId="news-conversion-cta-heading"

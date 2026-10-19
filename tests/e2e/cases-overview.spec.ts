@@ -118,8 +118,11 @@ test('cases overview supports anchor, native logo expansion, FAQ keyboard use, a
     )
     .toBe(66)
 
-  const faq = page.locator('section[aria-labelledby="page-faq-heading"] details').first()
+  const faq = page.locator('#s-faq details').first()
+  await expect(faq).toHaveAttribute('open', '')
   await faq.locator('summary').focus()
+  await page.keyboard.press('Enter')
+  await expect(faq).not.toHaveAttribute('open', '')
   await page.keyboard.press('Enter')
   await expect(faq).toHaveAttribute('open', '')
 
@@ -130,4 +133,42 @@ test('cases overview supports anchor, native logo expansion, FAQ keyboard use, a
       transitionDuration: getComputedStyle(image).transitionDuration,
     }))
   expect(motion.transitionDuration).toBe('0s')
+})
+
+test('shared FAQs keep their accordion, CTA, and case JSON-LD contracts', async ({ page }) => {
+  const routes = [
+    ['/', true],
+    ['/en', true],
+    ['/cases', false],
+    ['/en/cases', false],
+  ] as const
+
+  for (const [path, hasHomeCta] of routes) {
+    await page.goto(path, { waitUntil: 'domcontentloaded' })
+    const faq = page.locator('#s-faq')
+    const details = faq.locator('details')
+    await expect(details.first()).toHaveAttribute('open', '')
+    await expect(details.nth(1)).not.toHaveAttribute('open', '')
+    await expect(faq.locator('details[open]')).toHaveCount(1)
+    await details.nth(1).locator('summary').click()
+    await expect(details.first()).not.toHaveAttribute('open', '')
+    await expect(details.nth(1)).toHaveAttribute('open', '')
+    await expect(faq.locator('details[open]')).toHaveCount(1)
+    await expect(page.locator('#home-conversion-cta-heading')).toHaveCount(hasHomeCta ? 1 : 0)
+
+    if (hasHomeCta) continue
+    await expect(page.locator('#cases-conversion-cta-heading')).toHaveCount(1)
+    const questions = await faq.locator('.faq-q > span:nth-child(2)').allTextContents()
+    const answers = await faq.locator('.faq-a').allTextContents()
+    const schemas = (await page.locator('script[type="application/ld+json"]').allTextContents())
+      .map((source) => JSON.parse(source))
+      .filter((schema) => schema['@type'] === 'FAQPage')
+    expect(schemas).toHaveLength(1)
+    expect(schemas[0].mainEntity.map((item: { name: string }) => item.name)).toEqual(questions)
+    expect(
+      schemas[0].mainEntity.map((item: { acceptedAnswer: { text: string } }) =>
+        item.acceptedAnswer.text.trim()
+      )
+    ).toEqual(answers.map((answer) => answer.trim()))
+  }
 })

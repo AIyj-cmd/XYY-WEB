@@ -39,7 +39,7 @@ export async function fillRequired(page: Page, locale: ContactLocale) {
   await field(page, 'name').fill(values.name)
   if (locale === 'zh') await field(page, 'phone').fill(values.phone)
   else await field(page, 'email').fill(values.email)
-  await page.locator('#contact-form #service').selectOption('cloud-warehouse')
+  await page.locator('#contact-form #service').selectOption('鞋服云仓')
   await field(page, 'message').fill(values.message)
   await page.getByRole('checkbox').check()
 }
@@ -58,7 +58,7 @@ export async function expectPreserved(page: Page, locale: ContactLocale) {
   await expect(field(page, 'name')).toHaveValue(values.name)
   await expect(field(page, 'message')).toHaveValue(values.message)
   await expect(page.getByRole('checkbox')).toBeChecked()
-  await expect(page.locator('#contact-form #service')).toHaveValue('cloud-warehouse')
+  await expect(page.locator('#contact-form #service')).toHaveValue('鞋服云仓')
   await expect(field(page, locale === 'zh' ? 'phone' : 'email')).toHaveValue(
     locale === 'zh' ? values.phone : values.email
   )

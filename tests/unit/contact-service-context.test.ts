@@ -3,26 +3,26 @@ import { describe, expect, it } from 'vitest'
 import { getContactServiceContext } from '@/lib/contact/service-context'
 
 const sources = [
-  ['/xiefu-yuncang', '鞋服云仓', 'Apparel fulfilment', 'cloud-warehouse'],
-  ['/huadong-xiefu-yuncang', '华东鞋服云仓', 'East China fulfilment', 'cloud-warehouse'],
-  ['/kuajing-yuncang', '跨境云仓', 'Cross-border fulfilment', 'cloud-warehouse'],
-  ['/huanan-xiefu-yuncang', '华南鞋服云仓', 'South China fulfilment', 'cloud-warehouse'],
-  ['/zhibo-cangpei', '直播电商仓配', 'Livestream fulfilment', 'cloud-warehouse'],
-  ['/b2b-mendian-cangpei', 'B2B门店仓配', 'Retail distribution', 'cloud-warehouse'],
-  ['/tuihuo-zhijian', '退货质检', 'Returns inspection', 'quality-inspection'],
-  ['/houzheng-xiufu', '后整修复', 'Garment care and repair', 'quality-inspection'],
-  ['/wuliu-shuzihua', '物流数字化能力', 'Digital operations', 'logistics-cloud'],
-  ['/yundao-zhineng-jijian', '运到智能寄件平台', 'Smart shipping platform', 'logistics-cloud'],
-  ['/en/apparel-fulfillment', '鞋服云仓', 'Apparel fulfilment', 'cloud-warehouse'],
-  ['/en/cross-border-fulfillment', '跨境云仓', 'Cross-border fulfilment', 'cloud-warehouse'],
-  ['/en/south-china-fulfillment', '华南鞋服云仓', 'South China fulfilment', 'cloud-warehouse'],
-  ['/en/east-china-fulfillment', '华东鞋服云仓', 'East China fulfilment', 'cloud-warehouse'],
-  ['/en/livestream-fulfillment', '直播电商仓配', 'Livestream fulfilment', 'cloud-warehouse'],
-  ['/en/returns-inspection', '退货质检', 'Returns inspection', 'quality-inspection'],
-  ['/en/garment-care', '后整修复', 'Garment care and repair', 'quality-inspection'],
-  ['/en/retail-distribution', 'B2B门店仓配', 'Retail distribution', 'cloud-warehouse'],
-  ['/en/digital-operations', '物流数字化能力', 'Digital operations', 'logistics-cloud'],
-  ['/en/smart-shipping', '运到智能寄件平台', 'Smart shipping platform', 'logistics-cloud'],
+  ['/xiefu-yuncang', '鞋服云仓', 'Apparel fulfilment', '鞋服云仓'],
+  ['/huadong-xiefu-yuncang', '华东鞋服云仓', 'East China fulfilment', '华东鞋服云仓'],
+  ['/kuajing-yuncang', '跨境云仓', 'Cross-border fulfilment', '跨境云仓'],
+  ['/huanan-xiefu-yuncang', '华南鞋服云仓', 'South China fulfilment', '华南鞋服云仓'],
+  ['/zhibo-cangpei', '直播电商仓配', 'Livestream fulfilment', '直播电商仓配'],
+  ['/b2b-mendian-cangpei', 'B2B门店仓配', 'Retail distribution', 'B2B门店仓配'],
+  ['/tuihuo-zhijian', '退货质检', 'Returns inspection', '退货质检'],
+  ['/houzheng-xiufu', '后整修复', 'Garment care and repair', '后整修复'],
+  ['/wuliu-shuzihua', '物流数字化能力', 'Digital operations', null],
+  ['/yundao-zhineng-jijian', '运到智能寄件平台', 'Smart shipping platform', null],
+  ['/en/apparel-fulfillment', '鞋服云仓', 'Apparel fulfilment', '鞋服云仓'],
+  ['/en/cross-border-fulfillment', '跨境云仓', 'Cross-border fulfilment', '跨境云仓'],
+  ['/en/south-china-fulfillment', '华南鞋服云仓', 'South China fulfilment', '华南鞋服云仓'],
+  ['/en/east-china-fulfillment', '华东鞋服云仓', 'East China fulfilment', '华东鞋服云仓'],
+  ['/en/livestream-fulfillment', '直播电商仓配', 'Livestream fulfilment', '直播电商仓配'],
+  ['/en/returns-inspection', '退货质检', 'Returns inspection', '退货质检'],
+  ['/en/garment-care', '后整修复', 'Garment care and repair', '后整修复'],
+  ['/en/retail-distribution', 'B2B门店仓配', 'Retail distribution', 'B2B门店仓配'],
+  ['/en/digital-operations', '物流数字化能力', 'Digital operations', null],
+  ['/en/smart-shipping', '运到智能寄件平台', 'Smart shipping platform', null],
 ] as const
 
 const contact = (query = '') => new URL(`https://example.test/contact${query}`)
@@ -43,10 +43,25 @@ describe('contact service context', () => {
     })
   })
 
-  it('keeps finder-only, case-only and manual contact contexts without a source label', () => {
+  it('maps finder-only needs and regions to their most specific service options', () => {
     expect(getContactServiceContext(contact('?need=garment-care&region=east-china'), 'en')).toEqual(
-      { preselectedService: 'quality-inspection', sourceLabel: null }
+      { preselectedService: '后整修复', sourceLabel: null }
     )
+    expect(
+      getContactServiceContext(contact('?need=ecommerce-fulfilment&region=east-china'), 'zh-CN')
+    ).toEqual({ preselectedService: '华东鞋服云仓', sourceLabel: null })
+    expect(
+      getContactServiceContext(contact('?need=ecommerce-fulfilment&region=south-china'), 'zh-CN')
+    ).toEqual({ preselectedService: '华南鞋服云仓', sourceLabel: null })
+    expect(
+      getContactServiceContext(contact('?need=ecommerce-fulfilment&region=any'), 'zh-CN')
+    ).toEqual({ preselectedService: '鞋服云仓', sourceLabel: null })
+    expect(
+      getContactServiceContext(contact('?need=store-replenishment&region=any'), 'zh-CN')
+    ).toEqual({ preselectedService: 'B2B门店仓配', sourceLabel: null })
+  })
+
+  it('keeps case-only and manual contact contexts without a source label', () => {
     expect(getContactServiceContext(contact('?case=ur'), 'zh-CN')).toEqual({
       preselectedService: null,
       sourceLabel: null,
@@ -80,7 +95,7 @@ describe('contact service context', () => {
         contact('?from=%2Fxiefu-yuncang&entry=hero&need=constructor&region=any'),
         'en'
       )
-    ).toEqual({ preselectedService: 'cloud-warehouse', sourceLabel: 'Apparel fulfilment' })
+    ).toEqual({ preselectedService: '鞋服云仓', sourceLabel: 'Apparel fulfilment' })
   })
 
   it('keeps one service when source and finder independently select the same service', () => {
@@ -89,7 +104,7 @@ describe('contact service context', () => {
         contact('?from=%2Fxiefu-yuncang&entry=hero&need=ecommerce-fulfilment&region=south-china'),
         'en'
       )
-    ).toEqual({ preselectedService: 'cloud-warehouse', sourceLabel: 'Apparel fulfilment' })
+    ).toEqual({ preselectedService: '鞋服云仓', sourceLabel: 'Apparel fulfilment' })
   })
 
   it('clears both source display and preselection when valid sources conflict', () => {
