@@ -17,7 +17,7 @@
 
 ## 当前目标
 
-- `XYY-20261019-10`：按用户要求整理本轮页面改动与 Git 状态，目标为 GitHub `AIyj-cmd/XYY-WEB` 的 `main`。起始 HEAD 与远端均为 `59cf9a5`，37 个既有待提交路径保留；完整门禁发现并最小修正案例 CSS 超一行预算、白皮书单测仍断言旧 FAQ 组件两项问题，最终范围 38 个路径。Luna R3 PASS：本次完整 `npm run verify` 与 `npm run format:check` 均 exit 0，740 类型文件 0 errors/0 warnings/5 hints、144 测试文件/1029 单测全部通过、资源/缓存/维护预算及 server build 通过，32 份功能候选身份一致。当前为提交前候选，待独立 Review 与普通推送后补录准确提交；未部署、未操作真实 CMS/数据库。证据 `output/git-sync/xyy-20261019-10/`。
+- `XYY-20261019-10`：已按用户要求将本轮页面调整、回归测试与相关记录共 38 个路径普通推送至 GitHub `AIyj-cmd/XYY-WEB` 的 `main`，应用提交为 `bd77a03a372a24fa8b0ff5e2f23ec2b13b790af8`。2026-10-19 17:17 CST 回读本地 HEAD、origin/main 与远端 main 三者一致，ahead/behind 为 0/0、工作区干净；当前文档为该次同步的事实补录。完整 `npm run verify` 与 `npm run format:check` 均 exit 0：740 类型文件 0 errors/0 warnings/5 hints、144 测试文件/1029 单测全部通过、资源/缓存/维护预算及 server build 通过；Luna R3 PASS、Nova APPROVED。门禁发现的 CSS 超一行与旧 FAQ 组件断言已最小修正，原失败证据保留。直连推送超时后，使用本机既有代理按命令重试成功，未改持久配置或 TLS；未强推。应用提交的 [GitHub CI](https://github.com/AIyj-cmd/XYY-WEB/actions/runs/39228961080) 在补录时仍 in_progress，未宣称通过。后续仅补录 DEV_STATE/SOL 的提交保持应用内容不变，最终文档提交身份留在 ignored 证据 `output/git-sync/xyy-20261019-10/`；本次未部署或操作真实 CMS/数据库。
 
 以下 Task02～09 的“未提交/推送”描述记录各任务验收时点；本轮最终 Git 同步状态以 Task10 为准。
 
