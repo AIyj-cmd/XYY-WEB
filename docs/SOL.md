@@ -3089,3 +3089,12 @@ Limits：本轮限Chrome152模拟视口及离线/helper验证，空内容schema�
 - 真实 `npm run test:lhci:all` exit 0，run `2026-10-20T09-02-51-818Z-83bfd4c6`：桌面/手机各 8 路径 × 3 次，共 48 JSON 与 48 HTML；两端中位数汇总和 artifact glob 匹配，runtime/HTTP errors 为 0，LHR 资源主机仅 `127.0.0.1`。7 个子命令成功，`failure=null`、`workspaceRemoved=true`、`cleanupFailures=[]`；4400/4401 清理，4321/PID 98418 预览保持。
 - Luna PASS、Nova APPROVED；Sol 审阅最终 diff、QA 与 Review，核对候选 1700 tracked files 无漂移后，逐字节回填 7 个冻结文件，1698 个非目标文件回填前后保持，目标 `git diff --check` 通过。原始证据、冻结清单、回填记录与最终验收位于 `output/ci-lighthouse/xyy-20261020-16/`。收尾仅新增合同/状态/本日志的事实增量并检查格式，不重复已通过应用门禁。
 - 本地修复验收为 LOCAL_READY；未提交、推送、运行 GitHub Actions 或部署，生产仍是 Task14 发布。observe 的 SEO 0.69、手机关于页 performance/LCP 警告保留。Node guard 阻断一次非关键 Astro telemetry；LH 子进程按既有设计不继承 NODE_OPTIONS，LHR 主机证据不等于全链网络拦截。仅本地 Chromium/loopback，未访问真实 CMS/数据库或生产；Terra 初始 5 个 FAIL 仅有摘要，不冒充原始日志。GitHub 实际结果须在准确推送授权后验证。
+
+#### XYY-20261020-17 — 品牌优化与 CI 修复 GitHub 同步
+
+- 用户明确要求推送 GitHub 并同步 Git 状态；MEDIUM，范围为当前已验收 Task15 品牌/SEO、Task16 Lighthouse CI 修复与 Task14/15/16 记录的提交和普通推送，目标为现有 `origin/main`。基线 `f9bcf4675b07e1639af888f54c093216ceeb8c17`，初始 26 路径；合同、清单和哈希位于 `output/git-sync/xyy-20261020-17/`。未纳入独立原生发布分支、部署、服务器、真实 CMS/数据库或业务扩展。
+- Terra 只读核对 26 路径来源，18 个实现/测试/CI 文件与 Task15/16 既有验收逐字节一致。CI main push 仅运行验证和报告上传，无网站部署；已知凭据签名与禁止产物路径扫描均为 0。直连 fetch 无响应后结束本次进程，使用既有本机代理逐命令 fetch/API/push 成功，未修改持久代理、TLS 或权限配置；推送前远端与基线一致，无分叉。
+- Luna 在独立工作树执行本次完整门禁。R1 因 Sol 提供的共享 `node_modules` 链接导致 vendor 补丁解析至主工作区而失败；仅为验证候选复制独立依赖后解决，主依赖保持。R2 有 3 个默认 5 秒超时，保留失败日志；原断言与超时下单 worker 定向 30/30、`VITEST_MAX_WORKERS=4` 的 R3 完整 1043/1043 通过。结果与并发资源压力相容，不证明唯一因果；没有修改业务、测试或门禁阈值。
+- 有效 R3 `npm run verify` exit 0：747 类型文件 0 errors/0 warnings/5 既有 hints，147 文件/1043 单测、Lint、912 文件维护预算、资源/缓存与构建通过；最终格式检查 exit 0。真实容量测量为 406425600 bytes、1177 inodes。候选与主工作区 18 路径哈希无漂移，两工作区差异集合仍精确为 26 路径。Task15 浏览器与 Task16 Lighthouse 证据仅按精确哈希复用，未冒充本次重跑；验证使用 loopback 假依赖，主预览保持。
+- Luna PASS、Nova APPROVED，Sol 审阅 diff、失败与复测证据及暂存范围后验收。精确暂存 26 路径，创建应用提交 `704b4afe31a38571a9fe2bd25ee7a0959ebdfa4f` 并普通推送 `origin/main` 成功。2026-10-20 17:44 CST，本地 HEAD、`origin/main` 与 GitHub API main 一致，ahead/behind 0/0、主工作区干净；应用提交 CI `39402842785` 当时为 `in_progress`。
+- 本段与 DEV_STATE 是推送后的事实补录，仅这两份文档发生后续变化；核对增量事实、格式、whitespace 和精确暂存清单，18 个业务/测试/CI 哈希及依赖锁保持，按 Nova 明确的收尾边界复用本轮完整门禁与 Review，不重复应用测试。最终提交身份和 CI 实际状态保存在 ignored `final-result.json`，不将计划或本地通过写成远端通过。未部署网站、改生产配置、触及真实 CMS/数据库或退役目标。
