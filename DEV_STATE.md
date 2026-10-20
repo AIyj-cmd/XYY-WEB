@@ -10,8 +10,10 @@
 
 ## Git 同步状态（2026-10-20）
 
-- `XYY-20261020-13`：用户已授权同步当前已验收页面、SEO 优化、相关测试与记录至 `AIyj-cmd/XYY-WEB` 的 `main`。初始 HEAD 与更新后的 `origin/main` 均为 `a0994d9b11d9a0898913980a05a9651962360445`，没有分叉；本轮候选 99 个路径，包含已交付报告的仓库副本 `docs/reports/2026-10-20-contact-form-diagnosis.html`。
-- 最终 R3 隔离环境 `npm run verify` 与 `npm run format:check` 均通过：745 类型文件无错误/警告、5 个既有提示，146 个测试文件/1036 单测全部通过，Lint、910 文件维护预算、资源/缓存检查与构建通过。已补齐白皮书 FAQ 默认展开的三行既有测试断言；R2 Chromium 目标 E2E 1/1 通过，行数预算超限后 R3 仅删除三个空行，非空代码等值并复用浏览器证据。Luna R3 PASS、Nova APPROVED；提交和推送状态待实际回读后补录。
+- `XYY-20261020-13`：已按用户授权，将已验收页面、SEO 优化、相关测试与记录共 99 个路径普通推送至 `AIyj-cmd/XYY-WEB` 的 `main`，应用与报告提交为 `5ab95b76e6b7578e9ee9741304821551e5a092a1`。HTML 报告已纳入 `docs/reports/2026-10-20-contact-form-diagnosis.html`，与桌面交付逐字节一致；已撤回的概况区设计未恢复。
+- 2026-10-20 15:48:06 CST 回读本地 HEAD、`origin/main` 与 GitHub API main 三者一致，ahead/behind 为 0/0、工作区干净。本节为同步后的事实补录，后续文档提交不改变应用内容；最新提交身份以 Git 引用及 `output/git-sync/xyy-20261020-13/` 的最终回读证据为准。
+- 最终 R3 隔离环境 `npm run verify` 与 `npm run format:check` 均通过：745 类型文件无错误/警告、5 个既有提示，146 个测试文件/1036 单测全部通过，Lint、910 文件维护预算、资源/缓存检查与构建通过。已补齐白皮书 FAQ 默认展开的三行既有测试断言；R2 Chromium 目标 E2E 1/1 通过，行数预算超限后 R3 仅删除三个空行，非空代码等值并复用浏览器证据。Luna R3 PASS、Nova APPROVED，Sol 已验收。
+- 上述回读时，应用提交的 [GitHub CI](https://github.com/AIyj-cmd/XYY-WEB/actions/runs/39388905483) 为 `in_progress`，未宣称远端 CI 通过。后续状态以 GitHub 和本次证据目录的实际回读为准。
 - 本次 Git 同步不部署网站；生产版本仍以本文件顶部的 `20261020T052050Z-c6b7267` 记录为准。联系表单诊断未实施业务修复。后续任务记录中的“未提交/推送”描述对应各自验收时点，本轮最终 Git 状态以本节与 Git 引用为准。
 
 ## 协作记录约定
