@@ -1,41 +1,37 @@
 ---
+import '@/styles/publications-hero.css'
+
 interface Props {
   latest?: { cover: string; pdf: string; readingHref: string }
 }
 const { latest } = Astro.props
 ---
 
-<section class="relative py-20 overflow-hidden" aria-labelledby="slj-hero-heading">
-  {
-    latest && (
-      <img
-        src={latest.cover}
-        alt="森林期刊封面"
-        class="absolute inset-0 w-full h-full object-cover object-center"
-        fetchpriority="high"
-      />
-    )
-  }
-  <div
-    class="absolute inset-0"
-    style="background: linear-gradient(105deg, rgba(8,20,42,0.97) 0%, rgba(8,20,42,0.85) 50%, rgba(8,20,42,0.55) 100%);"
+<section class="publications-hero" aria-labelledby="slj-hero-heading">
+  <img
+    src="/whitepapers-research-hero.webp"
+    alt=""
     aria-hidden="true"
-  >
-  </div>
-  <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <p class="text-brand-orange font-bold text-[11px] tracking-[0.4em] uppercase mb-4">
+    width="2400"
+    height="1589"
+    class="publications-hero__image"
+    fetchpriority="high"
+  />
+  <div class="publications-hero__shade" aria-hidden="true"></div>
+  <div class="publications-hero__content">
+    <p class="publications-hero__eyebrow text-brand-orange font-bold tracking-[0.4em] uppercase">
       新亦源供应链 · 鞋服仓配知识库
     </p>
-    <h1 id="slj-hero-heading" class="text-5xl lg:text-6xl font-black text-white leading-tight mb-5">
+    <h1 id="slj-hero-heading" class="publications-hero__title font-black text-white">
       供应链白皮书
     </h1>
-    <p class="text-xl font-bold text-white max-w-2xl leading-relaxed mb-3">
+    <p class="publications-hero__lead font-bold text-white max-w-2xl">
       把仓配经验，转化为供应链决策参考。
     </p>
-    <p class="text-base text-navy-100 max-w-3xl leading-relaxed mb-8">
+    <p class="publications-hero__description text-navy-100 max-w-3xl">
       新亦源供应链白皮书聚焦鞋服行业，分享云仓运营、退货质检、直播仓配与数字化管理的一线经验，为品牌、电商及供应链团队提供仓配选型、流程优化和团队培训的实用参考。
     </p>
-    <div class="flex flex-wrap gap-4">
+    <div class="publications-hero__actions flex flex-wrap">
       {
         latest && (
           <a

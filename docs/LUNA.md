@@ -6947,3 +6947,218 @@ Tests performed：
 Regression coverage：完整 typecheck、lint、maintainability、资源/缓存检查、Vitest 全量 144/1029、生产 server build、全量 Prettier；Task02/r2、03/r2、04、05/r3、06、07、08、09/r2 候选与冻结页面/CSS/资源身份均已复核。4321 既有开发进程未被停止或替换。
 
 Remaining risks：验证仅限本地 CI 隔离依赖与构建，未访问真实 CMS、Xiansuo、生产、数据库或外部写入；未部署、提交或推送。工作区仍保留并行 Agent 修改，Git 同步及最终主分支状态由 Sol 负责。
+
+#### XYY-20261019-11 — 共享页脚毛玻璃背景独立验证
+
+Task ID：`XYY-20261019-11`；Risk：LOW；Result：**Luna PASS（页脚 Scope）**。未修改应用实现；仅更新 `tests/e2e/about-cases.spec.ts` 两处过时的 `bg-slate-50` 断言为 `background-color: rgb(248, 250, 252)`，并核对候选 `Footer.astro` / `site-footer.css` SHA-256 与 Terra 交接值一致。
+
+Tests performed：
+
+- Playwright CLI wrapper（`bash /home/yj/.codex/skills/playwright/scripts/playwright_cli.sh`）仅访问既有 `http://127.0.0.1:4321`。中英文首页在 1440/390/360，以及关于页、服务总览页在桌面/390px 手机均存在共享 `footer.site-footer`；实底为 `rgb(248, 250, 252)`，`::before` 为 `blur(18px)`，Chromium 支持时 `::after` 为 `blur(18px) saturate(1.2)`，两伪元素 `pointer-events: none`，内容容器 `z-index: 2`，正文后代无滤镜（仅既有 Logo `IMG` 的 `brightness(0)`），页脚链接/微信按钮存在，`scrollWidth === innerWidth` 且滚动后页脚可达。矩阵证据见 [`home-matrix.log`](../output/playwright/xyy-20261019-11/luna/home-matrix.log) 与 [`about-product-matrix.log`](../output/playwright/xyy-20261019-11/luna/about-product-matrix.log)。
+- 交互证据：页脚导航链接 hover/focus 均恢复 underline；Tab 后焦点仍在页脚且 `:focus-visible`；点击“关于我们”到达 `/about`；微信公众号 popover 可打开、可见并由关闭按钮关闭。见 [`interaction.log`](../output/playwright/xyy-20261019-11/luna/interaction.log)。
+- 降级证据：注入临时规则禁用 `backdrop-filter` 与前景 `filter` 后，浅色实底、深色标题、390px 无横溢仍保留；CDP `prefers-reduced-transparency: reduce` 下 `::before`/`::after` 均隐藏、实底和文字仍可读、无动画。见 [`degradation.log`](../output/playwright/xyy-20261019-11/luna/degradation.log)。代表中英桌面/手机 top/bottom 截图已实际读图：[`home-zh-1440-top.png`](../output/playwright/xyy-20261019-11/luna/home-zh-1440-top.png)、[`home-zh-1440-bottom.png`](../output/playwright/xyy-20261019-11/luna/home-zh-1440-bottom.png)、[`home-en-390-top.png`](../output/playwright/xyy-20261019-11/luna/home-en-390-top.png)、[`home-en-390-bottom.png`](../output/playwright/xyy-20261019-11/luna/home-en-390-bottom.png)。
+- 按合同运行既有第一条定向 E2E：`PLAYWRIGHT_PORT=4321 PLAYWRIGHT_ARTIFACTS_DIR=output/playwright/xyy-20261019-11/luna/about-e2e npx playwright test tests/e2e/about-cases.spec.ts --project=chromium -g 'refactored about, cases, publications and Yundao modules preserve their contracts'`。页脚相关新断言已通过；整条用例在既有白皮书 FAQ 断言 `tests/e2e/about-cases.spec.ts:192` 失败，首个 FAQ 实际初始带 `open=""`，与本页脚候选无关，原始失败证据见 [`error-context.md`](../output/playwright/xyy-20261019-11/luna/about-e2e/test-results/about-cases-refactored-abo-92011-es-preserve-their-contracts-chromium/error-context.md)。按合同未扩大修改该测试或业务实现。
+- `npx prettier --check tests/e2e/about-cases.spec.ts` exit `0`；目标 `git diff --check` exit `0`。候选 hash 证据见 [`candidate-hashes.sha256`](../output/playwright/xyy-20261019-11/luna/candidate-hashes.sha256)。未运行 `verify`/`verify:release`、build，未访问远程、CMS、数据库，未提交、推送或部署。
+
+Regression coverage：中英首页 1440/390/360、关于/服务总览桌面与移动共享页脚、背景/滤镜层级、无横溢与底部可达、hover/focus/Tab/真实内部导航、微信 popover、无 backdrop-filter 临时降级、CDP reduced-transparency、候选 hash、格式与 diff；截图为真实当前候选且已读图。
+
+Remaining risks：整条既有 `about-cases` 用例当前仍因白皮书首个 FAQ 默认展开而 exit `1`，属于范围外已有契约/实现不一致，Luna 未修改；验证限本地 loopback Chromium，未覆盖真机、Safari 或线上环境。另一工作树的并行 `run-release-r3.py` 未触碰。
+
+#### XYY-20261019-11 R2 — 页脚补充边界探针
+
+Task ID：`XYY-20261019-11`；Result：**PASS（补证）**。未修改实现；未改写既有 FAQ 失败结论。
+
+- 英文首页 360px 补测通过：页脚宽 `360`、`scrollWidth=360`、底部 `bottom=800.125` 在 `800px` viewport 视口边缘 1px 容差内，`backgroundColor=rgb(248, 250, 252)`，`::before blur(18px)`、`::after blur(18px) saturate(1.2)`、伪元素 pointer-events 均为 `none`。原始 CLI 输出见 [`home-en-360-r2.log`](../output/playwright/xyy-20261019-11/luna/home-en-360-r2.log)。
+- 旧 [`degradation.log`](../output/playwright/xyy-20261019-11/luna/degradation.log) 的标题查询与当前 Footer 实际结构不一致；R2 改用真实 `h3` 并直接保存原始 CLI 输出。支持滤镜、临时禁用滤镜、CDP `prefers-reduced-transparency: reduce` 三态均为 `h3Count=3`、`h3Color=rgb(10, 26, 51)`、实底保留、`scrollWidth=390`，无动画；R2 原始证据见 [`degradation-r2.log`](../output/playwright/xyy-20261019-11/luna/degradation-r2.log)。
+- `/product` 与 `/en/services` 在 1440/390 均实际滚至共享页脚：服务页使用内层 `#product-video-scroll` 滚动容器（桌面 `scrollTop=8100/8183`，手机 `8531/8909`），文档根滚动值保持 0；页脚底边在视口边缘 1px 容差内，底栏完整位于 viewport 内，四组 `footerBottomInViewport=true`、`bottomBarInViewport=true`。原始 CLI 输出见 [`product-scroll-r2.log`](../output/playwright/xyy-20261019-11/luna/product-scroll-r2.log)。
+
+R2 Remaining risks：同一既有 `about-cases` 用例仍因白皮书 FAQ 默认 `open` 而失败；该失败未修复、未记绿，保持原证据与范围外分类。所有补证仍限本地 `127.0.0.1:4321` Chromium，未运行全量门禁、未访问远程/CMS/数据库、未提交或部署。
+
+#### XYY-20261019-12 — 关于页简介标题对齐独立验证
+
+Task ID：`XYY-20261019-12`；Risk：LOW；Result：**Luna PASS**。未修改应用源码或测试；候选 `AboutHero.astro`、`about-stage.css` hash 与 Terra 交接一致，Task11 的 Footer、footer CSS、`about-cases.spec.ts` 保护 hash 也保持。
+
+Tests performed：
+
+- Playwright CLI 仅访问本地 `http://127.0.0.1:4321`，六组 `/about` 与 `/en/about` 的 1440/390/360 viewport 均通过：简介区 `img=0`、`a=0`，保留 `h2#about-overview-heading` 与原正文；标题/正文左边界差均为 `0px`，无截断，页面与 body `scrollWidth` 分别等于 viewport（1440/390/360）。
+- 六组均保留 Header Logo 与 Footer Logo 各 `1` 个；中英文原文、标题/正文颜色及字号均可见，桌面标题为 `12px`、正文 `16px`，移动正文 `15px`，颜色与现有 CSS 计算值一致。原始 CLI 输出见 [`about-overview-matrix.log`](../output/playwright/xyy-20261019-12/luna/about-overview-matrix.log)。
+- 代表图已等待 `document.fonts.ready`，滚动简介区至真实 viewport 后截图并读图：[`about-en-1440-final.png`](../output/playwright/xyy-20261019-12/luna/about-en-1440-final.png)、[`about-zh-390-final.png`](../output/playwright/xyy-20261019-12/luna/about-zh-390-final.png)；滚动位置与 rect 原始输出见 [`final-screenshots.log`](../output/playwright/xyy-20261019-12/luna/final-screenshots.log)。旧首屏 hero 图保留，不作为简介区证据。
+- `npx prettier --check src/components/about/AboutHero.astro src/styles/about-stage.css` 与目标 `git diff --check` 均 exit `0`；候选/保护 hash 输出见 [`static-checks.log`](../output/playwright/xyy-20261019-12/luna/static-checks.log)。本地 4321 原有进程在验证前已停止，按合同启动同一 `scripts/local-dev.mjs --mode development --port 4321` 隔离预览；未运行 about-cases 综合 E2E、build、fullverify，未访问远程/CMS/数据库，未提交、推送或部署。
+
+Regression coverage：中英文关于页简介区 1440/390/360、图片/首页链接删除、h2/正文对齐、原文与计算字号/颜色、无横溢/截断、Header/Footer Logo 保留、代表 viewport 截图、目标格式/diff 与 Task11 保护 hash。
+
+Remaining risks：验证限本地 loopback Chromium，未覆盖真机、Safari 或线上环境；其他关于页模块、视频/动画与 CMS 来源未扩展验证，按合同排除。
+
+#### XYY-20261019-13 — 行业动态首屏本地图独立验证
+
+Task ID：`XYY-20261019-13`；Risk：LOW；Result：**Luna PASS**。未修改源码或测试；本地图、中文/英文组件 hash 与 Terra 交接一致，Task11/12 四份实现文件及 `about-cases.spec.ts` 保护 hash 保持。
+
+Tests performed：
+
+- Playwright CLI 仅访问本地 `http://127.0.0.1:4321`，中英文 `/news` × 1440/390/360 共 6 组；先等待 `document.fonts.ready`，中文 `img[src="/news-fashion-hero.webp"]` 完成并 `decode()`，英文 CSS 背景用独立本地 `Image.decode()` 验证。每组本地图 HTTP `200`、`image/webp`、`285916` bytes、`2400×1602`，运行时 `images.pexels.com` 请求为 `[]`。原始输出见 [`news-hero-matrix.log`](../output/playwright/xyy-20261019-13/luna/news-hero-matrix.log)。
+- 六组均为单一 H1，标题/正文可见，白色标题文字清晰；中文/英文原文与分类链接保持（中文 `/news?cat=...`、英文 `/en/news?category=...`）；页面 `scrollWidth === innerWidth`，首屏 hero 与分类栏尺寸记录见 [`layout-matrix.log`](../output/playwright/xyy-20261019-13/luna/layout-matrix.log)。
+- 初始矩阵的桌面 `scrollHeight > clientHeight` 仅来自 h1 行盒与 glyph overhang；`overflow` 实际为 `visible`，基于可见裁切条件的六组复核均 `visuallyClipped=false`，见 [`h1-visibility-r2.log`](../output/playwright/xyy-20261019-13/luna/h1-visibility-r2.log)。
+- 代表截图已实际读图：中英文桌面/390 均显示本地服装陈列与绿植背景，主体可辨、标题和正文清晰；见 [`news-zh-1440.png`](../output/playwright/xyy-20261019-13/luna/news-zh-1440.png)、[`news-zh-390.png`](../output/playwright/xyy-20261019-13/luna/news-zh-390.png)、[`news-en-1440.png`](../output/playwright/xyy-20261019-13/luna/news-en-1440.png)、[`news-en-390.png`](../output/playwright/xyy-20261019-13/luna/news-en-390.png)。
+- `npx prettier --check` 两个目标组件与 scoped `git diff --check` 均 exit `0`；asset 体积/hash、候选组件 hash 和五份保护 hash 见 [`static-checks.log`](../output/playwright/xyy-20261019-13/luna/static-checks.log)。未运行 about-cases 综合 E2E、build、fullverify，未访问远程、真实 CMS 或数据库，未提交、推送或部署。
+
+Regression coverage：中英文首屏图片 HTTP/解码、CSS 背景与本地 img 两种接入、无 Pexels 运行时请求、标题/正文/单一 H1、分类 href、hero 尺寸、1440/390/360 无横溢与内容可见性、四张当前候选截图、格式/diff、候选与 Task11/12 保护 hash。
+
+Remaining risks：验证限本地 loopback Chromium，未覆盖真机、Safari 或线上 CDN；未对后续文章封面作图片承诺，CMS 数据仍按本地 fallback 展示。未运行范围外综合 E2E 或全量门禁。
+
+### XYY-20261020-05 · Luna 独立验证 · 2026-10-20
+
+- 完整 `verify:release` R3 通过（exit 0）：148 个单测文件 / 1046 测试；E2E 387 通过、17 个既有条件跳过；正式域名合同 6 通过；747 文件类型检查无错误/警告。1689 个候选文件前后哈希一致。loopback 假依赖及 Node 出网 guard 下完成，未访问真实 CMS/线索数据；guard 不代表系统级网络审计。容量基线已复制为 `luna/capacity-baseline.json`。
+- 生产 release `20261020T052050Z-c6b7267`：中文首页、英文首页、联系页 × 390/1440，共 6 组合通过并亲看截图；无横溢、可见坏图或旧 IP 引用。线上 DPR2 订单图选择 899px，覆盖需求 571px，通过；主物流图受既有 926px 原图上限约束。
+- 同条件实测图片 encoded bytes：手机首屏 276297→191608（-30.65%），纵向滚动后 2821199→560620（-80.13%）；桌面首屏 464423→273360（-41.14%），滚动后 3329265→905112（-72.81%）。所有实际请求图片字节与核验资产一致；手机样本未横滑案例，均未打开二维码，不等同全部引用资源总量。
+- 仅运行 1 次上线后 Lighthouse 12.6.1，与 Task02 mobile simulated 4G/CPU4 设置一致。Performance 80→81、SEO 100→100；LCP 4223.481→3596.856ms，TBT 151→129.048ms，CLS 0.000801→0，总传输 593817→404884B；FCP 2630.827→2964.808ms、Speed Index 3189.507→4652.619ms 变慢。属于混合的单次实验室结果，未读取 CrUX/GSC 真实用户指标，不能宣称全面提速或确定因果。
+- Root 首次严格 health 断言发生一次失败，原因未捕获；Root 后续公网 5 次及 loopback 3 次均 HTTP 200、双依赖 ok。保留初次失败，Luna 未重复健康探针。浏览器会话、测试服务已关闭；未登录、提交表单或写 CMS。
+- 汇总：`luna/final-result.json`；原始门禁/UI/图片/Lighthouse 证据均按该文件索引留存。范围内验收 PASS，保留上述测量与健康事件限制。
+#### XYY-20261020-07 — 合作案例与行业动态首屏尺寸独立验证（R1）
+
+Task ID：`XYY-20261020-07`；Result：**FAIL**。
+
+Expected：`/cases`、`/en/cases`、`/news`、`/en/news` 与对应首页在 1440×900、768×1024、390×844、360×640、844×390 的首屏宽高误差不超过 1px，且追加 1440×600 四个目标路由时实际高度为 600px；案例首屏文字和两个 CTA 均应完整位于 hero 内，图片/背景覆盖且无导航遮挡或横溢。
+
+Actual：五种视口的 30 组全路由矩阵中，20 个目标页及对应首页高度均与 `max(viewportHeight, 600)` 相等、宽度全视口、无横溢；图片与文字矩阵通过。追加 1440×600 时 `/en/cases` 的 hero 高度为 600px，但英文案例 `.cases-hero__actions` 实际 `top=560.33`、`bottom=612.33`，两个 CTA 均有 12.33px 超出 hero 底部，未满足完整可见条件。英文案例 H1/副标题/正文均在容器内；案例图片 `2400×1600` 完成并解码，图片展示矩形为 `1440×600`。
+
+Reproduction：启动/复用隔离预览后执行：
+
+```bash
+node scripts/local-dev.mjs --mode development --port 4321
+PLAYWRIGHT_CLI_SESSION=xyy-20261020-07-luna bash /home/yj/.codex/skills/playwright/scripts/playwright_cli.sh run-code 'async(page)=>{await page.setViewportSize({width:1440,height:600});await page.goto("http://127.0.0.1:4321/en/cases");await page.evaluate(()=>document.fonts.ready);return await page.evaluate(()=>{const h=document.querySelector(".cases-hero"),r=h.getBoundingClientRect();return [...h.querySelectorAll(".cases-hero__actions a")].map(a=>({href:a.getAttribute("href"),bottom:a.getBoundingClientRect().bottom,heroBottom:r.bottom}))})}'
+```
+
+Evidence：完整原始 CLI 输出见 [`full-matrix.log`](../output/playwright/xyy-20261020-07/luna/full-matrix.log)（30 rows）、失败边界见 [`fail-en-cases-1440x600.log`](../output/playwright/xyy-20261020-07/luna/fail-en-cases-1440x600.log)；六张已实际读图的代表截图为 [`cases-zh-1440.png`](../output/playwright/xyy-20261020-07/luna/cases-zh-1440.png)、[`cases-zh-390.png`](../output/playwright/xyy-20261020-07/luna/cases-zh-390.png)、[`news-zh-1440.png`](../output/playwright/xyy-20261020-07/luna/news-zh-1440.png)、[`news-zh-390.png`](../output/playwright/xyy-20261020-07/luna/news-zh-390.png)、[`cases-en-390.png`](../output/playwright/xyy-20261020-07/luna/cases-en-390.png)、[`news-en-390.png`](../output/playwright/xyy-20261020-07/luna/news-en-390.png)。候选五文件 hash 与 Terra 交接一致，76 份保护 hash `76/76`，scoped `git diff --check`、Prettier、目标 ESLint 与维护预算均通过，证据在 `output/playwright/xyy-20261020-07/luna/`。
+
+Likely affected area：`src/styles/cases-overview-base.css` 的 `.cases-hero__inner` 桌面上下 `clamp()` 留白，在 600px 最小 hero、英文大字号标题/正文/CTA 组合下使 actions 底边越界；Terra 已按 Sol 调度处理该范围内最小修正，Luna 未修改实现。
+
+Severity：MEDIUM（目标桌面短屏案例首屏 CTA 被 hero 边界裁切，阻断本任务 AC；常规五视口矩阵未复现）。
+
+Remaining risks：R1 仅限本地 loopback Chromium，未访问真实 CMS/生产，未运行 full verify/build，未提交、推送或部署；首页英文 360×640 与 844×390 的既有 eyebrow/header overlap 属首页范围外现象，未改动。待 Terra 同 Task ID 交付新候选后复测受影响案例矩阵与必要截图。
+
+#### XYY-20261020-07 — 合作案例与行业动态首屏尺寸独立验证（R2）
+
+Task ID：`XYY-20261020-07`；Result：**PASS**。
+
+Tests performed：Terra R2 仅更新 `src/styles/cases-overview-base.css` 的 `.cases-hero__inner` 留白（候选 hash `e170ea42261cbe3aa0c51d219e58cfb36f1ab577c3243697c10795f181e4b13b`）后，独立用 Playwright CLI 复测中英文 `/cases`、`/en/cases` 五种视口及 1440×600，共 12 组。每组等待字体和首屏案例图 `decode()`；hero 宽度全视口，高度均与对应首页及 `max(viewportHeight,600)` 相等，`heightDelta=0`；案例标题、正文、两个 CTA 实际边界均在 hero 内，无导航重叠、横溢或 body 横溢。R1 失败的英文 1440×600 CTA 已由 `bottom=612.33` 收敛为 `bottom=570.16`，短桌面完整可见。
+
+- 案例图片 `/cases-collaboration-hero.webp` 在 12 组均 `complete=true`、`naturalWidth=2400`、`naturalHeight=1600`、decode 成功、`object-fit: cover`，展示矩形与 hero 一致。
+- 中英文 CTA href 保持：浏览/`Browse cases` 为 `#cases-grid`，第二 CTA 为中文 `/contact`、英文 `/en/contact`；实际点击两语 anchor 后均得到 `location.hash="#cases-grid"`，等待平滑滚动后 `#cases-grid` 位于 viewport（`gridTop=0.47`）。
+- 代表截图已实际读图：R2 案例中文桌面/手机、英文手机与英文 1440×600 短桌面见 [`r2-cases-zh-1440.png`](../output/playwright/xyy-20261020-07/luna/r2-cases-zh-1440.png)、[`r2-cases-zh-390.png`](../output/playwright/xyy-20261020-07/luna/r2-cases-zh-390.png)、[`r2-cases-en-390.png`](../output/playwright/xyy-20261020-07/luna/r2-cases-en-390.png)、[`r2-cases-en-1440x600.png`](../output/playwright/xyy-20261020-07/luna/r2-cases-en-1440x600.png)；R1 新闻中英手机/中文桌面截图仍对应未变新闻候选，见同目录 `news-zh-1440.png`、`news-zh-390.png`、`news-en-390.png`。
+- R2 候选五文件 hash 与交接值一致（cases base 为 R2 hash，其余四份不变），`protected.json` 76/76，目标 Prettier、英文/中文新闻 ESLint、scoped `git diff --check` 和维护预算均 exit 0。证据索引见 `output/playwright/xyy-20261020-07/luna/`。
+- 补充英文新闻 CSS 双层背景证据：`/en/news` 在 1440×900 与 390×844 的 computed background 均指向本地 `/news-fashion-hero.webp`、`background-size: cover, cover`，背景层矩形与 hero 一致；独立 `new Image()` `await decode()` 均成功，`complete=true`、自然尺寸 `2400×1602`。原始输出见 [`news-en-background-decode-r2.log`](../output/playwright/xyy-20261020-07/luna/news-en-background-decode-r2.log)。
+
+Regression coverage：R1 的 30 组全路由矩阵仍保留在 [`full-matrix.log`](../output/playwright/xyy-20261020-07/luna/full-matrix.log)：首页与四个目标页在 1440×900、768×1024、390×844、360×640、844×390 高度一致且无横溢；新闻中文本地图解码、英文 CSS 双层背景尺寸、分类栏紧随 hero、分类 href 与新闻截图均通过。R2 对案例追加 12 组边界、实际 anchor 点击、CTA href、文字/导航遮挡、图片解码、R2 hash 与保护 hash 复核，R1 失败证据保留在 [`fail-en-cases-1440x600.log`](../output/playwright/xyy-20261020-07/luna/fail-en-cases-1440x600.log)。
+
+Remaining risks：验证限本地 loopback Chromium，未覆盖真实设备、Safari/Firefox 或线上 CDN；未访问真实 CMS/生产，未运行 `npm run verify`、build，未提交、推送或部署。首页英文窄短屏 eyebrow/header overlap 是首页既有范围外现象，未修改；Terra R2 之外的并行工作区脏改动均保留。
+
+#### XYY-20261020-09 — 行业动态首屏文案与字号独立验证
+
+Task ID：`XYY-20261020-09`；Result：**PASS**。
+
+Tests performed：
+
+- 复用身份已验证的本地预览 `http://127.0.0.1:4321`（PID 98418），未关闭或替换服务。Playwright CLI 独立验证 `/news`、`/en/news` × 1440×900、768×1024、390×844、360×640、1440×600、360×560，共 12 组；每组等待 `document.fonts.ready` 与首屏图片 decode，不等待懒加载全页图片。
+- 12 组均为单一 H1、新文案准确匹配、两个 block span、hero 宽度全视口且高度为 `max(viewportHeight, 600)`；标题/配文实际计算字号满足桌面 `86.4px/24px`、手机 `44px/20px` 下限。眉题、标题、配文真实矩形均在 hero 内，无 header overlap、文字滚动溢出、页面/body 横溢。
+- 分类栏 12 组均与 hero 紧接（gap `0px`），中文/英文分类 href 保持；中文首屏图片完成并 decode（`2400×1602`），英文 CSS 背景确认本地 `/news-fashion-hero.webp`，已知路径 `new Image()` `await decode()` 成功。
+- CLI role/name 选择器复核中英文 H1 各唯一命中 `1`：中文 `/看见行业变化\s*读懂鞋服仓配/`，英文 `/Industry insights\.\s*Apparel operations\./`，原始输出见 [`h1-role-selector.log`](../output/playwright/xyy-20261020-09/luna/h1-role-selector.log)。
+- 四张截图已等待字体与首屏图后拍摄并实际读图：[`news-zh-1440.png`](../output/playwright/xyy-20261020-09/luna/news-zh-1440.png)、[`news-zh-390.png`](../output/playwright/xyy-20261020-09/luna/news-zh-390.png)、[`news-en-1440.png`](../output/playwright/xyy-20261020-09/luna/news-en-1440.png)、[`news-en-390.png`](../output/playwright/xyy-20261020-09/luna/news-en-390.png)。
+- 仅同步合同允许的两处旧 H1 测试断言：`tests/e2e/service-pages.spec.ts` 中文正则、`tests/e2e/english-news-fixture.spec.ts` 英文正则；两处相对 `baseline/` 各只有对应一行变化。目标源码与两测试 Prettier、ESLint、scoped `git diff --check` 均 exit `0`；三候选 hash 与 Terra 交接值一致，77/77 保护 hash 通过。
+
+Regression coverage：首屏文案/单一 H1、字体下限、真实边界、导航遮挡、横溢、六视口高度、分类衔接与 href、中文 img 解码、英文 CSS 双层背景与本地图解码、H1 role/name 唯一选择器、四张桌面/手机截图、文章页选择器范围、候选/保护 hash 及格式/Lint/diff。未运行两个完整 CMS fixture 测试、全量 E2E、`npm run verify`、typecheck 或 build。
+
+Remaining risks：验证限本地 loopback Chromium，未覆盖真实设备、Safari/Firefox 或生产环境；未访问真实 CMS、未提交、推送或部署。中文未知文章 slug 在本地 fallback 下重定向回 `/news`，英文未知文章页为 404；文章组件源码不包含新的 `news-hero__title/description` 选择器，范围验证受本地无 CMS 文章数据限制。
+
+#### XYY-20261020-10 — 白皮书首屏尺寸与图片
+
+Task ID：`XYY-20261020-10`；Result：**PASS**。
+
+Tests performed：
+
+- 仅访问本地 `http://127.0.0.1:4321`（PID 98418 保持运行），Playwright CLI Chromium 独立验证 `/supply-chain-whitepapers/`、`/en/supply-chain-whitepapers` × 1440×900、768×1024、390×844、360×640、1440×600、360×560，共 12 组；每组等待 `document.fonts.ready` 和首屏图 `decode()`。Hero 高度均为 `max(innerHeight, 600)`，并与对应 `/`、`/en/` 首页 `.s-hero` 高度一致。按 `document.documentElement.clientWidth` 核对浏览器滚动条占位后的实际内容宽度，12 组 hero/home 宽度与 `scrollWidth` 均一致且无横溢；原始输出见 [`matrix.log`](../output/playwright/xyy-20261020-10/luna/matrix.log)。
+- 眉题、H1、配文和全部 CTA 以文本 Range 实际边界检查，均在 header 底部以下及 hero 底部以内；两语每页业务 `main h1` 唯一，原文案及 3 个 CTA 的 href/target/rel 与 [`baseline/browser-content.json`](../output/playwright/xyy-20261020-10/baseline/browser-content.json) 保持。点击中文“浏览全部资料”和英文“Browse all issues”均实际得到 `#issues`，目录区可见。
+- 两语均请求本地 `/whitepapers-research-hero.webp`，观察到 HTTP 200、`image/webp`，自然尺寸 `2400×1589`，computed `object-fit: cover`，运行时外站请求为空；静态候选 5 项与 Terra hash 一致，89 份保护 hash 无差异，见 [`static-checks.log`](../output/playwright/xyy-20261020-10/luna/static-checks.log)。
+- 英文 360×560 仅做 CSS 变量布局模拟：将 `--language-suggestion-visible-height` 临时设为 `48px` 后，全部文字和 CTA 仍在 hero 内；未触发真实语言建议条交互，原始结果与说明见 [`matrix.log`](../output/playwright/xyy-20261020-10/luna/matrix.log)。中英文 1440/390 四张截图已等待字体和图片解码后拍摄并实际读图：[`zh-1440.png`](../output/playwright/xyy-20261020-10/luna/zh-1440.png)、[`zh-390.png`](../output/playwright/xyy-20261020-10/luna/zh-390.png)、[`en-1440.png`](../output/playwright/xyy-20261020-10/luna/en-1440.png)、[`en-390.png`](../output/playwright/xyy-20261020-10/luna/en-390.png)。截图 CLI 原始输出见 [`screenshots.log`](../output/playwright/xyy-20261020-10/luna/screenshots.log)。
+- 首次矩阵脚本因辅助函数错误传参而失败，已保留 [`matrix-attempt-error.log`](../output/playwright/xyy-20261020-10/luna/matrix-attempt-error.log)；随后修正为在浏览器回调内部定义 Range 辅助函数并完成上述完整矩阵。该事件是测试脚本问题，不是应用失败。
+
+Regression coverage：两语六视口首屏高度/实际内容宽度、首页几何对比、Range 级文字可见性、header 遮挡、单一业务 H1、原文案、阅读/PDF/目录 CTA 属性与实际 hash 点击、本地图 HTTP/解码/尺寸/cover、外站图片请求、CSS 变量短屏布局模拟、四张桌面/移动截图、5 项候选 hash 与 89 项保护 hash。
+
+Remaining risks：验证限本地 Chromium，未覆盖真机、Safari/Firefox、线上 CDN 或真实 CMS；未运行全量 E2E、build、`npm run verify`，未提交、推送或部署。截图和矩阵中的 15px 差异来自 Chromium 标准垂直滚动条，已按 `clientWidth` 与 `scrollWidth` 判定实际内容全宽，无横溢。
+
+#### XYY-20261020-10 R2 — 按合作案例统一字号
+
+Task ID：`XYY-20261020-10`；Result：**PASS**。
+
+Tests performed：
+
+- 仅访问本地 `http://127.0.0.1:4321`（PID 98418 保持运行），Playwright CLI Chromium 等待字体和对应 Hero 图片 `decode()` 后，定向比较中英文白皮书与对应 cases 在 1440×900、768×1024、390×844、360×560 共 16 个页面样本的五级字体。眉题、H1、副标题、正文的 computed `fontSize` 与 cases 逐项相等；CTA 全部 computed `fontSize` 独立补采为 `14.4px`（见 [`cta-fonts.log`](../output/playwright/xyy-20261020-10/r2/luna/cta-fonts.log)）。白皮书另测 1440×600，两语均通过。
+- 所有文字以 element 与真实 Range 边界检查，全部 CTA 逐个检查 element/Range，均位于 Hero 内并避开 header；各目标 Hero 高度为 `max(innerHeight,600)`，按 `document.documentElement.clientWidth` 与 `scrollWidth` 判定无横溢。原始矩阵见 [`matrix.log`](../output/playwright/xyy-20261020-10/r2/luna/matrix.log)。
+- 白皮书原文案和 3 个 CTA 的 href/target/rel 与 [`baseline/browser-content.json`](../output/playwright/xyy-20261020-10/baseline/browser-content.json) 保持；R2 三份候选 hash 与交接值一致，91 份保护 hash 无差异，见 [`static-checks.log`](../output/playwright/xyy-20261020-10/r2/luna/static-checks.log)。
+- 英文 360×560 临时设置 `--language-suggestion-visible-height: 48px` 后，所有文字和 CTA 的 element/Range 仍在 600px Hero 内且无横溢；变量已移除，记录明确为 CSS 变量布局模拟，未触发真实建议条，见 [`css-variable.log`](../output/playwright/xyy-20261020-10/r2/luna/css-variable.log)。
+- 四张最终截图均在等待字体和 Hero 图片解码后拍摄并实际读图：[`zh-1440.png`](../output/playwright/xyy-20261020-10/r2/luna/zh-1440.png)、[`zh-390.png`](../output/playwright/xyy-20261020-10/r2/luna/zh-390.png)、[`en-1440.png`](../output/playwright/xyy-20261020-10/r2/luna/en-1440.png)、[`en-390.png`](../output/playwright/xyy-20261020-10/r2/luna/en-390.png)；截图原始 CLI 输出见 [`screenshots.log`](../output/playwright/xyy-20261020-10/r2/luna/screenshots.log)。
+- 三次 CLI 辅助脚本语法/作用域错误均保留在 [`matrix-attempt-error.log`](../output/playwright/xyy-20261020-10/r2/luna/matrix-attempt-error.log)、[`css-variable-attempt-error.log`](../output/playwright/xyy-20261020-10/r2/luna/css-variable-attempt-error.log)、[`cta-fonts-attempt-error.log`](../output/playwright/xyy-20261020-10/r2/luna/cta-fonts-attempt-error.log)；修正后的实际矩阵、变量模拟和 CTA 字号证据均通过，不是应用失败。
+
+Regression coverage：R2 两语白皮书/cases 四视口五级字号对比、白皮书 1440×600 短屏、文字与全部 CTA 的 element/Range 边界、header 避让、Hero 高度、clientWidth/scrollWidth 无横溢、原文案/href 属性、CTA `14.4px`、英文 48px 变量模拟、R2 候选与 91 项保护 hash、四张最终截图。前轮已验证且本轮未改的本地图 HTTP/解码/锚点行为未重复执行。
+
+Remaining risks：验证限本地 Chromium，未覆盖真机、Safari/Firefox、线上 CDN 或真实 CMS；未运行全量 E2E、单测、build、`npm run verify`，未提交、推送或部署。截图中的 15px 差异来自 Chromium 标准垂直滚动条，矩阵按 `clientWidth` 与 `scrollWidth` 判定实际内容宽度。
+
+#### XYY-20261020-11 — 用户撤回后的基线恢复独立核验
+
+Task ID：`XYY-20261020-11`；Result：**PASS（恢复核验）**。
+
+Tests performed：用户撤回白皮书出版概况重设计后，Luna 仅做有限本地恢复核验。当前 `src/pages/supply-chain-whitepapers.astro` 与 `output/playwright/xyy-20261020-11/baseline/supply-chain-whitepapers.astro` 字节一致，SHA-256 均为 `a161f550630f434d36218c7d78d78576cc951b3c4e6dc36c548034f9aaab9af6`。新组件 `src/components/publications/PublicationsOverview.astro` 与 `src/styles/publications-overview.css` 均不存在；`protected.json` 的 94 项 hash 全部一致。原始结果见 [`withdrawal-static.log`](../output/playwright/xyy-20261020-11/luna/withdrawal-static.log)。
+
+- 保持运行的本地服务 `http://127.0.0.1:4321/supply-chain-whitepapers/` 返回 HTTP 200；页面恢复原 `aria-label="森林期刊出版概况"`，四项原值/标签 `14`、`2022`、`150+`、`已出版期数`、`创刊年份`、`服务品牌`、`更新安排` 均存在。
+- 页面不含撤回设计的“白皮书概览”、`PUBLICATION OVERVIEW` 或 `publications-overview` 标记。原始 curl/文本结果见 [`withdrawal-page.log`](../output/playwright/xyy-20261020-11/luna/withdrawal-page.log)。
+- 原重设计期间已产生的矩阵/截图证据保留在本任务 Luna 目录，但不作为本次恢复核验的通过依据；按用户要求未继续四视口验收、截图读图或全量测试。
+
+Regression coverage：目标页面回到 baseline 字节、撤回组件/CSS 不存在、94 项保护 hash、中文页 HTTP 200、原概况 section、四项原数据可见及新标记缺失。
+
+Remaining risks：本次仅验证本地恢复状态，未运行浏览器矩阵、截图、全量测试、build 或 `npm run verify`；未访问远程/CMS/数据库，未提交、推送或部署。
+
+#### XYY-20261020-13 — 提交前完整门禁与候选身份核验
+
+Task ID：`XYY-20261020-13`；Result：**PASS（verify/format gate）**，保留一个提交前 E2E 契约风险。
+
+Tests performed：
+
+- 候选清单 99 路在本次 LUNA 日志追加前全部与 `baseline.json` SHA-256 一致；报告 `docs/reports/2026-10-20-contact-form-diagnosis.html` 也精确匹配基线。证据见 [`candidate-hashes.log`](../output/git-sync/xyy-20261020-13/luna/candidate-hashes.log) 与 [`candidate-hashes-final.log`](../output/git-sync/xyy-20261020-13/luna/candidate-hashes-final.log)。
+- 按 CI 隔离环境执行 `npm run verify`，exit 0：146 个 Vitest 文件、1036 个测试通过，typecheck、lint、维护性、资源/缓存检查及 build 均完成。`verify.log` 中的 `Terminated` 来自 `tests/unit/maintenance-capacity.test.ts:54-75` 的故意 SIGTERM 子进程负例；Vitest 汇总完成，父 gate 继续 build 并记录 exit 0，结束后无残留 verify/vitest 进程。原始输出见 [`verify.log`](../output/git-sync/xyy-20261020-13/luna/verify.log)。
+- 同一 CI 环境执行 `npm run format:check`，exit 0，所有文件通过 Prettier。原始输出见 [`format-check.log`](../output/git-sync/xyy-20261020-13/luna/format-check.log)。
+
+Regression coverage：候选 99 路身份与报告副本、完整本地 verify（类型、Lint、维护预算、资源/缓存、146/1036 单测与 build）、全仓格式检查；未访问真实 CMS、数据库、线索接口或生产环境，未改实现/测试、未部署。
+
+Remaining risks：`tests/e2e/about-cases.spec.ts:188-195` 仍断言白皮书 FAQ 初始关闭，而当前已验收 HomeFAQ 行为为默认展开；所需三行默认展开/答案可见/收起同步 hunk 尚未在候选中。该风险不在 `npm run verify` 覆盖内，Terra 完成最小测试修正后需先独立运行该 E2E，再重新执行提交前 verify；本次不将候选宣称为最终可提交状态。
+
+#### XYY-20261020-13 R2 — FAQ 补丁独立复测
+
+Task ID：`XYY-20261020-13`；Result：**FAIL**。
+
+Expected：补丁后的 `npm run verify`、`npm run format:check` 与定向 `about-cases.spec.ts` Chromium 用例均 exit 0，且维护性预算不超过 220 行。
+
+Actual：按合同 CI 隔离环境运行 `npm run verify` exit 1；`typecheck` 完成并报告 0 errors、0 warnings、5 hints，但 `scripts/check-maintainability.mjs` 在进入单测/build 前报告 `tests/e2e/about-cases.spec.ts: 223 lines exceeds 220`。`npm run format:check` exit 0。隔离端口 4399 上运行 `npx playwright test tests/e2e/about-cases.spec.ts --project=chromium` exit 0，1/1 通过，实际覆盖 FAQ 默认展开、点击收起、再次点击展开。
+
+证据：[`verify.log`](../output/git-sync/xyy-20261020-13/luna/r2/verify.log)、[`format-check.log`](../output/git-sync/xyy-20261020-13/luna/r2/format-check.log)、[`about-cases.log`](../output/git-sync/xyy-20261020-13/luna/r2/about-cases.log)、[`candidate-hashes-before-luna.log`](../output/git-sync/xyy-20261020-13/luna/r2/candidate-hashes-before-luna.log)、[`final-assessment.log`](../output/git-sync/xyy-20261020-13/luna/r2/final-assessment.log)。R2 候选在本日志追加前 99/99 路 hash 匹配，冻结测试文件 SHA 为 `fdb4889fc063e670e4b9da1f77133e20e1af465759a35dc4a2d2b2a25787b23f`。
+
+Likely affected area：`tests/e2e/about-cases.spec.ts` 的维护性行数预算；FAQ 运行时行为本次定向 E2E 已通过。Severity：MEDIUM，提交前门禁被阻断。
+
+Regression coverage：FAQ 默认展开/收起/再次展开定向回归、格式检查、候选与冻结测试 hash；未宣称 verify 的单测、资源检查或 build 通过，因为 verify 在维护性阶段提前退出。
+
+Remaining risks：需在 Terra 取得最小范围修正后，沿用本 Task ID 重新执行 verify；本次未修改实现或测试。验证仅限本地 Chromium 与 loopback CI 隔离服务，未访问真实 CMS、数据库、线索接口或生产环境；4399 服务已退出，现有 4321/PID98418 保持运行。
+
+#### XYY-20261020-13 R3 — FAQ 补丁维护预算复测
+
+Task ID：`XYY-20261020-13`；Result：**PASS**。
+
+Tests performed：
+
+- 独立比较 Terra 提供的 R2 快照 [`about-cases.r2.spec.ts`](../output/git-sync/xyy-20261020-13/terra/r3/about-cases.r2.spec.ts) 与当前 `tests/e2e/about-cases.spec.ts`：检查器行数由 223 降至 220，非空行序列逐字节一致，仅删除三个空行；FAQ 默认展开、答案可见、收起与再次展开断言均保持。当前测试 SHA 为 `b34eec14e13443a607a08275a7798c004a420335fc33f832855e981b8d9a0c98`。
+- 按合同 CI 隔离环境重新运行 `npm run verify`，exit 0：typecheck 745 文件、0 errors/0 warnings/5 hints；维护性预算 910 文件通过；146 个测试文件、1036 个测试全部通过；资源/缓存检查与 Astro server build 完成。输出中的 `Terminated` 是既有维护测试故意触发的子进程信号，父 gate 已成功完成。
+- 同一环境运行 `npm run format:check`，exit 0，全部文件通过 Prettier。
+- R3 未重复浏览器：R2 定向 Chromium 已 1/1 通过并覆盖 FAQ 默认展开、点击收起、再次展开；R3 仅删除空行且非空源代码逐字节一致，因此按派发要求复用该行为证据，依据见 [`e2e-reuse.log`](../output/git-sync/xyy-20261020-13/luna/r3/e2e-reuse.log)。
+
+Regression coverage：R2→R3 测试源非空内容等值、维护性预算、类型检查、Lint、资源/缓存检查、146/1036 单测、server build、格式检查；R2 已通过的 FAQ Chromium 行为证据复用。候选清单中全部非角色日志业务路径 hash 保持；`docs/LUNA.md` 与 `docs/TERRA.md` 的追加属于角色日志变化，见 [`candidate-hashes.log`](../output/git-sync/xyy-20261020-13/luna/r3/candidate-hashes.log)。
+
+Remaining risks：浏览器行为本轮未重新执行，仅因 R3 变更经证据确认只删空行；验证仍限本地 CI loopback，未覆盖真实 CMS、数据库、生产环境、其他浏览器或设备，未提交、推送或部署。现有 4321/PID98418 预览保持运行。
+
+证据：[`source-delta.log`](../output/git-sync/xyy-20261020-13/luna/r3/source-delta.log)、[`verify.log`](../output/git-sync/xyy-20261020-13/luna/r3/verify.log)、[`format-check.log`](../output/git-sync/xyy-20261020-13/luna/r3/format-check.log)、[`final-assessment.log`](../output/git-sync/xyy-20261020-13/luna/r3/final-assessment.log)。

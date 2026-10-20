@@ -177,7 +177,7 @@ test('news page keeps category filters in content and supports CMS publishing', 
 }) => {
   await page.goto('/news')
 
-  await expect(page.getByRole('heading', { name: '鞋服物流知识库' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: /看见行业变化\s*读懂鞋服仓配/ })).toBeVisible()
   await expect(page.getByRole('group', { name: '文章分类筛选' })).toBeVisible()
   const whitepapersLink = page.locator('main a[href="/supply-chain-whitepapers/"]').first()
   await expect(whitepapersLink).toBeVisible()

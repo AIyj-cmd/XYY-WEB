@@ -47,7 +47,7 @@ test('refactored about, cases, publications and Yundao modules preserve their co
   await expect(aboutFooter.getByText('华南总部')).toBeVisible()
   await expect(aboutFooter.getByText('广东省广州市黄埔区果园一路2号')).toBeVisible()
   await expect(page.locator('#about-hero [aria-label="新亦源联系信息"]')).toHaveCount(0)
-  await expect(aboutFooter).toHaveClass(/bg-slate-50/)
+  await expect(aboutFooter).toHaveCSS('background-color', 'rgb(248, 250, 252)')
   await expect(aboutFooter.getByRole('heading', { name: '仓配服务' })).toBeVisible()
   await expect(aboutFooter.getByRole('heading', { name: '快速入口' })).toBeVisible()
   await expect(aboutFooter.getByRole('link', { name: '关于我们', exact: true })).toHaveAttribute(
@@ -148,11 +148,10 @@ test('refactored about, cases, publications and Yundao modules preserve their co
   await page.getByRole('button', { name: '仓网布局', exact: true }).click()
   await expect(page.getByRole('heading', { name: /CDC\/RDC\/FDC三级仓网/ })).toBeVisible()
   await expect(page.getByRole('dialog', { name: '仓网布局', exact: true })).toBeVisible()
-
   await page.goto('/cases')
   const standardFooter = page.locator('body > footer')
   await expect(standardFooter).toBeVisible()
-  await expect(standardFooter).toHaveClass(/bg-slate-50/)
+  await expect(standardFooter).toHaveCSS('background-color', 'rgb(248, 250, 252)')
   await expect(page.getByRole('heading', { name: '鞋服仓配合作案例' })).toBeVisible()
   await expect(page.getByRole('link', { name: /浏览合作案例/ })).toHaveAttribute(
     'href',
@@ -167,7 +166,6 @@ test('refactored about, cases, publications and Yundao modules preserve their co
   await expect(page.locator('.cases-logo-wall__more .cases-logo-wall__item')).toHaveCount(66)
   await expect(page.locator('.cases-logo-wall__more')).not.toHaveAttribute('open', '')
   await expect(page.getByRole('heading', { name: '为什么品牌选择新亦源' })).toBeVisible()
-
   await page.goto('/supply-chain-whitepapers/')
   await expect(page.getByRole('heading', { level: 1, name: '供应链白皮书' })).toBeVisible()
   await expect(page).toHaveTitle(/供应链白皮书/)
@@ -189,6 +187,9 @@ test('refactored about, cases, publications and Yundao modules preserve their co
   const firstFaqAnswer =
     '新亦源供应链白皮书是面向鞋服行业的仓配知识资料栏目，目前汇集新亦源出品的《森林期刊》，围绕云仓运营、退货质检、直播仓配与数字化实践提供阅读参考。栏目以业务问题组织阅读入口，原有 PDF 保留刊名和期次；引用具体内容时，应以原刊正文为准。'
   const firstFaq = page.locator('details').filter({ hasText: firstFaqQuestion })
+  await expect(firstFaq).toHaveAttribute('open', '')
+  await expect(firstFaq.getByText(firstFaqAnswer, { exact: true })).toBeVisible()
+  await firstFaq.locator('summary').click()
   await expect(firstFaq).not.toHaveAttribute('open', '')
   await firstFaq.locator('summary').click()
   await expect(firstFaq).toHaveAttribute('open', '')
@@ -211,7 +212,6 @@ test('refactored about, cases, publications and Yundao modules preserve their co
     'supply-chain-whitepapers'
   )
   expect(await (await page.request.get('/llms.txt')).text()).toContain('供应链白皮书')
-
   await page.goto('/yundao-zhineng-jijian')
   await expect(page.locator('.yd-interface figure')).toHaveCount(3)
   await expect(page.locator('.yd-flow li')).toHaveCount(6)

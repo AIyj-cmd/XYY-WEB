@@ -2,6 +2,7 @@
 import '@/styles/home-hero.css'
 import { homeUi } from '@/i18n/home-ui'
 import type { SiteLocale } from '@/i18n/routes'
+import { siteImage } from '@/lib/site-images'
 
 interface Props {
   image: string
@@ -25,7 +26,12 @@ const dataGap = locale === 'en' ? ' ' : ''
 ---
 
 <section id="s-hero" class="s-hero" aria-labelledby="hero-heading" data-locale={locale}>
-  <img src={image} alt={copy.hero.imageAlt} class="hero-img" fetchpriority="high" />
+  <img
+    {...siteImage(image, 'max(100vw, 177.78vh, 1067px)')}
+    alt={copy.hero.imageAlt}
+    class="hero-img"
+    fetchpriority="high"
+  />
   <div class="hero-overlay" aria-hidden="true"></div>
   <div class="hero-body">
     <p class="hero-eyebrow">{copy.hero.eyebrow}</p>

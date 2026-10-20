@@ -3,12 +3,13 @@ import { BRAND } from '@/lib/brand'
 import { serializeJsonForScript } from '@/lib/safe-json'
 import { findLocalePair, matchesLocalePath, type SiteLocale } from '@/i18n/routes'
 import type { LocalePair } from '@/i18n/case-routes'
+import { shareImage } from '@/lib/site-images'
 
 interface Props {
   title: string
   description: string
   canonical: string
-  ogImage: string
+  ogImage?: string
   jsonLd?: Record<string, unknown> | Record<string, unknown>[]
   noIndex?: boolean
   locale?: SiteLocale
@@ -38,6 +39,7 @@ const routePair =
     ? localePair
     : findLocalePair(pathname, locale)
 const alternate = routePair && (locale === 'en' ? routePair[0] : routePair[1])
+const sharingImage = shareImage(ogImage, locale)
 ---
 
 <meta charset="UTF-8" />
@@ -69,15 +71,15 @@ const alternate = routePair && (locale === 'en' ? routePair[0] : routePair[1])
 <meta property="og:title" content={fullTitle} />
 <meta property="og:description" content={description} />
 <meta property="og:url" content={canonical} />
-<meta property="og:image" content={ogImage} />
-<meta property="og:image:width" content="1200" />
-<meta property="og:image:height" content="630" />
+<meta property="og:image" content={sharingImage.src} />
+{sharingImage.width && <meta property="og:image:width" content={String(sharingImage.width)} />}
+{sharingImage.height && <meta property="og:image:height" content={String(sharingImage.height)} />}
 <meta property="og:locale" content={locale === 'en' ? 'en_US' : 'zh_CN'} />
 
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content={fullTitle} />
 <meta name="twitter:description" content={description} />
-<meta name="twitter:image" content={ogImage} />
+<meta name="twitter:image" content={sharingImage.src} />
 
 <link
   rel="stylesheet"

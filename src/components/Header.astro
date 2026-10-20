@@ -15,6 +15,7 @@ import LanguageSuggestion from './navigation/LanguageSuggestion.astro'
 import type { LocalePair } from '@/i18n/case-routes'
 import MobileNavigation from './navigation/MobileNavigation.astro'
 import { contactLanguageHref, isContactPath } from '@/lib/conversion/contact-source'
+import { siteImage } from '@/lib/site-images'
 
 interface Props {
   locale?: SiteLocale
@@ -58,9 +59,8 @@ const switchLabel =
         class="site-header__logo shrink-0 px-2 hover:opacity-85 transition-opacity"
       >
         <img
-          src="/logo.png"
+          {...siteImage('/logo.png', '74px')}
           alt={copy.brand}
-          height="36"
           class="h-7 w-auto object-contain"
           fetchpriority="high"
         />

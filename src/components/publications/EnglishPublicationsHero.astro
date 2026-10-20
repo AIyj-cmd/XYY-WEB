@@ -1,5 +1,6 @@
 ---
 import type { WhitepaperListing } from '@/data/whitepapers/types'
+import '@/styles/publications-hero.css'
 
 interface Props {
   latest?: WhitepaperListing
@@ -8,44 +9,32 @@ interface Props {
 const { latest } = Astro.props
 ---
 
-<section
-  class="relative overflow-hidden pb-20 pt-[calc(8rem+var(--language-suggestion-visible-height,0px))] sm:pt-[calc(6rem+var(--language-suggestion-visible-height,0px))] lg:pt-[calc(5rem+var(--language-suggestion-visible-height,0px))]"
-  aria-labelledby="whitepapers-hero-heading"
->
-  {
-    latest && (
-      <img
-        src={latest.cover}
-        alt={`Cover of Issue ${latest.issue} of Forest Journal (Chinese original)`}
-        class="absolute inset-0 h-full w-full object-cover object-center"
-        fetchpriority="high"
-      />
-    )
-  }
-  <div
-    class="absolute inset-0"
-    style="background: linear-gradient(105deg, rgba(8,20,42,0.97) 0%, rgba(8,20,42,0.85) 50%, rgba(8,20,42,0.55) 100%);"
+<section class="publications-hero" aria-labelledby="whitepapers-hero-heading">
+  <img
+    src="/whitepapers-research-hero.webp"
+    alt=""
     aria-hidden="true"
-  >
-  </div>
-  <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-    <p class="mb-4 text-[11px] font-bold uppercase tracking-[0.4em] text-brand-orange">
+    width="2400"
+    height="1589"
+    class="publications-hero__image"
+    fetchpriority="high"
+  />
+  <div class="publications-hero__shade" aria-hidden="true"></div>
+  <div class="publications-hero__content">
+    <p class="publications-hero__eyebrow font-bold uppercase tracking-[0.4em] text-brand-orange">
       XINYIYUAN SUPPLY CHAIN · RESEARCH LIBRARY
     </p>
-    <h1
-      id="whitepapers-hero-heading"
-      class="mb-5 text-5xl font-black leading-tight text-white lg:text-6xl"
-    >
+    <h1 id="whitepapers-hero-heading" class="publications-hero__title font-black text-white">
       Supply-chain whitepapers
     </h1>
-    <p class="mb-3 max-w-2xl text-xl font-bold leading-relaxed text-white">
+    <p class="publications-hero__lead max-w-2xl font-bold text-white">
       Operational reference material for apparel supply-chain decisions.
     </p>
-    <p class="mb-8 max-w-3xl text-base leading-relaxed text-navy-100">
+    <p class="publications-hero__description max-w-3xl text-navy-100">
       Browse translated issue summaries from Forest Journal. The article pages and PDFs remain in
       their original Chinese so that source material can be checked in context.
     </p>
-    <div class="flex flex-wrap gap-4">
+    <div class="publications-hero__actions flex flex-wrap">
       {
         latest && (
           <a

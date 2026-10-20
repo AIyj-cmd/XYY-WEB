@@ -120,31 +120,12 @@
   border-left: 1px solid rgba(11, 28, 54, 0.2);
 }
 
-.about-introduction__overview-heading {
-  display: flex;
-  align-items: center;
-  gap: 1.25rem;
-}
-
 .about-introduction__overview h2 {
   margin: 0;
   color: #0b1c36;
   font-size: 0.75rem;
   font-weight: 800;
   letter-spacing: 0.22em;
-}
-
-.about-introduction__logo {
-  display: inline-block;
-  padding: 0.55rem 0.85rem;
-  border-radius: 0.75rem;
-  background: #0b1c36;
-}
-
-.about-introduction__logo img {
-  display: block;
-  width: 5.9rem;
-  height: auto;
 }
 
 .about-introduction__overview p {

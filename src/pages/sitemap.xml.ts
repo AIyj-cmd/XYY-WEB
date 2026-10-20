@@ -48,16 +48,12 @@ const ENGLISH_STATIC_PAGES = [
   '/en/privacy',
 ].map((url) => ({ url, priority: url === '/en' ? '0.8' : '0.6', changefreq: 'monthly' }))
 
-// Update this only when the static-page content is materially revised.
-const STATIC_CONTENT_LASTMOD = '2026-08-08'
-
 export const GET: APIRoute = async () => {
   const staticEntries = [...STATIC_PAGES, ...ENGLISH_STATIC_PAGES]
     .map(
       ({ url, priority, changefreq }) =>
         `  <url>
     <loc>${BRAND.url}${url}</loc>
-    <lastmod>${STATIC_CONTENT_LASTMOD}</lastmod>
     <changefreq>${changefreq}</changefreq>
     <priority>${priority}</priority>
   </url>`

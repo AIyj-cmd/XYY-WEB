@@ -4,6 +4,7 @@ import '../../styles/home-cases.css'
 import { homeUi } from '@/i18n/home-ui'
 import { localizedCasePath } from '@/i18n/case-routes'
 import type { SiteLocale } from '@/i18n/routes'
+import { caseImage } from '@/lib/site-images'
 
 interface CaseItem {
   label: string
@@ -78,7 +79,7 @@ const displayGallery = locale === 'en' ? displayCases.length > 0 : true
           return (
             <a class="case-card cg-panel" data-case={cardKey} href={href}>
               <img
-                src={item.img}
+                {...caseImage(item.img)}
                 alt={copy.imageAlt(card?.shortName ?? item.label)}
                 loading="lazy"
               />

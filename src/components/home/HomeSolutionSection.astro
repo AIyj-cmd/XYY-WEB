@@ -11,6 +11,7 @@ import type { Service } from '@/lib/directus'
 import HomeServiceFeatures from './HomeServiceFeatures.astro'
 import { homeUi } from '@/i18n/home-ui'
 import type { SiteLocale } from '@/i18n/routes'
+import { siteImage } from '@/lib/site-images'
 
 interface Props {
   service: Service
@@ -49,7 +50,7 @@ const features =
           <p class="svc-dashboard-heading">{copy.solutions.dashboard}</p>
           <div class="svc-dashboard-viewport">
             <img
-              src={HOME_IMAGES.svc2}
+              {...siteImage(HOME_IMAGES.svc2, '(max-width: 900px) 100vw, 50vw')}
               alt={copy.solutions.dashboardAlt}
               class="svc-img"
               loading="lazy"
@@ -58,7 +59,10 @@ const features =
         </div>
       ) : (
         <img
-          src={HOME_IMAGES[`svc${index}` as 'svc0' | 'svc1']}
+          {...siteImage(
+            HOME_IMAGES[`svc${index}` as 'svc0' | 'svc1'],
+            '(max-width: 900px) 100vw, max(50vw, 800px)'
+          )}
           alt={service.name}
           class="svc-img"
           loading="lazy"

@@ -32,7 +32,7 @@ test.describe.serial('English news independent CMS fixture', () => {
     await page.goto(`${fixture.app.url}/en/news`)
     await expect(page.locator('html')).toHaveAttribute('lang', 'en')
     await expect(
-      page.getByRole('heading', { name: 'Apparel fulfilment insights', level: 1 })
+      page.getByRole('heading', { name: /Industry insights\.\s*Apparel operations\./, level: 1 })
     ).toBeVisible()
     await expect(page.getByRole('link', { name: 'A live English insight' })).toHaveAttribute(
       'href',

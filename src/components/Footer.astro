@@ -4,6 +4,7 @@ import type { SiteSettingsRecord } from '@/lib/directus'
 import { ENGLISH_NAVIGATION, ENGLISH_SERVICE_LINKS, type SiteLocale } from '@/i18n/routes'
 import { shellCopy } from '@/i18n/shell'
 import FooterSocialLinks from '@/components/FooterSocialLinks.astro'
+import { siteImage } from '@/lib/site-images'
 import '@/styles/site-footer.css'
 
 interface Props {
@@ -19,7 +20,7 @@ const homePath = locale === 'en' ? '/en' : '/'
 const privacyPath = locale === 'en' ? '/en/privacy' : '/privacy'
 ---
 
-<footer class="site-footer border-t border-slate-200 bg-slate-50 pt-10 pb-6 text-navy-700">
+<footer class="site-footer border-t border-slate-200 pt-10 pb-6 text-navy-700">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <!-- Main grid -->
     <div class="footer-main mb-8 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
@@ -27,7 +28,7 @@ const privacyPath = locale === 'en' ? '/en/privacy' : '/privacy'
       <div class="lg:col-span-1">
         <a href={homePath} class="inline-block mb-5" aria-label={copy.home}>
           <img
-            src="/logo.png"
+            {...siteImage('/logo.png', '126px')}
             alt={copy.brand}
             class="h-12 w-auto brightness-0 opacity-80"
             loading="lazy"

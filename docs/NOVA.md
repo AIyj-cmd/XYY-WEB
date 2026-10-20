@@ -3981,3 +3981,76 @@ Result：**APPROVED**。未发现 correctness、architecture、security、Scope�
 Remaining Risks：本结论发生在实际提交和推送之前，不表示 GitHub 已同步、远端 CI 已触发/完成或网站已部署。CI 会在 main push 后运行完整 release/Lighthouse 流程，其结果必须按实际状态记录；本地 `npm run verify` 不能替代远端 CI。历史发布计划保留旧现场地址与操作背景，仅作为归档，不构成本轮部署授权或当前 runbook。
 
 Handoff：**APPROVED** 返回 Sol 最终验收。追加本日志后，Sol 必须把 `docs/NOVA.md` 重新暂存，确认仍恰为原 38 路径、除 Nova 日志外 33 项 manifest/业务 hash 不变，并重做暂存 diff/hash、whitespace 与敏感/产物排除检查；纯日志增量不要求重跑已绿应用门禁。首次应用提交普通推送后，可按合同只修改 `DEV_STATE.md` 与 `docs/SOL.md`，记录应用提交 SHA、实际远端 readback、ahead/behind 与当时 CI 状态；不得把运行中写成成功。第二个文档提交前须确认仅两份文档变化、业务 hash 不变并做 diff/敏感检查；该文档提交自身 SHA 及最终本地/`origin/main`/远端一致性写入 ignored `final-result.json`，避免自引用尚未生成的提交。任何实现、测试、配置、workflow、目标远端或强推变化都使本批准失效并需重新审阅。Nova 未执行 git add/commit/push、部署、远程业务访问、CMS 或数据库操作。
+
+### XYY-20261020-05 · Nova 独立审阅 · 2026-10-20
+
+- 最终结论 **APPROVED**。已核对生产 release `20261020T052050Z-c6b7267` / `c6b7267dc3cc7a5fd2082a09db7c403879987681` 与批准的源码、增量包及脚本一致；R3 完整门禁 1046 单测、387 E2E、6 正式域名合同通过，17 项为既有条件跳过。
+- 上线检查 77 项通过，覆盖 14 页面、49 资源、双语 OG、62 URL 站图、5 入口跳转、缓存、HSTS 和后台；首次 health 断言失败仍按原始 FAIL 留档，响应正文未捕获、原因未知。随后无额外修复的公网 5/5 与 loopback 3/3 均 HTTP 200、双依赖 ok，接受当前恢复，不据此断言根因或长期稳定。
+- Luna 线上 6 组合 UI、图片字节及 DPR2 选图通过。单次同设置 Lighthouse 的 LCP 4.223→3.597 秒，但 FCP 2.631→2.965 秒、Speed Index 3.190→4.653 秒变慢；保留混合结果，不宣称全面提速、确定因果或真实用户 CWV 改善。
+- 仅只读核对既有证据并写 Nova 记录，未远程操作、修改生产或重复采样。最终证据：`output/seo/xyy-20261020-05/nova/postdeployment-final-review.json`。
+
+### XYY-20261020-12 — 官网联系表单陈述只读 Review
+
+Task ID：`XYY-20261020-12`（HIGH，只读诊断）。
+
+Review Scope：核对用户转述的豆包说明与本地 `contact` API、验证/HTTP/限流/存储模块、联系表单及两份客户端脚本；只读参考本机 Xiansuo 接收路由并明确其当前有未提交差异。没有向官网或下游发送请求，没有读取环境变量、日志、数据库或代理配置，没有修改业务源码。联系链源码相对已记录的发布提交 `c6b7267dc3cc7a5fd2082a09db7c403879987681` 无差异，但这只证明本地源码身份，不证明用户所述线上请求、响应头或数据库结果。
+
+Architecture：**PASS（实现边界），豆包的“JS 动态渲染”表述需修订**。`ContactForm.astro:80-130` 已在服务端 HTML 中渲染完整表单，`contact.astro:64` / `EnglishContact.astro:38` 引入 `contact-page.ts` 接管提交；`ContactForm.astro:133-135` 另引入 `contact-enquiry.ts` 处理“插入填写提纲”。提交脚本在 `contact-page.ts:76-109` 阻止原生提交、校验 `FormData` 后向 `/api/contact` 发送 JSON。由于 API 在 `contact.ts:21-24` 只接受 `application/json`，缺少该 JS 时原生表单编码会被 415 拒绝；因此“成功提交依赖 JS”正确，“表单本身由 JS 动态渲染”不正确。散列后的三层 chunk 名称和导入层级是构建产物，不能作为稳定源码契约。
+
+Security：**PASS（有界事实），不得扩写成安全认证**。相关源码中未见验证码或专用 CSRF token；同时已有非空 `website` 蜜罐静默 200、按请求方 IP 的 10 分钟 5 次限流、8 KiB 原始请求体上限、JSON-only 门禁和服务端字段校验。Astro 默认 `checkOrigin=true`，但其实现仅对 form-like Content-Type 做同源拒绝，`application/json` 不在该名单；普通浏览器跨源 JSON 通常还会触发 CORS 预检。故可说“无验证码/专用 CSRF token，HTTP 客户端可按公开 JSON 契约请求”，不能简化为“完全没有防护”或据此下漏洞结论。Luna 的定向测试未覆盖 Origin/Referer，这不构成全系统安全结论。
+
+Maintainability：**PASS**。请求读取、验证、限流、存储及客户端校验各自分层，无本任务实现差异。中文手机号规则确为去除空格/横杠后匹配 `1[3-9]` 开头的 11 位手机号或座机（`validation.ts:25-27,71-73`）；中文必填为姓名、电话、需求描述和隐私同意，邮箱选填。隐私同意在浏览器勾选时提交字符串 `on`，服务端还接受字符串 `"true"`（`validation.ts:50,56-57`），但布尔值 `true` 会被清洗为空并拒绝，豆包的“或 true”必须注明是字符串。
+
+Contract Risks：**需修订**。本地确有豆包引用的 503 契约：`storage.ts:3` 定义相同中文错误，`contact.ts:38-40` 将任一存储层错误统一映射为 `503 + storage_unavailable`。但该码同时覆盖缺失/非法配置、下游任意非 2xx、无效 JSON、响应契约不符、5 秒超时、网络异常等（`storage.ts:28-68`），不能证明数据库/表格临时写不进去。尤其下游可能已写入、但响应在 5 秒后超时或响应解析失败，网站仍会返回该 503；因此“第一次根本没落库、重试必不重复”没有代码保证。网站请求也没有 Idempotency-Key。当前本机接收路由会规范化电话、按电话查重，并把重复返回 `duplicate:true`；存储适配层把 `duplicate:true/false` 都视为成功，但该接收文件有未提交差异且未核验生产，不能据此断言线上实际去重。
+
+Test Coverage Review：**PASS（诊断范围）**。Luna 定向运行 `contact-storage-privacy`、`contact-http-security`、`contact-content-type`、`contact-integration`、`contact` 共 **5 files / 51 tests passed**，覆盖 503 映射来源、下游超时/网络/无效响应、duplicate 成功、蜜罐、限流、JSON Content-Type 与 8 KiB 门禁。没有重跑全量测试；本任务没有代码改动。测试未模拟“下游已提交后响应丢失”，也未核验线上请求日志、数据库、代理头或实际第二次响应。
+
+Result：**需修订（陈述层面）**。豆包对接口路径、JSON 格式、中文字段规则、蜜罐以及“本地存在该 503 响应”的描述大体有源码依据；必须删除或改写三项过度断言：`storage_unavailable` 不能定位为数据库写入失败或证明未落库，HTTP 200 还需 `response.ok && success===true` 且可能来自蜜罐/重复请求，并且 `Proxy-agent`/503 不能仅凭本地代码归因给 nginx。服务端 `validation_failed` 只返回错误文案和 code，没有 field；字段定位仅来自提交前客户端校验。应用自身没有自动 5 秒退避重试，客户端超时为 15 秒；“等 5 秒再试”若发生，是豆包自己的行为，无法从本地代码证实。
+
+Remaining Risks：没有读取或验证用户所述原始响应头、生产访问日志、Xiansuo 生产版本、真实数据库写入或反向代理配置；本地源码相同不等于线上运行时、部署制品和数据状态均已核验。用户在转述中包含个人电话号码，后续报告无需重复该号码。
+
+Handoff：**需修订** 返回 Sol。建议对用户明确区分“本地实现确认”“本地实现反驳”和“没有线上证据无法判断”三类结论。本 Review 未执行真实提交、网络访问、数据库/CMS 操作、部署、提交或推送。
+
+#### XYY-20261020-12 R2 — 生产只读证据 Review
+
+Task ID：`XYY-20261020-12 R2`（HIGH，只读生产诊断）。
+
+Review Scope：只审阅用户授权连接 `8.138.148.179` 后已经采集的生产日志、进程/服务快照、部署 bundle 标记、脱敏配置来源与 Luna 独立只读核对。Nova 未再次连接远端，没有访问旧 IP/域名、下游接口或 health，没有读取密钥值、数据库或 CMS，也没有执行真实提交、配置变更、重启、部署或修复。
+
+Architecture：**PASS**。当前 `/data/xyy/current` 指向 release `20261020T052050Z-c6b7267`，manifest SHA 为 `c6b7267dc3cc7a5fd2082a09db7c403879987681`；部署 bundle 明确包含 5 秒 `AbortSignal.timeout`、`/api/integrations/website-leads` 下游请求、响应契约校验及统一 `storage_unavailable` 映射，与 R1 审阅的本地源码语义一致。nginx、Web、Directus 在采样时均 active，`NRestarts=0`；14:40–14:50 的 Web systemd journal 无服务事件。该证据只排除了明显的 Web 服务重启时间重合，不等同于端到端健康证明。
+
+Security：**PASS（授权边界）**。证据采集仅输出 release 标识、脱敏后的依赖 origin、匿名 IP hash、固定错误类别和安全 bundle 标记，没有输出 Token、完整环境变量、真实 IP 或表单个人信息。`clientGroup` 是来源 IP 的匿名 hash，只能证明两条访问日志具有同一网络来源值，不能单独证明同一个人、设备或豆包进程。
+
+Maintainability：**PASS（诊断建议）**。建议优先核对线索接收服务的实际归属、运行地址、认证与数据目的地，再决定恢复或迁移方式；仅替换 URL 缺少契约和数据边界验证。后续可增加脱敏错误类别、下游耗时及关联 ID，并在有幂等/去重保证后再评估超时预算或重试策略。无 JavaScript 时原生表单被 415 拒绝是独立的降级体验问题，没有证据表明它导致本次 503。
+
+Contract Risks：**PASS（有界结论）**。生产 access log 在北京时间 `14:45:32` 记录 `/api/contact` 503、`rt=5.009`/`urt=5.010`，`14:45:49` 记录同一匿名 clientGroup 的 200、`rt=1.024`/`urt=1.024`；Web error log 在第一条同秒记录固定 catch 类别 `Xiansuo unavailable, lead not saved`。这证明生产日志中存在与用户描述时间和状态序列一致的失败与成功，并强烈吻合应用内 5 秒下游超时门限；但 catch 同时覆盖网络异常和响应解析异常，日志文案中的 `lead not saved` 也不是持久化证据，因此仍不能绝对确定底层根因、第一次是否落库或第二次是否为 duplicate/honeypot。nginx 该窗口无 contact error 及 Web 无重启事件只排除相应已记录事件，不能排除瞬时网络或下游故障。
+
+Test Coverage Review：**PASS（只读证据范围）**。Luna 独立确认 release/manifest、三项服务快照及部署 bundle 的 timeout、storage error、响应 `duplicate` 契约和无 idempotency marker。现有证据显示运行配置的 Xiansuo origin 为 `xs.tomatopia.top`，采样时服务器 DNS 将其解析到历史 IP `47.82.105.103`；该解析是采样时事实，不证明 14:45 请求当时的解析结果，也不证明旧目标直接造成这次延迟。`.env` 链接与默认 dotenv 加载路径存在，但 `/proc` 未显示该 key 不能反向否定运行时 dotenv 配置。
+
+Result：**APPROVED（有措辞条件）**。可向用户说明“生产日志确有与豆包描述匹配的 503→200 序列，首个请求耗时约 5.01 秒，高度符合应用内 5 秒下游超时”；不得表述为已精确认证豆包客户端、已证明旧 IP 是本次根因、已证明下游没有落库、已确认重试无重复，或已复现/修复故障。当前依赖仍指向解析至历史 IP 的域名是需要单独处理的架构事实。
+
+Remaining Risks：没有下游服务日志、请求关联 ID、14:45 时刻 DNS 证据、Xiansuo 数据库记录或第二次 200 响应体，无法判断第一次持久化状态、第二次具体成功分支或下游真实瓶颈。生产依赖归属和正确运行地址尚未核定。
+
+Handoff：**APPROVED** 返回 Sol，以上措辞边界必须保留。R2 Review 只追加本日志；没有修改业务代码、配置、测试或环境，没有再访问任何远程目标。
+
+### XYY-20261020-13 — 当前页面与报告 GitHub 同步最终 Review
+
+Task ID：`XYY-20261020-13`（MEDIUM，提交/普通推送前 Review）。
+
+Review Scope：审阅从基线 `a0994d9b11d9a0898913980a05a9651962360445` 到当前工作树的 99 个候选路径、既有页面/SEO 任务归属、报告副本、FAQ 测试最小补丁、Terra/Luna R2/R3 记录、完整提交前门禁、公开仓库安全边界和现有 `origin/main` 普通推送授权。候选路径与实际 tracked/untracked 差异 **99/99 精确一致**，无新增、缺失、重命名、symlink 或可执行文件；本 Review 未暂存、提交或推送。
+
+Architecture：**PASS**。页脚、About、新闻、案例/白皮书 Hero 与 SEO 图片链均可归属已完成并独立验证的前序任务；49 个 `seo-v1` 资源、两张新 Hero 图、站点图片目录/生成器、调用方和测试形成同一已验收闭环。Task11 撤回合同开头明确标记原设计取消，`PublicationsOverview.astro`、`publications-overview.css` 及源码引用均不存在，历史合同入库不会恢复实现。唯一新增测试行为是 `about-cases.spec.ts` 恢复发布分支已有的三行首条 FAQ 默认展开/答案可见/点击收起断言；R3 只删三个空行，非空行与已通过浏览器的 R2 副本逐字节相同，最终 SHA-256 为 `b34eec14e13443a607a08275a7798c004a420335fc33f832855e981b8d9a0c98`。
+
+Security：**PASS**。99 路径不含 `.env`、凭据、原始生产日志、截图、备份、构建目录或 ignored output；已记录的已知 Token/私钥/凭据 URL 特征扫描为 0 命中，Nova 对 48 个文本候选再做高置信模式检查亦无命中。HTML 报告没有表单电话号码、原始客户端 IP、Token、外部脚本/样式/图片或主动网络代码；其桌面副本和仓库副本 SHA-256 均为 `66d57784…c4d8`。报告包含活动/历史 IP、部署与本机路径等诊断元数据，但这些类别此前已存在于公开仓库的 AGENTS/状态历史中，且本轮合同明确要求随公开仓库同步报告；没有新增认证材料。DNS 查询与旧目标访问在报告、`DEV_STATE.md`、`docs/SOL.md` 中均已更正为“仅执行 DNS 解析，未发 HTTP/HTTPS、SSH、健康检查或业务请求”。
+
+Maintainability：**PASS**。候选没有重复实现或无关重构；新增 package scripts 只暴露既有站点图片生成/检查入口，workflow 未改。FAQ 测试恰为 220 行并通过维护预算。全部 48 个文本候选无尾随空白或冲突标记，tracked diff whitespace 检查通过；49 WebP 和 2 PNG 类型有效，完整资源检查已覆盖引用和部署资产。候选中无异常权限位。
+
+Contract Risks：**PASS**。报告副本与用户已验收桌面文件逐字节相同，并保留 503 只“高度符合”5 秒门限、第二次仅知 HTTP 200、未读响应体/数据库、当前 DNS 不构成历史因果、本机 receiver 有脏改等限制。联系表单未被修复或改动。现有 GitHub workflow 只运行 CI 校验及 artifact 上传，权限为 `contents: read`，无部署步骤；用户授权覆盖现有公开仓库 `AIyj-cmd/XYY-WEB` 的 `origin/main` 普通推送，不覆盖 force push、网站部署、服务器、CMS、数据库、DNS、TLS 或生产配置操作。提交/推送成功、远端 CI 结果和生产状态必须分开记录。
+
+Test Coverage Review：**PASS**。Luna R3 对当前业务树执行 `npm run verify` exit 0：745 个类型文件 0 errors/0 warnings/5 个既有 hints，Lint、910 文件维护预算、69 引用资源/103 部署资源、cache patch、146 个测试文件/1036 单测及 Astro server build 全部通过；`npm run format:check` exit 0。日志中的 `Terminated` 来自既有容量测试主动终止子进程的负例，父门禁随后给出完整通过汇总、完成 build 并 exit 0。R2 FAQ Chromium **1/1 passed**，覆盖默认展开、收起、再次展开；R3 只删空行且非空源等值，因此浏览器证据复用合理。R2 的 223/220 维护预算失败和 R3 首次因证据目录不存在而未启动 npm 的包装错误均如实保留，未计入 PASS。
+
+Result：**APPROVED**。未发现 Scope、架构、安全、维护性、API/CMS 契约、公开报告、撤回边界、验证可信性或普通推送授权的阻断项。当前 99 路候选可由 Sol 在追加本日志后重新冻结并精确暂存，复核候选集合、hash、whitespace 和敏感/产物排除后提交，并在远端 main 仍与基线一致时执行用户授权的普通 push。
+
+Remaining Risks：本结论发生在提交与推送之前，不表示 commit、远端 readback、GitHub CI 或生产部署已经完成。全量门禁是本地 loopback/模拟依赖验证；浏览器补丁仅 Chromium，R3 未重复运行而以空行等值证据复用。敏感特征扫描是有限模式，不是绝对证明；报告公开暴露的基础设施元数据是明确候选内容，但不含凭据。推送后若只补录 Git SHA、远端一致性和实际 CI 状态，可按文档差异做精确复核；任何业务、测试、workflow、目标远端或强推变化均使本批准失效。
+
+Handoff：**APPROVED** 返回 Sol。追加本日志后 `docs/NOVA.md` 将产生预期 hash 变化；Sol 必须把它纳入原 99 路最终冻结/暂存并重做提交前集合与安全检查。Nova 未执行 git add、commit、push、部署、远程业务访问、CMS 或数据库操作。

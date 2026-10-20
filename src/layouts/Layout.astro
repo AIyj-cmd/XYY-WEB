@@ -28,7 +28,7 @@ const {
   title,
   description,
   canonical = new URL(Astro.url.pathname, BRAND.url).href,
-  ogImage = `${BRAND.url}/logo.png`,
+  ogImage,
   jsonLd,
   noIndex = false,
   siteSettings: providedSiteSettings,

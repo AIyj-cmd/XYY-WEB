@@ -59,16 +59,7 @@ const copy = aboutUi(locale)
         class="about-introduction__overview about-overview"
         aria-labelledby="about-overview-heading"
       >
-        <div class="about-introduction__overview-heading">
-          <a
-            class="about-introduction__logo"
-            href={locale === 'en' ? '/en' : '/'}
-            aria-label={copy.hero.homeAria}
-          >
-            <img src="/logo.png" alt={copy.hero.logoAlt} width="2362" height="905" />
-          </a>
-          <h2 id="about-overview-heading">{copy.hero.overviewHeading}</h2>
-        </div>
+        <h2 id="about-overview-heading">{copy.hero.overviewHeading}</h2>
         <p>{overview}</p>
       </div>
     </div>

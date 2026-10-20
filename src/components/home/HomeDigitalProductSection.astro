@@ -3,6 +3,7 @@ import { YUNDAO_FEATURES } from '@/data/home'
 import HomeServiceFeatures from './HomeServiceFeatures.astro'
 import { homeUi } from '@/i18n/home-ui'
 import type { SiteLocale } from '@/i18n/routes'
+import { siteImage } from '@/lib/site-images'
 
 interface DigitalProduct {
   id: string
@@ -43,25 +44,28 @@ const displayFeatures = isEnglishYundao ? copy.digital.features : product.featur
           <div class="yundao-interface-grid" aria-label={copy.digital.visual}>
             <img
               class="yundao-interface-main"
-              src="/yundao-logistics-list.png"
+              {...siteImage('/yundao-logistics-list.png', '926px')}
               alt={copy.digital.interfaces[0]}
               loading="lazy"
             />
             <img
               class="yundao-interface-side-1"
-              src="/yundao-order-list.png"
+              {...siteImage(
+                '/yundao-order-list.png',
+                '(max-width: 900px) max(45vw, 18rem), max(25vw, 18rem)'
+              )}
               alt={copy.digital.interfaces[1]}
               loading="lazy"
             />
             <img
               class="yundao-interface-side-2"
-              src="/yundao-alerts.png"
+              {...siteImage('/yundao-alerts.png', '(max-width: 900px) 45vw, 25vw')}
               alt={copy.digital.interfaces[2]}
               loading="lazy"
             />
             <img
               class="yundao-interface-detail"
-              src="/yundao-report.png"
+              {...siteImage('/yundao-report.png', '(max-width: 900px) 45vw, 25vw')}
               alt={copy.digital.interfaces[3]}
               loading="lazy"
             />

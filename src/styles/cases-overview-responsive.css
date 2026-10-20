@@ -8,11 +8,8 @@
 }
 
 @media (max-width: 639px) {
-  .cases-hero {
-    min-height: 43rem;
-  }
   .cases-hero__inner {
-    padding-top: 9.5rem;
+    padding: clamp(4.5rem, 12vh, 6rem) 0 0.75rem;
   }
   .cases-grid-section__heading,
   .cases-logo-wall header {

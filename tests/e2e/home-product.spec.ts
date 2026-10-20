@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test'
 import { getClaimText } from '../../src/lib/claims'
+import { CASE_DETAILS } from '../../src/data/brand/case-details'
 
 test('homepage loads the shoe-apparel fulfillment message and primary CTA', async ({ page }) => {
   await page.goto('/')
@@ -21,18 +22,24 @@ test('homepage loads the shoe-apparel fulfillment message and primary CTA', asyn
   await expect(page.getByRole('link', { name: /在线估算费用|仓储成本估算器/ })).toHaveCount(0)
 })
 
-test('homepage case dialogs reuse all six card covers and close with Escape', async ({ page }) => {
+test('homepage case dialogs keep full-resolution originals behind optimized covers', async ({
+  page,
+}) => {
   await page.goto('/')
 
   const dialogImage = page.locator('#modal-hero-img')
   await expect(dialogImage).not.toHaveAttribute('src', /.+/)
   for (const path of ['ur', 'maxrieny', 'xingmian', 'meiyi', 'romi-studio', 'inman']) {
     const card = page.locator(`a.case-card[href="/cases/${path}"]`)
-    const cardImageSrc = await card.locator('img').getAttribute('src')
+    const original = Object.values(CASE_DETAILS).find((item) => item.slug === path)!.image
+    await expect(card.locator('img')).toHaveAttribute('src', /\/media\/seo-v1\//)
     await card.click()
     await expect(page.getByRole('dialog')).toBeVisible()
     await expect(dialogImage).toBeVisible()
-    await expect(dialogImage).toHaveAttribute('src', cardImageSrc ?? '')
+    await expect(dialogImage).toHaveAttribute('src', original)
+    await expect
+      .poll(() => dialogImage.evaluate((image) => (image as HTMLImageElement).naturalWidth))
+      .toBe(1200)
     await page.keyboard.press('Escape')
     await expect(page.locator('#case-modal')).toBeHidden()
   }

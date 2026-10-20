@@ -2588,3 +2588,73 @@ Status: CODE DONE（待 Luna 独立验证与 Nova Review）
 
 - 仅更新 `publication-copy.test.ts` 中仍硬编码旧 `PageFAQ` 单行调用的断言。现在先从 `HomeFAQ` 调用块提取源码，再在该同一块内断言 `heading="供应链白皮书常见问题"` 与 `items={faqs}`；`getFaqs('senlinqikan', PUBLICATION_FAQS)`、`createFaqSchema(faqs)` 及全部 FAQ 文案/种子/hero 断言保持原样。页面实现未改。
 - 自测 PASS：目标 Vitest（1 文件、3 测试）、Prettier、ESLint 与 scoped `git diff --check`；修改前副本 SHA-256 为 `863d9c55df745394e28b4280b374eb9250152cda6e0b2f5c1f78d2313f66edd7`，新测试候选为 `8a91325d00fdd44d9985690de753bae089df26cc97d0eb26fda2214fbd4c2216`，冻结业务基线 hash 复核 0 差异，`cases-values.css` 保持 `fcf3b9db40a811b768df15f18cae3e2f7b0cb8fb0a73dc8ddba50ae6f24dd7dd`。完整 `npm run verify` 待 Luna R3 独立复测；未提交、推送、部署或访问外部系统。证据见 `output/git-sync/xyy-20261019-10/terra/publication-copy-r2.md`。
+
+#### XYY-20261019-11 — 共享页脚毛玻璃背景
+
+- 共享 `Footer.astro` 移除过时的 `bg-slate-50` 根类，`site-footer.css` 以局部低饱和蓝橙柔光伪元素、渐变之上的半透明 `::after` `backdrop-filter: blur(18px)` 玻璃层和内侧细高光替换原浅灰实底；内容容器置于两层装饰上方，伪元素不接收指针事件，因此原文字、链接、键盘焦点、图标和微信弹层保持清晰且可交互。`overflow: hidden` 将模糊光晕限制在页脚内。
+- 无 `backdrop-filter` 支持时保留可读的 `#f8fafc` 实底；`prefers-reduced-transparency: reduce` 关闭透光、滤镜和装饰层。未增加 DOM、JS、图片、动画或调整页脚布局尺寸。已有 `tests/e2e/about-cases.spec.ts` 两处 `bg-slate-50` 类断言会随根类删除过时，按合同留由 Luna 最小更新。
+- 自检 PASS：目标 Prettier 写入及 check、`npx eslint src/components/Footer.astro`、`git diff --check` 与 `npm run check:maintainability`（904 文件）均通过；`site-footer.css` 为 98 行，在 200 行预算内。候选 SHA-256：`Footer.astro` `b24f94f8c8d4175126836ac2eb5c52b463084529b1dd90bad998ed95b2696cb3`，`site-footer.css` `f86e4b4e9bf051f7ebd2fd39fe106a64b5426f5f974bc29e4cbb40dfb95e8ecb`。按合同未运行浏览器、E2E、typecheck、build 或全量 verify；未提交、推送、部署或访问 CMS/数据库，待 Luna 独立 UI/交互及降级验证。
+
+#### XYY-20261019-12 — 关于页简介标题对齐
+
+- 仅删除 `AboutHero` 简介块的 Logo 首页链接、图片和只为同行排版服务的 wrapper；`h2#about-overview-heading` 直接置于既有 overview 容器内，保留 `aria-labelledby`、原标题和正文。同步删除 `about-stage.css` 的 wrapper、Logo 及其图片三条无调用选择器；其他 Header/Footer Logo、文案、翻译字段、分隔线、间距与响应式规则未改。
+- 自检 PASS：目标 Prettier 写入及 check、`npx eslint src/components/about/AboutHero.astro` 与 scoped `git diff --check` 均通过。候选 SHA-256：`AboutHero.astro` `52d54899cffbcecc7a1386051f4a33a51842ed94616be0586c9e73e529ae31c3`，`about-stage.css` `dae4e67392b209ca205c1c47c4df8227bba9fa0a714615d162675e9fd15b26de`；合同保护的 Footer、footer CSS 和 `about-cases.spec.ts` hash 均保持。按合同未运行浏览器、E2E、typecheck、build 或全量 verify；未提交、推送、部署或访问 CMS/数据库，待 Luna 独立视觉验证。
+
+#### XYY-20261019-13 — 行业动态首屏非仓库图片
+
+- 已将 Sol 确认的 Pexels 服装陈列候选原字节复制为 `public/news-fashion-hero.webp`；中文首屏改用该本地图并补充 2400×1602 尺寸属性，英文首屏在原 aria-hidden 背景层使用同一张本地图与中文同款文字遮罩。中英文均设为 50% 35% 裁切点，以在矮首屏保留衣架主体；标题、正文、分类、布局、CMS/API 与原 `w-hq.webp` 均未改。来源、许可、下载 URL、日期和 hash 记录在 `docs/news-hero-image.md`。
+- 自检 PASS：目标 Prettier check、两个目标组件 ESLint、scoped `git diff --check` 与 `npm run check:maintainability`（904 文件）均通过；英文组件物理 179 行、维护脚本计 180 行，满足 180 行预算。Sharp 解码确认 WebP 2400×1602、285,916 bytes。候选 SHA-256：asset `a60a36f642f7dfe0fb98ab5dd78df0ad6a847f3ee8749e170d171cab466e2e99`，中文组件 `7416af02337666f3a39e57fe3345ff023b894b073c092a55e5f2c6c1106bce72`，英文组件 `3a81fb70f2cf1e3a72eb93b36367ec30e12c435a6eb8caee99036061a7637689`；Task11/12 五份源码和 `about-cases.spec.ts` 保护 hash 均保持。按合同未运行浏览器、E2E、typecheck、build 或全量 verify；未提交、推送、部署或访问 CMS/数据库，待 Luna 独立浏览器验证。
+
+#### XYY-20261020-07 — 合作案例与行业动态首屏尺寸统一
+
+- `cases-hero` 和中英文共享 `news-hero` 均改为 `height: 100vh`、`min-height: 600px`，图片或背景继续覆盖容器。案例内容从底部对齐改为垂直居中；仅在 639px 及以下用更紧凑的上下留白替换旧 43rem 固定高度，给英文完整标题、正文和两个 CTA 留出空间。新闻两个首屏内容容器使用共享 `news-hero__content` 全宽规则，保留原导航安全留白、渐变、图片、文字和链接。
+- 自检 PASS：五份目标文件 Prettier check、两个 Astro 组件 ESLint、scoped `git diff --check` 与 `npm run check:maintainability`（909 文件）均通过；英文新闻组件物理 179 行、维护脚本计 180 行，保持预算。`protected.json` 中 76 份非目标文件 SHA-256 复核 0 差异。候选 SHA-256：cases base `25afbbc7c63c187fe549bae5214a5c72e3d5d0210f30a29579dcf120eab09db5`，cases responsive `f5c6a3a87379fefc77e8d002d92b1a141324f83fe6838cf64fe28a2ae83b97b4`，news CSS `85ed0f724e4402346731bd03490caebaa5312214e229258fe2526fcd460fe60f`，中文新闻 `1a109808a7b139b5f8f92088693ed3ef9b624d36ca6bfcfbed6d645049c773a5`，英文新闻 `31b47f9115a344f62bbb59c34ec143cb46561032aaefe89f9b19c2ba76f572c1`。按合同未运行浏览器、E2E、typecheck、build 或全量 verify；未提交、推送、部署或访问 CMS/数据库，待 Luna 独立矩阵验证。
+
+#### XYY-20261020-07 R2 — 英文案例 1440×600 CTA 裁切修复
+
+- Luna 在 1440×600 独立发现英文案例 actions 底部为 612.33px，超出 600px hero。仅将 `.cases-hero__inner` 的桌面 padding 改为 `6rem 0 1.5rem`；内容总高 468.33px 加 120px 留白可容纳于最小 600px 高度，639px 以下既有紧凑 padding 覆盖保持。
+- 自检 PASS：目标 CSS Prettier check 与 scoped `git diff --check` 通过；`protected.json` 76 项 0 差异。新 cases base SHA-256：`e170ea42261cbe3aa0c51d219e58cfb36f1ab577c3243697c10795f181e4b13b`；其余四份候选 hash 保持。未重跑浏览器、E2E、typecheck、build 或全量 verify，待 Luna 复测该裁切场景。
+
+#### XYY-20261020-09 — 行业动态首屏文案与字号
+
+- 中英文新闻首屏更新为合同指定的眉题、两行 H1 和配文；`h1` id 与各 section 的 `aria-labelledby` 保持。新增仅限 `news-hero` 的 eyebrow、title 与 description 样式：标题 `clamp(2.75rem, 6vw, 5.5rem)`、配文 `clamp(1.25rem, 1.7vw, 1.5rem)`，两段 title span 均为 block。全屏高度、图片、渐变、横向容器、分类与后续内容未改；旧 H1 测试断言留由 Luna 最小更新。
+- 自检 PASS：三个目标文件 Prettier check、两个 Astro 组件 ESLint、scoped `git diff --check` 与 `npm run check:maintainability`（909 文件）均通过；英文新闻物理 179 行、维护脚本计 180 行。`protected.json` 77 项非目标文件 SHA-256 复核 0 差异。候选 SHA-256：中文新闻 `f412cf5420f83cb278a707d8ec4ba202a9edf39449aae9a5f19d1e4e7ce01241`，英文新闻 `689972e6d2b831bac6fb70c6331fc37605122a8540741da062a0c84d77ae2ff2`，news CSS `6af6cfe7538341dd08578be56b0ec69bab97d772605fd6525a8447d282fc5ee5`。按合同未运行浏览器、E2E、typecheck、build 或全量 verify；未提交、推送、部署或访问 CMS/数据库，待 Luna 独立矩阵与 H1 断言同步验证。
+
+#### XYY-20261020-10 — 白皮书首屏尺寸与图片
+
+- 两语目录 Hero 现在共用局部 `publications-hero` 样式与 100vh/600px 最小高度；静态本地图无条件显示，latest 仍仅控制原有阅读/PDF CTA 的出现。保留原标题、H1/aria、链接条件和目录期刊封面。局部手机规则收紧间距、字距、正文与按钮 padding，确保短屏完整显示；图片为 cover，深蓝遮罩保持文字清晰。来源、许可、规格、hash 及“非企业数据”用途说明记录在 `docs/whitepapers-hero-image.md`。
+- 收尾复核确认共用内容 padding 在桌面及 `max-width: 639px` 两处均加入 `var(--language-suggestion-visible-height, 0px)`，保留英文语言建议条的安全留白。自检 PASS：两 Hero 及局部 CSS/来源文件 Prettier、两 Hero ESLint、scoped `git diff --check`、`npm run check:maintainability`（910 files）和 `npx vitest run tests/unit/publication-copy.test.ts`（1 file/3 tests）均退出 0；Sharp 解码为 WebP 2400×1589。`protected.json` 的 89 项逐一 SHA-256 复核为 0 差异。候选 SHA-256：中文 Hero `632d7303d02a5e3a4c7b91b8d2f7e175fc5a0f61337a038f112d740f867a2b68`，英文 Hero `52ddc280acc620cecc9e4dbdf20decb75588e793e26f334a84c3fe143507a256`，局部 CSS `98cdbcf4fef96a44e7c628f322988f31ed4a949ea4db834104daf182f7e63a3d`，图片 `f719833a10d6a3c5be01e954cb222fba3ba4d575fa4e3bb4aefab3d96400988b`，来源记录 `440d51f66d98192076bad5a449f8865cb5f86cea7f829b7428f34f1e894a84a8`。按合同未运行 build、全量 verify、CMS/API 或浏览器矩阵；本地 4321 服务未重启或停止，短屏独立复核留给 Luna。未提交、推送或部署。
+
+#### XYY-20261020-10 R2 — 按合作案例统一字号
+
+- 两 Hero 移除眉题、H1、副标题及正文的 Tailwind 字号 utility，改由局部 CSS 统一为案例的 0.7rem、`clamp(3rem, 7.2vw, 6.5rem)`、`clamp(1.1rem, 2vw, 1.45rem)` 与 1rem；CTA 为 0.9rem。H1 同步 `line-height: 1.05` 与 `letter-spacing: -0.055em`。手机规则不再覆盖任何目标字号，只保留紧凑间距、描述行高和按钮内边距；全屏/600px 最小高度、本地图、语言建议安全留白、原文及链接保持。
+- 首轮 `prettier --check` 因两份 Astro class 排序失败，随后仅对该两文件执行 Prettier 写入；最终目标 Prettier、两 Hero ESLint、scoped `git diff --check` 均 PASS，`npm run check:maintainability` 为 PASS（910 files）。R2 `protected.json` 的 91 项逐一 SHA-256 复核为 0 差异。候选 SHA-256：中文 Hero `66c3f199c6777bdacbede65299181dd5ccfd9f4543aa518f79a1368b2e5c5df9`，英文 Hero `5d7a4b274b94b0c634dd795ef01bf3f526fc5b5979e827a60fefdf949168cc34`，局部 CSS `4964a13b13d37c8aaac99c1f05afbdf83885ebcadb4dbbfe44c3863d2633c0f9`。未运行浏览器、单测、build 或全量 verify；4321 未重启或停止，待 Luna 定向字号与 Range 边界矩阵验证。未提交、推送或部署。
+
+#### XYY-20261020-11 — 白皮书出版概况重设计
+
+- 中文目录页以 `PublicationsOverview` 替换原四个独立数字块；页面仅新增组件导入并继续传入既有 `PUBLICATION_STATS`。组件以可见 `h2` 关联 section，使用 `dl/dt/dd` 输出前三项原数值与标签；第四项从既有更新安排字符串拆为“双月”“季度”“专题”三枚静态标签，并附“以实际发布安排为准”。未改数据源、Hero、目录、FAQ、英文页或 SEO。
+- 新局部 CSS 为浅色承接区与完整白色面板：桌面四列、左对齐细分隔线、突出数字与克制橙色标签；767px 及以下为两列，第二行使用顶部细分隔线，更新标签可自然换行。根据 Sol 对 390 草稿的收尾意见，首行指标补足 1.25rem 底部留白、更新说明文字加深至 `#64748b`、概览标题字重明确为 800。无图片、JS、动画或点击语义。自检 PASS：目标 Prettier、页面与组件 ESLint、scoped `git diff --check`、`npm run check:maintainability`（912 files）与 `npx vitest run tests/unit/publication-copy.test.ts`（1 file/3 tests）均退出 0；`protected.json` 的 94 项逐一 SHA-256 为 0 差异。候选 SHA-256：页面 `684bcca14f6e47a460c22256c05b6fd25bd14fa4aa3844b2e5a1daaf0fd092ef`，组件 `24a70dfca924145d1715b578977f5c7b6fadb7a27658deacd49eb42611317b43`，样式 `6c3b9df72293172a3f3175c2ac1fc9545c39d1edcd83df1d7a8195387da39eac`。按合同未运行浏览器、build、全量 verify 或外部/CMS 操作；4321 未重启或停止，未提交、推送或部署，待 Luna 独立四视口读图及边界复核。
+
+- 用户随后明确要求撤回本任务设计。已将 `src/pages/supply-chain-whitepapers.astro` 精确恢复为任务基线，SHA-256 为 `a161f550630f434d36218c7d78d78576cc951b3c4e6dc36c548034f9aaab9af6`；`PublicationsOverview.astro` 与 `publications-overview.css` 均已删除。`cmp` 逐字节通过、两新增文件均不存在、scoped `git diff --check` 通过，94 项保护 hash 为 0 差异。未运行测试、构建、浏览器或外部操作；4321 未重启或停止，未提交、推送或部署。
+
+### XYY-20261020-05 · 首页图片、分享卡与 SEO 元数据修复
+
+Status: 实施完成；候选 `c6b7267dc3cc7a5fd2082a09db7c403879987681`，Sol 已部署并报告 77 项公网检查通过。独立完整发布门禁及 Review 结论由 Luna/Nova 记录。
+
+Implementation: 在隔离工作树交付 68 文件，包含 49 个版本化资源；以 sharp 可复现优化 16 组首页/共享图片，保留旧 URL、原尺寸弹窗与布局。按每图最大展示变体汇总由 3,356,975 B 降至 1,556,868 B（53.62%，不是浏览器实际传输量）。输出中英两张真实品牌 1200×630 PNG 分享卡；默认元数据宽高真实，自定义未知尺寸图片不强写尺寸。删除静态 sitemap 的不可靠固定 lastmod，保留可靠发布日期及既有 URL/canonical。经 Sol 批准移除首屏标题、文案、CTA 的隐藏等待入场，保留下方动画。依据 cover 框比例修正物流主图与订单图响应式选择；最终订单图加入 18rem 下限，不改其他图。依赖版本/lock、AboutHero、新闻与后台均未改。
+
+Validation: 实施侧 focused 单测 3 文件/8 项、Astro check 747 文件 0 errors/0 warnings、定向 lint/format/维护预算、资源逐字节再生与 16 原资产一致性通过。此组完整自测先于最后一处订单 sizes 字符串修正；最后修正后定向 Chromium 框尺寸验证 DPR1 选 480、DPR2/3 选 899 且满足像素需求，并通过定向 lint/format/维护预算。R2 门禁停止的证据保留，不冒充通过；最终精确候选的完整门禁由 Luna 记录。两张卡已本地与 Sol 目视确认标志对比、文字和裁切。
+
+Backport: 提供含二进制资源的 68 文件补丁，git apply --check 和独立复制件模拟均通过。Sol 随后报告已回填主工作区：67 文件与候选完全一致，Footer 保留用户已有玻璃背景，其余 15 个保护路径未变。Terra 未直接修改主工作区源码或生产。
+
+Health triage: 只读确认 health、权限契约、运行配置、相关客户端和依赖版本与 b60631f 完全一致。健康接口实时要求 CMS/Xiansuo 均 ok，单次上游限时 1500 ms，无重试；CMS 两次串行。初次错误是 Sol 的 check-live.py（requests 外层 30 秒）中的 AssertionError，非 Timeout，且没有 body；原因未知，不能写成冷启动已确认，亦与 local-probe 的 2 秒预算无关。Sol 报告随后 5 次公网 + 3 次 loopback 均 HTTP 200/双依赖 ok，期间未作额外修复。证据：`output/seo/xyy-20261020-05/terra/health-triage.json`；候选清单、压缩清单、自测、R3 单处修正与 backport 模拟在同目录。
+
+#### XYY-20261020-13 — Git 同步前 FAQ 测试契约对齐
+
+- 仅在 `tests/e2e/about-cases.spec.ts` 的首条白皮书 FAQ 后恢复 `b60631f` 已存在的三条断言：首题默认具有 `open`、精确答案可见、点击 `summary` 后收起；原有的再次点击展开及答案断言保持。既有两条页脚浅色背景断言和全部其他行未改。
+- 自检 PASS：`npx prettier --check tests/e2e/about-cases.spec.ts`、`npx eslint tests/e2e/about-cases.spec.ts` 与 `git diff --check` 均退出 0。相对 `b60631f` 复核已无 FAQ hunk 差异，余下仅为本任务前已有的页脚断言替换和空行差异；候选 SHA-256 `fdb4889fc063e670e4b9da1f77133e20e1af465759a35dc4a2d2b2a25787b23f`。证据 `output/git-sync/xyy-20261020-13/terra/faq-test-fix.md`。未运行 Playwright、全量 verify、build；未提交、推送、部署或进行外部写入，待 Luna 独立复测目标 E2E。
+
+#### XYY-20261020-13 R3 — FAQ 测试维护预算修正
+
+- Luna R2 已通过目标浏览器 E2E 与格式，但 `about-cases.spec.ts` 触发 220 行维护预算。本次只删除 `/cases`、`/supply-chain-whitepapers/` 与 `/yundao-zhineng-jijian` 前的三个既有空行；所有非空行按保存的 R2 副本逐行相同，首题 FAQ 三条断言和两条既有页脚背景断言均保持。
+- 自检 PASS：目标 Prettier、ESLint、`npm run check:maintainability`（910 files；报告该文件 220 行）与 `git diff --check` 均退出 0。R2 原文件 SHA-256 `fdb4889fc063e670e4b9da1f77133e20e1af465759a35dc4a2d2b2a25787b23f`，R3 候选为 `b34eec14e13443a607a08275a7798c004a420335fc33f832855e981b8d9a0c98`；等值检查确认非空行序列一致。证据 `output/git-sync/xyy-20261020-13/terra/r3/verification.md`。未重跑 Playwright、全量 verify、build；未提交、推送、部署或外部写入，待 Luna 最终 verify。

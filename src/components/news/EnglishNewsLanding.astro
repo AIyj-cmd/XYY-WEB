@@ -13,23 +13,26 @@ const { articles, category, totalCount, viewAllHref } = Astro.props
 ---
 
 <section
-  class="relative overflow-hidden bg-navy-900 pb-16 pt-[calc(8rem+var(--language-suggestion-visible-height,0px))] text-white sm:pt-[calc(6rem+var(--language-suggestion-visible-height,0px))]"
+  class="news-hero relative overflow-hidden bg-navy-900 pb-16 pt-[calc(8rem+var(--language-suggestion-visible-height,0px))] text-white sm:pt-[calc(6rem+var(--language-suggestion-visible-height,0px))]"
   aria-labelledby="insights-heading"
 >
-  <div class="absolute inset-0 bg-[linear-gradient(115deg,#091b34,#183c65)]" aria-hidden="true">
+  <div
+    class="absolute inset-0 bg-cover bg-[position:50%_35%]"
+    style="background-image: linear-gradient(105deg, rgba(8,20,42,0.96) 0%, rgba(8,20,42,0.82) 45%, rgba(8,20,42,0.50) 100%), url('/news-fashion-hero.webp');"
+    aria-hidden="true"
+  >
   </div>
-  <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-    <p class="mb-3 text-sm font-semibold uppercase tracking-[0.18em] text-brand-orange">Insights</p>
-    <h1 id="insights-heading" class="max-w-3xl text-4xl font-black leading-tight lg:text-5xl">
-      Apparel fulfilment insights
+  <div class="news-hero__content relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <p class="news-hero__eyebrow">Industry &amp; operations</p>
+    <h1 id="insights-heading" class="news-hero__title">
+      <span>Industry insights.</span><span>Apparel operations.</span>
     </h1>
-    <p class="mt-4 max-w-2xl text-lg leading-relaxed text-blue-100">
-      Selected, reviewed notes on apparel warehousing, returns inspection and supply-chain
-      operations.
+    <p class="news-hero__description text-blue-100">
+      Explore industry trends and practical perspectives on apparel fulfilment, quality management
+      and returns.
     </p>
   </div>
 </section>
-
 <nav class="border-b border-gray-100 bg-white" aria-label="Insight categories">
   <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
     <div class="no-scrollbar flex gap-2 overflow-x-auto py-5">

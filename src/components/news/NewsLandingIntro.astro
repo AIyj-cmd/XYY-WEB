@@ -8,12 +8,14 @@ interface Props {
 const { category } = Astro.props
 ---
 
-<section class="relative py-16 overflow-hidden" aria-labelledby="news-hero-heading">
+<section class="news-hero relative overflow-hidden py-16" aria-labelledby="news-hero-heading">
   <img
-    src="/w-hq.webp"
+    src="/news-fashion-hero.webp"
     alt=""
     aria-hidden="true"
-    class="absolute inset-0 w-full h-full object-cover object-center"
+    width="2400"
+    height="1602"
+    class="absolute inset-0 w-full h-full object-cover object-[50%_35%]"
     fetchpriority="high"
   />
   <div
@@ -22,16 +24,13 @@ const { category } = Astro.props
     aria-hidden="true"
   >
   </div>
-  <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <p class="text-brand-orange font-semibold text-sm tracking-wider uppercase mb-3">行业动态</p>
-    <h1
-      id="news-hero-heading"
-      class="text-4xl lg:text-5xl font-black text-white leading-tight mb-4"
-    >
-      鞋服物流知识库
+  <div class="news-hero__content relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <p class="news-hero__eyebrow">行业洞察 · 仓配实务</p>
+    <h1 id="news-hero-heading" class="news-hero__title">
+      <span>看见行业变化</span><span>读懂鞋服仓配</span>
     </h1>
-    <p class="text-lg text-navy-100 max-w-2xl">
-      聚焦鞋服仓配、退货质检与供应链运营，持续发布经核验的行业洞察与实践内容
+    <p class="news-hero__description text-navy-100">
+      聚焦鞋服行业趋势，分享仓储履约、品质管理与退货处理的思考和实践。
     </p>
   </div>
 </section>

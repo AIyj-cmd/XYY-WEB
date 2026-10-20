@@ -1,8 +1,9 @@
 .cases-hero {
   position: relative;
   display: grid;
-  min-height: min(48rem, 100svh);
-  align-items: end;
+  height: 100vh;
+  min-height: 600px;
+  align-items: center;
   overflow: hidden;
   color: #fff;
   background: #07172e;
@@ -39,7 +40,7 @@
 
 .cases-hero__inner {
   z-index: 1;
-  padding: clamp(9rem, 19vh, 13rem) 0 clamp(4rem, 10vh, 7.5rem);
+  padding: 6rem 0 1.5rem;
 }
 
 .cases-kicker {
