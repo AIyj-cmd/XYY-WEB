@@ -85,7 +85,7 @@ if (command === 'assert' && mode === 'assert-fail') process.exit(17)
 `
 
 const npm = `#!/usr/bin/env node
-import { access, writeFile } from 'node:fs/promises'
+import { access, readFile, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 try {
   await access('scripts/build-fail.txt')
@@ -99,6 +99,7 @@ await writeFile(join(process.env.LHCI_REPORT_DIRECTORY, 'build-env.json'), JSON.
   PUBLIC_SITE_URL: process.env.PUBLIC_SITE_URL,
   LHCI_MODE: process.env.LHCI_MODE,
   LHCI_ENFORCE_THRESHOLDS: process.env.LHCI_ENFORCE_THRESHOLDS,
+  capacityBaseline: await readFile('output/capacity-baseline.json', 'utf8'),
 }))
 `
 

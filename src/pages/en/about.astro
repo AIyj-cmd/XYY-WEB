@@ -19,7 +19,7 @@ import {
   translateAboutOverview,
 } from '@/i18n/about-content'
 import { getEnglishSiteSettings } from '@/i18n/site-settings'
-import { createFaqSchema } from '@/lib/seo'
+import { createFaqSchema, createOrganizationSchema } from '@/lib/seo'
 import {
   getAboutContent,
   getAboutHistory,
@@ -51,13 +51,14 @@ const overview = translateAboutOverview(about.overview)
 const historyItems = translateAboutHistory(history)
 const honorItems = translateAboutHonors(honors)
 const faqItems = translateAboutFaqs(faqs)
+const orgSchema = createOrganizationSchema()
 const faqSchema = createFaqSchema(faqItems)
 ---
 
 <EnglishLayout
   title="About XINYIYUAN"
   description="Learn about XINYIYUAN Supply Chain, an apparel supply-chain operator based in Guangzhou."
-  jsonLd={faqSchema}
+  jsonLd={[orgSchema, faqSchema]}
   siteSettings={settings}
   showFloatingContact={false}
 >

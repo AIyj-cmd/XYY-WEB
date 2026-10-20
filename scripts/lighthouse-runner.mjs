@@ -16,7 +16,6 @@ const devices = { desktop: 'lighthouserc.cjs', mobile: 'lighthouserc.mobile.cjs'
 const defaultPorts = { desktop: 4400, mobile: 4401 }
 const require = createRequire(import.meta.url)
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
-
 function args(argv) {
   const [selection] = argv
   if (!['desktop', 'mobile', 'all'].includes(selection) || argv.length !== 1)
@@ -143,7 +142,10 @@ async function main() {
   const cleanupFailures = []
   await mkdir(reportRoot, { recursive: true })
   try {
-    workspace = await createLighthouseWorkspace({ projectRoot })
+    workspace = await createLighthouseWorkspace({
+      projectRoot,
+      capacityBaselineFile: process.env.CAPACITY_BASELINE_FILE,
+    })
     const environment = isolatedEnvironment(originValue, port, reportRoot, lhciOptions())
     await commandRunner.execute('npm', ['run', 'build'], {
       cwd: workspace,

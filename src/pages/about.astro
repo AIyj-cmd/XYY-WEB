@@ -20,7 +20,7 @@ import {
   getSiteSettings,
   getWarehouses,
 } from '@/lib/directus'
-import { createFaqSchema } from '@/lib/seo'
+import { createFaqSchema, createOrganizationSchema } from '@/lib/seo'
 
 const honorFallbacks = HONORS.map((title, index) => ({
   title,
@@ -49,30 +49,12 @@ const breadcrumbSchema = {
   ],
 }
 
-const orgSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'Organization',
-  '@id': `${BRAND.url}/#organization`,
-  name: BRAND.fullName,
-  alternateName: '新亦源',
-  url: BRAND.url,
-  foundingDate: String(BRAND.founded),
-  foundingLocation: { '@type': 'Place', name: '广州' },
-  description: BRAND.description,
-  telephone: [BRAND.phone.toll],
-  address: {
-    '@type': 'PostalAddress',
-    streetAddress: '果园一路2号',
-    addressLocality: '广州市黄埔区',
-    addressRegion: '广东省',
-    addressCountry: 'CN',
-  },
-}
+const orgSchema = createOrganizationSchema()
 const faqSchema = createFaqSchema(faqs)
 ---
 
 <Layout
-  title="关于新亦源｜广州新亦源供应链管理有限公司"
+  title="关于新亦源 XINYIYUAN｜广州新亦源供应链管理有限公司"
   description={`广州新亦源供应链管理有限公司2011年成立，专注鞋服仓配、退货质检和瑕疵修复，服务${CLAIM_TEXT.partnerBrands}品牌。了解新亦源的发展历程、仓网与服务能力。`}
   jsonLd={[breadcrumbSchema, orgSchema, faqSchema]}
   {siteSettings}

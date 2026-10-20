@@ -1,4 +1,4 @@
-import { access, readFile } from 'node:fs/promises'
+import { access, readFile, rm, writeFile } from 'node:fs/promises'
 import { afterEach, describe, expect, it } from 'vitest'
 
 import {
@@ -141,5 +141,22 @@ describe('Lighthouse runner contract', () => {
       LHCI_MODE: 'enforce',
       LHCI_ENFORCE_THRESHOLDS: JSON.stringify(thresholds),
     })
+  })
+
+  it('uses the CI-selected baseline when the project default is absent', async () => {
+    const fixture = await createLighthouseRunnerFixture()
+    fixtures.push(fixture)
+    const contents = '{"source":"runner-ci-selection"}\n'
+    const selected = `${fixture.external}/verify-release-baseline.json`
+    await rm(`${fixture.root}/output/capacity-baseline.json`)
+    await writeFile(selected, contents)
+
+    const result = await runFixture(fixture, 'desktop', { CAPACITY_BASELINE_FILE: selected })
+
+    expect(result.status, `${result.error?.message || ''}\n${result.stderr || ''}`).toBe(0)
+    const environment = JSON.parse(
+      await readFile(`${await readReportRoot(fixture)}/build-env.json`, 'utf8')
+    )
+    expect(environment.capacityBaseline).toBe(contents)
   })
 })

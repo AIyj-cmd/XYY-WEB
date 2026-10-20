@@ -2,7 +2,7 @@ export const homeUiZh = {
   hero: {
     imageAlt: '新亦源现代化仓储中心',
     eyebrow: '专注鞋服供应链 · 深耕15年',
-    brand: '新亦源鞋服云仓',
+    brand: '新亦源鞋服云仓 · XINYIYUAN',
     title: ['从入库质检到退货上架，', '鞋服仓配一次解决'],
     titleAria: '从入库质检到退货上架，鞋服仓配一次解决',
     subtitle:

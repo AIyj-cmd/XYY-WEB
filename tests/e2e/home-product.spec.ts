@@ -5,7 +5,7 @@ import { CASE_DETAILS } from '../../src/data/brand/case-details'
 test('homepage loads the shoe-apparel fulfillment message and primary CTA', async ({ page }) => {
   await page.goto('/')
 
-  await expect(page.getByText('新亦源鞋服云仓', { exact: true }).first()).toBeVisible()
+  await expect(page.getByText('新亦源鞋服云仓 · XINYIYUAN', { exact: true }).first()).toBeVisible()
   await expect(
     page.getByRole('heading', { name: /从入库质检到退货上架，.*鞋服仓配一次解决/ })
   ).toBeVisible()

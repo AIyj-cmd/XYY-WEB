@@ -6,7 +6,7 @@
 
 - 用户于 2026-10-16 明确要求后续远程环境只保留新 ECS `8.138.148.179`。旧测试/验收站 `wz.tomatopia.top`、`47.82.105.103` 已退出当前操作范围，不得再用于测试、健康检查、构建取数、部署或回退；本机与 CI 的 loopback 验证仍可使用。
 - 下方历史任务、角色日志和归档手册中的旧站操作仅记录当时事实，不构成当前操作指引或授权。2026-10-20 已实际核实 `56xyy.com` 与 `www.56xyy.com` 均解析至新 ECS，并按用户授权启用主域名 HTTPS；后续操作仍需核对实际解析。
-- 新 ECS 当前发布为 `20261020T052050Z-c6b7267`，2026-10-20 13:23:36 CST 切换；源码提交 `c6b7267dc3cc7a5fd2082a09db7c403879987681`。正式入口 `https://56xyy.com`，production、正常页面可收录；www、HTTP 与 HTTPS IP 308 跳转保持，apex/www HTTPS 启用 HSTS `max-age=86400`。上一版本 `20261020T032023Z-b60631f` 及配置备份 `/data/xyy/backups/seo-20261020-05` 保留。主工作区此前未部署的页脚/关于/新闻视觉修改仍未混入本次上线。
+- 新 ECS 当前发布为 `20261020T083310Z-c5ca1e4`，2026-10-20 16:36 CST 完成更新；源码提交 `c5ca1e4f7c8ada095c32acfeefb3a42609591c91`，包含本次从 GitHub 核实的 main `f9bcf4675b07e1639af888f54c093216ceeb8c17` 与既有原生 CMS 读取适配。正式入口 `https://56xyy.com`，沿用 production、收录、跳转和 HSTS 配置。此前已推送的页脚、关于、案例、新闻与白皮书视觉更新已纳入发布；主工作区并行 Task15 的未提交改动未混入。上一版本 `20261020T052050Z-c6b7267` 和所有更早 release 均保留，本次回退记录为 `/data/xyy/backups/native-update-20261020-14`；配置与非 Web 服务保持。发布后桌面/手机 16 组独立验收 PASS，Nova 最终 APPROVED，Task14 已验收关闭。
 
 ## Git 同步状态（2026-10-20）
 
@@ -14,7 +14,7 @@
 - 2026-10-20 15:48:06 CST 回读本地 HEAD、`origin/main` 与 GitHub API main 三者一致，ahead/behind 为 0/0、工作区干净。本节为同步后的事实补录，后续文档提交不改变应用内容；最新提交身份以 Git 引用及 `output/git-sync/xyy-20261020-13/` 的最终回读证据为准。
 - 最终 R3 隔离环境 `npm run verify` 与 `npm run format:check` 均通过：745 类型文件无错误/警告、5 个既有提示，146 个测试文件/1036 单测全部通过，Lint、910 文件维护预算、资源/缓存检查与构建通过。已补齐白皮书 FAQ 默认展开的三行既有测试断言；R2 Chromium 目标 E2E 1/1 通过，行数预算超限后 R3 仅删除三个空行，非空代码等值并复用浏览器证据。Luna R3 PASS、Nova APPROVED，Sol 已验收。
 - 上述回读时，应用提交的 [GitHub CI](https://github.com/AIyj-cmd/XYY-WEB/actions/runs/39388905483) 为 `in_progress`，未宣称远端 CI 通过。后续状态以 GitHub 和本次证据目录的实际回读为准。
-- 本次 Git 同步不部署网站；生产版本仍以本文件顶部的 `20261020T052050Z-c6b7267` 记录为准。联系表单诊断未实施业务修复。后续任务记录中的“未提交/推送”描述对应各自验收时点，本轮最终 Git 状态以本节与 Git 引用为准。
+- Task13 的 Git 同步本身未部署网站；随后 Task14 的生产更新以本文件顶部记录为准。联系表单诊断未实施业务修复。后续任务记录中的“未提交/推送”描述对应各自验收时点，实际 Git 状态以 Git 引用及所属任务证据为准。
 
 ## 协作记录约定
 
@@ -25,7 +25,13 @@
 
 ## 当前目标
 
-- `XYY-20261020-12 R2`：按用户授权只读连接新 ECS 排查联系提交。生产日志记录北京时间 2026-10-20 14:45:32 POST `/api/contact` 返回 503、耗时约 5.01 秒，同秒 Web 进入 Xiansuo 异常分支；同一匿名来源分组 14:45:49 返回 200、约 1.02 秒。高度吻合 5 秒下游超时门限，现有日志不足以确定底层原因或是否已落库。当前 release 仍为 `20261020T052050Z-c6b7267`，服务状态正常。只读发现该发布加载的线索接收配置仍为 `xs.tomatopia.top`，采样时 DNS 指向已退出操作范围的旧 IP；仅执行 DNS 解析；未向旧域名/IP 发起 HTTP/HTTPS、SSH、健康检查或业务请求，也未调用会访问它的 health。此为当前配置事实，不证明历史 DNS 或故障因果；后续须先核对接收服务归属与数据目的地，不能直接替换 URL。Luna 独立版本/服务/bundle 核验完成，Nova 诊断表述 APPROVED。未执行真实提交、数据库查询、修复、配置变更、重启或部署；证据 `output/contact-diagnosis/xyy-20261020-12/remote/`。
+- `XYY-20261020-16`：Lighthouse CI 缺容量基线与报告上传路径问题已本地修复，尚未提交、推送或触发 GitHub Actions。基于 main `f9bcf46` 的独立候选统一使用 CI 实测的外部 `CAPACITY_BASELINE_FILE`，复制至隔离工作区标准位置，保留默认/相对路径与失败检查；artifact glob 改为匹配 `<run-id>/<device>/`。7 个实现/测试文件已逐字节回填，1698 个非目标文件在回填前后保持。独立 26 项定向测试与完整 `npm run verify` 通过（146 文件/1042 单测、类型检查 0 errors/0 warnings、构建通过）；真实 Lighthouse 桌面/手机各 8 路径 × 3 次，共 48 份报告生成，命令 exit 0，临时工作区清理成功。Luna PASS、Nova APPROVED，Sol 已完成本地验收。observe 模式仍有 SEO 0.69 与手机关于页性能/LCP 警告，未调整阈值；本地结果不代表 GitHub hosted runner 已通过。生产仍为 Task14 的 `c5ca1e4`，Task15 保持；证据 `output/ci-lighthouse/xyy-20261020-16/sol/final-acceptance.json`。后续推送需用户对 GitHub 目标与动作明确授权。
+
+- `XYY-20261020-15`：英文品牌搜索关联已本地验收，尚未提交、推送或上线。中文首页/关于页的标题和可见品牌行加入 `XINYIYUAN`；中英四页统一 Organization 根标识、中文注册名、真实中英品牌别名与基础企业资料，根首页 WebSite 补英文别名，英文首页描述补品牌。8 个实现文件与 3 个测试文件在合同范围内，CMS/翻译/claims/路由和样式保持。独立验证 4 单测、5 项首页 E2E、R2 双项目 24 项品牌 E2E 通过；747 文件类型检查 0 errors/0 warnings/5 既有 hints，目标格式/Lint、912 文件维护预算及 diff 检查通过。审阅发现的截图并发覆盖已修正为逐测试独立路径，28 PNG 路径全部唯一。Luna R2 PASS、Nova APPROVED，Sol 已审阅 diff/截图并核对冻结 10 文件和 787 个保护文件无漂移。主预览 `http://127.0.0.1:4321/` 保持；仅本地 Chromium/移动模拟，未运行完整 verify/build/release 或提交 Search Console，不承诺收录/排名。Task14 的独立生产发布未包含本批次；证据 `output/seo/xyy-20261020-15/`。后续提交/部署须分别执行强制 verify / verify:release；推送与部署需对应的用户明确授权。
+
+- `XYY-20261020-14`：CLOSED，已按用户授权连接新 ECS 并更新 GitHub 最新代码。独立原生候选 `c5ca1e4` 相对 main `f9bcf46` 仅保留 3 个实现、6 个测试的既有 CMS 兼容；本次完整 `verify:release` exit 0，1046 单测、387 E2E/17 既有条件跳过、6 formal 通过，1702 源文件哈希保持，Luna R2 PASS、Nova 发布前 APPROVED。正式域名构建与制品验证后于 16:36 CST 部署成功，仅重启 Web；公网版本、页面 canonical 及新版新闻标题通过，配置、CMS/Nginx 进程、全部旧 release 保持，临时验收服务已清理。上线后 8 路径 × 桌面/手机共 16 组 HTTP、唯一 H1、布局、首屏图片及错误检查通过，版本精确匹配，未登录后台 GET 200；Luna PASS、Nova 最终 APPROVED，Sol 已读图并验收。独立候选已本地提交且干净，主工作区 Task15 并行修改保持；未推送 GitHub、改 CMS/数据库、DNS/TLS/Nginx 或既有环境，未触发 `/healthz` 或真实询盘。GitHub f9 CI 的额外 Lighthouse 报告步骤仍因缺少容量基线失败，与本次本地完整门禁分开记录；浏览器限 Chromium 模拟视口，联系链路未验收。证据 `output/release/xyy-20261020-14/final-result.json`。
+
+- `XYY-20261020-12 R2`：按用户授权只读连接新 ECS 排查联系提交。生产日志记录北京时间 2026-10-20 14:45:32 POST `/api/contact` 返回 503、耗时约 5.01 秒，同秒 Web 进入 Xiansuo 异常分支；同一匿名来源分组 14:45:49 返回 200、约 1.02 秒。高度吻合 5 秒下游超时门限，现有日志不足以确定底层原因或是否已落库。诊断当时 release 为 `20261020T052050Z-c6b7267`，服务状态正常。只读发现该发布加载的线索接收配置仍为 `xs.tomatopia.top`，采样时 DNS 指向已退出操作范围的旧 IP；仅执行 DNS 解析；未向旧域名/IP 发起 HTTP/HTTPS、SSH、健康检查或业务请求，也未调用会访问它的 health。此为诊断时配置事实，不证明历史 DNS 或故障因果；后续须先核对接收服务归属与数据目的地，不能直接替换 URL。Luna 独立版本/服务/bundle 核验完成，Nova 诊断表述 APPROVED。未执行真实提交、数据库查询、修复、配置变更、重启或部署；证据 `output/contact-diagnosis/xyy-20261020-12/remote/`。
 
 - `XYY-20261020-11`：用户在概况区重设计验证期间要求撤回，已恢复原四项数据布局。中文目录页与任务前基线逐字节一致，新增概览组件和 CSS 已移除；94 项保护 hash 保持。Terra 撤回、Luna 独立恢复核验 PASS：本地页 HTTP 200，原概况区与四项原值/标签存在，新标题与样式类不存在。此前首屏图片、尺寸和字号修改保留，预览 PID 98418 保持运行。原重设计未验收，过程证据保留于 `output/playwright/xyy-20261020-11/`；未提交、推送或部署。
 

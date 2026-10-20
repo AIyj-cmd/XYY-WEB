@@ -33,6 +33,8 @@ XYY-WEB 已运行于正式环境，当前处于稳定维护阶段。仓库根目
 
 | Task            | Risk   | Owner | Status    |
 | --------------- | ------ | ----- | --------- |
+| XYY-20261020-16 | MEDIUM | Sol → Terra → Luna → Nova | LOCAL_READY（缺文件修复，verify / 48 份 LH 报告通过；未推送 GitHub） |
+| XYY-20261020-14 | HIGH | Sol → Terra → Luna → Nova | CLOSED（c5ca1e4 已上线，Luna PASS / Nova 最终 APPROVED） |
 | XYY-20261020-05 | HIGH | Sol → Terra → Luna → Nova | CLOSED（c6b7267 已上线，Luna PASS / Nova APPROVED） |
 | XYY-20261019-10 | HIGH | Sol → Terra → Luna → Nova | CLOSED（应用 bd77a03 已推送 GitHub；verify/format PASS、Nova APPROVED，未部署） |
 | XYY-20261019-09 | MEDIUM | Sol → Terra → Luna → Nova | CLOSED（R2 鼠标移动跟随案例滑动，保留橙色数字与手机单卡；Luna PASS / Nova APPROVED） |
@@ -3058,3 +3060,32 @@ Limits：本轮限Chrome152模拟视口及离线/helper验证，空内容schema�
 - Nova 最终 APPROVED：99 路径完整、业务哈希保持、撤回实现不存在、报告与桌面一致且未发现凭据/用户手机号/外部依赖。审阅要求把 DEV_STATE 与本日志中的两处旧目标访问表述统一为“仅 DNS 解析，未发 HTTP/HTTPS、SSH、健康检查或业务请求”，已修正并通过 scoped diff-check；仅文档措辞，不重跑应用测试。Sol 据最终验证、Review 与用户 GitHub 推送授权验收候选；生产部署不在范围内。
 - Sol 精确暂存 99 路径并复核清单、凭据特征、whitespace 与提交树，提交 `5ab95b76e6b7578e9ee9741304821551e5a092a1` 后普通推送 `origin/main` 成功，未强推或改写历史。2026-10-20 15:48:06 CST 回读本地 HEAD、origin/main 与 GitHub API main 完全一致，ahead/behind 为 0/0、工作区干净；应用提交 CI `39388905483` 当时为 in_progress，未宣称通过。此处与 DEV_STATE 为已完成推送的事实补录，最新文档提交身份由 Git 引用和 ignored 最终回读记录确定。
 - 状态补录仅改 DEV_STATE/SOL，检查增量事实、格式与 diff，应用及报告字节保持最终候选，复用本轮完整 verify/format 与独立测试/Review。未部署网站、操作服务器或真实 CMS/数据库；新页面仍不代表生产已更新。
+
+#### XYY-20261020-14 — 新服务器更新 GitHub 最新代码
+
+- 用户明确要求连接 `8.138.148.179` 并更新 `AIyj-cmd/XYY-WEB` 最新代码；HIGH，按 Terra → Luna → Nova → Sol 完成。范围限 `/data/xyy` Web 发布、版本切换及 Web 重启；合同 `docs/plans/xyy-20261020-14-native-release.md`。初始主工作区干净，HEAD/main 为 `f9bcf4675b07e1639af888f54c093216ceeb8c17`；本次 fetch 与构建前 GitHub 回读确认该 SHA。主工作区随后出现 Task15 并行改动，全部保留且未混入发布。
+- 服务器以不可变 release 运行，无 `.git`，故从当前原生提交 `c6b7267` 在独立工作区集成 main，保留既有 CMS 读取兼容。候选相对 main 仅 3 个实现及 6 个测试差异，与旧生产兼容逻辑一致；1702 项文件冻结。Luna 完整门禁通过后，Sol 创建双亲合并提交 `c5ca1e4f7c8ada095c32acfeefb3a42609591c91`，候选保持干净；只提交独立候选，未提交主工作区或推送 GitHub。
+- Luna 有效 R2 `npm run verify:release` exit 0：148 文件/1046 单测、387 E2E 通过/17 项既有条件跳过、6 formal、类型/Lint/维护预算/资源缓存/构建及容量 preflight 通过；14 路径桌面/手机共 28 组检查通过。测试只用 loopback，guard 0 阻断事件，冻结源码无漂移。R1 runner 漏设 cwd，确认在主工作区后停止，exit 130 作废，不计入 PASS。完整原始证据保留。
+- Sol 正式构建 exit 0，client/server origin 均为 `https://56xyy.com`。制品 inventory 1043 项，增量 69 文件、删除 62 项，锁文件不变并复用已验证依赖；artifact SHA `e7294e43…390be`、archive SHA `92288a57…126d9`、发布器 SHA `8f089648…80a6c`。Nova 发布前 APPROVED，核对来源、CMS 契约、完整制品、凭据边界及本地 stub 成功/失败回退；上传前再次核对 current、配置和服务基线。
+- 2026-10-20 16:36:53–16:36:59 CST 上传后发布执行 exit 0。候选先在 50032 通过版本及 16 个 GET 路径验证，再切换 `/data/xyy/current` 到 `20261020T083310Z-c5ca1e4`，仅重启 `xyy-web`；live 50031 再验通过。旧 `20261020T052050Z-c6b7267` 与所有更早 release 保留，回退记录 `/data/xyy/backups/native-update-20261020-14`。配置 hash/mode/uid/gid、Directus/Nginx PID与启动时间保持；未变更 DNS/TLS/Nginx、既有环境或权限配置。
+- 上线后公网版本、页面、canonical 和新版新闻标题通过。Luna 有效 R3 对 8 路径做 1440×900/390×844 共 16 组检查，全部 HTTP 200、单 H1、无横溢、首屏图片有界解码通过、无页面/响应错误；版本精确匹配，未登录后台 GET 200。实际启用同源 GET 路由拦截，未发生禁止请求。Sol/Nova 亲看新闻和白皮书桌面/手机四张最终截图正常，Nova 最终 APPROVED，Sol 按 AC 验收 CLOSED。
+- 初版只读 postflight 用 `socket.bind` 检查烟测端口，TIME_WAIT 导致误判；保留 R1 原始输出，改用 `ss` 无 LISTEN 与临时 unit inactive/not-found/MainPID0 后通过，未改部署器或生产。Luna 初次实站验证等待全部懒加载图解码而未完成，作废样本保留，仅有界首屏检查的 R3 计入通过。独立验收服务/浏览器已清理，主预览 4321/PID 98418 保持。
+- GitHub main 的 CI `39389035875` 仍因额外 Lighthouse 报告步骤缺少 `output/capacity-baseline.json` 而失败，未宣称远端 CI 绿；本次精确候选的完整本地发布门禁与实站验收均通过。既有联系接收链未修复或验收，未执行 `/healthz`、真实 POST、CMS 写入、数据库操作或退役目标请求；浏览器限 Chromium 模拟视口。记录为 `output/release/xyy-20261020-14/final-result.json`，文档收尾只审阅本任务差异、格式与 whitespace，不重复已通过应用测试。
+
+#### XYY-20261020-15 — 英文品牌搜索关联本地优化
+
+- 用户在只读建议后要求“你看着来优化”，授权本地实现；MEDIUM，合同 `docs/plans/xyy-20261020-15-english-brand-seo.md`。基线 HEAD `f9bcf4675b07e1639af888f54c093216ceeb8c17`，初始已有 Task14 的 TERRA 日志和发布合同；后续 Task14 并行发布及状态记录完整保留，本任务未进入其发布候选。
+- Terra 在 8 个源文件增加稳定英文品牌字段与共用 Organization 构造，统一四页根实体、真实中文 legalName、中英 aliases、Logo/地址等既有资料；根首页 WebSite 补英文别名，中文标题/可见品牌行加入 XINYIYUAN，英文首页描述补品牌。没有改变 CMS 读取、翻译匹配、空值与回退、claims、路由或样式，未虚构英文注册名或 sameAs。补 1 项企业身份单测并更新既有首页品牌断言；Sol 核对实际 HTML，四页 Organization 全对象一致，canonical/hreflang 与修改前一致。
+- Luna 独立 PASS：2 文件/4 单测、首页产品 E2E 5/5、新品牌 E2E 初次有效单项目 12/12；747 类型文件 0 errors/0 warnings/5 既有 hints、11 文件目标 ESLint/Prettier、912 文件维护预算和 diff 检查通过。四页覆盖 1440×900、390×844、360×800，品牌文字可见、无遮挡/横溢。验证期间修正测试端口、英文大小写和 Page 类型，业务源码未因此返工；原先声明的本地验证不等于生产收录。
+- Nova 初审指出新增测试的固定截图路径会被默认两个 project 并发覆盖。R2 由 Terra 仅改回调参数和三处 `testInfo.outputPath()`，保留全部断言/视口；Luna 默认 chromium/mobile 双项目复测 24/24，28 PNG 的完整路径全部唯一。测试 SHA `3b4c7423f3643bf0011a8a8c6b34a104f2dfd599a6c9dcc07a10d93039935f34`。Nova 最终 APPROVED，记录 `output/seo/xyy-20261020-15/nova/final-review.json`。
+- Sol 已解析实际 Playwright 报告验证 5/5 与 R2 24/24，无失败/跳过；亲看中文首页桌面/窄屏、中文关于窄屏、英文首页手机与英文关于桌面截图。冻结 10 文件哈希一致，787 个范围外源/测试/配置文件不变，11 个最终源/测试路径均在合同内，按 AC 完成本地验收。主预览复用 `127.0.0.1:4321` / PID 98418；Terra 临时预览已关闭。
+- 仅本地 Chromium 与手机模拟；本轮没有运行完整 verify/build/verify:release，也未提交、推送、部署或执行 Search Console/其他外部写入。上线与索引效果未验证，不承诺排名或 AI 引用。收尾只核对本次合同/日志/状态的增量格式和 diff，复用已通过应用证据；后续提交/发布仍须执行对应强制门禁及授权核对。
+
+#### XYY-20261020-16 — Lighthouse CI 容量基线与报告路径修复
+
+- 用户在缺文件诊断后明确要求修复；MEDIUM，合同 `docs/plans/xyy-20261020-16-lighthouse-ci-baseline.md`。基线 main `f9bcf4675b07e1639af888f54c093216ceeb8c17`；主工作区已有 Task14 记录和 Task15 品牌改动，故在独立候选 `/home/yj/data/xyy-ci-fix-20261020-16` 实施并验证，仅回填本任务 7 文件。
+- Terra 将 CI 实测 `verify-release-baseline.json` 通过 `CAPACITY_BASELINE_FILE` 传入 workspace，复制到既有标准位置；保留默认路径，支持项目内相对路径及外部绝对路径，缺失/空值/目录/直接符号链接明确失败。沿用容量门禁、环境与 symlink 隔离、失败清理；CI 使用 runner 临时目录，desktop/mobile artifact glob 修正为含 run-id 的实际层级。未改依赖、页面或阈值。
+- Luna 改进工作流回归为具体 named step 和实际环境变量/命令绑定，避免其他 step 的同名变量误通过，未新增依赖。定向 3 文件/26 测试及完整 `npm run verify` exit 0：745 类型文件 0 errors/0 warnings/5 hints，146 文件/1042 单测、Lint、维护预算、资源/缓存与构建通过。默认 baseline 不存在，实际基线由本次测量生成在候选外；真实非法 JSON 容量门禁 exit 1，目录/直接符号链接拒绝且无临时工作区残留。
+- 真实 `npm run test:lhci:all` exit 0，run `2026-10-20T09-02-51-818Z-83bfd4c6`：桌面/手机各 8 路径 × 3 次，共 48 JSON 与 48 HTML；两端中位数汇总和 artifact glob 匹配，runtime/HTTP errors 为 0，LHR 资源主机仅 `127.0.0.1`。7 个子命令成功，`failure=null`、`workspaceRemoved=true`、`cleanupFailures=[]`；4400/4401 清理，4321/PID 98418 预览保持。
+- Luna PASS、Nova APPROVED；Sol 审阅最终 diff、QA 与 Review，核对候选 1700 tracked files 无漂移后，逐字节回填 7 个冻结文件，1698 个非目标文件回填前后保持，目标 `git diff --check` 通过。原始证据、冻结清单、回填记录与最终验收位于 `output/ci-lighthouse/xyy-20261020-16/`。收尾仅新增合同/状态/本日志的事实增量并检查格式，不重复已通过应用门禁。
+- 本地修复验收为 LOCAL_READY；未提交、推送、运行 GitHub Actions 或部署，生产仍是 Task14 发布。observe 的 SEO 0.69、手机关于页 performance/LCP 警告保留。Node guard 阻断一次非关键 Astro telemetry；LH 子进程按既有设计不继承 NODE_OPTIONS，LHR 主机证据不等于全链网络拦截。仅本地 Chromium/loopback，未访问真实 CMS/数据库或生产；Terra 初始 5 个 FAIL 仅有摘要，不冒充原始日志。GitHub 实际结果须在准确推送授权后验证。

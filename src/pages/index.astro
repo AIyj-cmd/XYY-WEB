@@ -12,7 +12,7 @@ import { CASE_FALLBACKS, createHomeCaseDetails } from '@/data/cases'
 import { BRAND, CASE_DETAILS } from '@/lib/brand'
 import { getClaimText } from '@/lib/claims'
 import { getHomepageStats, getServices, getCases, getFaqs, getSiteSettings } from '@/lib/directus'
-import { ORGANIZATION_ID, createBreadcrumbSchema, createFaqSchema } from '@/lib/seo'
+import { createBreadcrumbSchema, createFaqSchema, createOrganizationSchema } from '@/lib/seo'
 
 const [STATS, SERVICES, allCases, FAQS, siteSettings] = await Promise.all([
   getHomepageStats(HOME_STATS_FALLBACKS),
@@ -47,26 +47,7 @@ const caseCardMeta = CASES.map((c) => ({
 }))
 const caseDetailsWithDisplayImages = createHomeCaseDetails(CASES)
 
-const orgSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'Organization',
-  '@id': ORGANIZATION_ID,
-  name: BRAND.fullName,
-  alternateName: ['新亦源', '新亦源供应链'],
-  url: BRAND.url,
-  logo: `${BRAND.url}/logo.png`,
-  description: BRAND.description,
-  foundingDate: String(BRAND.founded),
-  telephone: [BRAND.phone.toll],
-  address: {
-    '@type': 'PostalAddress',
-    streetAddress: '果园一路2号',
-    addressLocality: '广州市黄埔区',
-    addressRegion: '广东省',
-    addressCountry: 'CN',
-  },
-  areaServed: { '@type': 'Country', name: '中国' },
-}
+const orgSchema = createOrganizationSchema()
 
 const webSiteSchema = {
   '@context': 'https://schema.org',
@@ -74,6 +55,7 @@ const webSiteSchema = {
   '@id': `${BRAND.url}/#website`,
   url: BRAND.url,
   name: BRAND.name,
+  alternateName: [BRAND.englishShortName, BRAND.englishName],
   description: BRAND.description,
   inLanguage: 'zh-Hans',
 }
@@ -84,7 +66,7 @@ const faqSchema = createFaqSchema(FAQS)
 ---
 
 <Layout
-  title="新亦源鞋服云仓｜鞋服仓储、质检、发货一体化服务"
+  title="新亦源 XINYIYUAN｜鞋服仓储与一体化仓配服务"
   description={`新亦源2011年成立，提供鞋服仓配、退货质检、瑕疵修复及全渠道库存管理。直营仓储${homeClaims.warehouseArea}，服务${homeClaims.partnerBrands}品牌，发货准确率与库存准确率${homeClaims.shippingAccuracy}。`}
   jsonLd={[orgSchema, webSiteSchema, breadcrumbSchema, faqSchema]}
   {siteSettings}

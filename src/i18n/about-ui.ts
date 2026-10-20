@@ -108,7 +108,7 @@ const en = {
 const zhCN = {
   hero: {
     eyebrow: '关于我们',
-    brand: '新亦源供应链',
+    brand: '新亦源供应链 · XINYIYUAN',
     titleLines: ['让每个品牌', '都有专业的', '出货能力'],
     overviewHeading: '关于新亦源',
     homeAria: '新亦源供应链首页',

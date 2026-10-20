@@ -1,4 +1,6 @@
 import { createRequire } from 'node:module'
+import { readFile } from 'node:fs/promises'
+import { resolve } from 'node:path'
 import { afterEach, describe, expect, it } from 'vitest'
 
 const require = createRequire(import.meta.url)
@@ -65,5 +67,30 @@ describe('Lighthouse CI configuration contract', () => {
       expect(assertion.aggregationMethod).toBe('median')
     }
     expect(config.ci.assert.assertions['largest-contentful-paint'][1].maxNumericValue).toBe(2500)
+  })
+
+  it('passes the measured CI baseline into the isolated Lighthouse workspace and uploads run reports', async () => {
+    const workflow = await readFile(resolve(process.cwd(), '.github/workflows/ci.yml'), 'utf8')
+    const namedStep = (name: string) => {
+      const marker = `      - name: ${name}\n`
+      const start = workflow.indexOf(marker)
+      expect(start, `workflow step not found: ${name}`).toBeGreaterThanOrEqual(0)
+      const next = workflow.indexOf('\n      - name: ', start + marker.length)
+      return workflow.slice(start, next === -1 ? workflow.length : next)
+    }
+    const lighthouseStep = namedStep('Collect median Lighthouse reports after production build')
+    const desktopUpload = namedStep('Upload desktop Lighthouse report')
+    const mobileUpload = namedStep('Upload mobile Lighthouse report')
+
+    expect(lighthouseStep).toContain('set -euo pipefail')
+    expect(lighthouseStep).toContain('capacity_dir="${RUNNER_TEMP}/xyy-capacity"')
+    expect(lighthouseStep).toContain('lighthouse_tmp="${RUNNER_TEMP}/xyy-lighthouse-tmp"')
+    expect(lighthouseStep).toContain('mkdir -p "$lighthouse_tmp"')
+    expect(lighthouseStep).toMatch(
+      /TMPDIR="\$lighthouse_tmp"\s*\\\s*\n\s*CAPACITY_BASELINE_FILE="\$\{capacity_dir\}\/verify-release-baseline\.json"\s*\\\s*\n\s*LHCI_CHROME_PATH="\$chrome_path" npm run test:lhci:all/
+    )
+    expect(lighthouseStep.match(/npm run test:lhci:all/g)).toHaveLength(1)
+    expect(desktopUpload).toContain('path: output/lighthouse/*/desktop/')
+    expect(mobileUpload).toContain('path: output/lighthouse/*/mobile/')
   })
 })

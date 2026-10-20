@@ -2658,3 +2658,33 @@ Health triage: 只读确认 health、权限契约、运行配置、相关客户�
 
 - Luna R2 已通过目标浏览器 E2E 与格式，但 `about-cases.spec.ts` 触发 220 行维护预算。本次只删除 `/cases`、`/supply-chain-whitepapers/` 与 `/yundao-zhineng-jijian` 前的三个既有空行；所有非空行按保存的 R2 副本逐行相同，首题 FAQ 三条断言和两条既有页脚背景断言均保持。
 - 自检 PASS：目标 Prettier、ESLint、`npm run check:maintainability`（910 files；报告该文件 220 行）与 `git diff --check` 均退出 0。R2 原文件 SHA-256 `fdb4889fc063e670e4b9da1f77133e20e1af465759a35dc4a2d2b2a25787b23f`，R3 候选为 `b34eec14e13443a607a08275a7798c004a420335fc33f832855e981b8d9a0c98`；等值检查确认非空行序列一致。证据 `output/git-sync/xyy-20261020-13/terra/r3/verification.md`。未重跑 Playwright、全量 verify、build；未提交、推送、部署或外部写入，待 Luna 最终 verify。
+
+### XYY-20261020-14 · 原生 Web 更新候选与发布执行器
+
+- 已在隔离工作树 `/home/yj/data/xyy-native-update-20261020-14` 从线上 `c6b7267dc3cc7a5fd2082a09db7c403879987681` 合并 GitHub 最新 main `f9bcf4675b07e1639af888f54c093216ceeb8c17`，使用 `--no-commit --no-ff`；自动合并无冲突。相对最新 main 的候选差异精确为既有原生 Directus 兼容的 3 个实现文件与 6 个测试文件；`git diff --cached --check` 通过。`output/release/xyy-20261020-14/terra/` 已冻结 1,702 个 tracked 文件的 SHA-256 清单、二进制 diff 与集成结果。
+- 同目录新增本地构建/增量包脚本、严格主机密钥的上传脚本和仅供 Sol 在获授权目标运行的远程执行器。构建器要求 Sol 创建精确双父 merge 提交且候选哈希不漂移，并要求 Luna `verify:release` PASS、容量基线及 loopback 网络 guard；产物以实际 merge SHA 标识并以锁文件一致为依赖复用前提。远程执行器只在 50032 版本和页面 loopback smoke 后切换 `current` 并重启 `xyy-web`；切换前后校验既有配置、Directus/Nginx 的 PID 与启动时间，失败回退旧 release。没有包含 Nginx/HSTS 变更、健康端点、真实表单提交、CMS/数据库操作或远程连接。
+- 自检 PASS：三份 Python 脚本 `py_compile`、冻结输入检查、候选 staged diff 格式检查。未执行生产构建、上传、远程执行、提交或部署；Luna 正在独立运行完整门禁，Sol commit 后才允许构建器继续。
+- R2：按 Sol 补充的上线覆盖要求，远程执行器的同一候选/上线 GET smoke 额外覆盖 `/en/about`、`/en/contact`、`/cases`、`/en/cases`、`/news`、`/en/news`、中英文白皮书页面；原首页、产品、服务、站点地图与 robots 检查保持。未改候选源码，仍无健康端点或提交请求。
+
+#### XYY-20261020-15 — 英文品牌搜索关联
+
+- 在 `BRAND` 增加稳定的 `XINYIYUAN` 与 `XINYIYUAN Supply Chain` 字段；`createOrganizationSchema()` 集中输出四页复用的同一 `Organization` 节点：根站 `@id`/URL、中文品牌名、已知中文法定名称、双语别名、Logo、既有描述和基础联系/地址/成立信息均一致，不新增 `sameAs` 或英文法定名称。根首页唯一 `WebSite` 保持根 URL，补两个英文别名。
+- `/`、`/en`、`/about` 与 `/en/about` 均改用共享组织节点。保留 `DocumentHead` 的英文标题后缀、canonical/hreflang、CMS 获取及翻译流程；中文首页和关于页标题补 `XINYIYUAN`，英文首页描述补品牌与鞋服仓配语境，中文两处既有可见品牌行自然追加 `XINYIYUAN`。仅同步首页 E2E 的精确旧品牌断言；新增单测仅覆盖组织身份输出契约，不以源码字符串替代页面验证。
+- 实施侧验证 PASS：目标 Prettier、ESLint、scoped `git diff --check`、Vitest 2 files/4 tests、`npm run typecheck`（0 errors，2 个既有第三方声明/CommonJS warnings）与 `npm run check:maintainability`（911 files）。独立 `dev:local` 在 45089 使用 loopback fake Directus，`LOCAL_DEV_READY` 的 `identityVerified=true` 后由 Terra SIGINT 清理，未碰 4321；按 Sol 交接，不在实施侧重复浏览器矩阵。未运行 build/full verify，未提交、推送、部署、真实 CMS/数据库或外部写入。精确命令、限制和 10 项源码 SHA-256 见 `output/seo/xyy-20261020-15/terra/implementation.md`；待 Luna 独立验证四页 HTML/JSON-LD/标题/canonical-hreflang、桌面手机可见性和更新后的首页断言，再交 Nova Review。
+
+#### XYY-20261020-15 R2 — Playwright 截图隔离修复
+
+- Nova 发现新增 `brand-identity.spec.ts` 将截图写入固定的 Luna 证据目录，可能污染并行项目。仅为每条测试注入 `testInfo`，并把 12 张页面截图及两张中文桌面局部截图改为 `testInfo.outputPath()`；断言、路由、视口、测试名与业务源码均未改。
+- 自检 PASS：目标 Prettier 写入及 check、ESLint、scoped `git diff --check` 均 exit 0。最终测试文件 SHA-256 为 `3b4c7423f3643bf0011a8a8c6b34a104f2dfd599a6c9dcc07a10d93039935f34`；证据 `output/seo/xyy-20261020-15/terra/r2-screenshot-paths.md`。未运行浏览器、E2E、typecheck、build 或完整 verify，未提交、推送、部署或访问 CMS/数据库；交 Luna 按合同双 project 24 项复测，随后 Nova R2 复审。
+
+### XYY-20261020-16 — Lighthouse CI 容量基线路径修复
+
+- Lighthouse 隔离工作区现在接受 `CAPACITY_BASELINE_FILE`：未配置时仍从项目根 `output/capacity-baseline.json` 读取；项目内相对路径按项目根解析；绝对 CI 文件仅接受常规非符号链接文件。缺失、空值、越出项目的相对路径或符号链接均明确失败，且不会留下工作区。选定源以复制方式写入工作区既有 `output/capacity-baseline.json`，不让构建继承外部路径；默认容量门禁、`.env`/dist/cache 排除和外部符号链接拒绝保持。
+- runner 将父进程选定路径传给工作区。CI Lighthouse step 使用先前的 `${RUNNER_TEMP}/xyy-capacity/verify-release-baseline.json` 与独立 `${RUNNER_TEMP}/xyy-lighthouse-tmp`；artifact glob 改为实际 run-id 层级下的 desktop/mobile 目录。未变更容量阈值、失败传播、页面、依赖、锁文件或生产配置。
+- 先以外部绝对、项目相对、缺失、空值和 runner 默认文件缺失五项回归观察到 5 个失败；实施后定向 Vitest 3 files/26 tests、目标 Prettier、ESLint、维护预算（runner 199 行）及 scoped `git diff --check` 均 PASS。证据和精确 SHA-256 位于 `output/ci-lighthouse/xyy-20261020-16/terra/implementation.md`。未运行完整 verify、真实 Lighthouse/GitHub CI、提交、推送、部署、CMS/数据库或外部服务；交 Luna 全量门禁和 loopback 真实 Lighthouse，后续 Nova 审阅路径、清理、glob 与隔离契约。
+
+### XYY-20261020-17 — Git 同步前来源核对
+
+- 只读核对冻结 `candidate-paths.txt` 的 26 路候选：当前 SHA-256 与 Task17 基线 26/26 一致；Task15 最终验收的 11 路与 Task16 最终验收的 7 路实现/测试/工作流文件均逐文件精确匹配，共 18/18。其余 8 路为 Task14/15/16 已验收计划与角色状态记录，来源映射见 `output/git-sync/xyy-20261020-17/terra/provenance.json`。
+- 静态检查 `.github/workflows/ci.yml`：仅触发 PR 与 main push 的 CI，未发现部署步骤或 ssh/scp/rsync/PM2/Nginx/kubectl/helm/ansible 命令，也没有项目生产或已退役目标；其中唯一 `curl` 仅下载固定 SHA-256 的 GitHub runner 原生依赖。`git diff --check` exit 0。
+- 未改业务/测试实现，未执行 `git add`、commit、push、部署、CMS/数据库/凭据读取或业务网络访问，也未重跑完整 verify；由 Luna 独立完整 verify，随后 Nova Review。日志与证据文件由本任务所有权新增，均在冻结候选快照之后，需 Sol 最终暂存范围核对。

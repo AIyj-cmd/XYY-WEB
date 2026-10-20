@@ -7,6 +7,8 @@ export const BRAND = {
   name: '新亦源供应链',
   fullName: '广州新亦源供应链管理有限公司',
   shortName: '新亦源',
+  englishShortName: 'XINYIYUAN',
+  englishName: 'XINYIYUAN Supply Chain',
   tagline: '让物流更简单·让服务更快捷',
   mission: '让发货更准确、高效、快捷',
   description: `广州新亦源供应链管理有限公司，总部位于广州，2011年成立，专注鞋服仓配与质检服务。合作品牌${seoClaim('partnerBrands')}，直营仓储${seoClaim('warehouseArea')}，服务门店${seoClaim('servedStores')}，管理SKU ${seoClaim('managedSkus')}。`,

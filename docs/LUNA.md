@@ -7162,3 +7162,104 @@ Regression coverage：R2→R3 测试源非空内容等值、维护性预算、�
 Remaining risks：浏览器行为本轮未重新执行，仅因 R3 变更经证据确认只删空行；验证仍限本地 CI loopback，未覆盖真实 CMS、数据库、生产环境、其他浏览器或设备，未提交、推送或部署。现有 4321/PID98418 预览保持运行。
 
 证据：[`source-delta.log`](../output/git-sync/xyy-20261020-13/luna/r3/source-delta.log)、[`verify.log`](../output/git-sync/xyy-20261020-13/luna/r3/verify.log)、[`format-check.log`](../output/git-sync/xyy-20261020-13/luna/r3/format-check.log)、[`final-assessment.log`](../output/git-sync/xyy-20261020-13/luna/r3/final-assessment.log)。
+
+#### XYY-20261020-14 — 原生发布候选独立门禁
+
+Task ID：`XYY-20261020-14`；Risk：HIGH；Result：**PASS（R2 有效）**。
+
+Tests performed：
+
+- 在候选 `/home/yj/data/xyy-native-update-20261020-14` 的正确工作目录内执行完整 `npm run verify:release`，实际 exit `0`。Vitest 为 **148 个文件 / 1046 tests passed**；Chromium 桌面与手机 E2E 为 **387 passed / 17 existing conditional skipped**；formal contract 为 **6 passed**；最终 Astro server build 完成。`verify-release.exit` 与 `capacity-preflight.exit` 均为 `0`，容量 wrapper 峰值为 `1,452,711,936` bytes、`13,122` inodes。证据：[`verify-release.log`](../output/release/xyy-20261020-14/luna/verify-release.log)、[`capacity-baseline.json`](../output/release/xyy-20261020-14/luna/capacity-baseline.json)。
+- Node egress guard 只允许 loopback；本次记录 584 个 guard 安装事件、0 个 blocked 事件，未访问旧站、真实 CMS、数据库或外部依赖。构建与测试的 Directus/Xiansuo 均指向 loopback mock。环境和依赖解析见 [`environment.txt`](../output/release/xyy-20261020-14/luna/environment.txt)：`http-cache-semantics` 解析至候选 `scripts/vendor`，lock SHA 保持 `d5e8013d…0d77ec`。
+- 冻结 tracked manifest SHA `55cc8b713df2186f95fe73b84c2d2afd8f3198566b321a2599cbc5ebf4feb3d7`；source-before/after 均为 1702/1702，前后 mismatch `0`。证据：[`source-before.json`](../output/release/xyy-20261020-14/luna/source-before.json)、[`source-after.json`](../output/release/xyy-20261020-14/luna/source-after.json)。Sol 随后仅创建 merge metadata commit `c5ca1e4f7c8ada095c32acfeefb3a42609591c91`，parents 为 `c6b7267dc3cc7a5fd2082a09db7c403879987681` 与 `f9bcf4675b07e1639af888f54c093216ceeb8c17`。
+- 依据本次 14 路径增量做独立页面验收：桌面 `1440×900` 与手机 `390×844` 各 **14/14 HTTP 200**，每页单一 H1、无横向溢出、无 console/page/bad-response 错误；`product-zh` 与 `services-en` 各记录一次页面切换视频源的既有 `ERR_ABORTED`，没有 HTTP 失败。矩阵和 28 张截图见 [`matrix-summary.json`](../output/playwright/xyy-20261020-14/matrix-summary.json)。矩阵 server/browser 已清理，4399/4401/4402 无监听；4321/PID 98418 保持。
+- Terra 三脚本仅做本地静态/输入核验：`py_compile` exit `0`，`build-package.py --check-inputs` 返回 `INPUTS_VALID`；未调用 upload/deploy。最终 SHA 分别为 `build-package.py=e6ee948d557db0b96c486707c1b425891acc44796531205771cdabbc11efa475`、`upload.py=d4524ef2970f54e674e6f03c33d16198f13700f34cd9a37a96c20757f6cdaea3`、`ops/deploy.py=8f0896486ace52ffb78fcab3e5e32af54e2abefaff3a04be64c83a328be80a6c`。静态检查未发现 `healthz`、HTTP POST 或 Nginx mutation；deploy probe 为 GET。证据：[`terra-script-static-check.json`](../output/release/xyy-20261020-14/luna/terra-script-static-check.json)。
+
+Regression coverage：完整 typecheck、lint、maintainability、assets/cache checks、Vitest 148/1046、Chromium E2E 桌面/手机、formal contract、最终 build、loopback CMS fallback、Node egress guard、容量 preflight、冻结 source hash 前后核对，以及 14 路径桌面/手机页面矩阵。没有重复访问生产或真实表单。
+
+Remaining risks：R1 runner 曾漏设候选 cwd，实际 `/proc/157301/cwd` 为主工作区 `/home/yj/data/website`，该轮 exit `130` 已保留并明确作废；R2 在候选 cwd 内的 exit `0` 才是本次 PASS 依据，见 [`verify-release-r1-environment-error.log`](../output/release/xyy-20261020-14/luna/verify-release-r1-environment-error.log)。Luna 未执行 production build、部署或上线后浏览器检查，Sol/Nova 门禁仍适用；未执行真实 CMS/数据库、`/healthz`、真实 POST、外部依赖或生产写入；浏览器为 Chromium 桌面/手机模拟，未覆盖真机、Safari/Firefox。GitHub `f9bcf467` CI 的 Lighthouse median artifact ENOENT 属独立 CI 报告，不改变本地候选门禁结论。
+
+最终结构化结果：[`final-result.json`](../output/release/xyy-20261020-14/luna/final-result.json)。
+
+#### XYY-20261020-14 R-live — 上线后只读浏览器验收
+
+Task ID：`XYY-20261020-14`；Result：**PASS**。
+
+Tests performed：
+
+- 对已部署 `https://56xyy.com` 的 `/`、`/about`、`/cases`、`/en/cases`、`/news`、`/en/news`、`/supply-chain-whitepapers/`、`/en/supply-chain-whitepapers` 做 Chromium 只读检查；桌面 `1440×900` 与手机 `390×844` 共 **16/16 组通过**。每组 HTTP `200`、单一 H1、无横向溢出、首屏可见 Hero 图片在 5 秒有界解码检查内完成且 `naturalWidth>0`、可见控件数大于 0；无 console/page error、HTTP 失败或坏响应。
+- 浏览器 `page.route('**/*')` 实际拦截规则仅允许 `56xyy.com` 的 GET 以及 `data:`/`blob:` 资源，拒绝非 GET、`/healthz` 和外部/旧地址；本次请求无被拦截项，未发起禁止请求。未登录 `GET /admin/` 两视口均 HTTP `200`，未登录、未提交表单。
+- `GET /version` 两视口均 HTTP `200`，精确匹配 `gitSha=c5ca1e4f7c8ada095c32acfeefb3a42609591c91`、`gitShortSha=c5ca1e4`、`releaseId=20261020T083310Z-c5ca1e4`、`environment=production`。
+- 重点桌面/手机 news 与 whitepaper 截图已实际读图；全部 16 张截图、原始 CLI 输出和有限解码脚本见 [`live/`](../output/playwright/xyy-20261020-14/live/)、[`desktop-r3-matrix.raw`](../output/playwright/xyy-20261020-14/live/desktop-r3-matrix.raw)、[`mobile-r3-matrix.raw`](../output/playwright/xyy-20261020-14/live/mobile-r3-matrix.raw)。结构化结果见 [`live-result.json`](../output/release/xyy-20261020-14/luna/live-result.json)。
+- 结束后仅清理本任务的 desktop/mobile 浏览器会话；确认 4321/PID 98418 仍监听，未触碰主预览。
+
+Regression coverage：8 个指定中英文入口的桌面/手机首屏、HTTP/H1/布局宽度、Hero 图片解码、可见控件、错误响应与页面错误、同源 GET 策略、production `/version` 身份和未登录 `/admin/` 可达性；未重复完整 E2E 或扩展矩阵。
+
+Remaining risks：验证限 Chromium 桌面/手机模拟，未覆盖真机、Safari/Firefox；按上线后只读边界未执行登录、POST、`/healthz`、CMS/数据库或外部地址请求。路由拦截规则实际启用且本次零拦截，禁止请求行为未通过人为发起来测试。
+
+#### XYY-20261020-15 — 英文品牌搜索关联独立验证
+
+Task ID：`XYY-20261020-15`；Result：**PASS**。
+
+Tests performed：
+
+- `npx vitest run tests/unit/brand-identity.test.ts tests/unit/english-about-ui.test.ts` exit `0`：2 files、4 tests passed。
+- `PLAYWRIGHT_PORT=4321 PLAYWRIGHT_ARTIFACTS_DIR=output/seo/xyy-20261020-15/luna/home-product-e2e npx playwright test tests/e2e/home-product.spec.ts --project=chromium` exit `0`：5/5 passed，覆盖既有首页品牌文案回归。
+- `PLAYWRIGHT_PORT=4321 PLAYWRIGHT_ARTIFACTS_DIR=output/seo/xyy-20261020-15/luna/brand-e2e-r3 npx playwright test tests/e2e/brand-identity.spec.ts --project=chromium --workers=1` exit `0`：12/12 passed。四页 `/`、`/en`、`/about`、`/en/about` 均覆盖 `1440×900`、`390×844`、`360×800`。
+- `npm run typecheck` exit `0`：747 files，0 errors、0 warnings、5 hints；相关 11 文件 ESLint exit `0`、Prettier check exit `0`、`npm run check:maintainability` exit `0`（912 files）、scoped `git diff --check` exit `0`。
+- Sol `frozen-candidate.json` 的 10 个冻结源/测试文件哈希全部匹配（hash check exit `0`）。Luna 新增 [`brand-identity.spec.ts`](../tests/e2e/brand-identity.spec.ts) SHA-256：`e6bc3ef193710e27fa47215db5711bbaeebd20458f1726d41f5023f7a4b95fa9`。
+- Playwright CLI 独立访问 4321 主预览并记录中文首页桌面、中文关于页手机的真实 title/brand/overview/canonical 与宽度；原始结果见 [`browser-evidence.md`](../output/seo/xyy-20261020-15/luna/browser-evidence.md) 及 [`cli/`](../output/seo/xyy-20261020-15/luna/cli/)。重点截图为 [`cli-home-zh-1440.png`](../output/seo/xyy-20261020-15/luna/cli-home-zh-1440.png)、[`cli-about-zh-390.png`](../output/seo/xyy-20261020-15/luna/cli-about-zh-390.png)、[`home-zh-brand.png`](../output/seo/xyy-20261020-15/luna/home-zh-brand.png)、[`about-zh-overview.png`](../output/seo/xyy-20261020-15/luna/about-zh-overview.png)；四页三视口完整截图在同一 Luna 目录。
+
+Regression coverage：真实 DOM 品牌可见性与中英文 UI、标题/语言、四页唯一 Organization、统一 `/#organization` 与根 URL、中文法定名称、真实中英 aliases/logo、无 `sameAs`、根页唯一 WebSite 与英文 aliases、canonical、双向 hreflang、桌面/手机文字滚动后无遮挡和 `scrollWidth === clientWidth`；相关单测、首页产品 E2E、类型、Lint、格式、维护预算和冻结候选哈希均已复核。未访问真实 CMS、数据库、生产或外部依赖。
+
+Remaining risks：验证限本地 Chromium 与 4321 loopback 主预览，未覆盖真机、Safari/Firefox；按本轮合同未运行 full `npm run verify`、build 或 `verify:release`，未提交、推送、部署或执行 CMS/数据库/外部写入。主预览 PID 98418 保持运行。实现文件未由 Luna 修改；本任务仅新增 `tests/e2e/brand-identity.spec.ts`、Luna 日志和 `output/seo/xyy-20261020-15/luna/` 证据。
+
+#### XYY-20261020-15 R2 — 双 project 截图隔离独立复测
+
+Task ID：`XYY-20261020-15`；Result：**PASS**。
+
+Tests performed：
+
+- 沿用可信 `http://127.0.0.1:4321/` 主预览（PID `98418`），未停止或替换服务。测试文件 SHA-256 为 `3b4c7423f3643bf0011a8a8c6b34a104f2dfd599a6c9dcc07a10d93039935f34`。
+- 按合同执行 `PLAYWRIGHT_PORT=4321 PLAYWRIGHT_ARTIFACTS_DIR=output/seo/xyy-20261020-15/luna/brand-e2e-r2-dual npx playwright test tests/e2e/brand-identity.spec.ts --workers=2`，exit `0`；默认 Chromium 12/12、mobile 12/12，共 24/24 passed。
+- R2 截图隔离核对 exit `0`：共 28 PNG；Chromium 14、mobile 14；每 project 各 12 张常规截图及 `home-zh-brand.png`、`about-zh-overview.png` 两张额外截图；所有完整路径唯一。两 project 14 个 basename 的重合是预期的，实际目录路径分别含 `-chromium` / `-mobile`，无覆盖。
+- Sol 冻结的 10 个文件 SHA-256 复核 exit `0`，全部保持匹配。R2 期间未修改源码或测试。
+
+Regression coverage：复测完整双 project 的四页品牌身份 E2E、三种视口、标题/语言、Organization 与 WebSite JSON-LD、canonical/hreflang、品牌可见性和无横溢/遮挡；重点截图路径隔离问题已被 `testInfo.outputPath` 修正并实证通过。
+
+Remaining risks：本轮仅复测双 project E2E 与截图/冻结哈希，不重复 full verify、build 或无关检查；验证仍限本地 Chromium/mobile 模拟，未覆盖真机、Safari/Firefox、真实 CMS、数据库、生产或外部写入，未提交、推送或部署。证据见 [`r2-dual-evidence.md`](../output/seo/xyy-20261020-15/luna/r2-dual-evidence.md) 与 [`png-paths.txt`](../output/seo/xyy-20261020-15/luna/brand-e2e-r2-dual/png-paths.txt)。
+
+#### XYY-20261020-16 — Lighthouse CI 容量基线路径独立验证
+
+Task ID：`XYY-20261020-16`；Result：**PASS**。
+
+Tests performed：
+
+- 在候选 `/home/yj/data/xyy-ci-fix-20261020-16` 中显式 `cd` 并断言 `pwd`，4400/4401 启动前无监听。Luna 仅改进 [`tests/unit/lighthouse-config.test.ts`](../../xyy-ci-fix-20261020-16/tests/unit/lighthouse-config.test.ts) 的测试约束：按 named step 提取实际 workflow 文本，精确断言 Lighthouse step 的外部 `CAPACITY_BASELINE_FILE`、专用 `TMPDIR`、Chrome 环境、唯一 `npm run test:lhci:all`，并分别核对 desktop/mobile artifact glob；未新增依赖。
+- 定向回归 exit `0`：3 files、26 tests。容量包裹的最终 `npm run verify` exit `0`：typecheck 745 files、0 errors/0 warnings/5 hints；Vitest 146 files/1042 tests；维护性、assets/cache 与 build 全部通过。基线由本次 `capacity-baseline.mjs` 真实生成至证据目录，测量时未设置 `CAPACITY_BASELINE_FILE`；候选默认 `output/capacity-baseline.json` 保持不存在。
+- 真实 `npm run test:lhci:all` exit `0`，loopback `127.0.0.1:4400` 完成 desktop/mobile 各 8 路径×3 次，共 **48 LHR**；两端 summary 均 `routeCount=8`、`runCount=3`、`aggregation=median`，report glob `output/lighthouse/*/desktop/` 与 `.../mobile/` 均各匹配 24 份 JSON/HTML。`run.json` 为 `failure=null`、`workspaceRemoved=true`、`cleanupFailures=[]`，临时 workspace 无残留。
+- 独立 boundary probe 实际拒绝 baseline 目录与符号链接，且 workspace 根为空；非法 JSON 经真实 `check-capacity.mjs` exit `1`。冻结清单 1700 tracked files 前后 mismatch `0`；7 个候选文件最终 SHA 与证据已记录。
+- LHR 中所有 network-request 主机仅 `127.0.0.1`，runtime error/HTTP error 均为 0。父 Node egress guard 记录并阻断 1 次非关键 `telemetry.astro.build` TLS 尝试；runner 的 `isolatedEnvironment` 明确不传递 `NODE_OPTIONS`，因此 LH 子进程 guard 不宣称为全链覆盖。未访问真实 CMS、数据库、生产或外部写入。
+
+Regression coverage：容量基线默认/相对路径/外部绝对路径、缺失/空值、环境隔离、失败传播、workspace 清理、`.env`/dist/cache/外部 symlink 隔离；workflow named step 的实际 env/命令/artifact glob；完整 verify；真实 48 份 Lighthouse 报告、8 路由、桌面/手机中位数汇总与 loopback 网络主机核对。
+
+Remaining risks：GitHub Actions workflow 未推送或真实运行，本轮证据为本地 workflow 合同解析与 loopback 执行；LHCI observe 模式有已记录性能告警（所有页面 SEO 0.69，mobile about 还有 performance/LCP），未改阈值；验证限指定 Chromium/Lighthouse 版本，未覆盖真机、Safari/Firefox、真实 CMS/数据库或生产环境。Terra 实施前 5 个失败仅有 implementation.md 摘要，没有独立原始日志。
+
+结构化结果：[`final-result.json`](../output/ci-lighthouse/xyy-20261020-16/luna/final-result.json)。
+
+#### XYY-20261020-17 — Git 同步候选隔离门禁独立验证
+
+Task ID：`XYY-20261020-17`；Result：**PASS**。
+
+Tests performed：
+
+- 候选 `/home/yj/data/xyy-git-sync-20261020-17` 基于 `f9bcf4675b07e1639af888f54c093216ceeb8c17`。R1 因候选 `node_modules` 共享符号链接使 `http-cache-semantics` 解析至主工作区 vendor，`npm run verify` exit `1`（`runtime_does_not_resolve_local_patch`）；`npm run format:check` exit `0`。按 Sol 授权仅在候选复制依赖目录，R2 运行时解析已指向候选 `scripts/vendor`，未改主仓库依赖或业务/测试代码。
+- R2 完整 Vitest 为 147 files、1043 tests 中 144 files/1040 passed，3 个既有 5 秒超时：`cms-initial-case-content`、`cms-initialization-acceptance-cli`、`local-dev-port`。三文件随后用单 worker 定向复测 30/30 passed，且 R3 maxWorkers=4 的完整 1043 tests 通过；这些结果与并行资源压力相容，但未证明唯一因果。R2 原始失败日志保留。
+- R3 在 loopback 假 Directus/Xiansuo、清洁环境并设置 `VITEST_MAX_WORKERS=4` 下重新执行容量包装的原始 `npm run verify`，exit `0`：typecheck 747 files（0 errors/0 warnings/5 hints）、147 files/1043 tests、维护性 912 files、资源/缓存检查和 Astro server build 全部通过。真实容量基线峰值为 device `66310` 的 `406425600` bytes、`1177` inodes。最终 `npm run format:check` exit `0`。
+- 候选源码 18 路径及主工作区对应 18 路径验证前后 SHA-256 均无漂移；候选 `git diff --check` exit `0`。Task15 品牌 24 路 E2E 与 Task16 Lighthouse 48 报告按 18/18 精确哈希一致复用历史验收证据，本次未重复浏览器/LHCI。
+
+Regression coverage：完整 typecheck、Lint、维护性预算、public assets、cache patch、Vitest 147/1043、server build、Prettier format check、候选依赖解析、真实容量测量、18 路候选/主工作区源码哈希稳定性；未读取真实 `.env`，未访问真实 CMS、数据库、生产或旧远程环境，未停止 `127.0.0.1:4321`/PID98418。
+
+Remaining risks：GitHub Actions 未在本地验证中运行；浏览器/Lighthouse 证据为 Task15/16 精确哈希一致时的历史结果，未覆盖新的 CI runner 行为。R1/R2 失败原件保留，最终 R3 PASS 使用 `VITEST_MAX_WORKERS=4` 控制并发；R2 默认并发的超时与并行资源压力相容，但未证明唯一因果。未提交、推送或部署。
+
+证据：[`final-result.json`](../output/git-sync/xyy-20261020-17/luna/final-result.json)、[`verify-r3.log`](../output/git-sync/xyy-20261020-17/luna/verify-r3.log)、[`format-final.log`](../output/git-sync/xyy-20261020-17/luna/format-final.log)、[`source-hashes-final.diff`](../output/git-sync/xyy-20261020-17/luna/source-hashes-final.diff)、[`main-hashes-final.diff`](../output/git-sync/xyy-20261020-17/luna/main-hashes-final.diff)。

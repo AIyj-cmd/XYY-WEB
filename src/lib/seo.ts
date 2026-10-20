@@ -2,6 +2,31 @@ import { BRAND } from './brand'
 
 export const ORGANIZATION_ID = `${BRAND.url}/#organization`
 
+export function createOrganizationSchema() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    '@id': ORGANIZATION_ID,
+    name: BRAND.name,
+    legalName: BRAND.fullName,
+    alternateName: [BRAND.shortName, BRAND.englishShortName, BRAND.englishName],
+    url: BRAND.url,
+    logo: `${BRAND.url}/logo.png`,
+    description: BRAND.description,
+    foundingDate: String(BRAND.founded),
+    foundingLocation: { '@type': 'Place', name: BRAND.locations.south.city },
+    telephone: [BRAND.phone.toll],
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: '果园一路2号',
+      addressLocality: '广州市黄埔区',
+      addressRegion: '广东省',
+      addressCountry: 'CN',
+    },
+    areaServed: { '@type': 'Country', name: '中国' },
+  }
+}
+
 export function absoluteUrl(pathname = '/') {
   return new URL(pathname, `${BRAND.url}/`).href
 }

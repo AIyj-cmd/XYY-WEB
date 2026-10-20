@@ -14,7 +14,7 @@ import { englishClaim } from '@/i18n/claims'
 import { createEnglishHomeCaseDetails, translateCases } from '@/i18n/cases'
 import { translateHomeFaqs, translateHomeServices, translateHomeStats } from '@/i18n/home-content'
 import { getEnglishSiteSettings } from '@/i18n/site-settings'
-import { createFaqSchema, ORGANIZATION_ID } from '@/lib/seo'
+import { createFaqSchema, createOrganizationSchema } from '@/lib/seo'
 import '@/styles/english-cases.css'
 
 const [statsSource, servicesSource, casesSource, faqsSource, siteSettings] = await Promise.all([
@@ -40,19 +40,12 @@ const homeClaims = {
   servedStores: englishClaim('servedStores', 'home'),
   coveredCities: englishClaim('coveredCities', 'home'),
 }
-const orgSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'Organization',
-  '@id': ORGANIZATION_ID,
-  name: 'XINYIYUAN Supply Chain',
-  url: `${BRAND.url}/en`,
-  inLanguage: 'en',
-}
+const orgSchema = createOrganizationSchema()
 ---
 
 <EnglishLayout
   title="Apparel fulfilment in China"
-  description="Apparel warehousing, quality inspection, fulfilment and returns operations for brands doing business in China."
+  description="XINYIYUAN Supply Chain provides apparel warehousing, quality inspection, fulfilment and returns operations for brands doing business in China."
   jsonLd={[orgSchema, createFaqSchema(faqs)]}
   {siteSettings}
 >

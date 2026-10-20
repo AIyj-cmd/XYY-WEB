@@ -1,4 +1,4 @@
-import { access, mkdir, mkdtemp, readdir, rm, writeFile } from 'node:fs/promises'
+import { access, mkdir, mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, describe, expect, it } from 'vitest'
@@ -42,6 +42,9 @@ describe('Lighthouse workspace isolation', () => {
       await expect(access(join(workspace, '.astro'))).rejects.toThrow()
       await expect(access(join(workspace, 'node_modules/.vite'))).rejects.toThrow()
       await expect(access(join(workspace, 'src/index.html'))).resolves.toBeUndefined()
+      await expect(
+        readFile(join(workspace, 'output/capacity-baseline.json'), 'utf8')
+      ).resolves.toBe('{}\n')
     } finally {
       await removeLighthouseWorkspace(workspace)
     }
@@ -78,6 +81,78 @@ describe('Lighthouse workspace isolation', () => {
       createLighthouseWorkspace({ projectRoot: fixture.root, temporaryRoot: fixture.root })
     ).rejects.toThrow('lighthouse_workspace_must_be_outside_project')
   })
+
+  it('copies a selected absolute baseline when the CI default is absent', async () => {
+    const fixture = await createLighthouseRunnerFixture()
+    fixtures.push(fixture)
+    const selected = join(fixture.external, 'verify-release-baseline.json')
+    const contents = '{"source":"external-ci"}\n'
+    await rm(join(fixture.root, 'output/capacity-baseline.json'))
+    await writeFile(selected, contents)
+
+    const workspace = await createLighthouseWorkspace({
+      projectRoot: fixture.root,
+      temporaryRoot: process.env.TMPDIR,
+      capacityBaselineFile: selected,
+    })
+    try {
+      await expect(
+        readFile(join(workspace, 'output/capacity-baseline.json'), 'utf8')
+      ).resolves.toBe(contents)
+      await expect(readFile(selected, 'utf8')).resolves.toBe(contents)
+    } finally {
+      await removeLighthouseWorkspace(workspace)
+    }
+  })
+
+  it('resolves a selected relative baseline from the project root', async () => {
+    const fixture = await createLighthouseRunnerFixture()
+    fixtures.push(fixture)
+    const contents = '{"source":"project-relative"}\n'
+    await mkdir(join(fixture.root, 'output/ci'), { recursive: true })
+    await writeFile(join(fixture.root, 'output/ci/verify-release-baseline.json'), contents)
+
+    const workspace = await createLighthouseWorkspace({
+      projectRoot: fixture.root,
+      temporaryRoot: process.env.TMPDIR,
+      capacityBaselineFile: 'output/ci/verify-release-baseline.json',
+    })
+    try {
+      await expect(
+        readFile(join(workspace, 'output/capacity-baseline.json'), 'utf8')
+      ).resolves.toBe(contents)
+    } finally {
+      await removeLighthouseWorkspace(workspace)
+    }
+  })
+
+  it.each([
+    [
+      'missing',
+      'output/ci/missing-baseline.json',
+      /lighthouse_workspace_capacity_baseline_missing/,
+    ],
+    ['invalid', '', /lighthouse_workspace_invalid_capacity_baseline/],
+  ])(
+    'fails and cleans the workspace for a %s selected baseline',
+    async (_label, selected, expected) => {
+      const fixture = await createLighthouseRunnerFixture()
+      fixtures.push(fixture)
+      const temporaryRoot = await mkdtemp(join(process.env.TMPDIR || tmpdir(), 'luna-lh-baseline-'))
+      try {
+        await expect(
+          createLighthouseWorkspace({
+            projectRoot: fixture.root,
+            temporaryRoot,
+            capacityBaselineFile: selected,
+          })
+        ).rejects.toThrow(expected)
+        await expect(readdir(temporaryRoot)).resolves.toEqual([])
+      } finally {
+        await rm(temporaryRoot, { recursive: true, force: true })
+      }
+    }
+  )
 
   it('cleans the partially copied workspace when an input is missing', async () => {
     const fixture = await createLighthouseRunnerFixture()
