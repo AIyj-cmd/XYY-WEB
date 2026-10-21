@@ -33,10 +33,10 @@ XYY-WEB 已运行于正式环境，当前处于稳定维护阶段。仓库根目
 
 | Task            | Risk   | Owner | Status    |
 | --------------- | ------ | ----- | --------- |
-| XYY-20261021-04 | HIGH | Luna → Nova → Sol | IN_PROGRESS（用户已授权GitHub同步；verify/format PASS，未部署） |
-| XYY-20261021-03 | HIGH | Terra → Luna → Nova → Sol | LOCAL_READY（正文图片代理修复；Luna R5 PASS / Nova R2 APPROVED；未推送部署） |
-| XYY-20261021-02 | LOW | Sol → Terra → Luna | LOCAL_READY（仅首页主标题；目标测试和两视口 PASS；用户要求暂不推送） |
-| XYY-20261021-01（文章分离） | HIGH | Sol → Terra → Luna → Nova | LOCAL_READY（1070 单测 / 英文 E2E 9/9，Nova R2 APPROVED；待真实 CMS 与发布授权） |
+| XYY-20261021-04 | HIGH | Luna → Nova → Sol | SYNCED（应用9f0961e已到GitHub；本地/远端一致，未部署；随后仅补录文档） |
+| XYY-20261021-03 | HIGH | Terra → Luna → Nova → Sol | GIT_SYNCED（Task04；正文图片修复已推送，未部署） |
+| XYY-20261021-02 | LOW | Sol → Terra → Luna | GIT_SYNCED（Task04；首页主标题已推送，未部署） |
+| XYY-20261021-01（文章分离） | HIGH | Sol → Terra → Luna → Nova | GIT_SYNCED（Task04；仍待真实 CMS 与发布授权） |
 | XYY-20261020-16 | MEDIUM | Sol → Terra → Luna → Nova | LOCAL_READY（缺文件修复，verify / 48 份 LH 报告通过；未推送 GitHub） |
 | XYY-20261020-14 | HIGH | Sol → Terra → Luna → Nova | CLOSED（c5ca1e4 已上线，Luna PASS / Nova 最终 APPROVED） |
 | XYY-20261020-05 | HIGH | Sol → Terra → Luna → Nova | CLOSED（c6b7267 已上线，Luna PASS / Nova APPROVED） |
@@ -3173,3 +3173,11 @@ Limits：本轮限Chrome152模拟视口及离线/helper验证，空内容schema�
 - Luna本轮fresh loopback npm run verify exit0：766类型文件0errors/0warnings/6hints、151文件1082单测、930文件预算、构建通过；全量/目标格式与diff通过，63基线hash零漂移，pending gate保持。既有英文9项、首页和正文图片2项E2E按源码相同复用，不扩张全量浏览器。
 - GitHub连接器核实仓库default main及权限，gh API回读远端main984461e。标准HTTPS Git超时，官方备用HTTPS也失败；官方SSH443已用meta主机密钥验证，但无本机授权，未新增账号密钥或改origin。备用传输只创建与本地一致tree/commit，再对main expected旧SHA且force=false快进；不打印/写凭据、不绕过分支保护。脚本与具体提交范围须经Nova审阅后才写远端。
 - 当前提交/推送尚未执行，不宣称Git已同步；证据output/git-sync/xyy-20261021-04。
+
+
+### XYY-20261021-04 — GitHub 应用推送与状态回读
+
+- Nova APPROVED_FOR_AUTHORIZED_GITHUB_SYNC，审阅64路径、敏感信息/禁止产物/精确公开百度验证文件、pending schema和无自动部署CI；API脚本逐项审阅通过。Luna本轮fresh verify/format已通过，提交前无业务源码变化，完整验证不重复。
+- Sol精确stage64路径，非文档文件与验证基线hash一致，staged diff-check通过；正常UTC本地应用提交9f0961e5d68650c0fac17f05a09f0c815ad1d338。API dry-run核parent984461e、64个A/M 100644路径与tree，apply创建tree675edd08072a2a116fd3be8f57de8326cd87d006及完全相同commit SHA，再经GitHub连接器expected_sha=984461e、force=false更新唯一main，成功；未改origin/账号密钥，未绕过分支保护。
+- 2026-10-21 18:08 CST API回读GitHub main与本地HEAD一致，origin/main仅据实更新；ahead/behind 0/0、工作区干净。GitHub应用CI39582314743为in_progress，未称通过。此后仅补录DEV_STATE、SOL及Task04合同的实际Git状态，再同步文档；最终文档身份与回读见Git引用及output/git-sync/xyy-20261021-04/final-result.json。
+- Task01/02/03代码已同步GitHub，生产均未应用；本次无部署、真实CMS/数据库/权限操作，schema release gate保持pending。历史“暂不推送/未提交”仅指对应验收时点。文档补录审阅精确diff、格式及diff-check，不改应用，不重复完整业务测试；既有源码/测试hash继续保持。
