@@ -11,17 +11,12 @@ const now = new Date('2026-09-29T00:00:00.000Z')
 const source = {
   id: 1,
   status: 'published' as const,
-  title: '中文文章',
   slug: 'published-english',
-  summary: '中文摘要',
-  category: '行业资讯',
-  content: '<p>中文正文</p>',
+  category: 'industry-news',
+  content: '<p>Reviewed English body.</p>',
   published_at: '2026-09-28T00:00:00.000Z',
-  title_en: 'Published English article',
-  summary_en: 'Reviewed English summary.',
-  content_en: '<p>Reviewed English body.</p>',
-  english_status: 'published' as const,
-  english_published_at: '2026-09-28T00:00:00.000Z',
+  title: 'Published English article',
+  summary: 'Reviewed English summary.',
 }
 
 describe('English news adapter', () => {
@@ -35,16 +30,16 @@ describe('English news adapter', () => {
     __setDirectusRequesterForTests(null)
   })
 
-  it('keeps old CMS records without English fields out of the English list', async () => {
-    const requester = vi.fn(async () => [{ ...source, title_en: undefined }])
+  it('keeps empty independent records out of the English list', async () => {
+    const requester = vi.fn(async () => [{ ...source, title: undefined }])
     __setDirectusRequesterForTests(requester)
 
     await expect(getPublishedEnglishNews()).resolves.toEqual([])
     expect(requester).toHaveBeenCalledWith(
-      'news',
+      'english_news',
       expect.objectContaining({
         fields: ['*'],
-        filter: expect.not.objectContaining({ english_status: expect.anything() }),
+        filter: expect.objectContaining({ status: { _eq: 'published' } }),
       })
     )
   })
@@ -52,10 +47,8 @@ describe('English news adapter', () => {
   it.each([
     { status: 'draft' as const },
     { status: 'archived' as const },
-    { english_status: 'draft' as const },
-    { english_status: 'archived' as const },
-    { english_published_at: '2026-09-30T00:00:00.000Z' },
-    { content_en: '<p>&nbsp; </p>' },
+    { published_at: '2026-09-30T00:00:00.000Z' },
+    { content: '<p>&nbsp; </p>' },
   ])('rejects source or English records that are not publicly complete', async (override) => {
     __setDirectusRequesterForTests(async () => [{ ...source, ...override }])
 
@@ -63,12 +56,12 @@ describe('English news adapter', () => {
   })
 
   it.each([
-    { title_en: '\u200B' },
-    { summary_en: '\u200D' },
-    { summary_en: '\u200C' },
-    { content_en: '<p>&ZeroWidthSpace;</p>' },
-    { content_en: '<p>&#8203;</p>' },
-    { content_en: '<p>&shy;</p>' },
+    { title: '\u200B' },
+    { summary: '\u200D' },
+    { summary: '\u200C' },
+    { content: '<p>&ZeroWidthSpace;</p>' },
+    { content: '<p>&#8203;</p>' },
+    { content: '<p>&shy;</p>' },
   ])('rejects invisible-only English values from the list and detail', async (override) => {
     __setDirectusRequesterForTests(async () => [{ ...source, ...override }])
 
@@ -76,13 +69,13 @@ describe('English news adapter', () => {
     await expect(getEnglishNewsArticle(source.slug)).resolves.toBeNull()
   })
 
-  it('returns a localized public article only after both editions are published', async () => {
+  it('returns an independent public article when its own record is published', async () => {
     __setDirectusRequesterForTests(async () => [source])
 
     await expect(getEnglishNewsArticle(source.slug)).resolves.toMatchObject({
-      title: source.title_en,
+      title: source.title,
       category: 'Industry news',
-      published_at: source.english_published_at,
+      published_at: source.published_at,
     })
   })
 
@@ -101,9 +94,9 @@ describe('English news adapter', () => {
     __setDirectusRequesterForTests(async () => [
       {
         ...source,
-        title_en: 'Returns 👩‍💻 guide',
-        summary_en: 'Teams coordinate across São Paulo.',
-        content_en: content,
+        title: 'Returns 👩‍💻 guide',
+        summary: 'Teams coordinate across São Paulo.',
+        content,
       },
     ])
 
@@ -119,8 +112,8 @@ describe('English news adapter', () => {
     __setDirectusRequesterForTests(async () => [
       {
         ...source,
-        title_en: '<Returns>',
-        summary_en: '<guide>',
+        title: '<Returns>',
+        summary: '<guide>',
       },
     ])
 

@@ -1,4 +1,8 @@
 import { getDirectusApiUrl, getDirectusContentToken, requestItems } from './directus-client'
+import { collectNewsRichTextAssetIds } from './news-rich-text'
+import { toPublishedEnglishNewsArticle } from './news-english'
+import type { EnglishNewsRecord } from './news-english-types'
+import { parseNewsPublicationTime } from './news-publication-time'
 import type { DirectusCollection } from './directus-types'
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
@@ -6,12 +10,16 @@ const REFERENCE_CACHE_MS = 5_000
 const references = [
   ['cases', 'image_file'],
   ['news', 'cover_image'],
+  ['english_news', 'cover_image'],
   ['publications', 'cover_file'],
   ['publications', 'pdf_file'],
   ['service_pages', 'hero_image'],
   ['about_history', 'image_file'],
   ['about_honors', 'image_file'],
 ] as const satisfies readonly (readonly [DirectusCollection, string])[]
+
+const newsCollections = new Set<DirectusCollection>(['news', 'english_news'])
+const canonicalSlug = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 
 let cache: { expiresAt: number; ids: Set<string> } | null = null
 let cacheRead: Promise<Set<string>> | null = null
@@ -24,24 +32,75 @@ function relationId(value: unknown) {
   return ''
 }
 
+function isPublicNewsRow(item: Record<string, unknown>) {
+  return (
+    item.status === 'published' &&
+    typeof item.slug === 'string' &&
+    canonicalSlug.test(item.slug) &&
+    typeof item.published_at === 'string' &&
+    (parseNewsPublicationTime(item.published_at) ?? Infinity) <= Date.now()
+  )
+}
+
+function isEnglishNewsRecord(
+  item: Record<string, unknown>
+): item is EnglishNewsRecord & Record<string, unknown> {
+  return (
+    typeof item.id === 'number' &&
+    typeof item.title === 'string' &&
+    typeof item.slug === 'string' &&
+    typeof item.summary === 'string' &&
+    typeof item.category === 'string'
+  )
+}
+
+function publicInlineContent(collection: DirectusCollection, item: Record<string, unknown>) {
+  if (collection === 'english_news')
+    return isEnglishNewsRecord(item) ? (toPublishedEnglishNewsArticle(item)?.content ?? null) : null
+  return isPublicNewsRow(item) && typeof item.content === 'string' ? item.content : null
+}
+
 async function readPublishedAssetIds() {
   const rows = await Promise.all(
     references.map(async ([collection, field]) => {
       const filter: Record<string, unknown> = { status: { _eq: 'published' } }
-      if (collection === 'news') {
+      if (newsCollections.has(collection)) {
         filter.published_at = { _nnull: true, _lte: '$NOW' }
       }
       return requestItems<Record<string, unknown>[]>(collection, {
         filter,
-        fields: [field],
+        fields: newsCollections.has(collection)
+          ? [
+              field,
+              'id',
+              'content',
+              'slug',
+              'status',
+              'published_at',
+              'title',
+              'summary',
+              'category',
+            ]
+          : [field],
         limit: -1,
       })
     })
   )
   return new Set(
-    rows.flatMap((items, index) =>
-      items.map((item) => relationId(item[references[index][1]])).filter(Boolean)
-    )
+    rows
+      .flatMap((items, index) => {
+        const [collection, field] = references[index]
+        return items.flatMap((item) => {
+          const inlineContent = newsCollections.has(collection)
+            ? publicInlineContent(collection, item)
+            : null
+          return [
+            relationId(item[field]),
+            ...(inlineContent ? [...collectNewsRichTextAssetIds(inlineContent)] : []),
+          ]
+        })
+      })
+      .filter(Boolean)
   )
 }
 

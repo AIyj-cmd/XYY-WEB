@@ -22,6 +22,7 @@ describe('CMS setup domains', () => {
       'warehouses',
       'cases',
       'news',
+      'english_news',
       'faqs',
       'case_details',
       'case_stats',

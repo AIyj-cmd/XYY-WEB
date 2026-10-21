@@ -4164,3 +4164,183 @@ Result：**APPROVED**。未发现 correctness、architecture、security、Scope�
 Remaining Risks：GitHub Actions 尚未针对新提交运行；本地 workflow 审阅与历史精确哈希证据不等于 hosted runner 成功。远端基线记录于 2026-10-20 17:30:44 +08:00，当时本地 HEAD、`origin/main` 与 GitHub API main 均为 `f9bcf467…8c17`、ahead/behind 0/0；Sol 普通推送前必须再次回读，意外分叉即停止。敏感特征扫描是有限模式；验证限本地 loopback，没有测试真实 CMS、数据库、生产、部署或外部写入。
 
 Handoff：**APPROVED** 返回 Sol。追加本日志后须重新冻结精确 26 路，并复核 staged 路径/hash、whitespace、敏感特征和禁止产物；18 路实现/测试/CI 任一 hash、目标远端、普通推送方式或授权边界变化都会使批准失效。首次推送后若仅以同一 Task ID 在 `DEV_STATE.md` 与 `docs/SOL.md` 机械补录实际 commit、远端、CI 与未部署事实，且 18 路 hash、workflow、lock/toolchain 均不变，可复用本次本地 R3/Nova 门禁；收尾提交前仍须精确核对仅两路 staged diff，并做 whitespace/格式、敏感项与产物检查。任何源码、测试、workflow、计划、依赖、配置、其他角色日志、目标远端或授权变化都不能复用。每次 main push 都会产生独立 GitHub Actions run，必须按精确 commit 分开记录，不能把本地 PASS、首次 push 的 CI 或文档收尾描述成部署。结构化结论：`output/git-sync/xyy-20261020-17/nova/review.json`。
+
+#### XYY-20261020-18 — 发布后最终 Review
+
+Task ID：`XYY-20261020-18`（HIGH，发布后只读 Review）。
+
+Review Scope：审阅精确上传/部署记录、最终 postflight、source-postdeploy、Sol 视觉证据，以及 Luna 上线后有效隔离复测。当前 `current`、loopback `/version` 和 Luna 双视口公网 `/version` 均精确指向已批准提交 `7d7cdabcd3cea1e0e26fe7fc207fc49da08041d5` / release `20261020T102057Z-7d7cdab`；上传的 artifact/archive/inventory/deploy runner hash 与发布前批准逐项一致。Nova 未连接或变更生产。
+
+Architecture：**PASS**。部署 exit 0，仅 `xyy-web` 在 18:24:42 CST 发生预期重启；`xyy-directus` 与 Nginx 的 PID、启动时间、active/substate 和 unit path 与基线完全一致。旧 release 全部保留，依赖仅在 lock 不变前提下复用，main/candidate 发布后仍分别为 `984461e…33b2c` 与干净的 `7d7cdab…41d5`。最终 QA runner 为每条路由创建独立 context/page，在 close 前冻结路由事件并单列 teardown 事件，消除跨路由归属污染而未弱化断言。
+
+Security：**PASS**。上传七项 hash 与批准值一致；postflight 确认配置 hash/mode/uid/gid、非 Web 服务均保持，50032 无监听，临时 unit 为 inactive/not-found、MainPID 0。部署与实站证据中没有 healthz、POST、真实联系提交、直接 CMS 管理/数据库操作、CMS/数据库写入、Nginx 改动或退役/外部目标。最终浏览器守卫仅允许 `https://56xyy.com` 同源 GET 和 data/blob；有效轮 blocked 与 teardown-blocked 均为 0。
+
+Maintainability：**PASS**。发布后未改业务或生产制品。共享 page 的 R1 **12/16 FAIL** 原件保留；全局过滤 `ERR_ABORTED` 的 exit-0 轮明确标记 filtered-invalid，未作为通过。最终 runner 通过逐路由隔离修复归属，源码中没有 `ERR_ABORTED` 过滤，README 已准确更新为生产严格 16/16 已执行。
+
+Contract Risks：**PASS**。两视口版本身份精确为 schemaVersion 1 / production / 当前 release/commit。8 路由 × 桌面手机均 HTTP 200、expected path/canonical、单一 H1、无横溢且有可见控件。四个品牌页在两视口均通过可见中英文品牌/标题与唯一 Organization 契约，根首页 WebSite 契约精确。CMS 成功空内容、错误分类与回退边界未变；验收方未直接调用 CMS 管理/数据库接口，也未写入 CMS/数据库。页面 GET 可能按站点既有路径触发服务端 CMS 读取，不宣称全链路未访问 CMS。
+
+Test Coverage Review：**PASS**。唯一有效线上复测绑定 runner SHA-256 `7473a0f6…727d` 与 result `2cbd3a7d…e2e2c`，exit 0、**16/16**、`failures=[]`。16 组全部 HTTP 200；26/26 首屏可见图片完整解码；route failed、teardown failed、bad response、console error、page error、blocked 与 teardown blocked 均为 0；品牌 Organization 8/8、根 WebSite 2/2 精确，16 张截图存在。Sol 审阅首页/关于桌面手机四图；Nova 抽查最终中文桌面首页/案例与英文手机关于/新闻，未发现导航、品牌、CTA、Hero/视频控件、裁切或溢出阻断。R1 `24bb129a…69efb` 与 filtered-invalid `2596ef85…d7eb` 均只作为失败历史，完全排除于 PASS。
+
+Result：**APPROVED**。发布版本、制品、current、配置/服务边界、旧 release、严格线上 GET 矩阵、品牌/结构化数据和视觉证据均与批准对象一致；未发现上线后的 correctness、architecture、security、Scope、maintainability、CMS/API contract、数据边界或回归阻断项。
+
+Remaining Risks：线上浏览器限 Chromium 桌面/手机模拟与 8 个代表首屏，不覆盖真机、Safari/Firefox、全部路由或所有 below-fold lazy 图片。未执行登录、POST、真实联系提交、healthz、直接 CMS 管理/API、数据库查询/写入或外部目标，联系接收链仍在范围外；页面 GET 可能触发站点自身服务端 CMS 读取。候选与 live readiness 各出现一次有界 `URLError` 后自行就绪，最终身份和全部 GET 通过且未触发回退。上线后 QA runner 的修正只影响证据归属、不影响已部署 artifact/deploy runner；最终批准绑定严格 runner `7473a0f6…727d`。
+
+Handoff：最终 **APPROVED** 返回 Sol，可关闭 Task 18。结构化结论：`output/release/xyy-20261020-18/nova/final-review.json`。Nova 仅写本日志与 Review JSON，未连接远端、重新部署、重启服务、修改业务/测试、写 CMS/数据库或执行其他生产动作。
+
+### XYY-20261021-01 — 英文文章独立后台集合 Review
+
+Task ID：`XYY-20261021-01`（HIGH，本地候选 Review）。
+
+Review Scope：审阅合同、18 个应用文件、相关迁移/权限/前台测试、Luna R6 完整验证与 R7 独立夹具复测。当前 HEAD 为基线 `984461e17dfcae7e7d1324a9fa530fb742133b2c`；18 文件当前 SHA-256 与 Luna R7 冻结值逐项一致。`.gitignore`、百度验证检查器/测试/文件、Task18 计划及其他角色日志属于并行或历史修改，未归入本任务。Nova 只追加本日志和 ignored Review JSON，未改实现/测试、未访问真实 CMS/数据库/远程环境。
+
+Architecture：**REJECTED**。迁移与公开适配器没有复用同一套“实质内容”判定：`scripts/lib/english-news-separation-migration.mjs:17-21,27-32` 只剥离标签、`&nbsp;` 和有限 Unicode，而 `src/lib/news-english.ts:29-39` 在清洗后按完整不可见字符规则判定。纯函数复现中，旧正文 `<p>&#8203;</p>` 得到 `issues=[]` 并生成 `status=published` 的迁移记录，但同一正文经公开适配器返回 `null`。迁移随后仍会在回读后隐藏旧字段，违反“不完整内容写前显式阻止”以及迁移与公开可见性一致的合同。
+
+Security：**REJECTED**。`config/cms-contract.mjs:13` 将 `english_news` 作为默认 runtime-read active collection，`config/cms-collections.mjs:3-10` 因此把它加入通用权限集合；`scripts/setup-cms.mjs:43-47` 默认调用通用同步，而 `scripts/lib/content-policy-sync.mjs:34-74` 在 `DIRECTUS_CUSTOM_PERMISSION_RULES` 未显式为 true 时对现有或新权限写入 `permissions: null`。内存模拟确认默认写体为 `english_news/read/fields=['*']/permissions=null`。这会创建或覆盖 `scripts/sync-english-news-read-policy.mjs:15-20` 专用脚本要求的 published-only 规则，使后续普通 `setup-cms` 执行撤销精确策略；与只为指定 policy 配置 `english_news` published read 的边界冲突。
+
+Maintainability：**REJECTED**。`scripts/lib/english-news-separation-schema.mjs:4-19,54-67` 只比较字段 type、required、少量 schema 键和发布时间 conditions；它不比较 status/category choices、字段关键 UI metadata，也不检查额外 required 字段。纯函数复现中，既有集合移除 `archived` choice 后仍返回 `issues=[]`、零变更；加入额外 `chinese_required` 非空字段也返回同样结果。`scripts/lib/english-news-separation-readback.mjs:19-33` 复用相同不完整比较，因此会把错误 Studio 表单判为回读成功；额外 required 字段还可能让记录 POST 在此前 schema/navigation 写入之后才失败。
+
+Contract Risks：**FAIL**。上述三项分别破坏迁移前完整性阻断、read-policy 最小权限及既有集合三状态/无额外必填字段契约。其余抽查项未发现新的阻断：新集合定义本身为 non-singleton、draft 默认和 published/draft/archived 三状态；旧中文英文五字段与 group 未删除；发布时间 core 对 4008 输入/8016 比较等值；前台从独立集合读取并对 draft/future/非法 slug/空正文 fail closed，401/403/非法响应不走 unavailable fallback；媒体引用增加 `english_news` 且含发布时间门控；详情互链只在另一语言同 slug 真实公开时生成；schema status 仍为 `pending_release_gate`。
+
+Test Coverage Review：Luna 证据真实但不足以覆盖上述风险。R6 完整 `npm run verify` 为 exit 0：757 类型文件、149 单测文件/1062 tests、Lint/预算/资源/缓存/build 通过；R7 明确没有重跑全量，实际为 typecheck exit 0、25 项定向 Vitest、English Playwright 9/9 及 1440/390/360 六张 list/detail PNG，应用与测试冻结哈希均未漂移。现有测试覆盖新建集合 happy path、部分迁移冲突和专用权限 CLI，却未覆盖迁移判定与公开清洗一致性、通用 `setup-cms` 对专用权限的覆盖、既有集合缺 archived choice 或额外 required 字段的拒绝/收敛。
+
+Result：**REJECTED**。当前本地候选不能进入 Sol 最终验收或把 CMS schema gate 标记为 verified。阻断项均有当前代码与本地纯函数/内存模拟依据，不依赖未授权真实 Studio 操作。
+
+Remaining Risks：真实 Directus Schema、指定 policy 权限、Studio 左侧顺序以及列表/新建/编辑表单的桌面/移动 UI 均未获授权且未验证；本 Review 不把 mock API/前台 Chromium 当作后台或生产验收。未执行真实 CMS/数据库/权限、部署、push、远程读取或凭据访问。
+
+Handoff：返回 Sol，沿用原 Task ID 交 Terra 最小返工：统一迁移与公开内容完整性判定；确保通用 setup 不会创建或覆盖专用 `english_news` published-only 权限；对既有集合的关键 choices/metadata 与额外 required 字段写前拒绝或安全收敛，并补对应回归。之后按合同 Luna 复测，再交 Nova 重审。结构化证据：`output/english-news-admin/xyy-20261021-01/nova/review.json`。
+
+#### XYY-20261021-01 R2 — 英文文章独立后台集合返工 Review
+
+Task ID：`XYY-20261021-01`（HIGH，R2 本地候选 Review）。
+
+Review Scope：只复核首轮三个 HIGH finding 的 R8 实现修复、R9 contract test 类型收窄、22 个应用文件与相关测试/夹具冻结、Luna R9 fresh 验证及本地 `local_ready` 边界。当前 HEAD 仍为基线 `984461e17dfcae7e7d1324a9fa530fb742133b2c`；22 个应用文件和全部列入清单的测试/夹具当前 SHA-256 与 Luna R9 after 值逐项一致，before/after diff 均为空。并行 Baidu 四文件哈希未漂移，未归入本任务或回退。
+
+Architecture：**PASS**。`src/lib/sanitize-core.mjs` 成为原富文本清洗的唯一无副作用 JavaScript core，`src/lib/news-english-visibility.mjs` 在其上集中英文标题/摘要可见性与清洗后正文判定；迁移预检和公开适配器分别从同一模块导入，不再复制两套语义。旧 sanitizer 对 487 个样本与新 core 输出等值，时间 core 继续保持 4008 输入/8016 比较等值；`node --no-experimental-strip-types` 可直接导入共享可见性模块。迁移仍保存原始 `content_en`，公开端仍在输出前清洗，没有扩大为正文重写。
+
+Security：**PASS**。`scripts/lib/content-policy-sync.mjs:6,54-63` 对 `english_news` 无条件生成 `{status:{_eq:'published'}}`，因此通用 `setup-cms` 的 create/update 路径都不会再以 `permissions:null` 覆盖专用规则；中文 `news` 在默认模式仍保持原 `permissions:null`，其他集合只有既有全局 `publishedOnly` 开关为 true 时才收紧。专用 policy CLI 的准确 target/environment marker、精确 policy/scope、深比较、写后回读与重复零写逻辑未被削弱。
+
+Maintainability：**PASS**。`scripts/lib/english-news-separation-schema.mjs:4-63` 对定义中声明的 interface/display/width/required/hidden/readonly/special/options/conditions/group 及关键 schema 属性做归一化比较，并在 `:106-112` 拒绝非系统生成的额外 required 字段；API 返回的 JSON 字符串 options 与对象 key 顺序得到归一化，等价形状不会误报。系统 `id`、主键、自增和 readonly special 字段被排除于人工必填冲突。R9 只把 contract test fixture 收窄为显式 `ApiField` 并运行时验证 choices，未改 22 个应用文件。
+
+Contract Risks：**PASS**。首轮三项 finding 均闭环：实体零宽字符、实际零宽字符和 soft hyphen 正文现在得到 `incomplete_legacy_record` 并在 apply 前 **0 writes**，图片正文与 ZWJ emoji 仍有效；通用权限同步只对 `english_news` 固定 published-only；缺 archived/status choices、category choices 漂移及额外人工 required 字段均在写前显式报错，完整 API 归一化 schema 可通过并由相同 planner 回读。新集合仍为 non-singleton、draft 默认及 published/draft/archived 三状态；中文字段、中文发布流程、失败分类、媒体时间门控、同 slug 真实公开互链与 pending release gate 均保持。
+
+Test Coverage Review：**PASS**。Luna R9 fresh `npm run verify` exit 0：760 type files、0 errors/0 warnings、150 Vitest files/1070 tests、Lint、925 文件维护预算、assets/cache/build 均通过。针对返工的 7 files/62 tests、三个独立探针和 `node --no-experimental-strip-types` 探针均 exit 0；English Playwright 9/9 通过，并生成 1440/390/360 的 list/detail 六张截图。Nova 独立重放三个最小纯函数/内存探针，确认不可见正文和错误 schema 均在写前 0 writes，权限写体为英文 published-only、中文默认 null；未重复全量测试。
+
+Result：**APPROVED（local_ready）**。当前本地候选满足本任务 AC 与首轮返工要求，可交 Sol 做本地最终验收。批准绑定 Luna R9 的 22 个应用文件及相关测试/夹具哈希；这些文件、权限语义、Schema planner 或 gate 状态变化后需重新 Review。
+
+Remaining Risks：真实 Directus Schema、指定 policy 权限、Studio 左侧顺序及列表/新建/编辑表单的桌面/移动 UI 尚未获授权和验证；本地 mock API 与 Chromium 前台证据不能替代真实后台验收。`config/cms-contract.mjs` 仍为 `pending_release_gate`，本批准不允许改为 verified，也不表示已提交、推送、部署或可直接发布。未执行真实 CMS/数据库/权限、远程读取、凭据访问或任何外部写入。
+
+Handoff：**APPROVED** 返回 Sol，仅用于本地候选验收。后续若进入发布阶段，仍须用户对准确目标、动作和环境明确授权，并完成真实 schema/权限/Studio 回读、release gate 和部署前 `npm run verify:release`。结构化结论：`output/english-news-admin/xyy-20261021-01/nova-r2/review.json`。
+
+#### XYY-20261021-01 R10 — 隔离 Directus Studio 本地预览 Review
+
+Task ID：`XYY-20261021-01`（HIGH，R10 本地运行环境 Review）。
+
+Review Scope：只审阅用户明确要求启动的隔离本地 Directus 预览、运行目标/绑定/volume、演示数据边界、真实 Studio 验收和 R9 源码冻结；不重新审业务功能或全量测试。只读核对容器 `xyy-english-news-preview`、freeze readback、Luna UI 证据和当前源码哈希；未修改容器、SQLite、配置、实现或测试。
+
+Architecture：**PASS**。运行镜像为官方 `directus/directus:12.1.1`，唯一发布端口是 `127.0.0.1:8055 -> 8055/tcp`；database 与 uploads 只 bind mount 到 `output/english-news-admin/xyy-20261021-01/local-preview/` 下的专用目录。数据库客户端为 SQLite，文件为 `/directus/database/english-news-preview.db`；现有 `127.0.0.1:5432` listener 未被映射、挂载或访问。bootstrap 仅在 ignored local-preview 中适配 SQLite 物理类型检查，仍从仓库完整 `news`/`english_news` 定义创建字段，并随后按原定义创建两条 `directus_files` cover relation；22 个业务应用文件没有变化。
+
+Security：**PASS**。容器只绑定 loopback，`PUBLIC_URL` 也是 `http://127.0.0.1:8055`，telemetry 实际为 false；Docker mounts 仅有本任务 database/uploads 两个目录。演示账号、容器 KEY/SECRET 与 SQLite 都位于被 `.gitignore` 的 `output/`，当前 tracked local-preview 文件数为 0；`.env` mode 600，database/uploads 目录 mode 700。实例只含一条中文 draft 和一条英文 draft，freeze readback 明确 `productionDataImported=false`；没有读取现有凭据、生产数据或远程环境。
+
+Maintainability：**PASS**。本地 bootstrap 与运行产物全部限制在 ignored evidence 目录，没有把 SQLite 特殊处理写入业务实现、CMS 通用 runtime 或 Git 候选。当前 22 个应用文件 SHA-256 与 Luna R10 before/after 冻结逐项一致；并行 Baidu 四文件哈希无差异，HEAD 仍为 `984461e17dfcae7e7d1324a9fa530fb742133b2c`。
+
+Contract Risks：**PASS**。API freeze readback 确认 `news` sort 1、`english_news` sort 2、中文标签“文章”与“英文文章管理”相邻；五个 legacy English 字段均 hidden+readonly；中文和英文 `cover_image` 均保留指向 `directus_files` 的真实 relation。Luna 在真实 Studio 中确认两列表各只有所属语言 demo draft，中文/英文 New/Edit 均显示状态、标题、URL 标识、分类、摘要、正文、封面和发布时间，英文状态精确为已发布/草稿/已归档；没有点击保存或改写 schema、文章、用户配置。
+
+Test Coverage Review：**PASS（R10 Studio 范围）**。Luna 完成真实 login、相邻入口、双列表、四类 New/Edit 表单和三状态菜单验证；1440×900 与 390×844 共 12 张截图。Nova 只读复核容器 inspect、端口、mount、SQLite 路径、忽略规则、文件权限、freeze readback、截图数量和源码哈希。控制台的初始未认证 refresh 400、favicon 404、WebGPU fallback 与启动期 `Unexpected token '<'` 已如实记录；它们未阻塞登录、导航、列表或表单，因此不构成本次 UI AC 的失败，也未被描述为零 console error。
+
+Result：**APPROVED（isolated local preview）**。当前运行中的本地 Studio 满足用户查看中英文后台分离效果的范围，且未触及现有 PostgreSQL、生产 CMS、远程或业务源码。
+
+Remaining Risks：实例只有合成 draft，不验证生产数据迁移、真实 policy、生产数据库或发布过程；真机、Safari/Firefox 未覆盖。演示账号仅适用于当前 loopback 绑定；若端口改为非 loopback 或实例承载真实数据，本批准立即失效。`config/cms-contract.mjs` 仍为 `pending_release_gate`，本结论不允许标记 verified，不代表提交、推送、生产部署或发布批准。
+
+Handoff：**APPROVED** 返回 Sol，仅确认隔离本地 Directus 预览可供用户继续查看。容器保持运行是用户已授权的本地预览状态；任何生产 CMS/数据库/权限/部署动作仍须另行明确授权。结构化结论：`output/english-news-admin/xyy-20261021-01/local-preview/nova/review.json`。
+
+### XYY-20261021-03 — 文章正文图片缺失只读诊断 Review
+
+Task ID：`XYY-20261021-03`（HIGH，纯只读故障诊断 Review）。
+
+Review Scope：复核指定公开文章正文图片故障的因果证据、结论措辞和后续最小修复边界；没有修复动作授权。当前 HEAD 为 `984461e17dfcae7e7d1324a9fa530fb742133b2c`，工作区同时存在 Task 01/02、Baidu 与日志等并行修改；Nova 未改实现/测试、CMS、数据库、权限或生产配置，也未执行新的公网探测。
+
+Architecture：**PASS**。公开 HTML 的封面经 `/api/cms-assets/<uuid>`，六张正文图片却保留为 `/assets/<uuid>.(jpeg|png)?...`。`src/lib/directus-assets.ts:6-15,28-47` 的受控代理白名单只读取结构化媒体字段，不解析正文；`src/lib/sanitize-core.mjs:23-36` 保留 `img.src/srcset` 并只增加 lazy，中文详情经 `src/pages/news/[slug].astro:25` 清洗后在 `src/components/news/NewsArticleBody.astro:59-63` 原样输出。因此“正文绕过既有代理”有直接源码依据。相关当前文件含 Task 01 并行差异，但与 HEAD 的有关差异只涉及英文集合/互链和 sanitizer core 抽取，观察到的中文正文交付语义未改变，且与保存的线上 HTML 一致。
+
+Security：**PASS**。Terra/Luna/Sol 证据仅来自匿名、GET-only 公开页面与图片请求，没有管理接口、CMS/数据库、远程服务器、凭据或写操作。建议继续关闭 Directus 文件匿名访问；后续若另行授权修复，只能将已公开且到时的文章正文中严格可识别的本站 Directus UUID 纳入现有代理白名单，不得公开整个文件库、转发任意 query 或外部 URL。
+
+Maintainability：**PASS**。后续最小边界复用既有资产代理、严格 UUID 与文章公开时间规则，并要求中文 `news.content` 和同规则的 `english_news.content` 使用一致提取逻辑；没有理由增加第二套公开文件通道或放宽权限。本轮没有业务改动，不存在本任务引入的重复实现或额外复杂度。
+
+Contract Risks：**PASS（诊断成立，线上缺陷仍未修）**。Luna 的匿名 Chromium 在 390×844 和 1440×900 均记录正文 6/6 为 HTTP 403 `application/json`、`naturalWidth=0`，封面为 HTTP 200 `image/jpeg` 且解码为 1080×810；Sol 保存的首张正文响应同为 403 并含 `X-Powered-By: Directus`。页面 CSP 明确允许同源/HTTPS 图片，正文无 `srcset`；Terra 的桌面 UA 与 iPhone Safari UA 结果一致。证据足以将直接原因定为“匿名正文交付路径收到 Directus 403”，也证明并非移动视口独有；没有证据支持 Safari codec、CSP 或 UA 差异结论。
+
+Test Coverage Review：**PASS（诊断范围）**。覆盖原始状态/类型、六张正文逐项结果、封面同 UUID 对照、lazy 滚动后的解码宽度、桌面/移动 Chromium 视口、桌面/iPhone UA、CSP、`srcset` 与源码链路。Playwright WebKit 未安装且没有下载，Nova/Luna 未控制真实 iPhone Safari、Wi-Fi 或蜂窝网络；用户真机报告与现象相符，但不冒充独立真机复测。当前没有修复，因此没有任何修复后 PASS、全量测试或已解决声明。
+
+Result：**APPROVED（diagnosis only）**。因果结论和限制措辞可交 Sol：已发布正文把六张需权限的 Directus 资产直接交给匿名客户端，六个请求均返回 403；相同首图 UUID 经既有封面代理成功。该路径差异以高置信度解释正文破图，且现有复现不是手机独有。
+
+Remaining Risks：生产缺陷仍存在，本轮没有修复、提交、推送或部署。未来实现需在并行 Task 01 改动上保持共享 sanitizer、中文/英文独立公开时间和失败可见契约；修复后应先验证严格 URL 重写、仅公开到时正文 UUID 入白名单、draft/future/无效 UUID 拒绝和外链不变，再做匿名桌面/移动浏览器与用户真实 iPhone Safari 的 Wi-Fi/蜂窝复测。
+
+Handoff：**APPROVED diagnosis** 返回 Sol。建议的最小后续 Scope 仅为：将清洗后正文内可识别的本站 Directus `/assets/<strict-uuid>` 图片重写到 `/api/cms-assets/<uuid>`，并让受控代理只从公开且到时的 `news.content` / `english_news.content` 提取这些 UUID；继续拒绝草稿、未来、非法及无关文件。该建议不是实现或外部写入授权。结构化结论：`output/mobile-news-images/xyy-20261021-03/nova/review.json`。
+
+#### XYY-20261021-03 R1 — 正文图片受控代理本地修复 Review
+
+Task ID：`XYY-20261021-03`（HIGH，本地修复候选 Review）。
+
+Review Scope：审阅五个业务源码、R1 canonical origin 与 R2/R3 非字符串缺陷闭环、正文图片授权边界、Luna R3 独立证据及并行文件保护。当前 HEAD 仍为 `984461e17dfcae7e7d1324a9fa530fb742133b2c`；11 个任务源码/测试/config 当前哈希与 Luna R3 after 值一致，25 个 Task 01/02/Baidu 保护文件与 fix baseline 一致。Nova 只新增本 Review 证据和日志，未改实现/测试或外部环境。
+
+Architecture：**REJECTED**。正向设计使用 `sanitize-html` 的真实 `img` 节点 hook，避免 HTML regex；alt、注释、script、textarea 和普通文本中的伪 `src` 不会授权或生成事件属性，默认与只观察模式对旧 sanitizer 的 307 样本/614 比较等值。阻断在第二个浏览器图片源通道：`src/lib/sanitize-core.mjs:38-46` 只把 `transformed.attribs.src` 交给 hook，且仅当该 `src` 被替换时删除 `srcset`；`src/lib/news-rich-text.ts:53-61,65-74` 因而也只收集和重写 `src`。当 `src` 为外链或缺失、`srcset` 含本站 Directus URL 时，受限地址会原样进入 HTML，授权收集仍为空。
+
+Security：**REJECTED**。精确 origin、userinfo 拒绝、路径 prefix、严格 UUID/图片后缀、已重写 `src` 的 query/hash 丢弃、外链不代理，以及公开/到时中英文正文校验均正确；但是未处理的 `srcset` 仍可暴露 CMS 提供的 query。Nova 本地纯函数探针使用合成 `access_token=synthetic-do-not-use`，实际输出完整保留该 query，且 `collectedIds=[]`；没有使用真实 Secret 或网络。浏览器可根据 DPR/宽度选择该候选并再次直连返回 403 的匿名 `/assets` 路径。
+
+Maintainability：**PASS except finding**。资产代理继续复用既有缓存、中止、CSP、上游 header 与错误流；中文公开判断与现有路由一致，英文复用完整公开 adapter。R2 已加入 canonical production origin 的精确 base，R3 已让非法对象/数组/数字正文显式抛固定 TypeError，均未吞错或扩大 host 匹配。修正时应让同一解析后的 `img` 节点统一处理 `src` 和 `srcset`，避免渲染与授权再次分叉。
+
+Contract Risks：**FAIL**。当前候选违反明确 AC“`srcset` 不得绕回受限原地址”和 query/token 不泄露边界。保存的复现包括两种输入：外链 `src` + 私有 Directus `srcset`，以及只有私有 Directus `srcset`；两者输出都保留 `/assets/<uuid>...`，且 UUID 都不进受控代理白名单。`tests/unit/news-rich-text.test.ts:23-35` 只覆盖 `src` 本身可识别时删除 `srcset`，没有覆盖该分支。
+
+Test Coverage Review：Luna R3 证据本身可信：fresh `npm run verify` exit 0，765 类型文件、151 单测文件/1080 tests、Lint、929 文件预算、assets/cache/build 通过；5 files/32 定向测试、format/目标 Prettier/diff 均通过；本地 Chromium fixture 2/2 在 1440/390 验证普通六张 `src` 图片经代理解码、直接资产 403、draft/future 404 且零上游。该套件未覆盖 Nova 复现的 mixed/no-src `srcset` 分支，因此不足以批准当前候选。R1 origin 与 R2/R3 非字符串问题均已闭合，没有重开。
+
+Result：**REJECTED**。唯一阻断是 parsed `img.srcset` 没有纳入正文图片重写/授权合同；除此之外没有发现新的 Scope、并行回退、发布过滤、默认 sanitizer 漂移或失败隐藏问题。
+
+Remaining Risks：本轮只是本地候选，未访问生产、真实 CMS、权限或数据库，未提交、推送或部署；线上仍未修。WebKit 未安装且未下载，没有真机 iPhone Safari/Wi-Fi/4G 结果。即使后续本地候选通过，也不能称线上或真机已修复。
+
+Handoff：**REJECTED** 返回 Sol。沿用原 Task ID 做最小修正：确保任何可识别的本站 Directus `/assets/<strict-uuid>` 候选都不会以原始 `srcset` 留在公开 HTML，也不会保留 query/hash；只有实际经受控代理输出的 UUID 才按相同解析节点进入白名单。补 mixed external-src/private-srcset 与 srcset-only 回归后交 Luna 复测，再交 Nova 复审。结构化结论与探针：`output/mobile-news-images/xyy-20261021-03/fix-nova-r1/review.json`、`srcset-boundary-probe.json`。
+
+#### XYY-20261021-03 R2 — 正文图片受控代理修复复审
+
+Task ID：`XYY-20261021-03`（HIGH，Terra R4/R5 本地候选复审）。
+
+Review Scope：只读复核 14 个任务文件、Nova R1 的两类 `srcset` 阻断、R2 canonical origin、R3 非字符串、Sol 追加的 English `id` 投影缺口、依赖范围、Luna R5 fresh 证据与并行保护。基线是 `fix-baseline` 保存的未提交 Task 01 工作树版本，不把 HEAD diff 中既有英文后台改动归于本修复。当前 14 个任务文件与 Luna R5 after 哈希一致，25 个 Task 01/02/Baidu 保护文件与 baseline 一致，HEAD 仍为 `984461e17dfcae7e7d1324a9fa530fb742133b2c`。
+
+Architecture：**PASS**。`src/lib/sanitize-core.mjs:36-53` 从真实 sanitizer `img` 节点同时提供已清洗的 `src/srcset`，只有获得替换源时才写新 `src` 并删除整个 `srcset`；默认及 observer-only 清洗对任务前 core 的 323 样本/646 次比较全部等值。`src/lib/news-rich-text.ts:56-69` 是收集与渲染共用的唯一选择器：严格有效的 `src` 优先，否则按规范 `parse-srcset` 结果取首个严格本站 Directus 候选；`:71-80` 和 `:83-92` 分别复用它做白名单收集与代理输出。两语言正文使用同一 rewrite helper，封面、缓存、中止、CSP、上游 header 和错误处理保持既有路径。
+
+Security：**PASS**。R1 的 external `src` + private `srcset` 与 srcset-only 两个阻断都已闭合：命中后只输出 `/api/cms-assets/<uuid>`，完整删除原 `srcset`，query/hash 和合成 token 不进入公开 HTML或上游代理参数。精确 HTTP(S) origin、userinfo 拒绝、prefix、UUID variant/version、图片后缀与 canonical production base 保持；协议相对、lookalike host、错误 prefix/后缀、alt/注释/script/textarea 普通文本不授权，完全外链响应式图片保持。没有放开 Directus 匿名文件权限、任意外链代理或 token 转发。
+
+Maintainability：**PASS**。`parse-srcset@1.0.2` 原已是 `sanitize-html` 的传递依赖，本候选只新增 exact root direct declaration；lockfile 只增加 root 声明，`npm ls` 显示单个 deduped 1.0.2 节点，没有新依赖树。最小 `.d.ts` 仅描述用到的 candidate 字段。R5 只删除安全测试空行，非空行 SHA-256 保持，文件为 219 行并恢复预算；没有 HTML regex、重复 parser 或第二套收集语义。
+
+Contract Risks：**PASS**。`src/lib/directus-assets.ts:73-83` 现显式选择 `id` 及 English adapter 所需字段，`:45-60` 的 number-id guard 与完整 `toPublishedEnglishNewsArticle` 校验没有弱化；投影-aware fixture 和断言确认真实 fields 投影不会再令合法英文正文永远 404。中文正文沿用现有公开 status/slug/time 规则；英文额外拒绝无效标题、摘要、分类、正文、slug、draft/future。R2 loopback 下 canonical 正式 origin 仍为精确 base；R3 非字符串渲染继续抛固定 TypeError，collect 对 unknown 不授权。`pending_release_gate` 未变。
+
+Test Coverage Review：**PASS**。Luna R5 fresh `npm run verify` exit 0：766 类型文件、0 errors/0 warnings/6 hints，Lint、930 文件维护预算、assets/cache、151 Vitest files/1082 tests 与 Astro server build 完成。R4 的 6 files/49 focused tests 覆盖 mixed/srcset-only、data URL/逗号/非法描述符、query/token 清理、严格 URL/UUID、全外链、发布门控和 English `id` 投影；R5 因仅空白收敛按合同复用。隔离 Chromium 2/2 在 1440/390 验证六图全部经 proxy 解码，前两张覆盖响应式分支且无残留 `srcset`，直接 `/assets` 403，draft/future 404 且零上游请求；格式、目标 Prettier 与 diff 均通过。
+
+单次 R5 verify 日志在 Vitest 中间出现一行 `Terminated`，同一调用随后报告 151/1082 全通过、继续完成 build 并以 0 退出；没有重试或第二轮。该行按原样保留为 runner 输出，来源未进一步归因，但不与同一进程的最终测试汇总、后续 build 和 exit 0 冲突，因此不构成门禁失败。
+
+Result：**APPROVED（local candidate）**。Nova R1 的 `srcset` 绕回和 query 保留、Sol 追加的 English `id` 投影均有直接代码、投影测试与浏览器证据闭环；未发现新的 correctness、architecture、security、Scope、maintainability、CMS/API contract、数据边界或并行回退阻断项。
+
+Remaining Risks：本结论只批准当前本地候选；生产仍运行旧路径，未经另行发布授权、部署和上线后复测不能称线上已修。WebKit 未安装且未下载，没有真实 iPhone Safari、Wi-Fi/4G 验证。命中 Directus 响应式引用后按批准合同折叠为单一代理 `src` 并移除 `srcset`，保证受控交付但不保留响应式变体。
+
+Handoff：**APPROVED** 返回 Sol，仅用于本地最终验收。Nova 未改实现/测试、真实 CMS、权限、数据库或生产，未提交、推送或部署；此前用户“不推送”继续有效。结构化结论：`output/mobile-news-images/xyy-20261021-03/fix-nova-r2/review.json`。
+
+### XYY-20261021-04 — GitHub 同步前 Review
+
+Task ID：`XYY-20261021-04`（HIGH，授权 GitHub 同步 Review）。
+
+Review Scope：只读审阅当前 63 条既有候选及新增本任务合同共 64 路径、Task 01/02/03 既有验收冻结、Baidu 验证四文件、Task18 历史发布计划、fresh Luna 门禁、公开仓库敏感项、未变 CI workflow，以及 ignored `sync-via-api.py` 的 dry-run/apply 与 connector ref 更新流程。未改实现/测试、未创建提交或远端对象、未移动 ref，也未部署或操作 CMS/数据库/权限。
+
+Architecture：**PASS**。63 条基线候选在 Luna fresh verify 前后哈希零漂移；当前所有非文档候选仍与该冻结一致。新增第 64 路仅为 Git 同步合同，之后 `DEV_STATE.md`、`docs/LUNA.md`、`docs/SOL.md` 的差异是本任务状态/验证追加；本 Review 再追加既有 `docs/NOVA.md`，没有改变应用、测试、依赖、workflow 或配置。Task 01/02/03 的源代码和配套测试保持各自最终批准版本，`CMS_SCHEMA_VERSION_STATUS` 仍为 `pending_release_gate`，Git 同步不会把未执行的真实 CMS Schema/权限步骤标为 verified。
+
+Security：**PASS**。完整展开 untracked 后，当前状态与 64 路合同精确一致，全部为普通文件；没有 `.env`、备份、压缩包、数据库、私钥、构建、dist、output 或 pyc 候选。当前 secret scan 对私钥、GitHub Token、JWT 和本地预览密码为 0 finding，测试 Authorization 值是明确的合成 fixture。32-byte Baidu 校验值本就用于公网根路径，`.gitignore` 只放行该精确文件；检查器逐字节许可，测试拒绝改值、改名、大小写、嵌套、尾换行和 HTML 包装。仓库为 public，这些公开/历史记录未发现真实凭据。
+
+Maintainability：**PASS**。本次 fresh `npm run verify` 与格式门禁覆盖完整候选；业务 E2E 只在对应源码/测试哈希未变时复用既有独立证据。状态和角色文档明确区分本地候选、Git 同步、生产部署、CMS 迁移及真机验证。约 4.2 MB 候选主要来自已有角色/状态日志；ignored output 中的同步脚本、API payload/report、host key、pyc、Luna 日志和本地预览数据均不会进入 Git。
+
+Contract Risks：**PASS with execution guards**。Review 绑定脚本 SHA-256 `b4c1b1c30cfba7fffd87275dbaeb0abeaddf51fe4669806e49c75df489993569`。脚本固定仓库 `AIyj-cmd/XYY-WEB` 和 `main`，要求本地 worktree/index 干净、父 SHA 为 40 位、local commit parent 与实时 remote main 都等于预期值；只接受 A/M、100644、无 rename/delete 的文本路径，拒绝隐藏/output/dist 和范围外根目录。apply 以父 tree 建新 tree，并用本地 message、UTC author/committer、单 parent 建 commit；remote tree 或 commit SHA 与本地任一不等即在 ref 前硬停。脚本本身从不改 ref；最终 connector `update_ref` 明确支持 `expected_sha`，只允许目标 `main`、旧 SHA `984461e17dfcae7e7d1324a9fa530fb742133b2c`、`force=false` 的快进。
+
+脚本按允许根目录做宽白名单，没有内嵌 64 路 manifest，因此执行前的精确范围检查不可省略：正常 UTC 本地提交后必须确认 `diff-tree` 恰为 64 路且全为 A/M 100644；先无 `--apply` dry-run，核对 ignored report 的 `files` 与 64 路集合完全相等、`applied=false`、父/tree/head 正确；之后才可 apply。tree/commit SHA 均相等后才调用带 lease 的 connector；ref 写后须重新回读 GitHub main 等于本地 HEAD，再据真实回读更新/报告 tracking 和 ahead/behind。任何并发 main 变化、额外路径、非 UTC/签名 commit、对象 SHA 差异或非快进都必须停止。
+
+Test Coverage Review：**PASS**。Luna fresh `npm run verify` exit 0：766 类型文件、0 errors/0 warnings/6 hints，Lint、930 文件维护预算、assets/cache、151 Vitest files/1082 tests 及 Astro server build 通过；全量 format、候选目标 Prettier 和 scoped diff 均 exit 0。日志中的一行 `Terminated` 原样保留，同一调用随后汇总 151/1082、完成 build 并 exit 0，没有重试。英文 9 项、首页和新闻图片 2 项浏览器证据因对应实现哈希未变而复用。本轮 `.github/workflows/ci.yml` 无 diff，权限为 `contents: read`，只执行安装、验证、audit、build、Lighthouse 与 artifact upload，没有部署、CMS、数据库、权限、服务器或生产写步骤。
+
+Result：**APPROVED（authorized GitHub sync only）**。截至 Review，GitHub API `main`、本地 HEAD 与 `origin/main` 均为 `984461e17dfcae7e7d1324a9fa530fb742133b2c`，ahead/behind 0/0；仓库身份和默认分支正确。当前候选、脚本与 ref 流程可按上述 exact-scope、same-object、lease 和 non-force 条件同步。
+
+Remaining Risks：标准 Git HTTPS 当前超时，官方 SSH 443 虽已核实 host key 但没有可用公钥授权，因此采用 API Git 对象传输。若 tree/commit 比对失败，可能留下不可达对象，但 main 不应被触碰且必须停止。新提交的 GitHub hosted CI 尚未运行，推送后只能按真实状态报告 pending/success/failure。本批准不包含部署、生产访问、CMS/数据库/Schema/权限、force push、改 remote 或其他仓库/分支。
+
+Handoff：**APPROVED** 返回 Sol，仅允许用户明确授权的当前仓库 `main` Git 同步。首次提交/ref 更新完成后，可在同 Task ID 下对既有状态/角色日志做机械的实际 SHA、远端回读、CI 与“未部署”补录；仅当 diff 严格限这些文档、secret scan/diff check 通过且应用/测试/workflow/依赖/config 不变时，可复用本 Review 而不重跑全量门禁。结构化结论：`output/git-sync/xyy-20261021-04/nova/review.json`。

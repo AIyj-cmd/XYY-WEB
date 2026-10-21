@@ -1,12 +1,22 @@
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from 'node:http'
-import { spawn } from 'node:child_process'
 import { readFile } from 'node:fs/promises'
 import { once } from 'node:events'
-import { createServer as createNetServer } from 'node:net'
 import { resolve } from 'node:path'
+import { startEnglishNewsFixtureApp } from './english-news-fixture-app'
 
 export type EnglishNewsFixtureMode =
   'ok' | 'empty' | 'unavailable' | 'unauthorized' | 'forbidden' | 'invalid'
+
+export type ChineseNewsFixtureRecord = {
+  id: number
+  status: 'published' | 'draft' | 'archived'
+  title: string
+  slug: string
+  summary: string
+  content: string
+  category: string
+  published_at: string
+}
 
 export type EnglishNewsFixtureRecord = {
   id: number
@@ -17,17 +27,17 @@ export type EnglishNewsFixtureRecord = {
   content: string
   category: string
   published_at: string
-  title_en?: string
-  summary_en?: string
-  content_en?: string
-  english_status?: 'published' | 'draft' | 'archived'
-  english_published_at?: string
+  cover_image?: string | null
+  legacy_news_id?: number | null
 }
 
-type FixtureState = { mode: EnglishNewsFixtureMode; records: EnglishNewsFixtureRecord[] }
+type FixtureState = {
+  mode: EnglishNewsFixtureMode
+  chineseRecords: ChineseNewsFixtureRecord[]
+  englishRecords: EnglishNewsFixtureRecord[]
+}
 
 const appRoot = resolve(import.meta.dirname, '../..')
-const buildOrigin = `http://127.0.0.1:${process.env.PLAYWRIGHT_PORT ?? '4399'}`
 
 async function listen(server: Server) {
   server.listen(0, '127.0.0.1')
@@ -36,18 +46,6 @@ async function listen(server: Server) {
   if (!address || typeof address === 'string')
     throw new Error('fixture server did not expose a port')
   return address.port
-}
-
-async function getFreePort() {
-  const server = createNetServer()
-  server.listen(0, '127.0.0.1')
-  await once(server, 'listening')
-  const address = server.address()
-  if (!address || typeof address === 'string') throw new Error('could not reserve an app port')
-  const port = address.port
-  server.close()
-  await once(server, 'close')
-  return port
 }
 
 function sendJson(response: ServerResponse, status: number, body: unknown) {
@@ -70,27 +68,37 @@ function querySlug(request: IncomingMessage) {
 }
 
 async function loadFixtureRecords() {
-  const raw = JSON.parse(
-    await readFile(resolve(appRoot, 'tests/fixtures/english-news-records.json'), 'utf8')
-  ) as EnglishNewsFixtureRecord[]
+  const [chineseRaw, englishRaw] = await Promise.all([
+    readFile(resolve(appRoot, 'tests/fixtures/english-news-records.json'), 'utf8'),
+    readFile(resolve(appRoot, 'tests/fixtures/english-news-independent-records.json'), 'utf8'),
+  ])
   const past = new Date(Date.now() - 60_000).toISOString()
   const future = new Date(Date.now() + 86_400_000).toISOString()
-  return raw.map((record) => ({
+  const timestamp = (value: string) =>
+    value === '__PAST__' ? past : value === '__FUTURE__' ? future : value
+  const chineseRecords = (JSON.parse(chineseRaw) as ChineseNewsFixtureRecord[]).map((record) => ({
     ...record,
-    published_at: record.published_at === '__PAST__' ? past : future,
-    english_published_at: record.english_published_at === '__PAST__' ? past : future,
+    published_at: timestamp(record.published_at),
   }))
+  const englishRecords = (JSON.parse(englishRaw) as EnglishNewsFixtureRecord[]).map((record) => ({
+    ...record,
+    published_at: timestamp(record.published_at),
+  }))
+  return { chineseRecords, englishRecords }
 }
 
-async function startMockDirectus(initialRecords: EnglishNewsFixtureRecord[]) {
-  const state: FixtureState = { mode: 'ok', records: structuredClone(initialRecords) }
+async function startMockDirectus(initial: Awaited<ReturnType<typeof loadFixtureRecords>>) {
+  const state: FixtureState = {
+    mode: 'ok',
+    chineseRecords: structuredClone(initial.chineseRecords),
+    englishRecords: structuredClone(initial.englishRecords),
+  }
   const server = createServer((request, response) => {
     if (request.method !== 'GET' || !request.url?.startsWith('/items/')) {
       sendJson(response, 404, { errors: [{ message: 'fixture route not found' }] })
       return
     }
     const collection = new URL(request.url, 'http://127.0.0.1').pathname.split('/')[2]
-    if (collection !== 'news') return sendJson(response, 200, { data: [] })
     if (state.mode === 'unavailable')
       return sendJson(response, 503, { errors: [{ message: 'fixture unavailable' }] })
     if (state.mode === 'unauthorized')
@@ -99,8 +107,14 @@ async function startMockDirectus(initialRecords: EnglishNewsFixtureRecord[]) {
       return sendJson(response, 403, { errors: [{ message: 'fixture forbidden' }] })
     if (state.mode === 'invalid') return sendJson(response, 200, { malformed: true })
     if (state.mode === 'empty') return sendJson(response, 200, { data: [] })
+    const source =
+      collection === 'news'
+        ? state.chineseRecords
+        : collection === 'english_news'
+          ? state.englishRecords
+          : []
     const slug = querySlug(request)
-    const records = slug ? state.records.filter((record) => record.slug === slug) : state.records
+    const records = slug ? source.filter((record) => record.slug === slug) : source
     return sendJson(response, 200, { data: records })
   })
   const port = await listen(server)
@@ -109,8 +123,11 @@ async function startMockDirectus(initialRecords: EnglishNewsFixtureRecord[]) {
     setMode(mode: EnglishNewsFixtureMode) {
       state.mode = mode
     },
-    setRecords(records: EnglishNewsFixtureRecord[]) {
-      state.records = structuredClone(records)
+    setChineseRecords(records: ChineseNewsFixtureRecord[]) {
+      state.chineseRecords = structuredClone(records)
+    },
+    setEnglishRecords(records: EnglishNewsFixtureRecord[]) {
+      state.englishRecords = structuredClone(records)
     },
     async close() {
       server.close()
@@ -119,82 +136,12 @@ async function startMockDirectus(initialRecords: EnglishNewsFixtureRecord[]) {
   }
 }
 
-async function startAppServer(directusUrl: string) {
-  const appPort = await getFreePort()
-  const child = spawn(process.execPath, ['server.mjs'], {
-    cwd: appRoot,
-    env: {
-      ...process.env,
-      DEPLOY_ENVIRONMENT: 'ci',
-      DIRECTUS_URL: directusUrl,
-      DIRECTUS_CONTENT_TOKEN: 'english-news-fixture-token',
-      ENABLE_DOMAIN_REDIRECTS: 'false',
-      HOST: '127.0.0.1',
-      PUBLIC_SITE_URL: buildOrigin,
-      XIANSUO_API_URL: 'http://127.0.0.1:1',
-      XIANSUO_INGEST_TOKEN: 'english-news-fixture-token',
-      PORT: String(appPort),
-    },
-    stdio: ['ignore', 'pipe', 'pipe'],
-  })
-  const output: string[] = []
-  const onData = (chunk: Buffer) => output.push(chunk.toString())
-  child.stdout?.on('data', onData)
-  child.stderr?.on('data', onData)
-  await new Promise<void>((resolveReady, reject) => {
-    let finished = false
-    let retry: ReturnType<typeof setTimeout> | undefined
-    const finish = (callback: () => void) => {
-      if (finished) return
-      finished = true
-      clearTimeout(timeout)
-      if (retry) clearTimeout(retry)
-      callback()
-    }
-    const timeout = setTimeout(
-      () => finish(() => reject(new Error(`fixture app did not start: ${output.join('')}`))),
-      20_000
-    )
-    const retryCheck = () => {
-      if (!finished) retry = setTimeout(check, 20)
-    }
-    const check = async () => {
-      if (finished) return
-      try {
-        const response = await fetch(`http://127.0.0.1:${appPort}/en/news`, {
-          redirect: 'manual',
-        })
-        if (response.status !== 200) return retryCheck()
-      } catch {
-        return retryCheck()
-      }
-      finish(resolveReady)
-    }
-    check()
-    child.once('exit', (code) => {
-      finish(() => reject(new Error(`fixture app exited ${code}: ${output.join('')}`)))
-    })
-  }).catch(async (error) => {
-    if (child.exitCode === null) child.kill('SIGTERM')
-    throw error
-  })
-  return {
-    process: child,
-    url: `http://127.0.0.1:${appPort}`,
-    async close() {
-      if (child.exitCode !== null) return
-      child.kill('SIGTERM')
-      await once(child, 'exit')
-    },
-  }
-}
-
 export async function startEnglishNewsFixture() {
-  const records = await loadFixtureRecords()
-  const cms = await startMockDirectus(records)
+  const initial = await loadFixtureRecords()
+  const cms = await startMockDirectus(initial)
   try {
-    const app = await startAppServer(cms.url)
-    return { cms, app, records }
+    const app = await startEnglishNewsFixtureApp(cms.url)
+    return { cms, app, ...initial }
   } catch (error) {
     await cms.close()
     throw error

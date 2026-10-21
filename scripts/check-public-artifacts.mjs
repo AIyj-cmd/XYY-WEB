@@ -8,6 +8,8 @@ export const googleVerificationFileName = 'google4adb4e763f43adcd.html'
 export const googleVerificationContents = Buffer.from(
   'google-site-verification: google4adb4e763f43adcd.html'
 )
+export const baiduVerificationFileName = 'baidu_verify_codeva-dy5qG5C8Yw.html'
+export const baiduVerificationContents = Buffer.from('26cb1c20f3e1758a398b04f36273038a')
 
 export async function findPublicHtmlArtifacts(directory = root) {
   const artifacts = []
@@ -23,7 +25,9 @@ export async function findPublicHtmlArtifacts(directory = root) {
         const content = await readFile(path)
         const approvedGoogleVerification =
           artifact === googleVerificationFileName && content.equals(googleVerificationContents)
-        if (!approvedGoogleVerification) artifacts.push(artifact)
+        const approvedBaiduVerification =
+          artifact === baiduVerificationFileName && content.equals(baiduVerificationContents)
+        if (!approvedGoogleVerification && !approvedBaiduVerification) artifacts.push(artifact)
       }
     }
   }

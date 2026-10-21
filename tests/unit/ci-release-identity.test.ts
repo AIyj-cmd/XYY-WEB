@@ -6,6 +6,8 @@ import { promisify } from 'node:util'
 
 import { describe, expect, it } from 'vitest'
 
+import { CMS_SCHEMA_VERSION } from '../../config/cms-contract.mjs'
+
 const run = promisify(execFile)
 const sha = '54fa9e64642403548f2c3e04f0242e427445aa30'
 const buildTime = '2026-10-08T12:00:00.000Z'
@@ -59,7 +61,7 @@ describe('CI release identity validation', () => {
           releaseId: '20261008T120000Z-54fa9e6',
           buildTime,
           environment: 'ci',
-          cmsSchemaVersion: '2026-10-cms-maintenance',
+          cmsSchemaVersion: CMS_SCHEMA_VERSION,
         },
         cmsSchemaStatus: 'candidate_unverified',
       })
@@ -139,7 +141,7 @@ describe('CI release identity validation', () => {
       )
       await expect(readFile(output, 'utf8')).resolves.toContain(`"gitSha": "${sha}"`)
       await expect(readFile(output, 'utf8')).resolves.toContain(
-        '"cmsSchemaVersion": "2026-10-cms-maintenance"'
+        `"cmsSchemaVersion": "${CMS_SCHEMA_VERSION}"`
       )
     } finally {
       await rm(directory, { recursive: true, force: true })

@@ -1,7 +1,6 @@
-// Verified on staging on 2026-10-09 after the authorized paired backup, isolated restore,
-// limited E/G migration, zero-change plan, and strict CMS verification.
-export const CMS_SCHEMA_VERSION = '2026-10-cms-maintenance'
-export const CMS_SCHEMA_VERSION_STATUS = 'verified'
+// The English-news separation contract is pending an explicitly authorized release gate.
+export const CMS_SCHEMA_VERSION = '2026-10-english-news-separation'
+export const CMS_SCHEMA_VERSION_STATUS = 'pending_release_gate'
 
 const policies = {
   homepage_stats: { lifecycle: 'legacy', identity: [], seedPolicy: 'migration_only' },
@@ -11,6 +10,7 @@ const policies = {
   warehouses: { lifecycle: 'active', identity: ['content_key'], seedPolicy: 'normal' },
   cases: { lifecycle: 'active', identity: ['slug'], seedPolicy: 'normal' },
   news: { lifecycle: 'active', identity: ['slug'], seedPolicy: 'normal' },
+  english_news: { lifecycle: 'active', identity: ['slug'], seedPolicy: 'migration_only' },
   faqs: { lifecycle: 'active', identity: ['content_key'], seedPolicy: 'normal' },
   case_details: { lifecycle: 'legacy', identity: [], seedPolicy: 'migration_only' },
   case_stats: { lifecycle: 'legacy', identity: [], seedPolicy: 'migration_only' },

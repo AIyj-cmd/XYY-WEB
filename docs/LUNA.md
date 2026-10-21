@@ -7263,3 +7263,472 @@ Regression coverage：完整 typecheck、Lint、维护性预算、public assets�
 Remaining risks：GitHub Actions 未在本地验证中运行；浏览器/Lighthouse 证据为 Task15/16 精确哈希一致时的历史结果，未覆盖新的 CI runner 行为。R1/R2 失败原件保留，最终 R3 PASS 使用 `VITEST_MAX_WORKERS=4` 控制并发；R2 默认并发的超时与并行资源压力相容，但未证明唯一因果。未提交、推送或部署。
 
 证据：[`final-result.json`](../output/git-sync/xyy-20261020-17/luna/final-result.json)、[`verify-r3.log`](../output/git-sync/xyy-20261020-17/luna/verify-r3.log)、[`format-final.log`](../output/git-sync/xyy-20261020-17/luna/format-final.log)、[`source-hashes-final.diff`](../output/git-sync/xyy-20261020-17/luna/source-hashes-final.diff)、[`main-hashes-final.diff`](../output/git-sync/xyy-20261020-17/luna/main-hashes-final.diff)。
+
+#### XYY-20261020-18 — 原生发布候选完整独立门禁
+
+Task ID：`XYY-20261020-18`；Result：**PASS（R2 有效）**。
+
+Tests performed：
+
+- 在冻结候选 `/home/yj/data/xyy-native-update-20261020-18` 显式 `cd` 并断言 cwd，候选 HEAD 为 `c5ca1e4f7c8ada095c32acfeefb3a42609591c91`，`MERGE_HEAD`/最新 main 为 `984461e17dfcae7e7d1324a9fa530fb742133b2c`；候选保持 `INTEGRATED_NO_COMMIT`，Luna 未提交、推送或部署。
+- R1 原始结果保留但不计入结论：`verify-release.exit=1`，Vitest `149 files / 1037 passed / 16 failed`；16 项均由 wrapper 在容量文件生成前预设 `CAPACITY_BASELINE_FILE` 引起，首个根因为 `lighthouse_workspace_capacity_baseline_missing`。证据见 [`verify-release-r1.log`](../output/release/xyy-20261020-18/luna/verify-release-r1.log)。
+- R2 按 CI 时序在 `capacity-baseline.mjs` 测量期间 unset `CAPACITY_BASELINE_FILE`，生成基线后再执行 preflight；完整 `npm run verify:release` exit `0`，`verify-release.exit=0`，`capacity-preflight.exit=0`。Vitest **149 files / 1053 tests passed**；Chromium desktop/mobile E2E **411 passed / 17 existing configured skipped**（共 428）；formal contract **6 passed**；最终 Astro server build 完成。原始命令与输出见 [`verify-release.log`](../output/release/xyy-20261020-18/luna/verify-release.log)。
+- 本次容量真实测量峰值为 device `66310` 的 **1,547,059,200 bytes / 12,749 inodes**，见 [`capacity-baseline.json`](../output/release/xyy-20261020-18/luna/capacity-baseline.json)。网络 guard 安装 580 次、blocked 0 次；仅允许 loopback。桌面/手机 E2E 产出 36 张截图和 Playwright report，见 [`output/playwright/xyy-20261020-18/e2e/`](../output/playwright/xyy-20261020-18/e2e/)。
+- 源冻结身份无漂移：before/after 均 **1707 files**、冻结 manifest **1707**、mismatch **0**、`frozenManifestPass=true`；冻结清单 SHA-256 为 `e6b9c96f79a378e1886e7645cefe32cbe3185d9e86fe498a67ba820af26d176a`，见 [`source-before.json`](../output/release/xyy-20261020-18/luna/source-before.json)、[`source-after.json`](../output/release/xyy-20261020-18/luna/source-after.json)。4399/4401/4402 收尾后均无监听；4321/PID98418 主预览保持运行。
+- 已准备上线后只读脚本 [`run-live-readonly.mjs`](../output/playwright/xyy-20261020-18/live/run-live-readonly.mjs) 与运行说明 [`README.md`](../output/playwright/xyy-20261020-18/live/README.md)，脚本使用 ESM `import`、`createRequire(import.meta.url)`，并通过 direct-execution guard 避免 import 时启动浏览器；`node --check` 与无网络 ESM import/bootstrap 均 exit `0`。脚本从 Terra `artifact.json` 读取版本身份，覆盖 8 路由×2 视口、同源 GET-only guard、品牌/Organization/WebSite 契约与 16 张截图；本轮未执行公网请求，等待 Sol 发布完成后单独指令。
+
+Regression coverage：typecheck、lint、maintainability、public/deployment assets、cache patch、149/1053 Vitest、双语品牌 24 E2E（纳入完整 428-case matrix）、桌面/手机布局与 CMS fallback、formal production-origin 6-case contract、两次生产 Astro build、容量 preflight、候选 cwd/依赖解析和 1707 源哈希前后核对；未扩大到无关 Lighthouse 或实站矩阵。
+
+Remaining risks：未执行生产构建上传、部署或上线后浏览器检查，Sol/Nova 发布门禁仍适用；未访问真实 CMS、数据库、`healthz`、外部依赖或真实 POST；浏览器证据限配置 Chromium desktop/mobile，未覆盖真机、Safari/Firefox；候选仍为未提交集成工作树。
+
+结构化结果：[`final-result.json`](../output/release/xyy-20261020-18/luna/final-result.json)。
+
+#### XYY-20261020-18 R-live — 上线后只读浏览器验收
+
+Task ID：`XYY-20261020-18`；Result：**PASS**。
+
+Tests performed：
+
+- 对已部署 `https://56xyy.com` 的 `/`、`/en`、`/about`、`/en/about`、`/cases`、`/en/cases`、`/news`、`/en/news`，以 Chromium 桌面 `1440×900` 与手机 `390×844` 执行唯一一次严格 16 组复测，exit `0`，**16/16 passed**，`failures=[]`。每组 HTTP `200`、单一 H1、无横向溢出、首屏可见图片在有界时限内完成解码、可见控件存在；无 console/page error、坏响应或 route 级 failed request。
+- 每条路由均使用独立 browser context/page；在 context 关闭前冻结请求事件，关闭阶段事件单独记录为 `teardownFailedRequests`/`teardownBlockedRequests`。最终 16 组两类数组均为空，因此未过滤 `ERR_ABORTED` 或降低失败断言。R1 的跨路由取消原件与过滤版无效复测均保留，分别见 [`live-result-r1.json`](../output/playwright/xyy-20261020-18/live/live-result-r1.json) 与 [`live-result-r2-filtered-invalid.json`](../output/playwright/xyy-20261020-18/live/live-result-r2-filtered-invalid.json)，不作为通过依据。
+- `GET /version` 桌面/手机均 HTTP `200`，精确匹配 `gitSha=7d7cdabcd3cea1e0e26fe7fc207fc49da08041d5`、`releaseId=20261020T102057Z-7d7cdab`、`environment=production`。首页及四个品牌页的品牌可见性/中英文标题、Organization/WebSite JSON-LD 契约均通过。
+- 路由守卫实际保持同源 GET-only，`healthz`、POST 与外部请求均禁止；16 组 `blockedRequests=[]`，未操作表单、CMS、数据库或真实 POST。每组截图共 16 张，原始日志、退出码和结构化结果见 [`live/`](../output/playwright/xyy-20261020-18/live/)。
+
+Regression coverage：生产版本身份、8 路由桌面/手机首屏、HTTP/H1、canonical、无横溢、首屏图片解码、可见控件、console/page/bad-response/failed-request、品牌与结构化数据契约、同源 GET-only 策略及 16 张截图。
+
+Remaining risks：验证限 Chromium 桌面/手机模拟，未覆盖真机、Safari/Firefox；按上线后只读边界未执行登录、表单提交、`/healthz`、CMS/数据库或外部地址请求。R1 失败和过滤版复测证据已保留，但最终结论仅采用独立 context 的严格复测；未修改业务/测试源码、未提交、推送或再次部署。
+
+结构化结果：[`live-result.json`](../output/playwright/xyy-20261020-18/live/live-result.json)。
+### XYY-20261021-01 — 英文文章独立后台集合独立 QA（R1）
+
+Task ID：`XYY-20261021-01`；Result: **FAIL**。
+
+Expected：`english_news` 作为独立文章集合可通过迁移/权限流程安全接入；相关回归、维护性门禁和迁移边界验证通过后，再执行本地 English fixture 的桌面/移动端 E2E。真实 Directus 后台 UI、Schema、权限和 CMS 写入仍需准确目标授权，本轮不操作。
+
+Actual：
+
+- 定向 Vitest 为 **6 files：5 passed、1 failed；53 passed、1 failed（54 total）**。唯一失败为 `tests/unit/cms-setup.test.ts > CMS setup domains > keeps collection definitions declarative and uniquely named`：实现集合列表已包含 `english_news`，测试仍要求旧的 19 项列表。
+- 隔离环境 `DEPLOY_ENVIRONMENT=ci`、Directus/Xiansuo loopback、假 token、`PUBLIC_SITE_URL=http://127.0.0.1:4399` 下，`npm run verify` 在 `check:maintainability` 退出 **1**；此前 typecheck 为 **754 files / 0 errors / 0 warnings / 5 hints**，lint 通过。维护性门禁报告 `src/lib/directus-types.ts:274 > 260` 与 `scripts/lib/english-news-separation-migration.mjs:202 > 200`，因此未运行 assets、全量 Vitest、build。
+- 迁移 adversarial probe 发现 image-only legacy HTML（`<p><img src="/legacy-cover.jpg"></p>`）被报告 `incomplete_legacy_record`，目标记录为 0；这会丢失可公开的图片正文。
+- 对已存在且 `hidden: true` 的 `english_news` 集合，`buildEnglishNewsSeparationPlan` 返回 `issues=[]`、`navigation=[]`；对缺少/异常 collection translation metadata 的已有集合也未报错，可能产生“计划零变更但入口仍不可见/文案不完整”。
+- read-policy mock apply 使用 GET 返回错误 scope（`policy` 正确但 `collection=news`）时，CLI 仍退出 0 并 PATCH `/permissions/p1`；写入后没有 GET/readback 校验。重复匹配 2 条记录能在写入前以 `english_news_read_policy_conflict` 失败。默认 preview 为只读且输出预期 scope。
+
+Reproduction：
+
+```text
+VITEST_MAX_WORKERS=4 npx vitest run tests/unit/english-news-separation-migration.test.ts tests/unit/news-english-adapter.test.ts tests/unit/cms-contract.test.ts tests/unit/cms-setup.test.ts tests/unit/directus-assets-security.test.ts tests/unit/public-artifacts.test.ts --maxWorkers=4
+set -o pipefail; DEPLOY_ENVIRONMENT=ci DIRECTUS_URL=http://127.0.0.1:9 PUBLIC_DIRECTUS_URL=http://127.0.0.1:9 DIRECTUS_CONTENT_TOKEN=dummy DIRECTUS_TOKEN=dummy ENABLE_DOMAIN_REDIRECTS=false PUBLIC_SITE_URL=http://127.0.0.1:4399 XIANSUO_API_URL=http://127.0.0.1:9 XIANSUO_INGEST_TOKEN=dummy ASTRO_TELEMETRY_DISABLED=1 npm run verify
+DIRECTUS_URL=http://127.0.0.1:9 DIRECTUS_TOKEN=dummy node scripts/sync-english-news-read-policy.mjs
+```
+
+Evidence：[`focused-vitest.log`](../output/english-news-admin/xyy-20261021-01/luna/focused-vitest.log)、[`npm-verify.log`](../output/english-news-admin/xyy-20261021-01/luna/npm-verify.log)、[`npm-verify.exit`](../output/english-news-admin/xyy-20261021-01/luna/npm-verify.exit)、[`npm-format-check.log`](../output/english-news-admin/xyy-20261021-01/luna/npm-format-check.log)、[`adversarial-migration-probes.log`](../output/english-news-admin/xyy-20261021-01/luna/adversarial-migration-probes.log)、[`adversarial-time-probes.log`](../output/english-news-admin/xyy-20261021-01/luna/adversarial-time-probes.log)、[`read-policy-preview.log`](../output/english-news-admin/xyy-20261021-01/luna/read-policy-preview.log)、[`read-policy-mock-probes.log`](../output/english-news-admin/xyy-20261021-01/luna/read-policy-mock-probes.log)、[`source-hash-diff.txt`](../output/english-news-admin/xyy-20261021-01/luna/source-hash-diff.txt)。`npm run format:check` exit 0，`git diff --check` exit 0；candidate source hashes before/after一致（diff 0 bytes）。未修改应用实现、既有测试或 Terra 文件。
+
+Likely affected area：`tests/unit/cms-setup.test.ts` 的固定 contract 期望；`scripts/lib/english-news-separation-migration.mjs` 的 visible HTML 判断与维护性预算；`scripts/lib/english-news-separation-schema.mjs` 的既有目标集合 metadata 收敛；`scripts/sync-english-news-read-policy.mjs` 的 apply scope 校验和写后 readback。Severity：**HIGH**（完整 verify 未通过，且迁移可能丢失合法图片正文；权限 CLI 可将错误 scope 记录当作成功更新）。
+
+Reproduction limitation：因上述实现/门禁失败，本轮未继续运行 English fixture Playwright E2E、桌面/移动截图或 `verify:release`；真实 Directus Studio 桌面/移动 UI、Schema、权限、数据库和 CMS 写入未授权且未执行，不能据此宣称后台入口已验证。
+
+Handoff：返回 Sol → Terra 修复后沿用同一 Task ID 复测；Luna 仅追加本日志和 `output/english-news-admin/xyy-20261021-01/luna/` 证据，未提交、推送、部署或访问生产/远程环境。
+### XYY-20261021-01 R2 — 英文文章独立后台集合独立 QA 复测
+
+Task ID：`XYY-20261021-01`；Result: **FAIL**。
+
+Expected：R1 缺陷修复后，policy CLI 的 scope/readback/幂等边界、迁移 image-only 与时间解析、完整 `npm run verify` 均通过，再运行 English fixture 的桌面/移动 E2E。真实 Directus Studio UI、CMS/数据库/权限写入仍不在授权范围内。
+
+Actual：
+
+- R2 定向 Vitest：**8 files / 68 tests passed**，覆盖新 read-policy CLI tests、迁移、English adapter、CMS contract/setup、asset security、public artifacts 和 publication-time parser。
+- policy mock adversarial：错 `policy`、错 `action`、错 `collection` 均 `english_news_read_policy_scope_mismatch` 且 **0 writes**；嵌套 `{status: {_eq: 'draft'}}` 在写后未变为 published 时以 `english_news_read_policy_readback_failed` 失败；重复匹配以 `english_news_read_policy_conflict` 失败且 **0 writes**。迁移 image-only HTML 保留记录和 URL，隐藏集合入口 metadata（icon、hidden=false、zh-CN label）生成修复计划，裸 Shanghai 时间可解析。
+- 合同环境 `DEPLOY_ENVIRONMENT=local`、Directus/Xiansuo loopback、假 token、`PUBLIC_SITE_URL=http://127.0.0.1:4399` 下，`npm run verify` **exit 1**。typecheck：**757 files / 0 errors / 0 warnings / 5 hints**；lint、maintainability（922 files）、public assets/cache checks 均通过。Vitest：**149 files，147 passed / 2 failed；1048 passed / 8 failed（1056）**。失败为 `tests/unit/ci-release-identity.test.ts` 仍期望旧 `2026-10-cms-maintenance` schema version（2 tests），以及 `tests/unit/deploy-target-gate.test.ts` 的 6 个 deploy fixture 在新的 `release_manifest_blocked: cms_schema_status=pending_release_gate` 前置门禁处退出，未到原有目标断言。
+- `npm run format:check` exit 0。由于完整 verify 失败，按闸门未运行 English fixture Playwright E2E、桌面/移动 screenshot 矩阵或 `verify:release`，因此没有新的 E2E PASS/screenshot 证据。
+
+Reproduction：
+
+```text
+VITEST_MAX_WORKERS=4 npx vitest run tests/unit/english-news-read-policy.test.ts tests/unit/english-news-separation-migration.test.ts tests/unit/news-english-adapter.test.ts tests/unit/cms-contract.test.ts tests/unit/cms-setup.test.ts tests/unit/directus-assets-security.test.ts tests/unit/public-artifacts.test.ts tests/unit/news-publication-time.test.ts --maxWorkers=4
+set -o pipefail; DEPLOY_ENVIRONMENT=local DIRECTUS_URL=http://127.0.0.1:9 PUBLIC_DIRECTUS_URL=http://127.0.0.1:9 DIRECTUS_CONTENT_TOKEN=dummy DIRECTUS_TOKEN=dummy ENABLE_DOMAIN_REDIRECTS=false PUBLIC_SITE_URL=http://127.0.0.1:4399 XIANSUO_API_URL=http://127.0.0.1:9 XIANSUO_INGEST_TOKEN=dummy ASTRO_TELEMETRY_DISABLED=1 npm run verify
+npm run format:check
+```
+
+Evidence：[`focused-vitest.log`](../output/english-news-admin/xyy-20261021-01/luna-r2/focused-vitest.log)、[`read-policy-adversarial-final.log`](../output/english-news-admin/xyy-20261021-01/luna-r2/read-policy-adversarial-final.log)、[`migration-adversarial.log`](../output/english-news-admin/xyy-20261021-01/luna-r2/migration-adversarial.log)、[`npm-verify.log`](../output/english-news-admin/xyy-20261021-01/luna-r2/npm-verify.log)、[`npm-format-check.log`](../output/english-news-admin/xyy-20261021-01/luna-r2/npm-format-check.log)。`source-hash-diff.txt` 仅显示并行既有保护文件 `tests/unit/public-artifacts.test.ts` 在验证期间发生变化（新增百度验证 artifact 测试）；Luna 未编辑该文件，也未修改任何应用实现或本任务测试。其余候选源码 hashes 前后保持。
+
+Likely affected area：`tests/unit/ci-release-identity.test.ts` 的旧 schema version fixture；`tests/unit/deploy-target-gate.test.ts` 与新的 pending release gate fixture 顺序不一致。业务范围内 R2 定向 policy、迁移和时间边界未复现失败。Severity：**HIGH**（强制完整 verify 未通过，无法进入 English E2E/最终验收）。
+
+Remaining limitation：未验证真实 Directus Studio 桌面/移动后台入口，未进行 CMS、数据库、Schema、权限、远程、部署或凭据操作；fixture 前台 E2E 与 screenshots 因 verify gate FAIL 未执行，不能将模拟前台结果称为后台 UI 验收。
+
+Handoff：返回 Sol → Terra 修正全量 verify 的两个旧 fixture/门禁契约后，沿同一 Task ID 重新运行 verify，再执行 English fixture E2E 与截图矩阵；Luna 未提交、推送或部署。
+### XYY-20261021-01 R3 — 英文文章独立后台集合最终复测
+
+Task ID：`XYY-20261021-01`；Result: **FAIL**。
+
+Expected：R3 测试夹具修复后，新增 17 项测试和完整 `npm run verify` 通过，再运行 English fixture 的 1440/390/360 桌面与移动浏览器矩阵并保存新截图；迁移必须把裸 Shanghai 时间写成确定的 UTC ISO 瞬间。
+
+Actual：
+
+- Terra R3 新增夹具回归：**2 files / 17 tests passed**（`ci-release-identity.test.ts`、`deploy-target-gate.test.ts`）；目标 Prettier 和 `git diff --check` 均通过。
+- 完整 verify 在 `check:cache-patch` 后进入 Vitest 前被我停止，未获得 shell exit code，也未宣称通过。停止前实际通过：typecheck **757 files / 0 errors / 0 warnings / 5 hints**、lint、维护性 **922 files**、public assets **69 referenced / 103 deployment assets**、cache patch；之后未取得全量 Vitest 或 build 结果。
+- 迁移时间严格 probe 失败：输入 `published_at=2026-10-02 08:00:00` 与 `english_published_at=2026-10-02 08:00:00` 时，parser 能比较到 `2026-10-02T00:00:00.000Z` 的瞬间，但 `buildEnglishNewsSeparationPlan(...).records[0].published_at` 仍为原始裸字符串 `2026-10-02 08:00:00`。另测中英文一方裸值时，若该裸值为较晚生效时间，同样原样输出。写入 Directus/DB 后会重新按环境时区解释，不能满足迁移保留生效时刻的 AC。
+- 因上述业务语义失败，未继续全量 Vitest、build、English fixture E2E、桌面/移动截图或 `verify:release`。真实 Directus Studio UI、CMS/数据库/权限/远程/部署仍未操作。
+
+Reproduction：
+
+```text
+VITEST_MAX_WORKERS=4 npx vitest run tests/unit/ci-release-identity.test.ts tests/unit/deploy-target-gate.test.ts --maxWorkers=4
+node --input-type=module  # 脚本见 migration-time-write-probe.log，构造 bare Shanghai legacy rows 并检查 outgoing published_at
+set -o pipefail; DEPLOY_ENVIRONMENT=local DIRECTUS_URL=http://127.0.0.1:9 PUBLIC_DIRECTUS_URL=http://127.0.0.1:9 DIRECTUS_CONTENT_TOKEN=dummy DIRECTUS_TOKEN=dummy ENABLE_DOMAIN_REDIRECTS=false PUBLIC_SITE_URL=http://127.0.0.1:4399 XIANSUO_API_URL=http://127.0.0.1:9 XIANSUO_INGEST_TOKEN=dummy ASTRO_TELEMETRY_DISABLED=1 npm run verify
+```
+
+Evidence：[`new-17-vitest.log`](../output/english-news-admin/xyy-20261021-01/luna-r3/new-17-vitest.log)、[`migration-time-write-probe.log`](../output/english-news-admin/xyy-20261021-01/luna-r3/migration-time-write-probe.log)、[`npm-verify.log`](../output/english-news-admin/xyy-20261021-01/luna-r3/npm-verify.log)、[`npm-verify.exit`](../output/english-news-admin/xyy-20261021-01/luna-r3/npm-verify.exit)、[`target-format.log`](../output/english-news-admin/xyy-20261021-01/luna-r3/target-format.log)、[`source-hash-diff.txt`](../output/english-news-admin/xyy-20261021-01/luna-r3/source-hash-diff.txt)。本任务候选源码哈希 before/after **0 diff**；并行 Baidu workflow 的 `.gitignore`、`scripts/check-public-artifacts.mjs`、`tests/unit/public-artifacts.test.ts` 与验证文件未纳入本任务判断，也未被 Luna 修改。
+
+Likely affected area：`scripts/lib/english-news-separation-migration.mjs` 的 `migratedRecord` 出站时间字段；解析与比较使用了确定瞬间，但写出仍沿用旧输入字符串。Severity：**HIGH**（迁移后同一文章的公开时间可能随 Directus/DB/运行环境时区改变，阻断内容保真与发布流程 AC）。
+
+Remaining limitation：完整 verify 未取得最终 exit，未执行全量 Vitest/build/E2E/screenshots；本轮仅 R3 新增 17 项独立测试通过。真实 Directus Studio 后台入口未授权且未验收，前台 fixture 不能替代后台 UI 验证。
+
+Handoff：返回 Sol → Terra 修复出站时间规范化后，沿同一 Task ID 重新运行完整 verify，再运行 English fixture 桌面/移动矩阵；Luna 未提交、推送、部署或外部写入。
+### XYY-20261021-01 R4 — 英文文章独立后台集合最终复测（状态元数据阻塞）
+
+Task ID：`XYY-20261021-01`；Result: **FAIL**。
+
+Expected：迁移出站时间统一为 canonical UTC ISO；英文独立集合应允许 published/draft/archived 独立维护；完整 verify 通过后再执行 English fixture 桌面/移动 E2E。
+
+Actual：
+
+- 裸 Shanghai 时间 probe 通过：`2026-10-02 08:00:00`、中英混合裸/offset 三种组合均输出 `2026-10-02T00:00:00.000Z`，probe exit 0。
+- 时间+迁移定向 Vitest：**2 files / 19 tests passed**；R3 夹具定向 Vitest：**2 files / 17 tests passed**。
+- 独立 metadata probe 失败：`ENGLISH_NEWS_COLLECTION_DEFINITION.fields[status].meta.options.choices` 只有 `published`、`draft`，没有 `archived`；迁移仍能生成 archived 记录，但 Directus 英文后台状态选择无法维护 archived。
+- 完整 `npm run verify` 已在确认上述 metadata FAIL 后手动停止，未取得 shell exit，也未宣称通过。停止前 typecheck **757 files / 0 errors / 0 warnings / 5 hints**、lint、维护性 **922 files** 和 public artifact/precheck 的部分步骤已完成；未获得完整 assets、全量 Vitest 或 build 结果。
+- 因 metadata FAIL 未运行 English fixture E2E、1440/390/360 截图或 `verify:release`。真实 Directus Studio UI、CMS/数据库/权限/远程/部署均未操作。
+
+Reproduction：
+
+```text
+VITEST_MAX_WORKERS=4 npx vitest run tests/unit/news-publication-time.test.ts tests/unit/english-news-separation-migration.test.ts --maxWorkers=4
+VITEST_MAX_WORKERS=4 npx vitest run tests/unit/ci-release-identity.test.ts tests/unit/deploy-target-gate.test.ts --maxWorkers=4
+node --input-type=module  # 读取 ENGLISH_NEWS_COLLECTION_DEFINITION.status.meta.options.choices，检查 archived
+set -o pipefail; DEPLOY_ENVIRONMENT=local DIRECTUS_URL=http://127.0.0.1:9 PUBLIC_DIRECTUS_URL=http://127.0.0.1:9 DIRECTUS_CONTENT_TOKEN=dummy DIRECTUS_TOKEN=dummy ENABLE_DOMAIN_REDIRECTS=false PUBLIC_SITE_URL=http://127.0.0.1:4399 XIANSUO_API_URL=http://127.0.0.1:9 XIANSUO_INGEST_TOKEN=dummy ASTRO_TELEMETRY_DISABLED=1 npm run verify
+```
+
+Evidence：[`migration-time-probe.log`](../output/english-news-admin/xyy-20261021-01/luna-r4/migration-time-probe.log)、[`time-migration-vitest.log`](../output/english-news-admin/xyy-20261021-01/luna-r4/time-migration-vitest.log)、[`r3-fixture-vitest.log`](../output/english-news-admin/xyy-20261021-01/luna-r4/r3-fixture-vitest.log)、[`english-status-metadata-probe.log`](../output/english-news-admin/xyy-20261021-01/luna-r4/english-status-metadata-probe.log)、[`npm-verify.log`](../output/english-news-admin/xyy-20261021-01/luna-r4/npm-verify.log)、[`npm-verify.exit`](../output/english-news-admin/xyy-20261021-01/luna-r4/npm-verify.exit)、[`source-hash-diff.txt`](../output/english-news-admin/xyy-20261021-01/luna-r4/source-hash-diff.txt)。本任务文件哈希 before/after **0 diff**；并行 Baidu 保护文件未纳入本任务判定且未被 Luna 修改。
+
+Likely affected area：`scripts/data/english-news-collection-definition.mjs` 的独立英文 `status` 字段定义复用 `statusField()`，未声明 archived 选项。Severity：**HIGH**（后台编辑表单无法独立维护迁移保留的 archived 状态，阻断 AC1/AC2）。
+
+Remaining limitation：完整 verify 未取得最终 exit，未执行全量 Vitest/build/E2E/screenshots；真实 Directus Studio 后台入口未授权且未验收，前台 fixture 不能替代后台 UI 验证。
+
+Handoff：返回 Sol → Terra 补齐英文 status 的 archived metadata 与回归后，沿同一 Task ID 重跑完整 verify，再执行 English fixture 桌面/移动矩阵；Luna 未提交、推送、部署或外部写入。
+### XYY-20261021-01 R5 — 英文文章独立后台集合最终复测（类型门禁阻塞）
+
+Task ID：`XYY-20261021-01`；Result: **FAIL**。
+
+Expected：英文集合 status 含 published/draft/archived、默认 draft，singleton=false；迁移/setup 回归通过，完整 `npm run verify` 通过后执行 English fixture 桌面/移动 list/detail、withdraw、中文独立和 English-only 互链验证及新截图。
+
+Actual：
+
+- metadata probe 通过：status choices 为 published、draft、archived，默认值为 draft；集合 metadata `singleton=false`；已有 `singleton=true` 的 English collection 计划生成 `singleton=false` 修复。
+- `npx vitest run tests/unit/english-news-separation-migration.test.ts tests/unit/cms-setup.test.ts --maxWorkers=4`：**2 files / 19 tests passed**。
+- 完整 `npm run verify` **exit 1**，在 `astro check` 阶段停止：**757 files / 1 error / 0 warnings / 5 hints**。唯一错误为 `tests/unit/english-news-separation-migration.test.ts:58` 直接访问联合类型的 `chineseStatus?.meta.options`，TypeScript 报 `TS2339 Property 'options' does not exist on type ...`。
+- 因 typecheck FAIL，未运行 lint、维护性、assets/cache、全量 Vitest、build、English fixture E2E 或截图矩阵，也未运行 `verify:release`。
+
+Reproduction：
+
+```text
+VITEST_MAX_WORKERS=4 npx vitest run tests/unit/english-news-separation-migration.test.ts tests/unit/cms-setup.test.ts --maxWorkers=4
+node --input-type=module  # metadata-probe.log：检查 archived/default/singleton 收敛
+set -o pipefail; DEPLOY_ENVIRONMENT=local DIRECTUS_URL=http://127.0.0.1:9 PUBLIC_DIRECTUS_URL=http://127.0.0.1:9 DIRECTUS_CONTENT_TOKEN=dummy DIRECTUS_TOKEN=dummy ENABLE_DOMAIN_REDIRECTS=false PUBLIC_SITE_URL=http://127.0.0.1:4399 XIANSUO_API_URL=http://127.0.0.1:9 XIANSUO_INGEST_TOKEN=dummy ASTRO_TELEMETRY_DISABLED=1 npm run verify
+```
+
+Evidence：[`metadata-probe.log`](../output/english-news-admin/xyy-20261021-01/luna-r5/metadata-probe.log)、[`metadata-vitest.log`](../output/english-news-admin/xyy-20261021-01/luna-r5/metadata-vitest.log)、[`npm-verify.log`](../output/english-news-admin/xyy-20261021-01/luna-r5/npm-verify.log)、[`npm-verify.exit`](../output/english-news-admin/xyy-20261021-01/luna-r5/npm-verify.exit)、[`source-hash-diff.txt`](../output/english-news-admin/xyy-20261021-01/luna-r5/source-hash-diff.txt)。本任务源码 hash before/after **0 diff**；并行 Baidu 保护文件和历史日志未纳入本任务判定，未被 Luna 修改。
+
+Likely affected area：`tests/unit/english-news-separation-migration.test.ts` 的 metadata assertion 类型收窄；业务实现 metadata probe 已通过。Severity：**HIGH**（强制 verify 未通过，无法进入浏览器验收与最终交付）。
+
+Remaining limitation：未执行完整 verify 后续阶段、English fixture 前台 E2E、桌面/移动截图或 `verify:release`；真实 Directus Studio 后台 UI、CMS、数据库、权限、远程与部署均未授权且未操作。前台 mock fixture 不能替代后台 UI 验收。
+
+Handoff：返回 Sol → Terra 修正测试类型断言后，沿同一 Task ID 重跑完整 verify，再执行 English fixture 浏览器矩阵；Luna 未提交、推送、部署或外部写入。
+
+### XYY-20261021-01 R6 — English fixture E2E FAIL（独立发布夹具契约不一致）
+
+Task ID：`XYY-20261021-01`；Result：**FAIL**。
+
+Expected：R5 类型断言修复后，完整 `npm run verify` 与 English fixture 配置下的独立英文发布、草稿/未来/归档、内容门控、中文互不依赖、撤稿/互链和响应式浏览器回归均通过；不得把前台 mock 当作 Directus Studio 后台验收。
+
+Actual：
+
+- 前置 metadata/time 回归：**2 files / 21 tests passed**；英文集合状态选项为 `published/draft/archived`，默认 `draft`，`singleton=false`。
+- 完整 `npm run verify`：**exit 0**。typecheck **757 files / 0 errors / 0 warnings / 5 hints**；维护性 **922 files**；Vitest **149 files / 1062 tests passed**；assets/cache/build 均通过。环境使用 `DEPLOY_ENVIRONMENT=local`、`PUBLIC_SITE_URL=http://127.0.0.1:4399`、Directus/Xiansuo loopback 和 dummy token。
+- English fixture Playwright：**exit 1**，共调度 9 项；**3 passed、1 failed、5 did not run**。layout 与 Unicode visibility 两个 spec 的 3 项通过。`english-news-fixture.spec.ts` 首项失败：列表中的 `Draft English insight` 期望 `toHaveCount(0)`，实际为 **1**，随后该 serial spec 的 5 项未运行。
+- 夹具数据明确显示该 slug 的中文 `status=draft`，但英文 `english_status=published` 且英文发布时间已过去；当前英文前台读取 `english_news` 并仅按英文状态/时间过滤，所以会将它公开。这与该测试“中文 draft 时隐藏英文”的期望冲突；需要 Sol/Terra 先裁决 AC2 独立发布语义与 fixture 期望，Luna 未修改实现或测试夹具。
+
+Reproduction：
+
+```sh
+VITEST_MAX_WORKERS=4 npx vitest run tests/unit/english-news-separation-migration.test.ts tests/unit/news-publication-time.test.ts --maxWorkers=4
+DEPLOY_ENVIRONMENT=local PUBLIC_SITE_URL=http://127.0.0.1:4399 DIRECTUS_URL=http://127.0.0.1:9 PUBLIC_DIRECTUS_URL=http://127.0.0.1:9 DIRECTUS_CONTENT_TOKEN=dummy DIRECTUS_TOKEN=dummy ENABLE_DOMAIN_REDIRECTS=false XIANSUO_API_URL=http://127.0.0.1:9 XIANSUO_INGEST_TOKEN=dummy ASTRO_TELEMETRY_DISABLED=1 npm run verify
+PLAYWRIGHT_ENGLISH_NEWS_ARTIFACTS_DIR=output/english-news-admin/xyy-20261021-01/luna-r6 npx playwright test --config=playwright.english-news.config.ts
+```
+
+Evidence：[`r6-targeted-vitest.log`](../output/english-news-admin/xyy-20261021-01/luna-r6/r6-targeted-vitest.log)、[`metadata-time-probe.log`](../output/english-news-admin/xyy-20261021-01/luna-r6/metadata-time-probe.log)、[`npm-verify.log`](../output/english-news-admin/xyy-20261021-01/luna-r6/npm-verify.log)、[`english-news-playwright.log`](../output/english-news-admin/xyy-20261021-01/luna-r6/english-news-playwright.log)、[`failure-summary.md`](../output/english-news-admin/xyy-20261021-01/luna-r6/failure-summary.md)、失败截图/trace（`test-results/english-news-fixture-Engli-4f71e-h-reciprocal-language-links-chromium/`）、[`source-hash-diff.txt`](../output/english-news-admin/xyy-20261021-01/luna-r6/source-hash-diff.txt)。任务源码哈希 before/after 无差异；HEAD before/after 均为 `984461e17dfcae7e7d1324a9fa530fb742133b2c`。本轮 layout 产生 1440/390 的 list/detail 四张截图；360 几何断言执行但既有测试没有输出 360 截图。
+
+Likely affected area：`tests/fixtures/english-news-records.json` 与 `tests/e2e/english-news-fixture.spec.ts` 的状态夹具/期望，和独立 `english_news` 读取契约之间不一致；若产品决定中文 draft 必须阻止英文，则影响 `src/lib/directus-news-english.ts` 的发布过滤。Severity：**HIGH**（强制 E2E 门禁失败，无法最终验收）。
+
+Remaining limitation：真实 Directus Studio 桌面/移动后台 UI、真实 CMS/数据库/权限、远程环境、部署和凭据均未操作；本次浏览器只验证本地 mock CMS 前台，不能宣称后台入口已验收。完整 verify 通过不抵消 E2E FAIL。
+
+Handoff：返回 Sol 先裁决独立发布 AC 与该 fixture 的矛盾；如需修复后沿同一 Task ID 重新执行 E2E。Luna 未提交、推送、部署或外部写入。
+
+### XYY-20261021-01 R7 — 英文新闻独立 fixture 最终复测
+
+Task ID：`XYY-20261021-01`；Result：**PASS（R7 夹具/测试回归；R6 完整 verify 作为独立证据引用）**。
+
+Tests performed：
+
+- 当前 R7 `npx astro check`：**exit 0**，757 files、0 errors、0 warnings、5 hints。
+- R7 目标 Prettier、ESLint、`npm run check:maintainability`（922 files）及 `git diff --check`：均 **exit 0**。
+- `VITEST_MAX_WORKERS=4 npx vitest run tests/unit/news-english-adapter.test.ts tests/unit/directus-assets-security.test.ts --maxWorkers=4`：**2 files / 25 tests passed，exit 0**。
+- `PLAYWRIGHT_ENGLISH_NEWS_ARTIFACTS_DIR=output/english-news-admin/xyy-20261021-01/luna-r7 npx playwright test --config=playwright.english-news.config.ts`：**9/9 passed，exit 0**。覆盖 English-only 发布、中文 draft 时英文仍独立公开、英文撤下而中文保持公开、撤下后移除语言配对、future/archived/无效正文、sitemap、empty/unavailable/401/403/非法响应、Unicode 和响应式 list/detail。
+- 另行以本地 mock fixture 生成 360×844 list/detail 截图，exit 0；本轮共有 **6 张截图**：1440、390、360 各自 list/detail。
+
+Regression coverage：R6 已实际完成的完整 `npm run verify` 单独记录为 **exit 0、149 files / 1062 tests、build 通过**，证据见 [`luna-r6/npm-verify.log`](../output/english-news-admin/xyy-20261021-01/luna-r6/npm-verify.log)；R7 未把复用证据误报为本轮重新执行，也未对未变业务重复全量单测/build。
+
+Evidence：[`pass-summary.md`](../output/english-news-admin/xyy-20261021-01/luna-r7/pass-summary.md)、[`typecheck.log`](../output/english-news-admin/xyy-20261021-01/luna-r7/typecheck.log)、[`targeted-vitest.log`](../output/english-news-admin/xyy-20261021-01/luna-r7/targeted-vitest.log)、[`english-news-playwright.log`](../output/english-news-admin/xyy-20261021-01/luna-r7/english-news-playwright.log)、六张 list/detail 截图、[`app-hash-diff.txt`](../output/english-news-admin/xyy-20261021-01/luna-r7/app-hash-diff.txt)、[`test-hash-diff.txt`](../output/english-news-admin/xyy-20261021-01/luna-r7/test-hash-diff.txt)。18 个应用文件冻结清单包含之前遗漏的 `src/lib/news-english-types.ts`；应用与 R7 测试/夹具 before/after hash 均无差异，HEAD before/after 均为 `984461e17dfcae7e7d1324a9fa530fb742133b2c`。
+
+Remaining risks：真实 Directus Studio 桌面/移动后台 UI、真实 CMS/Schema/权限、数据库、远程环境、部署和真机/Safari/Firefox 未获授权且未验证。本轮浏览器是本地 Chromium + mock CMS 前台，不能等同后台 UI 验收；R7 PASS 不改变该限制。
+
+Handoff：R7 独立复测交 Sol → Nova Review；Luna 未修改业务实现、未提交/推送/部署、未进行任何外部写入。
+
+### XYY-20261021-01 R8 — fresh verify FAIL（contract test 类型门禁）
+
+Task ID：`XYY-20261021-01`；Result：**FAIL**。
+
+Expected：R8 Nova 三项缺陷修复后，必须重新执行 fresh `npm run verify`，再执行 English fixture Playwright 9/9 与 1440/390/360 list/detail 截图；不可复用 R6 full verify 作为 R8 fresh 结果。
+
+Actual：
+
+- fresh `npm run verify` **exit 1**，在 `astro check` 停止，尚未进入 lint、维护性、assets/cache、全量 Vitest、build 或 E2E。结果：**760 files / 6 errors / 0 warnings / 5 hints**。
+- 6 个错误全部来自 `tests/unit/english-news-separation-contract.test.ts` 的异构 collection-definition union 类型访问：第 42 行 `field.schema`、`field.meta.required`，第 97–98 行 `status/category.meta.options` 及嵌套 `choices`，均为 TS2339。
+- 应用文件 22 个（含 `src/lib/news-english-visibility.mjs`、`src/lib/sanitize-core.mjs`、`scripts/lib/content-policy-sync.mjs`）before/after hash 无漂移；相关测试/夹具 hash 也无漂移；HEAD before/after 均为 `984461e17dfcae7e7d1324a9fa530fb742133b2c`。
+- 并行 Baidu 保护四文件 hash diff 为空；未触真实 CMS、数据库、权限、远程、部署或凭据。
+
+Reproduction：
+
+```sh
+VITEST_MAX_WORKERS=4 DEPLOY_ENVIRONMENT=local PUBLIC_SITE_URL=http://127.0.0.1:4399 DIRECTUS_URL=http://127.0.0.1:9 PUBLIC_DIRECTUS_URL=http://127.0.0.1:9 DIRECTUS_CONTENT_TOKEN=dummy DIRECTUS_TOKEN=dummy ENABLE_DOMAIN_REDIRECTS=false XIANSUO_API_URL=http://127.0.0.1:9 XIANSUO_INGEST_TOKEN=dummy ASTRO_TELEMETRY_DISABLED=1 npm run verify
+```
+
+Evidence：[`failure-summary.md`](../output/english-news-admin/xyy-20261021-01/luna-r8/failure-summary.md)、[`npm-verify.log`](../output/english-news-admin/xyy-20261021-01/luna-r8/npm-verify.log)、[`npm-verify.exit`](../output/english-news-admin/xyy-20261021-01/luna-r8/npm-verify.exit)、[`app-hash-diff.txt`](../output/english-news-admin/xyy-20261021-01/luna-r8/app-hash-diff.txt)、[`test-hash-diff.txt`](../output/english-news-admin/xyy-20261021-01/luna-r8/test-hash-diff.txt)。
+
+Likely affected area：R8 新增 contract test 对 CMS collection-definition 异构 union 的类型收窄不足；这是测试/typecheck 门禁问题，尚未证明 R8 业务运行时失败。Severity：**HIGH**（fresh verify 未通过，无法进入浏览器验收）。
+
+Remaining limitation：因 fresh verify FAIL，未执行或宣称 English Playwright、截图、E2E/业务运行时 PASS；真实 Directus Studio UI、CMS、数据库、权限、远程和部署仍未授权且未验证。
+
+Handoff：返回 Sol → Terra 修复测试类型门禁后，沿同一 Task ID 重新执行 fresh verify，再由 Luna 执行 E2E 与截图；Luna 未修改实现或测试。
+
+### XYY-20261021-01 R9 — Nova 缺陷修复最终独立复测
+
+Task ID：`XYY-20261021-01`；Result：**PASS**。
+
+Tests performed：
+
+- fresh `npm run verify`（local loopback、dummy token、`VITEST_MAX_WORKERS=4`）：**exit 0**。typecheck **760 files / 0 errors / 0 warnings / 5 hints**；维护性 **925 files**；Vitest **150 files / 1070 tests passed**；assets、cache、build 均通过。
+- Nova 定向回归：`sanitize`、英文 adapter、publication time、migration、contract、content-policy-sync、cms-setup 共 **7 files / 62 tests passed，exit 0**。
+- 独立 visibility probe：零宽字符、soft hyphen、实体不可见正文在迁移写前产生 `incomplete_legacy_record` 且 **0 writes**；image-only 和 ZWJ emoji 内容有效。
+- 独立 policy probe：`english_news` 始终为 `{ status: { _eq: 'published' } }`；中文 `news` 保持 `permissions: null`。
+- 独立 schema probe：status/category choices 漂移和新增人工 required 字段均在写前报 issue，拒绝 apply **0 writes**；API 归一化形状可通过。
+- English fixture Playwright：**9/9 passed，exit 0**，覆盖独立英文发布、中文 draft 独立公开、英文撤稿后中文仍公开及语言配对移除、future/archived/content/error、Unicode、sitemap 和响应式布局。
+- `npm run format:check`、`git diff --check`：均 **exit 0**。
+- 1440、390、360 三视口各生成 list/detail，共 **6 张截图**。
+
+Evidence：[`pass-summary.md`](../output/english-news-admin/xyy-20261021-01/luna-r9/pass-summary.md)、[`npm-verify.log`](../output/english-news-admin/xyy-20261021-01/luna-r9/npm-verify.log)、[`r8-focused-vitest.log`](../output/english-news-admin/xyy-20261021-01/luna-r9/r8-focused-vitest.log)、[`nova-three-probes.log`](../output/english-news-admin/xyy-20261021-01/luna-r9/nova-three-probes.log)、[`english-news-playwright.log`](../output/english-news-admin/xyy-20261021-01/luna-r9/english-news-playwright.log)、六张截图、[`pending-gate-probe.log`](../output/english-news-admin/xyy-20261021-01/luna-r9/pending-gate-probe.log)。
+
+Freeze：22 个应用文件（含 `src/lib/news-english-types.ts`、`src/lib/news-english-visibility.mjs`、`src/lib/sanitize-core.mjs`、`scripts/lib/content-policy-sync.mjs`）before/after hash 无差异；相关测试/夹具 hash 无差异；并行 Baidu 四文件 hash 无差异；HEAD before/after 均为 `984461e17dfcae7e7d1324a9fa530fb742133b2c`。`config/cms-contract.mjs` 仍保留 `pending_release_gate`。
+
+Remaining risks：真实 Directus Studio 桌面/移动后台 UI、真实 CMS/schema/权限/数据库、远程部署及真机/Safari/Firefox 未获授权且未验证。本轮浏览器是本地 Chromium + mock CMS，不能等同后台 UI 验收；未执行任何外部写入。
+
+Handoff：R9 PASS 交 Sol → Nova R2；Luna 未修改实现、未提交/推送/部署。
+
+### XYY-20261021-01 R10 — 本地 Directus Studio 后台独立验收
+
+Task ID：`XYY-20261021-01`；Result：**PASS（R10 本地 Studio UI 范围）**。
+
+Tests performed：
+
+- 目标为专用本地 `xyy-english-news-preview` Directus 12.1.1 + SQLite，地址 `http://127.0.0.1:8055/admin/`；使用提供的演示账号完成真实网页登录，未记录凭据。
+- 桌面与移动浏览器均验证导航：内容组中 `文章` 下方紧邻 `英文文章管理`。
+- 中文列表只显示 `中文文章草稿示例`；英文列表只显示 `English article draft example`。
+- 中文/英文已有编辑表单和新建表单均独立展示完整字段：状态、标题、URL 标识、内容分类、内容摘要、正文内容、封面图片、发布时间。中文快照无 `title_en`、`summary_en`、`content_en`、`english_status`、`english_published_at`；英文快照无中文专属/旧配对字段。英文状态菜单精确显示 `已发布`、`草稿`、`已归档`。
+- 1440×900 与 390×844 均完成列表、新建、编辑检查，共 **12 张截图**；未点击保存。
+
+Regression coverage：R9 已实际完成的 fresh `npm run verify`（150 files / 1070 tests、exit 0）和 English fixture 9/9 证据保持不变；本轮针对真实本地 Studio 进行登录、菜单、列表隔离、四种表单和状态选项验收，不把前台 mock E2E 当作后台 UI 证据。
+
+Evidence：[`ui-observation.md`](../output/english-news-admin/xyy-20261021-01/local-preview/luna/ui-observation.md)、[`chinese-create-final.snapshot.txt`](../output/english-news-admin/xyy-20261021-01/local-preview/luna/chinese-create-final.snapshot.txt)、[`chinese-edit.snapshot.txt`](../output/english-news-admin/xyy-20261021-01/local-preview/luna/chinese-edit.snapshot.txt)、[`english-create-390.snapshot.txt`](../output/english-news-admin/xyy-20261021-01/local-preview/luna/english-create-390.snapshot.txt)、[`english-edit.snapshot.txt`](../output/english-news-admin/xyy-20261021-01/local-preview/luna/english-edit.snapshot.txt)、[`english-status-options.snapshot.txt`](../output/english-news-admin/xyy-20261021-01/local-preview/luna/english-status-options.snapshot.txt)、[`console-final.log`](../output/english-news-admin/xyy-20261021-01/local-preview/luna/console-final.log)；截图位于同一 `local-preview/luna/` 目录，共 12 张。
+
+Freeze：本地 Studio 验收前后 22 个应用文件 hash 无差异；并行 Baidu 四文件 hash 无差异；HEAD 为 `984461e17dfcae7d1324a9fa530fb742133b2c`；`config/cms-contract.mjs` 仍为 `pending_release_gate`。本轮未修改应用实现、测试、schema、文章或用户配置。
+
+Remaining risks：本轮未触生产 CMS、数据库、权限、远程、部署或真实发布；真机/Safari/Firefox 未验证。控制台仍有本地 Directus 启动噪声（初始 `/auth/refresh` 400、favicon 404、WebGPU fallback 和 `Unexpected token '<'`），但未形成可见阻塞 UI；证据中已单列，未伪报“零 console error”。
+
+Handoff：R10 本地 Studio UI PASS 交 Sol → Nova R2；Luna 未提交、推送、部署或外部写入。
+
+### XYY-20261021-02 — 首页主标题文案独立验收
+
+Task ID：`XYY-20261021-02`；Result：**PASS**。
+
+Tests performed：
+
+- 静态范围核对通过：`src/i18n/home-ui-zh.ts` 除 `hero.title` 与 `hero.titleAria` 外逐字保持；英文 `src/i18n/home-ui-en.ts` 无差异；本任务仅看到中文文案文件和既有首页标题断言文件的预期差异。
+- 新标题精确为 `专注规模型鞋服品牌的仓配一体化解决方案。`；既有标题 E2E 核心断言使用相同精确 accessible name。
+- `npx prettier --check src/i18n/home-ui-zh.ts tests/e2e/home-product.spec.ts`：exit 0；目标 `git diff --check`：exit 0。
+- `PLAYWRIGHT_PORT=4321 PLAYWRIGHT_ARTIFACTS_DIR=output/home-headline/xyy-20261021-02/playwright npx playwright test tests/e2e/home-product.spec.ts --grep "homepage loads the shoe-apparel fulfillment message and primary CTA" --project=chromium`：**1 passed，exit 0**。
+- 真实本地首页 `http://127.0.0.1:4321/` 返回 HTTP 200；1440×900 与 390×844 浏览器检查均读取到精确标题及 accessible name。两视口 `document.documentElement.scrollWidth` 分别为 1440、390，与 viewport 相等；标题两行子节点均完整落在标题边界内，未见裁切或横向溢出。
+
+Evidence：[`home-1440.png`](../output/home-headline/xyy-20261021-02/home-1440.png)、[`home-390.png`](../output/home-headline/xyy-20261021-02/home-390.png)、[`desktop-snapshot.txt`](../output/home-headline/xyy-20261021-02/desktop-snapshot.txt)、[`mobile-snapshot.txt`](../output/home-headline/xyy-20261021-02/mobile-snapshot.txt)、[`desktop-geometry.json`](../output/home-headline/xyy-20261021-02/desktop-geometry.json)、[`mobile-geometry.json`](../output/home-headline/xyy-20261021-02/mobile-geometry.json)、[`home-product-targeted.log`](../output/home-headline/xyy-20261021-02/home-product-targeted.log)、[`static-checks.log`](../output/home-headline/xyy-20261021-02/static-checks.log)、[`diff-scope.json`](../output/home-headline/xyy-20261021-02/diff-scope.json)。
+
+Remaining risks：按任务合同未运行完整 `npm run verify`、build 或无关 E2E；本地 4321 服务为已有预览，未启动、替换或修改。后台 8055、CMS、数据库、部署、推送和提交均未操作。本轮 Luna 未修改实现或测试，只新增本目录证据并追加本日志。
+
+Handoff：XYY-20261021-02 首页主标题独立验收 PASS 交 Sol；当前任务仍未提交、推送或部署。
+
+### XYY-20261021-03 — 公开新闻正文图片匿名浏览器独立复现
+
+Task ID：`XYY-20261021-03`；Result：**FAIL（匿名 Chromium 公共渲染路径）**。
+
+Expected：公开文章 `https://56xyy.com/news/morning-star-phase-2` 的封面与正文 6 张同源图片均应在滚动触发懒加载后正常解码显示。
+
+Actual：
+
+- 匿名 Playwright Chromium 390×844：封面 `/api/cms-assets/{uuid}` 返回 HTTP 200、`image/jpeg`，`naturalWidth=1080`；正文 6 张 `/assets/{uuid}.jpeg|png?...` 全部返回 HTTP 403、`application/json; charset=utf-8`，滚动后均为 `naturalWidth=0`。
+- 匿名 Chromium 1440×900 复现同样结果：正文 **6/6 HTTP 403、0/6 解码**。
+- 403 是 HTTP 响应而非 requestfailed；每次加载控制台记录 6 条 403，完整移动截图显示正文破图占位而封面和文字正常。
+
+Reproduction：打开公开 URL，设置 390×844 或 1440×900，reload 后依次将每个 `article img` 滚入视口，等待懒加载，再记录 `currentSrc`、`naturalWidth`、响应 status/content-type。全程匿名、无 cookie/凭据，仅 GET。
+
+Evidence：[`failure-summary.md`](../output/mobile-news-images/xyy-20261021-03/luna/failure-summary.md)、[`chromium-image-evidence.json`](../output/mobile-news-images/xyy-20261021-03/luna/chromium-image-evidence.json)、[`chromium-desktop-image-evidence.json`](../output/mobile-news-images/xyy-20261021-03/luna/chromium-desktop-image-evidence.json)、[`chromium-full-page-390.png`](../output/mobile-news-images/xyy-20261021-03/luna/chromium-full-page-390.png)、[`chromium-390.png`](../output/mobile-news-images/xyy-20261021-03/luna/chromium-390.png)、[`chromium-1440.png`](../output/mobile-news-images/xyy-20261021-03/luna/chromium-1440.png)、[`chromium-console.log`](../output/mobile-news-images/xyy-20261021-03/luna/chromium-console.log)、[`engine-availability.txt`](../output/mobile-news-images/xyy-20261021-03/luna/engine-availability.txt)。
+
+Likely affected area：可观察边界是匿名资源交付路径差异：封面通过应用 `/api/cms-assets` 代理成功，正文 HTML 直接指向 `/assets` 并收到 Directus 403 JSON。初步指向匿名资产授权/交付路径不一致；精确修复归 Terra 源码追踪与原始 HTTP 证据判断。
+
+Severity：**HIGH**，因公开文章正文 6 张图片对匿名 Chromium 用户全部不可用，符合用户反馈症状。
+
+Remaining limitation：本机 Playwright WebKit 未安装，未下载依赖；无法控制真实 iPhone Safari 或 WiFi/4G。Chromium 结果不能冒充真实 Safari 结论。未操作 CMS、数据库、SSH、服务器、部署或实现；目标源码脏状态属于并行任务，Luna 未修改或回退。
+
+Handoff：FAIL 返回 Sol，交 Terra 处理；待修复后沿同一 Task ID 复测。
+
+### XYY-20261021-03 R1 — 本地修复 fresh verify FAIL（origin fixture 契约）
+
+Task ID：`XYY-20261021-03`；Result：**FAIL**。
+
+Expected：在指定 loopback/dummy 环境下 fresh `npm run verify` 通过后，继续安全定向回归与匿名 1440/390 正文 6 图 fixture E2E。
+
+Actual：
+
+- fresh `npm run verify` exit 1；typecheck **765 files / 0 errors / 0 warnings / 5 hints**，lint、维护预算 **929 files**、public assets/cache 检查完成。
+- Vitest 达到 **151 files / 1075 tests**，其中 **1 failed**：`tests/unit/directus-assets-security.test.ts` 的 `authorizes inline body images only from published, canonical, already-visible articles`，第136行首个 inline asset 期望 `true`、实际 `false`。
+- 因 fresh verify 失败，未继续宣称 build、相关安全门禁或新 Playwright 2 项通过。
+
+Reproduction：
+
+```sh
+VITEST_MAX_WORKERS=4 DEPLOY_ENVIRONMENT=local PUBLIC_SITE_URL=http://127.0.0.1:4399 DIRECTUS_URL=http://127.0.0.1:9 PUBLIC_DIRECTUS_URL=http://127.0.0.1:9 DIRECTUS_CONTENT_TOKEN=dummy DIRECTUS_TOKEN=dummy ENABLE_DOMAIN_REDIRECTS=false XIANSUO_API_URL=http://127.0.0.1:9 XIANSUO_INGEST_TOKEN=dummy ASTRO_TELEMETRY_DISABLED=1 npm run verify
+```
+
+归因确认：失败单测 fixture 固定使用 `https://56xyy.com/assets/...`，而 required loopback verify 使 `news-rich-text` 默认 `SITE_URL` 为 `http://127.0.0.1:4399`，严格 origin allowlist 因此不收集该 ID。仅将同一 focused test 的 `PUBLIC_SITE_URL` 改为 `https://56xyy.com` 做无网络 probe 后，**1 file / 11 tests passed，exit 0**；证据见 `directus-assets-security-production-origin.log`。这是测试/environment contract mismatch，未修改测试或实现。
+
+Evidence：[`failure-summary.md`](../output/mobile-news-images/xyy-20261021-03/fix-luna-r1/failure-summary.md)、[`npm-verify.log`](../output/mobile-news-images/xyy-20261021-03/fix-luna-r1/npm-verify.log)、[`npm-verify.exit`](../output/mobile-news-images/xyy-20261021-03/fix-luna-r1/npm-verify.exit)、[`directus-assets-security-production-origin.log`](../output/mobile-news-images/xyy-20261021-03/fix-luna-r1/directus-assets-security-production-origin.log)、[`hash-diff.json`](../output/mobile-news-images/xyy-20261021-03/fix-luna-r1/hash-diff.json)。
+
+Likely affected area：`tests/unit/directus-assets-security.test.ts` 的 production-origin fixture 与 loopback verify 环境不一致；新严格 parser 按当前站点 origin 拒绝该 hardcoded URL。Severity：**HIGH**（fresh verify 红灯，无法完成最终修复验收）。
+
+Freeze：`fix-baseline/protected-hashes.json` 25 个保护文件及本任务 5 个业务 + 6 个测试/配置文件 before/after 均无差异；HEAD 未漂移。Luna 未修改实现/测试，未执行 CMS、数据库、SSH、部署、推送或外部写入。
+
+Remaining limitation：R1 未运行新 Playwright 2 项及完整后续安全定向，不能宣称代理修复 PASS；WebKit/真机限制沿用此前记录。
+
+Handoff：FAIL 返回 Sol → Terra，待 origin fixture/allowlist 契约明确修正后，沿同一 Task ID 重跑 fresh verify 与剩余门禁。
+
+### XYY-20261021-03 R2 — 本地修复非字符串中文正文契约回归
+
+Task ID：`XYY-20261021-03`；Result：**FAIL**。
+
+Expected：已发布中文文章的 CMS `content` 若为非字符串非法响应，应在写入页面前明确拒绝/报错；不能被转换为空正文后继续渲染。按仓库规则，非法响应和契约错误不能由空值或回退静默隐藏。
+
+Actual：`getNewsArticle()` 的 `isPublicNewsArticle()` 只校验 status、canonical slug 和发布时间，没有运行时校验 `content` 类型。对象正文可被接受；中文详情页随后调用 `rewriteNewsRichTextAssets(article.content)`，该 helper 对所有非字符串直接传 `''`，结果为长度 0 的空正文。对同一对象直接调用旧 `sanitizeRichText` 会抛 `TypeError: this.buffers[0].slice is not a function`，因此新路径改变了非法响应语义并隐藏了错误。
+
+Reproduction：临时 Vitest probe（运行后已删除，未留下测试变更）`tests/unit/.luna-r2-non-string-content-probe.test.ts`：**1 file / 1 test passed，exit 0**，断言 `rewriteNewsRichTextAssets({ blocks: [...] }) === ''` 且 `sanitizeRichText(object)` 抛 `TypeError`。源代码行证据见 `non-string-content-source-lines.txt`；原始 probe 记录见 `non-string-content-vitest.log`。
+
+Evidence：[`failure-summary.md`](../output/mobile-news-images/xyy-20261021-03/fix-luna-r2/failure-summary.md)、[`non-string-content-vitest.log`](../output/mobile-news-images/xyy-20261021-03/fix-luna-r2/non-string-content-vitest.log)、[`non-string-content-source-lines.txt`](../output/mobile-news-images/xyy-20261021-03/fix-luna-r2/non-string-content-source-lines.txt)、[`npm-verify.exit`](../output/mobile-news-images/xyy-20261021-03/fix-luna-r2/npm-verify.exit)。R2 fresh `npm run verify` 本身为 **exit 0**（typecheck 765 files / 0 errors / 0 warnings / 5 hints；Vitest 151 files / 1076 tests；build 完成），但该新增 adversarial probe 暴露现有测试未覆盖的内容契约缺口，不能据此宣称整体 PASS。
+
+Likely affected area：`src/lib/directus-queries.ts` 的中文公开文章运行时验证、`src/lib/news-rich-text.ts` 的 route input handling，以及 `src/pages/news/[slug].astro` 的正文渲染边界。Severity：**HIGH**，因为合法发布时间的非法 CMS 正文可能在公开页面静默变为空白。
+
+Freeze：Luna 未修改业务实现或持久测试；临时 probe 已删除。25 个 protected 文件与 11 个 R2 任务文件 before/after hash 均无差异，见 [`hash-diff.json`](../output/mobile-news-images/xyy-20261021-03/fix-luna-r2/hash-diff.json)。已完成的 R2 fresh verify 结果仅作证据保留，后续格式、资产定向和 Playwright 未继续执行。未触 CMS、数据库、远程、部署或生产；WebKit/真机限制沿用此前记录。
+
+Handoff：FAIL 返回 Sol → Terra，需实现侧明确非法中文 `content` 的拒绝策略并补回归后，沿同一 Task ID 重新复测。
+
+### XYY-20261021-03 R3 — 非字符串正文修复与匿名图片代理最终独立复测
+
+Task ID：`XYY-20261021-03`；Result：**PASS（R3 冻结范围）**。
+
+Tests performed：
+
+- R3 helper 定向回归：`tests/unit/news-rich-text.test.ts`、`tests/unit/sanitize.test.ts`、`tests/unit/directus-assets-security.test.ts`、`tests/unit/directus-assets-abort.test.ts`、`tests/unit/directus-assets.test.ts` 共 **5 files / 32 tests passed，exit 0**。对象、数组、数字均抛固定 `TypeError: news rich text content must be a string`；空字符串仍返回空内容；`collectNewsRichTextAssetIds(unknown)` 行为保持不变。
+- fresh loopback/dummy `npm run verify`：**exit 0**；typecheck **765 files / 0 errors / 0 warnings / 6 hints**，lint 通过，维护性预算 **929 files**，public assets/cache 检查通过，Vitest **151 files / 1080 tests passed**，Astro server build 完成。
+- `npm run format:check`、R3 目标文件 Prettier（含 `sanitize-core.mjs`、`news-rich-text.ts`、`config/public-site.mjs`）及目标 `git diff --check`：均 **exit 0**。
+- `playwright.news-images.config.ts` 隔离 fixture：**2/2 passed，exit 0**。Chromium 1440 与 390 两个 viewport 各验证 6 张正文图经 `/api/cms-assets` 解码；匿名直接 `/assets` 为 403；proxy 为 200；draft/future 均 404 且未请求上游。
+- `config/cms-contract.mjs` 仍为 `pending_release_gate`。
+
+Evidence：[`focused-vitest.log`](../output/mobile-news-images/xyy-20261021-03/fix-luna-r3/focused-vitest.log)、[`npm-verify.log`](../output/mobile-news-images/xyy-20261021-03/fix-luna-r3/npm-verify.log)、[`npm-format-check.log`](../output/mobile-news-images/xyy-20261021-03/fix-luna-r3/npm-format-check.log)、[`target-format-check.log`](../output/mobile-news-images/xyy-20261021-03/fix-luna-r3/target-format-check.log)、[`news-images-playwright.log`](../output/mobile-news-images/xyy-20261021-03/fix-luna-r3/news-images-playwright.log)、[`hash-diff.json`](../output/mobile-news-images/xyy-20261021-03/fix-luna-r3/hash-diff.json)、[`pending-gate-check.log`](../output/mobile-news-images/xyy-20261021-03/fix-luna-r3/pending-gate-check.log)。
+
+Freeze：25 个 protected 文件 hash before/after 无差异；R3 预期的 `src/lib/news-rich-text.ts` 与 `tests/unit/news-rich-text.test.ts` 两项变更与 Terra 冻结一致，其余 R2 任务文件无差异；HEAD before/after 均为 `984461e17dfcae7e7d1324a9fa530fb742133b2c`。Luna 未修改实现或持久测试，未触 CMS、数据库、权限、远程、部署、提交或推送。
+
+Remaining risks：WebKit 未安装且未下载，未验证真实 iPhone Safari/WiFi/4G；Playwright 仅为本地 Chromium mock CMS fixture，不能替代真机或生产验证。生产站点此前匿名 `/assets` 403 的实际修复部署状态仍未验证。
+
+Handoff：R3 PASS 返回 Sol，交 Nova Review；无实现级失败待返工。
+
+### XYY-20261021-03 R4 — srcset/English fields fresh gate FAIL
+
+Task ID：`XYY-20261021-03`；Result：**FAIL**。
+
+Expected：R4 的 srcset 选择、外链 fallback、English `id` 字段投影和匿名图片代理修复须通过 fresh loopback `npm run verify` 及后续格式/E2E 门禁。
+
+Actual：定向回归先通过 **6 files / 49 tests，exit 0**，包含 srcset-only、foreign-src fallback、data URL/带逗号描述符、严格 query/token 清理、外链保留、draft/future 过滤，以及 `news`/`english_news` 显式字段投影和 `id` 校验；`parse-srcset` 根直接依赖为 **1.0.2**。但 fresh `npm run verify` 在维护性门禁失败，exit 1：`tests/unit/directus-assets-security.test.ts` 为 **221 行**，超过预算 **220 行**；维护性扫描 930 files 后停止，未进入完整 Vitest/build。
+
+Reproduction：使用 R4 合同指定的 loopback/dummy 环境运行命令，原始结果见 [`npm-verify.log`](../output/mobile-news-images/xyy-20261021-03/fix-luna-r4/npm-verify.log) 与 [`npm-verify.exit`](../output/mobile-news-images/xyy-20261021-03/fix-luna-r4/npm-verify.exit)。
+
+Evidence：[`failure-summary.md`](../output/mobile-news-images/xyy-20261021-03/fix-luna-r4/failure-summary.md)、[`focused-vitest.log`](../output/mobile-news-images/xyy-20261021-03/fix-luna-r4/focused-vitest.log)、[`parse-srcset-version.log`](../output/mobile-news-images/xyy-20261021-03/fix-luna-r4/parse-srcset-version.log)、[`security-test-line-count.txt`](../output/mobile-news-images/xyy-20261021-03/fix-luna-r4/security-test-line-count.txt)。
+
+Likely affected area：`tests/unit/directus-assets-security.test.ts` 的测试文件预算；不应通过削弱断言或跳过门禁解决。Severity：**HIGH**，因为合同要求 fresh verify 完整通过。
+
+限制与交接：Luna 未修改实现或测试；fresh verify 失败后未继续格式、E2E 或截图，也未触 CMS、数据库、权限、远程、部署、提交或推送。返回 Sol → Terra，待预算范围内的最小测试调整后沿同一 Task ID 重跑。
+
+### XYY-20261021-03 R5 — 维护预算修复后最终独立复测
+
+Task ID：`XYY-20261021-03`；Result：**PASS（R5 冻结范围）**。
+
+Tests performed：
+
+- 预算快检：`npm run check:maintainability` **930 files / exit 0**；`tests/unit/directus-assets-security.test.ts` 当前 **219 行**。R4→R5 非空内容 SHA-256 保持 `79755a796c7de733ba231c975b7e007f7509bf4ffcad191848a6651f36eb6b82`，仅空白收敛。
+- Fresh loopback/dummy `npm run verify`：**exit 0**；typecheck **766 files / 0 errors / 0 warnings / 6 hints**，lint 通过，维护性 **930 files**，public assets/cache 检查通过，Vitest **151 files / 1082 tests passed**，Astro server build 完成。
+- 单次 verify 日志中 Vitest 运行期间出现一行中间 `Terminated`，同一进程随后继续完成 151/1082、build 并 exit 0；没有重试或第二次运行，详见 `termination-observation.md`。
+- `npm run format:check`、目标 Prettier（含 `.mjs`、`package.json`、`package-lock.json`、config、parse-srcset 类型声明）及目标 `git diff --check`：均 **exit 0**。
+- `playwright.news-images.config.ts` 隔离图片 fixture：**2/2 passed，exit 0**；Chromium 1440/390 两视口各 6 图经 proxy 解码，直接 `/assets` 403，draft/future 404 且不请求上游。
+- R4 已通过的 6 files / 49 focused tests 按合同复用，未重复运行。
+
+Regression coverage：R4 focused evidence 覆盖 srcset-only、foreign-src fallback、规范 `parse-srcset` 选择、data URL/逗号描述符、严格 UUID/origin、query/token 清理、外链保留、中文/英文公开字段及 `id` 投影、draft/future gating；R5 fresh verify 覆盖全量回归与 build。
+
+Evidence：[`npm-verify.log`](../output/mobile-news-images/xyy-20261021-03/fix-luna-r5/npm-verify.log)、[`termination-observation.md`](../output/mobile-news-images/xyy-20261021-03/fix-luna-r5/termination-observation.md)、[`npm-format-check.log`](../output/mobile-news-images/xyy-20261021-03/fix-luna-r5/npm-format-check.log)、[`target-format-check.log`](../output/mobile-news-images/xyy-20261021-03/fix-luna-r5/target-format-check.log)、[`news-images-playwright.log`](../output/mobile-news-images/xyy-20261021-03/fix-luna-r5/news-images-playwright.log)、[`hash-diff.json`](../output/mobile-news-images/xyy-20261021-03/fix-luna-r5/hash-diff.json)、[`package-direct-dependency-diff.txt`](../output/mobile-news-images/xyy-20261021-03/fix-luna-r5/package-direct-dependency-diff.txt)、[`pending-gate-check.log`](../output/mobile-news-images/xyy-20261021-03/fix-luna-r5/pending-gate-check.log)。
+
+Freeze：25 个 protected 文件与本轮 **14 个任务文件** before/after hash 均无差异；R5 预期仅测试空白调整，非空代码 hash 保持；`parse-srcset` 仅以 1.0.2 作为 package/package-lock 根直接依赖，未见其他依赖树变更；HEAD before/after 均为 `984461e17dfcae7e7d1324a9fa530fb742133b2c`；`config/cms-contract.mjs` 仍为 `pending_release_gate`。Luna 未修改实现、测试或依赖，未触 CMS、数据库、权限、远程、部署、提交或推送。
+
+Remaining risks：WebKit 未安装且未下载，未验证真实 iPhone Safari/WiFi/4G；Playwright 为本地 Chromium mock CMS fixture，不能替代真机或生产验证。生产站点此前匿名 `/assets` 403 的部署后状态仍未验证。
+
+Handoff：R5 PASS 返回 Sol，交 Nova Review。
+
+### XYY-20261021-04 — GitHub 同步前 Luna 独立门禁
+
+Task ID：`XYY-20261021-04`；Result：**PASS（推送前验证范围）**。
+
+Tests performed：
+
+- 以合同指定 loopback/dummy 环境执行 fresh `npm run verify`：**exit 0**。typecheck **766 files / 0 errors / 0 warnings / 6 hints**，lint 通过，维护性 **930 files**，public assets/cache 检查通过，Vitest **151 files / 1082 tests passed**，Astro server build 完成。
+- `npm run format:check`：**exit 0**。
+- 候选新增/敏感格式目标（`config`/`scripts` `.mjs`、`package.json`/`package-lock.json`、Playwright config、`src/types/parse-srcset.d.ts`、新闻资产/英文分离测试与 fixtures）Prettier：**exit 0**。
+- 候选 scoped `git diff --check`：**exit 0**。
+- 既有英文 9 项、首页及图片 2 项浏览器证据按合同复用，未重复运行无关 E2E 或下载浏览器依赖。
+
+Freeze and scope：合同候选清单 **63 files**，与 baseline 清单精确一致；baseline before/after hash **0 mismatches**，非 docs 文件也为 **0 mismatches**。HEAD before/after 均为 `984461e17dfcae7e7d1324a9fa530fb742133b2c`。`config/cms-contract.mjs` 仍为 `pending_release_gate`。本轮单次 verify 日志有 Vitest 期间中间 `Terminated` 行，但同一进程随后完成 151/1082、build 并 exit 0，未重试；详见 `termination-observation.md`。
+
+Evidence：[`scope-summary.md`](../output/git-sync/xyy-20261021-04/luna/scope-summary.md)、[`hash-scope-before.json`](../output/git-sync/xyy-20261021-04/luna/hash-scope-before.json)、[`hash-scope-after.json`](../output/git-sync/xyy-20261021-04/luna/hash-scope-after.json)、[`npm-verify.log`](../output/git-sync/xyy-20261021-04/luna/npm-verify.log)、[`npm-format-check.log`](../output/git-sync/xyy-20261021-04/luna/npm-format-check.log)、[`target-format-check.log`](../output/git-sync/xyy-20261021-04/luna/target-format-check.log)、[`diff-check.log`](../output/git-sync/xyy-20261021-04/luna/diff-check.log)、[`pending-gate-after.log`](../output/git-sync/xyy-20261021-04/luna/pending-gate-after.log)。
+
+Remaining risks：Luna 未执行 GitHub fetch、commit、push 或远端回读；未验证 hosted CI 运行结果。Sol 仍需在 Nova Review 后核对准确远端、提交范围、普通 push 及 GitHub 状态。未触生产站点、CMS、数据库、权限或部署。
+
+Handoff：推送前独立门禁 PASS 返回 Sol，交 Nova 审阅；Luna 未修改实现或测试。

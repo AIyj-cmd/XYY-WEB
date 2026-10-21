@@ -33,6 +33,10 @@ XYY-WEB 已运行于正式环境，当前处于稳定维护阶段。仓库根目
 
 | Task            | Risk   | Owner | Status    |
 | --------------- | ------ | ----- | --------- |
+| XYY-20261021-04 | HIGH | Luna → Nova → Sol | IN_PROGRESS（用户已授权GitHub同步；verify/format PASS，未部署） |
+| XYY-20261021-03 | HIGH | Terra → Luna → Nova → Sol | LOCAL_READY（正文图片代理修复；Luna R5 PASS / Nova R2 APPROVED；未推送部署） |
+| XYY-20261021-02 | LOW | Sol → Terra → Luna | LOCAL_READY（仅首页主标题；目标测试和两视口 PASS；用户要求暂不推送） |
+| XYY-20261021-01（文章分离） | HIGH | Sol → Terra → Luna → Nova | LOCAL_READY（1070 单测 / 英文 E2E 9/9，Nova R2 APPROVED；待真实 CMS 与发布授权） |
 | XYY-20261020-16 | MEDIUM | Sol → Terra → Luna → Nova | LOCAL_READY（缺文件修复，verify / 48 份 LH 报告通过；未推送 GitHub） |
 | XYY-20261020-14 | HIGH | Sol → Terra → Luna → Nova | CLOSED（c5ca1e4 已上线，Luna PASS / Nova 最终 APPROVED） |
 | XYY-20261020-05 | HIGH | Sol → Terra → Luna → Nova | CLOSED（c6b7267 已上线，Luna PASS / Nova APPROVED） |
@@ -3098,3 +3102,74 @@ Limits：本轮限Chrome152模拟视口及离线/helper验证，空内容schema�
 - 有效 R3 `npm run verify` exit 0：747 类型文件 0 errors/0 warnings/5 既有 hints，147 文件/1043 单测、Lint、912 文件维护预算、资源/缓存与构建通过；最终格式检查 exit 0。真实容量测量为 406425600 bytes、1177 inodes。候选与主工作区 18 路径哈希无漂移，两工作区差异集合仍精确为 26 路径。Task15 浏览器与 Task16 Lighthouse 证据仅按精确哈希复用，未冒充本次重跑；验证使用 loopback 假依赖，主预览保持。
 - Luna PASS、Nova APPROVED，Sol 审阅 diff、失败与复测证据及暂存范围后验收。精确暂存 26 路径，创建应用提交 `704b4afe31a38571a9fe2bd25ee7a0959ebdfa4f` 并普通推送 `origin/main` 成功。2026-10-20 17:44 CST，本地 HEAD、`origin/main` 与 GitHub API main 一致，ahead/behind 0/0、主工作区干净；应用提交 CI `39402842785` 当时为 `in_progress`。
 - 本段与 DEV_STATE 是推送后的事实补录，仅这两份文档发生后续变化；核对增量事实、格式、whitespace 和精确暂存清单，18 个业务/测试/CI 哈希及依赖锁保持，按 Nova 明确的收尾边界复用本轮完整门禁与 Review，不重复应用测试。最终提交身份和 CI 实际状态保存在 ignored `final-result.json`，不将计划或本地通过写成远端通过。未部署网站、改生产配置、触及真实 CMS/数据库或退役目标。
+
+#### XYY-20261020-18 — 新服务器同步最新 GitHub 代码
+
+- 用户明确授权连接 `8.138.148.179` 并更新 `AIyj-cmd/XYY-WEB` 最新代码；HIGH，合同 `docs/plans/xyy-20261020-18-native-release.md`，按 Terra → Luna → Nova → Sol 发布及上线后独立验收完成。主工作区初始干净；两次 fetch 核实 main 为 `984461e17dfcae7e7d1324a9fa530fb742133b2c`，域名与 www 均仅解析至新主机。服务器采用不可变 release 且无 Git 仓库，沿用已审发布流程。
+- Terra 在独立工作树将最新 main 无冲突合并到当前生产原生基线 `c5ca1e4`，冻结 1707 源文件；相对 main 仅保留既有 3 源/6 测试 CMS 兼容。Luna PASS 后，Sol 核对全部 hash 和准确 parents，创建本地合并提交 `7d7cdabcd3cea1e0e26fe7fc207fc49da08041d5`，候选干净，未推送。主工作区 1700 个保护文件保持，只有本任务合同/状态/角色日志更新。
+- Luna 有效 R2 完整 `npm run verify:release` exit 0：149 文件/1053 单测、411 E2E/17 既有条件跳过、6 formal 和构建通过。容量实测峰值 1547059200 bytes/12749 inodes，preflight exit 0；源 hash 无漂移，临时测试端口释放，4321/PID98418 保持。R1 将容量文件变量提前指向尚未生成的测量输出而失败；修正仅限验证 wrapper 的变量时序，原始失败保留，未改源码、断言或阈值。
+- Sol 正式构建的 client/server origin 均为 `https://56xyy.com`；release 为 `20261020T102057Z-7d7cdab`，delta 275064 bytes、68 普通文件、64 个旧制品文件删除、完整 inventory 1043 项，依赖锁不变。Nova 对精确源/制品/部署器发布前 APPROVED；切换前 SSH 回读 current/version、配置 hash/模式/属主、服务身份和旧 release 无漂移，剩余空间超过 186 GB。上传与部署均 exit 0。
+- 2026-10-20 18:24 CST 候选 50032 版本与 16 个页面/发现文件 GET 验收通过后原子切换 current，仅重启 `xyy-web`。上线版本精确匹配目标，postflight PASS；配置与 Directus/Nginx 进程身份保持，全部旧 release 保留，临时 unit inactive/not-found、50032 无监听。回退资料为 `/data/xyy/backups/native-update-20261020-18`；未触发回退。
+- 实站 R1 复用浏览器页面导致前页图库/视频的切页取消计入下一页，12/16 FAIL；过滤取消的中间复测被明确标为无效并保留。Sol 要求每路由独立 context/page、关闭前冻结观测、teardown 独立记录，保留全部失败断言。最终严格复测 16/16 PASS、26 个首屏可见图解码，版本、品牌、Organization/WebSite、canonical、H1、布局和错误检查通过，route/teardown failed、坏响应、console/page/policy 错误均 0；16 张截图保留。准备脚本最初 CommonJS/.mjs 启动问题在公网运行前修正为 ESM，未改业务代码。
+- Sol 审阅中文首页桌面/手机和关于英文桌面/中文手机实站截图；首页品牌、导航与 CTA 完整，关于视频和控件正常，正文品牌依独立 DOM 与精确源码的本地视觉证据。Nova 最终 APPROVED，Sol 按 AC 验收 CLOSED；有效证据与失败样本见 `output/release/xyy-20261020-18/final-result.json` 及 `output/playwright/xyy-20261020-18/live/`。
+- GitHub 最新 main 的 CI `39403042790` 已 completed/success；与原生合并候选的本地完整门禁分别记录。本次没有再次推送 GitHub、改 DNS/TLS/Nginx/PM2/既有环境或权限策略，没有直接调用 CMS 管理或数据库接口、写入真实数据、执行 `/healthz`、真实 POST 或退役目标请求；站点自身正常 CMS 读取不据此排除。联系接收链仍未验收，浏览器限 Chromium 模拟。收尾仅核对文档增量、格式和 diff，不重复已通过应用门禁。
+
+
+## XYY-20261021-01 — 百度站点验证文件（2026-10-21）
+
+- 按用户明确授权连接新 ECS `8.138.148.179`，在当前 release `20261020T102057Z-7d7cdab` 的 `dist/client/` 原子新增 `baidu_verify_codeva-Yi87xCOa9G.html`。文件与下载原件精确一致，32 bytes，SHA-256 `3fab82590629d088357ac3e7102e48e8c87848cd716c25ed1c7a3a2c2571dd67`。
+- 本地 `public/` 保留原文件；`.gitignore` 与 `scripts/check-public-artifacts.mjs` 仅增加此精确根文件名及精确内容例外，相关测试覆盖路径、大小写、改名及内容篡改拒绝。源码改动尚未提交或推送。
+- R1 由现有 HTML 禁止规则阻断；R2 Chrome 临时目录过长且主工作区出现其他任务并行改动，结果未作为验收依据。R3 在独立副本 `/home/yj/data/xyy-baidu-verify-20261021-01` 完成等价完整发布门禁（仅 CLI workers=3）：1048 单测、411 E2E、6 formal 通过，17 个既有条件跳过，最终构建及容量预检 exit 0；1706 源文件前后哈希一致。Nova 已审阅批准精确上传脚本。
+- 公网 `https://56xyy.com/baidu_verify_codeva-Yi87xCOa9G.html` 返回 HTTP 200、Content-Length 32、响应体精确匹配原件。前后 current、版本响应、release manifest、Nginx 配置与服务身份一致。没有发布其他应用变更、重启服务或操作 CMS/数据库。
+- 证据：`output/baidu-verification/xyy-20261021-01/`；保留原始失败、R3 完整门禁和公网核验证据。其他任务并行改动保持。
+
+
+### XYY-20261021-01 更正（2026-10-21）
+
+用户更正文件并明确要求直接替换、不重复全量测试。线上及本地 public 已删除 `baidu_verify_codeva-Yi87xCOa9G.html`，改为 `baidu_verify_codeva-dy5qG5C8Yw.html`；原32字节内容精确保留，本地精确许可规则同步。公网新文件 HTTP 200 且与下载原件逐字节一致，旧地址 HTTP 404。仅做这两项访问检查，未重跑全量测试、未重启服务或提交/推送 Git。
+
+### XYY-20261021-01 — 中英文文章后台分离（本地候选）
+
+- 用户要求左侧“文章”下新增“英文文章管理”，列表、新建和编辑表单分开。HIGH，合同 `docs/plans/xyy-20261021-01-english-news-admin.md`；基线 HEAD `984461e17dfcae7e7d1324a9fa530fb742133b2c`，保留既有状态/四角色日志、Task18 合同和并行百度修改。此记录与上方百度任务通过标题及独立证据目录区分。
+- Terra 实现原生 `english_news` 集合及菜单位置、独立发布字段、旧英文迁移/回读和专用读取权限工具；英文前台读取、媒体门控和真实公开语言配对同步。旧字段保留，成功迁移回读后才隐藏；默认预览不写入，冲突预检、幂等比对及准确环境/目标确认不允许绕过。迁移按旧中英文共同可见条件保留既有曝光边界，时间写为 UTC ISO；迁移后英文独立发布。清洗和时间解析分别提为唯一 JS core，保持原策略与 Node 兼容，不添依赖。
+- Nova 首轮 REJECTED 的不可见正文判定漂移、通用权限覆盖和 schema 检查不足已由 R8 收敛；Luna R8 检出的新测试六处类型错误由 R9 仅做类型收窄，原断言保持。此前失败、未执行步骤与自报类型证据更正均保留，未用历史通过掩盖失败。
+- Luna R9 新鲜完整 `npm run verify` exit 0：760 类型文件 0 errors/0 warnings/5 hints、150 文件/1070 单测、Lint/925 文件维护预算/资源/缓存/构建通过。62 项定向回归、三个独立写前零写探针、英文 Playwright 9/9、1440/390/360 列表/详情六张截图及格式/diff 检查通过；仅 loopback、dummy 依赖和 Chromium。22 个业务文件、相关测试/夹具与并行百度四文件哈希保持，HEAD 未变。
+- Nova R2 APPROVED，仅为 local_ready，三个原 HIGH 问题均独立复现修复。Sol 审阅 diff、R9 实际命令/结果、Review、桌面列表和 360 手机详情截图，核对业务/测试哈希；额外 sanitizer 487 样本及时间 core 4008 输入/8016 比较与 HEAD 等值通过。本地 Scope 验收 LOCAL_READY，真实菜单/表单验收与上线未完成。
+- 真实 Directus Schema、读取权限、数据迁移、Studio 桌面/移动 UI 和部署未经本任务授权，未连接生产或读取凭据，未提交/推送/外部写入。`config/cms-contract.mjs` 保持 `pending_release_gate`，当前生产 release 不变。下一步仅待用户对 `8.138.148.179` 正式环境的相关 CMS 备份、英文集合创建/迁移、菜单/读取权限及配套部署明确授权；获准仍须真实回读、Studio 验收和部署前完整 `verify:release`，不能直接以本地 mock 结果发布。
+- 收尾仅更新合同、当前状态和本日志，审阅可归属文档增量与 `git diff --check`，不重跑已通过应用测试。证据 `output/english-news-admin/xyy-20261021-01/luna-r9/`、`nova-r2/review.json`；并行百度工作不在此验收范围。
+- 用户随后要求启动本地项目查看：直接运行现有 `npm run dev:local`，获得 `LOCAL_DEV_READY`、`identityVerified:true`，PID 136040 监听 `127.0.0.1:4321`，首页与英文新闻页 HTTP 200。本地启动器固定 loopback 假依赖，不连接真实 CMS；本机无 Directus，`/admin/` HTTP 404，已明确本预览只可查看前台，不能查看或验收后台分离入口。未改应用源、不执行 CMS 迁移或部署；仅补状态/日志，文档 diff 检查通过，无须重跑应用测试。
+- 用户明确要求继续运行后台后，R10 按 Terra → Luna → Nova → Sol 补齐独立本地 Directus 12.1.1。专用容器 `xyy-english-news-preview` 仅绑定 `127.0.0.1:8055`，SQLite/uploads 与运行配置均在 ignored `output/english-news-admin/xyy-20261021-01/local-preview/`，遥测关闭，不连接已有 PostgreSQL、远程或生产。使用独立演示账号和两条合成 draft，真实完整 news/english_news 字段与封面关系保留；SQLite 物理字段类型适配仅在本地 bootstrap，冻结业务源码未变。
+- Root API 回读与 Terra 证据确认 `/admin/`、demo 登录 HTTP 200，news sort1、english_news sort2，旧英文子字段隐藏只读。Luna 真实 Studio 登录、相邻入口、各自列表、双语新建/编辑、英文三状态及桌面1440/手机390共12截图 PASS，未保存文章或配置；非阻塞 Directus 控制台噪声如实保留。Nova R10 APPROVED，仅批准隔离本地预览；22 业务/并行百度 hash、HEAD 与 pending release gate 保持，未写生产或部署。
+- Sol 已审阅桌面中文列表、英文新建与手机英文新建截图、API 回读及独立证据，验收本地预览并给用户可直接登录的 URL。后台继续运行，容器可 `docker start xyy-english-news-preview` 复开；本地演示内容不与正式站同步。前台4321仍为审核回退预览，未将其连接该本地 CMS。生产数据迁移/权限/Studio/发布仍不在本轮授权范围；仅文档收尾，审阅增量与 diff 检查，不重复全量业务测试。
+
+### XYY-20261021-02 — 首页中文主标题替换
+
+- 用户先要求 GitHub 推送，随后调整首页主标题，再明确“先不要推送”；尚未执行提交/推送，最新指令取消该同步动作。本轮只完成本地标题修改，LOW，合同 `docs/plans/xyy-20261021-02-home-headline.md`，基线 HEAD `984461e17dfcae7e7d1324a9fa530fb742133b2c`，保留文章后台分离、百度验证和既有日志修改。
+- Terra 仅将 `src/i18n/home-ui-zh.ts` 的 `hero.title/titleAria` 更新为“专注规模型鞋服品牌的仓配一体化解决方案。”，并同步 `tests/e2e/home-product.spec.ts` 中既有标题断言；中文其余文案及英文文件逐字保持，不改组件或样式。
+- Luna 独立 PASS：1440×900、390×844 真实浏览器标题可见且 accessible name 精确，无裁切或横溢；目标首页测试 1/1 exit 0，目标 Prettier、精确 diff scope 和 diff-check 通过。Sol 审阅精确差异、手机截图并回读本地 HTML 的新 aria-label，验收 LOCAL_READY；本地4321热更新、8055保持。
+- 未提交、推送、部署或操作 CMS/数据库；按静态文案比例未运行完整 verify/build，也不复用旧完整验证冒充本轮全量检查。收尾只补记录、审阅增量并检查文档 diff。证据 `output/home-headline/xyy-20261021-02/`。
+
+### XYY-20261021-03 — iPhone 文章正文图片失败只读诊断
+
+- 用户反馈已发布文章手机只显示封面、电脑和模拟手机正常，随后提供 `https://56xyy.com/news/morning-star-phase-2` 与 iPhone Safari 蓝问号截图，并确认 Wi-Fi/4G 一样。HIGH，只读诊断；不扩大到修复或生产变更，不提交/推送，保留全部既有脏文件。合同 `docs/plans/xyy-20261021-03-mobile-news-images.md`。
+- Sol 读取页面与代码并匿名请求首图：页面200，首正文 `/assets/<uuid>.jpeg?...` 403 JSON、响应标识 Directus。Terra 核对6图在桌面/iPhone UA全部403，封面同首UUID经 `/api/cms-assets` 成功返回 JPEG；CSP允许这些HTTPS地址，无正文srcset。代码确认 sanitizer保留正文src，而封面改用受控代理；代理白名单只含结构化封面/媒体字段，无正文引用。
+- Luna 独立匿名 Chromium 1440/390均复现正文6/6 HTTP403、naturalWidth=0，封面200 image/jpeg、1080×810解码成功；截图与请求证据齐备。WebKit未安装未下载，无真机Safari独立复测；不能将用户电脑之前可见归因于已证明的登录或缓存原因。Nova APPROVED，仅批准 diagnosis，明确非移动视口独有、非已证实codec或CSP故障。
+- Sol验收诊断 DIAGNOSED，业务故障仍未修复。后续最小修复建议为清洗后本站Directus图片URL改走现有代理，仅从公开且到时新闻正文严格提取UUID加入白名单；不放开directus_files匿名权限、不转发任意外链/query。当前未获修复或部署授权，未改业务源码/CMS/数据库/权限/生产配置；仅相关文档和证据，检查diff和格式，未运行不适用的业务全量测试。证据 `output/mobile-news-images/xyy-20261021-03/{terra,luna,nova,sol}/`。
+
+
+### XYY-20261021-03 — 正文图片本地修复验收
+
+- 用户明确“ok，修复一下这个问题”，授权本地修复；仍按“先不要推送”执行。HIGH，沿原 Task ID，通过 Terra → Luna → Nova → Sol；不提交/推送/部署、不改真实CMS/数据库/文件库权限/CSP或生产配置。修改以任务前脏版本为基线，保护既有英文后台分离、首页文案和百度修改。
+- 5个业务源涉及清洗core的可选图片属性hook、新增news-rich-text、directus-assets正文引用白名单，以及中英文详情的渲染调用。真实img节点的严格本站src优先，否则规范解析srcset选择首个本站候选，统一输出相对代理src并删除原srcset/query/hash；采集和渲染共用选择器，外链保持原策略，注释/script/textarea/alt内伪引用不授权。仅公开且到时的中文及完整公开校验通过的英文正文UUID进入既有白名单，缓存/abort/失败分类和封面语义保持。英文请求显式投影id，未弱化number-id guard。
+- 额外3路径仅package/lock将既存传递依赖parse-srcset 1.0.2声明直接依赖及最小类型，锁不改变依赖树。R1 loopback正式origin遗漏、R2非法正文静默为空、Nova R1 srcset漏处理均以同ID最小修复闭合；Luna R4维护预算失败后R5仅删除测试空行，非空代码hash不变，未放宽预算或断言。失败证据保留。
+- Luna R5 fresh隔离loopback完整npm run verify exit0：766类型文件0 errors/0 warnings/6 hints、151单测文件1082项、Lint/930文件预算/资源/缓存/构建通过；全量及目标格式、diff检查通过。R4六文件49定向回归按非空等值复用，独立Chromium图片fixture2/2通过：1440/390各6图（含srcset-only及外链fallback）全部代理解码，Directus匿名直连403，draft/future404且无上游文件请求。verify中间一行Terminated后同一调用完成全部测试/build并exit0、无重试，记录完整而不误称门禁失败。
+- Sol实际执行默认清洗等值脚本，任务前core与当前默认/只观察输出323样本646比较PASS；核对Luna日志、1082汇总/build/exit0及浏览器结果。Nova R2 APPROVED（local candidate），确认srcset、id投影、安全/依赖边界及14任务/25保护hash无漂移，HEAD仍984461e，CMS_SCHEMA_VERSION_STATUS仍pending_release_gate。Sol验收LOCAL_READY；收尾仅补文档并核对diff、结构化证据与哈希，不重复已通过业务检查。
+- 无WebKit/真实iPhone Safari/生产验证，不能宣称线上修复；发布后仍需用户真机路径复测。本轮未生产/CMS/DB/权限/提交推送部署，正式release保持。证据output/mobile-news-images/xyy-20261021-03/fix-luna-r5、fix-nova-r2/review.json及fix-sol/sanitizer-equivalence-r4.json，任务合同docs/plans/xyy-20261021-03-mobile-news-images.md。
+
+
+### XYY-20261021-04 — GitHub 同步准备
+
+- 用户最新明确“推送到github上，同步一下git的状态信息”，授权当前项目origin/main普通同步，覆盖此前暂不推送；未授权生产发布或真实CMS/数据库/权限操作。HIGH，基线984461e，63既有脏路径及新增本任务合同，保留所有既有修改。Task01/02/03业务已独立验收，本次略过实现步骤，执行Luna→Nova→Sol发布前核对。
+- Luna本轮fresh loopback npm run verify exit0：766类型文件0errors/0warnings/6hints、151文件1082单测、930文件预算、构建通过；全量/目标格式与diff通过，63基线hash零漂移，pending gate保持。既有英文9项、首页和正文图片2项E2E按源码相同复用，不扩张全量浏览器。
+- GitHub连接器核实仓库default main及权限，gh API回读远端main984461e。标准HTTPS Git超时，官方备用HTTPS也失败；官方SSH443已用meta主机密钥验证，但无本机授权，未新增账号密钥或改origin。备用传输只创建与本地一致tree/commit，再对main expected旧SHA且force=false快进；不打印/写凭据、不绕过分支保护。脚本与具体提交范围须经Nova审阅后才写远端。
+- 当前提交/推送尚未执行，不宣称Git已同步；证据output/git-sync/xyy-20261021-04。

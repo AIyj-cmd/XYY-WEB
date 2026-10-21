@@ -3,6 +3,7 @@ import { CASE_PUBLICATION_COLLECTION_DEFINITIONS } from './case-publication-coll
 import { CONTENT_MANAGEMENT_COLLECTION_DEFINITIONS } from './content-management-collection-definitions.mjs'
 import { CORE_CONTENT_COLLECTION_DEFINITIONS } from './core-content-collection-definitions.mjs'
 import { FAQ_COLLECTION_DEFINITION } from './faq-collection-definition.mjs'
+import { ENGLISH_NEWS_COLLECTION_DEFINITION } from './english-news-collection-definition.mjs'
 import { ORGANIZATION_COLLECTION_DEFINITIONS } from './organization-collection-definitions.mjs'
 import { SERVICE_CONTENT_COLLECTION_DEFINITIONS } from './service-content-collection-definitions.mjs'
 
@@ -14,6 +15,7 @@ export const CMS_COLLECTION_DEFINITIONS = [
   services,
   warehouses,
   ...CASE_NEWS_COLLECTION_DEFINITIONS,
+  ENGLISH_NEWS_COLLECTION_DEFINITION,
   FAQ_COLLECTION_DEFINITION,
   ...CASE_PUBLICATION_COLLECTION_DEFINITIONS,
   ...SERVICE_CONTENT_COLLECTION_DEFINITIONS,

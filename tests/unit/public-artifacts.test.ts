@@ -6,6 +6,8 @@ import { afterEach, describe, expect, it } from 'vitest'
 
 import {
   assertNoPublicHtmlArtifacts,
+  baiduVerificationContents,
+  baiduVerificationFileName,
   findPublicHtmlArtifacts,
   googleVerificationContents,
   googleVerificationFileName,
@@ -76,6 +78,54 @@ describe('public artifact build gate', () => {
     await expect(findPublicHtmlArtifacts(directory)).resolves.toEqual([googleVerificationFileName])
     await expect(assertNoPublicHtmlArtifacts(directory)).rejects.toThrow(
       `Public HTML artifacts are forbidden:\n- ${googleVerificationFileName}`
+    )
+  })
+
+  it('allows the approved root Baidu verification file byte-for-byte', async () => {
+    const directory = await publicDirectory()
+    await writeFile(join(directory, baiduVerificationFileName), baiduVerificationContents)
+
+    await expect(findPublicHtmlArtifacts(directory)).resolves.toEqual([])
+    await expect(assertNoPublicHtmlArtifacts(directory)).resolves.toBeUndefined()
+  })
+
+  it('rejects nested, differently cased, and renamed Baidu verification files', async () => {
+    const directory = await publicDirectory()
+    await writeFile(join(directory, baiduVerificationFileName), baiduVerificationContents)
+    await mkdir(join(directory, 'nested'))
+    await writeFile(join(directory, 'nested', baiduVerificationFileName), baiduVerificationContents)
+    await writeFile(
+      join(directory, 'baidu_verify_codeva-Yi87xCOa9G.HTML'),
+      baiduVerificationContents
+    )
+    await writeFile(
+      join(directory, 'baidu_verify_codeva-yi87xCOa9G.html'),
+      baiduVerificationContents
+    )
+    await writeFile(join(directory, 'baidu_verify_codeva-other.html'), baiduVerificationContents)
+
+    await expect(findPublicHtmlArtifacts(directory)).resolves.toEqual([
+      'baidu_verify_codeva-Yi87xCOa9G.HTML',
+      'baidu_verify_codeva-other.html',
+      'baidu_verify_codeva-yi87xCOa9G.html',
+      'nested/baidu_verify_codeva-dy5qG5C8Yw.html',
+    ])
+    await expect(assertNoPublicHtmlArtifacts(directory)).rejects.toThrow(
+      'Public HTML artifacts are forbidden:'
+    )
+  })
+
+  it.each([
+    ['trailing newline', '26cb1c20f3e1758a398b04f36273038a\n'],
+    ['changed token', '26cb1c20f3e1758a398b04f362730380'],
+    ['HTML content', '<html>26cb1c20f3e1758a398b04f36273038a</html>'],
+  ])('rejects a root Baidu verification file with %s', async (_label, content) => {
+    const directory = await publicDirectory()
+    await writeFile(join(directory, baiduVerificationFileName), content)
+
+    await expect(findPublicHtmlArtifacts(directory)).resolves.toEqual([baiduVerificationFileName])
+    await expect(assertNoPublicHtmlArtifacts(directory)).rejects.toThrow(
+      `Public HTML artifacts are forbidden:\n- ${baiduVerificationFileName}`
     )
   })
 })

@@ -59,6 +59,7 @@ public/yunliu.png
 # Audit / review documents — not for public serving
 public/*.html
 !public/google4adb4e763f43adcd.html
+!public/baidu_verify_codeva-dy5qG5C8Yw.html
 project-inspection-report.md
 
 # Local prompt scratch

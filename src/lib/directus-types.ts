@@ -1,6 +1,6 @@
 import type { BrandClaimKey } from './claims'
 import type { CmsHomepageStatReference } from './claims/cms'
-import type { EnglishNewsFields } from './news-english-types'
+import type { EnglishNewsRecord } from './news-english-types'
 
 export interface HomepageStat {
   id: number
@@ -65,7 +65,7 @@ export interface Case {
   image_file?: string | null
 }
 
-export interface NewsArticle extends EnglishNewsFields {
+export interface NewsArticle {
   id: number
   status?: 'published' | 'draft' | 'archived'
   title: string
@@ -239,6 +239,7 @@ export type DirectusSchema = {
   services: Service[]
   warehouses: Warehouse[]
   news: NewsArticle[]
+  english_news: EnglishNewsRecord[]
   cases: Case[]
   faqs: FaqRecord[]
   faq_pages: FaqPageRecord[]

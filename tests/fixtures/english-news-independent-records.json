@@ -1,0 +1,68 @@
+[
+  {
+    "id": 1901,
+    "status": "published",
+    "title": "A live English insight",
+    "slug": "english-news-live",
+    "summary": "A reviewed English summary.",
+    "content": "<p>Visible English body content.</p>",
+    "category": "industry-news",
+    "published_at": "__PAST__",
+    "legacy_news_id": 901
+  },
+  {
+    "id": 1902,
+    "status": "published",
+    "title": "A related English insight",
+    "slug": "english-news-related",
+    "summary": "A related summary.",
+    "content": "<p>Related English body content.</p>",
+    "category": "logistics-guides",
+    "published_at": "__PAST__",
+    "legacy_news_id": 902
+  },
+  {
+    "id": 1903,
+    "status": "draft",
+    "title": "Draft English insight",
+    "slug": "english-news-draft",
+    "summary": "Draft summary.",
+    "content": "<p>Draft body content.</p>",
+    "category": "industry-news",
+    "published_at": "__PAST__",
+    "legacy_news_id": 903
+  },
+  {
+    "id": 1904,
+    "status": "published",
+    "title": "Future English insight",
+    "slug": "english-news-future",
+    "summary": "Future summary.",
+    "content": "<p>Future body content.</p>",
+    "category": "industry-news",
+    "published_at": "__FUTURE__",
+    "legacy_news_id": 904
+  },
+  {
+    "id": 1905,
+    "status": "archived",
+    "title": "Archived English insight",
+    "slug": "english-news-archived",
+    "summary": "Archived summary.",
+    "content": "<p>Archived body content.</p>",
+    "category": "industry-news",
+    "published_at": "__PAST__",
+    "legacy_news_id": 905
+  },
+  {
+    "id": 1906,
+    "status": "published",
+    "title": "Missing body English insight",
+    "slug": "english-news-missing-body",
+    "summary": "Missing body summary.",
+    "content": "<p><script>alert('xss')</script></p>",
+    "category": "industry-news",
+    "published_at": "__PAST__",
+    "legacy_news_id": 906
+  }
+]

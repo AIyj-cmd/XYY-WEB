@@ -2688,3 +2688,124 @@ Health triage: 只读确认 health、权限契约、运行配置、相关客户�
 - 只读核对冻结 `candidate-paths.txt` 的 26 路候选：当前 SHA-256 与 Task17 基线 26/26 一致；Task15 最终验收的 11 路与 Task16 最终验收的 7 路实现/测试/工作流文件均逐文件精确匹配，共 18/18。其余 8 路为 Task14/15/16 已验收计划与角色状态记录，来源映射见 `output/git-sync/xyy-20261020-17/terra/provenance.json`。
 - 静态检查 `.github/workflows/ci.yml`：仅触发 PR 与 main push 的 CI，未发现部署步骤或 ssh/scp/rsync/PM2/Nginx/kubectl/helm/ansible 命令，也没有项目生产或已退役目标；其中唯一 `curl` 仅下载固定 SHA-256 的 GitHub runner 原生依赖。`git diff --check` exit 0。
 - 未改业务/测试实现，未执行 `git add`、commit、push、部署、CMS/数据库/凭据读取或业务网络访问，也未重跑完整 verify；由 Luna 独立完整 verify，随后 Nova Review。日志与证据文件由本任务所有权新增，均在冻结候选快照之后，需 Sol 最终暂存范围核对。
+
+### XYY-20261020-18 — 原生 Web 更新候选与发布执行器
+
+- 已在隔离工作树 `/home/yj/data/xyy-native-update-20261020-18` 从生产基线 `c5ca1e4f7c8ada095c32acfeefb3a42609591c91` 合并已核实 GitHub main `984461e17dfcae7e7d1324a9fa530fb742133b2c`，使用 `--no-commit --no-ff`，自动合并无冲突。相对最新 main 的候选差异精确为既有原生 Directus 兼容的 3 个实现文件和 6 个测试文件；冻结 1,707 个 tracked 文件，清单 SHA-256 为 `e6b9c96f79a378e1886e7645cefe32cbe3185d9e86fe498a67ba820af26d176a`，二进制差异 SHA-256 为 `3002424f0e7b0c973a3d11f6a1976447f699a706e9b5ac7e2483e82ff570a07d`。
+- 候选的 `node_modules` 已以实体目录复制，未将整个目录设为符号链接；其中 `http-cache-semantics -> ../scripts/vendor/http-cache-semantics` 的相对链接在候选中存在且有效。`base-inventory.json` 精确复用当前生产 Task14 目标 inventory（1,043 项；SHA-256 `e2e48b5156194493f7e6853441157b2c49c49f4e12c792d768baf78b541d7386`）。
+- `output/release/xyy-20261020-18/terra/` 已复用并仅更新 Task14 审过的冻结、构建、上传和远程执行器的任务、候选、旧 release、SHA 与上传/备份路径。构建器绑定 Task18 Sol baseline、精确双父 merge、冻结清单及 Luna `verify:release`/容量/网络 guard；执行器保持配置与非 Web 服务检查、候选 loopback、原子 `current` 切换和失败回退，未改权限策略或新增部署目标。
+- 自检 PASS：冻结脚本、候选 staged `git diff --check`、三份 Python `py_compile`、构建器 `--check-inputs`、当前 production inventory 与 Task14 artifact 哈希一致性及本任务输出 scoped `git diff --check` 均通过。未运行发布构建、完整测试、上传、远程执行、提交、推送、部署、CMS/数据库或凭据读取；待 Luna 在冻结候选运行完整 `npm run verify:release`，并由 Sol 在闸门通过后创建 merge commit。
+
+### XYY-20261021-01 — 英文文章独立后台集合
+
+- 新增 pending release gate 的 `english_news` 原生 Directus 合同、独立字段/封面关系和“英文文章管理”标签；英文公开读取、资产白名单、详情页 hreflang 配对均改为该集合。中文 `news` 及批量发布 API 合同未改；无中文对应的英文文章不产生语言配对。
+- 新增专用迁移及独立英文读取权限 CLI：迁移默认 dry-run、冲突/不完整英文内容 fail-closed、复用 CMS 时间解析、先完整 readback 再隐藏旧英文 group 字段；权限 CLI 默认仅预览，apply 要求精确 target/environment/confirmation。未执行任何真实 CMS、数据库、权限或远程写入。
+- 自检 PASS：定向 Vitest 5 files/39 tests、`git diff --check`、迁移模块 Node import、权限 CLI preview。`npm run typecheck` 已启动并完成诊断输出，仅见既有第三方声明/CommonJS warnings；不把它当作独立 PASS。未运行 E2E、build、完整 verify 或真实 Directus UI，待 Luna 用 mock Directus fixture 做独立桌面/手机浏览器验证，并在授权后的真实迁移前验证后台 UI、schema/read-policy readback。
+
+#### XYY-20261021-01 R2 — Luna 首轮最小修复
+
+- 已将 `english_news` 纳入 CMS setup 声明断言；把英文记录类型移至 `news-english-types.ts`，`directus-types.ts` 降至 259 行。迁移器把仅图片正文视为可迁移内容，保留公开层已允许的图片正文语义；补充集合 icon/翻译/hidden metadata 收敛、readback 和导航恢复。旧英文状态为 published 但英文时间缺失时保持 draft。
+- scoped read-policy 脚本改为校验返回的 policy/collection/action scope，重复相同配置零写，并在写后查询回读。定向 Vitest 6 files/47 tests、`npm run check:maintainability`、`node --check` 和 `git diff --check` 通过；未运行完整 verify/E2E 或任何真实写入。迁移 CLI 当前以 Node 24 实测可 import；Node 22.12 的 `.ts` strip-types 兼容性仍需在下一轮处理或明确运行时基线后验，不把它写成已解决事实。
+
+#### XYY-20261021-01 R2 — Node 22.12 迁移兼容收尾
+
+- 时间解析改为唯一无副作用 JavaScript core `news-publication-time-core.mjs`；原 TypeScript 模块只保留带类型的 API 包装、比较和泛型分页，公开行为不变。英文迁移器改为导入 core，不再让 Node CLI 解析 `.ts`。
+- 自检 PASS：既有 `news-publication-time` 与英文分离迁移单测共 2 files/16 tests，core 普通 ESM import，以及 `node --no-experimental-strip-types` core import 均通过；`git diff --check` 通过。未运行全量 verify/E2E/真实 CMS 或权限写入。
+
+#### XYY-20261021-01 R2 — 权限回读与后台标签修正
+
+- 仅英文 read-policy CLI 改为以 `isDeepStrictEqual` 比较完整的 permissions、validation 与 presets，避免 JSON 顶层 key replacer 丢失嵌套 `_eq` 而把 draft 当作 published。默认 preview 明确标记未读取远端状态；apply 继续只允许精确的 `english_news` read policy，写后必须回读为 published。
+- 迁移 schema 收敛英文文章管理中文标签时保留原有非 `zh-CN` translations；导航与其他 collection metadata 不受影响。新增 loopback mock 回归覆盖 draft→published 写入、写后仍 draft 的 fail-closed、错误 collection scope 的写前拒绝及重复 apply 零写；迁移测试覆盖保留已有英文标签。
+- 自检 PASS：定向 Vitest 7 files/59 tests、目标 ESLint/Prettier、`npm run check:maintainability`（922 files）、`node --check`、`git diff --check` 均通过。Node v24.18.0 上 `--no-experimental-strip-types` 直接导入 JS time core 通过，迁移 CLI 不需要解析 TypeScript。未运行完整 verify/E2E 或真实 Directus/CMS/权限写入；待 Luna 独立复测及真实环境经授权后的 UI/schema/readback 验证。
+
+#### XYY-20261021-01 R2 — 英文新闻证据目录隔离
+
+- `english-news-layout.spec.ts` 的四张显式截图改为读取既有 `PLAYWRIGHT_ENGLISH_NEWS_ARTIFACTS_DIR`，未设置时保持原默认目录；断言、视口、fixture 与 Playwright 配置不变，因此 Luna 可为本任务指定独立证据目录而不覆盖旧任务 PNG。
+- 自检 PASS：目标 Prettier、ESLint、`npm run check:maintainability`（922 files）与 `git diff --check`。未运行浏览器 E2E；待 Luna 以本任务目录执行。
+
+#### XYY-20261021-01 R3 — 发布夹具与 pending gate 回归
+
+- CI release identity 断言改为导入当前 `CMS_SCHEMA_VERSION`，避免 fixture 对已更新的英文新闻 schema version 使用过期常量。部署 target fixture 仅在临时隔离仓库把 schema status 写为 `verified`，使现有部署入口测试可抵达其受控本地 verify stub；真实 `config/cms-contract.mjs` 的 `pending_release_gate` 未改。
+- 新增两条入口回归：将隔离 fixture 的 schema status 设回 `pending_release_gate` 并作为 fixture 内本地提交后，两个真实部署入口都必须返回 `release_manifest_blocked`，且 npm、ssh、rsync 标记均不存在。未验收 schema 仍被发布拦截。
+- 自检 PASS：`npx vitest run tests/unit/ci-release-identity.test.ts tests/unit/deploy-target-gate.test.ts`（2 files/17 tests）、目标 ESLint/Prettier、`npm run check:maintainability`（922 files）及 `git diff --check`。未运行完整 verify/E2E，未修改部署实现、主 schema 状态或任何外部目标。
+
+#### XYY-20261021-01 R4 — 英文迁移 UTC 时间收敛
+
+- `english_news` 迁移记录现在只从已解析的中文/英文发布时间生成 UTC ISO 字符串。published 记录取两者较晚的有效时间；draft/archived 保留有效英文时间；缺失仍为 null，非法英文时间继续 fail-closed，不改变状态判断、遗留原字段或前台时间 parser。
+- 回归覆盖裸 Asia/Shanghai 中文时间、中文较晚的 published 时间、Z 与 +08 同一时刻、draft/archived 时间保留、缺失英文时间降 draft，以及非法英文时间不可被归一化。
+- 自检 PASS：`npx vitest run tests/unit/news-publication-time.test.ts tests/unit/english-news-separation-migration.test.ts`（2 files/19 tests）、目标 ESLint/Prettier、`npm run check:maintainability`（922 files）与 `git diff --check`。未运行完整 verify/E2E 或任何真实 CMS/外部写入。
+
+#### XYY-20261021-01 R5 — 英文文章 archived 状态与列表元数据
+
+- 英文文章集合的 status 字段现在显式含 published、draft、archived 三个选项，默认仍为 draft；集合 metadata 显式 `singleton: false`，并在英文分离 schema 计划中把现有 singleton 元数据收敛为独立列表。未改通用 status builder、中文 news 定义或其他集合。
+- 回归确认英文定义没有 legacy English group 字段、英文 archived 选项和 draft 默认值；中文 news 的既有 published/draft 两选项不变，并确认现有 singleton English collection 会计划为 false。
+- 自检 PASS：`npx vitest run tests/unit/english-news-separation-migration.test.ts tests/unit/cms-setup.test.ts`（2 files/19 tests）、目标 ESLint/Prettier、`npm run check:maintainability`（922 files）及 `git diff --check`。未运行完整 verify/E2E 或任何真实 CMS/外部写入。
+
+#### XYY-20261021-01 R6 — metadata 回归测试类型修复
+
+- 中文 news 状态选项断言改为 Vitest 的完整 `meta.options.choices` 属性路径断言，保留 published/draft 的精确数组校验，避免对异构 collection definition 联合类型直接访问 options 的 TypeScript 错误。英文三状态、draft 默认值与非 singleton 断言均保持。
+- 自检 PASS：`npx vitest run tests/unit/english-news-separation-migration.test.ts`（1 file/11 tests）、完整 `npm run typecheck`（0 errors；仅输出既有第三方声明/CommonJS 提示）、目标 ESLint/Prettier 与 `git diff --check`。未运行完整 verify/E2E 或任何真实 CMS/外部写入。
+
+#### XYY-20261021-01 R7 — 英文新闻独立 fixture 状态
+
+- 英文新闻 fixture 改为一次独立读取旧中文记录和新的 canonical English records JSON，两个集合拥有各自状态、分类、内容和发布时间；`__PAST__`/`__FUTURE__` 仍分别在两份数据中动态解析。不会再按中文记录映射英文响应，也不会在每次请求中重建英文数据。旧中文 fixture 保持未改。
+- 英文 E2E 现确认英文撤下不会撤下中文内容，但中文页会移除已失效的英文语言配对；中文文章撤为 draft 后英文已发布记录仍出现在英文列表、详情和 sitemap，且不产生虚构 zh-CN hreflang 或切换链接。已有草稿、future、archived、无效正文、Unicode 与错误语义断言保持。
+- 自检 PASS：独立 artifact 目录下 Playwright English fixture/visibility 8 tests、`npx vitest run tests/unit/news-english-adapter.test.ts tests/unit/directus-assets-security.test.ts`（2 files/25 tests）、目标 ESLint/Prettier、`npm run check:maintainability`（922 files）及 `git diff --check`。未运行完整 verify/E2E 或任何真实 CMS/外部写入。
+
+#### XYY-20261021-01 R8 — Nova 合同返工
+
+- 将富文本清洗移至唯一的无副作用 JavaScript core；前台英文可见性和迁移预检共用 Unicode 可见文本与清洗后正文判定。仅含零宽字符、soft hyphen 或实体零宽字符的遗留正文现在会作为不完整记录 fail-closed，图片正文和 ZWJ emoji 继续有效；原始 `content_en` 不改。
+- 通用内容 read-policy 同步对 `english_news` 始终生成 published-only 条件，其他集合保持原有默认权限语义。英文集合 schema 比较现覆盖已声明的 metadata、options/choices、conditions、schema 约束与额外人工 required 字段，API 归一化形状仍可通过；不兼容时在任何写入前返回 issue。
+- 自检 PASS：`npx vitest run tests/unit/sanitize.test.ts tests/unit/news-english-adapter.test.ts tests/unit/news-publication-time.test.ts tests/unit/english-news-separation-migration.test.ts tests/unit/english-news-separation-contract.test.ts tests/unit/content-policy-sync.test.ts tests/unit/cms-setup.test.ts`（7 files/62 tests）、`node --no-experimental-strip-types` 导入英文可见性 core、目标 ESLint/Prettier、`npm run check:maintainability` 与 `git diff --check`。`npm run typecheck` 完成且 0 errors，仅有既有第三方声明/CommonJS 提示。未运行完整 verify/E2E、未写入真实 Directus/CMS/权限或外部环境，待 Luna/Nova 独立复验。
+
+#### XYY-20261021-01 R9 — contract test 类型收窄
+
+- Luna R8 的 fresh `npm run verify` 在该新增 contract test 发现 6 个异构 collection-definition union 的 TS2339，R8 日志中的 typecheck 表述不足以代表其后的冻结状态，现以该 fresh 失败证据更正。仅将测试 fixture 归一为显式 `ApiField`，并以运行时检查收窄 choices；所有 status/category drift、required 字段与 API-normalized schema 断言保持。
+- 自检 PASS：`npx vitest run tests/unit/english-news-separation-contract.test.ts`（1 file/6 tests）和完整 `npm run typecheck` 实际退出 0；后者仅输出 3 条范围外既有第三方声明/CommonJS/async 提示。未运行完整 verify/E2E，未改任何应用文件或作真实 CMS、权限、外部写入。
+
+#### XYY-20261021-01 R10 — 隔离 Directus Studio 本地预览
+
+- 按用户明确授权，启动专用 Docker 容器 `xyy-english-news-preview`，仅绑定 `127.0.0.1:8055`，使用任务目录下全新 SQLite 与 uploads；未读取既有环境凭据、未连接现有数据库、远程或生产环境。容器配置禁用 telemetry，删除该容器不会删除本地 SQLite。
+- 在隔离实例中创建真实 `news`、`english_news`、`website_content` 导航和两个独立 draft 示例；两集合的封面 UUID 字段及 `directus_files` relation 均存在。中文文章排序为 1、英文文章管理排序为 2，中文标签正确；遗留英文子字段全部 hidden+readonly，故后台不暴露旧英文编辑组。示例数据明确不属于生产内容。
+- 自检 PASS：`/admin/` HTTP 200、demo 登录 HTTP 200、schema/readback 证据见 `output/english-news-admin/xyy-20261021-01/local-preview/evidence/freeze-readback.json`。Terra 未执行 Studio 浏览器交互；容器已冻结，待 Luna 在真实桌面/手机 Studio 验收左侧相邻入口与两套 New 表单字段隔离。未运行业务 full verify/E2E，未修改冻结应用源码、配置 pending 状态或任何外部环境。
+
+### XYY-20261021-02 — 首页主标题文案替换
+
+- 中文首页 Hero 两行标题及 accessible name 已精确改为“专注规模型鞋服品牌的仓配一体化解决方案。”，两行保留为“专注规模型鞋服品牌的／仓配一体化解决方案。”；首页既有标题 E2E 断言同步为精确完整句。
+- 自检 PASS：精确两文件 diff、目标 Prettier 和 `git diff --check`。未运行浏览器或完整 verify；待 Luna 在本地 4321 的 1440 与 390 视口确认无标题裁切或横溢。本轮未提交、推送、部署或操作 CMS/数据库。
+
+### XYY-20261021-03 — 真机正文图片只读诊断
+
+- 正式文章 HTML 已复现：封面经 `/api/cms-assets/<uuid>` 返回 JPEG；6 张正文图直接指向同源 Directus `/assets/<uuid>`，桌面及 iPhone Safari UA 均为 HTTP 403 JSON，错误明确为匿名访问 `directus_files` 被拒绝。正文没有 `srcset`，CSP 允许同源/HTTPS 图片，故当前证据将直接原因定位为正文绕过既有公开资产代理。
+- 只读证据和最小修复建议在 `output/mobile-news-images/xyy-20261021-03/terra/diagnosis.md` 与 `image-probes.tsv`。未改业务源码、权限、CMS、数据库、生产配置或外部环境；未以模拟/桌面结果否定真机现象。任何修复须另行授权，且不得通过放开 `directus_files` 匿名权限实现。
+
+### XYY-20261021-03 — 正文图片受控代理本地修复
+
+- 正文富文本中严格匹配本站或配置的公开 Directus origin 的 `/assets/<UUID>[安全图片扩展名]` 图片，现渲染为相对 `/api/cms-assets/<UUID>`；查询和片段不会保留。外链图片不改，已转换的图片移除 `srcset`，避免浏览器绕回受限直连地址。
+- 图片 UUID 收集与渲染重写共用 `sanitize-html` 的真实 `transformTags.img` 属性回调；默认单参数清洗行为保持。注释、script、textarea、普通文本和 `alt` 内伪造 `src` 都不会进入白名单，且 `alt` 内容不会被重组为真实事件属性。只为已发布、合法 slug、到达发布时间且英文还满足完整公开校验的正文图加入现有资产代理白名单；封面、缓存、失败和 CSP 语义未改。
+- 新增隔离 loopback mock CMS Playwright 回归：匿名 Directus 原始 `/assets` 返回 403，1440/390 的文章正文 6 张图片经本站代理返回可解码 PNG；draft/future 正文 UUID 代理为 404 且不请求上游文件。无生产、CMS、数据库、权限、CSP、部署、提交或推送操作。
+- 自检 PASS：`npx vitest run tests/unit/news-rich-text.test.ts tests/unit/sanitize.test.ts tests/unit/directus-assets-security.test.ts`（3 files/21 tests）、`npm run typecheck`（0 errors，3 条既有提示）、本地 CI 环境 `npm run build`、`npx playwright test --config=playwright.news-images.config.ts`（2 tests）、`npm run lint`、`npm run check:maintainability`（929 files）、目标 Prettier 与 `git diff --check`。完整 `npm run verify` 及独立安全/E2E 回归留待 Luna；实现待 Nova 审核。
+
+### XYY-20261021-03 R2 — loopback canonical origin allowlist
+
+- Luna R1 发现本地 `PUBLIC_SITE_URL=http://127.0.0.1:4399` 时，正文既有正式 `https://56xyy.com/assets/<uuid>` URL 未进入白名单，令公开 inline asset 探针错误返回 404。富文本图片基准现在额外精确包含 `DEFAULT_PUBLIC_SITE_ORIGIN`，与当前站点 origin 和配置的公开 Directus prefix 并列并按 origin/prefix 去重；不引入 hostname 通配。
+- 新回归在 loopback `PUBLIC_SITE_URL`/`PUBLIC_DIRECTUS_URL` 下动态加载模块，确认正式 canonical UUID 图片收集与重写一致；lookalike 仍被拒绝。既有 userinfo、prefix 和图片扩展名负例保持。
+- 自检 PASS：完整 loopback 环境 `npx vitest run tests/unit/directus-assets-security.test.ts tests/unit/news-rich-text.test.ts tests/unit/sanitize.test.ts`（3 files/22 tests）、`npm run typecheck`（0 errors，3 条既有提示）、目标 ESLint/Prettier 与 `git diff --check`。未运行完整 verify、未操作 CMS、权限、数据库、生产、部署、提交或推送；待 Luna fresh verify。
+
+### XYY-20261021-03 R3 — 非字符串正文显式失败
+
+- Luna R2 probe 发现 `rewriteNewsRichTextAssets` 会把 object/array/number 正文默认为空字符串，令非法 CMS body 静默显示为空。函数现在仅接受字符串；非字符串立即抛出固定 `TypeError: news rich text content must be a string`，错误不包含原始正文。空字符串和正常字符串行为保持；宽容的 `collectNewsRichTextAssetIds(unknown)` 未改。
+- 新增 object、array、number 的异常回归，以及空字符串仍为空的回归。未修改 Directus 查询、页面、清洗 core、资产代理或其他冻结源码。
+- 自检 PASS：Luna 同款 loopback 环境定向 Vitest `directus-assets-security`、`news-rich-text`、`sanitize`（3 files/26 tests）、`npm run typecheck`（0 errors，3 条既有提示）、目标 ESLint/Prettier 与 `git diff --check`。未运行完整 verify，待 Luna fresh verify；未执行 CMS、权限、数据库、生产、部署、提交或推送。
+
+### XYY-20261021-03 R4 — 响应式正文图片 srcset 收敛
+
+- Nova R1 发现外链或缺失 `src` 搭配本站 Directus `srcset` 时，浏览器仍可绕过受控代理直连受限资源。富文本图片 hook 现同时观察真实 `src` 与 `srcset` 属性；严格有效 `src` 优先，否则以规范 `parse-srcset` 结果选择首个严格匹配的本站 UUID 候选，统一改写为代理 `src` 并删除整个 `srcset`。收集与渲染共用同一候选选择，因而只有实际选中的 UUID 进入白名单；完全外链响应式图片保持原样。
+- `parse-srcset@1.0.2` 已作为直接依赖声明，锁文件仅增加 root dependency 声明；新增最小模块类型。回归覆盖 foreign/missing src、data URL 和带逗号描述符的 srcset、token/query 去除、完全外链与 alt 内伪 srcset。隔离 6 图 fixture 的前两张分别覆盖 foreign-src fallback 与 srcset-only，1440/390 仍全部经代理解码且不保留 srcset。
+- English inline 白名单查询显式选择 `id`，与既有 `isEnglishNewsRecord` 完整公开校验一致；fixture 按 Directus `fields` 参数投影响应，单测断言 `news`/`english_news` 的 id 与必要正文公开字段被请求。
+- 自检 PASS：Luna 同款 loopback 定向 Vitest `directus-assets-security`、`news-rich-text`、`sanitize`（3 files/28 tests）、`npm run typecheck`（0 errors，2 条既有提示）、目标 ESLint/Prettier 与 `git diff --check`、本地 CI 环境 build、隔离 Playwright 1440/390（2 tests）。默认 sanitizer 等值和完整 verify/E2E 留待 Sol/Luna；未执行 CMS、权限、数据库、生产、部署、提交或推送。
+
+### XYY-20261021-03 R5 — 维护预算空行收敛
+
+- Luna R4 的 fresh verify 在维护门禁发现 `directus-assets-security` 为 221 行、超出 220 行上限。仅删除授权测试文件内一处空行；删除前后非空行 sha256 相同，断言和非空代码完全未改，当前为 219 行。
+- 自检 PASS：目标 Prettier、`npm run check:maintainability`（930 files）与 `git diff --check`。未运行其他测试、业务修改或外部操作；待 Luna fresh verify。

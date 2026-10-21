@@ -1,6 +1,9 @@
 import { parseNewsPublicationTime } from './news-publication-time'
-import { sanitizeRichText } from './sanitize'
-import type { NewsArticle } from './directus-types'
+import {
+  hasVisibleEnglishNewsText,
+  sanitizedEnglishNewsContent as sanitizeEnglishNewsContent,
+} from './news-english-visibility.mjs'
+import type { EnglishNewsRecord } from './news-english-types'
 
 export const ENGLISH_NEWS_CATEGORIES = {
   'industry-news': { source: '行业资讯', label: 'Industry news' },
@@ -11,33 +14,26 @@ export const ENGLISH_NEWS_CATEGORIES = {
 
 export type EnglishNewsCategory = keyof typeof ENGLISH_NEWS_CATEGORIES
 
-export type EnglishNewsArticle = Omit<NewsArticle, 'title' | 'summary' | 'content' | 'category'> & {
-  title: string
-  summary: string
+export type EnglishNewsArticle = Omit<
+  EnglishNewsRecord,
+  'content' | 'published_at' | 'category'
+> & {
   content: string
+  published_at: string
   category: string
   categoryKey: EnglishNewsCategory
 }
 
 const categoryFor = (category: unknown): EnglishNewsCategory | undefined =>
-  (Object.keys(ENGLISH_NEWS_CATEGORIES) as EnglishNewsCategory[]).find(
-    (key) => ENGLISH_NEWS_CATEGORIES[key].source === category
-  )
-
-const invisibleOrWhitespace = /[\p{White_Space}\p{Default_Ignorable_Code_Point}]/gu
-
-const hasVisibleText = (value: string) => value.replace(invisibleOrWhitespace, '').length > 0
-
-const hasVisibleRichText = (html: string) =>
-  hasVisibleText(html.replace(/<[^>]*>/g, ' ').replace(/&(nbsp|#0*160|#x0*a0);/gi, ' '))
+  typeof category === 'string' && Object.hasOwn(ENGLISH_NEWS_CATEGORIES, category)
+    ? (category as EnglishNewsCategory)
+    : undefined
 
 export function sanitizedEnglishNewsContent(content: unknown): string | null {
-  if (typeof content !== 'string') return null
-  const sanitized = sanitizeRichText(content)
-  return hasVisibleRichText(sanitized) || /<img\b[^>]*\bsrc=/i.test(sanitized) ? sanitized : null
+  return sanitizeEnglishNewsContent(content)
 }
 
-export function isPublishedNewsSource(article: NewsArticle, now = Date.now()) {
+export function isPublishedEnglishNewsRecord(article: EnglishNewsRecord, now = Date.now()) {
   return (
     (article.status === undefined || article.status === 'published') &&
     typeof article.slug === 'string' &&
@@ -49,22 +45,21 @@ export function isPublishedNewsSource(article: NewsArticle, now = Date.now()) {
 }
 
 export function toPublishedEnglishNewsArticle(
-  article: NewsArticle,
+  article: EnglishNewsRecord,
   now = Date.now()
 ): EnglishNewsArticle | null {
   const categoryKey = categoryFor(article.category)
-  const content = sanitizedEnglishNewsContent(article.content_en)
+  const content = sanitizedEnglishNewsContent(article.content)
   if (
-    !isPublishedNewsSource(article, now) ||
+    !isPublishedEnglishNewsRecord(article, now) ||
     article.status !== 'published' ||
-    article.english_status !== 'published' ||
-    typeof article.english_published_at !== 'string' ||
-    parseNewsPublicationTime(article.english_published_at) === null ||
-    parseNewsPublicationTime(article.english_published_at)! > now ||
-    typeof article.title_en !== 'string' ||
-    !hasVisibleText(article.title_en) ||
-    typeof article.summary_en !== 'string' ||
-    !hasVisibleText(article.summary_en) ||
+    typeof article.published_at !== 'string' ||
+    parseNewsPublicationTime(article.published_at) === null ||
+    parseNewsPublicationTime(article.published_at)! > now ||
+    typeof article.title !== 'string' ||
+    !hasVisibleEnglishNewsText(article.title) ||
+    typeof article.summary !== 'string' ||
+    !hasVisibleEnglishNewsText(article.summary) ||
     !content ||
     !categoryKey
   ) {
@@ -72,12 +67,12 @@ export function toPublishedEnglishNewsArticle(
   }
   return {
     ...article,
-    title: article.title_en.trim(),
-    summary: article.summary_en.trim(),
+    title: article.title.trim(),
+    summary: article.summary.trim(),
     content,
     category: ENGLISH_NEWS_CATEGORIES[categoryKey].label,
     categoryKey,
-    published_at: article.english_published_at,
+    published_at: article.published_at,
   }
 }
 

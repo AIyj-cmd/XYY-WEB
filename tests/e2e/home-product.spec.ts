@@ -7,7 +7,7 @@ test('homepage loads the shoe-apparel fulfillment message and primary CTA', asyn
 
   await expect(page.getByText('新亦源鞋服云仓 · XINYIYUAN', { exact: true }).first()).toBeVisible()
   await expect(
-    page.getByRole('heading', { name: /从入库质检到退货上架，.*鞋服仓配一次解决/ })
+    page.getByRole('heading', { name: '专注规模型鞋服品牌的仓配一体化解决方案。' })
   ).toBeVisible()
   await expect(page.getByRole('link', { name: '获取仓配方案' }).first()).toBeVisible()
   await expect(page.locator('.hero-data')).toContainText(

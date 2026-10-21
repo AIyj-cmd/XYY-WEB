@@ -3,6 +3,7 @@ import { URLSearchParams } from 'node:url'
 import { CMS_ASSET_COLLECTIONS, CMS_CONTENT_COLLECTIONS } from '../../config/cms-collections.mjs'
 
 export const DEFAULT_CONTENT_POLICY_NAME = 'Website Content Read-Only'
+const PUBLISHED_ONLY_COLLECTIONS = new Set(['english_news'])
 
 function relationId(value) {
   return value && typeof value === 'object' ? value.id : value
@@ -56,7 +57,8 @@ export async function syncContentReadPermissions(directus, options = {}) {
       collection,
       action: 'read',
       permissions:
-        publishedOnly && !CMS_ASSET_COLLECTIONS.includes(collection)
+        (publishedOnly || PUBLISHED_ONLY_COLLECTIONS.has(collection)) &&
+        !CMS_ASSET_COLLECTIONS.includes(collection)
           ? { status: { _eq: 'published' } }
           : null,
       validation: null,

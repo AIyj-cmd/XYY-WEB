@@ -1,6 +1,7 @@
 ---
 import { formatEnglishNewsDate } from '@/lib/news-english'
 import { getDirectusAssetUrl, type EnglishNewsArticle } from '@/lib/directus'
+import { rewriteNewsRichTextAssets } from '@/lib/news-rich-text'
 
 interface Props {
   article: EnglishNewsArticle
@@ -8,6 +9,7 @@ interface Props {
 }
 
 const { article, related } = Astro.props
+const content = rewriteNewsRichTextAssets(article.content)
 ---
 
 <nav
@@ -65,7 +67,7 @@ const { article, related } = Astro.props
     <div
       class="prose prose-lg max-w-none prose-headings:text-navy-800 prose-headings:font-bold prose-a:text-navy-700 prose-a:underline prose-strong:text-navy-800 prose-blockquote:border-brand-orange"
       itemprop="articleBody"
-      set:html={article.content}
+      set:html={content}
     />
     <footer class="mt-12 border-t border-gray-100 pt-8">
       <p

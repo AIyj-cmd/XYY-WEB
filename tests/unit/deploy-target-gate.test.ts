@@ -1,5 +1,5 @@
 import { execFile } from 'node:child_process'
-import { readFile } from 'node:fs/promises'
+import { readFile, writeFile } from 'node:fs/promises'
 import { promisify } from 'node:util'
 
 import { describe, expect, it } from 'vitest'
@@ -93,6 +93,50 @@ describe('deployment target gate', () => {
       await removeDeployTargetFixture(fixture)
     }
   })
+
+  it.each(entries)(
+    'blocks %s for an unverified schema before local or remote actions',
+    async (entry) => {
+      const { fixture, bin } = await createDeployTargetFixture()
+      try {
+        const cmsContractPath = `${fixture}/config/cms-contract.mjs`
+        const cmsContract = await readFile(cmsContractPath, 'utf8')
+        await writeFile(
+          cmsContractPath,
+          cmsContract.replace(
+            "export const CMS_SCHEMA_VERSION_STATUS = 'verified'",
+            "export const CMS_SCHEMA_VERSION_STATUS = 'pending_release_gate'"
+          )
+        )
+        await run('git', ['add', 'config/cms-contract.mjs'], { cwd: fixture })
+        await run(
+          'git',
+          [
+            '-c',
+            'user.name=Test',
+            '-c',
+            'user.email=test@example.invalid',
+            'commit',
+            '-qm',
+            'pending',
+          ],
+          { cwd: fixture }
+        )
+        await expect(runEntry(entry, fixture, bin)).rejects.toMatchObject({
+          stderr: expect.stringContaining('release_manifest_blocked'),
+        })
+        for (const command of ['npm', 'ssh', 'rsync']) {
+          await expect(
+            import('node:fs/promises').then(({ readFile }) =>
+              readFile(`${bin}/${command}.marker`, 'utf8')
+            )
+          ).rejects.toThrow()
+        }
+      } finally {
+        await removeDeployTargetFixture(fixture)
+      }
+    }
+  )
 
   it.each(entries)('rejects a missing required URL in %s before remote commands', async (entry) => {
     const { fixture, bin } = await createDeployTargetFixture()

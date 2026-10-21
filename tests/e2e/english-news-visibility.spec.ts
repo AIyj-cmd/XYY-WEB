@@ -15,23 +15,24 @@ test.describe.serial('English news Unicode visibility fixture', () => {
 
   test.beforeEach(async () => {
     fixture.cms.setMode('ok')
-    fixture.cms.setRecords(fixture.records)
+    fixture.cms.setChineseRecords(fixture.chineseRecords)
+    fixture.cms.setEnglishRecords(fixture.englishRecords)
   })
 
   test('keeps invisible-only Unicode fields out of every public surface', async ({ request }) => {
-    const live = fixture.records.find((record) => record.slug === 'english-news-live')
+    const live = fixture.englishRecords.find((record) => record.slug === 'english-news-live')
     if (!live) throw new Error('fixture live record missing')
     const cases = [
-      { name: 'title', patch: { title_en: '\u200B' } },
-      { name: 'summary', patch: { summary_en: '\u200D' } },
-      { name: 'zero-width named entity', patch: { content_en: '<p>&ZeroWidthSpace;</p>' } },
-      { name: 'zero-width numeric entity', patch: { content_en: '<p>&#8203;</p>' } },
-      { name: 'soft hyphen entity', patch: { content_en: '<p>&shy;</p>' } },
+      { name: 'title', patch: { title: '\u200B' } },
+      { name: 'summary', patch: { summary: '\u200D' } },
+      { name: 'zero-width named entity', patch: { content: '<p>&ZeroWidthSpace;</p>' } },
+      { name: 'zero-width numeric entity', patch: { content: '<p>&#8203;</p>' } },
+      { name: 'soft hyphen entity', patch: { content: '<p>&shy;</p>' } },
     ]
 
     for (const { name, patch } of cases) {
-      fixture.cms.setRecords(
-        fixture.records.map((record) =>
+      fixture.cms.setEnglishRecords(
+        fixture.englishRecords.map((record) =>
           record.slug === live.slug ? { ...record, ...patch } : record
         )
       )
@@ -64,16 +65,16 @@ test.describe.serial('English news Unicode visibility fixture', () => {
     page,
     request,
   }) => {
-    const live = fixture.records.find((record) => record.slug === 'english-news-live')
+    const live = fixture.englishRecords.find((record) => record.slug === 'english-news-live')
     if (!live) throw new Error('fixture live record missing')
     const visible = {
       ...live,
-      title_en: 'Returns 👩‍💻 guide',
-      summary_en: 'Teams coordinate across São Paulo.',
-      content_en: '<p>Warehouse teams 👩‍💻 coordinate returns.</p><p>Family route: 👨‍👩‍👧‍👦.</p>',
+      title: 'Returns 👩‍💻 guide',
+      summary: 'Teams coordinate across São Paulo.',
+      content: '<p>Warehouse teams 👩‍💻 coordinate returns.</p><p>Family route: 👨‍👩‍👧‍👦.</p>',
     }
-    fixture.cms.setRecords(
-      fixture.records.map((record) => (record.slug === live.slug ? visible : record))
+    fixture.cms.setEnglishRecords(
+      fixture.englishRecords.map((record) => (record.slug === live.slug ? visible : record))
     )
 
     const list = await request.get(`${fixture.app.url}/en/news`)

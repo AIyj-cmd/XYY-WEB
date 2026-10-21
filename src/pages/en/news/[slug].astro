@@ -2,13 +2,19 @@
 import EnglishLayout from '@/components/en/EnglishLayout.astro'
 import EnglishNewsArticle from '@/components/news/EnglishNewsArticle.astro'
 import { BRAND } from '@/lib/brand'
-import { getDirectusAssetUrl, getEnglishNewsArticle, getPublishedEnglishNews } from '@/lib/directus'
+import {
+  getDirectusAssetUrl,
+  getEnglishNewsArticle,
+  getNewsArticle,
+  getPublishedEnglishNews,
+} from '@/lib/directus'
 import { createBreadcrumbSchema } from '@/lib/seo'
 import '@/styles/news.css'
 
 const slug = Astro.params.slug ?? ''
 const article = await getEnglishNewsArticle(slug)
 if (!article) Astro.response.status = 404
+const chineseArticle = article ? await getNewsArticle(article.slug) : null
 const unavailableCanonical = new URL(
   `/en/news/${encodeURIComponent(slug || 'unavailable')}`,
   BRAND.url
@@ -59,7 +65,7 @@ const page = article
       canonical={`${BRAND.url}${page.path}`}
       ogImage={page.image}
       jsonLd={page.schemas}
-      localePair={[`/news/${article.slug}`, page.path]}
+      localePair={chineseArticle ? [`/news/${article.slug}`, page.path] : undefined}
     >
       <EnglishNewsArticle {article} {related} />
     </EnglishLayout>

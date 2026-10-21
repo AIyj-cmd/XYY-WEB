@@ -6,15 +6,14 @@ import {
   type EnglishNewsCategory,
   toPublishedEnglishNewsArticle,
 } from './news-english'
-import type { NewsArticle } from './directus-types'
+import type { EnglishNewsRecord } from './news-english-types'
 
 const CANONICAL_SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 
 /**
- * English fields are deliberately read as `*`: older CMS schemas do not have
- * them, while Directus still returns the established Chinese record shape.
- * Do not add an English-field filter here, because that would make old schema
- * reads fail before the application can treat the record as untranslated.
+ * English records are isolated from Chinese news so editors can publish either
+ * language independently. Visibility checks remain local so drafts, future
+ * records, and empty content never reach public routes.
  */
 export async function getPublishedEnglishNews(
   limit = 10,
@@ -31,7 +30,7 @@ export async function getPublishedEnglishNews(
 export async function getEnglishNewsArticle(slug: string): Promise<EnglishNewsArticle | null> {
   if (!CANONICAL_SLUG.test(slug)) return null
   try {
-    const items = await requestItems<NewsArticle[]>('news', {
+    const items = await requestItems<EnglishNewsRecord[]>('english_news', {
       filter: {
         slug: { _eq: slug },
         status: { _eq: 'published' },
@@ -47,7 +46,7 @@ export async function getEnglishNewsArticle(slug: string): Promise<EnglishNewsAr
 }
 
 async function getVisibleEnglishNews(category?: EnglishNewsCategory) {
-  const items = await requestItems<NewsArticle[]>('news', {
+  const items = await requestItems<EnglishNewsRecord[]>('english_news', {
     filter: { status: { _eq: 'published' }, published_at: { _nnull: true } },
     sort: ['-published_at'],
     limit: -1,

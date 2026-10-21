@@ -2,23 +2,27 @@
 import NewsArticleContent from '@/components/news/NewsArticleContent.astro'
 import Layout from '@/layouts/Layout.astro'
 import { BRAND } from '@/lib/brand'
-import { getNewsArticle, getPublishedNews, getDirectusAssetUrl } from '@/lib/directus'
-import { toPublishedEnglishNewsArticle } from '@/lib/news-english'
-import { sanitizeRichText } from '@/lib/sanitize'
+import {
+  getDirectusAssetUrl,
+  getEnglishNewsArticle,
+  getNewsArticle,
+  getPublishedNews,
+} from '@/lib/directus'
+import { rewriteNewsRichTextAssets } from '@/lib/news-rich-text'
 import '@/styles/news.css'
 
 const { slug } = Astro.params as { slug: string }
 const article = await getNewsArticle(slug)
 if (!article) return Astro.redirect('/news', 302)
 
-const englishArticle = toPublishedEnglishNewsArticle(article)
+const englishArticle = await getEnglishNewsArticle(article.slug)
 const localePair = englishArticle
   ? ([`/news/${article.slug}`, `/en/news/${article.slug}`] as const)
   : undefined
 
 const relatedArticles = await getPublishedNews(3, 1)
 const related = relatedArticles.filter((item) => item.slug !== slug).slice(0, 3)
-const sanitizedContent = sanitizeRichText(article.content ?? '')
+const sanitizedContent = rewriteNewsRichTextAssets(article.content)
 
 const articleSchema = {
   '@context': 'https://schema.org',

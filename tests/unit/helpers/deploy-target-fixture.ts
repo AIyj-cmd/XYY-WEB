@@ -1,4 +1,4 @@
-import { cp, mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises'
+import { cp, mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { resolve } from 'node:path'
 import { execFile } from 'node:child_process'
@@ -24,6 +24,15 @@ export async function createDeployTargetFixture() {
     resolve(fixture, 'scripts/create-release-manifest.mjs')
   )
   await cp(resolve(root, 'config'), resolve(fixture, 'config'), { recursive: true })
+  const cmsContractPath = resolve(fixture, 'config/cms-contract.mjs')
+  const cmsContract = await readFile(cmsContractPath, 'utf8')
+  await writeFile(
+    cmsContractPath,
+    cmsContract.replace(
+      /export const CMS_SCHEMA_VERSION_STATUS = '[^']+'/,
+      "export const CMS_SCHEMA_VERSION_STATUS = 'verified'"
+    )
+  )
   await mkdir(resolve(fixture, 'deploy/production/web'), { recursive: true })
   await cp(
     resolve(root, 'deploy/production/web/deploy-web.sh'),

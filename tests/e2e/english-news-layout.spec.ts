@@ -1,6 +1,8 @@
 import { expect, test } from '@playwright/test'
 import { startEnglishNewsFixture, type EnglishNewsFixture } from '../helpers/english-news-fixture'
 
+const artifactDirectory =
+  process.env.PLAYWRIGHT_ENGLISH_NEWS_ARTIFACTS_DIR ?? 'output/english-news/xyy-20260929-03/luna'
 let fixture: EnglishNewsFixture
 
 test.describe('English news responsive layout', () => {
@@ -45,7 +47,7 @@ test.describe('English news responsive layout', () => {
       ).toBeGreaterThanOrEqual(listGeometry.headerBottom - 0.5)
       if (width === 1440 || width === 390) {
         await page.screenshot({
-          path: `output/english-news/xyy-20260929-03/luna/news-list-${width}.png`,
+          path: `${artifactDirectory}/news-list-${width}.png`,
         })
       }
 
@@ -74,7 +76,7 @@ test.describe('English news responsive layout', () => {
       ).toBeGreaterThanOrEqual(detailGeometry.headerBottom - 0.5)
       if (width === 1440 || width === 390) {
         await page.screenshot({
-          path: `output/english-news/xyy-20260929-03/luna/news-detail-${width}.png`,
+          path: `${artifactDirectory}/news-detail-${width}.png`,
         })
       }
     }

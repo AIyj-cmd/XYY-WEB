@@ -57,6 +57,57 @@ describe('Directus content policy synchronization', () => {
     )
   })
 
+  it('keeps english_news published-only in both new and existing default policy paths', async () => {
+    const request = vi.fn(async (method: string, path: string) => {
+      if (method === 'GET' && path.startsWith('/policies?')) {
+        return [{ id: 'policy-1', name: DEFAULT_CONTENT_POLICY_NAME }]
+      }
+      if (method === 'GET' && path.startsWith('/permissions?')) {
+        return [{ id: 8, policy: 'policy-1', collection: 'english_news', action: 'read' }]
+      }
+      return {}
+    })
+
+    await syncContentReadPermissions({ request }, { collections: ['english_news', 'news'] })
+
+    expect(request).toHaveBeenCalledWith(
+      'PATCH',
+      '/permissions/8',
+      expect.objectContaining({
+        collection: 'english_news',
+        permissions: { status: { _eq: 'published' } },
+      })
+    )
+    expect(request).toHaveBeenCalledWith(
+      'POST',
+      '/permissions',
+      expect.objectContaining({ collection: 'news', permissions: null })
+    )
+  })
+
+  it('creates the default english_news policy with a published rule while other content stays open', async () => {
+    const request = vi.fn(async (method: string, path: string) => {
+      if (method === 'GET' && path.startsWith('/permissions?')) return []
+      return {}
+    })
+
+    await syncContentReadPermissions({ request }, { policyId: 'policy-1' })
+
+    expect(request).toHaveBeenCalledWith(
+      'POST',
+      '/permissions',
+      expect.objectContaining({
+        collection: 'english_news',
+        permissions: { status: { _eq: 'published' } },
+      })
+    )
+    expect(request).toHaveBeenCalledWith(
+      'POST',
+      '/permissions',
+      expect.objectContaining({ collection: 'news', permissions: null })
+    )
+  })
+
   it('keeps Directus file reads unfiltered while published content stays filtered', async () => {
     const request = vi.fn(async (method: string, path: string) => {
       if (method === 'GET' && path.startsWith('/policies?')) {
