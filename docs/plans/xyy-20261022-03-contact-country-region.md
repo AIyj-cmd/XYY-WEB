@@ -29,4 +29,4 @@
 
 - Terra 已实施并冻结 23 路径；Sol 发现英文隐私旧列表的电话/邮箱必填描述与英文表单矛盾后，沿同 Task ID 最小修正文案及对应断言，新冻结后完成独立验证。
 - Luna PASS：fresh verify workers=4 exit 0，769 类型文件 0 errors/0 warnings/6 hints，153 文件/1102 单测、Lint/933 维护预算/资源/cache/构建通过；联系目标 12 文件/111 单测、E2E 150 passed/4 条件 skip/0 failed，独立双语 1440/390 probe 20/20、0 外部请求/0 非预期 console/pageerror。首轮 workers=3 在既有 cms-initial-case-content 的 5 秒测试超时 exit 1，原日志保留；未改实现、超时或断言，完整复测通过。全量格式与 diff 检查通过，35 来源/5 PDF 核心/23 本任务冻结均无漂移。
-- Sol 已视读中文手机和英文桌面截图，内存 mock 实测 80 字符国家或地区 + 1100 字符需求正文得到 1192 字符备注，精确六字段、完整保留、无真实请求。Nova APPROVED_FOR_AUTHORIZED_GITHUB_SYNC，34 路径范围、27 非文档/23 本任务/5 PDF 核心冻结及敏感信息/禁止产物审阅通过，Sol 验收 LOCAL_READY。授权 Git 同步待执行；未部署或写入真实接收端/CMS/数据库。
+- Sol 已视读中文手机和英文桌面截图，内存 mock 实测 80 字符国家或地区 + 1100 字符需求正文得到 1192 字符备注，精确六字段、完整保留、无真实请求。Nova APPROVED_FOR_AUTHORIZED_GITHUB_SYNC，34 路径范围、27 非文档/23 本任务/5 PDF 核心冻结及敏感信息/禁止产物审阅通过，Sol 验收 LOCAL_READY。授权应用 Git 同步已完成，提交 `a6e961ccbe8872e4dae7560ed776b3713fa599ee`。普通 push 60 秒超时 exit 124 原因未确证；另经 Nova APPROVE_SAFE_API_TRANSFER，以精确本地 tree/commit 与 expected_sha / force=false 快进 main。15:17:34 CST 三引用一致、0/0、工作区干净。其后仅三份状态文档独立提交同步，最终引用和 hosted CI 以 `sol/final-result.json` 实际回读为准；未部署或写入真实接收端/CMS/数据库。
