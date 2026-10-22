@@ -1,5 +1,6 @@
 export interface ContactLead {
   name: string
+  countryOrRegion: string
   phone: string
   company: string | null
   email: string | null
@@ -7,7 +8,12 @@ export interface ContactLead {
   message: string
 }
 
-export const CONTACT_FIELD_MAX_LENGTHS = { phone: 40, email: 120 } as const
+export const CONTACT_FIELD_MAX_LENGTHS = {
+  countryOrRegion: 80,
+  phone: 40,
+  email: 120,
+  message: 1100,
+} as const
 
 const clean = (value: unknown, maxLength = 500) =>
   typeof value === 'string' ? value.trim().slice(0, maxLength) : ''
@@ -16,6 +22,15 @@ const rawString = (value: unknown) => (typeof value === 'string' ? value : '')
 
 export function isWithinContactFieldLength(value: string, maxLength: number) {
   return value.length <= maxLength
+}
+
+export function isValidCountryOrRegion(value: unknown): value is string {
+  return (
+    typeof value === 'string' &&
+    value.trim().length > 0 &&
+    isWithinContactFieldLength(value, CONTACT_FIELD_MAX_LENGTHS.countryOrRegion) &&
+    !/[\r\n\u2028\u2029]/u.test(value)
+  )
 }
 
 export function isValidContactEmail(email: string) {
@@ -40,18 +55,30 @@ export function validateContactBody(body: Record<string, unknown>) {
   if (clean(body.website, 200)) return { honeypot: true as const }
 
   const name = clean(body.name, 80)
+  const rawCountryOrRegion = body.countryOrRegion
   const rawPhone = rawString(body.phone)
   const rawEmail = rawString(body.email)
   const phone = clean(rawPhone, CONTACT_FIELD_MAX_LENGTHS.phone)
   const company = clean(body.company, 120)
   const email = clean(rawEmail, CONTACT_FIELD_MAX_LENGTHS.email)
   const service = clean(body.service, 80)
-  const message = clean(body.message, 1200)
+  const message = clean(body.message, CONTACT_FIELD_MAX_LENGTHS.message)
   const privacyConsent = clean(body.privacyConsent, 10)
   const isEnglish = clean(body.locale, 10) === 'en'
 
+  if (!isWithinContactFieldLength(rawString(body.message), CONTACT_FIELD_MAX_LENGTHS.message)) {
+    return { error: '需求描述不能超过1100个字符' }
+  }
   if (!name || !message || (!isEnglish && !phone)) {
     return { error: '请填写姓名、电话和需求描述' }
+  }
+  if (!isValidCountryOrRegion(rawCountryOrRegion)) {
+    return {
+      error:
+        typeof rawCountryOrRegion === 'string' && rawCountryOrRegion.trim()
+          ? '国家或地区应为不超过80个字符的单行文字'
+          : '请填写国家或地区',
+    }
   }
   if (privacyConsent !== 'on' && privacyConsent !== 'true') {
     return { error: '请先同意个人信息使用说明' }
@@ -75,6 +102,7 @@ export function validateContactBody(body: Record<string, unknown>) {
 
   const lead: ContactLead = {
     name,
+    countryOrRegion: rawCountryOrRegion.trim(),
     phone,
     company: company || null,
     email: email || null,

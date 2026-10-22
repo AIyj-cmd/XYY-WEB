@@ -1,6 +1,6 @@
 # DEV_STATE
 
-更新时间：2026-10-21
+更新时间：2026-10-22
 
 ## 当前环境边界
 
@@ -33,6 +33,10 @@
 - 不记录密码、Token、API Key、私钥、Cookie、真实 `.env` 内容或其他敏感信息。
 
 ## 当前目标
+
+- `XYY-20261022-03`：LOCAL_READY，Nova APPROVED_FOR_AUTHORIZED_GITHUB_SYNC，Sol 已验收，待执行已授权 GitHub 同步。中英文联系页新增默认空值的必填“国家或地区”，共享 80 字符单行校验，需求正文统一 1100 字符且超长明确拒绝；发送边界仍为原六字段，将国家或地区及完整需求写入备注，最大组合实测 1192 字符。同步隐私必填信息、填写提纲和联系回归夹具。独立 fresh workers=4 `npm run verify` exit 0（769 类型文件 0 errors/0 warnings/6 hints、153 文件/1102 单测、Lint/933 维护预算/资源/cache/构建通过）；联系 12 文件/111 单测、E2E 150 passed/4 明确 mobile 条件 skip/0 failed，双语 1440/390 独立 probe 20/20、0 外部请求/非预期浏览器错误。首轮 workers=3 的既有 CMS 5 秒测试超时原样保留，未改实现/超时/断言，完整复测通过。35 来源/5 PDF 核心/23 本任务冻结无漂移，全量格式与 diff 通过。仅 loopback/mock，不代表真实接收落库或真机 Safari；未部署或写真实 CMS/数据库/服务器配置。合同 `docs/plans/xyy-20261022-03-contact-country-region.md`，证据 `output/contact-country/xyy-20261022-03/`。
+
+- `XYY-20261022-02`：LOCAL_READY，已完成报告中确认存在的 PDF 元数据质量问题的本地优化。新增构建阶段处理，为 14 期同 URL 下载制品补齐对应刊期/内容标题、品牌作者及说明，并移除冲突 XMP；14 份原 PDF、白皮书 JSON、OCR 和审校来源共 35 文件保持原哈希，未重写审校依据。使用独有临时目录与原子替换，输出路径重叠、缺失/非法来源、坏哈希及签名/加密文件明确失败。独立 fresh `npm run verify` exit 0（768 类型文件 0 errors/0 warnings/6 hints、152 文件/1089 单测、维护预算与构建通过），14/14 制品元数据正确、187/187 页尺寸/旋转/文本/30dpi 像素等值，第二输出目录 14/14 字节一致；loopback 匿名 PDF GET 200 且内容一致。审阅 APPROVED，仅限本地候选；已视读第 14 期封面与内页。初轮临时文件 rename ENOENT 原因未确证，后改为独有 staging 后构建通过；中间预算失败已收敛，verify 中间 `Terminated` 与最终 exit 0/全量通过均原样保留。未提交、推送、部署或操作真实 CMS/数据库/权限，正式站及现有 CMS release gate 不变；行业动态、HTML `no-store` 和生产 Nginx/HSTS/HTTP2 不在本轮实施范围。合同 `docs/plans/xyy-20261022-02-confirmed-seo-improvements.md`，证据 `output/seo/xyy-20261022-02/`。
 
 - `XYY-20261021-03`：GIT_SYNCED（Task04），生产尚未应用，本地正文图片修复已验收，正式网站尚未更新。已确认原文章6图直连 Directus `/assets` 匿名403；中英文正文现将严格本站资产引用统一输出相对 `/api/cms-assets/<UUID>`，srcset-only/外链fallback也通过规范解析选取合法候选，移除原srcset/query/hash；仅为公开且到时文章的实际选中UUID扩展白名单，不开放文件库权限。英文查询显式选择id并按字段投影验证。Terra R4实现、R5仅删测试空行；Luna R5 fresh verify exit0（766类型文件0 errors/0 warnings/6 hints、151文件1082单测、930文件预算、构建），49项定向及1440/390六图代理解码2/2通过，draft/future404且无上游请求；Sol默认清洗323样本646比较等值。Nova R2 APPROVED（local candidate），Sol核对14任务/25保护哈希及证据后验收。历史R1/R2/R3/srcset与测试预算失败均保留；最终verify中间Terminated输出后同一次调用完成全部测试/build并exit0，无重试。依赖仅直接声明已存在的parse-srcset 1.0.2；既有首页、后台分离和百度修改保留。未验证真实iPhone Safari/WebKit；发布后仍须真机复测。未提交、推送、部署或操作真实CMS/数据库/权限，暂不推送要求保持，CMS release gate继续pending。合同 `docs/plans/xyy-20261021-03-mobile-news-images.md`；证据 `output/mobile-news-images/xyy-20261021-03/{fix-luna-r5,fix-nova-r2,fix-sol}/`。 当前代码与记录已由Task04同步GitHub，本段未提交/暂不推送表述仅为此前验收时点；生产仍未部署，真实CMS迁移与真机验证状态未变。
 

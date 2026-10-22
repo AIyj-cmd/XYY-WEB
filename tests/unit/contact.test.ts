@@ -4,6 +4,14 @@ import { randomBytes } from 'node:crypto'
 import { POST, __resetContactRateLimitForTests } from '@/pages/api/contact'
 
 const integrationToken = randomBytes(32).toString('base64url')
+const chineseLead = {
+  name: '张三',
+  countryOrRegion: '中国',
+  phone: '13800138000',
+  message: '想了解仓配一体方案',
+  privacyConsent: 'on',
+}
+
 function request(body: Record<string, unknown>, headers: Record<string, string> = {}) {
   const payload = JSON.stringify(body)
   return new Request('https://56xyy.com/api/contact', {
@@ -39,7 +47,7 @@ describe('contact API', () => {
 
   it('keeps Chinese requests on the domestic phone rule without an English marker', async () => {
     const response = await POST({
-      request: request({ name: '张三', phone: '', message: '咨询', privacyConsent: 'on' }),
+      request: request({ ...chineseLead, phone: '', message: '咨询' }),
     } as any)
 
     expect(response.status).toBe(400)
@@ -50,13 +58,7 @@ describe('contact API', () => {
     vi.stubGlobal('fetch', fetchMock)
 
     const response = await POST({
-      request: request({
-        name: '张三',
-        phone: '13800138000',
-        email: 'not-an-email',
-        message: '想了解仓配一体方案',
-        privacyConsent: 'on',
-      }),
+      request: request({ ...chineseLead, email: 'not-an-email' }),
     } as any)
 
     expect(response.status).toBe(400)
@@ -83,6 +85,7 @@ describe('contact API', () => {
     const response = await POST({
       request: request({
         name: 'Overseas buyer',
+        countryOrRegion: 'United Kingdom',
         locale: 'en',
         message: 'Need an apparel fulfilment discussion.',
         privacyConsent: 'on',
@@ -114,12 +117,7 @@ describe('contact API', () => {
     vi.stubGlobal('fetch', fetchMock)
 
     const response = await POST({
-      request: request({
-        name: '张三',
-        phone: '13800138000',
-        message: '想了解仓配一体方案',
-        privacyConsent: 'on',
-      }),
+      request: request(chineseLead),
     } as any)
 
     expect(response.status).toBe(503)
@@ -131,12 +129,7 @@ describe('contact API', () => {
     vi.stubGlobal('fetch', fetchMock)
 
     const response = await POST({
-      request: request({
-        name: '张三',
-        phone: '13800138000',
-        message: '想了解仓配一体方案',
-        privacyConsent: 'on',
-      }),
+      request: request(chineseLead),
     } as any)
 
     expect(response.status).toBe(503)
@@ -159,7 +152,7 @@ describe('contact API', () => {
           })
       )
     )
-    const body = { name: '张三', phone: '13800138000', message: '咨询', privacyConsent: 'on' }
+    const body = { ...chineseLead, message: '咨询' }
     let lastResponse = new Response(null)
 
     for (let i = 0; i < 6; i += 1) {
@@ -195,7 +188,7 @@ describe('contact API', () => {
           })
       )
     )
-    const body = { name: '张三', phone: '13800138000', message: '咨询', privacyConsent: 'on' }
+    const body = { ...chineseLead, message: '咨询' }
     let lastResponse = new Response(null)
 
     for (let i = 0; i < 6; i += 1) {

@@ -24,18 +24,18 @@ const widths = [360, 390, 430, 1440] as const
 
 for (const [locale, path] of cases) {
   for (const width of widths) {
-    test(`${locale} ${width}px keeps four primary contact fields readable`, async ({ page }) => {
+    test(`${locale} ${width}px keeps five primary contact fields readable`, async ({ page }) => {
       await page.setViewportSize({ width, height: width >= 1000 ? 900 : 844 })
       await page.goto(path)
       await expect(form(page)).toBeVisible()
       await expect(optional(page)).not.toHaveAttribute('open', '')
-      await expect.poll(() => eligibleVisibleFields(page)).toBe(4)
+      await expect.poll(() => eligibleVisibleFields(page)).toBe(5)
       await expectNoHorizontalOverflow(page)
       await expect(
         page.locator(
-          '#contact-form #name, #contact-form #phone, #contact-form #email, #contact-form #company, #contact-form #service, #contact-form #message'
+          '#contact-form #name, #contact-form #countryOrRegion, #contact-form #phone, #contact-form #email, #contact-form #company, #contact-form #service, #contact-form #message'
         )
-      ).toHaveCount(6)
+      ).toHaveCount(7)
     })
   }
 }
@@ -57,7 +57,7 @@ test('native optional details support keyboard and touch without changing primar
   await summary.focus()
   await summary.press('Enter')
   await expect(optional(page)).toHaveAttribute('open', '')
-  await expect.poll(() => eligibleVisibleFields(page)).toBe(6)
+  await expect.poll(() => eligibleVisibleFields(page)).toBe(7)
   await summary.press('Space')
   await expect(optional(page)).not.toHaveAttribute('open', '')
   if (testInfo.project.name === 'mobile') {
@@ -101,7 +101,7 @@ test.describe('without JavaScript', () => {
     test(`${locale} contact remains readable with native details`, async ({ page }) => {
       const target = locale === 'en' ? `${path}?from=%2Fxiefu-yuncang&entry=hero` : path
       await page.goto(target)
-      await expect.poll(() => eligibleVisibleFields(page)).toBe(4)
+      await expect.poll(() => eligibleVisibleFields(page)).toBe(5)
       await expect(optional(page)).not.toHaveAttribute('open', '')
       if (locale === 'en') {
         await expect(page.locator('[aria-label="Service page context"]')).toContainText(
@@ -110,7 +110,7 @@ test.describe('without JavaScript', () => {
       }
       await optional(page).locator('summary').click()
       await expect(optional(page)).toHaveAttribute('open', '')
-      await expect.poll(() => eligibleVisibleFields(page)).toBe(6)
+      await expect.poll(() => eligibleVisibleFields(page)).toBe(7)
       await expectNoHorizontalOverflow(page)
     })
   }

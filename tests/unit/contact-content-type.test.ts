@@ -5,6 +5,7 @@ import { POST, __resetContactRateLimitForTests } from '@/pages/api/contact'
 const integrationToken = 't'.repeat(32)
 const lead = {
   name: '张三',
+  countryOrRegion: '中国',
   phone: '13800138000',
   message: '想了解仓配一体方案',
   privacyConsent: 'on',

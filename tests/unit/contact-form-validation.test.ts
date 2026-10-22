@@ -11,6 +11,7 @@ const data = (values: Record<string, string>) => {
 const zh = (overrides: Record<string, string> = {}) =>
   data({
     name: '张三',
+    countryOrRegion: '中国',
     phone: '13800138000',
     email: '',
     message: '想了解鞋服云仓方案',
@@ -21,6 +22,7 @@ const zh = (overrides: Record<string, string> = {}) =>
 const en = (overrides: Record<string, string> = {}) =>
   data({
     name: 'Overseas buyer',
+    countryOrRegion: 'United Kingdom',
     phone: '',
     email: 'buyer@example.com',
     message: 'Need an apparel fulfilment discussion.',
@@ -31,6 +33,7 @@ const en = (overrides: Record<string, string> = {}) =>
 describe('contact form client validation', () => {
   it.each([
     ['name', { name: '' }],
+    ['countryOrRegion', { countryOrRegion: '' }],
     ['phone', { phone: 'abc' }],
     ['email', { email: 'not-an-email' }],
     ['message', { message: '' }],
@@ -41,6 +44,7 @@ describe('contact form client validation', () => {
 
   it.each([
     ['email', { email: '' }],
+    ['countryOrRegion', { countryOrRegion: '' }],
     ['email', { email: 'not-an-email' }],
     ['phone', { phone: '13800138000' }],
     ['phone', { phone: '+123' }],
@@ -63,11 +67,31 @@ describe('contact form client validation', () => {
     expect(validateContactForm(en({ phone: '+1' + '2'.repeat(40) }), 'en')?.field).toBe('phone')
   })
 
+  it.each([
+    ['line break', '中国\n香港'],
+    ['overlong', 'a'.repeat(81)],
+  ])('rejects a %s country or region', (_label, countryOrRegion) => {
+    expect(validateContactForm(zh({ countryOrRegion }), 'zh-CN')?.field).toBe('countryOrRegion')
+  })
+
+  it('trims Unicode whitespace without changing a valid country or region', () => {
+    expect(
+      validateContactForm(en({ countryOrRegion: '\u3000United Kingdom\u3000' }), 'en')
+    ).toBeNull()
+  })
+
+  it.each([
+    ['zh-CN', zh({ message: 'x'.repeat(1101) }), 'message'],
+    ['en', en({ message: 'x'.repeat(1101) }), 'message'],
+  ] as const)('rejects an overlong message in %s', (locale, formData, field) => {
+    expect(validateContactForm(formData, locale)?.field).toBe(field)
+  })
+
   it('accepts complete bilingual payloads and exposes only stable field names', () => {
     expect(validateContactForm(zh(), 'zh-CN')).toBeNull()
     expect(validateContactForm(en(), 'en')).toBeNull()
     expect(validateContactForm(en({ name: '' }), 'en')?.field).toMatch(
-      /^(name|phone|email|message|privacyConsent)$/
+      /^(name|countryOrRegion|phone|email|message|privacyConsent)$/
     )
   })
 })

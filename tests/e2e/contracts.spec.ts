@@ -184,6 +184,7 @@ test('contact form shows API validation errors', async ({ page }) => {
   await expect(page.locator('#form-result')).toHaveAttribute('role', 'status')
   await expect(page.locator('#form-result')).toHaveAttribute('aria-live', 'polite')
   await page.getByLabel(/您的姓名/).fill('测试')
+  await page.getByLabel(/国家或地区/).fill('中国')
   await page.getByLabel(/联系电话/).fill('13800138000')
   await page.getByLabel(/需求描述/).fill('想了解仓配一体服务')
   await page.getByRole('checkbox').check()
@@ -191,4 +192,14 @@ test('contact form shows API validation errors', async ({ page }) => {
 
   await expect(page.locator('#form-result')).toContainText('server validation')
   await expect(page.locator('#form-result')).toBeFocused()
+})
+
+test('privacy notices list country or region among required enquiry fields', async ({ page }) => {
+  await page.goto('/privacy')
+  await expect(page.locator('article')).toContainText('姓名、联系电话、国家或地区和需求描述')
+
+  await page.goto('/en/privacy')
+  await expect(page.locator('article')).toContainText(
+    'name, country or region, email address and requirement description'
+  )
 })

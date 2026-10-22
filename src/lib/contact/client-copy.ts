@@ -7,7 +7,7 @@ const messages = {
   rate_limited: 'Too many submissions. Please try again later.',
   invalid_json: 'The request could not be read. Please try again.',
   validation_failed:
-    'Please provide your name, a valid email address, your requirements, and consent. If you add a phone number, include + and the country or region code.',
+    'Please provide your name, country or region, a valid email address, your requirements, and consent. If you add a phone number, include + and the country or region code.',
   storage_unavailable:
     'We could not save your enquiry. Please try again and keep your details in the form.',
   internal_error: 'Something went wrong. Please try again and keep your details in the form.',

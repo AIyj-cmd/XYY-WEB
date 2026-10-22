@@ -5,6 +5,7 @@ export type ContactLocale = 'zh' | 'en'
 export const contactValues = {
   zh: {
     name: '测试品牌',
+    countryOrRegion: '中国',
     phone: '13800138000',
     email: 'buyer@example.com',
     message: '想了解鞋服云仓方案',
@@ -12,6 +13,7 @@ export const contactValues = {
   },
   en: {
     name: 'QA apparel brand',
+    countryOrRegion: 'United Kingdom',
     phone: '+1 (555) 123-4567',
     email: 'buyer@example.com',
     message: 'Need an apparel fulfilment discussion.',
@@ -24,8 +26,10 @@ export const result = (page: Page) => page.locator('#form-result')
 export const submit = (page: Page) => form(page).locator('button[type="submit"]')
 export const optional = (page: Page) => page.locator('[data-contact-optional-fields]')
 
-const field = (page: Page, id: 'name' | 'phone' | 'email' | 'message' | 'company') =>
-  page.locator(`#contact-form #${id}`)
+const field = (
+  page: Page,
+  id: 'name' | 'countryOrRegion' | 'phone' | 'email' | 'message' | 'company'
+) => page.locator(`#contact-form #${id}`)
 
 export async function openOptional(page: Page) {
   const details = optional(page)
@@ -37,6 +41,7 @@ export async function openOptional(page: Page) {
 export async function fillRequired(page: Page, locale: ContactLocale) {
   const values = contactValues[locale]
   await field(page, 'name').fill(values.name)
+  await field(page, 'countryOrRegion').fill(values.countryOrRegion)
   if (locale === 'zh') await field(page, 'phone').fill(values.phone)
   else await field(page, 'email').fill(values.email)
   await page.locator('#contact-form #service').selectOption('鞋服云仓')
@@ -56,6 +61,7 @@ export async function fillOptional(page: Page, locale: ContactLocale) {
 export async function expectPreserved(page: Page, locale: ContactLocale) {
   const values = contactValues[locale]
   await expect(field(page, 'name')).toHaveValue(values.name)
+  await expect(field(page, 'countryOrRegion')).toHaveValue(values.countryOrRegion)
   await expect(field(page, 'message')).toHaveValue(values.message)
   await expect(page.getByRole('checkbox')).toBeChecked()
   await expect(page.locator('#contact-form #service')).toHaveValue('鞋服云仓')

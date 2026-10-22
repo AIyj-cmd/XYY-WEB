@@ -5,6 +5,7 @@ import { POST, __resetContactRateLimitForTests } from '@/pages/api/contact'
 
 const lead = {
   name: '张三',
+  countryOrRegion: '中国',
   phone: '13800138000',
   company: '测试公司',
   email: 'test@example.com',
@@ -58,7 +59,14 @@ describe('contact Xiansuo integration', () => {
         method: 'POST',
         headers: expect.objectContaining({ Authorization: `Bearer ${integrationToken}` }),
         signal: expect.any(AbortSignal),
-        body: JSON.stringify({ ...lead, privacyConsent: undefined }),
+        body: JSON.stringify({
+          name: lead.name,
+          phone: lead.phone,
+          company: lead.company,
+          email: lead.email,
+          service: lead.service,
+          message: `国家或地区：${lead.countryOrRegion}\n需求描述：${lead.message}`,
+        }),
       })
     )
   })
@@ -77,7 +85,14 @@ describe('contact Xiansuo integration', () => {
       expect(fetchMock).toHaveBeenCalledWith(
         'https://xs.test/api/integrations/website-leads',
         expect.objectContaining({
-          body: JSON.stringify({ ...lead, service, privacyConsent: undefined }),
+          body: JSON.stringify({
+            name: lead.name,
+            phone: lead.phone,
+            company: lead.company,
+            email: lead.email,
+            service,
+            message: `国家或地区：${lead.countryOrRegion}\n需求描述：${lead.message}`,
+          }),
         })
       )
     }
@@ -90,6 +105,7 @@ describe('contact Xiansuo integration', () => {
     vi.stubGlobal('fetch', fetchMock)
     const englishLead = {
       name: 'Overseas buyer',
+      countryOrRegion: '　United Kingdom　',
       phone: '',
       company: 'Example Apparel',
       email: 'buyer@example.com',
@@ -111,7 +127,7 @@ describe('contact Xiansuo integration', () => {
           company: englishLead.company,
           email: englishLead.email,
           service: englishLead.service,
-          message: englishLead.message,
+          message: '国家或地区：United Kingdom\n需求描述：Need an apparel fulfilment discussion.',
         }),
       })
     )
@@ -126,6 +142,7 @@ describe('contact Xiansuo integration', () => {
     const response = await POST({
       request: request({
         name: 'Overseas buyer',
+        countryOrRegion: 'United Kingdom',
         phone: '+44 (20) 7946-0958',
         email: 'buyer@example.com',
         message: 'Need an apparel fulfilment discussion.',

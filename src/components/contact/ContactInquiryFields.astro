@@ -1,6 +1,7 @@
 ---
 import type { SiteLocale } from '@/i18n/routes'
 import { CONTACT_SERVICE_OPTIONS, type ContactServiceValue } from '@/lib/contact/service-options'
+import { CONTACT_FIELD_MAX_LENGTHS } from '@/lib/contact/validation'
 
 const { locale = 'zh-CN', preselectedService } = Astro.props as {
   locale?: SiteLocale
@@ -40,7 +41,7 @@ const english = locale === 'en'
     id="message"
     name="message"
     required
-    maxlength="1200"
+    maxlength={CONTACT_FIELD_MAX_LENGTHS.message}
     rows={5}
     placeholder={english
       ? 'Describe your category, current operating scale and priorities so we can prepare a relevant discussion.'

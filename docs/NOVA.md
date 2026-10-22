@@ -4344,3 +4344,49 @@ Result：**APPROVED（authorized GitHub sync only）**。截至 Review，GitHub 
 Remaining Risks：标准 Git HTTPS 当前超时，官方 SSH 443 虽已核实 host key 但没有可用公钥授权，因此采用 API Git 对象传输。若 tree/commit 比对失败，可能留下不可达对象，但 main 不应被触碰且必须停止。新提交的 GitHub hosted CI 尚未运行，推送后只能按真实状态报告 pending/success/failure。本批准不包含部署、生产访问、CMS/数据库/Schema/权限、force push、改 remote 或其他仓库/分支。
 
 Handoff：**APPROVED** 返回 Sol，仅允许用户明确授权的当前仓库 `main` Git 同步。首次提交/ref 更新完成后，可在同 Task ID 下对既有状态/角色日志做机械的实际 SHA、远端回读、CI 与“未部署”补录；仅当 diff 严格限这些文档、secret scan/diff check 通过且应用/测试/workflow/依赖/config 不变时，可复用本 Review 而不重跑全量门禁。结构化结论：`output/git-sync/xyy-20261021-04/nova/review.json`。
+
+### XYY-20261022-02 — PDF 下载制品元数据构建最终 Review
+
+Task ID：`XYY-20261022-02`（MEDIUM，本地构建候选）。
+
+Review Scope：审阅 `astro.config.mjs`、package/lock、PDF 元数据模块与单测五个业务文件的实际 diff、Sol 冻结哈希、Astro build hook、14 期生成产物、Luna fresh verify/逐页等值/确定性/负例/来源保护与 loopback 下载证据。排除 news、页面/CMS/数据库/权限、HTML 缓存、生产 Nginx/HSTS/HTTP2、提交、推送和部署。Nova 未改实现或测试。
+
+Architecture：**PASS**。元数据生成集中在单一构建模块；`astro:build:done` 使用 hook 的 client 输出目录，实际 build 在 server assets 整理后等待该 integration，并在 `dist/client/senlinqikan/pdf/` 生成 14 期原 URL。字段只读自既有白皮书 JSON，未新建 CMS/claims/索引数据源；原 PDF、JSON、OCR 与审校来源仍是冻结输入，生成物留在 ignored dist。
+
+Security：**PASS**。写前 realpath 比较阻止输出根或嵌套 symlink 与源 PDF 目录重叠；每份文件写入 client 根下独有 staging 后 rename，现有目标 symlink/hardlink 只被替换而不被跟随写源。源 SHA-256 在解析前核对；缺失、坏 JSON/字段/hash/PDF、加密加载及签名/ByteRange/DocMDP 均显式失败。无 Secret、网络、CMS/API、数据库、权限或外部写入。
+
+Maintainability：**PASS**。顺序处理、异常传播和 finally 仅清理本次 staging，未静默回退。`pdf-lib@1.17.1` 只新增为 devDependency，lock diff 只有其必要传递项，无既有版本漂移。Prettier、ESLint、diff check 与维护预算通过；仓库检查器按 `split` 语义计模块 180 行，低于 mjs 200 行预算，Terra 日志中的“178 行”不是批准依据，最终汇报不应重复该数字。
+
+Contract Risks：**PASS**。14/14 Info Title/Author/Subject 精确来自 JSON/品牌，14/14 无冲突 XMP；`updateMetadata:false` 与两次非默认输出字节一致证明确定性。14 期 187/187 页的页数、尺寸、旋转、layout 文本和 30dpi RGB 像素零差异；35/35 原 PDF、JSON、OCR/审校来源哈希保持。loopback 原 URL 返回 200 `application/pdf` 且下载字节与构建制品一致。未改变页面索引、CMS/API、claims、缓存或服务器契约。
+
+Test Coverage Review：**PASS**。Luna fresh `npm run verify` exit 0：768 类型文件 0 errors/0 warnings/6 hints、152 files/1089 tests、lint、932 文件维护预算、assets/cache 与 Astro build 完成；定向 1 file/7 tests，加独立 overlap/symlink/hardlink/非法 JSON 负例、双输出确定性、187 页比较、29 张代表页及匿名 PDF GET。日志中间一行 `Terminated` 原样保留，同一命令随后汇总全部测试、完成 build 并 exit 0，没有重试冒充通过。
+
+Result：**APPROVED（local candidate）**。未发现 correctness、architecture、security、Scope、maintainability、CMS/API contract、数据边界、原件保护或回归证据的阻断项。
+
+Remaining Risks：批准只绑定当前五文件冻结哈希和本地构建；未提交、推送、部署或验证生产真实下载。逐页等值未单独枚举书签、注释与链接对象，但渲染、文本、页面几何和下载合同均无观察差异。路径保护未模拟主动并发篡改输出目录。首次 rename ENOENT 原因未确证，不得归因 Astro 竞态。
+
+Handoff：**APPROVED** 返回 Sol，可做本地最终验收；必须继续区分本地通过与尚未生产生效。结构化结论：`output/seo/xyy-20261022-02/nova/review.json`。
+
+### XYY-20261022-03 — 联系表单国家或地区与 GitHub 同步最终 Review
+
+Task ID：`XYY-20261022-03`（HIGH，联系接收契约及已授权 GitHub main 同步）。
+
+Review Scope：审阅 Task03 实际实现/测试 diff、最终 Terra 23 文件冻结、Luna fresh 验证与浏览器证据、只读接收端六字段 schema、Sol 最大边界探针，以及 Task02 已批准五个核心文件。当前工作区与 `candidate-final-scope.json` 精确同为 34 路径（7 文档、27 非文档），27 个非文档哈希全匹配；Task03 23/23、Task02 核心 5/5 及来源 35/35 无漂移。Nova 未改实现或测试，未提交、推送、部署或访问生产/CMS/数据库。
+
+Architecture：**PASS**。`countryOrRegion` 在共享 identity 组件定义一次，沿既有 FormData、客户端校验、服务端校验与 `ContactLead` 数据流传递；接收边界显式投影回原 `name/phone/company/email/service/message` 六字段，并只在 `message` 中加入带标签的国家或地区。80 字符国家和 1100 字符需求限制由 `CONTACT_FIELD_MAX_LENGTHS` 统一供 UI、前后端校验与填写提纲使用，没有平行 API、CMS 数据源、依赖或接收实现。
+
+Security：**PASS**。服务端在存储前拒绝缺失、空白、非字符串、81 字符及换行国家值，也在清洗前拒绝 1101 字符需求，避免静默截断。最大 80+1100 输入得到 1192 字符 wire message，低于只读接收端严格六字段 schema 的 1200 上限；consent、locale、honeypot 与 country 不作为额外 wire keys。既有 honeypot、频控、token、timeout 和中英文电话/邮箱校验保持。34 路径高置信 Secret 扫描为 0，且无 `.env`、output/dist、备份、压缩包、数据库、私钥或二进制产物候选。
+
+Maintainability：**PASS**。中英文隐私说明与实际必填规则一致：中文必填电话，英文必填邮箱且电话选填；Sol 捕获的英文旧说明矛盾已在最终冻结闭合。测试只更新受新必填字段和 1100 限制影响的 fixture/断言，并新增有效边界回归，没有删除安全语义或放宽超时。全部候选为普通文件，ignored 审阅证据不会进入提交。
+
+Contract Risks：**PASS with execution guards**。只读接收端 checkout 的 HEAD 与当前工作文件 schema 均为相同严格六字段及 message 1200；该本地源码不等于生产版本证明。Review 时本地 `main`、`origin/main` 与实时 `git ls-remote origin main` 均为 `3111bd37a76a80f73a5780c084d40017c2b434c8`，ahead/behind 0/0，普通非 force 快进同步当前可行。`.github/workflows/ci.yml` 无 diff、`contents: read`，仅验证/audit/build/Lighthouse/artifact upload，无部署、CMS、数据库、权限或生产写步骤。
+
+同步前 Sol 必须再次确认远端仍是已审 parent、暂存范围精确且非文档 hash 不变，运行 staged diff/Secret/产物检查；只用普通 `git push origin main`，不得 force、改 remote、绕过保护或部署。推送后据实回读 GitHub main、本地 HEAD、`origin/main`、ahead/behind 与 CI 状态。并发远端变化、额外路径或 hash 漂移均应停止而不是覆盖。
+
+Test Coverage Review：**PASS**。Luna fresh workers=4 `npm run verify` exit 0：769 类型文件 0 errors/0 warnings/6 hints、153 files/1102 tests、Lint/933 文件维护预算、assets/cache 与 build 完成；12 files/111 联系单测和 150 passed/4 条件 skip/0 failed E2E 通过。独立 probe 20/20 覆盖 zh/en × 1440/390 的字段属性、空值阻止且聚焦、有效请求、503 保留、200 重置和横溢，外部请求 0、pageerror 0，只有 4 条受控 503 console。格式与 diff 检查通过。首轮 workers=3 仅无关 `cms-initial-case-content` 5 秒测试超时 exit 1，原日志保留；未改源码、断言或 timeout，最终完整复测通过。
+
+Result：**APPROVED_FOR_AUTHORIZED_GITHUB_SYNC**。未发现 correctness、architecture、security、Scope、maintainability、API/接收契约、数据边界、既有改动保护或回归覆盖阻断项。本批准仅覆盖已审 Task02+Task03 候选与用户明确授权的 `origin/main` 普通快进同步。
+
+Remaining Risks：验证仅用 loopback/mock/本地 Chromium，没有真实询盘、生产接收端、CMS、数据库、部署或外部写入；只读接收端本地源码不证明生产已部署同版。首轮无关超时仍保留为观察。新提交的 GitHub hosted CI 尚未运行，且远端在执行前仍可能变化，必须以推送前后实时回读为准。
+
+Handoff：**APPROVED_FOR_AUTHORIZED_GITHUB_SYNC** 返回 Sol。Sol 可按上述精确范围和执行闸门进行正常 commit/push，并在同 Task ID 下机械补录真实提交 SHA、远端回读、CI 与“未部署”事实；不得借此操作生产、CMS、数据库、接收端、权限或服务器。结构化结论：`output/contact-country/xyy-20261022-03/nova/review.json`。

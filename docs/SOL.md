@@ -3181,3 +3181,20 @@ Limits：本轮限Chrome152模拟视口及离线/helper验证，空内容schema�
 - Sol精确stage64路径，非文档文件与验证基线hash一致，staged diff-check通过；正常UTC本地应用提交9f0961e5d68650c0fac17f05a09f0c815ad1d338。API dry-run核parent984461e、64个A/M 100644路径与tree，apply创建tree675edd08072a2a116fd3be8f57de8326cd87d006及完全相同commit SHA，再经GitHub连接器expected_sha=984461e、force=false更新唯一main，成功；未改origin/账号密钥，未绕过分支保护。
 - 2026-10-21 18:08 CST API回读GitHub main与本地HEAD一致，origin/main仅据实更新；ahead/behind 0/0、工作区干净。GitHub应用CI39582314743为in_progress，未称通过。此后仅补录DEV_STATE、SOL及Task04合同的实际Git状态，再同步文档；最终文档身份与回读见Git引用及output/git-sync/xyy-20261021-04/final-result.json。
 - Task01/02/03代码已同步GitHub，生产均未应用；本次无部署、真实CMS/数据库/权限操作，schema release gate保持pending。历史“暂不推送/未提交”仅指对应验收时点。文档补录审阅精确diff、格式及diff-check，不改应用，不重复完整业务测试；既有源码/测试hash继续保持。
+
+### XYY-20261022-02 — 已确认 SEO 问题的本地优化验收
+
+- 用户要求优化上一轮报告中属实的部分。本轮 MEDIUM，只处理 14 期 PDF 下载制品元数据；基线 HEAD `3111bd37a76a80f73a5780c084d40017c2b434c8`，工作区起始干净。行业动态、原报告、页面布局、真实 CMS/数据库/权限、HTML 缓存、生产 Nginx/HSTS/HTTP2、提交/推送/部署排除；合同 `docs/plans/xyy-20261022-02-confirmed-seo-improvements.md`。
+- 新增 `scripts/whitepapers/pdf-metadata.mjs`，Astro `build:done` 使用实际 client 输出目录顺序生成同 URL PDF；Title 使用原刊名、现有内容标题及品牌，Author 为新亦源供应链，Subject 使用既有说明。移除冲突 XMP，禁用自动日期更新；不改原始 PDF 或审校哈希。唯一直接新增依赖为精确版本 `pdf-lib@1.17.1`（dev），锁仅增加必要传递项。
+- 初审发现的源路径重叠/目标目录 symlink、目标文件 symlink/hardlink 写入风险、package 重复键和脚本维护预算 FAIL，已在同合同内闭合。最终使用真实路径 guard、独有 staging 与 rename 原子替换；非法/缺失元数据、坏源哈希、无效/签名/加密 PDF 明确失败。初次 build 临时文件 rename ENOENT 的底层原因未确证，不归因于 Astro；实际 Astro hooks 源码显示整理后顺序 await。最终自测与独立构建成功，未以历史结果替代当前检查。
+- 独立 fresh loopback/dummy `npm run verify` exit 0：768 类型文件 0 errors/0 warnings/6 hints，152 单测文件/1089 项、维护预算/资源/cache 检查与构建全部通过；目标 Prettier（含 package/lock）、ESLint、diff 检查通过。日志一行中间 `Terminated` 后同一调用完成所有测试/build 并 exit 0，原日志保留；没有重试或放宽断言冒充通过。
+- 独立 PDF 对比 14/14 期、187/187 页：页数、尺寸、旋转、文本和 30dpi RGB 像素哈希零差异；14 期 Title/Author/Subject 与 JSON 一致，XMP 无旧字段冲突。第二 client 输出 14/14 PDF 字节同一；35 个原 PDF/JSON/OCR/审校来源哈希全保持。路径、链接、坏 hash/JSON/PDF/签名负例符合预期；loopback `/senlinqikan/pdf/14.pdf` 匿名 200、application/pdf，下载字节与构建制品一致。
+- Review APPROVED（local candidate）。已回读完整门禁摘要和原日志、核对 5 个实现/依赖/测试文件冻结哈希、35 个来源保护哈希，视读生成第 14 期封面及第 10 页，接受本地 Scope 为 LOCAL_READY。核心修改为构建配置、处理脚本、必要依赖与锁文件、新定向测试；原件、页面及外部环境未写入。当前 HEAD 不变，未提交、推送或部署，不能宣称生产生效、搜索收录或排名/性能提升。
+- 收尾仅补本合同、当前状态与本记录，审阅精确文档 diff 与格式/空白；不重复已通过的业务测试。生产 PDF 资产更新或 HSTS/HTTP2 需对准确环境及动作明确授权，现有 CMS 发布门禁继续 pending。证据 `output/seo/xyy-20261022-02/{sol,luna,nova}/`。
+
+### XYY-20261022-03 — 联系表单国家或地区与 GitHub 同步验收
+
+- 用户明确要求新增必填国家或地区，并同步 GitHub 与本地 Git 状态。HIGH，合同 `docs/plans/xyy-20261022-03-contact-country-region.md`；main 基线 `3111bd37a76a80f73a5780c084d40017c2b434c8`，保留 11 个 Task02 既有脏路径，与已验收 PDF 优化合计 34 个待同步路径。授权仅本仓库 origin/main，不含部署、真实询盘、接收端修改、CMS/数据库/权限或服务器配置。
+- Terra 在双语表单新增默认空值的 countryOrRegion，前后端共享 80 字符单行必填校验，Unicode trim 保留；需求正文共享 1100 字符上限，超长明确失败。接收边界显式原六字段投影，把国家或地区及完整原需求写入 message，不新增严格接收 schema 的顶层字段；保留原 honeypot、consent、rate limit 和电话/邮箱规则。隐私说明、填写提纲和既有测试夹具同步。Sol catch 英文隐私旧列表电话/邮箱必填矛盾，同 ID 仅文案及断言返工，随后重新冻结验证；既有真实英文接收电话契约限制不在本轮修复。
+- Luna PASS：fresh workers=4 verify exit 0，769 类型文件 0 errors/0 warnings/6 hints、153 文件/1102 单测、Lint/933 维护预算/资源/cache/构建通过；目标联系 12 文件/111 单测、E2E 150 passed/4 明确 Chromium-only 场景在 mobile 条件跳过/0 failed，独立双语 1440/390 probe 20/20、0 外部请求/0 非预期 console/pageerror（4 个受控 503 资源错误单独保留）。首轮 workers=3 在既有 cms-initial-case-content 5 秒测试超时 exit 1，原日志保留；未改源码、断言或超时，完整复测通过。全量格式和 diff 通过，35 来源/5 PDF 核心/23 本任务冻结均无漂移。
+- Sol 已回读原日志、摘要、冻结与 27 非文档文件哈希，视读中文手机/英文桌面截图；Node 内存 fetch mock 实测 80 字符国家或地区 + 1100 字符需求正文为 1192 字符备注，精确六字段且完整保留。证据 `output/contact-country/xyy-20261022-03/{terra,luna,sol}/`。Nova APPROVED_FOR_AUTHORIZED_GITHUB_SYNC，Sol 已验收 LOCAL_READY；34 路径精确范围、敏感信息/禁止产物检查通过，待执行已授权普通快进。当前尚未提交/推送/部署；只读 GitHub main 仍为基线且无冲突。真实落库与真机 Safari 未验收，不宣称生产生效。

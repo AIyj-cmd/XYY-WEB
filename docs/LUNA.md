@@ -7732,3 +7732,81 @@ Evidence：[`scope-summary.md`](../output/git-sync/xyy-20261021-04/luna/scope-su
 Remaining risks：Luna 未执行 GitHub fetch、commit、push 或远端回读；未验证 hosted CI 运行结果。Sol 仍需在 Nova Review 后核对准确远端、提交范围、普通 push 及 GitHub 状态。未触生产站点、CMS、数据库、权限或部署。
 
 Handoff：推送前独立门禁 PASS 返回 Sol，交 Nova 审阅；Luna 未修改实现或测试。
+
+### XYY-20261022-02 — PDF SEO 等值验证准备（等待 Sol handoff）
+
+Task ID：`XYY-20261022-02`；Result：**PREPARED / WAITING_FOR_HANDOFF**。本阶段仅冻结源 PDF 基线，未对 Terra 实施运行测试、构建或给出实现 PASS/FAIL。
+
+Tests performed：
+
+- `pdf-equivalence.py` 语法检查通过（`ast.parse`）。脚本固定使用 Poppler `pdfinfo`、`pdftotext`、`pdftoppm` 与 PIL；解析器兼容当前 Poppler 无括号 page-size label 的输出。
+- 运行 30dpi 全页源基线命令，14 个源 PDF 共 **187 页**；逐页保存 PDF Info/XMP、页尺寸/旋转、UTF-8 layout 文本 SHA-256、RGB 像素 SHA-256 与 PNG SHA-256。
+- `source-hashes.json` 共 35 条保护记录；本次源 PDF 14 条均核对且 **14/14 匹配**。每期页数为 `9,9,8,9,8,16,16,16,16,10,16,18,16,20`。
+- 保存 **29 张**代表页 PNG（每期首/中间页，第14期附末页）供后续视觉复核。
+
+Evidence：[`prep-summary.json`](../output/seo/xyy-20261022-02/luna/prep-summary.json)、[`pdf-equivalence.py`](../output/seo/xyy-20261022-02/luna/pdf-equivalence.py)、[`baseline-manifest.json`](../output/seo/xyy-20261022-02/luna/baseline/baseline-manifest.json)、[`代表页目录`](../output/seo/xyy-20261022-02/luna/baseline/representative/)。原始逐页文本、渲染图和 XMP 分别位于同一 baseline 目录下的 `text/`、`render-30dpi/`、`metadata/`。
+
+Remaining risks：尚未核验生成客户端 PDF 的 metadata、XMP 冲突、页尺寸/文本/像素等值或 URL 下载产物；这些必须在 Sol 明确 Terra 完成交接后执行。未触 CMS、数据库、远程、部署、提交或推送。
+
+Handoff：基线准备完成，返回 Sol，等待实现交接后再运行 compare。
+
+### XYY-20261022-02 — PDF SEO 构建与等值独立验收
+
+Task ID：`XYY-20261022-02`；Result：**PASS**。
+
+Tests performed：
+
+- Fresh loopback/dummy `npm run verify`：**exit 0**；`astro check` 768 files、0 errors/0 warnings/6 hints，维护性、资产与 cache patch 检查通过；Vitest **152 files / 1089 tests passed**；Astro build 完成并在实际 `dist/client/senlinqikan/pdf/` 生成 14 期 PDF。日志含一行中间 `Terminated`，同一进程随后完成全部测试并正常构建退出 0，原样保留在证据中。
+- 目标 Prettier（含 `package.json`、`package-lock.json`）、ESLint 与 `git diff --check` 均 exit 0；定向 `whitepaper-pdf-metadata.test.ts` 为 **1 file / 7 tests passed**。
+- 独立 `pdf-equivalence.py compare`：14/14 期、187/187 页 PASS；逐页页数、尺寸、旋转、UTF-8 layout 文本和 30dpi RGB 像素哈希一致。14 期 PDF Info Title/Author/Subject 均精确符合 JSON，XMP 均为空且无冲突；29 张生成代表页已保存供视觉 QA。
+- 非默认第二输出目录独立生成后，14/14 文件与首次 Astro build 制品字节及 SHA-256 一致。
+- 保护清单 **35/35** 哈希无漂移；源 PDF、JSON、OCR/审阅来源未改。
+- 独立负例 PASS：源/目标 symlink 目录重叠拒绝、hardlink 目标原子替换且源文件保持、非法 JSON 拒绝；定向单测另覆盖目标 PDF symlink、缺失源、坏 hash、非法 PDF、签名 PDF 拒绝。
+- 本地静态 HTTP 夹具 `GET /senlinqikan/pdf/14.pdf`：HTTP 200、`application/pdf`，21,241,218 bytes，下载 SHA-256 与构建制品一致。
+
+Regression coverage：构建 hook/client 输出路径、14 期元数据与 XMP 清理、源保护、页级内容/几何/渲染等值、确定性双输出、路径隔离、原子替换、坏输入 fail-closed 及匿名 loopback 下载均已覆盖；未执行页面 UI/移动端 E2E，符合合同排除项。
+
+Evidence：[`final-summary.json`](../output/seo/xyy-20261022-02/luna/final-summary.json)、[`npm-verify.log`](../output/seo/xyy-20261022-02/luna/npm-verify.log)、[`comparison-result.json`](../output/seo/xyy-20261022-02/luna/compare-first/comparison-result.json)、[`determinism-result.json`](../output/seo/xyy-20261022-02/luna/determinism-result.json)、[`protected-hash-result.json`](../output/seo/xyy-20261022-02/luna/protected-hash-result.json)、[`independent-negative.log`](../output/seo/xyy-20261022-02/luna/independent-negative.log)、[`http-pdf-result.json`](../output/seo/xyy-20261022-02/luna/http-pdf-result.json)。生成代表页位于 [`compare-first/representative/`](../output/seo/xyy-20261022-02/luna/compare-first/representative/)。
+
+Remaining risks：验证仅限本地 loopback/dummy 环境，未验证生产部署、外部 CMS/数据库或真实下载链路；verify 中间 `Terminated` 行虽未影响最终 exit 0，仍保留为运行观察。
+
+Handoff：Luna 独立验收 PASS 返回 Sol，交 Nova Review；Luna 未修改实现、测试或生产环境。
+
+### XYY-20261022-03 — 联系表单国家或地区独立验证准备
+
+Task ID：`XYY-20261022-03`；Result：**PREPARED / WAITING_FOR_FREEZE**。Terra 尚未冻结，本阶段只完成合同、基线和验证命令准备，未对未冻结源码运行验收。
+
+准备内容：
+
+- 以 [`output/contact-country/xyy-20261022-03/sol/baseline.json`](../output/contact-country/xyy-20261022-03/sol/baseline.json) 为冻结基线，SHA-256 为 `325e63ff468162c455f50b7f1351315d38fc72ddd0a2a91f18b62dc5db762d9a`，记录 HEAD `3111bd37a76a80f73a5780c084d40017c2b434c8` 与 11 个既有脏路径 hash。
+- 保留 Task02 的 35 条来源哈希与五个实现文件 hash；当前只读核对为 **35/35 来源匹配、0 mismatch**，未修改 Sol 基线或 Task02 证据。
+- 准备 fresh `npm run verify` 的 loopback/dummy CMS、Xiansuo、origin 环境，遥测关闭、`VITEST_MAX_WORKERS=3`；准备 contact 目标单测、双语 contact E2E、1440/390 视口、空 country 无请求且聚焦、有效 country payload、失败保留/成功重置、无横溢断言。
+- 记录命令与禁止条件于 [`commands.txt`](../output/contact-country/xyy-20261022-03/luna/commands.txt)，准备摘要于 [`prep-summary.json`](../output/contact-country/xyy-20261022-03/luna/prep-summary.json)。
+
+限制：未运行 `npm run verify`、contact 单测、Playwright/浏览器、真实 POST、CMS/数据库、远程、提交、推送或部署；待 Sol 明确 Terra 冻结交接后再开始独立验收。
+
+Handoff：准备完成，返回 Sol，等待冻结交接。
+
+补充准备：已写入独立浏览器 probe [`contact-country-browser-probe.mjs`](../output/contact-country/xyy-20261022-03/luna/contact-country-browser-probe.mjs)，SHA-256 为 `901de093e141f7f0ff53d6e7cef88acac97024bbd67e3acce09939f96d835fa1`。脚本固定要求 loopback base URL，覆盖 zh/en × 1440/390 截图、country 必填/autocomplete/maxlength 属性、空值无 POST 且聚焦、有效 POST 带 `countryOrRegion`、mock 503 保留、mock 200 重置、无横溢与 console/pageerror，并拦截全部非 loopback 请求；脚本**尚未运行**。同时将 `EnglishPrivacy.astro`、`ContactPrivacyConsent.astro`、`contact-enquiry.ts` 与 `consultation-service-finder.spec.ts` 加入冻结后复核清单。
+
+### XYY-20261022-03 — 联系表单国家或地区独立验收
+
+Task ID：`XYY-20261022-03`；Result：**PASS**。
+
+Tests performed：
+
+- 冻结核对：EnglishPrivacy hash `571ee7b20a3998cf5d98c65a10dd23efe5d75487e8922b7d9850cfe5ef9c4e2c`、contracts hash `3bd29aad466b4757404434eee7356d28e8b81f90e5de129b8083fa77134c5a90` 均与 Terra 新 freeze 一致；Task03 Terra freeze 23/23 无漂移。
+- Fresh loopback/dummy `npm run verify`：最终 `VITEST_MAX_WORKERS=4` exit 0；typecheck 769 files、0 errors/0 warnings/6 hints，153 test files/1102 tests passed，lint、维护性、资产/cache 检查和 Astro build 完成。首轮 workers=3 因无关既有 `cms-initial-case-content` 5 秒测试超时 exit 1（152/153 files、1101/1102 tests），原始日志保留；未改断言、超时或实现，workers=4 复核完成完整 gate。
+- Contact 目标单测：**12 files / 111 tests passed，exit 0**，含新增 `contact-country-region.test.ts`。
+- 相关 E2E：contact mobile/recovery/conversion/English、consultation service finder、contracts 共 **150 passed、4 skipped、0 failed，exit 0**。4 个 skip 是 `contracts.spec.ts` 明确限定 Chromium 的语义/依赖/SSR 场景，在 mobile project 条件跳过；Chromium 已执行这些场景。
+- 独立 browser probe：**20/20 PASS**，覆盖 zh/en × 1440/390；验证 country required/autocomplete/maxlength、空值无 POST 且聚焦、有效 POST 带 `countryOrRegion`、mock 503 保留、mock 200 重置、无横溢、console/pageerror。共 0 个外部请求；4 条 503 resource console 均为受控 `expectedConsole`，其他 console/pageerror 为 0。截图已保存 4 张：zh/en 各 1440 与 390。
+- 全量 `npm run format:check`、`git diff --check`：均 exit 0。
+- Task02 保护核对：35/35 来源 hash、5/5 核心实现 hash 匹配；0 mismatch。
+
+Regression coverage：中英文客户端字段与服务端校验、country trim/边界、storage 六字段白名单与 message 组装、隐私必填信息、失败保留/成功重置、模板 1100 限制与历史 1200 断言、桌面/移动布局、无横溢及受控 loopback 请求均已覆盖。
+
+Evidence：[`final-summary.json`](../output/contact-country/xyy-20261022-03/luna/final-summary.json)、[`npm-verify-w4.log`](../output/contact-country/xyy-20261022-03/luna/npm-verify-w4.log)、[`npm-verify.log`](../output/contact-country/xyy-20261022-03/luna/npm-verify.log)、[`contact-unit.log`](../output/contact-country/xyy-20261022-03/luna/contact-unit.log)、[`contact-e2e.log`](../output/contact-country/xyy-20261022-03/luna/contact-e2e.log)、[`browser-probe/result.json`](../output/contact-country/xyy-20261022-03/luna/browser-probe/result.json)、[`hash-check.json`](../output/contact-country/xyy-20261022-03/luna/hash-check.json)、[`format-check.log`](../output/contact-country/xyy-20261022-03/luna/format-check.log)、[`diff-check.log`](../output/contact-country/xyy-20261022-03/luna/diff-check.log)。截图位于 [`browser-probe/screenshots/`](../output/contact-country/xyy-20261022-03/luna/browser-probe/screenshots/)。
+
+Remaining risks：验证仅限本地 loopback/dummy 环境，未执行真实询盘、生产、CMS、数据库、部署、提交或推送；浏览器使用本地 Chromium，未声称真实设备 Safari 行为。首轮 workers=3 的超时仍作为环境观察保留，最终 workers=4 完整通过。
+
+Handoff：Luna 独立验收 PASS 返回 Sol，交 Nova Review；Luna 未修改实现、持久测试或生产环境。

@@ -2809,3 +2809,18 @@ Health triage: 只读确认 health、权限契约、运行配置、相关客户�
 
 - Luna R4 的 fresh verify 在维护门禁发现 `directus-assets-security` 为 221 行、超出 220 行上限。仅删除授权测试文件内一处空行；删除前后非空行 sha256 相同，断言和非空代码完全未改，当前为 219 行。
 - 自检 PASS：目标 Prettier、`npm run check:maintainability`（930 files）与 `git diff --check`。未运行其他测试、业务修改或外部操作；待 Luna fresh verify。
+
+### XYY-20261022-02 — PDF 下载制品元数据构建
+
+- 新增顺序执行的 `pdf-lib@1.17.1` 构建模块，并在 Astro `build:done` 使用 hook 提供的 client 输出目录生成 14 期原 URL。每份生成制品以既有 JSON 的 `originalTitle`、`title`、`description` 写入 Info Title/Author/Subject；移除 XMP 元数据对象，避免遗留工程名、错期标题或冲突字段；加载使用 `updateMetadata: false`，不写入自动当前日期。
+- 源目录与输出的实际 PDF 目标目录在写前通过已存在路径的 realpath 比较，父级/目标子目录 symlink 重叠会明确拒绝；加密、DocMDP、签名字段值和 ByteRange 结构明确拒绝。生成先写 client 根下每次新建的 staging 目录，再以 rename 原子替换目标，因此既有目标文件 symlink 或 hardlink 不会被跟随写入源件；仅清理本次 staging。14 份原 PDF SHA-256 与既有审校值保持一致。
+- 定向单测覆盖 14 期准确 Info/XMP 清除、源文件不变、非默认输出、确定性、源缺失/哈希不匹配/无效/签名 PDF 失败、源目录与嵌套目录 symlink 拒绝，以及目标 PDF symlink 指向源件时的原子替换。PDF skill artifact marker 已在首次本地 PDF 写出前成功记录。
+- 自检：`npx vitest run tests/unit/whitepaper-pdf-metadata.test.ts` 为 1 file/7 tests PASS；目标 Prettier、ESLint、`git diff --check` 与 `node scripts/check-maintainability.mjs`（932 files）PASS；`npm run typecheck` 为 0 errors/0 warnings/6 既有 hints；最终 `npm run build` exit 0，hook 生成完成。回读 `dist/client/senlinqikan/pdf/1–14.pdf` 为 14/14 Title、Author、Subject 匹配 JSON 且 14/14 无 XMP。初次 build 的临时文件 rename 报 ENOENT，原因未确证；改用独立 staging 后重新 build PASS；曾有 219 行模块预算 FAIL，已收敛至 200 行预算内并通过检查。
+- 未运行完整 verify、逐页图像/正文等值比较或独立浏览器验收；未修改任何原 PDF、JSON、OCR、审校来源、页面、CMS/数据库、外部环境、提交、推送或部署。交 Luna 以其既有 187 页基线执行构建产物逐页渲染/文本/尺寸/旋转比较，重点复核原子替换、路径 guard、签名拒绝和 14 期元数据。
+
+### XYY-20261022-03 — 联系表单国家或地区必填
+
+- 联系表单现以空值默认展示双语“国家或地区 / Country or region”必填输入，使用 `autocomplete="country-name"` 与共享 80 字符上限；客户端和服务端均拒绝空白、非字符串、超长与换行，并保留 Unicode trim 后的有效内容。需求描述上限统一为 1100，超长直接失败且不截断原输入；填写提纲也读取同一限制。
+- 内部 `ContactLead` 保留国家或地区，Xiansuo 接收边界显式投影为原六字段；国家或地区与原需求完整写入 `message`，最大长度保留在接收端 1200 限制内。既有 consent、honeypot、rate limit 及中英文电话/邮箱校验未改。中英文隐私说明同步列为必填信息。
+- 更新原有成功夹具、移动和英文浏览器路径；新增客户端、API 与集成边界覆盖空白/非字符串/超长/换行、Unicode trim、1100 字符限制、六字段投影及失败保留和成功清空国家或地区。自检 PASS：定向 Vitest 7 files/78 tests、`npm run typecheck`（0 errors、0 warnings、6 条既有 hints）、`npm run lint`、目标 Prettier、`npm run check:maintainability`（933 files）与 `git diff --check`。
+- 未运行完整 `npm run verify` 或浏览器 E2E；未发送真实询盘、修改接收端、CMS/数据库、生产环境、提交、推送或部署。冻结哈希和命令证据见 `output/contact-country/xyy-20261022-03/terra/`，交 Luna 重点复核 1440/390 双语布局、必填聚焦、保留/重置和六字段 mock payload。

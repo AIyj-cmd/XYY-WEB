@@ -1,3 +1,5 @@
+import { CONTACT_FIELD_MAX_LENGTHS } from '@/lib/contact/validation'
+
 const message = document.getElementById('message') as HTMLTextAreaElement | null
 const templateButton = document.querySelector<HTMLButtonElement>('[data-contact-template]')
 const templateStatus = document.getElementById('contact-template-status')
@@ -59,8 +61,8 @@ templateButton?.addEventListener('click', () => {
 
   if (nextValue.length > message.maxLength) {
     templateStatus.textContent = english
-      ? 'The outline was not added because it would exceed the 1200-character limit. Your text is unchanged.'
-      : '加入填写提纲会超过1200字限制，原有内容未修改。'
+      ? `The outline was not added because it would exceed the ${CONTACT_FIELD_MAX_LENGTHS.message}-character limit. Your text is unchanged.`
+      : `加入填写提纲会超过${CONTACT_FIELD_MAX_LENGTHS.message}字限制，原有内容未修改。`
     return
   }
 

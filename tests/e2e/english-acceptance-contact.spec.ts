@@ -19,6 +19,7 @@ type ContactMode =
 
 const enquiry = {
   name: 'QA apparel brand',
+  countryOrRegion: 'United Kingdom',
   email: 'buyer@example.com',
   phone: '+1 (555) 123-4567',
   requirements: 'Need a local fulfilment discussion.',
@@ -33,6 +34,7 @@ const submitButton = (page: Page) => page.locator('#contact-form button[type="su
 
 async function fillEnglishEnquiry(page: Page) {
   await page.getByLabel('Your name').fill(enquiry.name)
+  await page.getByLabel('Country or region').fill(enquiry.countryOrRegion)
   await emailField(page).fill(enquiry.email)
   const optional = page.locator('[data-contact-optional-fields]')
   await optional.locator('summary').click()
@@ -87,7 +89,7 @@ async function serveContact(route: Route, mode: Exclude<ContactMode, 'busy'>) {
 
 const responseCases: Array<[Exclude<ContactMode, 'busy'>, string]> = [
   ['success', thankYou],
-  ['validation', 'Please provide your name, a valid email address'],
+  ['validation', 'Please provide your name, country or region, a valid email address'],
   [
     'storage',
     'We could not save your enquiry. Please try again and keep your details in the form.',
@@ -111,12 +113,14 @@ async function expectSubmissionState(page: Page, mode: Exclude<ContactMode, 'bus
   await expect(submitButton(page)).toBeEnabled()
   if (mode === 'success') {
     await expect(page.getByLabel('Your name')).toHaveValue('')
+    await expect(page.getByLabel('Country or region')).toHaveValue('')
     await expect(requirementsField(page)).toHaveValue('')
     await expect(page.getByRole('checkbox')).not.toBeChecked()
     await expect(result).not.toContainText('We could not')
     return
   }
   await expect(page.getByLabel('Your name')).toHaveValue(enquiry.name)
+  await expect(page.getByLabel('Country or region')).toHaveValue(enquiry.countryOrRegion)
   await expect(emailField(page)).toHaveValue(enquiry.email)
   await expect(page.getByLabel('Phone number (optional)')).toHaveValue(enquiry.phone)
   await expect(requirementsField(page)).toHaveValue(enquiry.requirements)
@@ -170,6 +174,7 @@ test('rejects invalid English fields locally and preserves values', async ({ pag
   })
   await page.goto('/en/contact')
   await page.getByLabel('Your name').fill(enquiry.name)
+  await page.getByLabel('Country or region').fill(enquiry.countryOrRegion)
   await requirementsField(page).fill(enquiry.requirements)
   await page.getByRole('checkbox').check()
   await submitButton(page).click()

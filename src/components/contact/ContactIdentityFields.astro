@@ -71,6 +71,24 @@ const inputClass =
           />
         </div>
       )}
+      <div>
+        <label for="countryOrRegion" class="mb-1.5 block text-sm font-semibold text-gray-700">
+          {english ? 'Country or region' : '国家或地区'}
+          <span class="text-brand-orange" aria-hidden="true">
+            *
+          </span>
+        </label>
+        <input
+          type="text"
+          id="countryOrRegion"
+          name="countryOrRegion"
+          required
+          maxlength={CONTACT_FIELD_MAX_LENGTHS.countryOrRegion}
+          autocomplete="country-name"
+          placeholder={english ? 'Enter your country or region' : '请输入您的国家或地区'}
+          class={inputClass}
+        />
+      </div>
     </div>
   )
 }

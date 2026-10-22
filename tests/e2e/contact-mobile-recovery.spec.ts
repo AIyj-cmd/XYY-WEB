@@ -26,8 +26,27 @@ async function fill(page: Page, locale: 'zh' | 'en') {
 }
 
 for (const locale of ['zh', 'en'] as const) {
+  test(`${locale} blocks a missing country or region and focuses it`, async ({ page }) => {
+    await page.goto(locale === 'zh' ? '/contact' : '/en/contact')
+    const values =
+      locale === 'zh'
+        ? { name: '测试品牌', contact: '13800138000', message: '想了解鞋服云仓方案' }
+        : { name: 'QA apparel brand', contact: 'buyer@example.com', message: 'Need fulfilment.' }
+    await page.locator('#contact-form #name').fill(values.name)
+    await page.locator(`#contact-form #${locale === 'zh' ? 'phone' : 'email'}`).fill(values.contact)
+    await page.locator('#contact-form #message').fill(values.message)
+    await page.getByRole('checkbox').check()
+
+    await submit(page).click()
+
+    await expect(result(page)).toContainText(
+      locale === 'zh' ? '请填写国家或地区' : 'Please enter your country or region'
+    )
+    await expect(page.locator('#contact-form #countryOrRegion')).toBeFocused()
+  })
+
   for (const [name, response] of scenarios) {
-    test(`${locale} preserves all six fields and focuses summary after API ${name}`, async ({
+    test(`${locale} preserves all seven fields and focuses summary after API ${name}`, async ({
       page,
     }) => {
       await page.route('**/api/contact', (route) =>
@@ -40,7 +59,7 @@ for (const locale of ['zh', 'en'] as const) {
         locale === 'zh'
           ? response.body.error
           : name === '400'
-            ? /Please provide your name, a valid email address/
+            ? /Please provide your name, country or region, a valid email address/
             : /save your enquiry/
       )
       await expect(result(page)).toBeFocused()
@@ -100,6 +119,7 @@ for (const locale of ['zh', 'en'] as const) {
     await submit(page).click()
     await expect(result(page)).toContainText(locale === 'zh' ? '提交成功' : 'Thank you')
     await expect(page.locator('#contact-form #name')).toHaveValue('')
+    await expect(page.locator('#contact-form #countryOrRegion')).toHaveValue('')
     await expect(page.getByRole('checkbox')).not.toBeChecked()
     expect(attempts).toBeGreaterThanOrEqual(2)
   })

@@ -5,6 +5,7 @@ import { storeContactLead } from '@/lib/contact/storage'
 const token = 't'.repeat(32)
 const lead = {
   name: '敏感姓名',
+  countryOrRegion: '中国',
   phone: '13800138000',
   company: '敏感公司',
   email: 'private@example.test',

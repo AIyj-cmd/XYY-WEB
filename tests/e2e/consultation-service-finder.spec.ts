@@ -25,7 +25,7 @@ test.describe('consultation enquiry protection', () => {
     )
   })
 
-  test('template preserves text and the 1200-char limit', async ({ page }) => {
+  test('template preserves text and the 1100-char limit', async ({ page }) => {
     await page.goto('/contact?need=returns-inspection&region=any&case=ur#contact-form')
     const message = page.locator('textarea[name="message"]')
     const template = page.locator('[data-contact-template]')
@@ -43,12 +43,12 @@ test.describe('consultation enquiry protection', () => {
     const afterFirstClick = inserted
     await template.click()
     await expect(message).toHaveValue(afterFirstClick)
-    const nearLimit = 'x'.repeat(1195)
+    const nearLimit = 'x'.repeat(1095)
     await message.fill(nearLimit)
     await template.click()
     await expect(message).toHaveValue(nearLimit)
-    await expect(page.locator('#contact-template-status')).toContainText('超过1200字限制')
-    expect((await message.inputValue()).length).toBe(1195)
+    await expect(page.locator('#contact-template-status')).toContainText('超过1100字限制')
+    expect((await message.inputValue()).length).toBe(1095)
   })
 
   test('failed submission keeps fields and retries', async ({ page }) => {
@@ -72,6 +72,7 @@ test.describe('consultation enquiry protection', () => {
     })
     await page.goto('/contact?need=returns-inspection&region=any#contact-form')
     await page.locator('input[name="name"]').fill('QA 保留输入')
+    await page.locator('input[name="countryOrRegion"]').fill('中国')
     await page.locator('input[name="phone"]').fill('13800138000')
     await page.locator('textarea[name="message"]').fill('原始需求')
     await page.locator('input[name="privacyConsent"]').check()
@@ -86,6 +87,7 @@ test.describe('consultation enquiry protection', () => {
     expect(payloads).toHaveLength(2)
     expect(payloads[0]).toMatchObject({
       name: 'QA 保留输入',
+      countryOrRegion: '中国',
       phone: '13800138000',
       message: '原始需求',
       service: '退货质检',

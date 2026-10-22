@@ -25,6 +25,17 @@ function resolveIntegrationUrl(rawUrl: string | undefined) {
   }
 }
 
+function integrationLead(lead: ContactLead) {
+  return {
+    name: lead.name,
+    phone: lead.phone,
+    company: lead.company,
+    email: lead.email,
+    service: lead.service,
+    message: `国家或地区：${lead.countryOrRegion}\n需求描述：${lead.message}`,
+  }
+}
+
 export async function storeContactLead(lead: ContactLead) {
   const integrationUrl = resolveIntegrationUrl(process.env.XIANSUO_API_URL)
   const integrationToken = configuredIntegrationToken(process.env.XIANSUO_INGEST_TOKEN)
@@ -41,7 +52,7 @@ export async function storeContactLead(lead: ContactLead) {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${integrationToken}`,
       },
-      body: JSON.stringify(lead),
+      body: JSON.stringify(integrationLead(lead)),
       signal: AbortSignal.timeout(XIANSUO_TIMEOUT_MS),
     })
 
