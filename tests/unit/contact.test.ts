@@ -7,7 +7,7 @@ const integrationToken = randomBytes(32).toString('base64url')
 const chineseLead = {
   name: '张三',
   countryOrRegion: '中国',
-  phone: '13800138000',
+  phone: '+1 (555) 123-4567',
   message: '想了解仓配一体方案',
   privacyConsent: 'on',
 }
@@ -45,9 +45,13 @@ describe('contact API', () => {
     __resetContactRateLimitForTests()
   })
 
-  it('keeps Chinese requests on the domestic phone rule without an English marker', async () => {
+  it.each([
+    ['missing number', ''],
+    ['domestic number without a country code', '13800138000'],
+    ['overlong number', '+1' + '2'.repeat(40)],
+  ])('rejects Chinese requests with a %s', async (_label, phone) => {
     const response = await POST({
-      request: request({ ...chineseLead, phone: '', message: '咨询' }),
+      request: request({ ...chineseLead, phone, message: '咨询' }),
     } as any)
 
     expect(response.status).toBe(400)
@@ -103,7 +107,12 @@ describe('contact API', () => {
     vi.stubGlobal('fetch', fetchMock)
 
     const response = await POST({
-      request: request({ name: '张三', phone: '13800138000', message: '咨询', website: 'bot' }),
+      request: request({
+        name: '张三',
+        phone: '+1 (555) 123-4567',
+        message: '咨询',
+        website: 'bot',
+      }),
     } as any)
 
     expect(response.status).toBe(200)

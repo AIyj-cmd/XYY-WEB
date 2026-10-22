@@ -12,7 +12,7 @@ const zh = (overrides: Record<string, string> = {}) =>
   data({
     name: '张三',
     countryOrRegion: '中国',
-    phone: '13800138000',
+    phone: '+1 (555) 123-4567',
     email: '',
     message: '想了解鞋服云仓方案',
     privacyConsent: 'on',
@@ -35,6 +35,7 @@ describe('contact form client validation', () => {
     ['name', { name: '' }],
     ['countryOrRegion', { countryOrRegion: '' }],
     ['phone', { phone: 'abc' }],
+    ['phone', { phone: '13800138000' }],
     ['email', { email: 'not-an-email' }],
     ['message', { message: '' }],
     ['privacyConsent', { privacyConsent: '' }],
@@ -54,16 +55,18 @@ describe('contact form client validation', () => {
     expect(validateContactForm(en(overrides), 'en')?.field).toBe(field)
   })
 
-  it('allows the optional contact method only when valid for the current language', () => {
+  it('accepts international phone numbers in both languages and keeps English phone optional', () => {
     expect(validateContactForm(zh({ email: 'buyer@example.com' }), 'zh-CN')).toBeNull()
+    expect(validateContactForm(zh({ phone: '+44 (20) 7946-0958' }), 'zh-CN')).toBeNull()
     expect(validateContactForm(en({ phone: '+44 (20) 7946-0958' }), 'en')).toBeNull()
     expect(validateContactForm(en({ phone: '13800138000' }), 'en')?.field).toBe('phone')
   })
 
-  it('rejects overlong raw optional values before trimming', () => {
+  it('rejects overlong raw contact values before trimming', () => {
     expect(validateContactForm(zh({ email: 'a'.repeat(121) + '@x.test' }), 'zh-CN')?.field).toBe(
       'email'
     )
+    expect(validateContactForm(zh({ phone: '+1' + '2'.repeat(40) }), 'zh-CN')?.field).toBe('phone')
     expect(validateContactForm(en({ phone: '+1' + '2'.repeat(40) }), 'en')?.field).toBe('phone')
   })
 

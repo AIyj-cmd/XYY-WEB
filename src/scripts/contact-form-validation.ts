@@ -4,7 +4,6 @@ import {
   CONTACT_FIELD_MAX_LENGTHS,
   isValidContactEmail,
   isValidCountryOrRegion,
-  isValidDomesticContactPhone,
   isValidInternationalContactPhone,
   isWithinContactFieldLength,
 } from '@/lib/contact/validation'
@@ -31,7 +30,7 @@ const copy = {
     missingCountryOrRegion: '请填写国家或地区。',
     invalidCountryOrRegion: '国家或地区应为不超过80个字符的单行文字。',
     missingEmail: '请输入有效的邮箱地址。',
-    invalidPhone: '请填写有效的手机号或座机号。',
+    invalidPhone: '请填写含国家或地区区号的有效国际电话号码。',
     invalidEmail: '请输入有效的邮箱地址。',
     missingMessage: '请填写需求描述。',
     messageTooLong: `需求描述不能超过${CONTACT_FIELD_MAX_LENGTHS.message}个字符。`,
@@ -91,7 +90,7 @@ export function validateContactForm(
     if (phone.trim() && !isValidInternationalContactPhone(phone.trim()))
       return { field: 'phone', message: messages.invalidPhone }
   } else {
-    if (!phone.trim() || !isValidDomesticContactPhone(phone.trim()))
+    if (!phone.trim() || !isValidInternationalContactPhone(phone.trim()))
       return { field: 'phone', message: messages.invalidPhone }
     if (email.trim() && !isValidContactEmail(email.trim()))
       return { field: 'email', message: messages.invalidEmail }

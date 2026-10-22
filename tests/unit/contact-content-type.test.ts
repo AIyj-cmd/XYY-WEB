@@ -6,7 +6,7 @@ const integrationToken = 't'.repeat(32)
 const lead = {
   name: '张三',
   countryOrRegion: '中国',
-  phone: '13800138000',
+  phone: '+1 (555) 123-4567',
   message: '想了解仓配一体方案',
   privacyConsent: 'on',
 }

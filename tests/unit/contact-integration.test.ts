@@ -6,7 +6,7 @@ import { POST, __resetContactRateLimitForTests } from '@/pages/api/contact'
 const lead = {
   name: '张三',
   countryOrRegion: '中国',
-  phone: '13800138000',
+  phone: '+44 (20) 7946-0958',
   company: '测试公司',
   email: 'test@example.com',
   service: 'cloud-warehouse',
@@ -61,7 +61,7 @@ describe('contact Xiansuo integration', () => {
         signal: expect.any(AbortSignal),
         body: JSON.stringify({
           name: lead.name,
-          phone: lead.phone,
+          phone: '+44 (20) 7946-0958',
           company: lead.company,
           email: lead.email,
           service: lead.service,

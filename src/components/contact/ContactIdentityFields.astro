@@ -66,9 +66,13 @@ const inputClass =
             required
             maxlength={CONTACT_FIELD_MAX_LENGTHS.phone}
             autocomplete="tel"
-            placeholder="请输入您的手机号"
+            placeholder="+1 (555) 123-4567"
+            aria-describedby="phone-help"
             class={inputClass}
           />
+          <p id="phone-help" class="mt-1.5 text-xs text-gray-500">
+            请填写含 + 和国家或地区区号的国际电话号码，可使用空格、连字符和括号。
+          </p>
         </div>
       )}
       <div>

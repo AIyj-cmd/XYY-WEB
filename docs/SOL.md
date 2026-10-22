@@ -3201,3 +3201,30 @@ Limits：本轮限Chrome152模拟视口及离线/helper验证，空内容schema�
 
 - Git 同步完成：精确暂存 34 路径、27 非文档哈希与敏感信息/禁止产物/diff guard PASS，UTC 普通应用提交 `a6e961ccbe8872e4dae7560ed776b3713fa599ee`。普通 push exit 124（60 秒超时，原因未确证）且远端仍为旧 SHA；Nova 单独 APPROVE_SAFE_API_TRANSFER 后，脚本 dry-run exact34，创建 tree `01257d45655dd67743e612fb89d0e9236bb2d631` 及精确同 SHA commit，再由 GitHub 连接器 expected_sha=3111bd37、force=false 更新唯一 main。15:17:34 CST 实际回读本地 HEAD/origin/main/GitHub main 均为应用提交、ahead/behind 0/0、工作区干净。仅据实更新本地 tracking ref，未改 origin/凭据、force 或绕过保护。
 - 随后仅补录 DEV_STATE、SOL 与合同三份状态文档，独立普通提交并沿同一已审 API/expected parent/force=false 机制同步；最终文档提交及 hosted CI 以后续 Git 引用和 `sol/final-result.json` 实际回读为准，不把应用推送或本地测试等同 CI 通过。三文档 diff/格式与非文档哈希复核，不重复应用测试；未部署或写真实接收端/CMS/数据库/权限，生产 release 和 pending CMS gate 保持。
+
+### XYY-20261022-04 — 启动本地效果预览
+
+- 用户要求启动本地项目查看效果，LOW；Scope 为既有 dev:local 启动或复用与 loopback GET 验证，Sol 仅负责运行证据和 DEV_STATE/SOL 记录，排除业务代码、真实询盘、生产/CMS/数据库、提交/推送。基线 HEAD 145581cfa1ff883ef6c59f6db3862184c44903b0，起始工作区干净；运行合同及证据 output/local-preview/xyy-20261022-04/。
+- 执行 npm run dev:local，缩略图准备完成，LOCAL_DEV_READY 身份校验通过，PID 69220、127.0.0.1:4321、reused=false，保持进程运行。首页、中文联系和英文联系 GET 200；双语国家或地区输入 required、maxlength=80、autocomplete=country-name、初值为空。满足本轮启动/可查看 AC，未发送 POST。
+- 使用项目既有隔离 loopback/dummy 配置和审核静态回退；无真实接收/CMS 写入或生产操作，不等同真实数据或真实询盘验证。仅更新本地状态文档，审阅增量/Markdown结构和 diff-check；业务源码未变，无提交或部署，未重复运行不适用的完整 verify/浏览器回归。
+
+### XYY-20261022-05 — 联系表单选填字段上移并默认展示
+
+- 用户截图要求将折叠区放出来并放到上方，LOW，最小 Scope 为 ContactForm 中 optional group 直接置于 primary 后、Inquiry 前，移除 details/summary；4 份既有 E2E/helper 同步移除展开依赖，选填、国家或地区必填、API/校验/存储均保持。基线 HEAD 145581c，Task04 已有 DEV_STATE/SOL 两脏文件保留；合同 output/contact-visible/xyy-20261022-05/task.json。Terra → Luna → Sol，未扩张 CSS 清理或重构。
+- 自测目标格式/预算933/typecheck（0 errors、0 warnings、6 既有 hints）/diff PASS；Sol 审阅最小源差异与测试，校正新增顺序断言须排除 hidden 容器内 honeypot 的定位问题后冻结，不改业务规则。Luna 最终 probe 4/4（zh/en ×1440/390）、contact-mobile 24、recovery 20、English invalid 2 共46 Playwright通过，目标格式/diff及五冻结hash全匹配。独立 probe 的 mode getter、唯一性断言和全POST拦截在 harness 中收敛，所有日志保留，以最终脚本/最终结果为准，不冒充业务返工。
+- 已视读中文桌面与手机截图，确认公司/邮箱默认显示在咨询服务上方且无横溢；满足 AC，验收 LOCAL_READY。仅本地 Chromium/loopback/mock，所有外部请求和非mock POST阻断；没有真实询盘或生产/CMS/数据库/发布。保留本地4321运行与热更新，未提交/推送；按无提交的局部UI调整未运行完整 verify/build。收尾仅记录与审阅文档增量、格式/空白和范围。证据 output/contact-visible/xyy-20261022-05/{terra,luna}/。
+
+### XYY-20261022-06 — 中文电话采用通用国际格式
+
+- 用户明确中文联系电话与英文一样通用、不要默认 +86/中国国内手机。MEDIUM，Terra → Luna → Nova → Sol；Scope 为 ContactIdentityFields、validation、contact-form-validation 三业务源及直接影响的联系测试夹具，保留9个Task04/05既有脏路径，不改接收端、storage六字段、国家字段、展开布局或外部环境。基线HEAD145581c，合同 output/contact-international/xyy-20261022-06/task.json。
+- 中文phone初值为空，使用通用+1示例和国际区号help/aria-describedby；双locale共享国际validator，支持空格/连字符/括号，raw max40先验不截断。中文phone保持必填，英文phone选填/email必填保持。成功夹具按场景用+1/+44，拒绝无区号138；没有+86自动映射或国内专用分支。
+- Luna PASS：12文件114单测、20相关E2E、zh/en ×1440/390 probe4/4；138零POST聚焦，+1/+44/+81原样进入mock，英文空phone可提交，选填可见/必填/保留重置/无横溢保持，所有外联与未mock POST拦截。补跑实际修改phone的两条提交/反机器人fixture双project4项，累计20，不把下拉options回归当作实际提交覆盖。目标格式/diff及15冻结hash通过；Terra typecheck0errors/0warnings/6既有hints、933维护预算通过。哈希初次提取误含prose的比较exit1已保留，严格15行后exit0，未发生文件漂移。
+- Nova APPROVED_LOCAL_PREVIEW_ONLY_WITH_RECEIVER_GATE。Sol已审源代码/测试diff、实匹配15冻结与Task05 ContactForm56145ea哈希，视读中文390截图并回读证据，验收本地预览。只读本地接收端schema仍phone required+国内regex，证据 receiver-limit.json；这不是部署身份证明，既不证明生产拒绝也不证明兼容。发布前须核验准确活动接收端，若不兼容另获授权适配；本轮不宣称端到端落库或production ready，不把mock替代真实接收。
+- 本地4321已热更新并保留运行；仅本地源码/测试/记录，未fullverify/build或提交推送部署、真实询盘、真实receiver/CMS/DB/权限写入。收尾审阅文档增量/格式/diff和冻结，不重复已绿测试。合同与四角色证据 output/contact-international/xyy-20261022-06/。
+
+### XYY-20261022-07 — 联系表单调整 GitHub 同步
+
+- 用户明确要求同步GitHub并更新本地Git信息，HIGH，仅origin/main普通快进。Task04/05/06实施已完成，本轮Luna→Nova→Sol；基线145581cfa1ff883ef6c59f6db3862184c44903b0，22既有脏路径加合同共23路径（17非文档）全部保留，不改业务代码、依赖或工作流，不部署或写真实receiver/CMS/DB/权限。合同 docs/plans/xyy-20261022-07-github-sync.md，证据 output/git-sync/xyy-20261022-07/。
+- Luna fresh workers4 verify exit0：769类型文件0errors/0warnings/6hints、153文件1105测试、Lint/933维护预算/资源/cache/build通过；全量format/diff、23scope、17非doc对本次基线和Task06最终15冻结通过。复用最近Task06/保持的Task05布局证据，不将Task06有意修改后的旧Task05电话夹具误称原hash未变。原日志中间Terminated后同次完成全部检查exit0，不隐藏或推断原因。
+- 只读回查基线GitHubCI39739670754 completed/failure，Audit production dependencies步骤npm audit --omit=dev exit1，2 vulnerabilities（1moderate、1high），报告sanitize-html及Vite/launch-editor advisories；不是已证明的网络故障。本轮package/lock/CI不变，不运行audit fix或升级；保留为真实既有CI/发布限制。新提交CI须实际回读，不把本地verify或Git同步当作hosted CI、安全审计或productionready。
+- 标准gitpush在同会话Task03实际60秒超时exit124、原因未确证。本轮计划复用逐字相同已审API算法（脚本de22894f80976f4f86fe65d8c09f02f2a7c2f35d3550192408d52b2e509d47d1），精确单父UTC本地tree/commit及expected旧SHA/force=false唯一main；Nova APPROVED_FOR_AUTHORIZED_GITHUB_SYNC_AND_SAFE_API_TRANSFER，Sol已验收；仅授权Git同步，不授权修依赖或部署。当前提交/传输待执行。接收兼容仍需在发布前核验准确活动接收端，本地国内only源码不是部署证据；本地主预览保持。

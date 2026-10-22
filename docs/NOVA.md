@@ -4390,3 +4390,51 @@ Result：**APPROVED_FOR_AUTHORIZED_GITHUB_SYNC**。未发现 correctness、archi
 Remaining Risks：验证仅用 loopback/mock/本地 Chromium，没有真实询盘、生产接收端、CMS、数据库、部署或外部写入；只读接收端本地源码不证明生产已部署同版。首轮无关超时仍保留为观察。新提交的 GitHub hosted CI 尚未运行，且远端在执行前仍可能变化，必须以推送前后实时回读为准。
 
 Handoff：**APPROVED_FOR_AUTHORIZED_GITHUB_SYNC** 返回 Sol。Sol 可按上述精确范围和执行闸门进行正常 commit/push，并在同 Task ID 下机械补录真实提交 SHA、远端回读、CI 与“未部署”事实；不得借此操作生产、CMS、数据库、接收端、权限或服务器。结构化结论：`output/contact-country/xyy-20261022-03/nova/review.json`。
+
+### XYY-20261022-06 — 中文国际电话格式本地预览最终 Review
+
+Task ID：`XYY-20261022-06`（MEDIUM，本地预览候选）。
+
+Review Scope：审阅三处实现源码、直接影响的 unit/E2E diff、Terra 15 文件冻结、自测记录、Luna 原始单测/E2E/browser probe/格式/hash 证据，以及只读本地接收端 schema。排除接收端实现、真实询盘、生产、CMS/数据库/权限、Git 提交推送和部署。15/15 freeze 哈希匹配；Task05 `ContactForm.astro` 保持 `56145ea9288ab0dd3649c3bde66ec9a9faf685f738b520dad3291e6509bdc4fb`，未复原已移除的折叠布局，两个不属本任务的联系 E2E 文件也保持 Task06 baseline hash。
+
+Architecture：**PASS（local）**。中英文现共用既有 `isValidInternationalContactPhone`；无人调用的国内号码 validator 已删除，没有新增第二套规则。中文 phone 仍必填，英文 phone 仍选填且 email 必填；服务端在 trim/slice 前检查 raw phone 40 字符上限，不会把超长输入截断后接受。storage 仍显式投影原六字段并原样保留格式化号码，不自动添加 `+86`；国家或地区、1100 字需求、consent、honeypot、rate limit 和 API 失败路径保持。
+
+Security：**PASS（local）**。共享 validator 要求前导 `+`、非零区号首位和去除允许的空格/括号/连字符后 7–15 位数字；中文缺失、普通 `13800138000`、过短和 raw 超长均在存储前失败。未改鉴权、token、日志、endpoint 或外部写入逻辑。独立浏览器探针拦截全部联系 POST、阻断全部非 loopback 请求，没有真实询盘、接收端、CMS 或数据库写入。
+
+Maintainability：**PASS**。中文输入为空默认值，使用共享 maxlength 40、`autocomplete="tel"`、通用 `+1` placeholder，并通过 `aria-describedby` 连接本地化区号说明。直接成功 fixture 改为 `+1/+44`，故意非法的 `138` 样例保留并新增中文拒绝断言；没有盲目替换所有号码。Task05 默认可见 company/email/phone 布局由源码 hash、probe 的唯一/可见/DOM 顺序断言和中英文 390 截图共同确认。
+
+Contract Risks：**LOCAL PASS；发布前 receiver gate 必须满足**。网站客户端和本地 API 对授权的国际格式行为一致，mock 六字段 payload 保留 `+1/+44/+81` 格式。只读 `/home/yj/xiansuo/server/src/routes/website-leads.ts` 当前仍为 phone 必填并使用 domestic-only regex，记录 SHA-256 `5cf48dd3c075a876cea12e6a4f3089ef0be02d20cce2f80e89024dc72702d72e`；但该本地源码不是部署身份，既不能证明生产拒绝，也不能证明生产兼容。任何网站发布前必须映射并验证准确活动接收端版本接受目标国际号码；若不兼容，需另获授权修改接收端并独立测试/Review。本限制不要求扩大当前本地任务。
+
+Test Coverage Review：**PASS for local preview**。Luna 定向 12 files/114 unit 与相关 E2E 20/20 通过。独立 zh/en × 1440/390 probe 4/4 PASS：中文 `138` 零 POST 且聚焦 phone，`+1/+44/+81` 原样进入 mock，英文空 phone 允许；empty/no-`+86`、maxlength 40、required/optional、help linkage、失败保留、成功清空、无横溢均通过，non-loopback 与未授权 POST 为 0。目标 Prettier、diff check 和 freeze compare 通过；Terra 记录 typecheck 0 errors/0 warnings/6 既有 hints、maintainability 933 files。未运行 full verify/build，符合无提交/部署的局部行为验证范围；未来提交和发布仍须走对应完整门禁。
+
+Result：**APPROVED_LOCAL_PREVIEW_ONLY_WITH_RECEIVER_GATE**。当前网站本地候选满足 Task06 AC；未发现 correctness、architecture、security、Scope、maintainability、网站 API 数据边界或回归覆盖阻断项。本结论不批准 GitHub 同步、部署或接收端变更，也不宣称 production/end-to-end ready。
+
+Remaining Risks：本地接收端源码观察与网站新契约存在兼容缺口，但没有活动生产版本证据；没有真实落库、生产、Safari/Firefox 或真机验证。未来提交须执行提交前门禁，部署须先满足接收端兼容闸门并执行发布验证。
+
+Handoff：**APPROVED_LOCAL_PREVIEW_ONLY_WITH_RECEIVER_GATE** 返回 Sol，仅可验收本地预览目标。接收端仓库、CMS、数据库、权限、GitHub 和生产环境继续排除。结构化结论：`output/contact-international/xyy-20261022-06/nova/review.json`。
+
+### XYY-20261022-07 — 联系表单调整 GitHub 同步最终 Review
+
+Task ID：`XYY-20261022-07`（HIGH，仅授权 GitHub main 同步）。
+
+Review Scope：审阅 23 路径候选、17 个非文档哈希、Task05 可见选填字段与 Task06 国际电话实际 diff、Luna fresh verify/format/diff/hash 证据、Secret/禁止产物、基线 GitHub CI 失败，以及 Git Database API 两阶段传输。排除部署、接收端/真实询盘、CMS/数据库/权限、依赖修复、force、凭据/remote/分支保护变更。当前 23 路径与 `candidate-scope.json` 精确一致，17 个非文档 hash 和 Task06 最终 15 文件 freeze 均无漂移。
+
+Architecture：**PASS for sync**。候选只包含已验收的 Task05 默认可见选填字段、Task06 中英文共享国际电话及其直接测试/记录；未改 package/lock、CI workflow、存储六字段或依赖。Task05 `ContactForm.astro`、`contact-mobile.spec.ts`、`english-acceptance-contact.spec.ts` 与 Task07 baseline 相同；recovery/helper 后续含 Task06 已授权国际号码 fixture，应以 Task06 最终 freeze 验收，不能误称 Task05 早期五文件整体未变。
+
+Security：**PASS for authorized transfer；NOT release-cleared**。23 路径高置信 Secret 扫描为 0，无 `.env`、output/dist、备份、压缩包、数据库、密钥或二进制产物，且均为普通文件。未变 CI workflow 为 `contents: read` 且无部署步骤。但基线 GitHub CI `39739670754` 已 completed/failure，唯一失败步骤为 `Audit production dependencies`；原始 `npm audit --omit=dev` 报告 2 vulnerabilities（sanitize-html moderate、Vite/launch-editor high）。package/lock/workflow 本轮均未改，因此不能声称漏洞已修、新 CI 会通过或具备生产发布安全结论。
+
+Maintainability：**PASS**。Luna fresh loopback/dummy `npm run verify` 同一调用最终 exit 0：typecheck 0 errors/0 warnings/6 既有 hints、Lint、933 文件预算、assets/cache、153 files/1105 tests 和 build 完成；全量 format 与 diff check exit 0。日志中间 `Terminated` 原样保留，同一调用随后给出完整测试汇总并完成 build，不推断该行原因，也不将最终 exit 0 误报为首轮失败或重试。
+
+Contract Risks：**PASS for GitHub sync with gates**。Review 时本地 HEAD、`origin/main` 与 GitHub API main 均为 `145581cfa1ff883ef6c59f6db3862184c44903b0`，ahead/behind 0/0。用户只授权 GitHub 同步；本地接收端兼容 gate、真实设备限制和依赖审计失败继续是发布条件，不能由 GitHub 同步覆盖。标准 push 超时原因未确证，不作网络、权限或凭据归因。
+
+Transfer Review：**APPROVE_SAFE_API_TRANSFER_WITH_EXACT_OBJECT_CHECKS**。`sync-via-api.py` SHA-256 为 `de22894f80976f4f86fe65d8c09f02f2a7c2f35d3550192408d52b2e509d47d1`，与 Task03 已审版本逐字相同。脚本要求 clean、单父、标准 unsigned UTC、expected parent、A/M 100644 文本路径和实时 remote parent；`--apply` 只 POST tree/commit，并要求远端 tree/commit SHA 与本地完全一致，脚本本身不写 ref。之后 connector 只可对 `AIyj-cmd/XYY-WEB/main` 使用实时 local app SHA、`expected_sha=145581c...`、`force=false`；回读 GitHub main 成功后才更新 `origin/main`。任何 parent/path/tree/commit/CAS 差异立即停止。
+
+应用提交须精确 23 路径并在提交后复核单父/UTC/无签名、完整 dry-run manifest、tree 和 commit identity。应用 ref 回读成功后，第二提交只允许 `DEV_STATE.md`、`docs/SOL.md`、本合同三份事实文档，不 amend；其 parent/live main 都必须为应用 SHA，fresh dry-run 精确三路径，object SHA 全等后才以 `expected_sha=<app SHA>`、`force=false` 更新并再次回读。
+
+Test Coverage Review：**PASS for sync**。本轮 fresh verify 和完整格式门禁覆盖当前候选；Task05/06 浏览器证据仅在相关最终源码/测试身份匹配时复用。Nova 复核当前布局/国际电话实现与测试 diff，未发现断言弱化或未审行为。局部验证及 fresh verify 不包含 CI 的独立 `npm audit` 步骤，不能替代 hosted CI 或生产/接收端验证。
+
+Result：**APPROVED_FOR_AUTHORIZED_GITHUB_SYNC_AND_SAFE_API_TRANSFER**。批准仅限上述精确两阶段 GitHub 非 force CAS 同步和本地 Git 信息回读；不批准部署、依赖修复、接收端、CMS、数据库、权限或生产操作。
+
+Remaining Risks：对象创建后 CAS 失败可能留下不可达对象，不能把对象存在称为同步成功。baseline hosted CI 因一项 moderate 与一项 high 依赖审计问题失败；新 CI 状态必须实际回读，生产发布仍被该安全审计与接收端兼容 gate 阻断。脚本 allowlist 宽于本次 manifest，因此 23 路径及后三文档 dry-run 精确等值不可省略。
+
+Handoff：**APPROVED_FOR_AUTHORIZED_GITHUB_SYNC_AND_SAFE_API_TRANSFER** 返回 Sol，按精确 parent/path/tree/commit、`expected_sha`、`force=false` 和两次远端回读执行。结构化结论：`output/git-sync/xyy-20261022-07/nova/review.json`。

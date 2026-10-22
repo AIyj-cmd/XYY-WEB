@@ -2824,3 +2824,15 @@ Health triage: 只读确认 health、权限契约、运行配置、相关客户�
 - 内部 `ContactLead` 保留国家或地区，Xiansuo 接收边界显式投影为原六字段；国家或地区与原需求完整写入 `message`，最大长度保留在接收端 1200 限制内。既有 consent、honeypot、rate limit 及中英文电话/邮箱校验未改。中英文隐私说明同步列为必填信息。
 - 更新原有成功夹具、移动和英文浏览器路径；新增客户端、API 与集成边界覆盖空白/非字符串/超长/换行、Unicode trim、1100 字符限制、六字段投影及失败保留和成功清空国家或地区。自检 PASS：定向 Vitest 7 files/78 tests、`npm run typecheck`（0 errors、0 warnings、6 条既有 hints）、`npm run lint`、目标 Prettier、`npm run check:maintainability`（933 files）与 `git diff --check`。
 - 未运行完整 `npm run verify` 或浏览器 E2E；未发送真实询盘、修改接收端、CMS/数据库、生产环境、提交、推送或部署。冻结哈希和命令证据见 `output/contact-country/xyy-20261022-03/terra/`，交 Luna 重点复核 1440/390 双语布局、必填聚焦、保留/重置和六字段 mock payload。
+
+### XYY-20261022-05 — 联系表单选填项默认可见
+
+- 删除联系表单中的选填 `details/summary` 折叠容器，将既有公司及备用联系方式字段直接置于主身份字段之后、服务和需求描述之前。中文公司/邮箱、英文公司/电话均保持选填，英文必填邮箱、国家或地区必填、提交 payload 与既有校验规则未改。
+- 既有移动和英文联系 E2E fixture 现直接填写可见选填项；删除已失效的展开辅助逻辑，并把断言改为默认七个可见用户字段、手机表单中选填字段位于服务和需求之前，以及校验失败仍聚焦可见选填字段。字段顺序探针明确排除隐藏 honeypot。
+- 自检 PASS：目标 Prettier、`npm run check:maintainability`（933 files）、`npm run typecheck`（0 errors、0 warnings、6 条既有 hints）和 `git diff --check`。未运行完整 verify/build 或浏览器 E2E，未改 API/validation/storage、提交、推送、部署、真实 POST、CMS 或数据库；交 Luna 独立复核双语 1440/390 无横溢和默认可见字段。
+
+### XYY-20261022-06 — 中文联系电话国际格式
+
+- 中文联系电话现与英文共用国际电话号码规则：必须以 `+` 和国家或地区区号开始，可使用空格、连字符和括号；中文字段仍必填，英文仍选填。中文输入提示改为国际号码示例，未预填、默认、转换或清除任何国家区号；原始输入 40 字符上限在两端均先于格式清理检查。
+- 客户端、API 与既有成功夹具改用 `+1`、`+44` 等格式；中文和英文均拒绝无区号的 `13800138000`，且 mock 出站请求保留完整国际号码文本。国家或地区必填、邮箱中英文规则、Task05 默认展开布局及现有 storage 六字段投影未改。下游接收端仅接受国内电话是跨项目已知限制，本轮未改接收端且未发送真实询盘，网站本地候选通过不代表生产端到端保存已就绪。
+- 自检 PASS：`npx vitest run tests/unit/contact-form-validation.test.ts tests/unit/contact.test.ts tests/unit/contact-integration.test.ts tests/unit/contact-content-type.test.ts tests/unit/contact-storage-privacy.test.ts tests/unit/contact-country-region.test.ts`（6 files/78 tests）、`npm run typecheck`（0 errors、0 warnings、6 条既有 hints）、目标 Prettier、`npm run check:maintainability`（933 files）及 `git diff --check`。未运行完整 verify/build 或浏览器 E2E，未改接收端、CMS/数据库、生产、提交、推送或部署；交 Luna 重点复核双语 1440/390、+1/+44/非 86 格式、中文无区号拒绝及 mock payload 原样保留。

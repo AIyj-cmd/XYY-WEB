@@ -6,7 +6,7 @@ const token = 't'.repeat(32)
 const lead = {
   name: '敏感姓名',
   countryOrRegion: '中国',
-  phone: '13800138000',
+  phone: '+1 (555) 123-4567',
   company: '敏感公司',
   email: 'private@example.test',
   service: 'cloud-warehouse',

@@ -30,7 +30,7 @@ for (const locale of ['zh', 'en'] as const) {
     await page.goto(locale === 'zh' ? '/contact' : '/en/contact')
     const values =
       locale === 'zh'
-        ? { name: '测试品牌', contact: '13800138000', message: '想了解鞋服云仓方案' }
+        ? { name: '测试品牌', contact: '+1 (555) 123-4567', message: '想了解鞋服云仓方案' }
         : { name: 'QA apparel brand', contact: 'buyer@example.com', message: 'Need fulfilment.' }
     await page.locator('#contact-form #name').fill(values.name)
     await page.locator(`#contact-form #${locale === 'zh' ? 'phone' : 'email'}`).fill(values.contact)
@@ -79,18 +79,15 @@ for (const locale of ['zh', 'en'] as const) {
 }
 
 for (const locale of ['zh', 'en'] as const) {
-  test(`${locale} invalid optional field opens details and focuses the field`, async ({ page }) => {
+  test(`${locale} invalid visible optional field focuses the field`, async ({ page }) => {
     await page.goto(locale === 'zh' ? '/contact' : '/en/contact')
     await fillRequired(page, locale)
-    await page.locator('[data-contact-optional-fields] summary').click()
     const invalidField = page.locator(`#contact-form #${locale === 'zh' ? 'email' : 'phone'}`)
     await invalidField.fill(locale === 'zh' ? 'invalid-email' : '12345')
-    await page.locator('[data-contact-optional-fields] summary').click()
     await submit(page).click()
     await expect(result(page)).toContainText(
       locale === 'zh' ? '请输入有效的邮箱地址' : 'include + and the country or region code'
     )
-    await expect(page.locator('[data-contact-optional-fields]')).toHaveAttribute('open', '')
     await expect(invalidField).toBeFocused()
   })
 }

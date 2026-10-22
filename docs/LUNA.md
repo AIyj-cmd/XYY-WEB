@@ -7810,3 +7810,65 @@ Evidence：[`final-summary.json`](../output/contact-country/xyy-20261022-03/luna
 Remaining risks：验证仅限本地 loopback/dummy 环境，未执行真实询盘、生产、CMS、数据库、部署、提交或推送；浏览器使用本地 Chromium，未声称真实设备 Safari 行为。首轮 workers=3 的超时仍作为环境观察保留，最终 workers=4 完整通过。
 
 Handoff：Luna 独立验收 PASS 返回 Sol，交 Nova Review；Luna 未修改实现、持久测试或生产环境。
+
+### XYY-20261022-05 — 联系表单字段可见性验证准备
+
+Task ID：`XYY-20261022-05`；Result：**PREPARED / WAITING_FOR_FREEZE**。Terra 尚未冻结，本阶段未访问本地预览、未运行 E2E/格式/diff/verify，也未修改实现。
+
+已准备独立 probe [`contact-visible-browser-probe.mjs`](../output/contact-visible/xyy-20261022-05/luna/contact-visible-browser-probe.mjs)，SHA-256：`4cc6102607cd0bacb17a3bd1788ee4abc93355961497aee7220f2a219fa5ba54`。冻结后使用 4 个独立 context 覆盖 zh/en × 1440/390，断言公司/次联系字段默认可见且唯一、无 `details` 折叠区、字段 DOM 顺序在 service/message 之前、locale-specific required/optional 语义、缺 country 无 POST 且聚焦、mock 503 保留、mock 200 重置、无横溢、全部非 loopback 请求拦截及 4 张截图。所有 POST 均由 probe mock，base URL 强制 loopback。路由按实时 mode getter 切换 missing/failure/success，并保留原始 locator 让重复字段触发严格失败；本次仅修改 ignored probe，未运行验证。
+
+证据：[prep-summary.json](../output/contact-visible/xyy-20261022-05/luna/prep-summary.json)、[commands.txt](../output/contact-visible/xyy-20261022-05/luna/commands.txt)。
+
+Handoff：准备完成，返回 Sol，等待 Terra freeze。
+
+### XYY-20261022-06 — 中文国际电话格式独立验收
+
+Task ID：`XYY-20261022-06`；Result：**PASS**。
+
+Tests performed：Terra freeze 15 文件 SHA-256 逐项匹配，hash compare exit 0；相关 contact 单测 12 files / 114 tests passed；本地 `http://127.0.0.1:4321` 独立 probe 覆盖 zh/en × 1440/390，4/4 PASS。中文初始 phone 为空且无 `+86`，国内 `13800138000` 无 POST 并聚焦 phone，`+1`、`+44`、`+81` 均以原格式进入 mock payload；英文 phone 为空可提交，`+44` 可提交；country/email/phone required 语义、maxlength 40、国际 placeholder/help、Task05 默认可见字段与无横溢均通过。所有非 loopback 请求为 0，所有 loopback POST 均被拦截，只有 `/api/contact` 由 probe mock；四张截图已保存。
+
+Regression coverage：contact recovery 缺 country/invalid focus 8 passed；English invalid 2 passed；conversion 中文提交 2 passed，实际成功提交/失败响应与 honeypot 用例双 project 4 passed；consultation template 与失败重试 4 passed。该组最小相关 E2E 合计 20 passed、0 failed。目标 Prettier check exit 0、`git diff --check` exit 0、freeze hash compare exit 0。未运行 full verify/build，符合合同范围。
+
+证据：[`final-summary.json`](../output/contact-international/xyy-20261022-06/luna/final-summary.json)、[`contact-unit.log`](../output/contact-international/xyy-20261022-06/luna/contact-unit.log)、[`browser-probe/result.json`](../output/contact-international/xyy-20261022-06/luna/browser-probe/result.json)、[`freeze-sha256-current.txt`](../output/contact-international/xyy-20261022-06/luna/freeze-sha256-current.txt)。最终 probe SHA-256：`e978ac095c155a1268cc39583e412bf2098a91f10c6b38d248e550e9b46097f8`。
+
+Remaining risks：receiver repository 仍为国内-only，本地 mock 仅证明页面/本地 API 保留国际格式，不证明真实接收端落库或生产兼容；未访问真实 receiver、CMS、数据库或生产环境，未运行完整 verify/build。首次 hash 提取命令因带入 freeze 后续说明文字返回 1，严格截取 15 行 hash 后 compare exit 0，未发现文件漂移。
+
+Handoff：Luna 独立验收 PASS 返回 Sol，供 Nova Review。
+
+### XYY-20261022-07 — GitHub 同步前独立门禁
+
+Task ID：`XYY-20261022-07`；Result：**PASS**。
+
+Tests performed：基于 `145581cfa1ff883ef6c59f6db3862184c44903b0` 的 23 路径范围核对通过，实际 status 为 23/23，17 个非文档文件均在合同范围。Fresh loopback/dummy `npm run verify` 使用 `VITEST_MAX_WORKERS=4`、遥测关闭，exit 0；typecheck、lint、维护性、资源/cache 检查、153 个 test files / 1105 tests 与 build 均完成。全量 `npm run format:check` exit 0，`git diff --check` exit 0。
+
+Hash coverage：基线 22/22 文件匹配、17/17 非文档匹配；Task06 freeze 15/15 匹配；Task05 `ContactForm.astro` 与四份相关 E2E/helper 保护 hash 保持。Task05/06 已有浏览器与针对性 E2E 证据按精确 hash 条件复用，未重复无关浏览器测试。
+
+Evidence：[`final-summary.json`](../output/git-sync/xyy-20261022-07/luna/final-summary.json)、[`npm-verify.log`](../output/git-sync/xyy-20261022-07/luna/npm-verify.log)、[`format-check.log`](../output/git-sync/xyy-20261022-07/luna/format-check.log)、[`hash-check.json`](../output/git-sync/xyy-20261022-07/luna/hash-check.json)、[`freeze-check.json`](../output/git-sync/xyy-20261022-07/luna/freeze-check.json)、[`scope-check.json`](../output/git-sync/xyy-20261022-07/luna/scope-check.json)。
+
+Remaining risks：Luna 未执行 commit/push/deploy 或任何真实 receiver、CMS、数据库操作；本地 receiver 国内-only 限制仍是发布前兼容闸门。Sol 已报告基线 GitHub CI 的 `npm audit --omit=dev` 失败（sanitize-html 与 Vite/launch-editor advisories），本轮未修改依赖或执行 audit fix；新同步提交的 hosted CI 必须由 Sol 后续实际回读，不能以本地 verify 代替。
+
+Handoff：Luna 独立同步前门禁 PASS 返回 Sol，交 Nova Review。
+
+### XYY-20261022-05 — 联系表单字段可见性独立验收
+
+Task ID：`XYY-20261022-05`；Result：**PASS**。
+
+Tests performed：Terra freeze 五文件 SHA-256 逐项比较 exit 0；loopback 独立 probe 使用 `http://127.0.0.1:4321` 覆盖 zh/en × 1440/390 四 context，exit 0、4/4 PASS。验证公司与次联系字段默认可见且唯一、无折叠 optional panel、DOM 顺序位于 service/message 前、required/optional 语义、缺 country 阻止 POST 并聚焦、mock 503 保留字段、mock 200 重置字段与 consent、无横溢；所有非 loopback 请求被拦截，所有 loopback POST 被拦截且仅 `/api/contact` 由 probe mock。四张截图已保存于 `output/contact-visible/xyy-20261022-05/luna/browser-probe/screenshots/`。
+
+Regression coverage：`contact-mobile.spec.ts` 24 passed；`contact-mobile-recovery.spec.ts` 相关缺 country、API 400/503 保留、network failure、visible optional invalid focus 场景 20 passed；`english-acceptance-contact.spec.ts` English local invalid 场景 2 passed。目标文件 Prettier check exit 0，`git diff --check` exit 0，freeze hash compare exit 0。未运行 full verify/build，符合合同范围。
+
+Probe 记录：首次运行仅因开发服务器精确 Vite debug 日志被旧过滤器判为 unexpected console，未出现业务断言、pageerror 或非预期 error；ignored probe 已增加精确白名单后重跑 PASS。最终 probe SHA-256：`a44d92e63e8c515c71757b3ea6e0818a094f6a4c40569f94493d5434842ada9d`。Luna 未修改实现、持久测试或生产环境。
+
+Remaining risks：验证限于本地 loopback、Chromium 与 mock POST；未验证真实外部提交、生产环境、真实设备浏览器或部署产物。完整证据见 [`final-summary.json`](../output/contact-visible/xyy-20261022-05/luna/final-summary.json)。
+
+Handoff：Luna 独立验收 PASS 返回 Sol，供 Nova 最终 Review。
+
+### XYY-20261022-06 — 中文国际电话格式独立验证准备
+
+Task ID：`XYY-20261022-06`；Result：**PREPARED / WAITING_FOR_FREEZE**。已读取合同与当前状态，Terra 尚未冻结，本阶段未运行未冻结源码、未修改实现或持久测试。
+
+已准备独立 loopback 浏览器 probe [`contact-international-browser-probe.mjs`](../output/contact-international/xyy-20261022-06/luna/contact-international-browser-probe.mjs)，SHA-256：`21448ab315390bdcb1859c7173d150fbe170255aebf5929efe3c10de69a72426`。冻结后覆盖 zh/en × 1440/390 四 context：中文电话初始为空且无 `+86`、required、maxlength 40、国际格式 placeholder 与 `aria-describedby` 帮助；国内 138 号码拒绝且聚焦 phone；中文 `+1`/`+44` 原样提交到 mock；英文 phone 为空仍可提交、`+44` 可提交，email/country required 语义保持；公司、邮箱、电话可见且唯一、无折叠区、无横溢；503 保留、200 清空。所有非 loopback 请求及所有 POST 均由 probe 拦截，只有 loopback `/api/contact` 按实时 mode mock。
+
+已准备针对性 contact 单测、最小既有 E2E、目标 Prettier/diff 与 Terra freeze hash 命令，见 [`commands.txt`](../output/contact-international/xyy-20261022-06/luna/commands.txt)；摘要见 [`prep-summary.json`](../output/contact-international/xyy-20261022-06/luna/prep-summary.json)。receiver 本地 schema 仍为国内-only，本轮不访问或修改真实接收端、CMS、数据库，不宣称落库或部署支持。
+
+Handoff：准备完成，返回 Sol，等待 Terra freeze。

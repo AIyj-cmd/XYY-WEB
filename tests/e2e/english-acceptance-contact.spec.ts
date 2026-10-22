@@ -36,8 +36,6 @@ async function fillEnglishEnquiry(page: Page) {
   await page.getByLabel('Your name').fill(enquiry.name)
   await page.getByLabel('Country or region').fill(enquiry.countryOrRegion)
   await emailField(page).fill(enquiry.email)
-  const optional = page.locator('[data-contact-optional-fields]')
-  await optional.locator('summary').click()
   await page.getByLabel('Phone number (optional)').fill(enquiry.phone)
   await requirementsField(page).fill(enquiry.requirements)
   await page.getByRole('checkbox').check()
@@ -181,7 +179,6 @@ test('rejects invalid English fields locally and preserves values', async ({ pag
   await expect(page.locator('#form-result')).toContainText('Please enter your email address.')
   await expect(page.getByLabel('Your name')).toHaveValue(enquiry.name)
   await emailField(page).fill(enquiry.email)
-  await page.locator('[data-contact-optional-fields] summary').click()
   await page.getByLabel('Phone number (optional)').fill('13800138000')
   await submitButton(page).click()
   await expect(page.locator('#form-result')).toContainText(

@@ -73,7 +73,7 @@ test.describe('consultation enquiry protection', () => {
     await page.goto('/contact?need=returns-inspection&region=any#contact-form')
     await page.locator('input[name="name"]').fill('QA 保留输入')
     await page.locator('input[name="countryOrRegion"]').fill('中国')
-    await page.locator('input[name="phone"]').fill('13800138000')
+    await page.locator('input[name="phone"]').fill('+1 (555) 123-4567')
     await page.locator('textarea[name="message"]').fill('原始需求')
     await page.locator('input[name="privacyConsent"]').check()
     await page.locator('#submit-btn').click()
@@ -88,7 +88,7 @@ test.describe('consultation enquiry protection', () => {
     expect(payloads[0]).toMatchObject({
       name: 'QA 保留输入',
       countryOrRegion: '中国',
-      phone: '13800138000',
+      phone: '+1 (555) 123-4567',
       message: '原始需求',
       service: '退货质检',
       privacyConsent: 'on',

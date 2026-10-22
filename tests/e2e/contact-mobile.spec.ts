@@ -4,7 +4,6 @@ import {
   fillOptional,
   fillRequired,
   form,
-  optional,
   expectNoHorizontalOverflow,
 } from './helpers/contact-mobile'
 
@@ -24,12 +23,11 @@ const widths = [360, 390, 430, 1440] as const
 
 for (const [locale, path] of cases) {
   for (const width of widths) {
-    test(`${locale} ${width}px keeps five primary contact fields readable`, async ({ page }) => {
+    test(`${locale} ${width}px keeps all contact fields readable`, async ({ page }) => {
       await page.setViewportSize({ width, height: width >= 1000 ? 900 : 844 })
       await page.goto(path)
       await expect(form(page)).toBeVisible()
-      await expect(optional(page)).not.toHaveAttribute('open', '')
-      await expect.poll(() => eligibleVisibleFields(page)).toBe(5)
+      await expect.poll(() => eligibleVisibleFields(page)).toBe(7)
       await expectNoHorizontalOverflow(page)
       await expect(
         page.locator(
@@ -40,33 +38,27 @@ for (const [locale, path] of cases) {
   }
 }
 
-test('native optional details support keyboard and touch without changing primary layout', async ({
+test('keeps optional contact fields visible before service and requirements on mobile', async ({
   page,
-}, testInfo) => {
+}) => {
   await page.setViewportSize({ width: 390, height: 844 })
   await page.goto('/contact')
-  const summary = optional(page).locator('summary')
-  const documentHeadingY = () =>
-    page.evaluate(() => {
-      const heading = document.querySelector('h1')
-      if (!heading) return null
-      const rect = heading.getBoundingClientRect()
-      return rect.top + window.scrollY
-    })
-  const before = await documentHeadingY()
-  await summary.focus()
-  await summary.press('Enter')
-  await expect(optional(page)).toHaveAttribute('open', '')
   await expect.poll(() => eligibleVisibleFields(page)).toBe(7)
-  await summary.press('Space')
-  await expect(optional(page)).not.toHaveAttribute('open', '')
-  if (testInfo.project.name === 'mobile') {
-    await summary.tap()
-    await expect(optional(page)).toHaveAttribute('open', '')
-  }
+  const fieldOrder = await page
+    .locator(
+      '#contact-form input:not([type="hidden"]):not([type="checkbox"]):visible, #contact-form select:visible, #contact-form textarea:visible'
+    )
+    .evaluateAll((fields) => fields.map((field) => field.getAttribute('name')))
+  expect(fieldOrder).toEqual([
+    'name',
+    'phone',
+    'countryOrRegion',
+    'company',
+    'email',
+    'service',
+    'message',
+  ])
   await expectNoHorizontalOverflow(page)
-  expect(before).not.toBeNull()
-  expect(await documentHeadingY()).toBeCloseTo(before as number, 5)
 })
 
 test('filled optional fields remain in the DOM and service context is SSR-only', async ({
@@ -98,19 +90,15 @@ test('filled optional fields remain in the DOM and service context is SSR-only',
 test.describe('without JavaScript', () => {
   test.use({ javaScriptEnabled: false, viewport: { width: 390, height: 844 } })
   for (const [locale, path] of cases) {
-    test(`${locale} contact remains readable with native details`, async ({ page }) => {
+    test(`${locale} contact remains readable with all fields visible`, async ({ page }) => {
       const target = locale === 'en' ? `${path}?from=%2Fxiefu-yuncang&entry=hero` : path
       await page.goto(target)
-      await expect.poll(() => eligibleVisibleFields(page)).toBe(5)
-      await expect(optional(page)).not.toHaveAttribute('open', '')
+      await expect.poll(() => eligibleVisibleFields(page)).toBe(7)
       if (locale === 'en') {
         await expect(page.locator('[aria-label="Service page context"]')).toContainText(
           'Apparel fulfilment'
         )
       }
-      await optional(page).locator('summary').click()
-      await expect(optional(page)).toHaveAttribute('open', '')
-      await expect.poll(() => eligibleVisibleFields(page)).toBe(7)
       await expectNoHorizontalOverflow(page)
     })
   }

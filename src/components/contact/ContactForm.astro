@@ -99,17 +99,8 @@ const enquiryContext = [
     </div>
 
     <ContactIdentityFields {locale} group="primary" />
+    <ContactIdentityFields {locale} group="optional" />
     <ContactInquiryFields {locale} {preselectedService} />
-    <details class="contact-optional-fields" data-contact-optional-fields>
-      <summary
-        >{
-          english ? 'Add company or phone details (optional)' : '补充公司或备用联系方式（选填）'
-        }</summary
-      >
-      <div class="contact-optional-fields__content">
-        <ContactIdentityFields {locale} group="optional" />
-      </div>
-    </details>
     <ContactPrivacyConsent {locale} />
 
     <button

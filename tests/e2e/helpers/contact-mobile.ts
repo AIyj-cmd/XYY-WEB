@@ -6,7 +6,7 @@ export const contactValues = {
   zh: {
     name: '测试品牌',
     countryOrRegion: '中国',
-    phone: '13800138000',
+    phone: '+1 (555) 123-4567',
     email: 'buyer@example.com',
     message: '想了解鞋服云仓方案',
     company: '测试公司',
@@ -24,19 +24,11 @@ export const contactValues = {
 export const form = (page: Page) => page.locator('#contact-form')
 export const result = (page: Page) => page.locator('#form-result')
 export const submit = (page: Page) => form(page).locator('button[type="submit"]')
-export const optional = (page: Page) => page.locator('[data-contact-optional-fields]')
 
 const field = (
   page: Page,
   id: 'name' | 'countryOrRegion' | 'phone' | 'email' | 'message' | 'company'
 ) => page.locator(`#contact-form #${id}`)
-
-export async function openOptional(page: Page) {
-  const details = optional(page)
-  if (!(await details.evaluate((element) => (element as HTMLDetailsElement).open)))
-    await details.locator('summary').click()
-  await expect(details).toHaveAttribute('open', '')
-}
 
 export async function fillRequired(page: Page, locale: ContactLocale) {
   const values = contactValues[locale]
@@ -51,7 +43,6 @@ export async function fillRequired(page: Page, locale: ContactLocale) {
 
 export async function fillOptional(page: Page, locale: ContactLocale) {
   const values = contactValues[locale]
-  await openOptional(page)
   await field(page, 'company').fill(values.company)
   await field(page, locale === 'zh' ? 'email' : 'phone').fill(
     locale === 'zh' ? values.email : values.phone
@@ -68,7 +59,6 @@ export async function expectPreserved(page: Page, locale: ContactLocale) {
   await expect(field(page, locale === 'zh' ? 'phone' : 'email')).toHaveValue(
     locale === 'zh' ? values.phone : values.email
   )
-  await openOptional(page)
   await expect(field(page, locale === 'zh' ? 'email' : 'phone')).toHaveValue(
     locale === 'zh' ? values.email : values.phone
   )

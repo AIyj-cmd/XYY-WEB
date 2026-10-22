@@ -37,11 +37,6 @@ export function isValidContactEmail(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
 }
 
-export function isValidDomesticContactPhone(phone: string) {
-  const normalized = phone.replace(/\s|-/g, '')
-  return /^1[3-9]\d{9}$|^\d{3,4}-?\d{7,8}$/.test(normalized)
-}
-
 export function isValidInternationalContactPhone(phone: string) {
   const normalized = phone.replace(/[\s()-]/g, '')
   return /^\+[1-9]\d{6,14}$/.test(normalized)
@@ -69,6 +64,9 @@ export function validateContactBody(body: Record<string, unknown>) {
   if (!isWithinContactFieldLength(rawString(body.message), CONTACT_FIELD_MAX_LENGTHS.message)) {
     return { error: '需求描述不能超过1100个字符' }
   }
+  if (!isWithinContactFieldLength(rawPhone, CONTACT_FIELD_MAX_LENGTHS.phone)) {
+    return { error: '国际电话号码长度不能超过40个字符' }
+  }
   if (!name || !message || (!isEnglish && !phone)) {
     return { error: '请填写姓名、电话和需求描述' }
   }
@@ -88,15 +86,14 @@ export function validateContactBody(body: Record<string, unknown>) {
     if (!isWithinContactFieldLength(rawEmail, CONTACT_FIELD_MAX_LENGTHS.email)) {
       return { error: '邮箱长度不能超过120个字符' }
     }
-    if (!isWithinContactFieldLength(rawPhone, CONTACT_FIELD_MAX_LENGTHS.phone)) {
-      return { error: '国际电话号码长度不能超过40个字符' }
-    }
     if (!email || !isValidContactEmail(email)) return { error: '请输入有效的邮箱地址' }
     if (phone && !isValidInternationalContactPhone(phone)) {
-      return { error: '请输入含国家/地区代码的有效国际电话号码' }
+      return { error: '请填写含 + 和国家/地区区号的有效国际电话号码' }
     }
   } else {
-    if (!isValidDomesticContactPhone(phone)) return { error: '请输入有效的手机号或座机号' }
+    if (!isValidInternationalContactPhone(phone)) {
+      return { error: '请填写含 + 和国家/地区区号的有效国际电话号码' }
+    }
     if (email && !isValidContactEmail(email)) return { error: '请输入有效的邮箱地址' }
   }
 
