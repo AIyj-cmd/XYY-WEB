@@ -11,12 +11,15 @@
 
 ## 本地 PageSpeed 优化（2026-10-23）
 
-- `XYY-20261023-03`：LOCAL_READY。按用户“修复这些问题在本地”的授权完成 20 个实现文件及相关记录，Luna 独立 PASS、Nova APPROVED_LOCAL_CANDIDATE、Sol 已验收。基线与当前 HEAD 均为 `33acf4b644b7d4d76d5627c29c73802203710601`；本任务未提交、推送或部署，生产 release 保持上方记录。合同 `docs/plans/xyy-20261023-03-pagespeed-local.md`，证据 `output/pagespeed/xyy-20261023-03/`。
+- `XYY-20261023-03`：已由 Task04 同步 GitHub，应用提交 `a95c9ce6495afd0efd182188b20b471595f49e40`。此前按用户本地修复授权完成 20 个实现文件及相关记录，Luna 独立 PASS、Nova APPROVED_LOCAL_CANDIDATE、Sol 已验收；原本地验收基线为 `33acf4b644b7d4d76d5627c29c73802203710601`。本次 Git 同步没有部署，生产 release 保持上方记录。合同 `docs/plans/xyy-20261023-03-pagespeed-local.md`，证据 `output/pagespeed/xyy-20261023-03/`。
 - 修正咨询标签与流程编号对比度；首页动画按需加载，语言提示缓存尺寸；小 CSS 允许内联但可执行 JS 继续外链，CSP 保持。双端实测首屏 CSS 请求从 7 个降到 4 个，8 处对比度最低 4.9169，无 JS 首屏与滚动/键盘交互正常。仅首屏及鞋服图片新增 6 个压缩变体，体积减少 11.90%–14.30%；16 原图、49 旧生成 URL 和其他 14 图组保持。
 - 内容哈希核验通过的生成图片使用一年 immutable 缓存，普通图片/字体/PDF/HTML/API 原策略保持。新增当前原生服务器 Nginx 本地候选，仅调整三处 HTTP/2 监听和主域/www HSTS 一天至七天；历史 Nginx 模板与安装器未改，不添加 includeSubDomains/preload。七天是分阶段起点，不代表强 HSTS 提示全部消失；后续上线须比对最新配置并验证目标版本。
 - 独立 fresh npm ci（Astro 7.3.3 / Node 24）完整 verify 通过：775 类型文件零错误/警告、156 文件/1140 单测及构建；目标浏览器 95 通过、5 既有条件跳过、零失败，69 项 HTTP 缓存及 13 项隔离 Nginx 1.30.6 检查通过，格式/差异/冻结哈希通过。已修复首轮模块作用域冲突，保留测试缓存路径与 HTTP 探针假设修正的原始失败证据。仅 loopback/dummy 与 Chromium 验证，不宣称生产生效、新 PageSpeed 分数、真实证书或其他浏览器已验收。
 
 ## Git 同步状态（2026-10-23）
+
+- `XYY-20261023-04`：已按用户“提交到github上，然后同步一下git信息”的授权，将 Task03 精确 26 路径普通提交并推送至 `AIyj-cmd/XYY-WEB/main`。应用提交 `a95c9ce6495afd0efd182188b20b471595f49e40`，单父 `33acf4b644b7d4d76d5627c29c73802203710601`，tree `5e3bbc8c4426b9d88b19cd2f3fe080da2a7c1806`。Luna 核对 26 路径及 20 实现冻结无漂移，复用刚完成的 Task03 verify/E2E；Nova 批准普通快进同步。原生 Git 使用本机代理成功，未强推、改 origin/凭据或使用 API 写入。
+- 应用推送后已回读本地 HEAD、origin/main 和 GitHub main 三引用一致、ahead/behind 0/0、工作区干净；[应用 CI](https://github.com/AIyj-cmd/XYY-WEB/actions/runs/39924350771) 当时为 in_progress，不宣称成功。随后仅补录本状态、SOL 日志与 Task03 交付状态；最终文档提交身份和对应 CI 以 Git 引用及 `output/git-sync/xyy-20261023-04/sol/final-result.json` 实际回读为准。本轮未部署或操作服务器、CMS、数据库、接收端，HSTS/HTTP2 仍为未部署候选。
 
 - `XYY-20261023-02`：当前 Astro 安全审计修复已在本地完成并独立验证。`package.json` 精确固定 Astro `7.3.3`，lock 同步其必要传递依赖；adapter `11.1.4`、Vite `8.1.6`、sanitize-html `2.18.1` 保持，CI 审计与测试门禁未改。Luna 新隔离环境 fresh npm ci、生产 audit（0 漏洞）、完整 verify（155 文件/1116 单测及构建）、格式/diff 和 142 项目标浏览器检查全部通过；本地 Node24，Node22 由 GitHub hosted CI 验证。依赖冻结见 `output/ci-fix/xyy-20261023-02/terra/freeze.json`，本次验证见 `luna/run-rerun-envfix/final-summary.json`；Git 三引用、最终 CI 运行和本任务验收状态以 `output/ci-fix/xyy-20261023-02/sol/final-result.json` 实际回读为准。生产 release 仍 `20261022T113304Z-e42b0aa`，本任务未部署或操作服务器、CMS、数据库、接收服务与基础设施。
 
