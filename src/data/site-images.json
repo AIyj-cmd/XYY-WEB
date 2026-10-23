@@ -37,25 +37,25 @@
       "originalSha256": "04063588ce4df4ca38b1c1615dc781b90fdbb9f2c82561a5655e2f32ec6da952",
       "variants": [
         {
-          "src": "/media/seo-v1/index-w768-885e5d667da3.webp",
+          "src": "/media/seo-v1/index-w768-aa9c73e0865f.webp",
           "width": 768,
           "height": 432,
-          "bytes": 49430,
-          "sha256": "885e5d667da343d0a831051860e564d75f535bf9b3ba52eeb7e3d99a5df63a6c"
+          "bytes": 42592,
+          "sha256": "aa9c73e0865f4dd6ddfe93f90330c3f86fda0d05e4179626ee6f95b8aaa06cb3"
         },
         {
-          "src": "/media/seo-v1/index-w1280-fedea7e180c0.webp",
+          "src": "/media/seo-v1/index-w1280-d71b32c3ebc9.webp",
           "width": 1280,
           "height": 720,
-          "bytes": 100498,
-          "sha256": "fedea7e180c0f47355e0c24a58c5fc7f95ca569d3b24bc8323ae2c10889a66bf"
+          "bytes": 86562,
+          "sha256": "d71b32c3ebc9df8e90e22efaf23b96f2d110e5f52fa7bb0ee2f5b68ff9565ac4"
         },
         {
-          "src": "/media/seo-v1/index-w1920-b11fcb57cb3d.webp",
+          "src": "/media/seo-v1/index-w1920-7ee1caebafda.webp",
           "width": 1920,
           "height": 1080,
-          "bytes": 186032,
-          "sha256": "b11fcb57cb3d88459e7d9293d8fca770d055bfb411af490bbededea041e763ae"
+          "bytes": 163044,
+          "sha256": "7ee1caebafda7bd7a049f2404511b23ef2d93425584fd4049d260b284aa6a039"
         }
       ]
     },
@@ -66,25 +66,25 @@
       "originalSha256": "eae2f5d8e78308269168a1ae60c5118f063e5e69b715c1bebef76acd131b00c6",
       "variants": [
         {
-          "src": "/media/seo-v1/w-apparel-home-w640-29ddcd26162c.webp",
+          "src": "/media/seo-v1/w-apparel-home-w640-2279b36b79ea.webp",
           "width": 640,
           "height": 480,
-          "bytes": 44132,
-          "sha256": "29ddcd26162ceaf47fb9d68f91c72723ad26ca0768064b6d0cb0aee885fff5ca"
+          "bytes": 37820,
+          "sha256": "2279b36b79ea3a18eca6bcd2acb77f55537da03fe2a2d653d0ea35932440e1d0"
         },
         {
-          "src": "/media/seo-v1/w-apparel-home-w960-b2c84ac79793.webp",
+          "src": "/media/seo-v1/w-apparel-home-w960-d16778ac0671.webp",
           "width": 960,
           "height": 720,
-          "bytes": 81752,
-          "sha256": "b2c84ac797933266eac3a302842d27aaf432ca6414d325a9932e97426b3d1957"
+          "bytes": 70126,
+          "sha256": "d16778ac0671b4d1fe370d08744cc6a6d5edc86a4c633725a9c36500ff3d47a7"
         },
         {
-          "src": "/media/seo-v1/w-apparel-home-w1448-249e9d27d8a8.webp",
+          "src": "/media/seo-v1/w-apparel-home-w1448-7979e7968c7b.webp",
           "width": 1448,
           "height": 1086,
-          "bytes": 168310,
-          "sha256": "249e9d27d8a868734043e233129bbc1266815ba338c56c7eb1ac03d3ec395ed8"
+          "bytes": 148274,
+          "sha256": "7979e7968c7bac55dd51d691c959f0bc420246f4a5a5a48ab9f48f22d1ce37cd"
         }
       ]
     },

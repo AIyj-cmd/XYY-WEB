@@ -11,8 +11,8 @@ const checkOnly = process.argv.includes('--check')
 const hash = (data) => createHash('sha256').update(data).digest('hex')
 const assets = [
   { source: '/logo.png', widths: [192, 384, 768], lossless: true },
-  { source: '/index.webp', widths: [768, 1280, 1920], quality: 72 },
-  { source: '/w-apparel-home.webp', widths: [640, 960, 1448], quality: 72 },
+  { source: '/index.webp', widths: [768, 1280, 1920], quality: 60 },
+  { source: '/w-apparel-home.webp', widths: [640, 960, 1448], quality: 60 },
   { source: '/w-home-return-inspection.webp', widths: [640, 960, 1448], quality: 72 },
   { source: '/w-fulfill-system-dashboard.png', widths: [640, 979], quality: 90 },
   ...[

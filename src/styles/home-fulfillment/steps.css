@@ -28,7 +28,7 @@
   border: 2px solid #e85d26;
   border-radius: 50%;
   background: #fff;
-  color: #e85d26;
+  color: #b83e12;
   font-size: 0.875rem;
   font-weight: 900;
   letter-spacing: 0.08em;
@@ -56,7 +56,7 @@
 }
 
 .fulfillment-step:hover .fulfillment-num {
-  background: #e85d26;
+  background: #b83e12;
   color: #fff;
   box-shadow:
     0 0 0 6px rgba(232, 93, 38, 0.15),

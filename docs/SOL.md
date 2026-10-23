@@ -3284,3 +3284,10 @@ Limits：本轮限Chrome152模拟视口及离线/helper验证，空内容schema�
 - 实现与独立验证完成：Terra 精确固定 Astro7.3.3，两文件冻结 `81aec1f6...7526`；锁变化均来自 Astro 必要依赖，adapter/Vite/sanitize 保持。Luna 正式隔离 rerun 的 fresh npm ci/native 资产校验、production audit0、verify155文件1116测试及构建、format/diff 全部通过；contact132、news图片2、English news8共142项浏览器检查通过，源码零漂移。首轮误复制 .env.production 后在 verify 前中止，未在工具输出展示其内容且旧子进程已终止；排除全部 .env* 后新目录完整复测，失败证据保留。实际本地Node24，Node22须由随后hosted CI确认。最终Git/CI实际状态与验收见本任务 `sol/final-result.json`；生产release仍e42，无远程生产操作。
 
 - 最终审查定位到隔离副本复制范围过宽：Luna 已在确认无活跃进程后删除两轮 private-build 与任务临时目录，保留外层测试/失败证据，并将 ignored harness 改为仅复制 git 跟踪的普通源码，排除环境及私有配置，独立无敏感值 fixture proof 通过；Terra 两个安装副本已移入系统回收站，任务目录只保留非敏感外层证据。两 package 冻结保持，此环境清理不改变应用与已完成测试结果。
+
+### XYY-20261023-03 — PageSpeed 细节优化与 HSTS 本地验收
+
+- 用户明确要求在本地修复，HIGH，合同 `docs/plans/xyy-20261023-03-pagespeed-local.md`。起始 main 干净，HEAD `33acf4b644b7d4d76d5627c29c73802203710601` 保持；仅 20 个实现路径与必要记录，无提交/推送/部署/远程或真实 CMS、数据库、询盘操作。当前生产 release 不变。
+- Terra 分别实现页面与传输：对比度、两组图片压缩、动画按需加载、语言提示尺寸缓存、小 CSS 内联、内容哈希核验的图片长期缓存、新原生 Nginx HTTP/2 与七天 HSTS 候选。旧 Nginx 模板和安装器受保护；候选与保存快照去注释比对仅三处 listen、两处 max-age 变化，无子域覆盖/预加载。
+- Luna fresh Astro 7.3.3 / Node24 完整 verify PASS（775 类型文件零错/零警告、156 文件/1140 单测及构建），浏览器 95 PASS/5 既有条件 skip/0 FAIL；双端 CSS 7→4、最低对比度 4.9169、无 JS/减少动画/滚动键盘/语言提示正常，69 项真实 HTTP 缓存和 13 项隔离 Nginx 检查通过。R1 模块作用域冲突已修；R2 测试缓存路径及 HTTP 探针假设均保留失败与修正证据，不冒充首次全绿。
+- Nova APPROVED_LOCAL_CANDIDATE。Sol 回读汇总、原日志与冻结，20 实现/6 保护文件/49 旧图均无漂移，视读桌面手机首页、手机实际 CTA viewport 及压缩图片。六变体减少 11.90%–14.30%，原图与其他图片不变；AC 达成，验收 LOCAL_READY。证据 `output/pagespeed/xyy-20261023-03/{sol,luna,nova}/`。不宣称新的 Google 分数或线上生效；HSTS 七天仍可能保留强策略提示，目标服务器版本/证书与后续阶段需部署时验证。

@@ -17,6 +17,9 @@ const publicSite = resolvePublicSiteConfig({
   DEPLOY_ENVIRONMENT: process.env.DEPLOY_ENVIRONMENT ?? fileEnv.DEPLOY_ENVIRONMENT,
 })
 
+export const shouldInlineStylesheet = (filePath, content) =>
+  filePath.endsWith('.css') && content.byteLength <= 8 * 1024
+
 export default defineConfig({
   output: 'server',
   adapter: node({ mode: 'middleware' }),
@@ -44,9 +47,9 @@ export default defineConfig({
       'import.meta.env.PUBLIC_SITE_URL': JSON.stringify(publicSite.origin),
     },
     build: {
-      // Astro emits processed scripts below this limit inline. Keep executable code external so
-      // the runtime CSP can safely allow only same-origin scripts.
-      assetsInlineLimit: 0,
+      // Inline small stylesheets to remove blocking requests. Executable scripts stay external
+      // so the existing same-origin script CSP remains unchanged.
+      assetsInlineLimit: shouldInlineStylesheet,
     },
   },
 })

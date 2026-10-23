@@ -8205,3 +8205,10 @@ Terra freeze SHA `81aec1f691c670195e17221ab101d355a0d2b09f3cae110eb6e1c7357dae75
 Remaining risks：Luna 本地运行时为 Node24，未宣称 Node22 本地通过；需 hosted Node22 CI 完成。Luna 未执行 Git push、hosted CI、生产/CMS/receiver/database 写入或真实 POST；本结果是独立本地验证 PASS。
 
 Post-review cleanup：Nova 发现两轮已结束 private build 仍保留隐藏目录；确认无活跃本任务进程后，已删除 Luna 自建的两轮 `private-build` 与对应临时 npm/cache 目录，保留外层原始日志、manifest、source compare 和测试结果。清理后 Luna 目录无 `.env*` 文件、`.aws/.codex/.claude` 目录或 private-build。harness 已从全目录 `copytree` 改为仅复制 `git ls-files` 的普通 regular files，并排除 `.env*` 与私有目录；无 secret 临时 fixture proof exit 0，`privateContentsRead=false`。证据：[`cleanup.json`](../output/ci-fix/xyy-20261023-02/luna/cleanup.json)、[`copy-fixture-proof.json`](../output/ci-fix/xyy-20261023-02/luna/copy-fixture-proof.json)、[`copy-tracked-source-task02.py`](../output/ci-fix/xyy-20261023-02/luna/copy-tracked-source-task02.py)。
+
+### XYY-20261023-03 — PageSpeed 本地独立验证
+
+- PASS。仅复制获准跟踪普通源码及新增候选，排除真实环境和私有文件；隔离 fresh npm ci 解析 Astro7.3.3 / Node24.18.0 / Playwright1.61.1，锁未改变。20 候选冻结与1743隔离源码最终哈希保持。
+- 完整 verify exit0：775类型文件零错/零警告/6既有hints，156文件1140单测及build、939维护预算、资源/cache检查通过。format/diff通过；9个目标E2E文件95通过、5既有mobile条件跳过、0失败，新增motion双端10项全通过。无JS首屏标题和CTA保持，CSS请求7→4，0内联执行脚本，CSP不变，8处对比度最低4.9169，双端滚动viewport无横溢。
+- 69项HTTP缓存检查与13项隔离Nginx1.30.6检查通过；16原图、49旧hashURL、14其他图组保持，六新变体减小11.90%–14.30%。测试仅dummy/loopback，网络guard无外连拦截事件，测试Web进程已停止。Nginx使用本地自签证书与mock上游，不能替代实际服务器TLS/版本验证。
+- 失败保留：R1真实模块变量冲突由Terra修复；R2为隔离根临时缓存被ESLint扫描，仅修harness路径；HTTP最初healthz/contact响应假设经HEAD基线对照纠正，条件304用原生HTTP避免Node fetch注入no-cache。没有改lint规则、应用断言或业务实现。完整证据 `output/pagespeed/xyy-20261023-03/luna/final-summary.json`；本条由Sol按独立交接补录。

@@ -22,7 +22,7 @@ section.conversion-cta {
 }
 .conversion-cta__eyebrow {
   margin: 0 0 0.9rem;
-  color: var(--conversion-cta-accent);
+  color: #b83e12;
   font:
     800 0.78rem/1.2 ui-monospace,
     SFMono-Regular,

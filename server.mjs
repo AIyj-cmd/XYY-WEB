@@ -15,6 +15,7 @@ import {
   resolveRequestProtocol,
 } from './server/request-policy.mjs'
 import { getRuntimeConfig } from './server/runtime-config.mjs'
+import { createStaticAssetCacheHeaders } from './server/static-asset-cache.mjs'
 import { assertBuildPublicSiteOrigin, PUBLIC_SITE_ORIGIN_MANIFEST } from './config/public-site.mjs'
 import {
   ForwardedAddressError,
@@ -82,20 +83,11 @@ app.get('/privacy', (_req, res) => res.sendFile(join(clientDir, 'privacy/index.h
 // Gzip/deflate/br compress all responses
 app.use(compression({ threshold: 512 }))
 
-// Static assets with immutable long cache (content-hashed by Astro build)
+// Long cache only for Astro assets and verified content-hashed generated images.
 app.use(
   express.static(clientDir, {
     redirect: false,
-    setHeaders(res, filePath) {
-      if (/_astro\//.test(filePath)) {
-        // Hashed filenames — cache forever
-        res.setHeader('Cache-Control', 'public, max-age=31536000, immutable')
-      } else if (/\.(woff2?|ttf|otf|eot)$/.test(filePath)) {
-        res.setHeader('Cache-Control', 'public, max-age=31536000')
-      } else if (/\.(png|jpg|jpeg|webp|avif|svg|gif|ico|mp4|webm)$/.test(filePath)) {
-        res.setHeader('Cache-Control', 'public, max-age=604800')
-      }
-    },
+    setHeaders: createStaticAssetCacheHeaders(clientDir),
   })
 )
 
