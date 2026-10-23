@@ -120,9 +120,11 @@ describe('Directus structured page content', () => {
           },
         ]
       if (collection === 'about_content')
-        return { overview: '公司介绍', hero_description: '首屏介绍' }
+        return { id: 1, status: 'published', overview: '公司介绍', hero_description: '首屏介绍' }
       if (collection === 'site_settings')
         return {
+          id: 1,
+          status: 'published',
           phone: '400-0000',
           headquarters_label: '总部',
           headquarters_address: '地址',

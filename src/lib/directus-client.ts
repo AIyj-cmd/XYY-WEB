@@ -95,6 +95,17 @@ function isDirectusRecord(value: unknown): value is Record<string, unknown> {
   )
 }
 
+function isEmptySingletonSentinel(value: Record<string, unknown>) {
+  if (value.id !== null) return false
+  return Object.entries(value).every(
+    ([field, fieldValue]) =>
+      field === 'id' ||
+      fieldValue === null ||
+      fieldValue === undefined ||
+      (field === 'key' && fieldValue === 'main')
+  )
+}
+
 function buildItemsUrl(collection: DirectusCollection, query: Record<string, unknown>) {
   const url = new URL(`${getDirectusApiUrl()}/items/${String(collection)}`)
   const params = queryToParams(query as Parameters<typeof queryToParams>[0])
@@ -186,6 +197,7 @@ export async function requestSingleton<T>(
   const data = Array.isArray(result) ? (result[0] ?? null) : result
   if (data === null) return null
   if (!isDirectusRecord(data)) throw invalidDirectusData(collection, operation, 'invalid_data')
+  if (isEmptySingletonSentinel(data)) return null
   return data as T
 }
 

@@ -1,11 +1,15 @@
 import { describe, expect, it, vi } from 'vitest'
 
+import { CMS_SCHEMA_VERSION, CMS_SCHEMA_VERSION_STATUS } from '../../config/cms-contract.mjs'
 import { ENGLISH_NEWS_COLLECTION_DEFINITION } from '../../scripts/data/english-news-collection-definition.mjs'
 import {
   applyEnglishNewsSeparationPlan,
   buildEnglishNewsSeparationPlan,
 } from '../../scripts/lib/english-news-separation-migration.mjs'
-import { planEnglishNewsSchema } from '../../scripts/lib/english-news-separation-schema.mjs'
+import {
+  planEnglishNewsNavigation,
+  planEnglishNewsSchema,
+} from '../../scripts/lib/english-news-separation-schema.mjs'
 
 const legacy = {
   id: 9,
@@ -77,6 +81,11 @@ const snapshot = (overrides = {}) => ({
 })
 
 describe('English news separation contract', () => {
+  it('records the verified contract at the approved English-news schema version', () => {
+    expect(CMS_SCHEMA_VERSION).toBe('2026-10-english-news-separation')
+    expect(CMS_SCHEMA_VERSION_STATUS).toBe('verified')
+  })
+
   it.each(['<p>&#8203;</p>', '<p>\u200B</p>', '<p>&shy;</p>'])(
     'fails closed for sanitized-invisible legacy content %s',
     async (content_en) => {
@@ -152,5 +161,34 @@ describe('English news separation contract', () => {
 
     expect(schema.issues).toEqual([])
     expect(schema.schema).toMatchObject({ collectionMeta: null, fields: [], relations: [] })
+  })
+
+  it('inserts English news after news without copying sibling metadata', () => {
+    const menu = ['faq_pages', 'faqs', 'homepage_content', 'news', 'service_pages', 'services']
+    const navigation = planEnglishNewsNavigation([
+      ...menu.map((collection) => ({
+        collection,
+        meta: { group: 'website_content', icon: collection, sort: null },
+      })),
+      {
+        collection: 'english_news',
+        meta: { group: 'website_content', hidden: true, icon: 'translate', sort: null },
+      },
+    ])
+
+    expect(navigation).toEqual({
+      issues: [],
+      updates: [
+        ...menu.slice(0, 4).map((collection, index) => ({
+          collection,
+          meta: { group: 'website_content', sort: index + 1 },
+        })),
+        { collection: 'english_news', meta: { group: 'website_content', sort: 5, hidden: false } },
+        ...menu.slice(4).map((collection, index) => ({
+          collection,
+          meta: { group: 'website_content', sort: index + 6 },
+        })),
+      ],
+    })
   })
 })

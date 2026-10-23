@@ -74,11 +74,15 @@ describe('homepage CMS singleton status contract', () => {
     expect(
       new URL(String(fetchMock.mock.calls[0]?.[0])).searchParams.get('fields')?.split(',')
     ).toEqual(expect.arrayContaining(['id', 'status', 'stats']))
+    expect(new URL(String(fetchMock.mock.calls[0]?.[0])).searchParams.get('filter')).toBe(
+      JSON.stringify({ status: { _eq: 'published' } })
+    )
   })
 
-  it('keeps draft and successful empty singleton responses empty without falling back', async () => {
+  it('keeps draft, archived, and successful empty singleton responses empty without falling back', async () => {
     for (const record of [
       { ...homepageRecord, status: 'draft' },
+      { ...homepageRecord, status: 'archived' },
       { ...homepageRecord, stats: [] },
       null,
     ]) {
@@ -88,7 +92,6 @@ describe('homepage CMS singleton status contract', () => {
   })
 
   it.each([
-    ['archived', { ...homepageRecord, status: 'archived' }],
     ['missing', { id: 1, key: 'home', stats: homepageRecord.stats }],
     ['null', { ...homepageRecord, status: null }],
     ['unknown', { ...homepageRecord, status: 'review' }],

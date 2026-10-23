@@ -1,6 +1,6 @@
-// The English-news separation contract is pending an explicitly authorized release gate.
+// The authorized schema and private Renderer read-policy verification passed for this contract.
 export const CMS_SCHEMA_VERSION = '2026-10-english-news-separation'
-export const CMS_SCHEMA_VERSION_STATUS = 'pending_release_gate'
+export const CMS_SCHEMA_VERSION_STATUS = 'verified'
 
 const policies = {
   homepage_stats: { lifecycle: 'legacy', identity: [], seedPolicy: 'migration_only' },

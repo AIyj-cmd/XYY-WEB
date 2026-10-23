@@ -3231,3 +3231,45 @@ Limits：本轮限Chrome152模拟视口及离线/helper验证，空内容schema�
 
 - 应用Git同步完成：精确stage23路径、17非文档哈希/secret/产物/diff guard PASS，普通UTC单父提交 `d369b4e23d77adb19785dd2b1dd3c164e00bdd70`。脚本dry-run exact23，创建tree50b7a24bbeecf2c037f11f43a165c6da63c44ed0和与本地精确同SHA commit；GitHub连接器expected_sha=145581c、force=false快进唯一main，2026-10-22T16:22:09.259638+08:00 回读本地HEAD/origin/main/GitHubmain一致、0/0、工作区干净。仅据实更新tracking ref，没有改origin/凭据、force或绕过保护。
 - 此后仅DEV_STATE、SOL、本合同三文档独立普通提交，同一已审exactobject/CAS/force=false机制同步；最终文档SHA和hostedCI以Git引用及sol/final-result.json实际回读为准。只复核docdiff/格式和17非doc冻结，不重复业务测试。Task04/05/06原未提交/推送记录为此前验收时点，当前已应用同步；没有部署，接收兼容、既有依赖audit、CMS/生产gate不变，不把Git同步或本地verify当作productionready。
+
+
+### XYY-20261022-08 — 新ECS源码同步与授权发布准备
+
+- 用户授权连接准确新ECS更新GitHub最新代码。main起始d498d98且干净，远程实际current仍20261020T102057Z-7d7cdab，web/Directus/Nginx active，无现有源码Git仓库。HIGH合同output/release/xyy-20261022-08/task.json。
+- Luna审source-stage安全父目录/拒绝symlink四模拟PASS，Nova APPROVED_FOR_SOURCE_STAGE_ONLY绑定c8d5c624脚本；Sol执行精确public main shallow clone至独立source-checkouts目录exit0。16:54 CST实际Github/stage SHA一致、clean；baseline/postflight配置hash/mode/owner、3服务PID/状态、current/version/publicenv/releases逐项一致，Luna独立后验PASS_SOURCE_SYNC_ONLY_WITH_RUNTIME_BLOCKED。源码到服务器不等同新表单生产生效，未重启或新建release。
+- 最新GitHub CI39747406443在production dependency audit失败，1moderate/1high；本次manifest实测exit1精确pending_release_gate。contenttoken metadata403不证明缺集合；获新授权后admin仅GET元数据才确认english_news不存在、旧6fields存在，Renderer唯一policy明确。DNS-only确认现receiver域名指向旧IP后，用户明确该域名是有效线索接收服务不应禁止；保留xs功能核验例外，旧网站/无关旧主机操作仍不恢复。未真实POST或healthz。
+- 用户随后明确授权依赖修复、新ECS英文CMS集合迁移、专用读取权限同步和门禁后上线；同ID继续。独立本地candidate由Terra保留native九路径并最小修依赖；Sol仅先准备限定字段的真实CMS dryrun、备份和回读，待Nova精确preapply批准后才写。必要菜单scope仅website_content原六兄弟sort和新增English位置，不改变其他meta/内容/schema/权限；该步骤是Sol对既有English导航目标和本次迁移授权的范围判断，需独立Review，不扩张成通用CMS管理授权。当前仍未发布，也未把未运行verify:release说为通过。
+
+- 获授权后的 receiver 功能只读核验：xs 域名 Nginx 指向 localhost3302/active PID795，对应 compiled website-leads.js SHA839a0514 与既有获审 b0c82 热修复精确一致；从实际模块仅抽取纯 Zod，7/7 国际电话/邮箱/备注边界测试通过，不导入整条业务路由或数据库。新ECS网站与活动接收进程的 token 以临时随机challenge HMAC仅内存比对相等，不持久化/输出凭据或摘要。未HTTP提交、通知或数据库操作。Nova接受为本次no-POST兼容证据，不宣称真实保存。
+- Terra候选保留native九路径并修 sanitize-html2.18.1/Vite8.1.6，14路径冻结；Luna独立实际npm audit --omit=dev为0漏洞、迁移2文件21测试、762文件/16依赖原样运行包等值。CMSstatus仍pending。生产artifact1043旧项全部未改，额外既有百度32字节页与main精确一致；新基线采用真实1044项并保留该页，未删除或“修复”既有文件。
+- 真实CMS仅1条news且无英文材料；root0700目录/0600 before.json已在新ECS备份，SHA b6c660ec...7f7eb8。运行包stage R2因ops父目录root0750不可由上传用户遍历而scp255，空incoming和旧current保留；未改既有权限，R3仅换dataxyy根新incoming路径，经Luna/Nova重审后成功精确传762文件到root0700ops目录，无CMS写。
+- R3 preview原CLI完成真实dryrun无issues，但Sol外层按旧输出读取navigation.sort导致KeyError，旧stdout/exit/stderr和原脚本均保留。真实payload为navigation.meta.sort；进一步核对备份发现faqs.hidden=true，原planner正确仅更新五可见兄弟及English共6项，隐藏faqs完全保留。合同和R4外层guard据此收敛，实际计划hash eccccbb64ecbafd3625f0cd64a8c09aa79f03a5fc1350288e6cf4dbef2e20b4e；待Luna/Nova复核，仅新R4证据名，不覆盖/自动重试。当前仍零CMS写/无新release，完整verify:release尚未运行。
+
+- R4已获Nova APPROVED_FOR_R4_READONLY_PREVIEW_AND_EXACT_CMS_PLAN_APPLY：实际preview exit0/cmsWrites=false/canonicalSHA eccccbb6...e20b4e，严格相同计划和CAS后执行apply。separation退出0（applied:0为英文记录数）；随后专用read权限POST返回403 custom_permission_rules_enabled restricted，立刻停止，未自动重试/清理/回滚。Luna独立frozen verify exit1，已通过零schema/nav/legacy剩余动作、源值/原meta/hiddenfaqs/原14权限保持，失败点恰为新增权限0而非预期1；后续Renderer读取/CRUD断言未执行，不宣称PASS。readonly实际runtime Directus12.5.0、@directus/api40.0.0、原PID206113，配置无LICENSE_KEY/TOKEN；官方12发行说明明确自定义权限为许可功能。Web未切换、完整verify:release未运行，状态gate保持pending；Terra仅诊断合法最小方案，Luna准备隔离完整验收harness，禁止以取消限制/改许可证/换数据库绕过真实问题。证据 sol/cms-preview-r4.json、cms-apply-r4-child-logs.json、cms-runtime-license-readonly.json、luna/cms-verify-r4-summary.json。
+
+- 用户已明确答复“采用服务器私有只读方案，继续上线”：批准现有私有Renderer policy新增english_news/read平铺权限（fields *、permissions {}、validation/presets null），接受持私有token可读草稿，匿名权限/写权限不变，网站仍严格过滤公开内容。此为对原published-only计划的准确用户授权变更；R5仅权限补齐，迁移不得重跑，待独立localtest/Review后执行。
+
+- R5已执行并独立回读：Luna actual-main mock/CAS漂移0POST等本地PASS，Nova先批准readonlypreview，再审真实plan c971698563615b39e113cbcd310fc30976b75bf579778a5a277069731ee0b4a9/snapshot ad40ff37...dae7dd1，精确批准一次apply。Sol frozenapply exit0，permissionPosts1无重试；Luna frozenreadonlyverify exit0，原14权限逐条保持、唯一新增exactflatEnglishread、Renderer空读成功/无CRUDshare/匿名拒绝，源schema/nav/legacy/hiddenfaqs保持。用户已接受私有token可读未发布记录，公开站仍依赖现有双重过滤；后续完整公开端E2E与bundle检查不可豁免。Terra接真实证据后仅更新config verified/直接测试与15路径冻结，Luna接完整verify:release；当前未新建或切换release。
+
+- 15路径源码最终冻结 d0933755...411200：真实CMS验收后config status verified/直接契约断言；首页archived→空而非500，与其他singleton一致，unknown原有invalid_data保持。Nova最初公开暴露推断经actualsource复读撤回；此为一致性修正而非漏洞修复。两定向文件14测试/格式diff PASS，native9中7路径精确保持、directus-queries与homepage-cms-contract为两处准确intentional diff。Luna已启动fresh完整verify:release。另Nova指出上传区TOCTOU实际问题，Terra在独立outputops补受信同字节launcher/root0700保护stage/SSHhelper单次读取，绝不混入源码冻结或绕过最终ops/制品审阅。
+
+- 完整门禁R1未通过：155文件1116单测及构建已通过，但mobile content-visibility四例实际访问helper默认4399而非本轮4608，trace为ERR_CONNECTION_REFUSED；是harness缺PLAYWRIGHT_BASE_URL，非页面断言放宽。Luna按Sol明确恢复指令仅终止本轮子进程，R1日志/trace保留；R2只有端口bind预检失败（无listener时可能TIME_WAIT），未执行fullsuite。R3用新目录及4638/4641/4642，全显式PLAYWRIGHT_BASE_URL和LUNA_EVIDENCE_DIR，source15hash不变，已启动完整fresh命令；不将R1局部通过冒充门禁PASS。Builder仅改实际R3证据路径，最终opsfreeze df3e26c6...283a32，旧freeze链/metadata修正均保留，等待R3与最终Review。
+
+- 补充完整失败集与R4环境恢复：R1完整rg实际为桌面content-visibility4、正文图1、手机content-visibility4共9失败，先前仅列手机四例不完整，不能宣称桌面全绿。R3正文图fixture把六个src写死4399，但自定义server/site origin为4638，浏览器trace仍请求4399而非proxy；应用正确未把未知origin当可信CMS，未改生产origin判定或放宽断言。默认4399下capacity包装定向news-body-images四例全部PASS（六图解码、草稿/未来404且不请求上游）；直接target首试被capacity measurement guard拒绝，保留证据。R3仅到413后按明确恢复指令终止，定向诊断期间ignored dist已重建，不作有效fullgate。R4现以标准4399/4401/4402、显式BASE_URL/EVIDENCE和同15冻结完整fresh重跑，禁止并发rebuild；发布仍待真实完整PASS。
+
+- R4最终完整门禁PASS：155文件/1116单测，421浏览器PASS、17既有条件skip、0FAIL，formal6/6和最终build通过；补独立全量format:check exit0，15路径/1739源文件零漂移，807前端/HTML文件token扫描0，network guard无外部事件，audit0漏洞。Nova批准精确本地普通合并提交及制品构建；Sol提交e42b0aadacd9b197d4004f4ced332050ec6d7dc5（双父d498/7d），本地release/xyy-20261022-08分支保留，clean且未push。正式制品20261022T113304Z-e42b0aa、artifact SHA6b2ec099...d3f65a，1053inventory/115changed/82旧构建删除项/Baidu保持，Nova精确制品与一次upload→protected deploy批准。
+
+- 上传exit0、uploadedOnly=true/deployed=false；随后唯一部署尝试exit1，fresh npm ci的preinstall缺少容量基线而明确拒绝，尚未canary/switch。原失败日志/已准备release/backup/root保护stage均保留，无自动重试或清理。Sol实际只读确认current/version仍旧7d，Web188804、xyy-directus206113、Nginx60141的状态与启动时间不变，全部baseline配置hash/mode/owner及旧releases保持，已准备1053文件inventory全部一致。首诊断误查directus.service的inactive仅是错误名称，已由真实xyy-directus回读纠正。Terra仅准备同Task最小recovery-r2：在原已审release上用现有capacity-baseline脚本真实监测依赖安装，独立新R2证据，待Luna/Nova闸门通过后才可另行执行恢复；候选源码及R4证据保持。
+
+- Recovery R2首轮独立测试FAIL：validate缺prepared release owner/group/mode明确校验；Luna本地tamper fixture误用hardlink污染ignored terra/ops/deploy.py，原测试/失败日志保留，不作为PASS。Sol仅只读回取远程root保护原runner，SHA711f7750...963fc准确，保存sol/recovered-original-deploy.py；远程文件未变。Terra受派保存污染版后恢复原bytes并增加root:9880750及父目录安全守卫，之后Luna须用独立临时copy复测实际入口，禁止hardlink到真实实现/证据。候选1739源码/R4结果及原线上状态不因此改变，恢复仍未执行。
+
+- Recovery R2最终独立复测PASS（9合同、actual-main成功与current漂移/rollbackrestart/readiness/config/nonWeb等FAILED证据、caller精确bytes/O_EXCL/no-retry/-O）。Nova recovery-r2-rereview明确批准freeze aab47a4a...59935、recovery dde908f7...0ba93、caller80c6d519...196d8b的一次精确恢复；Sol同bytes bootstrap执行exit0，无重试。实际20:14:46 CST切换release20261022T113304Z-e42b0aa，Web217503 active；Directus206113/Nginx60141启动时间与配置hash/mode/owner保持，1053inventory全部匹配、全部旧release保留、node_modules独立普通目录，真实sanitize-html2.18.1/Vite8.1.6。容量监测记录峰值205496320bytes/13802inodes，原失败log保留；现有私有English GET200且0记录。证据sol/production-recovery-r2.*、post-recovery-runtime.json。Luna已接上线后独立只读双端验收，最终Review尚待实际结果，不提前宣称整体验收PASS。
+
+- 最终验收完成：Luna公网只读rerun2 exit0，12主要中英路由200、Baidu200/32B、中英1440/390四联系页country必填/phone默认空及国际号有效/公司邮箱展示在需求前/无横溢，中文morning-star-phase-2六图全部解码，English news200且真实0卡片；无真实POST/外部请求/console或page errors。首probe误用/en/product（实际/en/services），第二probe把company optional断言写反（快照已false），仅探针修正、旧证据保留，不计应用故障或放宽需求。Sol亲看四张最终联系页截图；Nova final-production-acceptance-review APPROVED，Sol验收AC达成。公网主域/www解析8.138、version精确e42，真实运行及配置保存证据完整。最终结果sol/final-result.json；本次发布分支仍仅本地未push、main/origin d498 ahead/behind0/0、主工作区仅五状态日志待提交。保留用户已批准私有token可读英文草稿的权衡，无真实询盘通知/落库端到端验证，不将hosted CI称通过。文档diff检查通过，源码未变不重复已通过R4。
+
+
+### XYY-20261023-01 — 同步已上线修复到GitHub
+
+- 用户明确要求上传本轮修复；授权目标AIyj-cmd/XYY-WEB/main。基线main/origin/main/GitHub均d498，主工作区仅Task08五份状态日志未提交。Scope为精确复制已部署e42b0aa的15文件字节，保留五日志并补同步状态，独立fresh verify/格式及Nova审阅后生成main单父常规提交并快进推送；不将11个未推native历史提交一起发布。若普通Git传输失败，仅在审阅通过后用精确Git Database API创建相同tree/commit并force=false/expected旧SHA更新main。排除生产操作、CMS/DB/receiver、凭据与infra变更、强推及产物/Secret。合同output/git-sync/xyy-20261023-01/task.json。
+
+- Terra15路径已冻结并与部署e42精确一致，1719非日志源码保持；Luna本次隔离fresh verify exit0（155/1116+build）、格式/diff0、network0、capacity415240192B/2013inodes。官方production audit exit1新报告Astro7.2.8的moderate聚合（GHSA-98hj-9722-w3j8及低风险GHSA-mpr7-6m5w-76rw）；Astro与原main及部署版锁定相同，本轮不升级框架或操作生产，不把历史audit0当当前事实。Nova APPROVED_FOR_AUTHORIZED_GITHUB_SYNC_WITH_AUDIT_FINDING_AND_SAFE_API_FALLBACK，15源码/5日志共20路径无secret/产物，允许parent=d498普通UTC单父提交+非强推；失败且远端仍预期时才可固定API d01bf2da...dbbbb，metadata补录仅DEV_STATE/docsSOL两路径。当前ls-remote预检exit0。

@@ -42,9 +42,10 @@ export async function getHomepageStats(
 ): Promise<HomepageStat[]> {
   try {
     const row = await requestSingleton<HomepageContentRecord>('homepage_content', {
+      filter: { status: { _eq: 'published' } },
       fields: ['id', 'status', 'stats'],
     })
-    if (!row || row.status === 'draft') return []
+    if (!row || row.status === 'draft' || row.status === 'archived') return []
     if (row.status !== 'published' || !Array.isArray(row.stats)) {
       throw invalidDirectusData('homepage_content', 'read_singleton', 'invalid_data')
     }
@@ -117,7 +118,6 @@ function resolveCases(cases: Case[]) {
           .map(({ label, value, unit }) => `${label} ${value}${unit}`)
           .join(' · ')
       : item.metrics
-
     return {
       ...item,
       case_description: description,

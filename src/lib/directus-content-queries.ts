@@ -5,7 +5,7 @@ import type { PublicationIssue } from '@/data/publications/issues'
 import type { FeatureItem, StatItem } from '@/data/service'
 import { getDirectusAssetUrl, requestItems, requestSingleton } from './directus-client'
 import { interpolateClaims } from './directus-interpolation'
-import { fallbackForUnavailable } from './directus/request-state'
+import { fallbackForUnavailable, invalidDirectusData } from './directus/request-state'
 import type {
   AboutContentRecord,
   AboutHistoryRecord,
@@ -158,23 +158,30 @@ export async function getServicePageContent(slug: string, fallback: ServicePageC
 
 export async function getAboutContent(fallback: { overview: string; heroDescription: string }) {
   try {
-    const row = await requestSingleton<AboutContentRecord>('about_content')
-    return row && row.status !== 'draft'
-      ? {
-          overview: cmsText(row.overview, {
-            pageScope: 'about',
-            collection: 'about_content',
-            recordId: row.id,
-            field: 'overview',
-          }),
-          heroDescription: cmsText(row.hero_description, {
-            pageScope: 'about',
-            collection: 'about_content',
-            recordId: row.id,
-            field: 'hero_description',
-          }),
-        }
-      : { overview: '', heroDescription: '' }
+    const row = await requestSingleton<AboutContentRecord>('about_content', {
+      filter: published,
+      fields: ['id', 'status', 'overview', 'hero_description'],
+    })
+    if (!row || row.status === 'draft' || row.status === 'archived') {
+      return { overview: '', heroDescription: '' }
+    }
+    if (row.status !== 'published') {
+      throw invalidDirectusData('about_content', 'read_singleton', 'invalid_data')
+    }
+    return {
+      overview: cmsText(row.overview, {
+        pageScope: 'about',
+        collection: 'about_content',
+        recordId: row.id,
+        field: 'overview',
+      }),
+      heroDescription: cmsText(row.hero_description, {
+        pageScope: 'about',
+        collection: 'about_content',
+        recordId: row.id,
+        field: 'hero_description',
+      }),
+    }
   } catch (error) {
     return fallbackForUnavailable(error, fallback)
   }
@@ -214,27 +221,35 @@ export async function getAboutHonors(fallback: { title: string; image: string }[
 
 export async function getSiteSettings(fallback: Omit<SiteSettingsRecord, 'id' | 'status' | 'key'>) {
   try {
-    const row = await requestSingleton<SiteSettingsRecord>('site_settings')
-    return row && row.status !== 'draft'
-      ? {
-          phone: cmsValue(row.phone),
-          headquarters_label: cmsValue(row.headquarters_label),
-          headquarters_address: cmsValue(row.headquarters_address),
-          icp: cmsValue(row.icp),
-          footer_description: cmsText(row.footer_description, {
-            pageScope: 'site',
-            collection: 'site_settings',
-            recordId: row.id,
-            field: 'footer_description',
-          }),
-        }
-      : {
-          phone: '',
-          headquarters_label: '',
-          headquarters_address: '',
-          icp: '',
-          footer_description: '',
-        }
+    const row = await requestSingleton<SiteSettingsRecord>('site_settings', {
+      filter: published,
+      fields:
+        'id,status,phone,headquarters_label,headquarters_address,icp,footer_description'.split(','),
+    })
+    if (!row || row.status === 'draft' || row.status === 'archived') {
+      return {
+        phone: '',
+        headquarters_label: '',
+        headquarters_address: '',
+        icp: '',
+        footer_description: '',
+      }
+    }
+    if (row.status !== 'published') {
+      throw invalidDirectusData('site_settings', 'read_singleton', 'invalid_data')
+    }
+    return {
+      phone: cmsValue(row.phone),
+      headquarters_label: cmsValue(row.headquarters_label),
+      headquarters_address: cmsValue(row.headquarters_address),
+      icp: cmsValue(row.icp),
+      footer_description: cmsText(row.footer_description, {
+        pageScope: 'site',
+        collection: 'site_settings',
+        recordId: row.id,
+        field: 'footer_description',
+      }),
+    }
   } catch (error) {
     return fallbackForUnavailable(error, fallback)
   }

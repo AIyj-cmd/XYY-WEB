@@ -2836,3 +2836,85 @@ Health triage: 只读确认 health、权限契约、运行配置、相关客户�
 - 中文联系电话现与英文共用国际电话号码规则：必须以 `+` 和国家或地区区号开始，可使用空格、连字符和括号；中文字段仍必填，英文仍选填。中文输入提示改为国际号码示例，未预填、默认、转换或清除任何国家区号；原始输入 40 字符上限在两端均先于格式清理检查。
 - 客户端、API 与既有成功夹具改用 `+1`、`+44` 等格式；中文和英文均拒绝无区号的 `13800138000`，且 mock 出站请求保留完整国际号码文本。国家或地区必填、邮箱中英文规则、Task05 默认展开布局及现有 storage 六字段投影未改。下游接收端仅接受国内电话是跨项目已知限制，本轮未改接收端且未发送真实询盘，网站本地候选通过不代表生产端到端保存已就绪。
 - 自检 PASS：`npx vitest run tests/unit/contact-form-validation.test.ts tests/unit/contact.test.ts tests/unit/contact-integration.test.ts tests/unit/contact-content-type.test.ts tests/unit/contact-storage-privacy.test.ts tests/unit/contact-country-region.test.ts`（6 files/78 tests）、`npm run typecheck`（0 errors、0 warnings、6 条既有 hints）、目标 Prettier、`npm run check:maintainability`（933 files）及 `git diff --check`。未运行完整 verify/build 或浏览器 E2E，未改接收端、CMS/数据库、生产、提交、推送或部署；交 Luna 重点复核双语 1440/390、+1/+44/非 86 格式、中文无区号拒绝及 mock payload 原样保留。
+
+### XYY-20261022-08 — 原生 Web 更新离线兼容分析
+
+- 只读比对确认 GitHub main `d498d98` 与已部署 native 候选 `7d7cdab` 的 merge base 是 `984461e`，两者互非祖先；native 侧相对 main 精确保留 3 个 Directus singleton 兼容实现和 6 个回归测试。`git merge-tree 984461e 7d7cdab d498d98` 无冲突，因此后续隔离 checkout 可将 native 兼容九路径合并到最新 main，而不改当前 release。
+- 当前英文新闻合同为 `pending_release_gate`，release manifest 在任何 verify、SSH 或 rsync 前明确拒绝；运行时对 `english_news` 的 404/401/403 不作静态回退。真实 schema、迁移、published-only read policy 及 readback 尚未执行，不能把已有 content-token 的 403 当作“集合不存在”或“可发布”的证明。
+- 国际号码会经六字段投影原样发给 receiver；当前只具备 mock `+44` 证据。Sol 已确认 receiver 域名 DNS 解析到已退出范围的旧主机，按当前边界不得请求，因此 receiver 实际接受国际号码无法验证，runtime 发布为 BLOCKED。GitHub CI 另有 production dependency audit failure，独立于 `verify:release`，不能宣称 CI 为绿。
+- 本轮未创建候选、运行 build/verify、连接远程或作 CMS/receiver/部署写入。离线报告、最小后续候选方案和当前执行器哈希见 `output/release/xyy-20261022-08/terra/offline-compatibility-analysis.md`；后续只可在拥有完整 native `7d7cdab` 对象的本地隔离 worktree 形成 stage-only 合并候选，不能在远端 source-only shallow clone 合并。既有 `deploy.sh` 仅记录为只读实现事实，不是本轮推荐或唯一执行路径；Task18 已审 native 执行器刻意不请求 `/healthz`。CMS、receiver 目标、依赖审计以及下一阶段执行器/目标/探针仍待 Sol/Nova 分别审定。
+
+### XYY-20261022-08 — 候选依赖、英文新闻迁移与离线运行包
+
+- 在独立 worktree `/home/yj/data/xyy-native-update-20261022-08` 以 `d498d98` 为基线完成未提交、已暂存的 14 路径候选：保留 native `7d7cdab` 相对 `984461e` 的精确 9 路径兼容，并将 `sanitize-html` 固定到 `^2.18.1`、通过根 `overrides.vite=8.1.6` 约束 Vite。`npm audit --package-lock-only --omit=dev --json` 为 0 moderate/high；锁定依赖树实际解析为 `sanitize-html@2.18.1`、`vite@8.1.6`。未运行完整 verify/release、提交、推送、远程连接或 CMS 写入。
+- 英文新闻 dry-run 仅投影迁移必需的 11 个旧 `news` 字段；输出显式包含 `schema.collectionMeta`。导航 planner 对六个既有 `website_content` 兄弟仅 PATCH `meta.group`（既有值）与 `meta.sort`，把 `english_news` 插在 `news` 后；仅原英文集合隐藏时追加 `hidden:false`，不复制 icon、翻译或其他 metadata。定向单测 2 files/18 tests、`astro check`（0 error/0 warning/6 existing hints）、维护预算及 diff check 均 PASS；loopback mock 已验证字段投影及 dry-run 输出。
+- CJS esbuild 预检因两个原入口的 top-level await 产生硬错误，并有 `remote-target-policy` 的 entrypoint-only `import.meta` CJS warning；未抑制警告或重构入口。经 Sol 决定改交付原样源码 runtime 包：两个 `.mjs` 入口、递归相对 imports 和候选锁定的 `sanitize-html` 16 包依赖闭包，包内无 symlink。源码与包内 loopback dry-run/permission preview 输出完全一致。冻结、输入/制品哈希、CJS 失败原始 stderr 和运行包清单位于 `output/release/xyy-20261022-08/terra/freeze.json`、`runtime-package-manifest.json`、`runtime-package-loopback.json`。下一步由 Luna 验证原 CLI mock 等价、Nova 审核候选与运行包；CMS status 仍不得改为 verified，等待 Sol 的真实 CMS readback 证据。
+
+### XYY-20261022-08 — Task18 执行器适配（未执行）
+
+- 仅在本任务 `output/release/xyy-20261022-08/terra/` 适配了 `freeze-integration.mjs`、`build-package.py`、`upload.py` 与 `ops/deploy.py`，另加离线 runner 合同测试。执行器锁定 Sol 的 `release-baseline.json`、实际 1044 文件 `current-inventory.json`、base release `20261020T102057Z-7d7cdab` 与待创建合并父顺序 `[d498d98, 7d7cdab]`；基线已有的 32-byte Baidu 验证页被强制保留且哈希必须不变。
+- 因 package lock 已变，runner 不再复用 current 的依赖：解包到新 release 后删除其复制出的根 `node_modules`、检查 `scripts/vendor/http-cache-semantics`，仅在该新 release 内以 `/data/xyy/npm-cache` 执行 `npm ci --omit=dev`，将生命周期日志、package/lock 输入哈希、安装版本和 root node_modules 非 symlink 结果写入 backup。任何 npm CI 失败均在 loopback 与 current 原子切换前终止；Task18 的解包路径、regular-file、配置/非 Web PID 守卫、50032 loopback、回退、旧 release 保留、禁用 `/healthz` 与真实 POST 均保留。
+- 已按 Nova/ Sol 的完整性要求补强：三个 Python 执行器入口显式拒绝 `-O`；uploader 和远端 runner 都要求 Sol 传入最终 Nova 审核的 `--expected-artifact-sha`，拒绝任意自洽 artifact；uploader 只在 Task08 冻结 helper 的 hash、uid/gid、0700/0600 mode 且无 symlink 时，将其源码以 `python -c` 留在内存执行，不调用旧 helper 或打印/保存密码。自检 PASS：integration freeze 对当前 14 路径候选与待合并父顺序通过，`build-package.py --check-inputs`、Python compile、`node --check`、3 项 runner 合同测试、`python -O` 拒绝检查及 diff check 均通过。未生成最终发布制品、连接远程、上传、部署、写 CMS 或修改候选源码。冻结哈希见 `output/release/xyy-20261022-08/terra/ops-freeze.json`；下一步需 Luna 独立 ops 测试与 Nova 审核后，再由 Sol 决定实际构建/传输。
+- Luna 的首次独立 ops 检查发现 `ops/deploy.py` 使用 `sys.flags.optimize` 却漏导入 `sys`，使普通入口及 `-O`/`-OO` 入口均为 `NameError`。已最小补入导入，并把合同测试扩为：普通 `--help` 仅安全输出 usage，`-O`/`-OO` 在参数处理与任何 I/O 前精确抛出优化模式拒绝。此修复只待 Luna 对该入口项复测；未改候选源码、CMS 运行包、依赖、远端或部署状态。
+
+### XYY-20261022-08 — Directus 英文阅读权限门诊断
+
+- 只读确认 R4 的 schema separation 已 exit 0 且 `applied:0`，随后 English read-policy 在 `POST /permissions` 被 Directus 12.5.0 以 403 `custom_permission_rules_enabled is a restricted resource` 拒绝；未自动重试或回滚。失败来自该新规则的 `permissions.status._eq=published` 项目过滤，不是迁移、旧记录或认证失败。Sol 的部分执行后检查显示 current、服务、配置、旧 release 与 public 环境均未变化。
+- Directus 官方 v12.5.0 源码表明，`fields:['*']` 且 `permissions:{}`、`validation:null`、`presets:null` 的平铺 read rule 不属于 custom permission rule；保留 status 过滤则需要有效的 custom-permission-rules license。可选路径是取得相应 license 后保留原发布态过滤，或经用户针对风险的新明确授权，仅为既有私有 Renderer policy 新增一条平铺 `english_news` read 规则，绝不改 Public policy 或其他 14 条权限。
+- 网站 server-side English adapter 和 assets 路径仍双重检查 published 状态、发布日期、slug、分类和可见正文，现有 loopback fixture 已让 draft/archived/future/incomplete rows 绕过 mock query filter，并验证其详情 404、sitemap 不列出。不过平铺 policy 会让持有 Renderer token 的主体直接读取非公开行，不能等同于原 published-only 访问控制。诊断、官方链接、精确请求映射和后续本地 mock 要求见 `output/release/xyy-20261022-08/terra/cms-permission-gate-diagnosis.json`；未改源码、CMS、配置、令牌、远端或发布。
+
+### XYY-20261022-08 — R5 私有 Renderer 平铺英文阅读规则（本地待审）
+
+- 用户已明确选择服务器私有只读方案；仅新增本地 R5 operator、pinned-helper runner 与 mock 合同测试。R5 重用既有 root l4、保护 backup、运行包 manifest、helper hash/mode、NoRedirect、优化模式拒绝及文件锁；先执行 source CLI dry-run 并要求零 schema/navigation/records/legacy-field actions。
+- preview 将原始 backup 与当前 post-schema state 做精确比较，确保 14 条已有 Renderer permission 完全保留且没有既有 English read；以当前 canonical snapshot SHA 写入一次性 preview cache。apply 必须同时具备用户私有平铺授权标志、与 preview 相同的 Nova 审核 plan SHA、相同 snapshot CAS，且仅一次 `POST /permissions`；不调用 migration apply、不重试、不回滚。verify 要求原 14 条不变且仅新增一条 `english_news/read/fields:*`、空 permissions/validation/presets，Renderer 写/删/分享拒绝、匿名 English read 被拒绝。
+- 本地自检 PASS：Python compile、5 项 mock 合同测试、operator `-O` 与 runner `-OO` 都在 I/O 前显式拒绝。冻结见 `output/release/xyy-20261022-08/terra/cms-policy-r5-freeze.json`；未运行远端 preview/apply/verify、CMS 写入、许可证或配置变更、发布或真实 POST，交 Luna/Nova 独立检查。
+
+### XYY-20261022-08 — 发布 builder Luna harness 路径对齐（本地待审）
+
+- `build-package.py` 的 release gate 现只接受 Luna 已准备的 `luna/verify-release-r1/verify-release.exit`、`capacity-baseline.json` 和 `network-guard-task08.cjs`；仍要求 verify exit 为 0 和可解析容量基线，因此当前 CMS gate 未解除时不能构建。未手工伪造 PASS marker、软链接或制品。
+- 候选集成冻结预期已预留 `config/cms-contract.mjs`，供真实 R5 CMS verify PASS 后单独受控地把 schema status 改为 verified；当前配置未改，且旧 14 路径 integration 不会被此新预期重新运行或误报通过。保留前一份 `ops-freeze-r1-before-r5-builder.json`，新 `ops-freeze.json` 只更新 builder、integration 与其合同测试哈希。
+- 自检 PASS：目标 Python compile、4 项 ops 合同测试、builder `--check-inputs`、builder `-O` 拒绝、`node --check freeze-integration.mjs` 及 `git diff --check`。未构建最终制品、访问远端、CMS 写入或修改候选源码；等待 Luna/Nova 对 R5 和后续真实 CMS readback。
+
+### XYY-20261022-08 — CMS verified 契约候选冻结
+
+- 在 Sol 提供的 Luna 真实只读验收 `cms-policy-r5-verify.json`（exit 0）基础上，候选 `config/cms-contract.mjs` 保持 schema version `2026-10-english-news-separation` 并将状态更新为 `verified`。该验收实际确认只新增 Renderer 私有平铺 English read、原 14 条权限不变、Renderer 空读可用而 CRUD/share 拒绝、匿名 English GET 被拒绝；本轮未重新连接或操作 CMS。
+- 新的候选集成清单精确包含 15 条路径，保留上一份 14 路径冻结为 `freeze-r1-before-cms-verified.json`。为与已存在的 about/site singleton 行为一致，首页统计将 API 意外返回的 `archived` 视为成功空结果；未知状态继续以 `invalid_data` fail closed。对应两个目标单测文件共 14 项、目标 Prettier、候选 diff check 与 15 路径 integration 均通过。新冻结 `freeze.json` SHA-256 为 `d09337558f2f5db876712f1cc0231e49c0028d8372e3762fe3575c43e5411200`，细节见 `cms-verified-freeze-selfcheck.json`。
+- 未运行 `verify`、`verify:release`、build 或远程动作；候选尚未提交或发布，交 Luna/Nova 继续独立全量门禁。
+
+### XYY-20261022-08 — 发布执行器 TOCTOU 收敛（本地待审）
+
+- 因 upload 目录由非 root 用户持有，新增 root launcher 的受控边界：uploader 对 pinned helper 与 launcher 都单次读字节并验证哈希，但只创建上传目录和 SCP，不会部署；Sol 的独立调用器才以内存 launcher 字节进入 root 侧。launcher 在 root/l4 校验后，拒绝 symlink、FIFO 或非规则上传输入，以 Nova artifact SHA 和每个 artifact 内哈希读入、验证并仅以 root 0700 / 文件 0600 写入新的 `/data/xyy/ops/web-release-20261022-08`。不会复用、清理或重试该目录；runner 的 `UPLOAD` 固定为该保护目录，并以已验证的 deploy 内存字节执行，而非执行上传路径。
+- build artifact 新增 `launcherSha256`，uploader 同时要求 artifact 的值与其已冻结 launcher 值一致，供 Sol 的独立最终调用器按同一 SHA 绑定。保留前一份 executor 冻结为 `ops-freeze-r3-before-nonblock.json`；最新 `ops-freeze.json` SHA-256 为 `06c8b27adc175d4edaf70d5ee4f1bda7c92b13164e07b0c606b61b75addf2dc3`。
+- 自检 PASS：Python compile、10 项本地合同测试（包含一次 pinned helper 读取、常规 verified input、hash drift/symlink/FIFO 写前拒绝、优化模式拒绝及不执行上传 deploy 路径）、builder 输入检查、JSON/diff 检查。未构建制品、上传、远程执行、部署或 CMS 操作；后续由 Luna/Nova 审核执行器及 Sol 独立调用器。
+
+### XYY-20261022-08 — Builder R3 release gate 路径修正
+
+- build-package.py 的唯一 Luna gate 目录改为实际最终运行的 luna/verify-release-r3，仍只接受同目录中的 verify-release.exit、capacity-baseline.json 与 network-guard-task08.cjs。未创建、复制或软链接 PASS 标记；当 R3 目录不存在时，直接 gate mock 按预期拒绝。
+- 自检 PASS：Python compile、build-package.py --check-inputs、缺失 R3 gate 的定向拒绝检查、node --check freeze-integration.mjs 与 diff check。保留前一份 executor 冻结为 ops-freeze-r4-before-luna-r3.json；最新 ops-freeze.json SHA-256 为 14386596122d95e0e2d58ba046312f61e7f8e215e110c2b27cae41a2c5106404。未修改 source 15 路径、build、远程或发布，等待 Luna R3 真实产物及独立复测。
+
+### XYY-20261022-08 — R2 依赖安装恢复执行器（本地待审）
+
+- 首次受审部署在 preinstall capacity guard 停止，尚未切换 current 或重启 Web。恢复 executor 只接受原受审 artifact 和 protected-stage deploy.py 的固定 SHA，以非 main 模式加载原 runner 定义；它先重验 stage、artifact、1053 inventory、current、Node、配置与非 Web 服务，再移除仅失败 prepared release 自己的非 symlink node_modules。
+- 新 npm ci 必须经 scripts/capacity-baseline.mjs remote scope 监控 prepared release、npm cache 和 /tmp，并写独立 R2 容量、安装、部署和 rollback 证据名；原 dependency-install.log 不覆盖。安装成功后才复用原 manifest、origin、权限、50032 canary、原子 current 和仅 Web restart 边界，切换后异常会回退。
+- 本地自检为 Python compile、4 项 mock 合同测试、优化模式提前拒绝和 diff check。恢复 executor 冻结见 output/release/xyy-20261022-08/terra/recovery-r2/freeze.json；未连接服务器、执行恢复、清理失败 release/backup/stage 或修改候选源码，待 Luna/Nova 审核。
+
+### XYY-20261022-08 — R2 恢复守卫返工
+
+- Luna mock 的 hardlink 误操作曾截断本地 ignored terra/ops/deploy.py；污染字节已原样保留为 recovery-r2/failed-local-runner-hardlink-tamper.py（SHA-256 d9a0b51b...7651a7），并用 Sol 只读恢复副本精确还原原 runner SHA-256 711f7750...963fc。远程 root protected runner、artifact 与原失败证据未改。
+- 恢复 executor 在 reserve、node_modules 删除或 npm ci 前，现验证 /、/data、/data/xyy、releases ancestors 为 root-owned 且无 group/other write，prepared release 精确 root:988/0750，既有 node_modules 是普通 root-owned 非 symlink 目录。新增 owner/group/mode 和 symlink 负例；本地 compile、5 项 mock 合同测试、优化模式拒绝和 diff check 通过。旧冻结完整保留为 freeze-before-guard-repair.json，仍未运行远程恢复。
+
+### XYY-20261022-08 — R2 rollback 证据返工
+
+- post-switch 失败的 rollback 现采用原 runner 的嵌套错误收集：CURRENT 并发漂移明确记录 FAILED 且不覆盖；只有 link 回旧 release、Web restart、旧版本、配置和非 Web 服务全通过才记录 VERIFIED；任一步骤或 smoke stop 失败均记录 FAILED errors，pre-switch 失败保持 NOT_REQUIRED，最后仍重抛原部署异常。
+- 本地新增四个直接 rollback mock，覆盖 pre-switch、成功回退、CURRENT 漂移及 rollback restart 失败；共 9 项恢复合同测试、Python compile 与 diff check 通过。前一份 R2 freeze 完整保留为 freeze-before-rollback-repair.json，未执行远程恢复。
+
+### XYY-20261023-01 — Task08 已部署修复 Git 同步准备
+
+- 主工作区在复制前的 15 个源码/测试/依赖/CMS 契约路径均保持 d498 基线，现已精确复制并暂存已部署 e42b0aa 对应字节；逐文件 SHA 与 e42 一致。五份既有角色日志保持未暂存，未复制 native 历史、输出制品或 Secret。
+- 冻结 source 15 路径与 1719 个非日志保护路径，分别见 output/git-sync/xyy-20261023-01/terra/source-freeze.json 和 non-scope-source-manifest.json。另准备默认 dry-run 的 Git Database API 备用脚本，仅接受标准 UTC、单父、精确 20 路径提交；apply 只创建 tree/commit objects，main 移动仍由 Sol 的 expected SHA、force=false connector 单独执行。
+- 自检 PASS：API 脚本 compile、--check-inputs（15 source / 20 total）、staged diff check。未创建本地 commit、调用 GitHub API、推送、移动分支或修改远程。
+
+### XYY-20261023-01 — Git API 状态文档补录模式
+
+- API 备用脚本新增显式 --status-docs-only：仅该模式接受恰好 DEV_STATE.md 与 docs/SOL.md 两路径；默认仍要求精确 20 路径，其他 subset 拒绝。dry-run 与 apply 前均完整解析并验证 UTC author/committer，避免 API 先写 tree 后才发现身份非法。branch 仍只能由 Sol 的 expected SHA/force=false connector 移动。
+- 原脚本与冻结分别保留为 sync-via-api-before-status-docs.py、api-script-freeze-before-status-docs.json。自检 PASS：compile、--check-inputs（同时报告 20 和 2 两种模式）及 status flag 混用负例；未执行 GitHub API、commit、push 或 branch 操作。

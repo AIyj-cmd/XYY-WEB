@@ -22,9 +22,22 @@ if (
   throw new Error('apply_requires_exact_target_environment_and_confirmation')
 
 const directus = createDirectusAdminClient({ baseUrl, token })
+const legacyNewsProjection = [
+  'id',
+  'status',
+  'published_at',
+  'slug',
+  'category',
+  'cover_image',
+  'title_en',
+  'summary_en',
+  'content_en',
+  'english_status',
+  'english_published_at',
+].join(',')
 const [collections, legacyRows, legacyFields] = await Promise.all([
   directus.request('GET', '/collections'),
-  directus.request('GET', '/items/news?limit=-1'),
+  directus.request('GET', `/items/news?limit=-1&fields=${legacyNewsProjection}`),
   directus.request('GET', '/fields/news'),
 ])
 const exists = collections.some(({ collection }) => collection === 'english_news')
@@ -59,10 +72,11 @@ console.log(
     issues: plan.issues,
     schema: {
       createCollection: plan.schema.createCollection,
+      collectionMeta: plan.schema.collectionMeta,
       fields: plan.schema.fields.map(({ field }) => field),
       relations: plan.schema.relations.map(({ field }) => field),
     },
-    navigation: plan.navigation.map(({ collection, meta }) => ({ collection, sort: meta.sort })),
+    navigation: plan.navigation,
     records: {
       create: plan.records.length,
       slugs: plan.records.map(({ slug }) => slug),

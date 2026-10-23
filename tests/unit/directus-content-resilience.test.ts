@@ -34,10 +34,12 @@ describe('Directus singleton content resilience', () => {
         ]
       }
       if (collection === 'about_content') {
-        return { overview: '', hero_description: '后台首屏介绍' }
+        return { id: 1, status: 'published', overview: '', hero_description: '后台首屏介绍' }
       }
       if (collection === 'site_settings') {
         return {
+          id: 1,
+          status: 'published',
           phone: '',
           headquarters_label: '广州总部',
           headquarters_address: '',

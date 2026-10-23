@@ -146,9 +146,19 @@ export function planEnglishNewsNavigation(collections) {
     issues: [],
     updates: ordered.flatMap(({ collection, meta }, index) => {
       const sort = index + 1
-      return meta?.sort === sort
-        ? []
-        : [{ collection, meta: { ...meta, group: 'website_content', sort } }]
+      const restoreEnglishVisibility =
+        collection === 'english_news' && english?.meta?.hidden === true
+      if (meta?.sort === sort && !restoreEnglishVisibility) return []
+      return [
+        {
+          collection,
+          meta: {
+            group: 'website_content',
+            sort,
+            ...(restoreEnglishVisibility && { hidden: false }),
+          },
+        },
+      ]
     }),
   }
 }

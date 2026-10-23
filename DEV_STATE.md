@@ -1,14 +1,17 @@
 # DEV_STATE
 
-更新时间：2026-10-22
+更新时间：2026-10-23
 
 ## 当前环境边界
 
 - 用户于 2026-10-16 明确要求后续远程环境只保留新 ECS `8.138.148.179`。旧测试/验收站 `wz.tomatopia.top`、`47.82.105.103` 已退出当前操作范围，不得再用于测试、健康检查、构建取数、部署或回退；本机与 CI 的 loopback 验证仍可使用。
+- 用户于 2026-10-22 明确现有 `xs.tomatopia.top` 是线索接收服务，保留其功能和地址；不因与旧测试站同 IP 而禁用。该例外仅适用于获授权的接收功能核验，不恢复旧网站为构建、部署或回退目标。
 - 下方历史任务、角色日志和归档手册中的旧站操作仅记录当时事实，不构成当前操作指引或授权。2026-10-20 已实际核实 `56xyy.com` 与 `www.56xyy.com` 均解析至新 ECS，并按用户授权启用主域名 HTTPS；后续操作仍需核对实际解析。
-- 新 ECS 当前发布为 `20261020T102057Z-7d7cdab`，2026-10-20 18:24 CST 完成更新；源码提交 `7d7cdabcd3cea1e0e26fe7fc207fc49da08041d5`，包含本次从 GitHub 核实的最新 main `984461e17dfcae7e7d1324a9fa530fb742133b2c` 与既有原生 CMS 读取兼容。正式入口 `https://56xyy.com`；英文品牌/SEO 关联和最新代码已上线，production、收录、跳转及 HSTS 配置沿用。上一版本 `20261020T083310Z-c5ca1e4` 和所有更早 release 均保留，回退记录位于 `/data/xyy/backups/native-update-20261020-18`；仅重启 Web，既有配置及 Directus/Nginx 服务身份保持。完整发布门禁、上线后桌面/手机 16 组独立验收 PASS，Nova 最终 APPROVED，Task18 已验收关闭。
+- 新 ECS 当前发布为 `20261022T113304Z-e42b0aa`，2026-10-22 20:14 CST 完成切换；源码提交 `e42b0aadacd9b197d4004f4ced332050ec6d7dc5`，由 GitHub 最新 main `d498d984ae4ece0e270db6b3951acf41a69ca43f` 与既有原生 CMS 兼容合并，并包含本次已授权的依赖和英文 CMS 迁移兼容修复。正式入口 `https://56xyy.com`；联系表单国家或地区必填、国际电话及选填字段直接展示已随版本更新。仅重启 Web（PID217503），Directus206113、Nginx60141及配置 hash/mode/owner保持，旧 release `20261020T102057Z-7d7cdab` 与全部更早版本保留。Task08完整本地发布门禁及上线后独立桌面/手机验收通过，Nova最终APPROVED_FINAL_PRODUCTION_ACCEPTANCE，Sol已验收；证据 `output/release/xyy-20261022-08/sol/final-result.json`。
 
-## Git 同步状态（2026-10-22）
+## Git 同步状态（2026-10-23）
+
+- `XYY-20261023-01`：用户已明确要求将Task08上线新增修复同步GitHub main；精确15路径及其他1719非日志源码等价已确认，fresh verify（155文件/1116测试与构建）、全量格式/diff通过；本次官方npm audit exit1报告Astro7.2.8的1个moderate，上游风险未因同步新增，未擅自升级框架。Nova已批准本次精确20路径普通单父提交及非强推同步，正在执行，推送结果以本轮最终Git引用与证据为准。本轮仅Git同步与验证，不操作生产服务器、CMS、数据库或询盘接收端。
 
 - `XYY-20261022-07`：已按用户授权将选填字段默认展示/上移、通用国际号码规则、测试及 Task04/05/06 记录共 23 路径同步 `AIyj-cmd/XYY-WEB/main`，应用提交 `d369b4e23d77adb19785dd2b1dd3c164e00bdd70`。本轮独立 fresh verify（153 文件/1105 单测及构建）、全量格式/diff通过，17非文档冻结保持，Nova APPROVED_FOR_AUTHORIZED_GITHUB_SYNC_AND_SAFE_API_TRANSFER。使用与已审脚本逐字相同的 Git Database API 创建精确本地 tree/commit，再以 expected旧SHA=145581c、force=false 快进main；2026-10-22T16:22:09.259638+08:00 回读三引用一致、ahead/behind 0/0、工作区干净，未改origin/凭据或绕过保护。随后仅补录本文件、SOL与Task07合同三份状态文档，最终文档提交/CI以Git引用和 `output/git-sync/xyy-20261022-07/sol/final-result.json` 实际回读为准。基线CI39739670754因依赖审计2个报告（1moderate/1high）失败，本轮未改依赖、未声称CI或安全通过；接收兼容与CMS/生产发布闸门继续，未部署或写真实receiver/CMS/数据库/权限。Task04/05/06此前未提交/推送描述各自验收时点，现均随本应用提交同步；真实接收与生产状态不变。
 
@@ -37,6 +40,8 @@
 - 不记录密码、Token、API Key、私钥、Cookie、真实 `.env` 内容或其他敏感信息。
 
 ## 当前目标
+
+- `XYY-20261022-08`：已按授权在唯一新ECS `8.138.148.179` 更新 Web，release `20261022T113304Z-e42b0aa` / commit `e42b0aadacd9b197d4004f4ced332050ec6d7dc5`。GitHub main `d498d984ae4ece0e270db6b3951acf41a69ca43f` 已同步至独立源码目录；部署候选保留9路径原生兼容中的7份精确字节、两份首页归档一致性修正及授权依赖/迁移兼容修复，本地 release/xyy-20261022-08 分支保留、未推送。R4实际完整门禁通过：155文件/1116单测、421浏览器PASS/17既有条件skip/0FAIL、formal6/6、最终build；独立全量格式检查、audit0漏洞、15路径/1739源码零漂移、807前端/HTML token扫描0。英文CMS已完成11字段/关系/菜单/旧字段隐藏只读迁移，保留源值、其他元数据和原14权限；许可证不支持自定义权限过滤，用户明确批准仅私有Renderer新增平铺english_news/read，接受私有密钥可读草稿，匿名与写权限保持，网站严格过滤公开状态/未来文章。真实独立CMS回读PASS。R1部署在npm ci缺容量基线时未切换即停止；原失败记录及目录保留。经Terra返工、Luna独立mock和Nova精确复审后，R2仅执行一次恢复：remote容量实测fresh隔离npm ci、canary50032通过、原子切换并只重启Web；实际依赖sanitize-html2.18.1/Vite8.1.6，1053制品hash全部一致、旧release及配置/非Web服务保持，私有英文集合GET200空记录。现有xs.tomatopia.top接收功能和地址保留；无真实询盘POST/通知/落库测试、无receiver/DNS/Nginx/环境变更或GitHub推送。本地main仍d498且仅5份状态/角色日志修改；hosted CI旧审计失败不冒充已通过。上线后独立公网双端验收PASS：12路由200、中英四联系页视口/国际电话/字段顺序、Baidu验证和中文文章6张正文图均通过；英文实际空态正常。Sol亲看四张截图，Nova最终APPROVED_FINAL_PRODUCTION_ACCEPTANCE，Sol验收完成。两次旧公网探针失败分别为错误/en/product路径和company选填断言方向错误，已修正探针且保留原始记录，未因此修改应用。合同及最终证据 `output/release/xyy-20261022-08/sol/final-result.json`。
 
 - `XYY-20261022-07`：GIT_SYNCED，应用提交 `d369b4e23d77adb19785dd2b1dd3c164e00bdd70`，Nova APPROVED_FOR_AUTHORIZED_GITHUB_SYNC_AND_SAFE_API_TRANSFER，Sol 已验收并完成授权同步，未部署。用户要求将当前 Task04/05/06 调整与记录同步 `AIyj-cmd/XYY-WEB/main` 并更新本地 Git 信息；基线 `145581c`，22 既有脏路径和本合同共 23，17 非文档保持冻结。Luna fresh workers=4 verify exit 0：769 类型文件 0 errors/0 warnings/6 hints、153 文件/1105 单测、Lint/933 维护预算/资源/cache/构建通过；全量格式/diff及当前基线/Task06冻结检查通过。中间 `Terminated` 后同次完整检查 exit 0，原样保留。只读发现基线 CI `39739670754` 在 npm audit --omit=dev 失败（2 个既有漏洞报告，1 moderate/1 high）；本轮不改依赖或 CI，不宣称安全审计/hosted CI 通过。仅 Git 同步，接收兼容、生产发布和 CMS gate 均保持；合同 `docs/plans/xyy-20261022-07-github-sync.md`，证据 `output/git-sync/xyy-20261022-07/`。
 

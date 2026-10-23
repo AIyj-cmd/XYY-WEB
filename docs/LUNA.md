@@ -7821,6 +7821,58 @@ Task ID：`XYY-20261022-05`；Result：**PREPARED / WAITING_FOR_FREEZE**。Terra
 
 Handoff：准备完成，返回 Sol，等待 Terra freeze。
 
+### XYY-20261022-08 — Nova 脚本 guard 最小返测
+
+Task ID：`XYY-20261022-08`；Result：**PASS_GUARD_RETEST_WITH_CMS_APPLY_BLOCKED**。
+
+针对 Nova 指出的脚本问题完成独立最小返测，未重复源包、迁移单测或全套 release 检查。最终 `stage-cms-runtime.py` SHA-256 为 `830676d153c5bde120a14b2ccf38a703f04752c43a6021be2c82d3a5f0fda051`，`cms-operation.py` 为 `3a247bd3b1c09fe1138072c3030d1abbd1f82f36fbea15bad2c1745911d9665c`，新增 `run-cms-operation.py` 为 `f18c57bfd77e60e956a7a4372366cc54e36d7d4fa2b36148e5b793f07bd68d59`；私有 helper 为 `3df8a4ea3226d2fd3d2fefe70d790ac93ac8f3cced33d22d8f66afd0daf5b22e`，目录/文件权限 0700/0600。四个脚本 AST 与临时目录 `py_compile` 均 PASS。
+
+`-O` 与 `-OO` 下 stage、operator、runner、helper 均在读文件、写证据、subprocess 或远程操作前以 exit 1 拒绝。stage 的 archive/manifest 字节篡改、manifest/archive 不一致、helper hash 篡改、helper 0644、helper 父目录 0755 五个临时 fixture 均拒绝，mock subprocess 调用均为 0。runner 的 Luna 仅 `verify`、固定 manifest/helper/operator、证据 `open('x')` 不覆盖/不自动重试等 guard 通过；无效 owner/mode 入口拒绝。operator 的 renderer `create/update/delete/share` 四项均要求无权限或 `access: none`，负向 guard 静态复核通过，并保留 NoRedirect。
+
+本轮未执行真实 stage、CMS preview/apply/verify、远程、数据库、真实询盘、部署或 `verify:release`；CMS status 继续 pending，交 Nova 重审 runtime-stage 与 CMS preview。证据：[`retest-summary.json`](../output/release/xyy-20261022-08/luna/retest-summary.json)、[`scripts-compile-ast.json`](../output/release/xyy-20261022-08/luna/scripts-compile-ast.json)、[`optimized-guard.log`](../output/release/xyy-20261022-08/luna/optimized-guard.log)、[`stage-guard-harness.json`](../output/release/xyy-20261022-08/luna/stage-guard-harness.json)、[`permission-runner-guard-check.json`](../output/release/xyy-20261022-08/luna/permission-runner-guard-check.json)。
+
+Handoff：Nova 修复的脚本 guard 返测通过，CMS apply 仍未获 Luna 放行。
+
+### XYY-20261022-08 — CMS stage R3 最小静态复核
+
+Task ID：`XYY-20261022-08`；Result：**PASS_STAGE_ONLY_STATIC_R3**。
+
+R2 的 `scp exit255` 原因与 Sol 证据一致：`yanjiang` 无法穿过已有 root:root 0750 的 `/data/xyy/ops`；R2 incoming 为空、目标目录不存在、current 未变、CMS 请求/写入为 0，未 cleanup 或自动重试。R3 当前 `stage-cms-runtime.py` SHA-256 为 `d3b37ebce2e4386044b62fd59e88c8eb4a55822191953f2fa8f099943173c4a8`，与 R2 `830676d...` 的唯一内容差异是 `INCOMING` 从 `/data/xyy/ops/english-news-20261022-08-incoming` 改为 `/data/xyy/upload-english-news-20261022-08`。
+
+本地 AST/临时 `py_compile`、`-O/-OO` 显式拒绝、硬绑定 archive/manifest/helper SHA、嵌入 remote optimize guard 均通过。只读回读的 R2 父路径证据显示 `/data/xyy` root 0755 可供上传用户 traversing，`/data/xyy/ops` root 0750 仍由 root helper 保护。结论是 **可供 Nova 批准后执行 stage-only 尝试**；Luna 未重新连接远程、未执行 scp/stage、CMS preview/apply/verify、数据库或部署，因此不代表远程或 release PASS。
+
+证据：[`cms-stage-r3-summary.json`](../output/release/xyy-20261022-08/luna/cms-stage-r3-summary.json)、[`stage-r3-check.json`](../output/release/xyy-20261022-08/luna/stage-r3-check.json)、[`stage-r3-optimized.log`](../output/release/xyy-20261022-08/luna/stage-r3-optimized.log)、[`stage-r3-parent-evidence.json`](../output/release/xyy-20261022-08/luna/stage-r3-parent-evidence.json)、[`cms-stage-r2-failure.json`](../output/release/xyy-20261022-08/sol/cms-stage-r2-failure.json)。Web ops `deploy.py` 缺少 `sys` 导入的 HIGH FAIL 仍见 [`web-ops-summary.json`](../output/release/xyy-20261022-08/luna/web-ops-summary.json)。
+
+Handoff：返回 Sol，等待 Nova 对精确 R3 stage-only 脚本批准；不解除 CMS/release 闸门。
+
+### XYY-20261022-08 — Web ops 执行器独立前置复核
+
+Task ID：`XYY-20261022-08`；Result：**FAIL**。
+
+本轮仅复核 Web ops 执行器与离线合同测试，未执行最终构建、远程上传、远程部署、CMS 操作或 `verify:release`。`ops-freeze.json` 中 9 项文件哈希逐项匹配；实际基线 inventory 为 1044 文件，额外百度验证页保留且哈希匹配；GitHub main/native 两父提交追溯、artifact SHA 参数绑定、隔离 `npm ci --omit=dev`、vendor/capacity 输入、50032 smoke、非 Web 服务 PID guard、回退、tar 路径/symlink 检查、无 `/healthz` 和真实 POST 标记均通过静态复核。Terra 3 项合同测试、freeze Node syntax、`build-package.py --check-inputs` 均 exit 0；4 个 Python 文件 AST/临时 `py_compile` 通过。
+
+发现阻断缺陷：`output/release/xyy-20261022-08/terra/ops/deploy.py` 使用 `sys.flags.optimize`，但文件没有 `import sys`。因此普通入口以及 `python3 -O`、`python3 -OO` 都在第 361 行抛出 `NameError: name 'sys' is not defined`；`-O/-OO` 没有按合同要求执行显式拒绝 guard。该缺陷影响 release runner 入口，Severity：**HIGH**。FAIL 格式的 Expected/Actual/Reproduction/Evidence/Likely affected area 已写入 [`web-ops-summary.json`](../output/release/xyy-20261022-08/luna/web-ops-summary.json)。
+
+证据：[`web-ops-summary.json`](../output/release/xyy-20261022-08/luna/web-ops-summary.json)、[`web-ops-independent-check.json`](../output/release/xyy-20261022-08/luna/web-ops-independent-check.json)、[`web-ops-contract-tests.log`](../output/release/xyy-20261022-08/luna/web-ops-contract-tests.log)、[`web-ops-static.log`](../output/release/xyy-20261022-08/luna/web-ops-static.log)、[`deploy-entrypoint-failure.log`](../output/release/xyy-20261022-08/luna/deploy-entrypoint-failure.log)、[`web-ops-compile.json`](../output/release/xyy-20261022-08/luna/web-ops-compile.json)。
+
+Handoff：返回 Sol；Terra 需在原 Task ID 修复/确认 `deploy.py` 的 `sys` 导入后，由 Luna 仅复测该失败项。Web ops 不得视为 release PASS。
+
+### XYY-20261022-08 — CMS 候选前置独立验收
+
+Task ID：`XYY-20261022-08`；Result：**PASS_PREFLIGHT_WITH_CMS_APPLY_BLOCKED**。
+
+候选 `/home/yj/data/xyy-native-update-20261022-08` 的冻结状态为 `CANDIDATE_FROZEN_FOR_LUNA_NOVA`。独立核对 HEAD `d498d984ae4ece0e270db6b3951acf41a69ca43f`、准确 GitHub origin、14/14 冻结路径哈希、14 路暂存路径及无未暂存差异均匹配；主 main/native 兼容路径仍由冻结清单保留。候选实际执行 `npm audit --omit=dev` exit 0，输出 `found 0 vulnerabilities`。
+
+定向迁移回归 `VITEST_MAX_WORKERS=3 npx vitest run tests/unit/news-publication-time.test.ts tests/unit/english-news-separation-migration.test.ts` 为 2 files / 21 tests passed，exit 0。独立运行包核对为 762/762 regular files、16 个依赖包，archive、manifest、候选源/依赖闭包哈希全匹配；无 symlink、hardlink、危险路径或敏感文件名。Terra 已生成的 source/runtime CLI 与 read-policy mock loopback 输出由本次脚本独立比较，migration 与 policy 均等值且四个 exit code 均为 0。
+
+最终 Sol 脚本哈希：`stage-cms-runtime.py` 为 `1930c7a6301e0f2c99b78719a922972990cc529684e30fd900f32fbe9e55583a`，`cms-operation.py` 为 `02c4194d02f732fbd14e0f308b61844de66a45d1cf56526a28edb50608acae4b`；两者 AST 解析均 PASS。静态 guard 审阅确认固定新 ECS 目标、受限父目录、归档/manifest 全量校验、无 symlink/hardlink、root/l4/0700 运行目录、精确 loopback Directus、禁止重定向、preview/apply CAS 与权限/旧值回读断言。
+
+真实 CMS status 仍为 pending；Luna 未执行远程连接、运行包传输、CMS preview/apply/verify、数据库、真实询盘、部署或 `verify:release`。两项需 Nova/Sol 处理的真实运行风险已记录在 [`cms-script-review.json`](../output/release/xyy-20261022-08/luna/cms-script-review.json)：apply 的 migration 与 read-policy 是分开的写操作，子步骤失败时明确不自动 rollback/retry；运行包若在逐文件写入期间中断会留下部分目标并由下次 no-existing guard 阻断，需人工清理/恢复流程。CJS top-level-await bundle 失败按冻结记录保留，验收对象为原样 `.mjs` runtime 包。
+
+证据：[`final-summary.json`](../output/release/xyy-20261022-08/luna/final-summary.json)、[`candidate-freeze-check.json`](../output/release/xyy-20261022-08/luna/candidate-freeze-check.json)、[`candidate-npm-audit.log`](../output/release/xyy-20261022-08/luna/candidate-npm-audit.log)、[`migration-focused.log`](../output/release/xyy-20261022-08/luna/migration-focused.log)、[`runtime-equivalence-check.json`](../output/release/xyy-20261022-08/luna/runtime-equivalence-check.json)、[`runtime-equivalence-check.log`](../output/release/xyy-20261022-08/luna/runtime-equivalence-check.log)、[`cms-scripts-syntax.log`](../output/release/xyy-20261022-08/luna/cms-scripts-syntax.log)。
+
+Handoff：候选前置证据交 Sol，供 Nova 审阅 runtime-stage 与 CMS preview；CMS apply 继续阻断，未宣称发布或生产 CMS 通过。
+
 ### XYY-20261022-06 — 中文国际电话格式独立验收
 
 Task ID：`XYY-20261022-06`；Result：**PASS**。
@@ -7849,6 +7901,32 @@ Remaining risks：Luna 未执行 commit/push/deploy 或任何真实 receiver、C
 
 Handoff：Luna 独立同步前门禁 PASS 返回 Sol，交 Nova Review。
 
+### XYY-20261022-08 — 生产发布前只读预检
+
+Task ID：`XYY-20261022-08`；Result：**BLOCKED_PREDEPLOY**。本阶段仅做本地证据审阅与 `bash -n`，未执行远程连接、`stage-source.sh`、`verify:release`、healthz、真实 POST、CMS/数据库访问、服务切换、部署或回滚。
+
+候选身份：Sol 证据中的 GitHub main/CI head 均为 `d498d984ae4ece0e270db6b3951acf41a69ca43f`；最新 CI `release-verification` 在 `npm audit --omit=dev` 失败，报告 1 moderate 的 sanitize-html 与 1 high 的 vite/launch-editor advisory group，不能视为 hosted CI 绿。服务器 baseline 当前仍为 `/data/xyy/releases/20261020T102057Z-7d7cdab`，当前运行源码无 `.git`；服务状态记录为 web/Directus/nginx active，未执行 healthz。
+
+CMS metadata：loopback Directus `/collections/english_news` 只读 GET 返回 403、无 metadata；这只能证明当前 token 未获 metadata，不能证明集合不存在。真实 receiver 国际号码兼容仍是生产前闸门，本次未访问或声称已验证。
+
+`stage-source.sh` 更新后 SHA-256 为 `c8d5c624319230f8db6b97f24321245f1797d2241c37f788e0dffa552833fb68`，`bash -n` exit 0。脚本固定准确 GitHub repo 与 expected SHA，要求 hostname `l4`、current 精确为旧 release，stage 位于独立 `/data/xyy/source-checkouts/...`，clone `main` 单分支 depth 1，校验 HEAD/clean status，并在结束复核 current 未改变；新增 `/data`、`/data/xyy`、checkout parent 的 root/不可 group-other 写校验，以及 `lexists` + `test ! -L` 拒绝悬空 symlink。临时目录模拟正常创建、已有安全目录、悬空 symlink、不安全父目录四例 4/4 通过。判断更新为 **SAFE_TO_STAGE_ONLY**；仍未执行远程 stage，真实执行须继续遵守 l4/current 断言。
+
+运行切换当前**不可放行**：尚无独立 `verify:release` PASS，hosted CI 失败，CMS metadata gate 未满足，receiver 兼容条件未建立；正式域名与 receiver DNS 证据也显示 `xs.tomatopia.top` 指向已退出活动范围的 `47.82.105.103`，本次严格未请求。证据：[`prep-summary.json`](../output/release/xyy-20261022-08/luna/prep-summary.json)、[`stage-review.json`](../output/release/xyy-20261022-08/luna/stage-review.json)、[`guard-sim.log`](../output/release/xyy-20261022-08/luna/guard-sim.log)、[`stage-source-bash-n.log`](../output/release/xyy-20261022-08/luna/stage-source-bash-n.log)。
+
+Handoff：返回 Sol，交 Nova 审阅；保持当前运行版本不变。
+
+### XYY-20261022-08 — source-stage 后验独立核对
+
+Task ID：`XYY-20261022-08`；Result：**PASS_SOURCE_SYNC_ONLY_WITH_RUNTIME_BLOCKED**。
+
+基于 Sol 已落盘的实际 stage/postflight/GitHub 回读证据完成本地比较，未连接远程、未执行新测试或 runtime 操作。stage exit 0；source origin 为准确 GitHub repo，branch `main`，HEAD `d498d984ae4ece0e270db6b3951acf41a69ca43f`，status clean；GitHub final main 同 SHA。baseline 与 postflight 的配置 hash/mode/owner、3 个服务 PID/状态、current/version、公共环境和 release 列表均逐项一致；current/base `.git` 状态保持 absent。
+
+runtime 仍未切换，new release 未部署，`verify:release` 为 `NOT_RUN_NO_APPROVED_RELEASE_CANDIDATE`；Sol final blockers 保持：生产依赖 audit 1 moderate/1 high、CMS manifest gate pending 且 metadata 403、receiver DNS 指向已退出/排除地址。无远程配置写入、真实询盘、CMS 或数据库操作。
+
+证据：[`final-summary.json`](../output/release/xyy-20261022-08/luna/final-summary.json)、[`postflight-check.json`](../output/release/xyy-20261022-08/luna/postflight-check.json)。
+
+Handoff：source sync 后验 PASS 返回 Sol，runtime gate 仍 BLOCKED，交 Nova 审阅。
+
 ### XYY-20261022-05 — 联系表单字段可见性独立验收
 
 Task ID：`XYY-20261022-05`；Result：**PASS**。
@@ -7872,3 +7950,230 @@ Task ID：`XYY-20261022-06`；Result：**PREPARED / WAITING_FOR_FREEZE**。已�
 已准备针对性 contact 单测、最小既有 E2E、目标 Prettier/diff 与 Terra freeze hash 命令，见 [`commands.txt`](../output/contact-international/xyy-20261022-06/luna/commands.txt)；摘要见 [`prep-summary.json`](../output/contact-international/xyy-20261022-06/luna/prep-summary.json)。receiver 本地 schema 仍为国内-only，本轮不访问或修改真实接收端、CMS、数据库，不宣称落库或部署支持。
 
 Handoff：准备完成，返回 Sol，等待 Terra freeze。
+
+### XYY-20261022-08 — Web ops 入口与 CMS preview R4 独立返测
+
+Task ID：`XYY-20261022-08`；Result：**PASS（Web ops 入口复测；PASS_READONLY_R4_REVIEW_WITH_APPLY_BLOCKED）**。
+
+Web ops 新 freeze `ops-freeze.json` 状态为 `OPS_EXECUTORS_READY_FOR_LUNA_NOVA`，基线 inventory 为 1044；`deploy.py` SHA-256 `f9658cb42a5a18d9eb127501a3d814821f01923a68f2b4d02feb2b075faba519`、4 项合同测试 SHA-256 `da8f989e07fb9b6536d1a4b99213369a90c2e07b1f4072363c91a49f490604a4`、helper SHA/权限 `3df8a4ea...b22e` / 0600 均与 freeze 匹配。普通无参数与 `--help` 入口均返回 usage 且无 `NameError`；`python3 -O/-OO` 均 exit 1 并明确拒绝优化解释器；合同测试 **4/4 passed**。此前缺失 `sys` 导入的入口 FAIL 已由该新 freeze 复测关闭。未执行最终构建、上传、部署或 `verify:release`。
+
+CMS R4 仅做离线证据审阅：读取实际 `cms-preview-r3-raw.json`，确认 CLI dry-run 原始结果 `issues=[]`、11 fields、`cover_image` relation、records 0、可见导航恰为 `faq_pages → homepage_content → news → english_news → service_pages → services` 六项，排序使用 `meta.sort=1..6`，隐藏 `faqs` 不在计划中。`cms-navigation-visibility.json` 实际观察到 `faqs hidden=true`；R3 的 `KeyError: sort`、exit 1、stderr、diagnosis 与 R3 脚本副本均保留，diagnosis 记录 CLI exit 0、无 CMS writes、无自动 retry/cleanup。单一 visibility 快照不能独立证明前后值相等；当前 operator 的 SIBLINGS 保留 `faqs`、ORDER 仅六项，verify 比较其完整 metadata，故本轮结论限于结构/守卫复核。
+
+当前 R4 `cms-operation.py`（SHA-256 `79acbbc0...8441f0`）与 runner（`8bcfcdd0...97dd2f1`）通过 AST/内存 compile；`meta.sort`、六项 navigation、hidden faqs、renderer `create/update/delete/share` deny、helper/operator pin、Luna 仅 verify 等 guard 均通过。operator/runner 的 `-O/-OO` 均在读写、subprocess、远程前以 exit 1 明确拒绝。未执行 R4 preview、apply、verify、远程、CMS/数据库写入；CMS apply 仍须 Nova/Sol 审批。
+
+证据：[`web-ops-entry-retest.json`](../output/release/xyy-20261022-08/luna/web-ops-entry-retest.json)、[`web-ops-entry-retest.log`](../output/release/xyy-20261022-08/luna/web-ops-entry-retest.log)、[`cms-preview-r4-review.json`](../output/release/xyy-20261022-08/luna/cms-preview-r4-review.json)、[`cms-preview-r4-review.log`](../output/release/xyy-20261022-08/luna/cms-preview-r4-review.log)、[`cms-preview-r4-review.py`](../output/release/xyy-20261022-08/luna/cms-preview-r4-review.py)。
+
+Handoff：Web ops 入口缺陷复测通过；R4 仅为基于真实 R3 raw 的只读结构/guard 审阅，不等同真实 CMS preview 或 release PASS，返回 Sol 交 Nova 精确只读 preview 审批。
+
+### XYY-20261022-08 — R4 CMS partial-state只读 verify
+
+Task ID：`XYY-20261022-08`；Result：**FAIL**；Severity：**HIGH**。
+
+Expected：按冻结 runner 仅执行一次 `python3 output/release/xyy-20261022-08/sol/run-cms-operation.py verify luna`，exit 0；迁移后的 schema/navigation/source/metadata 保持，且存在唯一 `english_news` published-only read permission，随后完成 renderer 空读与 create/update/delete/share deny 检查。
+
+Actual：命令实际 exit 1，失败于 `cms-operation.py` 第 194 行：期望新增一条 permission，但实际新增数量为 0。此前已实际跑到并通过的 readback assertions 包括：`createCollection=false`、空 fields/relations/navigation/hideLegacyFields、records 全 0、legacy source rows 保持、renderer policy 保持、六个既有 sibling metadata 检查保持（五个可见旧集合执行 sort 断言，隐藏 `faqs` 作为未排序集合做完整比较）、news 字段集合及 legacy hidden/readonly 保持、原有 renderer permissions 全保持。因第 194 行失败，permission body、renderer `english_news` 空读及 content-token CRUD/share deny 检查均未到达，不能宣称通过。
+
+Reproduction：只运行一次冻结 runner；本地 `cms-verify-r4.exit` 为 `1`，JSON 输出为空，stderr 为 line 194 `AssertionError`。前置 apply 证据显示 separation 返回 `{"applied":0}`，read-policy 的 `POST /permissions` 返回 HTTP 403：`custom_permission_rules_enabled is a restricted resource.`
+
+Evidence：[`cms-verify-r4-summary.json`](../output/release/xyy-20261022-08/luna/cms-verify-r4-summary.json)、[`cms-verify-r4-analysis.log`](../output/release/xyy-20261022-08/luna/cms-verify-r4-analysis.log)、[`cms-verify-r4.stderr`](../output/release/xyy-20261022-08/luna/cms-verify-r4.stderr)、[`cms-apply-r4-child-logs.json`](../output/release/xyy-20261022-08/sol/cms-apply-r4-child-logs.json)、[`cms-preview-r4.json`](../output/release/xyy-20261022-08/sol/cms-preview-r4.json)。未读取原始 backup 到本地证据，未重试，Luna 未执行 CMS 写入；CMS partial 后 fresh runtime 回读仍显示 active runtime 为旧 release、未切换/未重启；证据为 [`after-cms-partial-runtime.json`](../output/release/xyy-20261022-08/sol/after-cms-partial-runtime.json)。
+
+Likely affected area：Directus `/permissions` 权限同步与 `sync-english-news-read-policy.mjs`，服务器启用的 `custom_permission_rules_enabled` restricted-resource 限制；迁移 schema/navigation/source 保持本身未复现失败。发布前必须先解决或获准确授权处理该 permission gate，再重新完成 renderer read/CRUD/share 终检。
+
+Handoff：返回 Sol；不修改实现、不重试、不放行 CMS/release。
+
+### XYY-20261022-08 — isolated verify:release harness preparation
+
+Task ID：`XYY-20261022-08`；Result：**PREPARED / BLOCKED_BY_CMS_GATE**；`verify:release` **未运行**。
+
+已准备 [`run-verify-release-task08.sh`](../output/release/xyy-20261022-08/luna/verify-release-r1/run-verify-release-task08.sh)，固定候选 `/home/yj/data/xyy-native-update-20261022-08`、HEAD `d498d984ae4ece0e270db6b3951acf41a69ca43f`、14 路冻结路径 hash、精确 GitHub origin 和无 `.env` 要求。执行前会检查候选 status/path/hash、CMS `CMS_SCHEMA_VERSION_STATUS === 'verified'`；当前实际 status 为 `pending_release_gate`，guard-only preflight 已按预期 exit 78，因此没有触发测试、构建或 release manifest。
+
+真正触发时的命令链会先运行 CI commit identity gate 和 `create-release-manifest`（两者均受 verified CMS status 约束），再由 `capacity-baseline.mjs` 包装 `npm run verify:release`；使用 `VITEST_MAX_WORKERS=4`、candidate-local `http-cache-semantics` resolution 检查、唯一 loopback ports `4608/4611/4612`、独立 TMP/artifact 目录、`NODE_OPTIONS` loopback-only net/http/https/dns guard、Directus/Xiansuo loopback dummy endpoints，并拒绝 candidate `.env` 与 harness 重跑覆盖。`source-manifest-task08.py` 会在前后记录 candidate git-listed source hash，漂移即失败；完成后运行 local capacity preflight。所有非 loopback 网络和真实询盘 POST 均不在授权范围内。
+
+Preparation checks：`bash -n`、Node guard `--check`、Python AST parse 均 exit 0；guard-only preflight 真实观察到 `cmsStatusVerified=false`、14/14 hash/path 仍匹配。R4 CMS FAIL 证据保持；当前 permission 403/pending gate 未解除前，full `verify:release`、release manifest 和发布验收均不得运行或宣称通过。
+
+证据：[`verify-release-prep.json`](../output/release/xyy-20261022-08/luna/verify-release-r1/verify-release-prep.json)、[`preparation-validation.log`](../output/release/xyy-20261022-08/luna/verify-release-r1/preparation-validation.log)、[`preflight-before.json`](../output/release/xyy-20261022-08/luna/verify-release-r1/preflight-before.json)、[`source-manifest-task08.py`](../output/release/xyy-20261022-08/luna/verify-release-r1/source-manifest-task08.py)、[`task08-release-gate.py`](../output/release/xyy-20261022-08/luna/verify-release-r1/task08-release-gate.py)。
+
+Handoff：harness 已准备，返回 Sol；等待 CMS permission/status 决策后再由 Sol 触发完整独立验收。
+
+### XYY-20261022-08 — English public visibility / asset-defense targeted QA
+
+Task ID：`XYY-20261022-08`；Result：**UNIT PASS / E2E AND FINAL-BUNDLE SCAN BLOCKED BY LOCAL BUILD DEPENDENCY**。
+
+Tests performed：对候选 `d498d984ae4ece0e270db6b3951acf41a69ca43f` 只做本地 loopback/dummy 独立验证。目标 Vitest 7 个文件、55 tests exit 0，另运行 `news-rich-text.test.ts` 11 tests exit 0，共 66 tests。覆盖英文 list/detail 的 published-only 过滤、draft/archived/future/incomplete/unknown true 404 与无 hreflang、related language pairing、sitemap state changes、仅 unavailable CMS 可回退、published canonical inline asset 引用、draft/future inline asset 404 且不请求上游、资产代理鉴权/隔离 CSP、同源 Directus image query 中 `access_token`/`token` 清理。精确测试名与输出见 [`english-public-visibility-review.json`](../output/release/xyy-20261022-08/luna/english-public-visibility-review.json)。
+
+Regression coverage：现有 `tests/e2e/english-news-fixture.spec.ts` 的 6 个场景、`english-news-visibility.spec.ts` 的 2 个场景和 `news-body-images.spec.ts` 的 2 个场景已审阅，现有断言覆盖 list/detail/related/hreflang/sitemap、草稿/归档/未来记录与正文图片资产；本次未把它们误报为已执行。尝试用唯一 loopback 端口启动这 3 组 E2E 时，Playwright webServer build 在 `prepare:fonts` 因候选 `node_modules/cn-font-split/dist/libffi-x86_64-unknown-linux-gnu.so` 缺失退出 1，浏览器用例实际未启动；完整容量基线尝试同样保留 exit 1 原始日志。
+
+令牌检查：源码审阅确认 `DIRECTUS_CONTENT_TOKEN` 仅由 server-side `process.env` 读取，公开资产 URL 为同源 `/api/cms-assets/<UUID>`；未发现 `PUBLIC_*TOKEN`。但因构建依赖缺失，没有最终 client bundle 可做字节扫描，因此“server token 不进入浏览器 bundle”仍是未证实限制，不能写成 PASS。未执行真实 Directus 权限读取/写入、远程 CMS、生产请求或真实 POST；R4 permission 失败证据保持。
+
+Evidence：[`english-public-targeted-unit.log`](../output/release/xyy-20261022-08/luna/english-public-targeted-unit.log)、[`english-public-rich-text-token-unit.log`](../output/release/xyy-20261022-08/luna/english-public-rich-text-token-unit.log)、[`english-public-targeted-e2e.log`](../output/release/xyy-20261022-08/luna/english-public-targeted-e2e.log)、[`english-public-capacity-baseline.log`](../output/release/xyy-20261022-08/luna/english-public-capacity-baseline.log)、[`english-public-visibility-review.json`](../output/release/xyy-20261022-08/luna/english-public-visibility-review.json)。本次未修改实现或持久测试文件；未运行 `verify:release`，CMS gate 仍 pending。
+
+Handoff：existing tests meaningfully cover the requested published-only and asset defenses; no mirror test was added. 返回 Sol / Nova，需在 CMS permission/status gate 解除且 fresh build 具备 native font dependency 后，再由正式 gate 复核浏览器与最终 bundle。
+
+### XYY-20261022-08 — isolated candidate native dependency repair
+
+Task ID：`XYY-20261022-08`；Result：**ENVIRONMENT REPAIRED / READY FOR THE APPROVED FUTURE GATE**。
+
+候选 `/home/yj/data/xyy-native-update-20261022-08` 的 `cn-font-split` package/lock 均精确为 `7.4.3`，但候选隔离 `node_modules` 缺少其 postinstall native 文件。未执行 npm install/rebuild、未访问网络；从本机已有同版本安装复制单一 regular file `libffi-x86_64-unknown-linux-gnu.so` 到候选包目录。源与目标均为 6,145,760 bytes，SHA-256 `db4690e3b9c4b04f6dfa5965792585c389914038f6a4c90fbe73baaf16bbf19c`，目标不是 symlink。候选模块顶层与 Node FFI 实现均成功加载，exit 0。
+
+保护核对：Terra freeze 的 14 个 staged source/package/test 文件逐项 **14/14 SHA 匹配**；候选 `package.json`、`package-lock.json` hash 与 freeze 保持；候选源码、实现和测试未改，node_modules 未使用共享 symlink。未重复 E2E/full verify，未访问 CMS、远程或生产环境。
+
+证据：[`native-binary-repair.json`](../output/release/xyy-20261022-08/luna/native-binary-repair.json)、[`english-public-native-repair.log`](../output/release/xyy-20261022-08/luna/english-public-native-repair.log)。该修复只恢复本地测试依赖，不代表 `verify:release` 或发布通过；后续仍须按 Sol gate 运行正式 full verify。
+
+### XYY-20261022-08 — R5 私有 Renderer 平铺读取规则独立本地复核
+
+Task ID：`XYY-20261022-08`；Result：**PASS（本地 mock / entrypoint guard；未执行真实 CMS）**。
+
+Tests performed：R5 freeze 状态为 `LOCAL_R5_READY_FOR_LUNA_NOVA`；4 个 Terra 文件及诊断文件在 freeze 前后 **4/4 SHA-256 匹配**。Terra 合同测试 5/5、Python compile exit 0。实际运行 frozen operator 的 `main()`（内存 HTTP mock、无远程请求）覆盖：preview 仅执行 `node scripts/migrate-english-news-separation.mjs` dry-run、要求零 schema/navigation/record action、生成分阶段日志和一次性 plan cache；apply 只产生 **1 次**精确 `POST /permissions`，body 等于未过滤 flat rule，未出现其他 mutation；preview 后 snapshot CAS 漂移在 POST 前 fail-closed，POST 数量为 0。`run-cms-policy-r5.py apply luna` 实际 exit 1 并拒绝 Luna apply；operator `-O` 与 runner `-OO` 均在 I/O/远程前 exit 1；pinned helper hash、regular-file、0600/0700 metadata 与 freeze 一致。
+
+Regression coverage：本地 mock 保持原 14 条 Renderer permission、legacy rows、news fields、collection metadata 的比较路径；隐藏 `faqs` 与既有 siblings 的保护逻辑继续由 R5 contract assertions 覆盖。现有英文 public-only 66 项 unit PASS 与 E2E 覆盖审阅结果保持，未重复 fullverify/E2E。
+
+Remaining risks：所有结果均为本地 mock/静态 guard，未执行真实 Directus preview/apply/verify、许可证或权限变更；平铺 private Renderer rule 允许 token 读取草稿，公开安全性仍依赖服务端 published-only 过滤。CMS/release gate 仍不可据此放行。
+
+Evidence：[`r5-summary.json`](../output/release/xyy-20261022-08/luna/r5-summary.json)、[`actual-entrypoint-mock.json`](../output/release/xyy-20261022-08/luna/r5/actual-entrypoint-mock.json)、[`terra-contract.log`](../output/release/xyy-20261022-08/luna/r5/terra-contract.log)、[`r5-freeze-before.json`](../output/release/xyy-20261022-08/luna/r5/r5-freeze-before.json)。未修改实现或 Terra 测试文件，未执行外部写入。
+
+Handoff：返回 Sol，交 Nova 复核；仅在其批准且 Sol 明确触发时，才可进入真实 CMS 权限流程。
+
+### XYY-20261022-08 — Web ops executors / release harness independent readiness review
+
+Task ID：`XYY-20261022-08`；Result：**PASS_PREPARED_OPS_RETEST / CMS GATE STILL BLOCKED**。
+
+本次只读复核 Terra 最新 `ops-freeze.json`（SHA-256 `8431cdb9bcb5c10e1c3e26dcc3030c68aa869696337c2f1690c69a7199bece1`）：9 个 freeze 条目逐项匹配当前文件哈希。运行既有 `test_release_runner_contract.py`，4/4 tests PASS；`build-package.py`、`upload.py`、`ops/deploy.py`、合同测试 Python compile、`freeze-integration.mjs` Node syntax、release builder `--check-inputs` 及 harness bash syntax 均 exit 0。普通 deploy 入口以缺少 artifact 参数退出 1，`-O/-OO` 均在 I/O 前以 optimized Python 拒绝退出 1，无 NameError。
+
+Harness 复核：`build-package.py` 的 Luna gate 路径与 `verify-release-r1` 一致；活动字段已从固定 `frozen14Hashes`/`frozen14` 泛化为 `frozenHashes`/`frozenFiles`，runner 改写输出到 `preflight-before-current.json`/`preflight-after-current.json`。原 pending `preflight-before.json` 未覆盖，SHA `566edc91048d5fbe8d89f98ca3111ea307661c7d33fd4c16ae040bbe89338f21`，另保存同字节 `preflight-before-pending.json`。新的 guard-only preflight 实际 exit 78，候选 14 个冻结源哈希均匹配，但 `cmsSchemaStatus=pending_release_gate`，因此 release gate 仍 fail-closed。
+
+证据：[`ops-retest-summary.json`](../output/release/xyy-20261022-08/luna/ops-retest-summary.json)、[`harness-schema-review.json`](../output/release/xyy-20261022-08/luna/harness-schema-review.json)、[`ops-contract.log`](../output/release/xyy-20261022-08/luna/ops-retest/ops-contract.log)、[`check-inputs.log`](../output/release/xyy-20261022-08/luna/ops-retest/check-inputs.log)、[`harness-current-preflight.log`](../output/release/xyy-20261022-08/luna/verify-release-r1/harness-current-preflight.log)、[`preflight-before.json`](../output/release/xyy-20261022-08/luna/verify-release-r1/preflight-before.json)。
+
+未运行 `verify:release`、final build、远程上传/部署或 CMS 操作；本结果是 ops executor/harness 准备通过，不是 release PASS。继续条件是 CMS status verified 及 Sol/Nova 后续明确 gate。
+
+### XYY-20261022-08 — R5 actual CMS read-only verification
+
+Task ID：`XYY-20261022-08`；Result：**PASS**。
+
+按 Nova 精确批准与 Sol 授权，冻结命令仅执行一次：`python3 output/release/xyy-20261022-08/terra/run-cms-policy-r5.py verify luna`，exit 0。实际回读确认：仅新增精确 flat `english_news` read permission；原 14 条权限保持；private Renderer `english_news` 空读成功；create/update/delete/share 均拒绝；匿名 `english_news` GET 被拒绝；`realInquiryPost=false`。冻结 operator 的 verify 断言同时覆盖迁移 source dry-run 零动作、schema/relations/records/navigation/legacy fields、news/source 字段、hidden FAQ 与其他 sibling 元数据保持。
+
+证据：[`cms-policy-r5-verify.json`](../output/release/xyy-20261022-08/luna/cms-policy-r5-verify.json)、[`cms-policy-r5-verify.exit`](../output/release/xyy-20261022-08/luna/cms-policy-r5-verify.exit)、[`summary.json`](../output/release/xyy-20261022-08/luna/cms-policy-r5-verify/summary.json)。未重试、未执行 CMS 写入、数据库操作、真实询盘、部署或 release build。
+
+Handoff：R5 actual read-only verification PASS；可交 Terra 更新 status verified。后续 full `verify:release` 仍需以新的 freeze 和 Sol/Nova gate 为准。
+
+### XYY-20261022-08 — full release gate R1/R2 independent verification
+
+Task ID：`XYY-20261022-08`；Result：**FAIL / BLOCKED（harness）**。
+
+Expected：fresh `verify:release` must reach the candidate loopback server and complete source-before/after, unit, E2E, formal contract and build gates. R1 preflight passed 15/15 freeze hashes and `cmsStatusVerified=true`; unit stage recorded 155 files/1116 tests before the capacity runner’s intermediate `Terminated` output. E2E then exposed four `content-visibility.spec.ts` cases failing before page assertions with `ERR_CONNECTION_REFUSED` at `http://127.0.0.1:4399/`. R1 runner exported `PLAYWRIGHT_PORT=4608`, while the helper fallback used 4399 because `PLAYWRIGHT_BASE_URL` was unset. This is a harness environment defect; the affected page implementation was not reached. Sol authorized termination of only the R1 process tree; R1 logs, traces and partial results remain, with no full-gate exit marker.
+
+R2 prepared the minimal harness environment fix (`PLAYWRIGHT_BASE_URL=$PUBLIC_SITE_URL`, `LUNA_EVIDENCE_DIR=$BASE/e2e`) and static search found no other runtime helper base URL. The one R2 start attempt stopped at the runner’s own port bind preflight with `OSError: [Errno 98] Address already in use`; `verify:release` did not start. Afterward ports 4608/4611/4612 had no listeners. No automatic retry was made, and no source, assertion, CMS, remote or production action occurred.
+
+Evidence：[`content-visibility-failure-triage.json`](../output/release/xyy-20261022-08/luna/verify-release-r1/content-visibility-failure-triage.json)、[`r1-aborted-summary.json`](../output/release/xyy-20261022-08/luna/verify-release-r1/r1-aborted-summary.json)、[`r2-harness-prep.json`](../output/release/xyy-20261022-08/luna/verify-release-r1/r2-harness-prep.json)、[`r2-start-summary.json`](../output/release/xyy-20261022-08/luna/verify-release-r1/r2-start-summary.json)、[`verify-release.log`](../output/release/xyy-20261022-08/luna/verify-release-r1/verify-release.log)。
+
+Separate ops/caller review remains local PASS: final ops freeze 10/10 hashes, 10 contract tests, and caller mock guards passed; this does not override the blocked full release gate. Severity：HIGH release-gate blocker; a future gate requires Sol authorization after the port-preflight condition is resolved.
+
+
+### XYY-20261022-08 — R4 完整独立 release gate（默认 fixture 端口）
+
+Task ID：`XYY-20261022-08`；Result：**PASS（本地 loopback/dummy release gate；未部署）**。
+
+R3 曾在自定义 `4638` 端口触发 `news-body-images` desktop/mobile naturalWidth 失败；trace 证明 `tests/helpers/news-image-fixture.ts` 将来源硬编码为 `127.0.0.1:4399`，而 R3 `PUBLIC_SITE_URL` 为 `4638`。该失败归类为 fixture trusted-origin 环境不匹配，未改源码、fixture、断言或超时。随后在默认 `PLAYWRIGHT_PORT=4399` 的独立定向执行中，`news-body-images.spec.ts` **4/4 passed**（六张正文图可解码、draft/future 404 且不请求上游），证据见 `verify-release-r3/targeted-default4399/` 与 `news-body-images-failure-diagnosis.json`。
+
+按 Sol 指示使用 fresh R4 harness：`bash output/release/xyy-20261022-08/luna/verify-release-r4/run-verify-release-task08.sh`，端口 `4399/4401/4402`、Playwright 1 worker、Vitest 4 worker、显式 `PLAYWRIGHT_BASE_URL=http://127.0.0.1:4399` 和独立 `LUNA_EVIDENCE_DIR`。15/15 freeze 哈希与 `cmsStatusVerified=true` 预检通过；`verify-release.exit=0`、capacity preflight exit 0。`npm run verify` 为 155 files / 1116 tests passed；Playwright 为 438 cases 中 421 passed、0 failed、17 skipped；skipped 全为既有 mobile duplicate 条件（测试明确 `project.name !== chromium` 时 skip），formal contract **6/6 passed**；最终 Astro build 及 `whitepaper-pdf-metadata` `astro:build:done` hook 完成。
+
+候选 source-before/source-after 均为 1739 files，HEAD `d498d984ae4ece0e270db6b3951acf41a69ca43f`、文件 hash、既有 staged status 完全一致；15/15 candidate freeze hashes 保持。Network guard 仅有 loopback 子进程安装记录，无 blocked/external 事件。对 `dist/client` 与 HTML 共 807 个文件扫描 `DIRECTUS_*TOKEN`、`PUBLIC_*TOKEN`、dummy/fixture token 标记为 0 命中；CSS 标准 `::placeholder` 仅作 benign 记录。
+
+Ops 最小独立复核：当前 `ops-freeze.json` SHA `d363c3d82eccd78ed8e503ac0f64c6ffd5272af65e53f8843e36496c13cc359f`，build/upload/deploy/launcher hash 与 freeze 匹配；`require_luna_gate()` 实际绑定 R4 capacity baseline/guard，builder `--check-inputs` exit 0，`-O` exit 1，临时缺失 `verify-release.exit` 被 fail-closed 拒绝。既有 candidate `npm audit --omit=dev` 证据为 0 vulnerabilities，但 hosted CI 与生产 receiver 仍为独立限制。
+
+证据：[`final-summary.json`](../output/release/xyy-20261022-08/luna/verify-release-r4/final-summary.json)、[`verify-release.log`](../output/release/xyy-20261022-08/luna/verify-release-r4/verify-release.log)、[`preflight-before-current.json`](../output/release/xyy-20261022-08/luna/verify-release-r4/preflight-before-current.json)、[`preflight-after-current.json`](../output/release/xyy-20261022-08/luna/verify-release-r4/preflight-after-current.json)、[`source-before.json`](../output/release/xyy-20261022-08/luna/verify-release-r4/source-before.json)、[`source-after.json`](../output/release/xyy-20261022-08/luna/verify-release-r4/source-after.json)、[`client-token-scan.json`](../output/release/xyy-20261022-08/luna/verify-release-r4/client-token-scan.json)、[`ops-r4-minimal.log`](../output/release/xyy-20261022-08/luna/verify-release-r4/ops-r4-minimal.log)。本轮未执行远程上传/部署、CMS/数据库写入、真实询盘 POST 或生产切换；本地 PASS 不等同已部署/生产 POST 验证。
+
+Handoff：独立 R4 release gate 证据返回 Sol，交 Nova 最终 Review。
+
+
+补充格式证据：冻结候选实际执行 `npm run format:check`，exit 0，原始日志 [`format-check.log`](../output/release/xyy-20261022-08/luna/verify-release-r4/format-check.log) 明确 `All matched files use Prettier code style!`。前后 15 路 freeze/source 快照逐项一致，见 [`format-freeze-before.json`](../output/release/xyy-20261022-08/luna/verify-release-r4/format-freeze-before.json) 与 [`format-freeze-after.json`](../output/release/xyy-20261022-08/luna/verify-release-r4/format-freeze-after.json)。R4 English public defense 的 Chromium cases 123–131 与 mobile cases 342–350 均 PASS，覆盖 published-only、相关语言链接、未发布/未来/unknown 404、sitemap、状态迁移、empty fallback、响应式与 Unicode 可见性。
+
+### XYY-20261022-08 — post-deploy public readonly QA preparation
+
+Task ID：`XYY-20261022-08`；Result：**PREPARED / NOT RUN（等待 Sol 明确部署成功）**。
+
+已在独立 ignored 目录准备 [`post-deploy-readonly-qa.mjs`](../output/release/xyy-20261022-08/luna/post-deploy-qa/post-deploy-readonly-qa.mjs) 及运行说明 [`README.md`](../output/release/xyy-20261022-08/luna/post-deploy-qa/README.md)，固定目标 `https://56xyy.com`、release `release20261022T113304Z-e42b0aa` 和 Git `e42b0aadacd9b197d4004f4ced332050ec6d7dc5`。脚本含 `RUN_POST_DEPLOY_QA=1` 显式闸门，未设置时退出 78；当前只进行了 `node --check`，exit 0，未发起公网 HTTP、浏览器、表单、CMS、数据库或 receiver 请求。
+
+准备内容覆盖 `/version` 精确 release/Git 回读、Baidu verification 保存、主要中英文路由 GET、中文/英文联系页 1440/390 截图与字段断言（country/region 唯一可见且 required、locale-specific phone/email requiredness、电话空值无 `+86`、国际号码客户端校验、company/email 位于 message 前、无横溢）、中文公开文章恰好六张正文图解码，以及英文 `/en/news` 无详情链接/文章卡的真实空结果。浏览器路由会记录并阻断所有非 GET/HEAD 请求及非 `56xyy.com` 主机请求；脚本从不提交表单或执行写入。
+
+证据目录：[`post-deploy-qa/`](../output/release/xyy-20261022-08/luna/post-deploy-qa/)。公网验收仍未开始；不能据此宣称部署成功或生产 PASS。待 Sol 明确部署成功后，按 README 的单次只读命令运行并保存实际响应与截图。
+
+### XYY-20261022-08 — recovery-r2 independent local mock review
+
+Task ID：`XYY-20261022-08`；Result：**FAIL / BLOCKED（recovery runner freeze mismatch；未执行远程恢复）**。
+
+核对 `terra/recovery-r2/freeze.json`：freeze SHA `95f0553ba4811a739a3768cb1236634a2662bdf8ec8ff59607ff507f22d68ea7`，`recover-deploy.py` SHA `8623250e40d33acd13aefd78aba17d1291dfd50022628f2b6e7ff658883ac40a`，`test_recover_deploy.py` SHA `ab4fb47970f5341cc52e3215717d1cd9b411db016dbc79cc1378510214a69b5b`，均与 freeze 一致。Terra recovery contract tests **4/4 PASS**，但它们未覆盖真实 frozen runner 与 prepared-release owner/mode guard。
+
+Expected：recovery 入口应能加载 freeze 声明的 runner，并在 prepared release owner/group/mode 不安全时于任何 R2 marker/npm 包装器写入前拒绝。Actual：freeze 声明 runner SHA `711f7750817c323be2b876e97de234085cc9abc271d959fde492948e34e963fc`，当前 `terra/ops/deploy.py` 回读不匹配，正式入口在 runner load 阶段 fail-closed；因此成功分支、回滚分支及该权限负例没有被宣称为 PASS。静态审阅还发现 `recover-deploy.py:validate()` 对 `RELEASE` 仅检查目录/非 symlink 与 `node_modules` 非 symlink，没有 owner/group/mode 断言，属于待修复的 HIGH 风险。
+
+独立 harness 与日志：[`recovery_r2_mock.py`](../output/release/xyy-20261022-08/luna/recovery-r2-mock/recovery_r2_mock.py)、[`run.log`](../output/release/xyy-20261022-08/luna/recovery-r2-mock/run.log)、[`terra-tests.log`](../output/release/xyy-20261022-08/luna/recovery-r2-mock/terra-tests.log)。Harness 首轮错误使用 hardlink 作为 tamper fixture，曾改写 ignored Terra `terra/ops/deploy.py`；该文件当前 hash 为 `d9a0b51b0be87ce1e09e4524408091ae72655d16f2c7da6d3e68648fdd7651a7`，不应被视为 freeze 内容，已向 Sol 报告并停止继续 recovery 测试。应用源码、测试源码、`/data`、远程、CMS、数据库和生产均未操作。
+
+Handoff：**FAIL** 返回 Sol；先恢复并重新冻结准确 runner，且由 Terra 处理 prepared release owner/group/mode guard 后，再按原 ID重新执行独立 mock recovery review。
+
+### XYY-20261022-08 — recovery R2 独立复测与 recovery caller mock
+
+Task ID：`XYY-20261022-08`；Result：**PASS（本地临时副本/mock；未执行远程恢复）**。
+
+冻结核对：新 `terra/recovery-r2/freeze.json` SHA `9f9681ba1a1dbf6137c6b962131586ce2da1ba1bdf1329b335ad87b1770aaae6`；`recover-deploy.py` SHA `4068edd5e1719673920d925d940e90d6ff4a3d86854716651d001d3273501442`；`test_recover_deploy.py` SHA `3c0a23fc06e35e5b709d142e4d94fb292b6a9e457dd79008aa683f56e0e381ca`；恢复后的原始 `terra/ops/deploy.py` 与 Sol 保存的 `recovered-original-deploy.py` 均为 SHA `711f7750817c323be2b876e97de234085cc9abc271d959fde492948e34e963fc`。Sol recovery caller `execute-recovery-r2.py` SHA `c1d76cf4473b90a3c89c4a6dc74a05dcfa68ef8a757b62d3700b7537f4aef91b`，全部与输入声明匹配。
+
+Tests performed：Terra recovery contract tests **5/5 PASS**。独立 `recovery_r2_mock.py` 使用 `shutil.copyfile` 创建临时 regular copies，并将原始 runner 从 Sol 只读保存副本加载到临时 stage；未使用 hardlink、未改写 Terra 或真实路径，主 mock exit 0。成功分支实际观察到 remote capacity wrapper 参数包含 prepared release、`/data/xyy/npm-cache`、`/tmp`，仅删除失败 release 的临时 `node_modules`，保留旧 current 模块与原 failure log，canary 成功后切换且只重启 Web。切换后 canary 失败触发 rollback；切换前 candidate canary 失败不切换。
+
+Regression coverage：wrong artifact/runner/inventory、current/config/non-Web drift、prepared release owner/group/mode、release symlink、node_modules symlink、missing stage、duplicate marker 均在 R2 marker/npm wrapper 前拒绝；`releaseBoundaryGuards` safe 及 6 个负例全部 PASS；重复 evidence fail-closed；`python3 -O recover-deploy.py` exit 1。Sol caller 独立 mock 通过精确 recovery bytes/flag 传递、一次性 O_EXCL evidence、artifact/helper hash mismatch、已有 evidence no-retry 与 `-O` 入口拒绝；subprocess 仅被本地拦截，无 credential loader、SSH 或远程调用。
+
+Evidence：[`recovery-r2-final-summary.json`](../output/release/xyy-20261022-08/luna/recovery-r2-final-summary.json)、[`run-final.log`](../output/release/xyy-20261022-08/luna/recovery-r2-mock/run-final.log)、[`terra-contract-r2.log`](../output/release/xyy-20261022-08/luna/recovery-r2-mock/terra-contract-r2.log)、[`freeze-hash-check-r2.json`](../output/release/xyy-20261022-08/luna/recovery-r2-mock/freeze-hash-check-r2.json)、[`caller-mock-summary.json`](../output/release/xyy-20261022-08/luna/recovery-r2-caller-mock/caller-mock-summary.json)、[`run.log`](../output/release/xyy-20261022-08/luna/recovery-r2-caller-mock/run.log)。
+
+Remaining risks：结果只覆盖本地临时副本与 mock/intercepted subprocess；没有执行真实 recovery、远程 SSH、生产切换、CMS/数据库写入或真实 POST，因此不等同生产恢复或部署 PASS。原先 hardlink fixture 造成的污染文件与首轮失败证据继续保留，未覆盖。
+
+### XYY-20261022-08 — recovery R2 rollback 返工最小独立复测
+
+Task ID：`XYY-20261022-08`；Result：**PASS（新 freeze；本地临时 regular-copy/mock，未执行远程恢复）**。
+
+冻结核对：`terra/recovery-r2/freeze.json` SHA `aab47a4a5b23653f21c6ceec89d189b452cf2e77f155ce0c3b309e2617d59935`；新 `recover-deploy.py` SHA `dde908f794073ae9ec9e1f571745bcad45cee747b9772ceaa14b277649c0ba93`；新 Sol caller `execute-recovery-r2.py` SHA `80c6d51944e0df2ea81d517e455834fe4d1fa60dae3a1bcd49b306d9a4196d8b`；旁存旧 caller SHA `c1d76cf4473b90a3c89c4a6dc74a05dcfa68ef8a757b62d3700b7537f4aef91b`，均与实际文件匹配。
+
+Tests performed：Terra recovery contract tests **9/9 PASS**，caller compile exit 0。独立 retest 使用 `shutil.copyfile` 临时 regular copies，未使用 hardlink、未改实现/Terra 文件或真实路径。主 mock exit 0：成功回退状态为 `VERIFIED`；pre-switch canary 失败为 `NOT_REQUIRED`；current 并发漂移、rollback restart、readiness、configuration、non-Web 任一失败均实际记录 `FAILED`，保留错误并重抛原异常。新 `-O` recovery 入口 exit 1。
+
+Regression coverage：保留成功 recovery、pre-switch、artifact hash、runner hash、prepared release owner guard、duplicate marker 关键路径；权限/边界 guards 全部通过。caller mock 以新 recovery SHA 绑定，精确传递 recovery bytes 与 expected-artifact flag，验证一次性 evidence（O_EXCL）、artifact/helper hash mismatch、已有 evidence no-retry、`-O` fail-before-I/O；subprocess 仅被本地拦截，无 credential loader、SSH 或远程调用。
+
+Evidence：[`recovery-r2-retest-final-summary.json`](../output/release/xyy-20261022-08/luna/recovery-r2-retest-final-summary.json)、[`recovery-r2-retest-summary.json`](../output/release/xyy-20261022-08/luna/recovery-r2-retest/recovery-r2-retest-summary.json)、[`run.log`](../output/release/xyy-20261022-08/luna/recovery-r2-retest/run.log)、[`terra-contract-r2.log`](../output/release/xyy-20261022-08/luna/recovery-r2-retest/terra-contract-r2.log)、[`caller-mock-summary.json`](../output/release/xyy-20261022-08/luna/recovery-r2-caller-retest/caller-mock-summary.json)、[`freeze-hash-check-r3.json`](../output/release/xyy-20261022-08/luna/recovery-r2-retest/freeze-hash-check-r3.json)。
+
+Remaining risks：这仍是本地临时副本与 mock/intercepted subprocess 结果，不等同生产 recovery、部署、远程 SSH、CMS/数据库写入或真实 POST。交 Nova 复审新 freeze 与 rollback 状态证据。
+
+### XYY-20261022-08 — 上线后公网只读 QA
+
+Task ID：`XYY-20261022-08`；Result：**PASS（已部署候选的公网只读验收）**。
+
+按 Sol 部署成功确认执行一次最终 probe：
+`RUN_POST_DEPLOY_QA=1 EXPECTED_RELEASE_ID=20261022T113304Z-e42b0aa EXPECTED_GIT_SHA=e42b0aadacd9b197d4004f4ced332050ec6d7dc5 LUNA_EVIDENCE_DIR=output/release/xyy-20261022-08/luna/post-deploy-qa/run-20261022T2020Z-rerun2 node output/release/xyy-20261022-08/luna/post-deploy-qa/post-deploy-readonly-qa.mjs`，exit 0。`/version` 200 且精确回读 release `20261022T113304Z-e42b0aa`、Git `e42b0aadacd9b197d4004f4ced332050ec6d7dc5`；Baidu verification 200/32 bytes。
+
+Tests performed：中文 `/`、`/about`、`/cases`、`/product`、`/contact`、`/news` 与英文 `/en`、`/en/about`、`/en/cases`、实际公开服务路由 `/en/services`、`/en/contact`、`/en/news` 全部 200。中英文联系页 1440/390 共 4 个上下文通过：country/region 唯一、可见且 required；中文 phone required、英文 phone optional、英文 email required、中文 email optional；company 唯一、可见且 optional；空 phone 无 `+86`；`+44` 国际号码客户端有效；company/email 位于 requirements/message 前；无横向溢出。英文新闻真实空结果 200、detail links 0、cards 0。中文公开文章 `/news/morning-star-phase-2` 200，正文恰好 6 张图片，6/6 naturalWidth/naturalHeight 均有效。
+
+安全边界：`blockedWrites=[]`、`blockedExternalRequests=[]`、`pageErrors=[]`、`consoleErrors=[]`；浏览器只读 GET/HEAD，未提交表单，未写 lead、CMS、数据库或 receiver。
+
+QA harness 记录：首轮保留 `/en/product` 404 证据；公开英文导航实际指向 `/en/services`，因此仅在 Luna 自有 probe 中替换该路由。第二轮发现 probe 的 company optional 断言逻辑写反（实际 DOM `required=false`），修正后重新执行；未改应用实现。路由诊断见 [`route-diagnosis.log`](../output/release/xyy-20261022-08/luna/post-deploy-qa/run-20261022T2020Z-rerun2/route-diagnosis.log)，最终 probe 脚本 SHA 见 [`script-hash-after.json`](../output/release/xyy-20261022-08/luna/post-deploy-qa/run-20261022T2020Z-rerun2/script-hash-after.json)。
+
+截图：[`contact-zh-1440.png`](../output/release/xyy-20261022-08/luna/post-deploy-qa/run-20261022T2020Z-rerun2/contact-zh-1440.png)、[`contact-zh-390.png`](../output/release/xyy-20261022-08/luna/post-deploy-qa/run-20261022T2020Z-rerun2/contact-zh-390.png)、[`contact-en-1440.png`](../output/release/xyy-20261022-08/luna/post-deploy-qa/run-20261022T2020Z-rerun2/contact-en-1440.png)、[`contact-en-390.png`](../output/release/xyy-20261022-08/luna/post-deploy-qa/run-20261022T2020Z-rerun2/contact-en-390.png)。完整结果见 [`final-summary.json`](../output/release/xyy-20261022-08/luna/post-deploy-qa/run-20261022T2020Z-rerun2/final-summary.json)；英文空页和中文六图截图也保存在同目录。
+
+Remaining risks：本次覆盖公网 GET/HEAD 与浏览器只读渲染；没有执行真实询盘 POST、CMS/数据库写入或 receiver 联通验证。部署身份与页面结果已通过，真实表单提交链路仍保持未测。
+
+### XYY-20261023-01 — primary 等价与 Git 同步独立 harness 准备
+
+Task ID：`XYY-20261023-01`；Result：**PREPARED / WAITING FOR TERRA 15-FILE FREEZE**。
+
+已读取合同、Task08 e42 clean candidate 与 1,739-file source manifest。准备了 [`run-primary-verify-task01.sh`](../output/git-sync/xyy-20261023-01/luna/run-primary-verify-task01.sh)、[`primary-equivalence-task01.py`](../output/git-sync/xyy-20261023-01/luna/primary-equivalence-task01.py) 和 loopback-only [`network-guard-task01.cjs`](../output/git-sync/xyy-20261023-01/luna/network-guard-task01.cjs)。最终 harness 会在 Terra 15-file freeze 与 Sol start notice 后执行：15 个 releaseDelta 文件逐字节对比 clean e42、其余非文档 manifest 文件等价、五份状态日志 before/after 保持；在独立 ignored build copy 中用 e42 隔离依赖运行 fresh `npm run verify`、capacity baseline、全量 `npm run format:check` 和 `git diff --check`。
+
+当前仅完成 bash/python/Node 静态语法检查，均 exit 0；`preparation-summary.json` 明确 `finalVerificationStarted=false`。未运行 `npm run verify`、format、audit、build、E2E、Git 操作、服务器/CMS/数据库/receiver 访问或外部写入。最终运行默认由 `RUN_LUNA_TASK01=1` 与 `PRIMARY_FREEZE` 双闸门控制，且会拒绝复用已有私有 build/TMP 目录。
+
+### XYY-20261023-01 — primary Git 同步独立验证
+
+Task ID：`XYY-20261023-01`；Result：**PASS_WITH_AUDIT_FINDING**。
+
+Source/freeze：Terra `source-freeze.json` SHA `f4d201a51db949a63be6f493d02fdbb55c5a393c3eb8d8b2666737b3a7efb6a6`、`non-scope-source-manifest.json` SHA `d261ce392ccbb0b0c0a04a490142c7dd06c0a8b096e5a69be91ffa5f23c58e9d` 均精确匹配。primary/e42 before/after 均 1,739 文件；15 个 staged delta **15/15 逐字节一致**；Terra 1719 个 non-scope source **1719/1719 一致**，无缺失/额外/非日志漂移。五份角色日志均存在，verify 期间仅 `docs/TERRA.md` 被 Terra 维护更新，已单独记录并按合同排除。
+
+Tests performed：独立 ignored private build copy 使用 e42 隔离依赖，未复制 primary `.env`，loopback-only network guard 无 blocked event，capacity peak `415,240,192` bytes / `2,013` inodes。`npm run verify` exit 0：155/155 test files、1116/1116 tests、build PASS；`npm run format:check` exit 0；`git diff --check` exit 0。未运行 `verify:release`/E2E。
+
+Production audit：独立官方 registry 命令 `npm audit --omit=dev --registry=https://registry.npmjs.org/` exit 1，报告 `astro <=7.3.2` 的 moderate advisory `GHSA-98hj-9722-w3j8`（同时列出 `GHSA-mpr7-6m5w-76rw`）。未执行 `npm audit fix`，未改依赖或 lock；因此本次等价/本地验证 PASS，但 audit 不是 clean，需 Sol/Nova 将该安全发现作为同步/发布剩余风险处理。
+
+API 备用脚本只做独立静态与 guard 检查：`sync-via-api.py` SHA `d01bf2da98545143f561210c1fb2ab18096661dd43e9d85779520321528dbbbb`，freeze SHA `c674e84abe629b554ad1231d993789ff233341a0d74f673a570c63bce0bf4092`；compile exit 0，`--check-inputs` exit 0（15 source / 20 default sync / 2 status docs），`--check-inputs --status-docs-only` 与 `--check-inputs --apply` 均 exit 1。未调用 API、未创建 request、未执行 Git 写入或 push。
+
+Evidence：[`final-summary.json`](../output/git-sync/xyy-20261023-01/luna/run-final/final-summary.json)、[`source-before.json`](../output/git-sync/xyy-20261023-01/luna/run-final/source-before.json)、[`source-after.json`](../output/git-sync/xyy-20261023-01/luna/run-final/source-after.json)、[`source-compare.json`](../output/git-sync/xyy-20261023-01/luna/run-final/source-compare.json)、[`npm-verify.log`](../output/git-sync/xyy-20261023-01/luna/run-final/npm-verify.log)、[`format-check.log`](../output/git-sync/xyy-20261023-01/luna/run-final/format-check.log)、[`production-audit.log`](../output/git-sync/xyy-20261023-01/luna/run-final/production-audit.log)、[`api-static/`](../output/git-sync/xyy-20261023-01/luna/run-final/api-static/)。
+
+Remaining risks：GitHub commit/push、hosted CI 和安全 advisory remediation 尚未由 Luna 执行；本结果仅是独立源等价与本地验证证据。

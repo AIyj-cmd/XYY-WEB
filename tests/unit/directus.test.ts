@@ -159,7 +159,10 @@ describe('Directus helpers', () => {
     ])
     expect(requester).toHaveBeenCalledWith(
       'homepage_content',
-      expect.objectContaining({ fields: ['id', 'status', 'stats'] })
+      expect.objectContaining({
+        filter: { status: { _eq: 'published' } },
+        fields: ['id', 'status', 'stats'],
+      })
     )
   })
 

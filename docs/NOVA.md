@@ -4438,3 +4438,313 @@ Result：**APPROVED_FOR_AUTHORIZED_GITHUB_SYNC_AND_SAFE_API_TRANSFER**。批准�
 Remaining Risks：对象创建后 CAS 失败可能留下不可达对象，不能把对象存在称为同步成功。baseline hosted CI 因一项 moderate 与一项 high 依赖审计问题失败；新 CI 状态必须实际回读，生产发布仍被该安全审计与接收端兼容 gate 阻断。脚本 allowlist 宽于本次 manifest，因此 23 路径及后三文档 dry-run 精确等值不可省略。
 
 Handoff：**APPROVED_FOR_AUTHORIZED_GITHUB_SYNC_AND_SAFE_API_TRANSFER** 返回 Sol，按精确 parent/path/tree/commit、`expected_sha`、`force=false` 和两次远端回读执行。结构化结论：`output/git-sync/xyy-20261022-07/nova/review.json`。
+
+### XYY-20261022-08 — 新 ECS 独立源码 staging Review
+
+Task ID：`XYY-20261022-08`（HIGH，仅审阅 source-only staging）。
+
+Review Scope：审阅冻结脚本 `output/release/xyy-20261022-08/sol/stage-source.sh`、Luna 静态/guard 证据、Terra 离线兼容分析和 Sol manifest 实拒绝证据。Nova 未远程连接、未改实现、未执行 clone、发布、CMS/数据库/receiver 或运行时操作。脚本 SHA-256 为 `c8d5c624319230f8db6b97f24321245f1797d2241c37f788e0dffa552833fb68`。
+
+Architecture：**PASS for source stage only**。脚本只允许在 hostname `l4` 且 `/data/xyy/current` 仍解析到 `/data/xyy/releases/20261020T102057Z-7d7cdab` 时，于独立固定路径 `/data/xyy/source-checkouts/xyy-20261022-08-d498d98` shallow clone 固定公开仓库 main；随后要求 HEAD 精确为 `d498d984ae4ece0e270db6b3951acf41a69ca43f`、工作区 clean，并再次确认 current 未变。无 merge、build、服务或 symlink 切换命令。
+
+Security：**PASS for source stage only**。`/data`、`/data/xyy` 及 checkout 父目录必须为 root-owned 且 group/other 不可写；目标存在或为悬空 symlink 都会拒绝。固定 HTTPS repo、关闭交互凭据提示并限制 clone 90 秒；未见 Secret、删除/覆盖、配置、CMS、数据库、receiver、health 或真实 POST 操作。
+
+Maintainability：**PASS**。脚本 31 行、fail-fast、输入固定；失败不会被静默清理或回退。失败或 SHA 不符可能留下可见的 partial stage，必须先检查并返回证据，不得在本批准下删除后自动重试。
+
+Contract Risks：源码 clone 不等于候选或发布。main CI 的 production dependency audit 仍有 1 moderate + 1 high；`create-release-manifest.mjs` 已按预期以 `cms_schema_status=pending_release_gate` exit 1 且未生成 manifest；receiver 国际电话兼容未验证；无候选且未运行 `verify:release`。Terra 的 merge-tree 零冲突仅为离线预测，shallow stage 不得合并 native 九路径或绕过 gate。
+
+Test Coverage Review：**PASS for static/guard scope**。脚本 `bash -n` 与冻结 hash 匹配；Luna 本地 guard 模拟 4/4 PASS，覆盖创建父目录、既有安全父目录、悬空 stage symlink 和 group-writable 父目录拒绝。该证据不证明远程 clone 已成功。
+
+Result：**APPROVED_FOR_SOURCE_STAGE_ONLY**。批准只绑定上述冻结脚本、准确 host/current 前置条件和隔离 clone 动作；runtime 继续 **BLOCKED**。
+
+Remaining Risks：远程文件系统与 clone 结果须在 Sol 执行后由 Luna 独立后验。超时可能留下 partial stage；root-owned 安全父目录检查不覆盖具备 root 权限的并发篡改。源码就位不清除 CI、CMS manifest 或 receiver gate。
+
+Handoff：Sol 可执行一次授权的隔离 clone；任一断言、clone、SHA、clean 或 current 检查失败即停止。成功后提交脚本 exit/JSON，并由 Luna 复核 origin、main、精确 HEAD、clean、stage 独立及 current 未变，再交 Nova 做最终 stage Review。不得在本批准下 merge、install、build、运行 `verify:release`、切换 current 或触碰服务/配置/CMS/数据库/receiver。结构化结论：`output/release/xyy-20261022-08/nova/review-stage.json`。
+
+#### XYY-20261022-08 — 英文 CMS 正式 apply 前静态 Review
+
+Task ID：`XYY-20261022-08`（HIGH，新增授权后的 CMS pre-apply Review）。
+
+Review Scope：只读审阅 main `d498d984ae4ece0e270db6b3951acf41a69ca43f` 的英文集合迁移、旧英文字段迁移及专用读取 policy 入口、依赖模块和相关测试。Nova 未连接远程、未读取凭据、未执行 preview/apply、未改业务实现。迁移入口 SHA-256 为 `67b5b52c42b8f2dfee13bedf745757501401e978631f92d99fb8550f872a31be`；专用 policy 入口为 `810d2143b489c5325ed8104b572a914257ad33d64879aa4fc091e267023f9d42`。
+
+Architecture：专用迁移会创建/收敛 `english_news`、写入从旧英文字段推导的记录、回读，再把 `news` 的六个旧英文相关字段设为 hidden+readonly；不删除或清空旧值。专用 policy 只查询指定 policy 的 `english_news/read`，缺失时 POST 一条、存在且不一致时 PATCH 同一条，写后要求 published-only 精确回读。两入口均不调用全站 setup、seed、通用权限同步或直接 SQL。
+
+Security：**APPLY PENDING**。当前迁移 GET `/items/news?limit=-1` 未限定 fields，会读取算法不需要的完整旧 news 记录；正式生产 preview/apply 前必须收敛为 `id,status,published_at,slug,category,cover_image,title_en,summary_en,content_en,english_status,english_published_at` 等实际必需字段。凭据仅需 admin `DIRECTUS_TOKEN`；policy 身份另需 `DIRECTUS_CONTENT_POLICY_ID`，运行时回读需 `DIRECTUS_CONTENT_TOKEN`。所有 token 必须从受保护环境传入，不能进入 argv、输出或证据。
+
+Maintainability：迁移为顺序 Directus 写入，无事务和自动 rollback；中途失败可能留下部分 schema/记录，必须先盘点后再决定重试。preview 会列 issues、字段、relation、记录 slug、旧字段和 navigation，但没有输出可能发生的 `schema.collectionMeta` patch；正式 apply 前必须补显式 plan 字段或提供同一冻结版本生成的 sanitized before/desired diff。
+
+Contract Risks：**当前 main 不批准 apply**。迁移 planner 可能 PATCH `website_content` 下多个兄弟集合的 group/sort，超出“english_news 及确需旧英文迁移字段”授权。远程 dry-run 必须满足 `navigation=[]`；非空则先收敛实现。允许写面仅为 `english_news` collection/fields/cover relation/items、`news` 六个旧英文字段的 hidden+readonly，以及指定 content policy 的唯一 `english_news/read`。Directus schema API 会产生 Directus 管理的底层表/字段/关系变更，这属于已授权 CMS 迁移的必然效果，不扩展为直接 SQL 或通用数据库授权。
+
+禁止使用 `setup-cms.mjs`、`sync-content-policy-permissions.mjs`、`migrate-cms-contract.mjs` 或 `init-cms-content.mjs`，它们会触及全站 schema、全量内容权限或 seed。`migrate-english-news-schema.mjs` 只会给旧 `news` 新增 group+五字段，也不得自动运行；字段不存在不能恢复旧英文内容，任何真实必要性须由定向 inventory 单独证明。
+
+Test Coverage Review：代码与既有定向测试证明专用 policy 的 exact target/environment/policy guard、scope mismatch、写后 readback 和重复零写；迁移 planner 对不完整内容、slug/target 冲突、错误 schema 和额外必填字段会在写前失败。当前没有真实远程 plan、schema、policy 或 content-token 证据，因此这些本地测试不能批准生产 apply。
+
+Result：**FIELD_LIMITED_READ_ONLY_PREFLIGHT_ONLY_APPLY_PENDING**。Sol 可继续读取 `english_news`、确需旧英文迁移字段和精确 policy 权限，生成脱敏 inventory；使用收敛后的冻结 candidate 做无 `--apply` dry-run。随后须交回 issues=[]、navigation=[]、允许字段/relation/legacy-field 集合、预期记录和显式 collectionMeta diff，再做正式 apply Review。
+
+Remaining Risks：真实 CMS 可能已有冲突字段、额外必填字段、重复目标记录或重复权限；迁移中途失败可能部分落地。policy 无 `--apply` 模式只打印静态目标并标记 `remoteState=not_read`，不能代替远端权限预检。不能用真实写探针验证 runtime token。
+
+Handoff：执行顺序固定为源码/hash 与 target 身份 → field-limited inventory → 无写 dry-run → Nova pre-apply Review → 迁移 apply → 零差异迁移回读 → 指定 policy apply → admin 精确权限回读 + content token 只读行为验收。任一步范围或计划漂移即停止。结构化结论：`output/release/xyy-20261022-08/nova/cms-preapply-review.json`。
+
+##### XYY-20261022-08 — 导航元数据范围收敛补充 Review
+
+Review Scope：复核合同 `navigationScopeDecision`、只读 `cms-navigation-preview.json`，以及 receiver compiled schema 与 token challenge 证据。新 ECS 的 `faq_pages`、`faqs`、`homepage_content`、`news`、`service_pages`、`services` 均属于 `website_content` 且 `sort=null`；本轮未发生 CMS 写入。
+
+Architecture：**精确七项导航范围可接受，正式 apply 仍待审**。为保持 preview 中六个既有集合的观察顺序并把 `english_news` 插在 `news` 后，允许 dry-run 规划：`faq_pages=1`、`faqs=2`、`homepage_content=3`、`news=4`、`english_news=5`、`service_pages=6`、`services=7`。六个既有集合只允许 PATCH `meta.group=website_content` 与对应 `meta.sort`；英文集合导航另允许 `hidden=false`。不得写入兄弟集合其他 metadata、内容、schema 或权限。
+
+Security：Terra 必须把当前全量 legacy `news` items GET 收敛到实际迁移字段，把兄弟 collection PATCH 收敛为上述最小 payload，并让 dry-run 显示 `collectionMeta`。执行前备份须保存在新 ECS 的任务专用 root-owned 0700 目录，原始 JSON 为 0600；仓库证据只记录路径、SHA-256、owner/mode、计数和脱敏 identity，不能复制内容或 token。备份应包含六兄弟完整 collection metadata、`english_news` 当前状态、相关 fields/relations/items、旧 `news` 六英文字段 metadata 与定向源记录、精确 policy/permission 状态。
+
+Contract Risks：迁移没有事务或自动 rollback。任一步失败时不得自动删除 collection、回退 schema 或盲目重试；保持 runtime 不切换并提交 partial inventory 另行审阅。正式计划必须恰有上述七项 navigation，保持既有六项相对顺序；出现其他集合、其他 payload key、不同顺序或无关 metadata diff 均停止。
+
+Readback Requirements：迁移后再次 dry-run 必须为 issues=[] 且 schema/relations/records/navigation/legacy fields 均零待写；七项 sort 精确为 1..7。六兄弟 `group` 不变，除 sort 外全部 metadata 与备份语义等值，内容/schema/权限不变。`english_news` 定义、cover relation、记录数、legacy id/slug 唯一性、状态/时间/内容 hash 精确；旧字段值不变，仅计划字段成为 hidden+readonly。专用 policy 后必须只有一条指定 policy 的 `english_news/read`，`fields=['*']`、published-only、validation/presets 为 null；CONTENT_TOKEN 只读证明 published 可见、draft 不暴露且无 create/update/delete，不使用写探针。
+
+Receiver Boundary：部署中 compiled Zod hash `839a0514…28dbf6` 与既有批准 hotfix `b0c82c8…` 匹配，7/7 内存样例通过；两端 token 以临时 HMAC challenge 内存比对相同，未输出 credential/digest、无 HTTP POST 或数据库操作。此证据满足用户接受的 no-POST schema/token 兼容核验，不证明网络投递、通知或落库，也不授权真实询盘。
+
+Result：**SCOPED_NAVIGATION_PLAN_ACCEPTED_READ_ONLY_PREFLIGHT_ONLY_APPLY_PENDING**。不再要求 pre-apply navigation 为空；改为要求精确七项、最小 payload 与完整 backup/readback 计划。待 Terra bundle、真实完整 dry-run 和备份 manifest 到齐后再做 apply 前批准。
+
+##### XYY-20261022-08 — Runtime stage 与 CMS 只读 preview Review
+
+Review Scope：审阅 `stage-cms-runtime.py`、`cms-operation.py`、冻结 runtime archive/manifest、Luna 的等值/静态/定向测试及 Sol 的备份、CMS inventory、policy 与 receiver 证据。本轮只申请将包放入新 ops 目录并运行 localhost CMS 只读 preview；Nova 未连接远程或执行脚本，CMS apply、部署与 runtime switch 继续排除。
+
+Architecture：运行包 `e1c70f76…ad69ffab` 与 manifest `cb904dd1…c104073` 覆盖 762 个普通文件、16 个 package，与 candidate 和两个原 CLI 等值，未见 symlink/hardlink/特殊 tar member。preview 固定 localhost、禁止 redirect、用受保护 backup 对 live payload 做 canonical CAS，只调用无 `--apply` 的迁移 CLI，并仅在 root 0700 ops 目录写 0600 日志与批准计划。该目标设计符合 stage/preview 边界。
+
+Security：**REJECTED**。第一，stage runner 没有硬绑定上述已审 archive/manifest SHA，只接受执行时 Terra 目录内任意自洽包，无法保证远程对象仍是 Review 对象。第二，有效 SSH/sudo 执行器与凭据来源是 Review 脚本之外的 ignored `remote.py`；stage 会执行其源码前缀并调用两次，却未验证 helper hash、普通文件或权限。当前 helper 为 uid 1000、mode 0664，具有 group write 和 world read，同时承载远程 credential，不满足生产执行链完整性和凭据保护。第三，两 Python runner 与远端解包的 host/path/hash/type/mode/CAS/plan 闸门都使用 `assert`，会被 `python -O` 或 `PYTHONOPTIMIZE` 整体移除。
+
+Required Fixes：stage 必须在首次远程动作前硬绑定 archive `e1c70f76…ad69ffab` 和 manifest `cb904dd1…c104073`，远端再次验证；改用不允许 group/other 读取或修改、非 symlink 普通文件且身份已冻结的 credential/executor 来源，并在每次使用前 fail closed，不能把 helper 内容或 credential 写入证据；所有安全/合同 guard 改为显式异常，或在任何动作前以不可优化逻辑拒绝 `sys.flags.optimize != 0`，远端解包同样处理。涉及权限修改仍须遵守现有授权边界。
+
+Maintainability：stage 与 preview 的 O_EXCL、目标不存在、非阻塞锁及不自动 cleanup/rollback/retry 设计可接受；中断后可能留下 partial destination，CMS migration 与 policy 分两段也可能部分成功，均须停止并提交 inventory，不得盲目清理或重试。
+
+Contract Risks：当前 apply 继续未批准。除 Luna 已记录的非事务风险外，未来 verify 只检查 runtime permission map 存在 `english_news/read`，没有断言 CONTENT_TOKEN 的 create/update/delete 均缺失；正式 apply Review 前必须补 least-privilege 负向断言。Receiver 的 7/7 compiled schema、token HMAC 和 Nginx 到 active PID 证据仍可用于用户认可的 no-POST 兼容核验，不表示真实提交或落库。
+
+Test Coverage Review：Luna 的 14/14 freeze、audit 0 vulnerability、2 files/21 tests、762/762 runtime 等值、16 packages、CLI mock 等值与两脚本 AST 均可信。但 AST/静态 guard 存在性无法发现 `assert` 被优化移除，也没有把外部 helper 纳入冻结，故不能覆盖上述阻断。
+
+Result：**REJECTED_FOR_CMS_RUNTIME_STAGE_AND_READ_ONLY_PREVIEW**。不得按 SHA `1930c7a6…e55583a` / `02c4194d…acae4b` 执行远程 stage 或 preview。完成三个最小执行链修复并由 Luna 复核新 hash 后，再提交 Nova 重审；CMS apply、`verify:release`、部署和 runtime switch 保持 blocked。结构化结论：`output/release/xyy-20261022-08/nova/runtime-stage-preview-review.json`。
+
+###### XYY-20261022-08 — Runtime stage 与只读 preview R2 Review
+
+Review Scope：只复核上轮三个执行链阻断、新增 hash-bound runner 和 CONTENT_TOKEN 写权限负向 guard。绑定 stage `830676d1…fda051`、operator `3a247bd3…d9665c`、runner `f18c57bf…bd68d59`、private helper `3df8a4ea…f5b22e`、archive `e1c70f76…ad69ffab`、manifest `cb904dd1…c104073`，以及备份 `b6c660ec…7eb8`。Nova 未连接远程或执行 stage/preview。
+
+Architecture：**PASS**。Stage 在第一个 subprocess 前硬绑定 archive/manifest，并在远端解包再次校验；helper 和 operator 均从已读入内存且 hash 精确的 bytes 执行，避免校验后替换。Runner 固定 manifest，Sol 可选 preview/apply/verify，Luna 只能 verify；本批准只允许 Sol preview。preview 继续固定 localhost Directus、禁 redirect、校验 backup/live canonical CAS，并仅调用无 `--apply` 的 CLI。
+
+Security：**PASS for stage/preview**。新 helper 为 uid 1000 的普通 0600 文件，父目录为同 uid 0700；原 helper 与权限未改。Stage、operator、runner、helper 在任何动作前拒绝优化模式，远端解包 snippet 同样拒绝；Luna 证明 `-O/-OO` 4×2 均 exit 1，五个包/manifest/helper 篡改或权限负例全部在零 subprocess 下拒绝。未来 verify 已补 CONTENT_TOKEN 的 create/update/delete/share 无权限断言。
+
+Maintainability：**PASS with fail-closed recovery**。目标必须全新，解包只生成 root 0700 下的 regular O_EXCL 文件；runner 证据也禁止覆盖。中断留下 partial directory 或已有 evidence 时必须停查，不允许自动 cleanup/retry。
+
+Contract Risks：Stage 只允许创建固定 incoming/runtime ops 目录、放入精确包和写受保护 stage 证据；preview 只允许写 operation lock、受保护日志与 `approved-preview.json`，不得写 CMS。CMS apply、`verify:release`、部署和 runtime switch 均继续 blocked。
+
+Test Coverage Review：Luna `PASS_GUARD_RETEST_WITH_CMS_APPLY_BLOCKED`：4/4 AST/compile、全部 optimized guard、五类零 subprocess 负例、runner 所有权/证据防覆盖与 CRUD/share guard 通过；14 candidate、762 runtime、16 package freeze 无漂移。无需重复此前全量检查。
+
+Result：**APPROVED_FOR_CMS_RUNTIME_STAGE_AND_READ_ONLY_PREVIEW**。执行前再次核对全部绑定 hash/helper mode；只运行一次 stage，并要求返回精确 archive/manifest、762 regular files、root uid/mode 0700、`cmsRequests=false`、`runtimeSwitched=false`。随后仅运行 `run-cms-operation.py preview sol`，要求 exit 0、`cmsWrites=false`、backup/live CAS 和预期 0 record、11 field、1 relation、7 navigation、6 legacy field 计划。任何差异立即停止。
+
+Handoff：Sol 可按上述固定对象在 `8.138.148.179` / hostname `l4` 执行一次 runtime stage 与只读 preview。必须把真实 plan SHA 和脱敏计划交 Nova 新一轮 apply Review；本批准不包含 CMS 写入、部署或切换。结构化结论：`output/release/xyy-20261022-08/nova/runtime-stage-preview-review-r2.json`。
+
+###### XYY-20261022-08 — Runtime stage 与只读 preview R3 Review
+
+Review Scope：只复核 R2 首次 stage 的真实失败边界和 R3 上传路径单行修正。R2 `scp` exit 255，原因是 SSH 用户不能遍历 root-owned mode-0750 `/data/xyy/ops`；旧 incoming 为 uid 1000/mode 0700 且为空，runtime destination 不存在，`current` 仍为旧 release，未进入解包、CMS 请求或写入，也未 cleanup/retry。
+
+Architecture / Security：**PASS**。R3 stage SHA 为 `d3b37ebc…173c4a8`，相对已审 R2 唯一变化是 incoming 从 ops 下移到 `/data/xyy/upload-english-news-20261022-08`。其父 `/data/xyy` 为 root-owned mode 0755，可供 `yanjiang` 遍历；最终 destination 仍固定在 root-owned mode-0750 `/data/xyy/ops/english-news-20261022-08`。远端解包仍验证 `/data`、`/data/xyy`、`/data/xyy/ops`、固定 archive/manifest、tar 成员与所有文件 hash。旧失败目录不在 R3 路径中并保持原样。
+
+Test Coverage Review：Luna `PASS_STAGE_ONLY_STATIC_R3` 确认唯一一行 diff，AST/py_compile、`-O/-OO` 早期拒绝、archive/manifest/helper 硬绑定和无 CMS/runtime switch 标记均保持。Operator `3a247bd3…d9665c`、runner `f18c57bf…bd68d59`、helper `3df8a4ea…f5b22e`、archive `e1c70f76…ad69ffab`、manifest `cb904dd1…c104073`、backup `b6c660ec…7eb8` 均未漂移。
+
+Result：**APPROVED_FOR_CMS_RUNTIME_STAGE_AND_READ_ONLY_PREVIEW_R3**。执行前须确认新 incoming 与 destination 均不存在；只允许一次 R3 stage。成功后要求 762 regular files、root-owned mode-0700 destination、精确包 hash、`cmsRequests=false`、`runtimeSwitched=false`，随后仅运行 frozen `preview sol` 并返回真实 plan/hash。失败继续留证停止，不 cleanup/retry。
+
+Remaining Risks / Handoff：R3 尚无真实 stage/preview 结果；CMS apply、`verify:release`、部署、runtime switch、权限修改及旧 R2 目录清理均未批准。独立 Web deploy 脚本问题不属于本 CMS stage 批准。结构化结论：`output/release/xyy-20261022-08/nova/runtime-stage-preview-review-r3.json`。
+
+###### XYY-20261022-08 — 真实 CMS 计划 R4 Apply Review
+
+Review Scope：审阅 R3 source CLI 的真实 protected child stdout、外层解析失败、可见导航范围、R4 operator/runner 与 Luna 独立只读复核。R3 source CLI 实际 exit 0；随后旧 wrapper 读取不存在的顶层 `sort` 而 `KeyError`，没有进入 apply 或 CMS 写入。Nova 独立对 `cms-preview-r3-raw.json` 做 canonical JSON SHA-256，结果精确为 `eccccbb64ecbafd3625f0cd64a8c09aa79f03a5fc1350288e6cf4dbef2e20b4e`。
+
+Architecture：**PASS**。真实计划为新建 `english_news`、`collectionMeta=null`、11 个精确字段、`cover_image` relation、0 个内容记录，并把六个旧英文字段设为 hidden+readonly。可见导航仅为 `faq_pages=1`、`homepage_content=2`、`news=3`、`english_news=4`、`service_pages=5`、`services=6`，payload 只含 `group=website_content` 和 `sort`。`faqs` 当前 `hidden=true`，正确排除于 planner；R4 verify 将其完整 metadata 与 backup 比较，不允许任何变化。
+
+Security：**PASS with non-transactional residual**。绑定 operator `79acbbc0…08441f0`、runner `8bcfcdd0…7dd2f1`、manifest `cb904dd1…c104073`、archive `e1c70f76…ad69ffab`、helper `3df8a4ea…f5b22e` 与 backup `b6c660ec…7eb8`。R4 preview 先要求 live canonical payload 等于 backup，再生成 fresh plan；apply 只在 fresh SHA 与已审 SHA 相同、`approved-preview-r4.json` 字节相同且 apply 前再次 CAS 相同时开放。计划从 protected backup 与冻结模块生成，不允许 live re-plan 扩围。专用 policy 只新增指定 Renderer policy 的 `english_news/read` published-only；verify 保留全部原权限并拒绝 CONTENT_TOKEN 的 create/update/delete/share。
+
+Maintainability：R3 源输出、exit/stderr 与私有日志均保留；R4 使用独立 log/cache/evidence 名称，不覆盖失败证据。Migration 与 policy 是两个顺序写入，仍非事务；任一步失败必须停止发布并保留 partial inventory，不自动 rollback、cleanup 或 retry。
+
+Test Coverage Review：Luna `PASS_READONLY_R4_REVIEW_WITH_APPLY_BLOCKED` 独立解析 authentic raw plan，确认 issues 为空、11 fields、1 relation、0 records、六项可见 navigation 和 hidden `faqs`；R4 operator/runner 的 AST/compile、`-O/-OO`、hash pin、raw-plan、CRUD/share guard 均通过。此轮没有 CMS 写入。
+
+Result：**APPROVED_FOR_R4_READONLY_PREVIEW_AND_EXACT_CMS_PLAN_APPLY**。先运行 frozen `preview sol`；只有 exit 0、`cmsWrites=false`、live/backup CAS 相同、fresh canonical SHA 仍为 `eccccbb6…e20b4e` 且 `approved-preview-r4.json` 精确一致，才允许运行 `apply sol eccccbb6…e20b4e`。Apply 侧仍须再次产生同 SHA 并通过即时 CAS。随后必须由 Luna 运行 frozen `verify`，确认零待写、旧值保持、隐藏 `faqs` 与无关 metadata 不变、六项 sort 精确、原权限全保留、唯一新增 published-only read 且 renderer 无写/share 权限。
+
+Failure Rule / Handoff：任一 hash、CAS、计划、命令、readback 或权限检查失败即停止，禁止自动 cleanup/rollback/retry。此批准不包含 `verify:release`、Web 部署、runtime switch、真实询盘 POST、直接 SQL 或无关 CMS/权限操作。CMS verify PASS 后仍须完成独立 release 门禁与发布 Review。结构化结论：`output/release/xyy-20261022-08/nova/cms-apply-review-r4.json`。
+
+###### XYY-20261022-08 — Directus Core Flat Read 替代方案只读评估
+
+Review Scope：R4 按已批条件执行，schema/navigation/旧源值/metadata 与原 14 条 Renderer 权限均经 Luna 只读验证；英文权限 POST 因 `custom_permission_rules_enabled` 返回 403，未新增权限，Web runtime 未切换。审阅 Directus 12.5.0 实际 license 状态、官方 Directus 12/Core 说明、现有英文查询/转换/资产代理与测试，不执行远程、CMS 或源码修改。
+
+Architecture：**公开网站行为可继续仅 published，但 CMS 层契约会降级**。列表和详情请求均带 `status=published`，转换层再次拒绝 draft、archived、未来时间、不完整内容与非法分类；sitemap、相关链接、hreflang 和中文配对复用相同入口。资产代理也只枚举 published、非未来引用并再次校验英文记录。`DIRECTUS_CONTENT_TOKEN` 来自服务端环境。Directus 官方 Core 模板本身采用 flat rules 并由前端过滤发布内容，因此从功能架构看可行。
+
+Security：提议只在既有非公开 Renderer policy `abe32be5-f27c-470c-a4b5-45ed6ed048d5` 新增 `english_news/read`，精确 `fields=['*']`、`permissions={}`、`validation=null`、`presets=null`，不改 Public policy 或写权限。实质代价是该私有 token 可直接读取 draft、archived、未来记录和全部字段；token 泄露或未来消费者漏掉过滤时会暴露未发布内容。这与此前批准的 CMS published-only 防线不同，必须由用户明确接受，不能作为自动兼容绕过。
+
+Source / Contract Gaps：当前 `sync-english-news-read-policy.mjs`、共享 `content-policy-sync.mjs` 和冻结 production verify 都硬编码 published-only；不能原样实施该替代方案，也不能把共享默认改成 unrestricted。需要专用、精确、可幂等且 fail-closed 的 Core-tier 路径，并更新独立 verifier。当前资产测试尚未明确覆盖“Renderer 可读全部行时，只有英文 draft/future 引用的 cover/正文资产仍为 404”，这是必须补的具体回归。
+
+Required Tests：实施前测试精确 payload、policy/target 绑定、冲突拒绝、幂等与 readback；使用故意忽略查询 filter 的混合记录 fixture，覆盖 list/detail/related/hreflang/sitemap；补英文 draft/future 资产拒绝；确认 server token 不进入浏览器 bundle/HTML/public env。生产 apply 后 admin 回读必须只有这一条新权限、原 14 条完全保持、Public policy 无英文权限、匿名读失败、Renderer 带 published filter 读取当前空集合成功，且 metadata 证明 create/update/delete/share 均不存在，不做真实写探针。任何实现改动后仍须 `npm run verify`、`npm run verify:release`、Luna 与 Nova 闸门。
+
+Result：用户随后已明确选择服务器私有只读方案，并接受持 Renderer token 可读取 draft 英文记录的代价；该授权无需重复询问。**USER_APPROVED_ALTERNATIVE_IMPLEMENTATION_REVIEW_PENDING_DEPLOY_REMAINS_BLOCKED**。方案可满足公开站点“仅展示 published”的可观察 AC，但不得再宣称 CMS 权限层也 published-only。下一步仅审 R5 permission-only 冻结实现与 Luna 证据；在该 Review、真实 preview/CAS、apply 后只读回读及剩余 release gates 通过前，不批准 CMS 写入执行或 Web 部署。结构化结论：`output/release/xyy-20261022-08/nova/cms-core-flat-read-assessment.json`。
+
+###### XYY-20261022-08 — R5 Private Renderer Permission Preview Review
+
+Review Scope：审阅冻结 R5 operator `b5507fca…b99a`、runner `d931f28a…7f53`、tests `3ad563cd…ff80`、诊断 `fb1e1610…b142` 与 Luna `PASS_LOCAL_R5_INDEPENDENT_MOCK_REVIEW`。用户已明确批准既有私有 Renderer policy 的 `english_news/read` flat rule，并接受持 token 可读 draft；本轮只批准真实只读 preview，Nova 未执行远程、CMS 写入、runtime 变更或部署。
+
+Architecture：**PASS**。R5 复用已冻结的 R4 runtime manifest、root-owned ops 目录与 protected backup；逐文件核对 manifest。每种 mode 都只以无 `--apply` 的方式运行英文迁移 CLI，并要求 schema、navigation、records、legacy fields 全部零待写。Preview/apply 前 snapshot 允许且只允许已验证的 R4 迁移结果，要求原 14 条 Renderer 权限逐条保持且不存在既有 `english_news/read`。计划 SHA 绑定 exact flat body、零动作迁移计划、backup SHA 与 canonical live snapshot SHA。
+
+Security：**PASS FOR READONLY PREVIEW**。Runner 固定 operator/helper hash，检查 helper 与父目录 owner/mode/非 symlink；两个入口在任何操作前拒绝 optimized Python；Directus client 禁 redirect。Luna 只能 verify，Sol apply 必须携带用户授权 flag 和 Nova 后续审过的 64 位 plan SHA。唯一 mutation 函数固定为一次 `POST /permissions` exact body；Luna actual-main mock 证明正常 apply 仅一 POST、CAS 漂移零 POST。Preview 仅写独立 0600 证据与批准 plan，必须报告 `cmsWrites=false`。
+
+Maintainability / Contract：R5 为专用 Core-tier 路径，不改共享 content-policy 的 published-only 默认。各阶段证据 O_EXCL，失败或完成后不得静默覆盖/自动重试。Verify 要求只新增一条 exact flat read、原权限全部保持、Renderer 空集合读成功、create/update/delete/share 均无权限且匿名读取拒绝。私有 token 的未过滤读取能力是用户已接受的长期 least-privilege 降级。
+
+Test Coverage Review：Luna 独立匹配四项冻结 hash，5 项 contract tests 与 py_compile 通过；实际 operator main mock 覆盖 preview read-only、exact one POST、snapshot 漂移 zero POST、source dry-run、owner/opt/helper guards。现有定向 public visibility 测试覆盖 mixed published/draft/archived/future/incomplete English records。本 preview 闸门无需提前运行完整浏览器 E2E；真实 apply/readback 后、部署前仍必须完成 public E2E、bundle scan、`npm run verify` 与 `npm run verify:release`。
+
+Result：**APPROVED_FOR_R5_READONLY_PREVIEW_ONLY**。Sol 可且仅可运行一次 frozen `preview sol`。必须得到 exit 0、`cmsWrites=false`、零迁移动作、原 14 权限保持、无现存 English read、exact flat body，并返回真实 canonical `planSha256` 与脱敏 preview 给 Nova 做独立 exact apply Review。本批准不包含 R5 apply、retry/rollback、license/config/Public policy/schema/content 变更或 Web 部署。结构化结论：`output/release/xyy-20261022-08/nova/cms-policy-r5-preview-review.json`。
+
+###### XYY-20261022-08 — R5 Actual Preview / Exact Apply Review
+
+Review Scope：复核真实 R5 preview 证据与已审冻结对象，给出只绑定实际计划 SHA 的一次权限 apply 判定。Preview exit 0、stderr 0 bytes、`cmsWrites=false`；flat body 精确为私有 Renderer policy `abe32be5-f27c-470c-a4b5-45ed6ed048d5` 的 `english_news/read`、`fields=['*']`、`permissions={}`、validation/presets null。实际 canonical plan SHA 为 `c971698563615b39e113cbcd310fc30976b75bf579778a5a277069731ee0b4a9`。受保护批准缓存回读与该 SHA/body 一致，并绑定 snapshot SHA `ad40ff37f86155fea063351ff7f65af05b9d296af0b66818535556703dae7dd1`。Operator/runner/tests/diagnosis 四项 hash 均未漂移。
+
+Architecture / Security：**PASS WITH USER-ACCEPTED FLAT-READ RISK**。能够输出该 preview 表明 runtime manifest/backup、零动作 source dry-run、R4 后 CMS state、原 14 权限及“尚无 English read”全部通过；远端批准缓存绑定 exact body 和实时 snapshot。Apply 必须重新生成同一 SHA、要求批准缓存字节一致，并在唯一一次 `POST /permissions` 前再次做 live snapshot CAS。用户已明确接受私有 token 可读未发布英文记录，此处不再重复请求授权。
+
+Maintainability / Contract：Apply 证据 O_EXCL，自动 retry 被禁止。POST 可能失败，也可能在传输/响应异常前已成功；任何异常只能保留证据并做只读 inventory/verify，不得第二次 POST 或自动 rollback。此操作不运行 schema/content/navigation/source migration 写入，也不触碰 Public policy、license/config、数据库或 Web runtime。
+
+Test Coverage Review：真实生产 preview 已通过冻结入口；Luna 的 actual-main mock 已证明正常路径只有一条 exact permission POST，CAS drift 为零 POST；66 项 public visibility/rich-text 定向单测已通过。浏览器 E2E/build 因缺少 cn-font-split native library 未启动，不作为 permission-only apply 前阻断，但必须在环境修复后、部署前实际通过。Apply 后必须由 Luna 立即运行 frozen read-only verify：原 14 权限逐条保持，只新增一条 exact flat read；Renderer 空集合读取成功且无 create/update/delete/share；anonymous read 401/403；schema/navigation/source/legacy fields/hidden `faqs` 与无关 metadata 不变。完整 public E2E、bundle scan、`npm run verify` 与 `npm run verify:release` 仍须在 CMS readback 后、部署前完成，不作豁免。
+
+Result：**APPROVED_FOR_EXACT_R5_PERMISSION_APPLY_ONCE_AND_LUNA_READONLY_VERIFY**。Sol 仅可运行一次 frozen runner：`apply sol --user-authorized-private-renderer-flat-read c971698563615b39e113cbcd310fc30976b75bf579778a5a277069731ee0b4a9`。任一 apply/verify 差异立即停，禁止 policy retry、自动 rollback、license/config 变更、部署或 runtime switch。结构化结论：`output/release/xyy-20261022-08/nova/cms-policy-r5-exact-apply-review.json`。
+
+###### XYY-20261022-08 — 发布候选与执行链准备 Review
+
+Review Scope：只审阅当前 15 路径 staged candidate、R5 权限真实回读，以及 ops freeze `8431cdb9…9bece1` 的 builder/uploader/deploy 执行边界。Nova 未修改候选、运行远程命令、构建 artifact、上传或部署。
+
+Architecture：R5 真实只读 verify exit 0，确认只新增用户批准的私有 `english_news/read` 平铺权限、原 14 权限保持、Renderer 无 CRUD/share、匿名读取拒绝。`config/cms-contract.mjs` 已进入 staged 15 路径；首页查询已有 published filter 和第二道状态检查，archived/unknown 从未公开。当前新增的 archived→empty 只是与 about/site 单例一致的语义修正，unknown 继续 fail closed。最终记录须准确写成八个 native 路径保持、`src/lib/directus-queries.ts` 一个 intentional diff。
+
+Security：**当前 ops freeze 不批准 artifact upload/deploy**。上传目录由 `yanjiang` 可写；若 root 直接执行上传后的 `deploy.py`，其内部 self-hash 无法证明启动时字节就是已审对象，且 artifact 在验证后、实际解包/使用前仍可被替换。`upload.py` 也先 hash 后再次读取 private helper。必须以 root 侧可信 launcher 单次读取并 hash/执行同一 runner bytes，把全部 artifact 原子放入新 root-owned 0700 staging、拒绝 symlink/非普通文件并复核全部 hash，之后只从保护目录部署；本地 helper 同样单次读取、核验、执行同一 bytes。失败须停，不自动 cleanup/retry/switch。
+
+Maintainability / Contract Risks：候选的发布状态转换与 focused archived 测试范围合理，但旧 14 路径 freeze 已过期；须在最终 15 路径完成后重建 freeze/integration/tracked manifest。私有 flat read 是用户已接受的权限层降级，公开只展示 published 仍须由实际 release tests 证明。R5 CMS PASS 不等于源码、build、artifact 或部署 PASS。
+
+Test Coverage Review：Luna 已验证 R5 production readback 和 prepared ops 的四项合同/语法检查，但现有测试未覆盖 root trust-boundary TOCTOU；`npm run verify:release`、public defensive browser tests、bundle scan、最终 build/artifact/upload/deploy 尚未完成。最终还须验证代表性英文资产 URL、无 retired host/secret/token、artifact 精确 inventory/delta、保留 Baidu 文件，以及新可信 launcher 的 tamper/symlink/mode/hash 负例。
+
+Result：**REJECTED_PENDING_TRUSTED_EXECUTION_CHAIN_AND_FINAL_RELEASE_GATES**。Sol 已接纳该阻断并安排 output-only 最小修复；待新 ops freeze 与 Luna 独立负例后复审具体代码。其后仍须 final 15-path freeze、完整 `verify:release`/公开防御/bundle scan 和精确 artifact SHA Review，才能讨论上传或部署批准。结构化结论：`output/release/xyy-20261022-08/nova/predeploy-preparatory-review.json`。
+
+Remaining Risks / Handoff：当前没有批准 artifact、upload、deploy、current switch 或 runtime restart。最终候选和 artifact 仍未成为已审不可变对象。
+
+###### XYY-20261022-08 — 发布执行链返工复审
+
+Review Scope：复核 ops freeze `06c8b27a…ddf2dc3`、外部 caller `0a25820b…f6e73b`、uploader `481f46e6…d8ac4c`、root launcher `ba2dbb12…d94bf`、deploy runner `711f7750…e963fc` 及 Luna `PASS_LOCAL_OPS_CALLER_MOCK`。未生成或审阅 release artifact，未进行 SSH、上传或部署。
+
+Architecture：**PASS**。Upload 与 deploy 分离并使用独立不可覆盖证据；artifact 将绑定 launcher SHA，外部 caller 同时要求明确的 artifact/program SHA。Root launcher 以内联已审 bytes 运行，通过单个 `O_NOFOLLOW|O_NONBLOCK` descriptor 读取每个不可信上传输入，按 artifact 校验后用 `O_EXCL` 写入新 root-owned 0700 staging；deploy runner 从已核验内存 bytes 执行，后续只读取该保护目录。
+
+Security：**PASS FOR PREPARATION ONLY**。此前 writable upload 目录的 TOCTOU 阻断已关闭。私有 helper 单次读取并校验 regular/owner/mode/hash；密码只经继承 FD 传给 scp。最终 Sol bootstrap 还须单次读取 caller、核对 `0a25820b…f6e73b` 后执行同一 bytes。错误 artifact/launcher、hash drift、symlink、FIFO、既有 evidence/protected path 以及 `-O/-OO` 均 fail closed；partial 状态仍禁止自动 cleanup/retry。
+
+Maintainability / Contract Risks：可信边界集中在专用 launcher，没有把远程 staging 逻辑散入业务 deploy runner。Runner 原有 host、baseline/current、config、非 Web 服务、独立依赖安装、loopback smoke、原子切换与 rollback 边界保持。当前仅验证准备代码；尚无可审 artifact，因此 archive、inventory、release ID、merge commit 与生产 payload 均未批准。
+
+Test Coverage Review：Luna 匹配 10 个 ops freeze 项和 15 个 source hash；10/10 contract tests 通过，覆盖 helper 单次读取、保护 staging、drift/symlink/FIFO 拒绝、同字节执行和优化模式拒绝。External caller 的 upload/deploy subprocess 均被本地截获，artifact/launcher 负例、existing evidence、密码 FD 与 same-verified-program-bytes 均 PASS。真实上传、SSH、root staging、deploy 以及最终 `verify:release`/artifact 未运行。
+
+Result：**APPROVED_FOR_SAFE_EXECUTION_CHAIN_PREPARATION_AND_CONDITIONAL_LOCAL_BUILD_ONLY**。可保留这组精确代码；只有最终 15 路径 freeze 和完整发布门禁 PASS 后，Sol 才可运行自身要求 Luna exit-0 marker 的本地 builder。生成 artifact 后必须把精确 SHA、launcher binding、inventory/archive/release identity 和门禁证据交 Nova 新一轮 Review。当前不批准上传、远程 launcher、部署、current switch、restart 或 retry。结构化结论：`output/release/xyy-20261022-08/nova/ops-execution-chain-rereview.json`。
+
+###### XYY-20261022-08 — Builder R4 门禁路径绑定 Review
+
+Review Scope：只复核 `build-package.py` 从 `verify-release-r3` 到实际当前 `verify-release-r4` 的证据路径切换，以及 ops freeze `d363c3d8…c359f`；未运行测试、build、remote 或 commit。
+
+Architecture / Security：**PASS**。`LUNA` 现准确指向 R4；`require_luna_gate()` 仍要求 `verify-release.exit` 内容精确为 `0`，并要求 capacity baseline 与 task08 network guard，artifact 继续记录三者 SHA。把唯一的 R4 路径字面量还原为 R3 后，文件 SHA 精确回到上一版 `65f3189d…093d`，证明当前 builder `1a92c697…5d34` 仅有该一行变化。新 freeze 的 10 个 entry、candidate freeze 与 previous-freeze 链全部 hash 相符，未发现 guard 或作用面放宽。
+
+Contract / Test Coverage：当前 R4 目录没有 `verify-release.exit`，完整日志仍在进行；因此 builder 会 fail closed，当前不可构建。Preflight 与 source-before exit 为 0 只表示前置阶段通过，不能表示完整 R4 PASS。Luna 的 missing-PASS 拒绝检查和完整 R4 总结仍需回读。
+
+Result：**APPROVED_R4_GATE_PATH_BINDING_WITH_BUILD_STILL_BLOCKED**。先前 conditional local-build 批准改为绑定 ops freeze `d363c3d8…c359f` 与 builder `1a92c697…5d34`；只有 Luna 完整 R4 exit-0、source freeze、公开防御及 bundle scan 经最终 Review 后才可实际调用。当前不批准 artifact、upload、SSH、deploy、current switch、restart 或 retry。结构化结论：`output/release/xyy-20261022-08/nova/builder-r4-gate-path-review.json`。
+
+###### XYY-20261022-08 — 最终 15 路径源码候选 Review
+
+Review Scope：代码级审阅 freeze `d0933755…1200` 的 15 路径、tracked manifest `597aae58…9dd` 的 1739 文件，以及既有 ops/caller freeze 绑定；完整 R4 仍作为待决条件。Nova 未运行 build、测试、远程、CMS 或 commit。
+
+Architecture：**PASS**。Singleton client 只把 `id:null` 且其余字段为空（允许 `key=main`）的 Directus sentinel 归一为 null；带内容或 persisted malformed record 不会被隐藏。About/site/homepage 均带 published query filter 并二次核验状态：draft/archived 返回明确空内容，missing/null/unknown persisted status fail closed。英文 list/detail、sitemap、related、hreflang 与资产继续共用现有转换和发布时间检查，draft/archived/future/incomplete 均被查询层和应用层拒绝。迁移读取只投影 11 个实际字段；navigation payload 对可见兄弟只写 group/sort，仅在 English 隐藏时写 `hidden=false`，不复制其他 metadata。
+
+Security / Contract：**PASS WITH USER-ACCEPTED PRIVATE READ RISK**。`DIRECTUS_CONTENT_TOKEN` 只从服务端 `process.env` 解析，public URL 与 credential 分离；15 路径 diff 没有 credential、旧 host、构建产物或禁止路径。用户已接受私有 Renderer token 可读未发布英文行，公开面仍依赖已审应用过滤；最终 bundle scan 和 public-defense gate 必须实际 PASS。`CMS_SCHEMA_VERSION_STATUS=verified` 有真实 R5 readback 支撑：仅新增获批 English read、原 14 权限保持、Renderer CRUD/share 与 anonymous read 仍拒绝。
+
+Maintainability：**PASS**。规则留在既有 Directus 查询/转换层，没有绕过 `src/lib/claims/`。七个 native compatibility 路径与上一 freeze 精确一致；两个 intentional diff 是 `src/lib/directus-queries.ts` 及其 homepage test，不能表述为九个全未变。`sanitize-html 2.18.1` 与 Vite `8.1.6` override 明确，lock 变化为对应 sanitizer/Vite/Rolldown 依赖解析；生产 Node v22.23.2 满足新 engine 下限。15 个 staged hash/path 全匹配、无 unstaged drift，1739 manifest 全部匹配。
+
+Test Coverage Review：先前 Luna 66 项英文 visibility/rich-text 定向用例和实际 CMS R5 独立回读可接受；singleton focused tests 覆盖 filter、sentinel、draft/archived empty 与 unknown fail-closed。仍必须取得完整 R4 `verify:release` exit 0、浏览器 suite 零失败并按实际 PASS/条件 skip 统计、audit/type/lint/unit/format/build、公开状态/资产防御、bundle 无 token/credential/旧 host，以及门禁后 source freeze 零漂移。当时 363/438 无失败只是中间进度，不能算 PASS。
+
+Result：**APPROVED_SOURCE_CANDIDATE_CONDITIONAL_ON_COMPLETE_R4_RELEASE_GATE**。15 路径源码设计与冻结 bytes 可通过候选 Review；完整 R4 经独立回读 PASS 前不得声称 release ready。本结论不批准 merge commit、本地 artifact build、artifact SHA、upload、SSH、remote launcher、deploy、current switch、restart 或 retry。结构化结论：`output/release/xyy-20261022-08/nova/final-source-candidate-review.json`。
+
+###### XYY-20261022-08 — R4 最终门禁、精确本地 Commit 与 Build Review
+
+Review Scope：回读 Luna R4 完整 release gate、原始 format/audit/token/network/source/ops 证据，决定是否允许精确双父本地 merge commit 与冻结 builder。本轮未运行测试、build、remote、commit 或任何外部写入。
+
+Architecture / Security：**PASS FOR LOCAL COMMIT AND BUILD ONLY**。R4 `verify:release` exit 0，CMS status 前后均为 verified；依赖 audit 为 0 vulnerability，network guard 342 行且 0 外部事件，client/HTML 807 文件 token scan 为 0。英文公开防御在 Chromium 123–131 与 mobile 342–350 全部通过，覆盖 draft/archived/future/unknown、401/403/非法响应不回退、sitemap、related、hreflang 和资产边界。Ops freeze `d363c3d8…c359f` 未漂移，builder R4 正向门禁和缺 PASS marker 的负向拒绝均通过。
+
+Maintainability / Test Coverage：**PASS**。Astro check 771 文件、0 errors/0 warnings/6 existing hints；lint、935 文件维护预算、69 referenced/103 deployment assets、cache patch、155 files/1116 unit、421 browser PASS + 17 既有条件 mobile skip + 0 FAIL、6 formal 与首尾两次 build 均通过。Vitest 日志中的单行 `Terminated` 后仍给出 155/155、1116/1116 完整汇总，并继续完成后续门禁和最终 exit 0，不计失败或重试。独立全量 `npm run format:check` 有原始 log 和 exit 0，Prettier 报告全部匹配；其前后 15 路径 hash、HEAD、status 完全一致。此前“438 全部 PASS”的措辞已修正为真实 421 PASS + 17 skip。
+
+Result：**APPROVED_FOR_EXACT_LOCAL_MERGE_COMMIT_AND_LOCAL_ARTIFACT_BUILD_ONLY**。允许创建一个普通本地 merge commit，父顺序必须为 main `d498d984…41a69ca43f`、native `7d7cdabc…08041d5`，tree 只能是 freeze `d0933755…1200` 的 15 路径；随后必须核对双父、15-path delta、1739 manifest `597aae58…9dd` 和 clean tree。满足后可运行精确 builder `1a92c697…5d34`（ops freeze `d363c3d8…c359f`）生成本地 artifact。结构化结论：`output/release/xyy-20261022-08/nova/final-gate-commit-build-review.json`。
+
+Remaining Risks / Handoff：未知的新 commit SHA 和 artifact 均需生成后再审。当前不批准 GitHub push、artifact、upload、SSH、remote launcher、deploy、current switch、restart、cleanup 或 retry；Sol 须将 commit/object、artifact SHA、manifest、inventory/delta/archive/member 与 builder log 交 Nova 精确 Review。
+
+###### XYY-20261022-08 — 实际 Artifact 与一次性新 ECS 部署链 Review
+
+Review Scope：对象级复核本地 merge commit `e42b0aad…d7dc5`、artifact SHA `6b2ec099…3f65a`、release `20261022T113304Z-e42b0aa`、archive/inventory/deleted/baseline/manifest、production build 网络与 token 边界，以及冻结 caller/helper/uploader/launcher/runner。Nova 未运行 build、测试、SSH、上传或部署。
+
+Architecture：**PASS**。Commit 双父顺序精确为 main `d498d984…41a69ca43f` 与 native `7d7cdabc…08041d5`，15-path delta、clean tree 与 1739 manifest 全匹配。新 inventory 是 candidate release sources 的 1053 文件逐字节/尺寸精确映射；相对 1044 baseline 的 115 changed/new 与 tar 成员集合完全相等。Tar 115 项均唯一普通文件，无绝对路径、`..`、symlink、special type 或越界顶层，逐项 hash/size 与 inventory 一致。82 deleted 精确等于 baseline minus new inventory，全部是旧 `dist` 哈希 JS/MJS；无 config/server/scripts/package/PDF/稳定公开文件删除。Baidu 文件保持 32 bytes 与原 SHA `38168310…e6c3`。
+
+Security：**PASS FOR EXACT ONE-SHOT UPLOAD AND DEPLOY**。Artifact 内 baseline、inventories、deleted、integration、tracked manifest、runner、launcher、CMS runtime、R4 exit/capacity/network guard、package/lock 绑定全部与实际文件匹配。Production build 网络日志仅 11 条 guard-installed 事件，无 connection/request；Nova 独立扫描最终 client/HTML 807 文件，未发现 build token、Directus/Xiansuo token 标识、dummy secret 或旧 host。Inventory/tar 无 `.env`、`node_modules`、backup、credential 或 secret 路径。执行链固定为 caller `0a25820b…f6e73b`、helper `3df8a4ea…f5b22e`、uploader `481f46e6…d8ac4c`、launcher `ba2dbb12…d94bf`、runner `711f7750…e963fc`。
+
+Maintainability / Contract Risks：部署端会在新 release 内按精确 package/lock 执行 fresh `npm ci --omit=dev`，发生在 canary/current switch 前并记录安装日志 hash 与 sanitize/Vite 版本；这一步尚未实际发生，失败须保留 partial evidence 且 current 不变。Artifact 的 129,933,272-byte 压缩体积主要来自 14 份已批准 metadata integration 生成 PDF。Runner 会在运行时再次核对 current、Node、配置、非 Web 服务、磁盘与端口；任何 drift 都 fail closed。真实上线成功仍需部署后回读，不能预宣称。
+
+Result：**APPROVED_FOR_EXACT_UPLOAD_ONLY_THEN_PROTECTED_DEPLOY_ONCE**。先以同一已验 caller bytes 运行一次 upload：artifact `6b2ec099…3f65a` + uploader `481f46e6…d8ac4c`，只允许上传到 `yanjiang@8.138.148.179:/data/xyy/upload-native-update-20261022-08` 并报告 `uploadedOnly=true/deployed=false`。Upload exit 0 后，才允许同 caller 一次 deploy：同 artifact + launcher `ba2dbb12…d94bf`；launcher 只能 root/hostname `l4`，创建新 root 0700 protected stage，执行 runner `711f7750…e963fc`。Runner 只可创建 release `20261022T113304Z-e42b0aa`、fresh install、50032 canary，通过后切 current 并仅重启 `xyy-web`。结构化结论：`output/release/xyy-20261022-08/nova/exact-artifact-deploy-review.json`。
+
+Failure / Remaining Risks：任一 hash、mode/owner、baseline/current、Node、config/service、inventory、install、canary、switch 或 live smoke 差异即停止并留证；禁止自动 retry、cleanup、替代 host、手工绕过、第二次 upload/deploy。Runner 自带的 post-switch exception rollback 仍在批准内。未批准 GitHub push、CMS/DB/receiver/DNS/TLS/Nginx/Directus/env/权限修改、真实询盘 POST 或 health 请求。部署后仍需 Luna 独立只读验收。
+
+###### XYY-20261022-08 — R1 部署失败只读评估
+
+Review Scope：回读一次 upload/deploy 原始 stdout/stderr/exit、dependency install 诊断与失败后 current/service/config/stage/release/inventory 状态；未执行远程或恢复动作。
+
+Architecture / Security：Upload exit 0，精确 artifact 文件均匹配并报告 `uploadedOnly=true/deployed=false`。Deploy exit 1 发生于 fresh `npm ci --omit=dev` 的 preinstall；`check-capacity.mjs` 正确以 `capacity_baseline_measurement_required:output/capacity-baseline.json` 拒绝没有测量上下文的安装。尚未启动 50032 canary、切换 current 或重启 Web。Current 仍为旧 `20261020T102057Z-7d7cdab`；`xyy-web` PID 188804、实际 `xyy-directus` PID 206113、Nginx PID 60141，config hash 不变。Root protected stage、prepared release、backup 保留；prepared 1053 inventory 零 mismatch。
+
+Contract Risks：最初诊断查询了错误 unit 名 `directus.service`，其 inactive 结果不能当作 Directus 故障；准确 active unit 为 `xyy-directus`。失败 npm ci 已留下 partial `node_modules`，在专用恢复 fresh install/验证前不可信。原 runner 的 one-shot stage/release/backup/evidence 已存在，不能重入或自动 retry/cleanup。
+
+Result：**DEPLOY_R1_FAILED_SAFELY_RECOVERY_NOT_YET_APPROVED**。须保留全部 R1 状态和证据；等待专用 recovery executor 的固定 hash、partial-state guard、remote capacity measurement、Luna 独立正负例和精确调用计划，再由 Nova Review。结构化结论：`output/release/xyy-20261022-08/nova/deploy-r1-failure-assessment.json`。
+
+###### XYY-20261022-08 — Recovery R2 精确 Review
+
+Review Scope：只读审阅 freeze `9f9681ba…aaae6`、recovery `4068edd5…01442`、Sol caller `c1d76cf4…aef91b`、原受保护 runner `711f7750…e963fc`、artifact `6b2ec099…3f65a`、失败后远程元数据和 Luna 独立 mock。本轮未运行测试、构建或任何远程恢复动作。
+
+Architecture / Security：安装前边界整体正确。Recovery 从已验证 bytes 加载原 runner，逐项校验 artifact/stage 输入、current、Node、配置、非 Web 服务、旧版与 prepared inventory、目录 owner/group/mode、祖先可写性和 node_modules 类型；之后才删除 R1 partial node_modules。Fresh `npm ci` 由既有 `capacity-baseline.mjs --scope remote` 包装，覆盖 release、npm cache、`/tmp`，使用独立 R2 证据名并保留原失败日志。Caller 固定 recovery/helper/artifact hash、同 bytes 执行、O_EXCL 证据、拒绝重复和优化模式。
+
+Finding：**HIGH — rollback 证据可误报**。`recover-deploy.py:193-198` 在 switch 后异常时，仅当 `CURRENT.resolve() == RELEASE` 才执行回滚；若 concurrent current drift，会跳过回滚却仍写 `VERIFIED`。若 link、Web restart、旧版 readiness、配置或非 Web 检查在回滚中失败，异常会在写 `FAILED` 证据前逸出。该语义弱于原 runner，违反“异常 rollback 可核验”的恢复 AC。最小修正是恢复原 runner 的嵌套 rollback try/catch：current drift 明确失败，收集回滚错误，仅所有旧版回读成功才写 `VERIFIED`，否则写 `FAILED`，最后重抛原部署异常。
+
+Test Coverage Review：Luna 的 5 个合同测试、主入口 success/canary failure/成功 rollback、15 个 drift/身份/权限/marker 负例、release boundary 和 caller same-bytes/no-retry/-O 均可信；缺少 switched=true 后 concurrent current drift 与 rollback 内部命令失败分支，因此没有发现上述误报路径。返测须覆盖这两类失败及现有 happy rollback/pre-switch failure，应用 bytes 未变，无需重复 R4 全量门禁。
+
+Result：**REJECTED_FOR_PRODUCTION_RECOVERY_R2**。当前 recovery/freeze/caller SHA 不得执行。R1 继续安全停留在旧 `7d7cdab`，失败 release、protected stage、backup 与原始日志保持。未批准 retry、cleanup、GitHub/CMS/DB/receiver/Nginx/env 写入。结构化结论：`output/release/xyy-20261022-08/nova/recovery-r2-review.json`。
+
+###### XYY-20261022-08 — Recovery R2 Rollback 返工复审
+
+Review Scope：只复核上轮唯一 rollback 证据阻断、新 freeze `aab47a4a…59935`、recovery `dde908f7…0ba93`、caller `80c6d519…196d8b` 与 Luna 定向返测。Artifact `6b2ec099…3f65a`、原受保护 runner `711f7750…e963fc`、helper `3df8a4ea…f5b22e`、应用源码和 R4 全量门禁均未变化；未重复扫描归档或运行任何远程动作。
+
+Architecture / Security：**PASS**。Switch 后异常路径现会显式拒绝 concurrent current drift，并捕获 smoke stop、relink、Web restart、旧版 readiness、配置及非 Web 服务回读错误。仅 switched 且全部旧版回读无错误时写 `VERIFIED`；pre-switch 失败写 `NOT_REQUIRED`；任一回滚错误写 `FAILED` 和 errors，随后重抛原部署异常。Caller 仅更新冻结 recovery SHA，仍以已读同 bytes、固定 helper/artifact、O_EXCL 证据和 no-retry 边界执行。
+
+Test Coverage Review：Luna 9/9 合同测试及实际主入口 mock PASS。成功回滚为 `VERIFIED`，canary 前失败为 `NOT_REQUIRED`；concurrent current drift、rollback restart/readiness/config/non-Web 五类均为 `FAILED`、包含错误且原异常重抛。关键 owner/group/mode/ancestor/hash/marker/-O 与 caller exact bytes/flag/O_EXCL/no-retry 负例保持通过；全部使用临时 regular copy，无 hardlink、remote 或 credential 调用。上轮唯一阻断已关闭。
+
+Result：**APPROVED_FOR_EXACT_ONE_TIME_RECOVERY_R2**。Sol 可从同一已验证 bytes 启动 caller `80c6d519…196d8b` 一次，仅在 root/hostname `l4` 对既有 release `20261022T113304Z-e42b0aa` 和 artifact `6b2ec099…3f65a` 执行 recovery `dde908f7…0ba93`：守卫通过后删除该 prepared release 的 partial node_modules，使用 remote capacity wrapper fresh `npm ci`，50032 canary 通过后才切 current，并仅重启 Web；异常按上述路径回滚并真实记录。禁止自动重试、cleanup、替代对象及 GitHub/CMS/DB/receiver/Nginx/env/真实 POST 写入。
+
+Remaining Risks / Handoff：实际远程容量、registry install、canary、switch 与线上结果尚未知。任一失败即停并保留 stdout/stderr/exit 和 R2 markers，不得二次调用；成功后仍须 Luna 独立只读验收。结构化结论：`output/release/xyy-20261022-08/nova/recovery-r2-rereview.json`。
+
+###### XYY-20261022-08 — 最终生产上线验收 Review
+
+Review Scope：复核唯一 R2 恢复的实际 exit/运行态、DNS 与公网版本身份、Luna 最终只读桌面/手机 QA、四张代表截图和授权边界。Nova 未修改源码/测试、连接远程、执行 CMS/DB/receiver/GitHub 或再次部署。
+
+Architecture / Security：**PASS**。精确恢复 caller 仅执行一次并 exit 0；production current 为 `20261022T113304Z-e42b0aa` / `e42b0aad…d7dc5`。仅 Web 重启为 PID 217503；Directus PID 206113、Nginx PID 60141 的启动时间和 active/running 状态保持。配置 hash/mode/owner、全部旧 releases 与 1053 文件 inventory 保持，node_modules 为普通非 symlink；fresh npm ci 实际安装 sanitize-html 2.18.1、Vite 8.1.6，remote capacity 实测峰值 205496320 bytes / 13802 inodes，R1 原失败证据保留。主域和 www 均解析至 8.138.148.179，公网 `/version` 精确回读发布身份；私有 English read 200/0 rows。
+
+Test Coverage Review：**PASS**。Luna 最终 `rerun2` exit 0：12 个实际中英路由均 200，Baidu verification 200/32 bytes；中英联系页 1440/390 四上下文满足 country/region 唯一可见必填、语言对应 phone/email 必填规则、phone 初值空、`+44` 国际号码有效、company/email 位于 message 前且无横溢。中文 `morning-star-phase-2` 200 且 6/6 正文图解码；英文新闻 200、0 cards、0 detail links。`blockedWrites=[]`、`blockedExternalRequests=[]`、`consoleErrors=[]`、`pageErrors=[]`。Nova 查看中文移动联系页、英文桌面联系页、英文空新闻和中文六图文章截图，未见实质布局或内容回归。
+
+Harness Boundary：首轮使用不存在的 `/en/product` 得到 404，是 QA 路由错误；第二轮在 `company.required=false` 时仍报“must remain optional”，是旧 probe 断言方向错误。最终冻结脚本改用真实 `/en/services`，line 197 仅在 company required 时失败，`rerun2` 四上下文均明确 `company.required=false`。旧失败日志保留，不算应用失败，也不冒充 PASS；应用代码未因此变化。
+
+Result：**APPROVED_FINAL_PRODUCTION_ACCEPTANCE**。Task08 已部署版本满足本次授权与 AC，可由 Sol 最终验收。未发生第二次恢复、cleanup、真实询盘 POST、receiver 变更、GitHub push、CMS/DB 写入、Nginx/env 变更或无关服务重启。
+
+Remaining Risks / Handoff：本轮按约不做真实询盘投递，因此不证明通知/落库端到端；English news 当前为空是准确内容状态。部署 commit `e42b0aad…d7dc5` 仍仅在本地 release 分支，GitHub main 仍为 `d498d984…41a69ca43f`，因 Task08 未授权 push；这是后续源代码同步风险，不阻断本次部署验收。用户已接受 private Renderer token 可读草稿，匿名与写权限不变，网站继续过滤未发布/未来内容。结构化结论：`output/release/xyy-20261022-08/nova/final-production-acceptance-review.json`。
+
+### XYY-20261023-01 — 已部署修复 GitHub 同步 Review
+
+Review Scope：审阅目标 `AIyj-cmd/XYY-WEB/main` 的 15 个已部署源码/测试/依赖/CMS 契约文件、五份状态角色日志、fresh verify/format/audit、普通 Git 前置与冻结 API 备用传输。Nova 未创建 commit、push、API object、ref update 或外部写入。
+
+Architecture / Scope：**PASS**。15 个 staged 文件在工作树、index、部署 commit `e42b0aad…d7dc5` 与 source freeze `f4d201a5…fb6a6` 四方逐字节一致，全部 mode 100644；1719 个非日志源码与 manifest `d261ce39…58e9d` 全匹配，无缺失/额外/漂移。候选仅将已审并上线的 CMS contract、英文迁移边界、singleton/publication 防御、依赖修复与直接测试复制到 primary main，不合并 11 个 native 历史提交。首个 commit 精确 20 路径，保留 DEV_STATE 与四角色日志。
+
+Security：**PASS_WITH_AUDIT_FINDING**。20 路径无 output/dist/node_modules、`.env`、压缩包、密钥或构建产物；五日志新增文本无真实 credential assignment，历史命中均为 dummy/合成测试值。Fresh `npm audit --omit=dev` exit 1：锁定 `astro@7.2.8` 命中 moderate `GHSA-98hj-9722-w3j8`，同时列出 `GHSA-mpr7-6m5w-76rw`。Astro 字节在原 main d498、已部署 e42 和当前候选相同，本次同步不新增也不修复该风险；Task08 的 audit 0 只能作为当时快照。CI workflow 含同一 production audit 步骤，因此不得宣称本次安全审计或 hosted CI 已通过。该已披露 moderate 不阻断把实际生产源码同步 GitHub；升级 Astro 与再次部署不在本任务范围。
+
+Test Coverage Review：**PASS_WITH_AUDIT_FINDING**。Luna fresh `npm run verify` exit 0，155/155 files、1116/1116 tests 与 build PASS；全量 format 和 diff check exit 0。15/15 delta、1719/1719 non-scope、1739 before/after 保持；private build 未复制 primary `.env`，loopback network guard 0 blocked events，容量峰值 415240192 bytes / 2013 inodes。Audit exit 1 单独保留，不并入 PASS。
+
+Git Transport：**APPROVED**。先创建 parent `d498d984…41a69ca43f` 的普通 UTC 单父 commit，必须恰含已审 20 个 A/M 路径、mode 100644，并复核 tree/freeze；随后先尝试普通 non-force `git push origin main`。当前 `ls-remote` exit 0 且 main 为 d498。备用 API 仅在普通 push 有真实失败且 fresh remote 仍为预期 parent 时可用：脚本 `d01bf2da…dbbbb` / freeze `c674e84a…4092`，先无 `--apply` dry-run 核对 parent/tree/20 paths，再 apply 只创建精确 tree/commit object；main 必须由 Sol connector 以 expected_sha=实时旧 main、force=false 移动，回读 commit/tree 完全一致。任何差异停止。
+
+Status Docs：应用同步回读成功后，仅允许 `DEV_STATE.md`、`docs/SOL.md` 两路径事实补录的普通单父 commit，父为实时应用 commit；优先普通 push。若传输失败且 remote 未变，才可用同脚本显式 `--status-docs-only`、精确 dry-run/object equality、expected_sha/force=false。15 个非文档 freeze 必须保持；应用 bytes 未变可复用 fresh verify，只做文档 diff/格式检查。
+
+Result：**APPROVED_FOR_AUTHORIZED_GITHUB_SYNC_WITH_AUDIT_FINDING_AND_SAFE_API_FALLBACK**。未批准生产、CMS/DB/receiver、基础设施、依赖升级、force push 或其他路径。实际 commit/push/API/CI 结果尚未发生，必须在回读后据实记录。结构化结论：`output/git-sync/xyy-20261023-01/nova/review.json`。
