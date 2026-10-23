@@ -8177,3 +8177,31 @@ API 备用脚本只做独立静态与 guard 检查：`sync-via-api.py` SHA `d01b
 Evidence：[`final-summary.json`](../output/git-sync/xyy-20261023-01/luna/run-final/final-summary.json)、[`source-before.json`](../output/git-sync/xyy-20261023-01/luna/run-final/source-before.json)、[`source-after.json`](../output/git-sync/xyy-20261023-01/luna/run-final/source-after.json)、[`source-compare.json`](../output/git-sync/xyy-20261023-01/luna/run-final/source-compare.json)、[`npm-verify.log`](../output/git-sync/xyy-20261023-01/luna/run-final/npm-verify.log)、[`format-check.log`](../output/git-sync/xyy-20261023-01/luna/run-final/format-check.log)、[`production-audit.log`](../output/git-sync/xyy-20261023-01/luna/run-final/production-audit.log)、[`api-static/`](../output/git-sync/xyy-20261023-01/luna/run-final/api-static/)。
 
 Remaining risks：GitHub commit/push、hosted CI 和安全 advisory remediation 尚未由 Luna 执行；本结果仅是独立源等价与本地验证证据。
+
+### XYY-20261023-02 — Astro advisory remediation independent harness preparation
+
+Task ID：`XYY-20261023-02`；Result：**PREPARED / WAITING FOR TERRA FREEZE**。
+
+已读取合同、`DEV_STATE.md`、基线 `26ecb95844dc82bb45b6d908d77bfc73c20ff2cb`、当前 package/lock、CI workflow 与相关 contact/news E2E。当前工作区 package 仍解析 Astro `7.2.8`，Node `v24.18.0` / npm `11.16.0`；Terra 尚未提供可供 Luna 验收的最终 freeze，未运行 `npm ci`、`npm audit`、`npm run verify`、format、build 或浏览器。
+
+准备了 [`run-ci-fix-task02.sh`](../output/ci-fix/xyy-20261023-02/luna/run-ci-fix-task02.sh)、[`source-snapshot-task02.py`](../output/ci-fix/xyy-20261023-02/luna/source-snapshot-task02.py)、CI 同值原生资产校验 [`check-cn-font-split-task02.sh`](../output/ci-fix/xyy-20261023-02/luna/check-cn-font-split-task02.sh)、loopback-only [`network-guard-task02.cjs`](../output/ci-fix/xyy-20261023-02/luna/network-guard-task02.cjs) 与 [`README.md`](../output/ci-fix/xyy-20261023-02/luna/README.md)。运行器要求 Terra freeze 与 `RUN_LUNA_TASK02=1`，拒绝覆盖旧证据；标准 Playwright 应用使用 `4399`，应用浏览器显式使用 `PLAYWRIGHT_BASE_URL=http://127.0.0.1:4399`，不启动手工 app/CMS/receiver。fresh `npm ci` 后会在 private build 内验证固定 asset 的 size/SHA/ldd/require，再执行 audit/verify/browser；应用 verify/browser 阶段使用网络护栏，只允许 loopback；不复制 `.env`，不连接生产、真实 CMS/receiver、数据库或执行 Git 写入。
+
+源快照基于 1,739 文件 baseline manifest，允许差异仅 `package.json`、`package-lock.json` 和 Terra 日志 `docs/TERRA.md`；其他漂移 fail-closed。冻结后计划独立执行 Node/npm 版本、capacity 包装的 fresh install/verify、`npm audit --omit=dev`、format/diff，以及默认 4399 配置下中英文 contact 桌面/移动和中文正文六图、英文 published-only/empty fallback news 回归。以上为准备记录，不构成 PASS；Task01 历史结果不复用。
+
+静态检查：`bash -n`、Python `py_compile`、Node `--check`、JSON parse 和 `git diff --check` 均 exit 0；本地未发现 Node22 二进制，当前仅记录 Node24，不能宣称 Node22 本地通过。原始记录见 [`static-checks.txt`](../output/ci-fix/xyy-20261023-02/luna/static-checks.txt)。证据摘要：[`preparation-summary.json`](../output/ci-fix/xyy-20261023-02/luna/preparation-summary.json)。
+
+### XYY-20261023-02 — Astro advisory remediation independent verification
+
+Task ID：`XYY-20261023-02`；Result：**PASS（Node24 本地隔离验证；Node22 hosted CI 仍为独立闸门）**。
+
+Terra freeze SHA `81aec1f691c670195e17221ab101d355a0d2b09f3cae110eb6e1c7357dae7526`，状态 `CANDIDATE_FROZEN_FOR_LUNA_NOVA`。`package.json` SHA `6f2cc87dd6a981ed89dab75cb0a38aabd962c26d037474a001b1eb08cd6e8c85`、`package-lock.json` SHA `dff6a8379a569f05e91bf4d849f2af493bf7174040d9dd6a5848471a706b347f` 精确匹配；解析版本 Astro `7.3.3`、Vite `8.1.6`、sanitize-html `2.18.1`、`@astrojs/node` `11.1.4`。
+
+正式 rerun 使用新的 ignored private build，排除全部 `.env*`，并由标准 Playwright 配置管理生命周期。fresh `npm ci` exit 0，capacity 峰值 `911,155,200` bytes / `43,395` inodes；CI 同值 `cn-font-split` 固定资产 size/SHA/ldd/require exit 0；官方 registry `npm audit --omit=dev` exit 0、0 vulnerabilities。`npm run verify` exit 0：771 diagnostic files、0 errors/0 warnings/6 hints，Vitest 155/155 files、1116/1116 tests，build PASS；verify capacity `418,115,584` bytes / `2,042` inodes；format 和 `git diff --check` 均 exit 0。
+
+独立浏览器回归均使用标准配置、4399 loopback 和网络护栏：contact 中文/英文桌面移动及 recovery/acceptance/conversion **132/132 PASS**；news body images **2/2 PASS**（桌面/移动六图、draft/future 404）；English news fixture/visibility **8/8 PASS**。source compare `changed=0, unexpected=0`，private build 环境文件数为 0。
+
+首轮证据 `run-final` 在 verify 前发现 harness 仅排除精确 `.env`、误复制 `.env.production`；该文件内容未在工具输出或保留证据中展示，无法证明旧 npm 子进程从未读取；随后停止并保留日志。其 detached npm-ci 进程组/子进程已按精确 PID 清理；修正为排除全部 `.env*` 后使用新目录 `run-rerun-envfix` 完成正式验证。首轮问题归类为 harness 安全缺陷，不是应用或依赖测试失败。详细汇总见 [`final-summary.json`](../output/ci-fix/xyy-20261023-02/luna/run-rerun-envfix/final-summary.json)、[`freeze-check.json`](../output/ci-fix/xyy-20261023-02/luna/run-rerun-envfix/freeze-check.json) 和 [`run-final-env-copy-failure.json`](../output/ci-fix/xyy-20261023-02/luna/run-final-env-copy-failure.json)。
+
+Remaining risks：Luna 本地运行时为 Node24，未宣称 Node22 本地通过；需 hosted Node22 CI 完成。Luna 未执行 Git push、hosted CI、生产/CMS/receiver/database 写入或真实 POST；本结果是独立本地验证 PASS。
+
+Post-review cleanup：Nova 发现两轮已结束 private build 仍保留隐藏目录；确认无活跃本任务进程后，已删除 Luna 自建的两轮 `private-build` 与对应临时 npm/cache 目录，保留外层原始日志、manifest、source compare 和测试结果。清理后 Luna 目录无 `.env*` 文件、`.aws/.codex/.claude` 目录或 private-build。harness 已从全目录 `copytree` 改为仅复制 `git ls-files` 的普通 regular files，并排除 `.env*` 与私有目录；无 secret 临时 fixture proof exit 0，`privateContentsRead=false`。证据：[`cleanup.json`](../output/ci-fix/xyy-20261023-02/luna/cleanup.json)、[`copy-fixture-proof.json`](../output/ci-fix/xyy-20261023-02/luna/copy-fixture-proof.json)、[`copy-tracked-source-task02.py`](../output/ci-fix/xyy-20261023-02/luna/copy-tracked-source-task02.py)。

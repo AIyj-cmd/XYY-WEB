@@ -2918,3 +2918,10 @@ Health triage: 只读确认 health、权限契约、运行配置、相关客户�
 
 - API 备用脚本新增显式 --status-docs-only：仅该模式接受恰好 DEV_STATE.md 与 docs/SOL.md 两路径；默认仍要求精确 20 路径，其他 subset 拒绝。dry-run 与 apply 前均完整解析并验证 UTC author/committer，避免 API 先写 tree 后才发现身份非法。branch 仍只能由 Sol 的 expected SHA/force=false connector 移动。
 - 原脚本与冻结分别保留为 sync-via-api-before-status-docs.py、api-script-freeze-before-status-docs.json。自检 PASS：compile、--check-inputs（同时报告 20 和 2 两种模式）及 status flag 混用负例；未执行 GitHub API、commit、push 或 branch 操作。
+
+### XYY-20261023-02 — Astro 安全补丁候选冻结
+
+- 以干净基线 `26ecb95844dc82bb45b6d908d77bfc73c20ff2cb` 的无 `.env` 隔离副本，依据官方公告和 registry metadata 将 Astro 从 `7.2.8` 固定到精确 `7.3.3`：该版本同时避开 GHSA-98hj-9722-w3j8（修复版 7.3.2）与 GHSA-mpr7-6m5w-76rw（修复版 7.3.3），并继续符合项目 Node `>=22.12.0` / npm `>=9.6.5`。现有 `@astrojs/node@11.1.4` 的 Astro peer `^7.2.1` 覆盖该版本；Vite `8.1.6` 与 sanitize-html `2.18.1` 未变。
+- 真实容量守卫包装的隔离 `npm ci --no-audit --no-fund` 通过，测量见 `output/ci-fix/xyy-20261023-02/terra/capacity-install-7.3.3.json`；随后 production `npm audit --omit=dev --json` exit 0、漏洞总数 0。定向 Prettier、2 个既有单测文件共 14 项、主副本字节一致性与 `git diff --check` 均通过。
+- 最小 lock 差异仅为 Astro 及其必要传递依赖：markdown-satteri、internal-helpers、find-proc、verkit、zod（另有 Astro 元数据内 svgo/peer 范围变化）；未运行完整 verify/build，未提交、推送、连接远端或写入外部系统。最初的 `^7.3.3` 隔离解析为 7.4.2，因超出“当前 7.3 最小补丁”要求被保留为弃用候选、未回填主目录且不作为通过证据。最终两文件哈希、命令和限制见 `output/ci-fix/xyy-20261023-02/terra/freeze.json` 与 `selfcheck.json`，待 Luna/Nova 独立验收。
+- 最终 Review 前已先确认两个任务私有安装副本均无活动进程、所有冻结/审计/容量/弃用候选/registry 证据均在外层任务目录，然后将 `install-worktree` 和 `install-worktree-7.3.3` 以系统回收站方式移出任务目录。回读确认任务目录没有私有安装副本或真实 `.env`；主 `package.json` 与 `package-lock.json` 哈希保持冻结值。清理记录见 `output/ci-fix/xyy-20261023-02/terra/cleanup.json`；未重跑应用测试或改动依赖候选。

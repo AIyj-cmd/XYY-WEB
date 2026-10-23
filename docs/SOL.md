@@ -3275,3 +3275,12 @@ Limits：本轮限Chrome152模拟视口及离线/helper验证，空内容schema�
 - Terra15路径已冻结并与部署e42精确一致，1719非日志源码保持；Luna本次隔离fresh verify exit0（155/1116+build）、格式/diff0、network0、capacity415240192B/2013inodes。官方production audit exit1新报告Astro7.2.8的moderate聚合（GHSA-98hj-9722-w3j8及低风险GHSA-mpr7-6m5w-76rw）；Astro与原main及部署版锁定相同，本轮不升级框架或操作生产，不把历史audit0当当前事实。Nova APPROVED_FOR_AUTHORIZED_GITHUB_SYNC_WITH_AUDIT_FINDING_AND_SAFE_API_FALLBACK，15源码/5日志共20路径无secret/产物，允许parent=d498普通UTC单父提交+非强推；失败且远端仍预期时才可固定API d01bf2da...dbbbb，metadata补录仅DEV_STATE/docsSOL两路径。当前ls-remote预检exit0。
 
 - 应用同步已完成：普通UTC单父提交e715f8c6d7b9ce5f230468b116d12543a8ef855d（parent d498，exact20，tree c1fe536c13fff4e835ed16f06d37ad68311265fa），普通git push origin HEAD:refs/heads/main exit0，无force/API/凭据或origin变更。14:15 CST API回读main对象tree/parent与本地一致，HEAD/origin/main/GitHub main三引用相同、ahead/behind0/0、工作区干净。应用CI39910286968已completed/failure，唯一失败步骤Audit production dependencies，原log确认Astro7.2.8的同一1moderate（两advisory）；既有源码并未因此修改或擅升级，不能声称audit/CI通过。仅补录本文件与DEV_STATE两路径，非文档15/1719冻结继续，复用同Task本次fresh verify/format证据，不重复无关全量测试；状态文档diff检查通过。最终metadata提交/远端三引用及CI实际状态以本Task sol/final-result.json为准，线上release及CMS/receiver保持原状态。
+
+
+### XYY-20261023-02 — 修复 Astro 安全审计与 GitHub CI
+
+- 用户明确要求修复当前 Astro 审计导致的 GitHub CI 失败，沿用上传 GitHub 的明确目标。基线 main/origin/main/GitHub main 均为 `26ecb95844dc82bb45b6d908d77bfc73c20ff2cb`，工作区干净。HIGH 风险，范围为最小兼容依赖修复、独立验证与审查、普通推送至 AIyj-cmd/XYY-WEB/main 并核实 hosted CI。合同 `output/ci-fix/xyy-20261023-02/task.json`；本任务排除生产部署、CMS/数据库/接收服务及基础设施操作，CI 门禁和业务规则保持。
+
+- 实现与独立验证完成：Terra 精确固定 Astro7.3.3，两文件冻结 `81aec1f6...7526`；锁变化均来自 Astro 必要依赖，adapter/Vite/sanitize 保持。Luna 正式隔离 rerun 的 fresh npm ci/native 资产校验、production audit0、verify155文件1116测试及构建、format/diff 全部通过；contact132、news图片2、English news8共142项浏览器检查通过，源码零漂移。首轮误复制 .env.production 后在 verify 前中止，未在工具输出展示其内容且旧子进程已终止；排除全部 .env* 后新目录完整复测，失败证据保留。实际本地Node24，Node22须由随后hosted CI确认。最终Git/CI实际状态与验收见本任务 `sol/final-result.json`；生产release仍e42，无远程生产操作。
+
+- 最终审查定位到隔离副本复制范围过宽：Luna 已在确认无活跃进程后删除两轮 private-build 与任务临时目录，保留外层测试/失败证据，并将 ignored harness 改为仅复制 git 跟踪的普通源码，排除环境及私有配置，独立无敏感值 fixture proof 通过；Terra 两个安装副本已移入系统回收站，任务目录只保留非敏感外层证据。两 package 冻结保持，此环境清理不改变应用与已完成测试结果。

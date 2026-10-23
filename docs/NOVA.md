@@ -4748,3 +4748,33 @@ Git Transport：**APPROVED**。先创建 parent `d498d984…41a69ca43f` 的普�
 Status Docs：应用同步回读成功后，仅允许 `DEV_STATE.md`、`docs/SOL.md` 两路径事实补录的普通单父 commit，父为实时应用 commit；优先普通 push。若传输失败且 remote 未变，才可用同脚本显式 `--status-docs-only`、精确 dry-run/object equality、expected_sha/force=false。15 个非文档 freeze 必须保持；应用 bytes 未变可复用 fresh verify，只做文档 diff/格式检查。
 
 Result：**APPROVED_FOR_AUTHORIZED_GITHUB_SYNC_WITH_AUDIT_FINDING_AND_SAFE_API_FALLBACK**。未批准生产、CMS/DB/receiver、基础设施、依赖升级、force push 或其他路径。实际 commit/push/API/CI 结果尚未发生，必须在回读后据实记录。结构化结论：`output/git-sync/xyy-20261023-01/nova/review.json`。
+
+### XYY-20261023-02 — Astro 安全依赖修复 Review 准备
+
+Review Scope：已读取任务合同、基线 `26ecb958…ff2cb`、当前 package/lock 契约和 CI 闸门，仅建立后续最终审阅基准。预期实现仅限 `package.json`、`package-lock.json`，目标为 Astro 7.3.3；生产/SSH、CMS/DB、receiver、infra、CI 绕过及无关依赖或业务改动均排除。
+
+Architecture / Security：基线为 Astro 7.2.8、`@astrojs/node` 11.1.4（peer `^7.2.1`）、Vite override 8.1.6、sanitize-html 2.18.1。Nova 的 fresh production audit 复现 exit 1：Astro `<=7.3.2` 命中 `GHSA-98hj-9722-w3j8` 与 `GHSA-mpr7-6m5w-76rw`，合并为 1 个 moderate，0 high/critical。最终需核对 Astro 精确目标、必要 lock 变化、Node 22/adapter 兼容、其余固定依赖不漂移，并以冻结候选的 audit 0 为准。
+
+Test Coverage Review：尚未收到 Terra 最终两文件 freeze 或 Luna 独立 final。等待 fresh npm ci/audit/verify、format/diff、联系页与新闻桌面/移动回归、范围和 hash 证据；Hosted CI success 只能在实际 non-force 同步后回读确认。当前工作树仅有并行准备中的 `docs/LUNA.md`、`docs/SOL.md` 修改，未将其误判为包实现。
+
+Result：**PREPARED_WAITING_FOR_TERRA_FREEZE_AND_LUNA_FINAL**。本阶段不作 APPROVED/REJECTED，也不授权 commit、push 或任何外部动作。结构化准备证据：`output/ci-fix/xyy-20261023-02/nova/preparation.json`。
+
+### XYY-20261023-02 — 最终 Review：首轮私有副本残留阻断
+
+Review Scope：复核 Terra 两文件冻结、Luna 正式隔离复测、精确七个待提交路径及 Git/CI 边界。依赖实现与测试证据本身无静态或行为阻断：Astro 精确 7.3.3，必要 lock 变化可追溯；adapter/Vite/sanitize、业务源码和门禁保持。Luna clean rerun 的 fresh install、audit 0、155 文件/1116 单测与 build、format/diff、contact 132、news images 2、English news 8 均通过；本地为 Node24，Node22 仍须 hosted CI。
+
+Security：**BLOCKED**。首轮 harness 中止后，`output/ci-fix/xyy-20261023-02/luna/run-final/private-build` 仍保留真实 `.env.production`，并复制了 `.aws`、`.codex`、`.claude` 等本地私有目录。Nova 仅按文件名确认，未读取内容。七路径 tracked diff 未发现 credential assignment，且该树为 ignored，但保留敏感副本仍不满足无 Secret/禁止产物边界，不能用“不提交”代替清理。
+
+Result：**REJECTED_PENDING_FAILED_PRIVATE_BUILD_CLEANUP**。仅需由对应 owner 删除整个失败 `run-final/private-build`，保留外层非敏感失败日志，并按名称回读确认失败副本及私有配置树不存在；不要求重跑测试或改业务。清理复核前不批准 commit/push。结构化结论：`output/ci-fix/xyy-20261023-02/nova/final-review-blocker.json`。
+
+### XYY-20261023-02 — 清理后最终复审
+
+Review Scope：最小复核上轮唯一安全阻断、两份 package freeze、Luna 最终门禁和精确七路径候选。Luna 已在无活动进程后删除两轮 private-build 及任务临时/cache，Terra 两个安装副本已移出任务树；外层非敏感失败/测试证据保留。路径名回读确认 Luna/Terra 任务树无真实 `.env*`、private-build、`.aws` 或 `.claude` 残留。复制 harness 已收敛为 tracked regular files，并通过私有名称 fixture proof。首轮 `.env.production` 内容未在工具或证据输出展示，但无法证明旧 npm 子进程从未访问；此边界已在 Luna/Sol 记录中准确表述。
+
+Architecture / Security / Maintainability：**PASS**。`package.json` SHA `6f2cc87d…e8c85`、lock SHA `dff6a837…b347f` 保持冻结；Astro 精确 7.3.3，adapter 11.1.4、Vite 8.1.6、sanitize-html 2.18.1 及 Node/npm engine 契约保持。两项 GHSA 范围已避开，fresh production audit 0；lock 变化均源自 Astro 必要传递项。七路径无构建产物或检测到的 credential assignment，未改业务源码、CI workflow 或测试规则。
+
+Test Coverage Review：**PASS_LOCAL_NODE24**。fresh npm ci/native asset、audit 0、verify 155 文件/1116 测试与 build、format/diff 均 exit 0；contact 132、news images 2、English news 8 全部 PASS，source compare changed=0/unexpected=0。原始 verify log 有中间 `Terminated` 行，但同一命令随后记录全部测试、完成构建并 exit 0，不推断原因。Node22 只待 hosted CI，不能提前宣称通过。
+
+Result：**APPROVED_FOR_AUTHORIZED_GITHUB_SYNC_WITH_HOSTED_NODE22_CI_PENDING**。Sol 可在 live main 仍为 `26ecb958…ff2cb` 时创建精确七路径的普通 UTC 单父 commit，复核 package hash 后 non-force push `AIyj-cmd/XYY-WEB/main`；随后必须回读 local HEAD/origin/main/GitHub main、parent/tree 并等待 hosted Node22 CI completed/success，任一漂移或失败即停止且不得绕过。当前文档已指向 ignored final-result，无需第二个 tracked commit；若确需补录，只允许 `DEV_STATE.md`、`docs/SOL.md` 的事实状态，仍须普通单父 non-force、文档 diff/格式检查，并以该最终 main commit 的 CI 为验收对象。
+
+Remaining Risks / Handoff：本任务不部署，生产仍为 e42，故 GitHub 修复不会自动进入线上。未批准生产、SSH、CMS、数据库、receiver、infra、force push 或其他路径。结构化结论：`output/ci-fix/xyy-20261023-02/nova/final-review.json`。

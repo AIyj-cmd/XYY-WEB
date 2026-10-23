@@ -67,7 +67,7 @@
   "dependencies": {
     "@astrojs/node": "^11.1.4",
     "@directus/sdk": "^23.0.0",
-    "astro": "^7.2.8",
+    "astro": "7.3.3",
     "compression": "^1.8.1",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
